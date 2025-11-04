@@ -1,33 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putunbr_fd.c                                    :+:      :+:    :+:   */
+/*   ft_handle_char.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/24 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/04 10:59:31 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/04 10:51:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-void	ft_putunbr_fd(unsigned int n, int fd)
+int	ft_handle_char(va_list args, t_flags *flags)
 {
-	char	str[10];
-	int		i;
+	char	c;
+	int		count;
 
-	if (n == 0)
-		return (ft_putchar_fd('0', fd));
-	i = 0;
-	while (n)
+	c = (char)va_arg(args, int);
+	count = 0;
+	if (flags->minus)
 	{
-		str[i++] = n % 10 + '0';
-		n = n / 10;
+		ft_putchar_fd(c, 1);
+		count = 1 + ft_print_width(flags->width - 1, 0, 0);
 	}
-	i--;
-	while (i >= 0)
+	else
 	{
-		ft_putchar_fd(str[i--], fd);
+		count = ft_print_width(flags->width - 1, 0, 0);
+		ft_putchar_fd(c, 1);
+		count++;
 	}
+	return (count);
 }

@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/24 00:00:00 by abdali            #+#    #+#              #
-#    Updated: 2025/11/04 10:23:08 by abdoali          ###   ########.fr        #
+#    Updated: 2025/11/04 10:53:30 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,13 +31,15 @@ INCLUDES = -I$(SRC_DIR) -I$(LIBFT_DIR)
 
 # Source files
 SRCS = $(SRC_DIR)/ft_printf.c \
-       $(SRC_DIR)/ft_handle.c
+       $(SRC_DIR)/ft_parse_flags.c \
+       $(SRC_DIR)/ft_utils.c \
+       $(SRC_DIR)/ft_handle_char.c \
+       $(SRC_DIR)/ft_handle_string.c \
+       $(SRC_DIR)/ft_handle_number.c \
+       $(SRC_DIR)/ft_print_number.c \
+       $(SRC_DIR)/ft_handle_hex.c \
+       $(SRC_DIR)/ft_handle_pointer.c
 
-# Bonus source files
-BONUS_SRCS = $(BONUS_DIR)/ft_handle_bonus.c \
-             $(BONUS_DIR)/ft_how_much.c \
-             $(BONUS_DIR)/ft_prefixes.c \
-             $(BONUS_DIR)/ft_suffixes.c
 
 # Object files
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
