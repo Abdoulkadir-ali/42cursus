@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/24 00:00:00 by abdali            #+#    #+#              #
-#    Updated: 2025/11/04 10:53:30 by abdoali          ###   ########.fr        #
+#    Updated: 2025/11/04 11:03:12 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ SRC_DIR = srcs/printf
 LIBFT_DIR = srcs/libft
 BONUS_DIR = $(SRC_DIR)/bonus
 LIBFT = $(LIBFT_DIR)/libft.a
-OBJDIR = obj
+OBJDIR = objs
 
 # Include flags
 INCLUDES = -I$(SRC_DIR) -I$(LIBFT_DIR)
