@@ -3,7 +3,7 @@ CFLAGS = -Wall -Werror -Wextra -g
 RM = rm -f
 AR = ar rcs
 NAME = libgnl.a
-OBJDIR = obj
+OBJDIR = objs
 
 # Mandatory files
 SRCS = get_next_line.c get_next_line_utils.c

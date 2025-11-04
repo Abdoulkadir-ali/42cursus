@@ -12,6 +12,9 @@ Welcome to my 42 School curriculum repository! This repository contains my proje
 ### Cercle 2
 - **[born2beroot](cercle-2/born2beroot/)** - System administration project
 - **[ft_printf](cercle-2/ft_printf/)** - Recreation of the printf function
+  - `srcs/printf/` - Core printf implementation
+  - `srcs/printf/bonus/` - Bonus features (flags, width, precision)
+  - `srcs/libft/` - Required libft functions
 - **[get_next_line](cercle-2/get_next_line/)** - Function to read lines from file descriptors
 
 ### Cercle 3
