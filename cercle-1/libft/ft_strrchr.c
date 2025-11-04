@@ -1,20 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bzero.c                                         :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:06:12 by abdali            #+#    #+#             */
-/*   Updated: 2025/10/16 20:38:29 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:07:24 by abdali            #+#    #+#             */
+/*   Updated: 2025/11/04 10:02:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	ft_bzero(void *s, unsigned int n)
+char	*ft_strrchr(const char *s, int c)
 {
-	unsigned char	*str;
+	char	*last;
 
-	str = (unsigned char *)s;
-	while (n)
-		str[n-- - 1] = 0;
+	last = (char *)0;
+	while (*s)
+	{
+		if (*s == (char)c)
+			last = (char *)s;
+		s++;
+	}
+	if ((char)c == '\0')
+		return ((char *)s);
+	return (last);
 }

@@ -6,13 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:05:20 by abdali            #+#    #+#             */
-/*   Updated: 2025/10/18 14:50:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/04 09:56:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-unsigned int	ft_strlen(char const *s)
+#include <stdlib.h>
+
+size_t	ft_strlen(char const *s)
 {
-	unsigned int	i;
+	size_t	i;
 
 	if (!s)
 		return (0);

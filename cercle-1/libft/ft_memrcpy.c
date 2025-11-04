@@ -6,11 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:06:41 by abdali            #+#    #+#             */
-/*   Updated: 2025/10/16 20:38:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/04 09:57:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	*ft_memrcpy(void *d, void *s, unsigned int n)
+#include <stdlib.h>
+
+void	*ft_memrcpy(void *d, const void *s, size_t n)
 {
 	unsigned char	*dest;
 	unsigned char	*src;

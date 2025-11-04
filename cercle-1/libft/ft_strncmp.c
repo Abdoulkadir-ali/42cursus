@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memrchr.c                                       :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:06:37 by abdali            #+#    #+#             */
-/*   Updated: 2025/10/16 20:38:41 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:05:23 by abdali            #+#    #+#             */
+/*   Updated: 2025/11/04 09:56:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	*ft_memrchr(void *s, int c, unsigned int n)
-{
-	unsigned char	*str;
-	unsigned char	byte;
+#include <stdlib.h>
 
-	str = (unsigned char *)s;
-	byte = (unsigned char)c;
-	while (n)
-	{
-		if (str[n - 1] == byte)
-			return (&str[n - 1]);
-		n--;
-	}
-	return ((void *)0);
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	if (n == 0)
+		return (0);
+	i = 0;
+	while (i < n && s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	if (i == n)
+		return (0);
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }

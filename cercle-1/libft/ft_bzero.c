@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memchr.c                                        :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:06:22 by abdali            #+#    #+#             */
-/*   Updated: 2025/10/16 20:38:33 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:06:12 by abdali            #+#    #+#             */
+/*   Updated: 2025/11/04 09:56:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	*ft_memchr(void *s, int c, unsigned int n)
-{
-	unsigned int	i;
-	unsigned char	*str;
-	unsigned char	byte;
+#include <stdlib.h>
 
-	i = 0;
+void	ft_bzero(void *s, size_t n)
+{
+	unsigned char	*str;
+
 	str = (unsigned char *)s;
-	byte = (unsigned char)c;
-	while (i < n)
-	{
-		if (str[i] == byte)
-			return ((void *)&str[i]);
-		i++;
-	}
-	return ((void *)0);
+	while (n)
+		str[n-- - 1] = 0;
 }
