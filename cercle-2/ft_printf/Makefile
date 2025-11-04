@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/24 00:00:00 by abdali            #+#    #+#              #
-#    Updated: 2025/10/24 11:36:48 by abdoali          ###   ########.fr        #
+#    Updated: 2025/11/04 10:23:08 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,18 +20,28 @@ AR = ar rcs
 RM = rm -f
 
 # Directories
-LIBFT_DIR = ./libft
+SRC_DIR = srcs/printf
+LIBFT_DIR = srcs/libft
+BONUS_DIR = $(SRC_DIR)/bonus
 LIBFT = $(LIBFT_DIR)/libft.a
 OBJDIR = obj
 
 # Include flags
-INCLUDES = -I. -I$(LIBFT_DIR)
+INCLUDES = -I$(SRC_DIR) -I$(LIBFT_DIR)
 
 # Source files
-SRCS = ft_printf.c ft_handle.c
+SRCS = $(SRC_DIR)/ft_printf.c \
+       $(SRC_DIR)/ft_handle.c
+
+# Bonus source files
+BONUS_SRCS = $(BONUS_DIR)/ft_handle_bonus.c \
+             $(BONUS_DIR)/ft_how_much.c \
+             $(BONUS_DIR)/ft_prefixes.c \
+             $(BONUS_DIR)/ft_suffixes.c
 
 # Object files
-OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
+BONUS_OBJS = $(BONUS_SRCS:$(BONUS_DIR)/%.c=$(OBJDIR)/bonus/%.o)
 
 # Colors for pretty output
 GREEN = \033[0;32m
@@ -53,8 +63,13 @@ $(LIBFT):
 	@make -C $(LIBFT_DIR)
 	@echo "$(GREEN)✓ libft built successfully!$(NC)"
 
-$(OBJDIR)/%.o: %.c
+$(OBJDIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJDIR)
+	@echo "$(YELLOW)Compiling $<...$(NC)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(OBJDIR)/bonus/%.o: $(BONUS_DIR)/%.c
+	@mkdir -p $(OBJDIR)/bonus
 	@echo "$(YELLOW)Compiling $<...$(NC)"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
@@ -73,10 +88,17 @@ fclean: clean
 re: fclean all
 	@echo "$(GREEN)✓ Rebuild complete!$(NC)"
 
+# Bonus rule
+bonus: $(LIBFT) $(OBJS) $(BONUS_OBJS)
+	@echo "$(YELLOW)Creating ft_printf library with bonus...$(NC)"
+	@cp $(LIBFT) $(NAME)
+	@$(AR) $(NAME) $(OBJS) $(BONUS_OBJS)
+	@echo "$(GREEN)✓ $(NAME) with bonus created successfully!$(NC)"
+
 # Test rule
 test: $(NAME)
 	@echo "$(YELLOW)Creating test program...$(NC)"
 	@$(CC) $(CFLAGS) $(INCLUDES) main.c $(NAME) -o test_printf
 	@echo "$(GREEN)✓ Test program created! Run ./test_printf$(NC)"
 
-.PHONY: all clean fclean re test
+.PHONY: all clean fclean re bonus test
