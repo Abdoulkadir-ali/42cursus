@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 19:13:14 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/09 16:21:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/09 16:24:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,16 @@ char	*gnl_free(char **fds, int fd)
 		fds[fd] = NULL;
 	}
 	return (NULL);
+}
+
+static int	find_newline(char *str)
+{
+	char	*pos;
+
+	if (!str)
+		return (-1);
+	pos = ft_strchr(str, '\n');
+	if (!pos)
+		return (-1);
+	return (pos - str);
 }
