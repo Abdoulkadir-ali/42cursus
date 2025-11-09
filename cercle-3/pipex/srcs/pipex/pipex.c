@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/09 14:44:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/09 15:54:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/09 16:38:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	init_pipes(int nb_cmds, t_pipe **pipes)
 	return (0);
 }
 
-static int	fork_processes(int nb_cmds, t_pipe *pipes, char **argv)
+static int	fork_processes(t_config *cfg, t_pipe *pipes)
 {
 	int	i;
 	int	pid;
@@ -31,14 +31,14 @@ static int	fork_processes(int nb_cmds, t_pipe *pipes, char **argv)
 
 	i = 0;
 	last_pid = 0;
-	while (i < nb_cmds)
+	while (i < cfg->nb_cmds)
 	{
 		pid = fork();
 		if (pid < 0)
 			exit_statement("fork", pipes, -1);
 		if (!pid)
-			run_process(i, nb_cmds, pipes, argv);
-		if (i == nb_cmds - 1)
+			run_process(cfg, i, pipes);
+		if (i == cfg->nb_cmds - 1)
 			last_pid = pid;
 		i++;
 	}
@@ -77,21 +77,23 @@ static void	cleanup(t_pipe *pipes)
 		free(pipes);
 }
 
-int	pipex(char **argv, int argc)
+int	pipex(char **argv, int argc, int append_mode)
 {
-	int		nb_cmds;
-	t_pipe	*pipes;
-	int		exit_code;
-	int		last_pid;
+	t_config	cfg;
+	t_pipe		*pipes;
+	int			exit_code;
+	int			last_pid;
 
-	nb_cmds = argc - 2;
+	cfg.argv = argv;
+	cfg.nb_cmds = argc - 2;
+	cfg.append_mode = append_mode;
 	pipes = NULL;
-	if (init_pipes(nb_cmds, &pipes) == -1)
+	if (init_pipes(cfg.nb_cmds, &pipes) == -1)
 		return (1);
-	last_pid = fork_processes(nb_cmds, pipes, argv);
-	if (nb_cmds > 1)
-		close_all_pipes(pipes, nb_cmds - 1);
-	exit_code = wait_children(nb_cmds, last_pid);
+	last_pid = fork_processes(&cfg, pipes);
+	if (cfg.nb_cmds > 1)
+		close_all_pipes(pipes, cfg.nb_cmds - 1);
+	exit_code = wait_children(cfg.nb_cmds, last_pid);
 	cleanup(pipes);
 	return (exit_code);
 }

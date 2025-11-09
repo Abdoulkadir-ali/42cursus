@@ -6,48 +6,32 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/09 00:00:00 by abdali            #+#    #+#              #
-#    Updated: 2025/11/09 16:54:07 by abdoali          ###   ########.fr        #
+#    Updated: 2025/11/09 16:55:35 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= pipex
+NAME		= gnl.a
 
 CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -I./includes -I./srcs/libft/includes -I./srcs/gnl/includes
+CFLAGS		= -Wall -Wextra -Werror -I./includes -I../libft/includes
+AR			= ar rcs
 RM			= rm -rf
 
-SRCS_DIR	= srcs/pipex
+SRCS_DIR	= srcs
 OBJS_DIR	= objs
-LIBFT_DIR	= srcs/libft
-LIBFT		= $(LIBFT_DIR)/libft.a
-GNL_DIR		= srcs/gnl
-GNL			= $(GNL_DIR)/gnl.a
+INCLUDES	= includes
 
-SRCS		= access.c \
-			  cmd.c \
-			  exit.c \
-			  here_doc.c \
-			  io.c \
-			  main.c \
-			  parser.c \
-			  pipes.c \
-			  pipex.c \
-			  process.c
+SRCS		= get_next_line.c \
+			  get_next_line_utils.c
 
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
 
-HEADER		= includes/pipex.h
+HEADER		= $(INCLUDES)/get_next_line.h
 
 all: $(NAME)
 
-$(LIBFT):
-	make -C $(LIBFT_DIR)
-
-$(GNL):
-	make -C $(GNL_DIR)
-
-$(NAME): $(LIBFT) $(GNL) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(GNL) $(LIBFT) -o $(NAME)
+$(NAME): $(OBJS)
+	$(AR) $(NAME) $(OBJS)
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(HEADER) | $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -57,13 +41,9 @@ $(OBJS_DIR):
 
 clean:
 	$(RM) $(OBJS_DIR)
-	make -C $(LIBFT_DIR) clean
-	make -C $(GNL_DIR) clean
 
 fclean: clean
 	$(RM) $(NAME)
-	make -C $(LIBFT_DIR) fclean
-	make -C $(GNL_DIR) fclean
 
 re: fclean all
 

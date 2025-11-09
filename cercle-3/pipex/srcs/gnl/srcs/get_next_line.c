@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 19:13:10 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/09 16:25:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/09 16:47:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+static int	find_newline(char *str)
+{
+	char	*pos;
+
+	if (!str)
+		return (-1);
+	pos = ft_strchr(str, '\n');
+	if (!pos)
+		return (-1);
+	return (pos - str);
+}
 
 char	*extract_remainder(char *buffer, int newline_pos)
 {
