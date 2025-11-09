@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/09 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/09 17:02:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/09 21:41:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,24 @@ char	*create_here_doc(char *limiter)
 	read_heredoc_lines(fd, limiter);
 	close(fd);
 	return (temp_file);
+}
+
+int	handle_heredoc_mode(int argc, char **argv)
+{
+	char	*heredoc_file;
+	int		exit_code;
+
+	if (argc < 6)
+	{
+		ft_putstr_fd("Usage: ./pipex here_doc LIMITER cmd cmd file\n", 2);
+		return (1);
+	}
+	heredoc_file = create_here_doc(argv[2]);
+	if (!heredoc_file)
+		return (1);
+	argv[2] = heredoc_file;
+	exit_code = pipex(argv + 2, argc - 2, 1);
+	unlink(heredoc_file);
+	free(heredoc_file);
+	return (exit_code);
 }

@@ -6,15 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/09 00:00:00 by abdali            #+#    #+#             */
-/*   Updated: 2025/11/09 17:03:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/09 21:44:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "libft.h"
 # include "get_next_line.h"
+# include "libft.h"
 # include <errno.h>
 # include <fcntl.h>
 # include <signal.h>
@@ -33,30 +33,32 @@ typedef struct s_pipex_config
 	int		append_mode;
 	int		nb_cmds;
 	char	**argv;
-}	t_config;
+}			t_config;
 
 /* Helper functions */
-int		close_all_pipes(t_pipe *pipes, int nb);
+int			close_all_pipes(t_pipe *pipes, int nb);
 
 /* Error handling */
-int		exit_statement(char *error_msg, void *ptr, int error_code);
-int		exit_process(char *error);
+int			exit_statement(char *error_msg, void *ptr, int error_code);
+int			exit_process(char *error);
 
 /* Parser functions */
-char	**parse_command(char *cmd);
-void	free_args(char **args);
+char		**parse_command(char *cmd);
+void		free_args(char **args);
 
 /* Pipex core functions */
-int		execute_command(char *cmd);
-int		read_from_infile(char *infile, t_pipe *pipes, int nb);
-int		write_to_outfile(char *outfile, t_pipe *pipes, int i, int nb);
-int		write_to_outfile_append(char *outfile, t_pipe *pipes, int i, int nb);
-int		run_process(t_config *cfg, int i, t_pipe *pipes);
-t_pipe	*create_pipes(int nb);
-int		check_file_access(char *infile, char *outfile);
-int		pipex(char **argv, int argc, int append_mode);
+int			execute_command(char *cmd);
+int			read_from_infile(char *infile, t_pipe *pipes, int nb);
+int			write_to_outfile(char *outfile, t_pipe *pipes, int i, int nb);
+int			write_to_outfile_append(char *outfile, t_pipe *pipes, int i,
+				int nb);
+int			run_process(t_config *cfg, int i, t_pipe *pipes);
+t_pipe		*create_pipes(int nb);
+int			check_file_access(char *infile, char *outfile);
+int			pipex(char **argv, int argc, int append_mode);
 
 /* Here_doc bonus functions */
-char	*create_here_doc(char *limiter);
+char		*create_here_doc(char *limiter);
+int			handle_heredoc_mode(int argc, char **argv);
 
 #endif
