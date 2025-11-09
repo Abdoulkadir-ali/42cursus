@@ -1,20 +1,3 @@
-# Compiled files
-*.o
-*.a
-objs/
-
-# Executable
-pipex
-
-# Test files
-test.txt
-res.txt
-
-# System files
-.DS_Store
-*.swp
-*.swo
-*~
-
-# Subjects folder
+*.txt
+obj/
 subjects/
