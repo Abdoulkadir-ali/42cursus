@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/09 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/09 16:53:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/09 17:02:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include "../gnl/includes/get_next_line.h"
 
 static char	*create_temp_filename(void)
 {

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/09 00:00:00 by abdali            #+#    #+#             */
-/*   Updated: 2025/11/09 16:58:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/09 17:03:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PIPEX_H
 
 # include "libft.h"
+# include "get_next_line.h"
 # include <errno.h>
 # include <fcntl.h>
 # include <signal.h>
