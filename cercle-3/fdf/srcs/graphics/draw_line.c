@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:47 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 16:04:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 17:01:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	init_bresenham(t_bresenham *b, t_point start, t_point end)
 	b->y = start.pos.y;
 }
 
-static void	img_pixel_put_fast(t_data *data, int x, int y, int color)
+static inline void	img_pixel_put_fast(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
@@ -43,7 +43,7 @@ static void	img_pixel_put_fast(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-static int	is_visible(int x, int y, t_data *data)
+static inline int	is_visible(int x, int y, t_data *data)
 {
 	return (x >= 0 && x < data->win_width && y >= 0 && y < data->win_height);
 }

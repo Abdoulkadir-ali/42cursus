@@ -6,33 +6,28 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:13:56 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 15:13:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 17:01:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
 // Interpolate between two colors based on a ratio (0.0 to 1.0)
-int	interpolate_color(int color1, int color2, double ratio)
+inline int	interpolate_color(int color1, int color2, double ratio)
 {
-	int	r1;
-	int	g1;
-	int	b1;
-	int	r2;
-	int	g2;
-	int	b2;
+	int			r;
+	int			g;
+	int			b;
+	double		inv_ratio;
 
-	r1 = get_red(color1);
-	g1 = get_green(color1);
-	b1 = get_blue(color1);
-	r2 = get_red(color2);
-	g2 = get_green(color2);
-	b2 = get_blue(color2);
-	return (create_color(
-		r1 + (int)((r2 - r1) * ratio),
-		g1 + (int)((g2 - g1) * ratio),
-		b1 + (int)((b2 - b1) * ratio)
-	));
+	inv_ratio = 1.0 - ratio;
+	r = (int)(((color1 >> 16) & 0xFF) * inv_ratio
+			+ ((color2 >> 16) & 0xFF) * ratio);
+	g = (int)(((color1 >> 8) & 0xFF) * inv_ratio
+			+ ((color2 >> 8) & 0xFF) * ratio);
+	b = (int)((color1 & 0xFF) * inv_ratio
+			+ (color2 & 0xFF) * ratio);
+	return ((r << 16) | (g << 8) | b);
 }
 
 // Get color based on height with gradient

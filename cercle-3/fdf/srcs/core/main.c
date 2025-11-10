@@ -1,41 +1,53 @@
 #include "fdf.h"
 #include "gui.h"
 #include "projection.h"
+#include "events.h"
+#include <stdio.h>
 
 static void	init_window_size(t_data *data)
 {
 	int	screen_w;
 	int	screen_h;
+	int	calculated_w;
+	int	calculated_h;
 
 	mlx_get_screen_size(data->mlx_ptr, &screen_w, &screen_h);
-	data->win_width = (int)(screen_w * WINDOW_WIDTH_RATIO);
-	data->win_height = (int)(screen_h * WINDOW_HEIGHT_RATIO);
-	if (data->win_width < MIN_WINDOW_WIDTH)
+	calculated_w = (int)(screen_w * WINDOW_WIDTH_RATIO);
+	calculated_h = (int)(screen_h * WINDOW_HEIGHT_RATIO);
+	if (calculated_w < MIN_WINDOW_WIDTH)
 		data->win_width = MIN_WINDOW_WIDTH;
-	if (data->win_height < MIN_WINDOW_HEIGHT)
+	else if (calculated_w > MAX_WINDOW_WIDTH)
+		data->win_width = MAX_WINDOW_WIDTH;
+	else
+		data->win_width = calculated_w;
+	if (calculated_h < MIN_WINDOW_HEIGHT)
 		data->win_height = MIN_WINDOW_HEIGHT;
-	if (data->win_width > screen_w)
-		data->win_width = screen_w;
-	if (data->win_height > screen_h)
-		data->win_height = screen_h;
+	else if (calculated_h > MAX_WINDOW_HEIGHT)
+		data->win_height = MAX_WINDOW_HEIGHT;
+	else
+		data->win_height = calculated_h;
+	if (data->win_width > screen_w - 50)
+		data->win_width = screen_w - 50;
+	if (data->win_height > screen_h - 50)
+		data->win_height = screen_h - 50;
 }
 
 static void	init_camera(t_data *data)
 {
-	data->camera.rotation.x = 0;
-	data->camera.rotation.y = 0;
-	data->camera.rotation.z = 0;
-	data->camera.scale = 20;
-	data->camera.target_scale = 20;
-	data->camera.offset.x = data->win_width / 2;
-	data->camera.offset.y = data->win_height / 2;
-	data->camera.color_shift.red = 0;
-	data->camera.color_shift.blue = 0;
-	data->camera.color_shift.green = 0;
 	data->camera.move_speed = 1.0;
 	data->camera.zoom_speed = 1.0;
 	data->camera.projection = PROJ_ISOMETRIC;
-	data->camera.dampening_threshold = 0.0;
+	data->camera.gui_style = 0;
+	adjust_camera_to_map(data);
+}
+
+static void	init_map_config(t_data *data)
+{
+	data->map_config.line_thickness = 1;
+	data->map_config.point_thickness = 0;
+	data->map_config.line_color = 0xFFFFFF;
+	data->map_config.point_color = 0xFFFFFF;
+	data->map_config.style = 0;
 }
 
 static void	init_mouse(t_data *data)
@@ -61,6 +73,7 @@ static void	init_keys(t_data *data)
 
 static void	setup_hooks(t_data *data)
 {
+	mlx_hook(data->win_ptr, 17, 0, cleanup_and_exit, data);
 	mlx_hook(data->win_ptr, 4, 1L << 2, mouse_press, data);
 	mlx_hook(data->win_ptr, 5, 1L << 3, mouse_release, data);
 	mlx_hook(data->win_ptr, 6, 1L << 6, mouse_move, data);
@@ -81,16 +94,22 @@ int	main(void)
 			data.win_height, "FDF - Advanced Controls");
 	if (!data.win_ptr)
 		return (1);
-	init_camera(&data);
 	init_mouse(&data);
 	init_keys(&data);
+	init_map_config(&data);
 	data.buttons = init_buttons();
-	data.map = create_test_grid();
+	init_map_list(&data);
+	if (data.map_count > 0)
+		data.map = data.maps[0];
+	else
+		data.map = create_test_grid();
 	if (!data.map)
 		return (1);
 	data.img = mlx_new_image(data.mlx_ptr, data.win_width, data.win_height);
 	data.img_addr = mlx_get_data_addr(data.img, &data.img_bpp,
 			&data.img_line_len, &data.img_endian);
+	init_camera(&data);
+	apply_map_style(&data);
 	init_gui(&data);
 	draw_panel_background(&data);
 	draw_grid(&data);

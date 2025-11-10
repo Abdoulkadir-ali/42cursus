@@ -16,8 +16,6 @@ void	zoom_out(t_data *data)
 
 	factor = 1.0 - (0.1 * data->camera.zoom_speed);
 	data->camera.target_scale *= factor;
-	if (data->camera.target_scale < 5)
-		data->camera.target_scale = 5;
 }
 
 void	update_zoom(t_data *data)

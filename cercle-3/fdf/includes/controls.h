@@ -32,6 +32,7 @@ typedef struct s_camera
 	t_vec2d				offset;
 	t_color_shift		color_shift;
 	t_projection_type	projection;
+	int					gui_style;
 	double				scale;
 	double				target_scale;
 	double				move_speed;
@@ -75,6 +76,8 @@ typedef struct s_keyboard
 	int	ctrl_left;
 	int	ctrl_right;
 	int	p;
+	int	n;
+	int	s;
 	int	esc;
 	int	r;
 }	t_keyboard;
@@ -107,5 +110,8 @@ t_buttons	init_buttons(void);
 void		zoom_in(t_data *data);
 void		zoom_out(t_data *data);
 void		update_zoom(t_data *data);
+
+// Camera adjustment functions
+void		adjust_camera_to_map(t_data *data);
 
 #endif

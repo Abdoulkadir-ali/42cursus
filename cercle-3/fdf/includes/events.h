@@ -14,8 +14,14 @@ int		mouse_move(int x, int y, t_data *data);
 int		key_press(int keycode, t_data *data);
 int		key_release(int keycode, t_data *data);
 
-// Loop hook for continuous updates
+/* ========== EVENT LOOP FUNCTIONS ========== */
+// Main loop hook for continuous updates
 int		loop_hook(t_data *data);
+
+// Process keyboard movement
 void	process_movement(t_data *data);
+
+// Cleanup and exit
+int		cleanup_and_exit(t_data *data);
 
 #endif

@@ -23,7 +23,20 @@ typedef struct s_map
 }	t_map;
 
 /* ========== MAP FUNCTIONS ========== */
+// Forward declaration
+typedef struct s_data	t_data;
+
 // Create and initialize test map
 t_map	*create_test_grid(void);
+
+// Load map from file
+t_map	*load_map(char *filename);
+
+// Free map memory
+void	free_map(t_map *map);
+
+// Map selection
+void	init_map_list(t_data *data);
+void	cycle_map(t_data *data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:33 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 15:37:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 16:13:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ t_buttons	init_buttons(void)
 	buttons.keyboard.ctrl_left = 65507;
 	buttons.keyboard.ctrl_right = 65508;
 	buttons.keyboard.p = 112;
+	buttons.keyboard.n = 110;
+	buttons.keyboard.s = 115;
 	buttons.keyboard.esc = 65307;
 	buttons.keyboard.r = 114;
 

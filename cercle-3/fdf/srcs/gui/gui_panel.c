@@ -2,6 +2,12 @@
 #include "gui.h"
 #include "projection.h"
 
+// Get accent color based on current GUI style
+static int	get_accent_color(t_data *data)
+{
+	return (get_gui_accent_color(data->camera.gui_style));
+}
+
 // Initialize GUI image buffer
 void	init_gui(t_data *data)
 {
@@ -41,20 +47,31 @@ static void	draw_rect(t_data *data, t_vec2 pos, t_vec2 size, int color)
 	}
 }
 
-// Draw the panel background
+// Draw the panel background with style-aware neon borders
 void	draw_panel_background(t_data *data)
 {
 	t_vec2	pos;
 	t_vec2	size;
+	int		bg_color;
+	int		accent;
+	int		i;
 
+	bg_color = get_gui_background_color(data->camera.gui_style);
+	accent = get_accent_color(data);
 	pos.x = 0;
 	pos.y = 0;
 	size.x = GUI_PANEL_WIDTH;
 	size.y = data->win_height;
-	draw_rect(data, pos, size, GUI_BG_COLOR);
-	pos.x = GUI_PANEL_WIDTH - 1;
-	size.x = 1;
-	draw_rect(data, pos, size, GUI_BORDER_COLOR);
+	draw_rect(data, pos, size, bg_color);
+	i = 0;
+	while (i < 3)
+	{
+		pos.x = GUI_PANEL_WIDTH - 3 + i;
+		size.x = 1;
+		size.y = data->win_height;
+		draw_rect(data, pos, size, accent);
+		i++;
+	}
 }
 
 // Draw text at position
@@ -107,6 +124,12 @@ void	draw_controls_guide(t_data *data)
 	y += GUI_LINE_HEIGHT;
 	draw_text(data, GUI_PADDING + 10, y, "P", GUI_KEY_COLOR);
 	draw_text(data, GUI_PADDING + 120, y, "Projection", GUI_TEXT_COLOR);
+	y += GUI_LINE_HEIGHT;
+	draw_text(data, GUI_PADDING + 10, y, "N", GUI_KEY_COLOR);
+	draw_text(data, GUI_PADDING + 120, y, "Next Map", GUI_TEXT_COLOR);
+	y += GUI_LINE_HEIGHT;
+	draw_text(data, GUI_PADDING + 10, y, "S", GUI_KEY_COLOR);
+	draw_text(data, GUI_PADDING + 120, y, "Style", GUI_TEXT_COLOR);
 	y += GUI_LINE_HEIGHT;
 	draw_text(data, GUI_PADDING + 10, y, "R", GUI_KEY_COLOR);
 	draw_text(data, GUI_PADDING + 120, y, "Reset View", GUI_TEXT_COLOR);
@@ -167,6 +190,20 @@ static void	draw_dampening_display(t_data *data)
 	}
 }
 
+// Draw visual style display
+static void	draw_style_display(t_data *data)
+{
+	int		y;
+	int		accent;
+
+	y = data->win_height - 240;
+	accent = get_accent_color(data);
+	draw_text(data, GUI_PADDING, y, "GUI STYLE", accent);
+	y += GUI_TITLE_HEIGHT;
+	draw_text(data, GUI_PADDING + 10, y,
+		(char *)g_gui_style_names[data->camera.gui_style], accent);
+}
+
 // Draw projection display
 static void	draw_projection_display(t_data *data)
 {
@@ -204,6 +241,7 @@ void	draw_speed_display(t_data *data)
 void	render_gui(t_data *data)
 {
 	draw_controls_guide(data);
+	draw_style_display(data);
 	draw_dampening_display(data);
 	draw_projection_display(data);
 	draw_speed_display(data);

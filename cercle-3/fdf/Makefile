@@ -6,18 +6,23 @@ LDFLAGS = -L./minilibx-linux -lmlx -lX11 -lXext -lm
 
 # Source files organized by category
 SRCS =	srcs/core/main.c \
+	srcs/core/cleanup.c \
 	srcs/graphics/draw_line.c \
 	srcs/graphics/window.c \
+	srcs/graphics/map_style.c \
 	srcs/math/rotate.c \
 	srcs/math/zoom.c \
+	srcs/camera/adjust.c \
 	srcs/color/color.c \
 	srcs/color/interpolate.c \
 	srcs/world/map.c \
+	srcs/world/select.c \
 	srcs/input/buttons.c \
 	srcs/events/mouse_events.c \
 	srcs/events/mouse_move.c \
 	srcs/events/key_events.c \
 	srcs/gui/gui_panel.c \
+	srcs/gui/gui_style.c \
 	srcs/projection/projection.c \
 	srcs/projection/basic_projections.c \
 	srcs/projection/advanced_projections.c
@@ -39,6 +44,7 @@ objs:
 	@mkdir -p objs/core
 	@mkdir -p objs/graphics
 	@mkdir -p objs/math
+	@mkdir -p objs/camera
 	@mkdir -p objs/color
 	@mkdir -p objs/world
 	@mkdir -p objs/input
