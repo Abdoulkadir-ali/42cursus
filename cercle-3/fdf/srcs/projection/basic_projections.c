@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   basic_projections.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/10 18:22:57 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/10 18:41:55 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 #include "projection.h"
 
-// Isometric projection (30 degree angle)
 t_point	project_isometric(t_point p3d, t_camera cam)
 {
 	t_vec3d	v;
@@ -11,7 +22,7 @@ t_point	project_isometric(t_point p3d, t_camera cam)
 	v.x = (double)p3d.pos.x;
 	v.y = (double)p3d.pos.y;
 	v.z = (double)p3d.pos.z;
-	rotated = apply_rotation(v, cam.rotation);
+	rotated = apply_rotation_centered(v, cam.rotation, cam.grid_center);
 	p2d.pos.x = (rotated.x - rotated.y) * cos(0.523599) * cam.scale;
 	p2d.pos.y = (rotated.x + rotated.y) * sin(0.523599) * cam.scale
 		- rotated.z * cam.scale;
@@ -22,7 +33,6 @@ t_point	project_isometric(t_point p3d, t_camera cam)
 	return (p2d);
 }
 
-// Orthographic projection (parallel projection, no perspective)
 t_point	project_orthographic(t_point p3d, t_camera cam)
 {
 	t_vec3d	v;
@@ -32,7 +42,7 @@ t_point	project_orthographic(t_point p3d, t_camera cam)
 	v.x = (double)p3d.pos.x;
 	v.y = (double)p3d.pos.y;
 	v.z = (double)p3d.pos.z;
-	rotated = apply_rotation(v, cam.rotation);
+	rotated = apply_rotation_centered(v, cam.rotation, cam.grid_center);
 	p2d.pos.x = rotated.x * cam.scale;
 	p2d.pos.y = -rotated.z * cam.scale;
 	p2d.pos.x += cam.offset.x;
@@ -42,7 +52,6 @@ t_point	project_orthographic(t_point p3d, t_camera cam)
 	return (p2d);
 }
 
-// Perspective projection (with depth)
 t_point	project_perspective(t_point p3d, t_camera cam)
 {
 	t_vec3d	v;
@@ -54,7 +63,7 @@ t_point	project_perspective(t_point p3d, t_camera cam)
 	v.x = (double)p3d.pos.x;
 	v.y = (double)p3d.pos.y;
 	v.z = (double)p3d.pos.z;
-	rotated = apply_rotation(v, cam.rotation);
+	rotated = apply_rotation_centered(v, cam.rotation, cam.grid_center);
 	depth = rotated.y + 200;
 	if (depth < 1)
 		depth = 1;

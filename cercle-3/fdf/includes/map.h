@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/10 20:06:37 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MAP_H
 # define MAP_H
 
@@ -19,6 +31,7 @@ typedef struct s_map
 	int		height;
 	int		min_z;
 	int		max_z;
+	double	z_divisor;
 	t_point	**points;
 }	t_map;
 
@@ -34,6 +47,9 @@ t_map	*load_map(char *filename);
 
 // Free map memory
 void	free_map(t_map *map);
+
+// Calculate min/max Z values for a map
+void	calculate_min_max_z(t_map *map);
 
 // Map selection
 void	init_map_list(t_data *data);

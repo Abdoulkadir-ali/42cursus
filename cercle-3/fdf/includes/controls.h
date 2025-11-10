@@ -1,13 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   controls.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/10 19:41:24 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/10 22:34:51 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CONTROLS_H
 # define CONTROLS_H
 
 # include "vectors.h"
 
-// Forward declare projection type (defined in projection.h)
 typedef enum e_projection_type	t_projection_type;
 
-/* ========== ROTATION STRUCTURE ========== */
-// Stores rotation angles for 3D transformations
 typedef struct s_rotation
 {
 	double	x;
@@ -15,8 +24,6 @@ typedef struct s_rotation
 	double	z;
 }	t_rotation;
 
-/* ========== COLOR SHIFT STRUCTURE ========== */
-// Color modification values for RGB channels
 typedef struct s_color_shift
 {
 	int	red;
@@ -24,12 +31,11 @@ typedef struct s_color_shift
 	int	green;
 }	t_color_shift;
 
-/* ========== CAMERA STRUCTURE ========== */
-// Camera/view controls for 3D scene
 typedef struct s_camera
 {
 	t_rotation			rotation;
 	t_vec2d				offset;
+	t_vec3d				grid_center;
 	t_color_shift		color_shift;
 	t_projection_type	projection;
 	int					gui_style;
@@ -37,11 +43,16 @@ typedef struct s_camera
 	double				target_scale;
 	double				move_speed;
 	double				zoom_speed;
-	double				dampening_threshold;
+	int					dampening_threshold;
+	double				pending_rot_x;
+	double				pending_rot_y;
+	double				z_scale;
+	int					frustum_margin;
+	int					spline_segments;
+	int					use_z_divisor;
+	int					invert_movement;
 }	t_camera;
 
-/* ========== MOUSE STATE ========== */
-// Tracks mouse button press states and position
 typedef struct s_mouse
 {
 	int	left_pressed;
@@ -53,8 +64,6 @@ typedef struct s_mouse
 	int	middle_start_y;
 }	t_mouse;
 
-/* ========== KEYBOARD STATE ========== */
-// Tracks arrow key press states
 typedef struct s_keys
 {
 	int	up;
@@ -63,10 +72,21 @@ typedef struct s_keys
 	int	right;
 	int	ctrl_left;
 	int	ctrl_right;
+	int	shift_left;
+	int	shift_right;
+	int	l;
+	int	z;
+	int	f;
+	int	h;
+	int	d;
+	int	t;
+	int	s;
+	int	a;
+	int	x;
+	int	i;
+	int	v;
 }	t_keys;
 
-/* ========== BUTTON CODE DEFINITIONS ========== */
-// Keyboard button codes
 typedef struct s_keyboard
 {
 	int	up_arrow;
@@ -75,14 +95,28 @@ typedef struct s_keyboard
 	int	right_arrow;
 	int	ctrl_left;
 	int	ctrl_right;
+	int	shift_left;
+	int	shift_right;
 	int	p;
 	int	n;
 	int	s;
 	int	esc;
 	int	r;
+	int	l;
+	int	z;
+	int	f;
+	int	h;
+	int	d;
+	int	t;
+	int	a;
+	int	x;
+	int	i;
+	int	v;
+	int	plus;
+	int	minus;
+	int	zero;
 }	t_keyboard;
 
-// Mouse button codes
 typedef struct s_mouse_buttons
 {
 	int	left;
@@ -92,26 +126,20 @@ typedef struct s_mouse_buttons
 	int	scroll_down;
 }	t_mouse_buttons;
 
-// Combined button codes
 typedef struct s_buttons
 {
 	t_keyboard		keyboard;
 	t_mouse_buttons	mouse;
 }	t_buttons;
 
-/* ========== CONTROL FUNCTIONS ========== */
-// Forward declaration for zoom functions
 typedef struct s_data	t_data;
 
-// Initialize button/key code mappings
 t_buttons	init_buttons(void);
 
-// Zoom control functions
 void		zoom_in(t_data *data);
 void		zoom_out(t_data *data);
 void		update_zoom(t_data *data);
 
-// Camera adjustment functions
 void		adjust_camera_to_map(t_data *data);
 
 #endif

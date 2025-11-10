@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   projection.h                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/10 19:41:48 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/10 20:08:15 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PROJECTION_H
 # define PROJECTION_H
 
@@ -24,7 +36,8 @@ extern const char	*g_projection_names[PROJ_COUNT];
 
 /* ========== PROJECTION FUNCTIONS ========== */
 // Apply selected projection to a 3D point
-t_point	project_point(t_point p3d, t_camera cam, t_projection_type type);
+t_point	project_point(t_point p3d, t_camera cam, t_projection_type type,
+			double z_divisor);
 
 // Individual projection algorithms
 t_point	project_isometric(t_point p3d, t_camera cam);

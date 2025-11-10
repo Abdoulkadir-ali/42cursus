@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   advanced_projections.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/10 18:23:49 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/10 18:42:20 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 #include "projection.h"
 
-// Oblique projection (cabinet projection, 45 degree angle)
 t_point	project_oblique(t_point p3d, t_camera cam)
 {
 	t_vec3d	v;
@@ -13,7 +24,7 @@ t_point	project_oblique(t_point p3d, t_camera cam)
 	v.x = (double)p3d.pos.x;
 	v.y = (double)p3d.pos.y;
 	v.z = (double)p3d.pos.z;
-	rotated = apply_rotation(v, cam.rotation);
+	rotated = apply_rotation_centered(v, cam.rotation, cam.grid_center);
 	oblique_angle = 0.785398;
 	oblique_factor = 0.5;
 	p2d.pos.x = (rotated.x + rotated.y * cos(oblique_angle) * oblique_factor)
@@ -27,24 +38,19 @@ t_point	project_oblique(t_point p3d, t_camera cam)
 	return (p2d);
 }
 
-// Camera matrix projection (full 3D camera transformation)
 t_point	project_camera_matrix(t_point p3d, t_camera cam)
 {
 	t_vec3d	v;
 	t_vec3d	rotated;
 	t_point	p2d;
-	double	fov;
-	double	aspect;
 	double	f;
 
 	v.x = (double)p3d.pos.x;
 	v.y = (double)p3d.pos.y;
 	v.z = (double)p3d.pos.z;
-	rotated = apply_rotation(v, cam.rotation);
-	fov = 1.047;
-	aspect = 1.333;
-	f = 1.0 / tan(fov / 2.0);
-	p2d.pos.x = (rotated.x * f / aspect) * cam.scale * 10;
+	rotated = apply_rotation_centered(v, cam.rotation, cam.grid_center);
+	f = 1.0 / tan(1.047 / 2.0);
+	p2d.pos.x = (rotated.x * f / 1.333) * cam.scale * 10;
 	p2d.pos.y = (rotated.z * f) * cam.scale * 10;
 	p2d.pos.x += cam.offset.x;
 	p2d.pos.y += cam.offset.y;
@@ -53,24 +59,20 @@ t_point	project_camera_matrix(t_point p3d, t_camera cam)
 	return (p2d);
 }
 
-// Nonlinear projection (artistic/warped projection)
 t_point	project_nonlinear(t_point p3d, t_camera cam)
 {
 	t_vec3d	v;
 	t_vec3d	rotated;
 	t_point	p2d;
-	double	warp_x;
-	double	warp_y;
 
 	v.x = (double)p3d.pos.x;
 	v.y = (double)p3d.pos.y;
 	v.z = (double)p3d.pos.z;
-	rotated = apply_rotation(v, cam.rotation);
-	warp_x = sin(rotated.y * 0.05) * 5;
-	warp_y = cos(rotated.x * 0.05) * 5;
-	p2d.pos.x = (rotated.x + warp_x - rotated.y) * cos(0.523599) * cam.scale;
-	p2d.pos.y = ((rotated.x + rotated.y) * sin(0.523599)
-			- rotated.z + warp_y) * cam.scale;
+	rotated = apply_rotation_centered(v, cam.rotation, cam.grid_center);
+	p2d.pos.x = (rotated.x + sin(rotated.y * 0.05) * 5 - rotated.y)
+		* cos(0.523599) * cam.scale;
+	p2d.pos.y = ((rotated.x + rotated.y) * sin(0.523599) - rotated.z
+			+ cos(rotated.x * 0.05) * 5) * cam.scale;
 	p2d.pos.x += cam.offset.x;
 	p2d.pos.y += cam.offset.y;
 	p2d.pos.z = rotated.z;

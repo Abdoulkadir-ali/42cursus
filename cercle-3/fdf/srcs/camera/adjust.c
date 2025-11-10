@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 17:36:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:41:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include <math.h>
+
+static int	get_max_dimension(t_data *data)
+{
+	if (data->map->height > data->map->width)
+		return (data->map->height);
+	return (data->map->width);
+}
 
 static double	calculate_ideal_zoom(t_data *data)
 {
@@ -19,16 +26,12 @@ static double	calculate_ideal_zoom(t_data *data)
 	double	scale_y;
 	double	scale;
 	int		max_dim;
-	double	available_width;
-	double	available_height;
 
-	max_dim = data->map->width;
-	if (data->map->height > max_dim)
-		max_dim = data->map->height;
-	available_width = data->win_width * DEFAULT_ZOOM_AVAILABLE_WIDTH;
-	available_height = data->win_height * DEFAULT_ZOOM_AVAILABLE_HEIGHT;
-	scale_x = available_width / (max_dim * DEFAULT_ZOOM_PADDING);
-	scale_y = available_height / (max_dim * DEFAULT_ZOOM_PADDING);
+	max_dim = get_max_dimension(data);
+	scale_x = (data->win_width * DEFAULT_ZOOM_AVAILABLE_WIDTH)
+		/ (max_dim * DEFAULT_ZOOM_PADDING);
+	scale_y = (data->win_height * DEFAULT_ZOOM_AVAILABLE_HEIGHT)
+		/ (max_dim * DEFAULT_ZOOM_PADDING);
 	scale = scale_x;
 	if (scale_y < scale)
 		scale = scale_y;
@@ -67,6 +70,9 @@ void	adjust_camera_to_map(t_data *data)
 	data->camera.target_scale = ideal_scale;
 	set_ideal_angle(data);
 	calculate_ideal_position(data);
+	data->camera.grid_center.x = (data->map->width - 1) / 2.0;
+	data->camera.grid_center.y = (data->map->height - 1) / 2.0;
+	data->camera.grid_center.z = 0.0;
 	data->camera.color_shift.red = 0;
 	data->camera.color_shift.blue = 0;
 	data->camera.color_shift.green = 0;

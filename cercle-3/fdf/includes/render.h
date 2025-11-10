@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/10 19:41:56 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/10 22:21:39 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef RENDER_H
 # define RENDER_H
 
@@ -9,16 +21,68 @@ typedef struct s_data	t_data;
 
 /* ========== ROTATION FUNCTIONS ========== */
 // 3D rotation transformations
-inline t_vec3d	rotate_x(t_vec3d v, double angle);
-inline t_vec3d	rotate_y(t_vec3d v, double angle);
-inline t_vec3d	rotate_z(t_vec3d v, double angle);
-t_vec3d			apply_rotation(t_vec3d v, t_rotation rot);
+t_vec3d					apply_rotation(t_vec3d v, t_rotation rot);
+t_vec3d					apply_rotation_centered(t_vec3d v, t_rotation rot,
+							t_vec3d c);
+
+static inline t_vec3d	rotate_x(t_vec3d v, double angle)
+{
+	t_vec3d	rotated;
+
+	rotated.x = v.x;
+	rotated.y = v.y * cos(angle) - v.z * sin(angle);
+	rotated.z = v.y * sin(angle) + v.z * cos(angle);
+	return (rotated);
+}
+
+static inline t_vec3d	rotate_y(t_vec3d v, double angle)
+{
+	t_vec3d	rotated;
+
+	rotated.x = v.x * cos(angle) + v.z * sin(angle);
+	rotated.y = v.y;
+	rotated.z = -v.x * sin(angle) + v.z * cos(angle);
+	return (rotated);
+}
+
+static inline t_vec3d	rotate_z(t_vec3d v, double angle)
+{
+	t_vec3d	rotated;
+
+	rotated.x = v.x * cos(angle) - v.y * sin(angle);
+	rotated.y = v.x * sin(angle) + v.y * cos(angle);
+	rotated.z = v.z;
+	return (rotated);
+}
 
 /* ========== PROJECTION FUNCTIONS ========== */
 // Convert 3D points to 2D screen coordinates
 t_point	project_isometric(t_point p3d, t_camera cam);
 
+/* ========== BRESENHAM STRUCTURE ========== */
+typedef struct s_bresenham
+{
+	int	dx;
+	int	dy;
+	int	sx;
+	int	sy;
+	int	err;
+	int	e2;
+	int	x;
+	int	y;
+}	t_bresenham;
+
 /* ========== DRAWING FUNCTIONS ========== */
+// Visibility and screening helpers
+int		is_point_visible(t_point p3d, t_data *data);
+int		is_on_screen(int x, int y, t_data *data);
+int		should_draw_line(t_point p1, t_point p2, t_data *data);
+
+// Image manipulation
+void	clear_image(t_data *data);
+void	clear_z_buffer(t_data *data);
+int		z_buffer_test(t_data *data, int x, int y, float z);
+
 // Line drawing with color interpolation
 void	draw_line(t_data *data, t_point start, t_point end);
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 17:47:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:21:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ int	cleanup_and_exit(t_data *data)
 {
 	free_cached_maps(data);
 	free_map_files(data);
+	if (data->z_buffer)
+		free(data->z_buffer);
 	if (data->img)
 		mlx_destroy_image(data->mlx_ptr, data->img);
 	if (data->gui_img)

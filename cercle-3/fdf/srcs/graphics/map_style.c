@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 16:40:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:28:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,33 @@
 static int	get_gradient_color(int z, int min_z, int max_z)
 {
 	double	ratio;
+	int		color_low;
+	int		color_mid;
+	int		color_high;
 	int		r;
 	int		g;
 	int		b;
 
+	color_low = 0x0000FF;
+	color_mid = 0x00FF00;
+	color_high = 0xFF0000;
 	if (max_z == min_z)
-		return (0xFFFFFF);
+		return (color_mid);
 	ratio = (double)(z - min_z) / (double)(max_z - min_z);
-	r = (int)(255 * ratio);
-	g = (int)(100 + 155 * ratio);
-	b = (int)(255 * (1.0 - ratio));
+	if (ratio < 0.5)
+	{
+		ratio = ratio * 2.0;
+		r = (int)(((color_low >> 16) & 0xFF) * (1.0 - ratio) + ((color_mid >> 16) & 0xFF) * ratio);
+		g = (int)(((color_low >> 8) & 0xFF) * (1.0 - ratio) + ((color_mid >> 8) & 0xFF) * ratio);
+		b = (int)((color_low & 0xFF) * (1.0 - ratio) + (color_mid & 0xFF) * ratio);
+	}
+	else
+	{
+		ratio = (ratio - 0.5) * 2.0;
+		r = (int)(((color_mid >> 16) & 0xFF) * (1.0 - ratio) + ((color_high >> 16) & 0xFF) * ratio);
+		g = (int)(((color_mid >> 8) & 0xFF) * (1.0 - ratio) + ((color_high >> 8) & 0xFF) * ratio);
+		b = (int)((color_mid & 0xFF) * (1.0 - ratio) + (color_high & 0xFF) * ratio);
+	}
 	return ((r << 16) | (g << 8) | b);
 }
 
@@ -72,37 +89,4 @@ int	get_map_line_color(int z, int min_z, int max_z, t_map_style style)
 	else if (style == MAP_STYLE_NEON)
 		return (get_neon_color(z));
 	return (0xFFFFFF);
-}
-
-int	get_map_point_color(int z, int min_z, int max_z, t_map_style style)
-{
-	return (get_map_line_color(z, min_z, max_z, style));
-}
-
-void	cycle_map_style(t_data *data)
-{
-	data->map_config.style = (data->map_config.style + 1) % MAP_STYLE_COUNT;
-	apply_map_style(data);
-}
-
-void	apply_map_style(t_data *data)
-{
-	int	x;
-	int	y;
-
-	y = 0;
-	while (y < data->map->height)
-	{
-		x = 0;
-		while (x < data->map->width)
-		{
-			data->map->points[y][x].color = get_map_line_color(
-					data->map->points[y][x].pos.z,
-					data->map->min_z,
-					data->map->max_z,
-					data->map_config.style);
-			x++;
-		}
-		y++;
-	}
 }

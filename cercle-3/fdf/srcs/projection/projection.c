@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   projection.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/10 18:24:05 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/10 21:17:05 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 #include "projection.h"
 
-// Projection type names for menu
 const char	*g_projection_names[PROJ_COUNT] = {
 	"Isometric",
 	"Orthographic",
@@ -11,9 +22,12 @@ const char	*g_projection_names[PROJ_COUNT] = {
 	"Nonlinear"
 };
 
-// Main projection dispatcher
-t_point	project_point(t_point p3d, t_camera cam, t_projection_type type)
+t_point	project_point(t_point p3d, t_camera cam, t_projection_type type,
+		double z_divisor)
 {
+	if (cam.use_z_divisor && z_divisor != 0.0)
+		p3d.pos.z /= z_divisor;
+	p3d.pos.z *= cam.z_scale;
 	if (type == PROJ_ISOMETRIC)
 		return (project_isometric(p3d, cam));
 	else if (type == PROJ_ORTHOGRAPHIC)

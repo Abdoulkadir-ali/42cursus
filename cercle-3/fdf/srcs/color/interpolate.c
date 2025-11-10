@@ -6,13 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:13:56 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 17:01:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:28:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-// Interpolate between two colors based on a ratio (0.0 to 1.0)
 inline int	interpolate_color(int color1, int color2, double ratio)
 {
 	int			r;
@@ -30,22 +29,16 @@ inline int	interpolate_color(int color1, int color2, double ratio)
 	return ((r << 16) | (g << 8) | b);
 }
 
-// Get color based on height with gradient
 int	get_height_color(int z, int min_z, int max_z)
 {
 	double	ratio;
 	int		color_low;
-	int		color_mid;
 	int		color_high;
 
 	color_low = 0x0000FF;
-	color_mid = 0x00FF00;
 	color_high = 0xFF0000;
 	if (max_z == min_z)
-		return (color_mid);
+		return (color_low);
 	ratio = (double)(z - min_z) / (double)(max_z - min_z);
-	if (ratio < 0.5)
-		return (interpolate_color(color_low, color_mid, ratio * 2.0));
-	else
-		return (interpolate_color(color_mid, color_high, (ratio - 0.5) * 2.0));
+	return (interpolate_color(color_low, color_high, ratio));
 }

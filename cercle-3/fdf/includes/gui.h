@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gui.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/10 19:41:39 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef GUI_H
 # define GUI_H
 
@@ -20,15 +32,17 @@ typedef struct s_data	t_data;
 
 /* ========== GUI FUNCTIONS ========== */
 // Initialize GUI image buffer
-void	init_gui(t_data *data);
+int		init_gui(t_data *data);
 
 // Render the GUI control panel
 void	render_gui(t_data *data);
 
-// Draw text helpers
-void	draw_text(t_data *data, int x, int y, char *text, int color);
+// Draw components
 void	draw_panel_background(t_data *data);
-void	draw_controls_guide(t_data *data);
-void	draw_speed_display(t_data *data);
+void	draw_controls_guide_at(t_data *data, int *y);
+void	draw_speed_display_at(t_data *data, int *y);
+void	draw_projection_display_at(t_data *data, int *y);
+void	draw_map_name_display_at(t_data *data, int *y);
+void	draw_performance_display_at(t_data *data, int *y);
 
 #endif

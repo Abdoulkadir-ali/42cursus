@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 15:45:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 18:06:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	adjust_zoom_speed(t_data *data, int increase)
 	redraw(data);
 }
 
-int	mouse_press(int button, int x, int y, t_data *data)
+static void	handle_mouse_click(int button, int x, int y, t_data *data)
 {
 	if (button == data->buttons.mouse.left)
 	{
@@ -51,7 +51,11 @@ int	mouse_press(int button, int x, int y, t_data *data)
 		data->mouse.last_x = x;
 		data->mouse.last_y = y;
 	}
-	else if (button == data->buttons.mouse.scroll_up)
+}
+
+static void	handle_mouse_scroll(int button, t_data *data)
+{
+	if (button == data->buttons.mouse.scroll_up)
 	{
 		if (data->keys.ctrl_left || data->keys.ctrl_right)
 			adjust_zoom_speed(data, 1);
@@ -65,6 +69,12 @@ int	mouse_press(int button, int x, int y, t_data *data)
 		else
 			zoom_out(data);
 	}
+}
+
+int	mouse_press(int button, int x, int y, t_data *data)
+{
+	handle_mouse_click(button, x, y, data);
+	handle_mouse_scroll(button, data);
 	return (0);
 }
 

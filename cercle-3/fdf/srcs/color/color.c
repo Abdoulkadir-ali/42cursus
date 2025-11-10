@@ -6,13 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 15:21:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 17:56:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-// Extract RGB components
 int	get_red(int color)
 {
 	return ((color >> 16) & 0xFF);
@@ -28,7 +27,6 @@ int	get_blue(int color)
 	return (color & 0xFF);
 }
 
-// Create color from RGB components
 int	create_color(int r, int g, int b)
 {
 	if (r < 0)
@@ -46,7 +44,6 @@ int	create_color(int r, int g, int b)
 	return ((r << 16) | (g << 8) | b);
 }
 
-// Shift color based on red, blue, and green shifts
 int	shift_color(int color, int red_shift, int blue_shift, int green_shift)
 {
 	int	r;
