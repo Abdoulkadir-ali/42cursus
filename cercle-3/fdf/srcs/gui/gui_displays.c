@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:22:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 23:01:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,9 @@ void	draw_performance_display_at(t_data *data, int *section_y)
 	}
 	else if (data->render_mode == RENDER_TRIANGLES)
 	{
+		put_text(data, GUI_PADDING, y, "Fill Tri (G):");
+		put_value(data, GUI_PADDING + 120, y, data->fill_triangles ? "Filled" : "Wireframe");
+		y += GUI_LINE_HEIGHT;
 		put_text(data, GUI_PADDING, y, "Tri Count:");
 		format_number((data->map->width / data->lod_level) *
 			(data->map->height / data->lod_level) * 2, buffer);

@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 19:41:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:36:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GUI_H
 # define GUI_H
 
-// Forward declaration
+
 typedef struct s_data	t_data;
 
 /* ========== GUI CONSTANTS ========== */
@@ -31,13 +31,8 @@ typedef struct s_data	t_data;
 # define GUI_KEY_COLOR 0xFFAA00
 
 /* ========== GUI FUNCTIONS ========== */
-// Initialize GUI image buffer
 int		init_gui(t_data *data);
-
-// Render the GUI control panel
 void	render_gui(t_data *data);
-
-// Draw components
 void	draw_panel_background(t_data *data);
 void	draw_controls_guide_at(t_data *data, int *y);
 void	draw_speed_display_at(t_data *data, int *y);

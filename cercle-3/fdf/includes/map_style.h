@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 16:37:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:36:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ typedef struct s_map_render_config
 	t_map_style	style;
 }	t_map_render_config;
 
-/* Map styling functions */
 void	cycle_map_style(struct s_data *data);
 void	apply_map_style(struct s_data *data);
 int		get_map_line_color(int z, int min_z, int max_z, t_map_style style);

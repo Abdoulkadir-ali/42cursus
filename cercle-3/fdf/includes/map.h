@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 20:06:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:36:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,12 @@
 
 # include "vectors.h"
 
-/* ========== POINT STRUCTURE ========== */
-// Represents a 3D point with position and color
 typedef struct s_point
 {
 	t_vec3	pos;
 	int		color;
 }	t_point;
 
-/* ========== MAP STRUCTURE ========== */
-// Contains the grid of 3D points with metadata
 typedef struct s_map
 {
 	int		width;
@@ -35,23 +31,12 @@ typedef struct s_map
 	t_point	**points;
 }	t_map;
 
-/* ========== MAP FUNCTIONS ========== */
-// Forward declaration
 typedef struct s_data	t_data;
 
-// Create and initialize test map
 t_map	*create_test_grid(void);
-
-// Load map from file
 t_map	*load_map(char *filename);
-
-// Free map memory
 void	free_map(t_map *map);
-
-// Calculate min/max Z values for a map
 void	calculate_min_max_z(t_map *map);
-
-// Map selection
 void	init_map_list(t_data *data);
 void	cycle_map(t_data *data);
 

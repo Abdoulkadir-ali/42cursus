@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:21:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:58:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,6 @@ void	init_camera(t_data *data)
 	data->camera.invert_movement = 1;
 	data->z_buffer = malloc(sizeof(float) * data->win_width * data->win_height);
 	data->use_depth_culling = 0;
+	data->fill_triangles = 1;
 	adjust_camera_to_map(data);
 }

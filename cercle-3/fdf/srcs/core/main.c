@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 21:22:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:53:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ int	main(void)
 	init_mouse(&data);
 	init_keys(&data);
 	init_map_config(&data);
-	data.buttons = init_buttons();
 	gettimeofday(&tv, NULL);
 	data.last_frame_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	data.frame_in_progress = 0;

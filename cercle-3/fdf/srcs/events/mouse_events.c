@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 18:06:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:55:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include "keycodes.h"
 
 static void	adjust_zoom_speed(t_data *data, int increase)
 {
@@ -31,19 +32,19 @@ static void	adjust_zoom_speed(t_data *data, int increase)
 
 static void	handle_mouse_click(int button, int x, int y, t_data *data)
 {
-	if (button == data->buttons.mouse.left)
+	if (button == MOUSE_LEFT)
 	{
 		data->mouse.left_pressed = 1;
 		data->mouse.last_x = x;
 		data->mouse.last_y = y;
 	}
-	else if (button == data->buttons.mouse.right)
+	else if (button == MOUSE_RIGHT)
 	{
 		data->mouse.right_pressed = 1;
 		data->mouse.last_x = x;
 		data->mouse.last_y = y;
 	}
-	else if (button == data->buttons.mouse.middle)
+	else if (button == MOUSE_MIDDLE)
 	{
 		data->mouse.middle_pressed = 1;
 		data->mouse.middle_start_x = x;
@@ -55,14 +56,14 @@ static void	handle_mouse_click(int button, int x, int y, t_data *data)
 
 static void	handle_mouse_scroll(int button, t_data *data)
 {
-	if (button == data->buttons.mouse.scroll_up)
+	if (button == MOUSE_SCROLL_UP)
 	{
 		if (data->keys.ctrl_left || data->keys.ctrl_right)
 			adjust_zoom_speed(data, 1);
 		else
 			zoom_in(data);
 	}
-	else if (button == data->buttons.mouse.scroll_down)
+	else if (button == MOUSE_SCROLL_DOWN)
 	{
 		if (data->keys.ctrl_left || data->keys.ctrl_right)
 			adjust_zoom_speed(data, 0);
@@ -82,11 +83,11 @@ int	mouse_release(int button, int x, int y, t_data *data)
 {
 	(void)x;
 	(void)y;
-	if (button == data->buttons.mouse.left)
+	if (button == MOUSE_LEFT)
 		data->mouse.left_pressed = 0;
-	else if (button == data->buttons.mouse.right)
+	else if (button == MOUSE_RIGHT)
 		data->mouse.right_pressed = 0;
-	else if (button == data->buttons.mouse.middle)
+	else if (button == MOUSE_MIDDLE)
 		data->mouse.middle_pressed = 0;
 	return (0);
 }

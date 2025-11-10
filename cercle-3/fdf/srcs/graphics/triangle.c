@@ -6,17 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:30:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:45:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include "triangle.h"
 
-/*
-** Swap two integers
-*/
-static void	swap_int(int *a, int *b)
+static void	ft_swap(int *a, int *b)
 {
 	int	tmp;
 
@@ -25,9 +22,6 @@ static void	swap_int(int *a, int *b)
 	*b = tmp;
 }
 
-/*
-** Swap two points
-*/
 static void	swap_point(t_point *a, t_point *b)
 {
 	t_point	tmp;
@@ -37,9 +31,6 @@ static void	swap_point(t_point *a, t_point *b)
 	*b = tmp;
 }
 
-/*
-** Interpolate color between two colors
-*/
 static int	interpolate_color_simple(int c1, int c2, float t)
 {
 	int	r;
@@ -52,9 +43,7 @@ static int	interpolate_color_simple(int c1, int c2, float t)
 	return ((r << 16) | (g << 8) | b);
 }
 
-/*
-** Draw a horizontal line for triangle fill with Z and color interpolation
-*/
+
 static void	draw_horizontal_scanline_z(t_data *data, int x1, int x2, int y,
 		float z1, float z2, int c1, int c2)
 {
@@ -66,7 +55,7 @@ static void	draw_horizontal_scanline_z(t_data *data, int x1, int x2, int y,
 
 	if (x1 > x2)
 	{
-		swap_int(&x1, &x2);
+		ft_swap(&x1, &x2);
 		t = z1;
 		z1 = z2;
 		z2 = t;
@@ -94,9 +83,6 @@ static void	draw_horizontal_scanline_z(t_data *data, int x1, int x2, int y,
 	}
 }
 
-/*
-** Interpolate X coordinate along triangle edge
-*/
 static int	interpolate_x(t_point p1, t_point p2, int y)
 {
 	double	t;
@@ -107,9 +93,6 @@ static int	interpolate_x(t_point p1, t_point p2, int y)
 	return ((int)(p1.pos.x + t * (p2.pos.x - p1.pos.x)));
 }
 
-/*
-** Interpolate Z coordinate along triangle edge
-*/
 static float	interpolate_z(t_point p1, t_point p2, int y)
 {
 	double	t;
@@ -120,9 +103,6 @@ static float	interpolate_z(t_point p1, t_point p2, int y)
 	return (p1.pos.z + t * (p2.pos.z - p1.pos.z));
 }
 
-/*
-** Interpolate color along triangle edge
-*/
 static int	interpolate_color_edge(t_point p1, t_point p2, int y)
 {
 	double	t;
@@ -133,10 +113,6 @@ static int	interpolate_color_edge(t_point p1, t_point p2, int y)
 	return (interpolate_color_simple(p1.color, p2.color, t));
 }
 
-/*
-** Draw filled triangle using scanline algorithm
-** Points are sorted by Y coordinate for top-to-bottom filling
-*/
 void	draw_filled_triangle(t_data *data, t_point p1, t_point p2, t_point p3)
 {
 	int	y;
@@ -144,17 +120,14 @@ void	draw_filled_triangle(t_data *data, t_point p1, t_point p2, t_point p3)
 	int	x2;
 	int	y_max;
 
-	// Sort points by Y coordinate
 	if (p1.pos.y > p2.pos.y)
 		swap_point(&p1, &p2);
 	if (p2.pos.y > p3.pos.y)
 		swap_point(&p2, &p3);
 	if (p1.pos.y > p2.pos.y)
 		swap_point(&p1, &p2);
-	// Use average color for the triangle
 	y = (int)p1.pos.y;
 	y_max = (int)p3.pos.y;
-	// Bounds check to prevent infinite loops with off-screen triangles
 	if (y < -10000 || y > 10000 || y_max < -10000 || y_max > 10000)
 		return ;
 	if (y_max - y > data->win_height * 2)
@@ -186,10 +159,28 @@ void	draw_filled_triangle(t_data *data, t_point p1, t_point p2, t_point p3)
 	}
 }
 
+void	draw_wireframe_triangle(t_data *data, t_point p1, t_point p2, t_point p3)
+{
+	draw_line(data, p1, p2);
+	draw_line(data, p2, p3);
+	draw_line(data, p3, p1);
+}
+
+void	draw_quad_triangles(t_data *data, t_point p1, t_point p2,
+		t_point p3, t_point p4)
+{
+	if (data->fill_triangles)
+	{
+		draw_filled_triangle(data, p1, p2, p3);
+		draw_filled_triangle(data, p2, p4, p3);
+	}
+	else
+	{
+		draw_wireframe_triangle(data, p1, p2, p3);
+		draw_wireframe_triangle(data, p2, p4, p3);
+	}
+}
 /*
-** Draw a quad (4 points) as two triangles
-** This creates a solid mesh appearance for the grid
-** 
 ** Quad layout:
 ** p1 --- p2
 ** |  \   |
@@ -199,9 +190,3 @@ void	draw_filled_triangle(t_data *data, t_point p1, t_point p2, t_point p3)
 ** Triangle 1: p1, p2, p3
 ** Triangle 2: p2, p4, p3
 */
-void	draw_quad_triangles(t_data *data, t_point p1, t_point p2,
-		t_point p3, t_point p4)
-{
-	draw_filled_triangle(data, p1, p2, p3);
-	draw_filled_triangle(data, p2, p4, p3);
-}

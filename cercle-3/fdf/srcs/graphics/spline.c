@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 20:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 20:22:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:46:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ void	draw_spline_segment(t_data *data, t_point p0, t_point p1,
 		t = i * step;
 		curr = catmull_rom_point(p0, p1, p2, p3, t);
 		next = catmull_rom_point(p0, p1, p2, p3, t + step);
-		// Interpolate color along the curve
 		next.color = lerp_color(p1.color, p2.color, t + step);
 		draw_line(data, curr, next);
 		i++;

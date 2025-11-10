@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:24 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:34:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:53:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,61 +85,14 @@ typedef struct s_keys
 	int	x;
 	int	i;
 	int	v;
+	int	g;
 }	t_keys;
 
-typedef struct s_keyboard
-{
-	int	up_arrow;
-	int	down_arrow;
-	int	left_arrow;
-	int	right_arrow;
-	int	ctrl_left;
-	int	ctrl_right;
-	int	shift_left;
-	int	shift_right;
-	int	p;
-	int	n;
-	int	s;
-	int	esc;
-	int	r;
-	int	l;
-	int	z;
-	int	f;
-	int	h;
-	int	d;
-	int	t;
-	int	a;
-	int	x;
-	int	i;
-	int	v;
-	int	plus;
-	int	minus;
-	int	zero;
-}	t_keyboard;
-
-typedef struct s_mouse_buttons
-{
-	int	left;
-	int	right;
-	int	middle;
-	int	scroll_up;
-	int	scroll_down;
-}	t_mouse_buttons;
-
-typedef struct s_buttons
-{
-	t_keyboard		keyboard;
-	t_mouse_buttons	mouse;
-}	t_buttons;
 
 typedef struct s_data	t_data;
-
-t_buttons	init_buttons(void);
-
 void		zoom_in(t_data *data);
 void		zoom_out(t_data *data);
 void		update_zoom(t_data *data);
-
 void		adjust_camera_to_map(t_data *data);
 
 #endif

@@ -26,7 +26,6 @@ SRCS =	srcs/core/main.c \
 	srcs/world/map.c \
 	srcs/world/map_loader.c \
 	srcs/world/select.c \
-	srcs/input/buttons.c \
 	srcs/events/mouse_events.c \
 	srcs/events/mouse_move.c \
 	srcs/events/key_events.c \

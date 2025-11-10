@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:31 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:21:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:53:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ typedef enum e_render_mode
 # define MAX_SPLINE_SEGMENTS 50
 
 /* ========== MAIN DATA STRUCTURE ========== */
-// Central structure containing all program state
 typedef struct s_data
 {
 	void		*mlx_ptr;
@@ -107,7 +106,6 @@ typedef struct s_data
 	t_camera			camera;
 	t_mouse				mouse;
 	t_keys				keys;
-	t_buttons			buttons;
 	t_map_render_config	map_config;
 	long				last_frame_time;
 	int					frame_in_progress;
@@ -115,9 +113,10 @@ typedef struct s_data
 	t_render_mode		render_mode;
 	float				*z_buffer;
 	int					use_depth_culling;
+	int					fill_triangles;
 }	t_data;
 
-/* ========== INITIALIZATION FUNCTIONS ========== */
+
 void	init_window_size(t_data *data);
 void	init_mouse(t_data *data);
 void	init_keys(t_data *data);

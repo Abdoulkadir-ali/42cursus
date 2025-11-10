@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:56 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:21:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/10 22:37:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,7 @@
 # include "map.h"
 # include "controls.h"
 
-// Forward declaration
 typedef struct s_data	t_data;
-
-/* ========== ROTATION FUNCTIONS ========== */
-// 3D rotation transformations
 t_vec3d					apply_rotation(t_vec3d v, t_rotation rot);
 t_vec3d					apply_rotation_centered(t_vec3d v, t_rotation rot,
 							t_vec3d c);
@@ -55,11 +51,8 @@ static inline t_vec3d	rotate_z(t_vec3d v, double angle)
 	return (rotated);
 }
 
-/* ========== PROJECTION FUNCTIONS ========== */
-// Convert 3D points to 2D screen coordinates
 t_point	project_isometric(t_point p3d, t_camera cam);
 
-/* ========== BRESENHAM STRUCTURE ========== */
 typedef struct s_bresenham
 {
 	int	dx;
@@ -72,7 +65,7 @@ typedef struct s_bresenham
 	int	y;
 }	t_bresenham;
 
-/* ========== DRAWING FUNCTIONS ========== */
+
 // Visibility and screening helpers
 int		is_point_visible(t_point p3d, t_data *data);
 int		is_on_screen(int x, int y, t_data *data);
