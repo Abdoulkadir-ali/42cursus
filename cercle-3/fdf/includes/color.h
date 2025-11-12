@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:17 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 19:18:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 23:43:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 # define COLOR_H
 
 # include "vectors.h"
+
+typedef struct s_rgb
+{
+	int	r;
+	int	g;
+	int	b;
+}	t_rgb;
 
 int		get_red(int color);
 int		get_green(int color);

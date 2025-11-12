@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 22:55:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 00:31:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	handle_n(int keycode, t_events *events)
 	DBG("handle_n called\n");
 	cycle_map(&events->graphics->map_manager, &events->map);
 	reset_view(events);
-	apply_map_style(events->map);
+	// apply_map_style(events->map);
 	return (1);
 }
 

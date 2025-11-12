@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:13:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 23:43:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ static int	init_map_and_image(t_data *data)
 
 static int	init_and_render(t_data *data)
 {
-	apply_map_style(data->map);
 	data->gui = init_gui(&data->window, &data->camera, &data->graphics.map_manager, &data->graphics.render_config, data->map);
 	if (!init_gui_images(&data->gui))
 		return (0);
@@ -99,8 +98,6 @@ int	main(void)
 	data.render_mode = RENDER_LINES;
 	if (!init_map_and_image(&data))
 		return (1);
-	data.map->style.style = MAP_STYLE_GRADIENT;
-	apply_map_style(data.map);
 	if (!init_and_render(&data))
 		return (1);
 	t_events events = {

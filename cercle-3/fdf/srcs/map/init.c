@@ -17,6 +17,6 @@ t_map	*init_map(char *filename)
 
 	map = load_map(filename);
 	if (map)
-		apply_map_style(map);
+		// apply_map_style(map);
 	return (map);
 }

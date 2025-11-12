@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:25:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 00:47:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,24 @@ void	draw_line(t_graphics *g, t_point start, t_point end)
 {
 	t_bresenham b;
 	int color;
+	float total_dist;
+	float current_dist;
 
 	DBG("draw_line start (%d,%d) to (%d,%d)\n", (int)start.pos.x, (int)start.pos.y, (int)end.pos.x, (int)end.pos.y);
 	init_bresenham(&b, start, end);
-	color = shift_color(start.color, g->camera->color_shift.x,
-			g->camera->color_shift.z, g->camera->color_shift.y);
+	total_dist = sqrt((end.pos.x - start.pos.x) * (end.pos.x - start.pos.x)
+			+ (end.pos.y - start.pos.y) * (end.pos.y - start.pos.y));
 	while (1)
 	{
 		if (is_visible(b.p.x, b.p.y, g))
-			img_pixel_put_with_z(g, b.p.x, b.p.y, 0, color);
+		{
+			current_dist = sqrt((b.p.x - start.pos.x) * (b.p.x - start.pos.x)
+					+ (b.p.y - start.pos.y) * (b.p.y - start.pos.y));
+			color = interpolate_color(start.color, end.color, current_dist / (total_dist + 1e-6));
+			// color = shift_color(color, g->camera->color_shift.x,
+			// 		g->camera->color_shift.z, g->camera->color_shift.y);
+			img_pixel_put_with_z(g, b.p.x, b.p.y, 0.0, color);
+		}
 		if (b.p.x == (int)end.pos.x && b.p.y == (int)end.pos.y)
 			break ;
 		b.e2 = 2 * b.err;

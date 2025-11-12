@@ -6,35 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:19:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 00:55:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map.h"
 #include "camera.h"
+#include "map.h"
 #include <fcntl.h>
+#include <math.h>
 #include <stdio.h>
-
-static void	init_flat_pattern(t_map *map)
-{
-	int	x;
-	int	y;
-
-	y = 0;
-	while (y < map->height)
-	{
-		x = 0;
-		while (x < map->width)
-		{
-			if ((x + y) % 2 == 0)
-				map->points[y][x].color = 0xFFFFFF;
-			else
-				map->points[y][x].color = 0x888888;
-			x++;
-		}
-		y++;
-	}
-}
 
 static void	init_grid_points(t_map *map)
 {
@@ -47,10 +27,13 @@ static void	init_grid_points(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			map->points[y][x].pos.x = x;
-			map->points[y][x].pos.y = y;
-			map->points[y][x].pos.z = x;
-			map->points[y][x].color = 0xFFFFFF;
+			map->points.raw[y][x].x = x;
+			map->points.raw[y][x].y = y;
+			map->points.raw[y][x].z = x;
+			map->points.pos[y][x] = map->points.raw[y][x];
+			map->points.color[y][x].r = 255;
+			map->points.color[y][x].g = 255;
+			map->points.color[y][x].b = 255;
 			x++;
 		}
 		y++;
@@ -71,7 +54,7 @@ void	calculate_min_max_z(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			z = map->points[y][x].pos.z;
+			z = map->points.raw[y][x].z;
 			if (first)
 			{
 				map->min_z = z;
@@ -93,9 +76,15 @@ void	calculate_min_max_z(t_map *map)
 		map->z_divisor = (map->max_z - map->min_z) / 10.0;
 	else
 		map->z_divisor = 1.0;
+	// Clamp z_divisor to prevent extreme normalization
+	map->z_divisor = (abs(map->max_z) > abs(map->min_z) ? abs(map->max_z) : abs(map->min_z))
+		/ 10.0;
+	if (map->z_divisor < 1.0)
+		map->z_divisor = 1.0;
 }
 
-void	calculate_min_max_proj_z(t_map *map, t_camera *camera, t_projection_type projection, double z_divisor)
+void	calculate_min_max_proj_z(t_map *map, t_camera *camera,
+		t_projection_type projection, double z_divisor)
 {
 	int		x;
 	int		y;
@@ -110,7 +99,10 @@ void	calculate_min_max_proj_z(t_map *map, t_camera *camera, t_projection_type pr
 		x = 0;
 		while (x < map->width)
 		{
-			p = project_point(map->points[y][x], camera, projection, z_divisor);
+			p = project_point(map->points.pos[y][x],
+					create_color(map->points.color[y][x].r,
+						map->points.color[y][x].g, map->points.color[y][x].b),
+					camera, projection, z_divisor);
 			z = p.pos.z;
 			if (first)
 			{
@@ -141,20 +133,34 @@ t_map	*create_test_grid(void)
 		return (NULL);
 	map->width = 50;
 	map->height = 50;
-	map->points = malloc(sizeof(t_point *) * map->height);
-	if (!map->points)
+	map->points.pos = malloc(sizeof(t_vec3d *) * map->height);
+	if (!map->points.pos)
+		return (NULL);
+	map->points.raw = malloc(sizeof(t_vec3d *) * map->height);
+	if (!map->points.raw)
+		return (NULL);
+	map->points.color = malloc(sizeof(t_rgb *) * map->height);
+	if (!map->points.color)
 		return (NULL);
 	y = 0;
 	while (y < map->height)
 	{
-		map->points[y] = malloc(sizeof(t_point) * map->width);
-		if (!map->points[y])
+		map->points.pos[y] = malloc(sizeof(t_vec3d) * map->width);
+		if (!map->points.pos[y])
+			return (NULL);
+		map->points.raw[y] = malloc(sizeof(t_vec3d) * map->width);
+		if (!map->points.raw[y])
+			return (NULL);
+		map->points.color[y] = malloc(sizeof(t_rgb) * map->width);
+		if (!map->points.color[y])
 			return (NULL);
 		y++;
 	}
 	init_grid_points(map);
-	init_flat_pattern(map);
+	// init_flat_pattern(map);
 	calculate_min_max_z(map);
+	map->min_proj_z = map->min_z;
+	map->max_proj_z = map->max_z;
 	return (map);
 }
 
@@ -164,16 +170,22 @@ void	free_map(t_map *map)
 
 	if (!map)
 		return ;
-	if (map->points)
+	if (map->points.pos)
 	{
 		y = 0;
 		while (y < map->height)
 		{
-			if (map->points[y])
-				free(map->points[y]);
+			if (map->points.pos[y])
+				free(map->points.pos[y]);
+			if (map->points.raw[y])
+				free(map->points.raw[y]);
+			if (map->points.color[y])
+				free(map->points.color[y]);
 			y++;
 		}
-		free(map->points);
+		free(map->points.pos);
+		free(map->points.raw);
+		free(map->points.color);
 	}
 	free(map);
 }

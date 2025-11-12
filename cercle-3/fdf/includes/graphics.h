@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:32:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 23:44:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ typedef struct s_thread_data
 }						t_thread_data;
 
 int						should_draw_line(t_point p1, t_point p2, t_graphics *g);
-int						is_point_visible(t_point p, t_graphics *g);
+int						is_point_visible(t_vec3d p, t_graphics *g);
 void					draw_spline_segment(t_graphics *g, t_point p0,
 							t_point p1, t_point p2, t_point p3, int segments);
 void					draw_line(t_graphics *g, t_point p1, t_point p2);

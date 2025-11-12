@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 19:28:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 00:53:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,22 +70,34 @@ int	allocate_map_points(t_map *map)
 	int	y;
 	int	x;
 
-	map->points = malloc(sizeof(t_point *) * map->height);
-	if (!map->points)
+	map->points.pos = malloc(sizeof(t_vec3d *) * map->height);
+	if (!map->points.pos)
+		return (0);
+	map->points.raw = malloc(sizeof(t_vec3d *) * map->height);
+	if (!map->points.raw)
+		return (0);
+	map->points.color = malloc(sizeof(t_rgb *) * map->height);
+	if (!map->points.color)
 		return (0);
 	y = 0;
 	while (y < map->height)
 	{
-		map->points[y] = malloc(sizeof(t_point) * map->width);
-		if (!map->points[y])
+		map->points.pos[y] = malloc(sizeof(t_vec3d) * map->width);
+		if (!map->points.pos[y])
+			return (0);
+		map->points.raw[y] = malloc(sizeof(t_vec3d) * map->width);
+		if (!map->points.raw[y])
+			return (0);
+		map->points.color[y] = malloc(sizeof(t_rgb) * map->width);
+		if (!map->points.color[y])
 			return (0);
 		x = 0;
 		while (x < map->width)
 		{
-			map->points[y][x].pos.x = x;
-			map->points[y][x].pos.y = y;
-			map->points[y][x].pos.z = 0;
-			map->points[y][x].color = 0xFFFFFF;
+			map->points.raw[y][x].x = x;
+			map->points.raw[y][x].y = y;
+			map->points.raw[y][x].z = 0;
+			map->points.color[y][x] = (t_rgb){255, 255, 255};
 			x++;
 		}
 		y++;
@@ -97,8 +109,10 @@ void	parse_map_data(t_map *map, int fd)
 {
 	char	*line;
 	char	**split;
+	char	**parts;
 	int		x;
 	int		y;
+	// int		color_val;
 
 	y = 0;
 	line = get_next_line(fd);
@@ -110,7 +124,20 @@ void	parse_map_data(t_map *map, int fd)
 			x = 0;
 			while (split[x] && x < map->width)
 			{
-				map->points[y][x].pos.z = ft_atoi(split[x]);
+				if (ft_strchr(split[x], ','))
+				{
+					parts = ft_split(split[x], ',');
+					map->points.raw[y][x].z = ft_atoi(parts[0]);
+					// color_val = ft_atoi(parts[1]);
+					// map->points.color[y][x].r = get_red(color_val);
+					// map->points.color[y][x].g = get_green(color_val);
+					// map->points.color[y][x].b = get_blue(color_val);
+					free_split(parts);
+				}
+				else
+				{
+					map->points.raw[y][x].z = ft_atoi(split[x]);
+				}
 				x++;
 			}
 			free_split(split);

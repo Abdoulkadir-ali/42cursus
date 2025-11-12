@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:13:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 23:38:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ typedef struct s_camera_context
 	t_window			*window;
 }						t_camera_context;
 
-t_point					project_point(t_point p3d, t_camera *cam,
+t_point					project_point(t_vec3d p3d, int color, t_camera *cam,
 							t_projection_type type, double z_divisor);
 t_point					project_isometric(t_point p3d, t_camera *cam);
 t_point					project_orthographic(t_point p3d, t_camera *cam);

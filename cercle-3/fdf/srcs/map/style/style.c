@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:24:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 00:48:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	apply_colors(t_map *map)
 {
 	int	x;
 	int	y;
+	int	color;
 
 	y = 0;
 	while (y < map->height)
@@ -34,8 +35,10 @@ void	apply_colors(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			map->points[y][x].color = get_height_color(map->points[y][x].pos.z,
-					map->min_z, map->max_z);
+			color = get_height_color(map->points.raw[y][x].z, map->min_z, map->max_z);
+			map->points.color[y][x].r = get_red(color);
+			map->points.color[y][x].g = get_green(color);
+			map->points.color[y][x].b = get_blue(color);
 			x++;
 		}
 		y++;
@@ -55,11 +58,15 @@ int	get_map_line_color(t_vec3 v, t_map_style style)
 	return (0xFFFFFF);
 }
 
+#include <stdio.h>
+
+
 void	apply_map_style(t_map *map)
 {
 	int		x;
 	int		y;
 	t_vec3	v;
+	int		color;
 
 	y = 0;
 	while (y < map->height)
@@ -67,8 +74,12 @@ void	apply_map_style(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			v = create_vec3(map->points[y][x].pos.z, map->min_z, map->max_z);
-			map->points[y][x].color = get_map_line_color(v, map->style.style);
+			if (map->points.color[y][x].r == 255 && map->points.color[y][x].g == 255 && map->points.color[y][x].b == 255)
+			{
+				v = create_vec3(map->points.raw[y][x].z, map->min_z, map->max_z);
+				color = get_map_line_color(v, map->style.style);
+				map->points.color[y][x] = (t_rgb){get_red(color), get_green(color), get_blue(color)};
+			}
 			x++;
 		}
 		y++;

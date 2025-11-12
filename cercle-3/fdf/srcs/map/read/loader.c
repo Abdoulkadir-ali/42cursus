@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:13:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 00:47:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "libft.h"
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
 
 t_map	*load_map(char *filename)
 {
@@ -41,10 +42,22 @@ t_map	*load_map(char *filename)
 		return (free_map(map), create_test_grid());
 	parse_map_data(map, fd);
 	close(fd);
+	int y = 0;
+	while (y < map->height)
+	{
+		int x = 0;
+		while (x < map->width)
+		{
+			map->points.pos[y][x] = map->points.raw[y][x];
+			x++;
+		}
+		y++;
+	}
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_z;
 	map->max_proj_z = map->max_z;
-	apply_colors(map);
+	map->style.style = MAP_STYLE_GRADIENT;
+	apply_map_style(map);
 	map->style.style = 0;
 	return (map);
 }

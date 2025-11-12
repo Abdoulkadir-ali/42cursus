@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:18:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 00:02:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,13 @@ typedef struct s_map_style_config
 	int						style;
 }							t_map_style_config;
 
+typedef struct s_map_points
+{
+	t_vec3d					**pos;
+	t_vec3d					**raw;
+	t_rgb					**color;
+}							t_map_points;
+
 typedef struct s_map
 {
 	int						width;
@@ -49,7 +56,7 @@ typedef struct s_map
 	int						min_proj_z;
 	int						max_proj_z;
 	double					z_divisor;
-	t_point					**points;
+	t_map_points			points;
 	t_map_style_config		style;
 }							t_map;
 
@@ -76,6 +83,7 @@ int							allocate_map_points(t_map *map);
 void						parse_map_data(t_map *map, int fd);
 void						get_map_dimensions(int fd, int *width, int *height);
 void						apply_colors(t_map *map);
+void						recover_colors(t_map *map);
 
 t_map_manager				init_map_manager(void);
 t_map						*init_map(char *filename);
