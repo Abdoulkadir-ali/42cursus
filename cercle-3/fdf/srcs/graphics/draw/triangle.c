@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 18:33:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 21:17:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,15 @@
 static void	swap_point(t_point *a, t_point *b)
 {
 	t_point	tmp;
+
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+static void	ft_swap(int *a, int *b)
+{
+	int	tmp;
 
 	tmp = *a;
 	*a = *b;
@@ -52,21 +61,21 @@ static void	draw_horizontal_scanline_z(t_graphics *g, int x1, int x2, int y,
 		c1 = c2;
 		c2 = offset;
 	}
-	if (y < 0 || y >= g->window.height)
+	if (y < 0 || y >= g->window->height)
 		return ;
 	x = x1;
 	while (x <= x2)
 	{
-		if (x >= 0 && x < g->window.width)
+		if (x >= 0 && x < g->window->width)
 		{
 			t = (x2 == x1) ? 0 : (float)(x - x1) / (float)(x2 - x1);
 			z = z1 + t * (z2 - z1);
 			color = interpolate_color_simple(c1, c2, t);
 			if (z_buffer_test(g, x, y, z))
 			{
-				offset = (y * g->window.main_img.img_line_len) + (x
-						* (g->window.main_img.img_bpp / 8));
-				*(unsigned int *)(g->window.main_img.img_addr + offset) = color;
+				offset = (y * g->window->main_img.img_line_len) + (x
+						* (g->window->main_img.img_bpp / 8));
+				*(unsigned int *)(g->window->main_img.img_addr + offset) = color;
 			}
 		}
 		x++;
@@ -120,7 +129,7 @@ void	draw_filled_triangle(t_graphics *g, t_point p1, t_point p2, t_point p3)
 	y_max = (int)p3.pos.y;
 	if (y < -10000 || y > 10000 || y_max < -10000 || y_max > 10000)
 		return ;
-	if (y_max - y > g->window.height * 2)
+	if (y_max - y > g->window->height * 2)
 		return ;
 	while (y <= y_max)
 	{
@@ -149,23 +158,23 @@ void	draw_filled_triangle(t_graphics *g, t_point p1, t_point p2, t_point p3)
 	}
 }
 
-void	draw_wireframe_triangle(t_graphics *g, t_triangle *t)
+void	draw_wireframe_triangle(t_graphics *g, t_point p1, t_point p2, t_point p3)
 {
-	draw_line(g, t.p1, t.p2);
-	draw_line(g, t.p2, t.p3);
-	draw_line(g, t.p3, t.p1);
+	draw_line(g, p1, p2);
+	draw_line(g, p2, p3);
+	draw_line(g, p3, p1);
 }
 
-void	draw_quad_triangles(t_graphics *g, t_quad_triangle *t)
+void	draw_quad_triangles(t_graphics *g, t_point p1, t_point p2, t_point p3, t_point p4)
 {
 	if (g->render_config.fill_triangles)
 	{
-		draw_filled_triangle(g, t.p1, t.p2, t.p3);
-		draw_filled_triangle(g, t.p2, t.p4, t.p3);
+		draw_filled_triangle(g, p1, p2, p3);
+		draw_filled_triangle(g, p2, p4, p3);
 	}
 	else
 	{
-		draw_wireframe_triangle(g, t.p1, t.p2, t.p3);
-		draw_wireframe_triangle(g, t.p2, t.p4, t.p3);
+		draw_wireframe_triangle(g, p1, p2, p3);
+		draw_wireframe_triangle(g, p2, p4, p3);
 	}
 }

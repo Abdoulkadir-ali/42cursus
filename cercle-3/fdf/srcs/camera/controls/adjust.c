@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:51:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 21:16:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static double	calculate_ideal_zoom(t_camera_context *ctx)
 	int		max_dim;
 
 	max_dim = get_max_dimension(ctx);
-	scale_x = (ctx->window.width * DEFAULT_ZOOM_AVAILABLE_WIDTH)
+	scale_x = (ctx->window->width * DEFAULT_ZOOM_AVAILABLE_WIDTH)
 		/ (max_dim * DEFAULT_ZOOM_PADDING);
-	scale_y = (ctx->window.height * DEFAULT_ZOOM_AVAILABLE_HEIGHT)
+	scale_y = (ctx->window->height * DEFAULT_ZOOM_AVAILABLE_HEIGHT)
 		/ (max_dim * DEFAULT_ZOOM_PADDING);
 	scale = scale_x;
 	if (scale_y < scale)
@@ -47,8 +47,8 @@ static void	calculate_ideal_position(t_camera_context *ctx)
 
 	y_adjust = (ctx->map->height * ctx->camera->scale)
 		* DEFAULT_Y_ADJUST_FACTOR;
-	ctx->camera->offset.x = ctx->window.width / 2.0;
-	ctx->camera->offset.y = (ctx->window.height / 2.0) - y_adjust;
+	ctx->camera->offset.x = ctx->window->width / 2.0;
+	ctx->camera->offset.y = (ctx->window->height / 2.0) - y_adjust;
 }
 
 static void	set_ideal_angle(t_camera_context *ctx)
@@ -72,8 +72,8 @@ void	adjust_camera_to_map(t_camera_context *ctx)
 	ctx->camera->grid_center.x = (ctx->map->width - 1) / 2.0;
 	ctx->camera->grid_center.y = (ctx->map->height - 1) / 2.0;
 	ctx->camera->grid_center.z = 0.0;
-	ctx->camera->color_shift.red = 0;
-	ctx->camera->color_shift.blue = 0;
-	ctx->camera->color_shift.green = 0;
+	ctx->camera->color_shift.x = 0;
+	ctx->camera->color_shift.y = 0;
+	ctx->camera->color_shift.z = 0;
 	ctx->camera->dampening_threshold = 0.0;
 }

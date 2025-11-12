@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 16:28:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 23:19:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "map.h"
+#include "camera.h"
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -48,7 +49,7 @@ static void	init_grid_points(t_map *map)
 		{
 			map->points[y][x].pos.x = x;
 			map->points[y][x].pos.y = y;
-			map->points[y][x].pos.z = 0;
+			map->points[y][x].pos.z = x;
 			map->points[y][x].color = 0xFFFFFF;
 			x++;
 		}
@@ -92,6 +93,42 @@ void	calculate_min_max_z(t_map *map)
 		map->z_divisor = (map->max_z - map->min_z) / 10.0;
 	else
 		map->z_divisor = 1.0;
+}
+
+void	calculate_min_max_proj_z(t_map *map, t_camera *camera, t_projection_type projection, double z_divisor)
+{
+	int		x;
+	int		y;
+	float	z;
+	int		first;
+	t_point	p;
+
+	first = 1;
+	y = 0;
+	while (y < map->height)
+	{
+		x = 0;
+		while (x < map->width)
+		{
+			p = project_point(map->points[y][x], camera, projection, z_divisor);
+			z = p.pos.z;
+			if (first)
+			{
+				map->min_proj_z = z;
+				map->max_proj_z = z;
+				first = 0;
+			}
+			else
+			{
+				if (z < map->min_proj_z)
+					map->min_proj_z = z;
+				if (z > map->max_proj_z)
+					map->max_proj_z = z;
+			}
+			x++;
+		}
+		y++;
+	}
 }
 
 t_map	*create_test_grid(void)

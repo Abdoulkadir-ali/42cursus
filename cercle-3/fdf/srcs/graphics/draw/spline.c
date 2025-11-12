@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 20:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 18:29:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 18:54:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,9 @@ static t_point	catmull_rom_point(t_point p0, t_point p1, t_point p2,
 	return (result);
 }
 
-static
-
-	void
-	draw_spline_segment(t_graphics *g, t_point p0, t_point p1, t_point p2,
-		t_point p3, int segments)
+void
+draw_spline_segment(t_graphics *g, t_point p0, t_point p1, t_point p2,
+	t_point p3, int segments)
 {
 	int		i;
 	double	t;
@@ -61,7 +59,7 @@ static
 		t = i * step;
 		curr = catmull_rom_point(p0, p1, p2, p3, t);
 		next = catmull_rom_point(p0, p1, p2, p3, t + step);
-		next.color = lerp_color(p1.color, p2.color, t + step);
+		next.color = interpolate_color(p1.color, p2.color, t + step);
 		draw_line(g, curr, next);
 		i++;
 	}
@@ -74,6 +72,6 @@ t_point	lerp_point(t_point p1, t_point p2, double t)
 	result.pos.x = p1.pos.x + (p2.pos.x - p1.pos.x) * t;
 	result.pos.y = p1.pos.y + (p2.pos.y - p1.pos.y) * t;
 	result.pos.z = 0;
-	result.color = lerp_color(p1.color, p2.color, t);
+	result.color = interpolate_color(p1.color, p2.color, t);
 	return (result);
 }

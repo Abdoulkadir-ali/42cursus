@@ -1,28 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   guide.c                                            :+:      :+:    :+:   */
+/*   window.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 15:46:10 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:33:08 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/12 20:51:12 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/12 21:09:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "data.h"
+#ifndef WINDOW_H
+# define WINDOW_H
 
-void	draw_controls_guide_at(t_data *data, int *section_y)
+# include "camera.h"
+
+typedef struct s_image
 {
-	int	y;
+	void		*img;
+	char		*img_addr;
+	int			img_bpp;
+	int			img_line_len;
+	int			img_endian;
+}				t_image;
 
-	y = *section_y;
-	put_colored(data, (t_vec2){GUI_PADDING, y}, "CONTROLS", GUI_TITLE_COLOR);
-	y += GUI_TITLE_HEIGHT;
-	draw_mouse_controls(data, &y);
-	draw_keyboard_controls(data, &y);
-	draw_action_keys(data, &y);
-	draw_optimization_keys(data, &y);
-	*section_y = y;
-}
+typedef struct s_window
+{
+	void		*mlx_ptr;
+	void		*ptr;
+	int			width;
+	int			height;
+
+	t_image		main_img;
+	t_image		gui_img;
+	float		*z_buffer;
+}				t_window;
+
+t_window		init_window(void *mlx_ptr);
+
+#endif

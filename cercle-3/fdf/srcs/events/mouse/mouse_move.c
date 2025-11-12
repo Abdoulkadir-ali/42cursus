@@ -6,120 +6,122 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 16:52:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 22:59:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
+#include <stdio.h>
 
-static void	handle_object_vec3d(int x, int y, t_data *data)
+static void	handle_object_vec3d(int x, int y, t_events *events)
 {
 	int		dx;
 	int		dy;
 	double	factor;
 
-	dx = x - data->mouse.last_x;
-	dy = y - data->mouse.last_y;
+	dx = x - events->graphics->mouse.last_x;
+	dy = y - events->graphics->mouse.last_y;
 	factor = 0.005;
-	data->camera.rotation.z -= dx * factor;
-	data->camera.rotation.x -= dy * factor;
-	data->mouse.last_x = x;
-	data->mouse.last_y = y;
-	redraw(data);
+	events->camera->rotation.z -= dx * factor;
+	events->camera->rotation.x -= dy * factor;
+	events->graphics->mouse.last_x = x;
+	events->graphics->mouse.last_y = y;
+	redraw(events);
 }
 
-static void	handle_camera_rotation(int x, int y, t_data *data)
+static void	handle_camera_rotation(int x, int y, t_events *events)
 {
 	int		dx;
 	int		dy;
 	double	factor;
 
-	dx = x - data->mouse.last_x;
-	dy = y - data->mouse.last_y;
+	dx = x - events->graphics->mouse.last_x;
+	dy = y - events->graphics->mouse.last_y;
 	factor = 0.005;
-	data->camera.rotation.z += dx * factor;
-	data->camera.rotation.x += dy * factor;
-	data->mouse.last_x = x;
-	data->mouse.last_y = y;
-	redraw(data);
+	events->camera->rotation.z += dx * factor;
+	events->camera->rotation.x += dy * factor;
+	events->graphics->mouse.last_x = x;
+	events->graphics->mouse.last_y = y;
+	redraw(events);
 }
 
-static void	clamp_color_shift(t_data *data)
+static void	clamp_color_shift(t_events *events)
 {
-	if (data->camera.color_shift.red > 255)
-		data->camera.color_shift.red = 255;
-	if (data->camera.color_shift.red < -255)
-		data->camera.color_shift.red = -255;
-	if (data->camera.color_shift.blue > 255)
-		data->camera.color_shift.blue = 255;
-	if (data->camera.color_shift.blue < -255)
-		data->camera.color_shift.blue = -255;
-	if (data->camera.color_shift.green > 255)
-		data->camera.color_shift.green = 255;
-	if (data->camera.color_shift.green < -255)
-		data->camera.color_shift.green = -255;
+	if (events->camera->color_shift.x > 255)
+		events->camera->color_shift.x = 255;
+	if (events->camera->color_shift.x < -255)
+		events->camera->color_shift.x = -255;
+	if (events->camera->color_shift.z > 255)
+		events->camera->color_shift.z = 255;
+	if (events->camera->color_shift.z < -255)
+		events->camera->color_shift.z = -255;
+	if (events->camera->color_shift.y > 255)
+		events->camera->color_shift.y = 255;
+	if (events->camera->color_shift.y < -255)
+		events->camera->color_shift.y = -255;
 }
 
-static void	handle_color_shift(int x, int y, t_data *data)
+static void	handle_color_shift(int x, int y, t_events *events)
 {
 	int	dx;
 	int	dy;
 
-	dx = x - data->mouse.last_x;
-	dy = y - data->mouse.last_y;
-	data->camera.color_shift.red += dx * 2;
-	data->camera.color_shift.blue -= dx * 2;
-	data->camera.color_shift.green -= dy * 2;
-	clamp_color_shift(data);
-	data->mouse.last_x = x;
-	data->mouse.last_y = y;
-	redraw(data);
+	dx = x - events->graphics->mouse.last_x;
+	dy = y - events->graphics->mouse.last_y;
+	events->camera->color_shift.x += dx * 2;
+	events->camera->color_shift.z -= dx * 2;
+	events->camera->color_shift.y -= dy * 2;
+	clamp_color_shift(events);
+	events->graphics->mouse.last_x = x;
+	events->graphics->mouse.last_y = y;
+	redraw(events);
 }
 
-static void	handle_dampening(int x, int y, t_data *data)
+static void	handle_dampening(int x, int y, t_events *events)
 {
 	int		dx;
 	int		dy;
 	double	distance;
 	double	max_relief;
 
-	dx = x - data->mouse.middle_start_x;
-	dy = y - data->mouse.middle_start_y;
+	dx = x - events->graphics->mouse.middle_start_x;
+	dy = y - events->graphics->mouse.middle_start_y;
 	distance = sqrt(dx * dx + dy * dy);
-	if (data->map->max_z > -data->map->min_z)
-		max_relief = (double)data->map->max_z;
+	if (events->map->max_z > -events->map->min_z)
+		max_relief = (double)events->map->max_z;
 	else
-		max_relief = (double)(-data->map->min_z);
+		max_relief = (double)(-events->map->min_z);
 	if (max_relief < 1)
 		max_relief = 1;
-	data->camera.dampening_threshold = (distance / 200.0) * max_relief;
-	data->mouse.last_x = x;
-	data->mouse.last_y = y;
-	redraw(data);
+	events->camera->dampening_threshold = (distance / 200.0) * max_relief;
+	events->graphics->mouse.last_x = x;
+	events->graphics->mouse.last_y = y;
+	redraw(events);
 }
 
-int	mouse_move(int x, int y, t_data *data)
+int	mouse_move(int x, int y, t_events *events)
 {
-	if (data->keys.shift_left || data->keys.shift_right)
+	DBG("mouse_move: to %d,%d\n", x, y);
+	if (events->graphics->keys.shift_left || events->graphics->keys.shift_right)
 	{
-		if (!data->mouse.middle_pressed)
+		if (!events->graphics->mouse.middle_pressed)
 		{
-			data->mouse.middle_pressed = 1;
-			data->mouse.middle_start_x = x;
-			data->mouse.middle_start_y = y;
+			events->graphics->mouse.middle_pressed = 1;
+			events->graphics->mouse.middle_start_x = x;
+			events->graphics->mouse.middle_start_y = y;
 		}
-		handle_dampening(x, y, data);
+		handle_dampening(x, y, events);
 	}
-	else if (data->mouse.middle_pressed)
-		handle_color_shift(x, y, data);
-	else if (data->mouse.right_pressed)
-		handle_camera_rotation(x, y, data);
-	else if (data->mouse.left_pressed)
-		handle_object_vec3d(x, y, data);
+	else if (events->graphics->mouse.middle_pressed)
+		handle_color_shift(x, y, events);
+	else if (events->graphics->mouse.right_pressed)
+		handle_camera_rotation(x, y, events);
+	else if (events->graphics->mouse.left_pressed)
+		handle_object_vec3d(x, y, events);
 	else
 	{
-		if (data->mouse.middle_pressed)
-			data->mouse.middle_pressed = 0;
+		if (events->graphics->mouse.middle_pressed)
+			events->graphics->mouse.middle_pressed = 0;
 	}
 	return (0);
 }

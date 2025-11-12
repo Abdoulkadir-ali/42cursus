@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:31 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:55:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 20:47:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ typedef struct s_camera t_camera;
 typedef struct s_mouse t_mouse;
 typedef struct s_keys t_keys;
 typedef struct s_point t_point;
-typedef struct s_map_render_config t_map_render_config;
+typedef struct s_map_render_config t_map_style;
 
 /* ========== SYSTEM INCLUDES ========== */
 # include <mlx.h>

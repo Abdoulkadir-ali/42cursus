@@ -6,62 +6,62 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 16:28:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 21:36:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
-static void	free_map_files(t_data *data)
+static void	free_map_files(t_events *events)
 {
 	int	i;
 
-	if (data->map_files)
+	if (events->graphics->map_manager.map_files)
 	{
 		i = 0;
-		while (i < data->map_count)
+		while (i < events->graphics->map_manager.count)
 		{
-			if (data->map_files[i])
-				free(data->map_files[i]);
+			if (events->graphics->map_manager.map_files[i])
+				free(events->graphics->map_manager.map_files[i]);
 			i++;
 		}
-		free(data->map_files);
+		free(events->graphics->map_manager.map_files);
 	}
 }
 
-static void	free_cached_maps(t_data *data)
+static void	free_cached_maps(t_events *events)
 {
 	int	i;
 
-	if (data->maps)
+	if (events->graphics->map_manager.maps)
 	{
 		i = 0;
-		while (i < data->map_count)
+		while (i < events->graphics->map_manager.count)
 		{
-			if (data->maps[i])
-				free_map(data->maps[i]);
+			if (events->graphics->map_manager.maps[i])
+				free_map(events->graphics->map_manager.maps[i]);
 			i++;
 		}
-		free(data->maps);
+		free(events->graphics->map_manager.maps);
 	}
 }
 
-int	cleanup_and_exit(t_data *data)
+int	cleanup_and_exit(t_events *events)
 {
-	free_cached_maps(data);
-	free_map_files(data);
-	if (data->z_buffer)
-		free(data->z_buffer);
-	if (data->img)
-		mlx_destroy_image(data->mlx_ptr, data->img);
-	if (data->gui_img)
-		mlx_destroy_image(data->mlx_ptr, data->gui_img);
-	if (data->win_ptr)
-		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-	if (data->mlx_ptr)
+	free_cached_maps(events);
+	free_map_files(events);
+	if (events->window->z_buffer)
+		free(events->window->z_buffer);
+	if (events->window->main_img.img)
+		mlx_destroy_image(events->window->mlx_ptr, events->window->main_img.img);
+	if (events->window->gui_img.img)
+		mlx_destroy_image(events->window->mlx_ptr, events->window->gui_img.img);
+	if (events->window->ptr)
+		mlx_destroy_window(events->window->mlx_ptr, events->window->ptr);
+	if (events->window->mlx_ptr)
 	{
-		mlx_destroy_display(data->mlx_ptr);
-		free(data->mlx_ptr);
+		mlx_destroy_display(events->window->mlx_ptr);
+		free(events->window->mlx_ptr);
 	}
 	exit(0);
 	return (0);

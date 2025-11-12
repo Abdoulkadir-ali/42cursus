@@ -6,93 +6,102 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:51:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 23:00:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
+#include <stdio.h>
 
-static void	adjust_zoom_speed(t_data *data, int increase)
+static int	adjust_zoom_speed(t_events *events, int increase)
 {
 	if (increase)
 	{
-		data->camera.zoom_speed += 0.2;
-		if (data->camera.zoom_speed > 5.0)
-			data->camera.zoom_speed = 5.0;
+		events->camera->zoom_speed += 0.2;
+		if (events->camera->zoom_speed > 5.0)
+			events->camera->zoom_speed = 5.0;
 	}
 	else
 	{
-		data->camera.zoom_speed -= 0.2;
-		if (data->camera.zoom_speed < 0.2)
-			data->camera.zoom_speed = 0.2;
+		events->camera->zoom_speed -= 0.2;
+		if (events->camera->zoom_speed < 0.2)
+			events->camera->zoom_speed = 0.2;
 	}
-	redraw(data);
+	return (1);
 }
 
-static void	handle_mouse_click(int button, int x, int y, t_data *data)
+static void	handle_mouse_click(int button, int x, int y, t_mouse *mouse)
 {
 	if (button == MOUSE_LEFT)
 	{
-		data->mouse.left_pressed = 1;
-		data->mouse.last_x = x;
-		data->mouse.last_y = y;
+		mouse->left_pressed = 1;
+		mouse->last_x = x;
+		mouse->last_y = y;
 	}
 	else if (button == MOUSE_RIGHT)
 	{
-		data->mouse.right_pressed = 1;
-		data->mouse.last_x = x;
-		data->mouse.last_y = y;
+		mouse->right_pressed = 1;
+		mouse->last_x = x;
+		mouse->last_y = y;
 	}
 	else if (button == MOUSE_MIDDLE)
 	{
-		data->mouse.middle_pressed = 1;
-		data->mouse.middle_start_x = x;
-		data->mouse.middle_start_y = y;
-		data->mouse.last_x = x;
-		data->mouse.last_y = y;
+		mouse->middle_pressed = 1;
+		mouse->middle_start_x = x;
+		mouse->middle_start_y = y;
+		mouse->last_x = x;
+		mouse->last_y = y;
 	}
 }
 
-static void	handle_mouse_scroll(int button, t_data *data)
+static int	handle_mouse_scroll(int button, t_events *events)
 {
 	t_camera_context	ctx;
 
-	ctx.camera = &data->camera;
-	ctx.map = data->map;
-	ctx.window.width = data->win_width;
-	ctx.window.height = data->win_height;
+	ctx.camera = events->camera;
+	ctx.map = events->map;
+	ctx.window = events->window;
 	if (button == MOUSE_SCROLL_UP)
 	{
-		if (data->keys.ctrl_left || data->keys.ctrl_right)
-			adjust_zoom_speed(data, 1);
+		if (events->graphics->keys.ctrl_left || events->graphics->keys.ctrl_right)
+			return (adjust_zoom_speed(events, 1));
 		else
 			zoom_in(&ctx);
 	}
 	else if (button == MOUSE_SCROLL_DOWN)
 	{
-		if (data->keys.ctrl_left || data->keys.ctrl_right)
-			adjust_zoom_speed(data, 0);
+		if (events->graphics->keys.ctrl_left || events->graphics->keys.ctrl_right)
+			return (adjust_zoom_speed(events, 0));
 		else
 			zoom_out(&ctx);
 	}
+	return (1);
 }
 
-int	mouse_press(int button, int x, int y, t_data *data)
+static void	handle_mouse_release(int button, t_mouse *mouse)
 {
-	handle_mouse_click(button, x, y, data);
-	handle_mouse_scroll(button, data);
+	if (button == MOUSE_LEFT)
+		mouse->left_pressed = 0;
+	else if (button == MOUSE_RIGHT)
+		mouse->right_pressed = 0;
+	else if (button == MOUSE_MIDDLE)
+		mouse->middle_pressed = 0;
+}
+
+int	mouse_press(int button, int x, int y, t_events *events)
+{
+	DBG("mouse_press: button %d at %d,%d\n", button, x, y);
+	handle_mouse_click(button, x, y, &events->graphics->mouse);
+	if (handle_mouse_scroll(button, events))
+		redraw(events);
 	return (0);
 }
 
-int	mouse_release(int button, int x, int y, t_data *data)
+int	mouse_release(int button, int x, int y, t_events *events)
 {
+	DBG("mouse_release: button %d at %d,%d\n", button, x, y);
 	(void)x;
 	(void)y;
-	if (button == MOUSE_LEFT)
-		data->mouse.left_pressed = 0;
-	else if (button == MOUSE_RIGHT)
-		data->mouse.right_pressed = 0;
-	else if (button == MOUSE_MIDDLE)
-		data->mouse.middle_pressed = 0;
+	handle_mouse_release(button, &events->graphics->mouse);
 	return (0);
 }

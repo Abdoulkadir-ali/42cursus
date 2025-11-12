@@ -1,74 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   controls_displays.c                                :+:      :+:    :+:   */
+/*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 15:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:18:54 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/12 19:53:29 by abdoali          #+#    #+#             */
+/*   Updated: 2025/11/12 19:53:29 by abdoali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
-static void	format_depth_str(int percent, char *str)
-{
-	str[0] = '0' + (percent / 10);
-	str[1] = '0' + (percent % 10);
-	str[2] = '%';
-	str[3] = ' ';
-	str[4] = 'v';
-	str[5] = 'i';
-	str[6] = 's';
-	str[7] = 'i';
-	str[8] = 'b';
-	str[9] = 'l';
-	str[10] = 'e';
-	str[11] = '\0';
-}
-
-void	draw_dampening_display(t_data *data)
-{
-	int		y;
-	char	depth_str[20];
-	int		visible_percent;
-
-	y = data->win_height - 240;
-	put_colored(data, GUI_PADDING, y, "DEPTH DAMPENING", GUI_TITLE_COLOR);
-	y += GUI_TITLE_HEIGHT;
-	if (data->camera.dampening_threshold <= data->map->min_z)
-		put_value(data, GUI_PADDING + 10, y, "OFF");
-	else
-	{
-		visible_percent = (int)(100.0 * (data->map->max_z
-					- data->camera.dampening_threshold) / (data->map->max_z
-					- data->map->min_z));
-		format_depth_str(visible_percent, depth_str);
-		put_value(data, GUI_PADDING + 10, y, depth_str);
-	}
-}
-
-void	draw_style_display(t_data *data)
-{
-	int		y;
-	int		accent;
-	char	*names[GUI_STYLE_COUNT];
-
-	names = {"TRON BLUE", "TRON ORANGE", "MATRIX", "CYBERPUNK", "NEON GRID"};
-	y = data->win_height - 240;
-	accent = get_gui_accent_color(data->camera.gui_style);
-	put_colored(data, GUI_PADDING, y, "GUI STYLE", accent);
-	y += GUI_TITLE_HEIGHT;
-	put_colored(data, GUI_PADDING + 10, y, names[data->camera.gui_style], accent);
-}
 
 void	draw_projection_display_at(t_data *data, int *section_y)
 {
 	int		y;
-	char	*names[PROJ_COUNT];
-
-    names = {"Isometric", "Orthographic", "Perspective", "Oblique","Camera Matrix","Nonlinear"};
+	char	*names[PROJ_COUNT] = {"Isometric", "Orthographic", "Perspective", "Oblique",
+		"Camera Matrix", "Nonlinear"};
 	y = *section_y;
 	put_colored(data, GUI_PADDING, y, "PROJECTION", GUI_TITLE_COLOR);
 	y += GUI_TITLE_HEIGHT;
@@ -99,16 +48,16 @@ void	draw_speed_display_at(t_data *data, int *section_y)
 
 void	draw_map_name_display_at(t_data *data, int *section_y)
 {
-	int y;
-	char *map_name;
+	int		y;
+	char	*map_name;
 
 	y = *section_y;
 	put_colored(data, GUI_PADDING, y, "MAP", GUI_TITLE_COLOR);
 	y += GUI_TITLE_HEIGHT;
-	if (data->map_files && data->current_map_index >= 0
-		&& data->current_map_index < data->map_count)
+	if (data->graphics.map_manager.map_files && data->graphics.map_manager.current_index >= 0
+		&& data->graphics.map_manager.current_index < data->graphics.map_manager.count)
 	{
-		map_name = data->map_files[data->current_map_index];
+		map_name = data->graphics.map_manager.map_files[data->graphics.map_manager.current_index];
 		put_value(data, GUI_PADDING + 10, y, map_name);
 	}
 	else

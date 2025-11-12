@@ -12,225 +12,138 @@
 
 #include "events.h"
 #include <stdio.h>
+#include <string.h>
 
-static void	handle_arrow_keys(int keycode, t_data *data)
+#define KEY_MAP_SIZE 0x10000
+
+static key_action_t	key_actions[KEY_MAP_SIZE];
+static key_action_t	key_releases[KEY_MAP_SIZE];
+
+static void	init_key_actions(void)
 {
-	if (keycode == XK_Up)
+	static int	initialized = 0;
+
+	if (initialized)
+		return ;
+	initialized = 1;
+	ft_memset(key_actions, 0, sizeof(key_actions));
+	ft_memset(key_releases, 0, sizeof(key_releases));
+	key_actions[XK_Escape] = handle_escape;
+	key_actions[XK_R] = handle_r;
+	key_actions[XK_r] = handle_r;
+	key_actions[XK_p] = handle_p;
+	key_actions[XK_P] = handle_p;
+	key_actions[XK_n] = handle_n;
+	key_actions[XK_N] = handle_n;
+	key_actions[XK_s] = handle_s;
+	key_actions[XK_S] = handle_s;
+	key_actions[XK_a] = handle_a;
+	key_actions[XK_A] = handle_a;
+	key_actions[XK_x] = handle_x;
+	key_actions[XK_X] = handle_x;
+	key_actions[XK_i] = handle_i;
+	key_actions[XK_I] = handle_i;
+	key_actions[XK_v] = handle_v;
+	key_actions[XK_V] = handle_v;
+	key_actions[XK_g] = handle_g;
+	key_actions[XK_G] = handle_g;
+	key_actions[XK_Control_L] = handle_press_flag;
+	key_actions[XK_Control_R] = handle_press_flag;
+	key_actions[XK_Shift_L] = handle_press_flag;
+	key_actions[XK_Shift_R] = handle_press_flag;
+	key_actions[XK_l] = handle_press_flag;
+	key_actions[XK_L] = handle_press_flag;
+	key_actions[XK_z] = handle_press_flag;
+	key_actions[XK_Z] = handle_press_flag;
+	key_actions[XK_f] = handle_press_flag;
+	key_actions[XK_F] = handle_press_flag;
+	key_actions[XK_d] = handle_press_flag;
+	key_actions[XK_D] = handle_press_flag;
+	key_actions[XK_t] = handle_press_flag;
+	key_actions[XK_T] = handle_press_flag;
+	key_actions[XK_plus] = handle_plus;
+	key_actions[XK_minus] = handle_minus;
+	key_actions[XK_0] = handle_0;
+	key_actions[XK_Up] = handle_up;
+	key_actions[XK_Down] = handle_down;
+	key_actions[XK_Left] = handle_left;
+	key_actions[XK_Right] = handle_right;
+	key_releases[XK_Up] = handle_release_flag;
+	key_releases[XK_Down] = handle_release_flag;
+	key_releases[XK_Left] = handle_release_flag;
+	key_releases[XK_Right] = handle_release_flag;
+	key_releases[XK_Control_L] = handle_release_flag;
+	key_releases[XK_Control_R] = handle_release_flag;
+	key_releases[XK_Shift_L] = handle_release_flag;
+	key_releases[XK_Shift_R] = handle_release_flag;
+	key_releases[XK_l] = handle_release_flag;
+	key_releases[XK_L] = handle_release_flag;
+	key_releases[XK_z] = handle_release_flag;
+	key_releases[XK_Z] = handle_release_flag;
+	key_releases[XK_f] = handle_release_flag;
+	key_releases[XK_F] = handle_release_flag;
+	key_releases[XK_d] = handle_release_flag;
+	key_releases[XK_D] = handle_release_flag;
+	key_releases[XK_t] = handle_release_flag;
+	key_releases[XK_T] = handle_release_flag;
+}
+
+int	key_press(int keycode, t_events *events)
+{
+	key_action_t	action;
+	int				redraw_needed;
+
+	init_key_actions();
+	DBG("key_press: keycode %d\n", keycode);
+	if (keycode >= 0 && keycode < KEY_MAP_SIZE)
 	{
-		if (data->keys.ctrl_left || data->keys.ctrl_right)
-			adjust_move_speed(data, 1);
+		action = key_actions[keycode];
+		if (action)
+		{
+			DBG("calling action for keycode %d\n", keycode);
+			redraw_needed = action(keycode, events);
+			// if (redraw_needed)
+			// 	redraw(events);
+			return (redraw_needed);
+		}
 		else
-			data->keys.up = 1;
+		{
+			DBG("no action for keycode %d\n", keycode);
+		}
 	}
-	else if (keycode == XK_Down)
-	{
-		if (data->keys.ctrl_left || data->keys.ctrl_right)
-			adjust_move_speed(data, 0);
-		else
-			data->keys.down = 1;
-	}
-	else if (keycode == XK_Left)
-		data->keys.left = 1;
-	else if (keycode == XK_Right)
-		data->keys.right = 1;
-}
-
-static void	handle_ctrl_keys(int keycode, t_data *data)
-{
-	if (keycode == XK_Control_L)
-		data->keys.ctrl_left = 1;
-	else if (keycode == XK_Control_R)
-		data->keys.ctrl_right = 1;
-	else if (keycode == XK_Shift_L)
-		data->keys.shift_left = 1;
-	else if (keycode == XK_Shift_R)
-		data->keys.shift_right = 1;
-}
-
-static void	handle_optimization_keys(int keycode, t_data *data)
-{
-	if (keycode == XK_l)
-		data->keys.l = 1;
-	else if (keycode == XK_z)
-		data->keys.z = 1;
-	else if (keycode == XK_f)
-		data->keys.f = 1;
-	else if (keycode == XK_h)
-		data->keys.h = 1;
-	else if (keycode == XK_d)
-		data->keys.d = 1;
-	else if (keycode == XK_t)
-		data->keys.t = 1;
-}
-
-static void	clamp_values(t_data *data)
-{
-	if (data->lod_level < MIN_LOD_LEVEL)
-		data->lod_level = MIN_LOD_LEVEL;
-	if (data->lod_level > MAX_LOD_LEVEL)
-		data->lod_level = MAX_LOD_LEVEL;
-	if (data->camera.z_scale < MIN_Z_SCALE)
-		data->camera.z_scale = MIN_Z_SCALE;
-	if (data->camera.frustum_margin < MIN_FRUSTUM_MARGIN)
-		data->camera.frustum_margin = MIN_FRUSTUM_MARGIN;
-	if (data->camera.frustum_margin > MAX_FRUSTUM_MARGIN)
-		data->camera.frustum_margin = MAX_FRUSTUM_MARGIN;
-	if (data->camera.dampening_threshold < MIN_DAMPENING_THRESHOLD)
-		data->camera.dampening_threshold = MIN_DAMPENING_THRESHOLD;
-	if (data->camera.dampening_threshold > MAX_DAMPENING_THRESHOLD)
-		data->camera.dampening_threshold = MAX_DAMPENING_THRESHOLD;
-	if (data->camera.spline_segments < MIN_SPLINE_SEGMENTS)
-		data->camera.spline_segments = MIN_SPLINE_SEGMENTS;
-	if (data->camera.spline_segments > MAX_SPLINE_SEGMENTS)
-		data->camera.spline_segments = MAX_SPLINE_SEGMENTS;
-	data->camera.z_scale = floor(data->camera.z_scale * 10.0) / 10.0;
-}
-
-static void	handle_combo_actions(int keycode, t_data *data)
-{
-	if (keycode == XK_plus)
-	{
-		if (data->keys.l)
-			data->lod_level++;
-		else if (data->keys.z)
-			data->camera.z_scale += 0.1;
-		else if (data->keys.f)
-			data->camera.frustum_margin += 10;
-		else if (data->keys.d)
-			data->camera.dampening_threshold += 5;
-		else if (data->keys.t)
-			data->camera.spline_segments += 2;
-		clamp_values(data);
-		redraw(data);
-	}
-	else if (keycode == XK_minus)
-	{
-		if (data->keys.l)
-			data->lod_level--;
-		else if (data->keys.z)
-			data->camera.z_scale -= 0.1;
-		else if (data->keys.f)
-			data->camera.frustum_margin -= 10;
-		else if (data->keys.d)
-			data->camera.dampening_threshold -= 5;
-		else if (data->keys.t)
-			data->camera.spline_segments -= 2;
-		clamp_values(data);
-		redraw(data);
-	}
-	else if (keycode == XK_0)
-	{
-		if (data->keys.l)
-			data->lod_level = DEFAULT_LOD_LEVEL;
-		else if (data->keys.z)
-			data->camera.z_scale = DEFAULT_Z_SCALE;
-		else if (data->keys.f)
-			data->camera.frustum_margin = DEFAULT_FRUSTUM_MARGIN;
-		else if (data->keys.d)
-			data->camera.dampening_threshold = DEFAULT_DAMPENING_THRESHOLD;
-		else if (data->keys.t)
-			data->camera.spline_segments = DEFAULT_SPLINE_SEGMENTS;
-		redraw(data);
-	}
-}
-
-int	XK_press(int keycode, t_data *data)
-{
-	if (keycode == XK_Escape)
-		return (cleanup_and_exit(data));
-	if (keycode == XK_R)
-		reset_view(data);
-	else if (keycode == XK_p)
-		cycle_projection(data);
-	else if (keycode == XK_n)
-		cycle_map(data);
-	else if (keycode == XK_s)
-		cycle_gui_style(data);
-	else if (keycode == XK_a)
-	{
-		data->render_mode = (data->render_mode + 1) % RENDER_MODE_COUNT;
-		redraw(data);
-	}
-	else if (keycode == XK_x)
-	{
-		data->camera.use_z_divisor = !data->camera.use_z_divisor;
-		redraw(data);
-	}
-	else if (keycode == XK_i)
-	{
-		data->camera.invert_movement = !data->camera.invert_movement;
-		redraw(data);
-	}
-	else if (keycode == XK_v)
-	{
-		data->use_depth_culling = !data->use_depth_culling;
-		redraw(data);
-	}
-	else if (keycode == XK_g)
-	{
-		data->fill_triangles = !data->fill_triangles;
-		redraw(data);
-	}
-	else if (keycode == XK_Control_L
-		|| keycode == XK_Control_R
-		|| keycode == XK_Shift_L
-		|| keycode == XK_Shift_R)
-		handle_ctrl_keys(keycode, data);
-	else if (keycode == XK_l
-		|| keycode == XK_z
-		|| keycode == XK_f
-		|| keycode == XK_d
-		|| keycode == XK_t)
-		handle_optimization_keys(keycode, data);
-	else if (keycode == XK_plus
-		|| keycode == XK_minus
-		|| keycode == XK_0)
-		handle_combo_actions(keycode, data);
-	else
-		handle_arrow_keys(keycode, data);
 	return (0);
 }
 
-int	XK_release(int keycode, t_data *data)
+int	key_release(int keycode, t_events *events)
 {
-	if (keycode == XK_Up)
-		data->keys.up = 0;
-	else if (keycode == XK_Down)
-		data->keys.down = 0;
-	else if (keycode == XK_Left)
-		data->keys.left = 0;
-	else if (keycode == XK_Right)
-		data->keys.right = 0;
-	else if (keycode == XK_Control_L)
-		data->keys.ctrl_left = 0;
-	else if (keycode == XK_Control_R)
-		data->keys.ctrl_right = 0;
-	else if (keycode == XK_Shift_L)
-		data->keys.shift_left = 0;
-	else if (keycode == XK_Shift_R)
-		data->keys.shift_right = 0;
-	else if (keycode == XK_l)
-		data->keys.l = 0;
-	else if (keycode == XK_z)
-		data->keys.z = 0;
-	else if (keycode == XK_f)
-		data->keys.f = 0;
-	else if (keycode == XK_d)
-		data->keys.d = 0;
-	else if (keycode == XK_t)
-		data->keys.t = 0;
+	key_action_t	action;
+
+	init_key_actions();
+	DBG("key_release: keycode %d\n", keycode);
+	if (keycode >= 0 && keycode < KEY_MAP_SIZE)
+	{
+		action = key_releases[keycode];
+		if (action)
+			return (action(keycode, events));
+	}
 	return (0);
 }
 
-int	loop_hook(t_data *data)
+int	loop_hook(t_events *events)
 {
+	static int	frame = 0;
 	int	needs_redraw;
 
+	DBG("loop_hook called, frame %d\n", frame);
 	needs_redraw = 0;
-	if (data->camera.scale != data->camera.target_scale)
+	if (process_movement(events))
 		needs_redraw = 1;
-	process_movement(data);
-	if (needs_redraw)
-		redraw(data);
+	needs_redraw++;
+	if (frame % 10 == 0)
+	{
+		DBG("redrawing\n");
+		redraw(events);
+	}
+	frame++;
 	return (0);
 }

@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:51:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 19:59:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map.h"
 #include "camera.h"
+
 #include "graphics.h"
+#include "map.h"
 #include <dirent.h>
 
 static int	is_fdf_file(const char *filename)
@@ -41,36 +42,7 @@ static int	count_fdf_files(DIR *dir)
 	return (count);
 }
 
-static void	load_single_map(t_data *data, struct dirent *entry, int i)
-{
-	char	filepath[512];
-
-	data->map_files[i] = malloc(ft_strlen(entry->d_name) + 1);
-	ft_strcpy(data->map_files[i], entry->d_name);
-	ft_strlcpy(filepath, "maps/test_maps/", sizeof(filepath));
-	ft_strlcat(filepath, data->map_files[i], sizeof(filepath));
-	data->maps[i] = load_map(filepath);
-}
-
-static void	load_map_files(t_data *data, DIR *dir, int count)
-{
-	struct dirent	*entry;
-	int				i;
-
-	i = 0;
-	entry = readdir(dir);
-	while (entry && i < count)
-	{
-		if (is_fdf_file(entry->d_name))
-		{
-			load_single_map(data, entry, i);
-			i++;
-		}
-		entry = readdir(dir);
-	}
-}
-
-void	init_map_list(t_data *data)
+void	init_map_list(t_map_manager *m)
 {
 	DIR	*dir;
 	int	count;
@@ -78,35 +50,49 @@ void	init_map_list(t_data *data)
 	dir = opendir("maps/test_maps");
 	if (!dir)
 	{
-		data->map_files = NULL;
-		data->maps = NULL;
-		data->map_count = 0;
+		m->map_files = NULL;
+		m->maps = NULL;
+		m->count = 0;
 		return ;
 	}
 	count = count_fdf_files(dir);
 	closedir(dir);
-	data->map_files = malloc(sizeof(char *) * count);
-	data->maps = malloc(sizeof(t_map *) * count);
-	data->map_count = count;
+	m->map_files = malloc(sizeof(char *) * count);
+	m->maps = malloc(sizeof(t_map *) * count);
+	m->count = count;
 	dir = opendir("maps/test_maps");
-	load_map_files(data, dir, count);
+	load_map_files(m, dir, count);
 	closedir(dir);
-	data->current_map_index = 0;
+	m->current_index = 0;
 }
 
-void	cycle_map(t_data *data)
+void	load_map_files(t_map_manager *m, DIR *dir, int count)
 {
-	t_camera_context	ctx;
+	struct dirent	*entry;
+	char			path[256];
+	int				i;
 
-	if (!data->maps || data->map_count == 0)
+	i = 0;
+	rewinddir(dir);
+	entry = readdir(dir);
+	while (entry && i < count)
+	{
+		if (is_fdf_file(entry->d_name))
+		{
+			m->map_files[i] = ft_strdup(entry->d_name);
+			ft_strlcpy(path, "maps/test_maps/", sizeof(path));
+			ft_strlcat(path, entry->d_name, sizeof(path));
+			m->maps[i] = load_map(path);
+			i++;
+		}
+		entry = readdir(dir);
+	}
+}
+
+void	cycle_map(t_map_manager *m, t_map **current_map)
+{
+	if (!m->maps || m->count == 0)
 		return ;
-	data->current_map_index = (data->current_map_index + 1) % data->map_count;
-	data->map = data->maps[data->current_map_index];
-	ctx.camera = &data->camera;
-	ctx.map = data->map;
-	ctx.window.width = data->win_width;
-	ctx.window.height = data->win_height;
-	adjust_camera_to_map(&ctx);
-	apply_map_style(data);
-	redraw(data);
+	m->current_index = (m->current_index + 1) % m->count;
+	*current_map = m->maps[m->current_index];
 }

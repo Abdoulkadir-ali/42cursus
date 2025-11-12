@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:24:11 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 18:24:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 19:20:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,18 @@
 
 int	lerp_color(int c1, int c2, double t)
 {
-	int r1;
-	int g1;
-	int b1;
-	int r2;
-	int g2;
-	int b2;
-	int r;
-	int g;
-	int b;
+	t_vec3	c1_vec;
+	t_vec3	c2_vec;
+	t_vec3	result_vec;
 
-	r1 = (c1 >> 16) & 0xFF;
-	g1 = (c1 >> 8) & 0xFF;
-	b1 = c1 & 0xFF;
-	r2 = (c2 >> 16) & 0xFF;
-	g2 = (c2 >> 8) & 0xFF;
-	b2 = c2 & 0xFF;
-	r = (int)(r1 + (r2 - r1) * t);
-	g = (int)(g1 + (g2 - g1) * t);
-	b = (int)(b1 + (b2 - b1) * t);
-	return ((r << 16) | (g << 8) | b);
+	c1_vec.x = get_red(c1);
+	c1_vec.y = get_green(c1);
+	c1_vec.z = get_blue(c1);
+	c2_vec.x = get_red(c2);
+	c2_vec.y = get_green(c2);
+	c2_vec.z = get_blue(c2);
+	result_vec.x = c1_vec.x + (c2_vec.x - c1_vec.x) * t;
+	result_vec.y = c1_vec.y + (c2_vec.y - c1_vec.y) * t;
+	result_vec.z = c1_vec.z + (c2_vec.z - c1_vec.z) * t;
+	return (create_color((int)result_vec.x, (int)result_vec.y, (int)result_vec.z));
 }

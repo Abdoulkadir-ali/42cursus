@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 16:21:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 19:18:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,74 @@ int	shift_color(int color, int red_shift, int blue_shift, int green_shift)
 	g += green_shift;
 	b += blue_shift;
 	return (create_color(r, g, b));
+}
+
+int	get_height_color(int z, int min_z, int max_z)
+{
+	t_vec3	color_low;
+	t_vec3	color_mid;
+	t_vec3	color_high;
+	t_vec3	result;
+	double	ratio;
+	int		r;
+	int		g;
+	int		b;
+
+	color_low.x = 0;
+	color_low.y = 0;
+	color_low.z = 255;
+	color_mid.x = 0;
+	color_mid.y = 255;
+	color_mid.z = 0;
+	color_high.x = 255;
+	color_high.y = 0;
+	color_high.z = 0;
+	if (max_z == min_z)
+		return (create_color(color_mid.x, color_mid.y, color_mid.z));
+	ratio = (double)(z - min_z) / (double)(max_z - min_z);
+	if (ratio < 0.5)
+	{
+		ratio = ratio * 2.0;
+		result.x = color_low.x * (1.0 - ratio) + color_mid.x * ratio;
+		result.y = color_low.y * (1.0 - ratio) + color_mid.y * ratio;
+		result.z = color_low.z * (1.0 - ratio) + color_mid.z * ratio;
+	}
+	else
+	{
+		ratio = (ratio - 0.5) * 2.0;
+		result.x = color_mid.x * (1.0 - ratio) + color_high.x * ratio;
+		result.y = color_mid.y * (1.0 - ratio) + color_high.y * ratio;
+		result.z = color_mid.z * (1.0 - ratio) + color_high.z * ratio;
+	}
+	r = (int)result.x;
+	g = (int)result.y;
+	b = (int)result.z;
+	return (create_color(r, g, b));
+}
+
+int	get_solid_color(int z)
+{
+	(void)z;
+	return (0xFF6B35);
+}
+
+int	get_zebra_color(int z)
+{
+	if (z % 2 == 0)
+		return (0xFFFFFF);
+	return (0x00FFFF);
+}
+
+int	get_neon_color(int z)
+{
+	int	colors[5];
+
+	colors[0] = 0xFF00FF;
+	colors[1] = 0x00FFFF;
+	colors[2] = 0xFFFF00;
+	colors[3] = 0xFF0080;
+	colors[4] = 0x00FF80;
+	if (z < 0)
+		z = -z;
+	return (colors[z % 5]);
 }

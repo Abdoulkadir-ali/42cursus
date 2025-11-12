@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:17 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:30:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 19:18:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,8 @@ int		shift_color(int color, int red_shift, int blue_shift, int green_shift);
 
 int		interpolate_color(int color1, int color2, double ratio);
 int		get_height_color(int z, int min_z, int max_z);
+int		get_solid_color(int z);
+int		get_zebra_color(int z);
+int		get_neon_color(int z);
 
 #endif

@@ -6,23 +6,44 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:36:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 21:36:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CORE_H
 # define CORE_H
 
+# include "events.h"
+# include "graphics.h"
+# include "gui.h"
 # include <X11/keysym.h>
 # include <mlx.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
 
-# include "data.h"
-# include "events.h"
-# include "gui.h"
-# include "graphics.h"
+
+
+typedef struct s_data
+{
+	void		*mlx_ptr;
+	void		*win_ptr;
+	t_window	window;
+	t_graphics	graphics;
+	t_map		*map;
+	t_map		**maps;
+	char		**map_files;
+	int			map_count;
+	int			current_map_index;
+	t_gui		gui;
+	t_camera	camera;
+	long		last_frame_time;
+	int			frame_in_progress;
+	int			render_mode;
+	int			lod_level;
+	int			use_depth_culling;
+	int			fill_triangles;
+}				t_data;
 
 /* ========== WINDOW CONSTANTS ========== */
 # define WINDOW_WIDTH_RATIO 0.85
@@ -48,11 +69,10 @@
 # define MIN_SPLINE_SEGMENTS 2
 # define MAX_SPLINE_SEGMENTS 50
 
-void					init_window_size(t_data *data);
-void					init_mouse(t_data *data);
-void					init_keys(t_data *data);
-void					init_map_config(t_data *data);
-void					init_camera(t_data *data);
-int						cleanup_and_exit(t_data *data);
+void			init_window_size(t_data *data);
+void			init_mouse(t_mouse *mouse);
+void			init_keys(t_keys *keys);
+void			init_map_config(t_data *data);
+int				cleanup_and_exit(t_events *events);
 
 #endif

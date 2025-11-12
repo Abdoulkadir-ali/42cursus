@@ -6,42 +6,37 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 18:31:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 23:25:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 #include "graphics.h"
+#include "color.h"
 
 static void	init_bresenham(t_bresenham *b, t_point start, t_point end)
 {
-	b->dx = abs(end.pos.x - start.pos.x);
-	b->dy = abs(end.pos.y - start.pos.y);
-	if (start.pos.x < end.pos.x)
-		b->sx = 1;
-	else
-		b->sx = -1;
-	if (start.pos.y < end.pos.y)
-		b->sy = 1;
-	else
-		b->sy = -1;
-	b->err = b->dx - b->dy;
-	b->x = start.pos.x;
-	b->y = start.pos.y;
+	b->delta.x = abs((int)end.pos.x - (int)start.pos.x);
+	b->delta.y = abs((int)end.pos.y - (int)start.pos.y);
+	b->step.x = ((int)start.pos.x < (int)end.pos.x) ? 1 : -1;
+	b->step.y = ((int)start.pos.y < (int)end.pos.y) ? 1 : -1;
+	b->err = b->delta.x - b->delta.y;
+	b->p.x = (int)start.pos.x;
+	b->p.y = (int)start.pos.y;
 }
 
 int	z_buffer_test(t_graphics *g, int x, int y, float z)
 {
 	int	index;
 
-	if (!g->render_config.use_depth_culling || !g->window.z_buffer)
+	if (!g->render_config.use_depth_culling || !g->window->z_buffer)
 		return (1);
-	if (x < 0 || x >= g->window.width || y < 0 || y >= g->window.height)
+	if (x < 0 || x >= g->window->width || y < 0 || y >= g->window->height)
 		return (0);
-	index = y * g->window.width + x;
-	if (z < g->window.z_buffer[index])
+	index = y * g->window->width + x;
+	if (z < g->window->z_buffer[index])
 	{
-		g->window.z_buffer[index] = z;
+		g->window->z_buffer[index] = z;
 		return (1);
 	}
 	return (0);
@@ -51,10 +46,11 @@ void	img_pixel_put_with_z(t_graphics *g, int x, int y, float z, int color)
 {
 	char	*dst;
 
-	if (z_buffer_test(g, x, y, z))
+	(void)z;
+	// if (z_buffer_test(g, x, y, z))
 	{
-		dst = g->window.main_img.img_addr + (y * g->window.main_img.img_line_len
-				+ x * (g->window.main_img.img_bpp / 8));
+		dst = g->window->main_img.img_addr + (y * g->window->main_img.img_line_len
+				+ x * (g->window->main_img.img_bpp / 8));
 		*(unsigned int *)dst = color;
 	}
 }
@@ -63,37 +59,28 @@ void	draw_line(t_graphics *g, t_point start, t_point end)
 {
 	t_bresenham b;
 	int color;
-	float total_dist;
-	float current_dist;
-	float z;
 
+	DBG("draw_line start (%d,%d) to (%d,%d)\n", (int)start.pos.x, (int)start.pos.y, (int)end.pos.x, (int)end.pos.y);
 	init_bresenham(&b, start, end);
-	color = shift_color(start.color, g->camera.color_shift.red,
-			g->camera.color_shift.blue, g->camera.color_shift.green);
-	total_dist = sqrt((end.pos.x - start.pos.x) * (end.pos.x - start.pos.x)
-			+ (end.pos.y - start.pos.y) * (end.pos.y - start.pos.y));
+	color = shift_color(start.color, g->camera->color_shift.x,
+			g->camera->color_shift.z, g->camera->color_shift.y);
 	while (1)
 	{
-		if (is_visible(b.x, b.y, g))
-		{
-			current_dist = sqrt((b.x - start.pos.x) * (b.x - start.pos.x) + (b.y
-						- start.pos.y) * (b.y - start.pos.y));
-			z = start.pos.z + (end.pos.z - start.pos.z) * (current_dist
-					/ (total_dist + 1e-6));
-			img_pixel_put_with_z(g, b.x, b.y, z, color);
-		}
-		if (b.x == end.pos.x && b.y == end.pos.y)
+		if (is_visible(b.p.x, b.p.y, g))
+			img_pixel_put_with_z(g, b.p.x, b.p.y, 0, color);
+		if (b.p.x == (int)end.pos.x && b.p.y == (int)end.pos.y)
 			break ;
 		b.e2 = 2 * b.err;
-		if (b.e2 > -b.dy)
+		if (b.e2 > -b.delta.y)
 		{
-			b.err -= b.dy;
-			b.x += b.sx;
+			b.err -= b.delta.y;
+			b.p.x += b.step.x;
 		}
-		if (b.e2 < b.dx)
+		if (b.e2 < b.delta.x)
 		{
-			b.err += b.dx;
-			b.y += b.sy;
+			b.err += b.delta.x;
+			b.p.y += b.step.y;
 		}
 	}
+	DBG("draw_line end\n");
 }

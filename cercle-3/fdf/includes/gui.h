@@ -6,38 +6,36 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 18:32:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 21:48:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GUI_H
 # define GUI_H
 
-# include "vectors.h"
 # include <mlx.h>
 
-typedef struct s_data	t_data;
+// Header imports
+# include "vectors.h"
+# include "map.h"
+# include "camera.h"
+# include "window.h"
 
-typedef struct s_image
+
+typedef struct s_camera	t_camera;
+typedef struct s_window	t_window;
+typedef struct s_render_config	t_render_config;
+typedef struct s_map_manager	t_map_manager;
+
+typedef struct s_gui
 {
-	void				*img;
-	char				*img_addr;
-	int					img_bpp;
-	int					img_line_len;
-	int					img_endian;
-}						t_image;
-
-typedef struct s_window
-{
-	void				*mlx_ptr;
-	void				*ptr;
-	int					width;
-	int					height;
-
-	t_image				main_img;
-	t_image				gui_img;
-	float				*z_buffer;
-}						t_window;
+	t_window			*window;
+	int					gui_style;
+	t_map_manager		*map_manager;
+	t_render_config		*render_config;
+	t_camera			*camera;
+	t_map				*map;
+}						t_gui;
 
 /* ========== GUI STYLE ========== */
 typedef enum e_gui_style
@@ -75,49 +73,36 @@ typedef struct s_gui_theme
 # define GUI_KEY_COLOR 0xFFAA00
 
 /* ========== GUI FUNCTIONS ========== */
-int						init_gui(t_data *data);
-void					render_gui(t_data *data);
-void					draw_panel_background(t_data *data);
-void					put_text(t_data *data, t_vec2 v, char *text);
-void					put_key(t_data *data, t_vec2 v, char *text);
-void					put_colored(t_data *d, t_vec2 v, char *text, int color);
-void					put_value(t_data *data, t_vec2 v, char *text);
+void					render_gui(t_gui *gui);
+void					draw_panel_background(t_gui *gui);
+void					put_text(t_gui *gui, int x, int y, char *text);
+void					put_key(t_gui *gui, int x, int y, char *text);
+void					put_colored(t_gui *gui, int x, int y, char *text,
+							int color);
+void					put_value(t_gui *gui, int x, int y, char *text);
 void					format_speed(double speed, char *buffer);
 void					format_number(int num, char *buffer);
 void					format_float(double val, char *buffer);
-void					cycle_gui_style(t_data *data);
+void					cycle_gui_style(t_gui *gui);
 t_gui_theme				get_gui_theme(t_gui_style style);
-int						get_gui_background_color(t_gui_style style);
-int						get_gui_accent_color(t_gui_style style);
-int						get_gui_border_color(t_gui_style style);
-int						get_gui_text_color(t_gui_style style);
 t_gui_theme				get_tron_blue_theme(void);
 t_gui_theme				get_tron_orange_theme(void);
 t_gui_theme				get_matrix_theme(void);
 t_gui_theme				get_cyberpunk_theme(void);
 t_gui_theme				get_neon_grid_theme(void);
-void					draw_mouse_controls(t_data *data, int *y);
-void					draw_keyboard_controls(t_data *data, int *y);
-void					draw_action_keys(t_data *data, int *y);
-void					draw_optimization_keys(t_data *data, int *y);
-void					draw_controls_guide_at(t_data *data, int *y);
-void					draw_speed_display_at(t_data *data, int *y);
-void					draw_projection_display_at(t_data *data, int *y);
-void					draw_map_name_display_at(t_data *data, int *y);
-void					draw_performance_display_at(t_data *data, int *y);
-void					draw_performance_header(t_data *data, int *y);
-void					draw_performance_counts(t_data *data, int *y);
-void					draw_performance_lod(t_data *data, int *y);
-void					draw_performance_z_scale(t_data *data, int *y);
-void					draw_performance_z_divisor(t_data *data, int *y);
-void					draw_performance_invert_move(t_data *data, int *y);
-void					draw_performance_depth_cull(t_data *data, int *y);
-void					draw_performance_frustum(t_data *data, int *y);
-void					draw_performance_depth(t_data *data, int *y);
-void					draw_performance_algorithm(t_data *data, int *y);
-void					draw_performance_spline_segments(t_data *data, int *y);
-void					draw_performance_triangles(t_data *data, int *y);
-void					draw_dampening_display(t_data *data);
-void					draw_style_display(t_data *data);
+void					draw_mouse_controls(t_gui *gui, int *y);
+void					draw_keyboard_controls(t_gui *gui, int *y);
+void					draw_action_keys(t_gui *gui, int *y);
+void					draw_optimization_keys(t_gui *gui, int *y);
+void					draw_controls_guide_at(t_gui *gui, int *y);
+void					draw_speed_display_at(t_gui *gui, int *y);
+void					draw_projection_display_at(t_gui *gui, int *y);
+void					draw_map_name_display_at(t_gui *gui, int *y);
+void					draw_performance_display_at(t_gui *gui, int *y);
+void					draw_dampening_display(t_gui *gui);
+void					draw_style_display(t_gui *gui);
+
+t_gui					init_gui(t_window *window, t_camera *camera, t_map_manager *map_manager, t_render_config *render_config, t_map *map);
+int						init_gui_images(t_gui *gui);
 
 #endif

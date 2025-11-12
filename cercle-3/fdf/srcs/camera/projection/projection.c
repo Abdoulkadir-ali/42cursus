@@ -6,18 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:24:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 16:49:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 20:30:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "camera.h"
 
-t_point	project_point(t_point p3d, t_camera cam, t_projection_type type,
+t_point	project_point(t_point p3d, t_camera *cam, t_projection_type type,
 		double z_divisor)
 {
-	if (cam.use_z_divisor && z_divisor != 0.0)
+	if (cam->use_z_divisor && z_divisor != 0.0)
 		p3d.pos.z /= z_divisor;
-	p3d.pos.z *= cam.z_scale;
+	p3d.pos.z *= cam->z_scale;
 	if (type == PROJ_ISOMETRIC)
 		return (project_isometric(p3d, cam));
 	else if (type == PROJ_ORTHOGRAPHIC)
