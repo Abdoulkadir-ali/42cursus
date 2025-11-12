@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 23:03:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:33:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,15 @@ typedef struct s_vec3d
 	double	z;
 }	t_vec3d;
 
+typedef struct s_point
+{
+	t_vec3				pos;
+	int					color;
+}						t_point;
+
+# define create_vec3(x, y, z) ((t_vec3){x, y, z})
+# define create_vec3d(x, y, z) ((t_vec3d){x, y, z})
+
+# define create_vec2(x, y) ((t_vec3d){x, y, z})
+# define create_vec2d(x, y) ((t_vec3d){x, y, z})
 #endif

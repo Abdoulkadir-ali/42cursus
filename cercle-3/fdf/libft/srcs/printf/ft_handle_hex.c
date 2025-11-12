@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/04 10:53:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:56:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "libft.h"
 
 static int	ft_print_hex_prefix(t_flags *flags, unsigned long n)
@@ -32,7 +31,7 @@ static int	ft_print_hex_prefix(t_flags *flags, unsigned long n)
 }
 
 static void	ft_calc_hex_params(unsigned long n, t_flags *flags, int *num_len,
-	int *total_len)
+		int *total_len)
 {
 	*num_len = ft_count_hex_digits(n);
 	if (flags->has_precision && flags->precision == 0 && n == 0)

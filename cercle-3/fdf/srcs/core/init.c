@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:58:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 18:05:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
+#include "core.h"
 
 void	init_window_size(t_data *data)
 {
@@ -23,21 +23,21 @@ void	init_window_size(t_data *data)
 	calculated_w = (int)(screen_w * WINDOW_WIDTH_RATIO);
 	calculated_h = (int)(screen_h * WINDOW_HEIGHT_RATIO);
 	if (calculated_w < MIN_WINDOW_WIDTH)
-		data->win_width = MIN_WINDOW_WIDTH;
+		data->graphics.window.width = MIN_WINDOW_WIDTH;
 	else if (calculated_w > MAX_WINDOW_WIDTH)
-		data->win_width = MAX_WINDOW_WIDTH;
+		data->graphics.window.width = MAX_WINDOW_WIDTH;
 	else
-		data->win_width = calculated_w;
+		data->graphics.window.width = calculated_w;
 	if (calculated_h < MIN_WINDOW_HEIGHT)
-		data->win_height = MIN_WINDOW_HEIGHT;
+		data->graphics.window.height = MIN_WINDOW_HEIGHT;
 	else if (calculated_h > MAX_WINDOW_HEIGHT)
-		data->win_height = MAX_WINDOW_HEIGHT;
+		data->graphics.window.height = MAX_WINDOW_HEIGHT;
 	else
-		data->win_height = calculated_h;
-	if (data->win_width > screen_w - 50)
-		data->win_width = screen_w - 50;
-	if (data->win_height > screen_h - 50)
-		data->win_height = screen_h - 50;
+		data->graphics.window.height = calculated_h;
+	if (data->graphics.window.width > screen_w - 50)
+		data->graphics.window.width = screen_w - 50;
+	if (data->graphics.window.height > screen_h - 50)
+		data->graphics.window.height = screen_h - 50;
 }
 
 void	init_mouse(t_data *data)
@@ -79,6 +79,8 @@ void	init_map_config(t_data *data)
 
 void	init_camera(t_data *data)
 {
+	t_camera_context	ctx;
+
 	data->camera.move_speed = 1.0;
 	data->camera.zoom_speed = 1.0;
 	data->camera.projection = PROJ_ISOMETRIC;
@@ -91,8 +93,15 @@ void	init_camera(t_data *data)
 	data->camera.spline_segments = DEFAULT_SPLINE_SEGMENTS;
 	data->camera.use_z_divisor = 1;
 	data->camera.invert_movement = 1;
-	data->z_buffer = malloc(sizeof(float) * data->win_width * data->win_height);
-	data->use_depth_culling = 0;
-	data->fill_triangles = 1;
-	adjust_camera_to_map(data);
+	data->graphics.camera = &data->camera;
+	data->graphics.map = data->map;
+	data->graphics.window.width = data->graphics.window.width;
+	data->graphics.window.height = data->graphics.window.height;
+	data->graphics.z_buffer = malloc(sizeof(float) * data->graphics.window.width * data->graphics.window.height);
+	data->graphics.use_depth_culling = 0;
+	data->graphics.fill_triangles = 1;
+	ctx.camera = &data->camera;
+	ctx.map = data->map;
+	ctx.window = data->graphics.window;
+	adjust_camera_to_map(&ctx);
 }

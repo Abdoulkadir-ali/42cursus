@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2025/11/10 21:57:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:54:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,32 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
+# ifndef MAX_FDS
+#  define MAX_FDS 1024
+# endif
+
+# include "libft.h"
+# include <stdarg.h>
+# include <unistd.h>
+
+/* Flags structure for bonus handling */
+typedef struct s_flags
+{
+	int				minus;
+	int				zero;
+	int				hash;
+	int				space;
+	int				plus;
+	int				width;
+	int				precision;
+	int				has_precision;
+	char			type;
+}					t_flags;
 
 typedef struct s_list
 {
@@ -37,6 +63,8 @@ void				ft_putstr_fd(char *s, int fd);
 
 size_t				ft_strlen(const char *s);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
+char				*ft_strcpy(char *dst, const char *src);
+int					ft_strcmp(const char *s1, const char *s2);
 size_t				ft_strlcpy(char *dst, const char *src, size_t size);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 int					ft_atoi(const char *s);
@@ -84,5 +112,31 @@ void				ft_lstclear(t_list **lst, void (*del)(void *));
 void				ft_lstiter(t_list *lst, void (*f)(void *));
 t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 						void (*del)(void *));
+
+char				*get_next_line(int fd);
+int					gnl_strchr_idx(char *str, char c);
+char				*gnl_realloc(char *s1, char *s2);
+char				*gnl_free(char **fds, int fd);
+
+int					ft_handle_char(va_list args, t_flags *flags);
+int					ft_handle_string(va_list args, t_flags *flags);
+int					ft_handle_number(va_list args, t_flags *flags);
+int					ft_handle_hex(va_list args, t_flags *flags);
+int					ft_handle_pointer(va_list args, t_flags *flags);
+
+int					ft_parse_flags(const char *format, int *i, t_flags *flags);
+int					ft_print_width(int width, int zero, int left);
+int					ft_count_digits(long n);
+int					ft_count_hex_digits(unsigned long n);
+int					ft_print_number_with_flags(long n, t_flags *flags);
+int					ft_print_unsigned_with_flags(unsigned int n,
+						t_flags *flags);
+int					ft_print_hex_with_flags(unsigned long n, t_flags *flags);
+int					ft_print_string_with_flags(char *str, t_flags *flags);
+int					ft_print_sign_and_prefix(long n, t_flags *flags,
+						int *sign_printed);
+int					ft_print_precision_zeros(int num_len, int precision);
+
+int					ft_printf(const char *format, ...);
 
 #endif

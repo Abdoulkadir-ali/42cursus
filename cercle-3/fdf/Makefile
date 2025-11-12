@@ -11,32 +11,37 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRCS =	srcs/core/main.c \
 	srcs/core/init.c \
 	srcs/core/cleanup.c \
-	srcs/graphics/draw.c \
-	srcs/graphics/draw_line.c \
-	srcs/graphics/window.c \
-	srcs/graphics/spline.c \
-	srcs/graphics/triangle.c \
-	srcs/graphics/map_style.c \
-	srcs/graphics/map_style_apply.c \
-	srcs/math/rotate.c \
-	srcs/math/zoom.c \
-	srcs/camera/adjust.c \
+	srcs/graphics/graphics.c \
+	srcs/graphics/lines/draw.c \
+	srcs/graphics/lines/draw_line.c \
+	srcs/graphics/splines/spline.c \
+	srcs/graphics/triangles/triangle.c \
+	srcs/camera/controls/adjust.c \
+	srcs/camera/controls/rotate.c \
+	srcs/camera/controls/zoom.c \
+	srcs/camera/projection/projection.c \
+	srcs/camera/projection/basic.c \
+	srcs/camera/projection/advanced.c \
 	srcs/color/color.c \
 	srcs/color/interpolate.c \
-	srcs/world/map.c \
-	srcs/world/map_loader.c \
-	srcs/world/select.c \
-	srcs/events/mouse_events.c \
-	srcs/events/mouse_move.c \
-	srcs/events/key_events.c \
-	srcs/events/key_handlers.c \
-	srcs/gui/gui_panel.c \
-	srcs/gui/gui_controls.c \
-	srcs/gui/gui_displays.c \
-	srcs/gui/gui_style.c \
-	srcs/projection/projection.c \
-	srcs/projection/basic_projections.c \
-	srcs/projection/advanced_projections.c
+	srcs/map/build/grid.c \
+	srcs/map/read/loader.c \
+	srcs/map/read/select.c \
+	srcs/map/style/style.c \
+	srcs/events/mouse/mouse_events.c \
+	srcs/events/mouse/mouse_move.c \
+	srcs/events/keys/key_events.c \
+	srcs/events/keys/key_handlers.c \
+	srcs/gui/panel/panel.c \
+	srcs/gui/print/put.c \
+	srcs/gui/print/format.c \
+	srcs/gui/display/displays.c \
+	srcs/gui/style/style.c \
+	srcs/gui/style/select.c \
+	srcs/gui/controls/guide.c \
+	srcs/gui/controls/keyboard.c \
+	srcs/gui/controls/mouse.c \
+
 
 # Object files in objs directory
 OBJS = $(SRCS:srcs/%.c=objs/%.o)
@@ -58,13 +63,26 @@ $(MLX_LIB):
 objs:
 	@mkdir -p objs/core
 	@mkdir -p objs/graphics
-	@mkdir -p objs/math
+	@mkdir -p objs/graphics/lines
+	@mkdir -p objs/graphics/splines
+	@mkdir -p objs/graphics/triangles
 	@mkdir -p objs/camera
+	@mkdir -p objs/camera/controls
+	@mkdir -p objs/camera/projection
 	@mkdir -p objs/color
-	@mkdir -p objs/world
-	@mkdir -p objs/input
+	@mkdir -p objs/map
+	@mkdir -p objs/map/build
+	@mkdir -p objs/map/read
+	@mkdir -p objs/map/style
 	@mkdir -p objs/events
+	@mkdir -p objs/events/mouse
+	@mkdir -p objs/events/keys
 	@mkdir -p objs/gui
+	@mkdir -p objs/gui/controls
+	@mkdir -p objs/gui/display
+	@mkdir -p objs/gui/panel
+	@mkdir -p objs/gui/print
+	@mkdir -p objs/gui/style
 	@mkdir -p objs/projection
 
 # Compile object files

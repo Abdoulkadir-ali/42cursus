@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:24 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:53:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:22:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,84 +15,73 @@
 
 # include "vectors.h"
 
-typedef enum e_projection_type	t_projection_type;
+# define MOUSE_LEFT 1
+# define MOUSE_MIDDLE 2
+# define MOUSE_RIGHT 3
+# define MOUSE_SCROLL_UP 4
+# define MOUSE_SCROLL_DOWN 5
 
-typedef struct s_rotation
-{
-	double	x;
-	double	y;
-	double	z;
-}	t_rotation;
-
-typedef struct s_color_shift
-{
-	int	red;
-	int	blue;
-	int	green;
-}	t_color_shift;
-
-typedef struct s_camera
-{
-	t_rotation			rotation;
-	t_vec2d				offset;
-	t_vec3d				grid_center;
-	t_color_shift		color_shift;
-	t_projection_type	projection;
-	int					gui_style;
-	double				scale;
-	double				target_scale;
-	double				move_speed;
-	double				zoom_speed;
-	int					dampening_threshold;
-	double				pending_rot_x;
-	double				pending_rot_y;
-	double				z_scale;
-	int					frustum_margin;
-	int					spline_segments;
-	int					use_z_divisor;
-	int					invert_movement;
-}	t_camera;
+# define KEY_UP_ARROW XK_Up
+# define KEY_DOWN_ARROW XK_Down
+# define KEY_LEFT_ARROW XK_Left
+# define KEY_RIGHT_ARROW XK_Right
+# define KEY_CTRL_LEFT XK_Control_L
+# define KEY_CTRL_RIGHT XK_Control_R
+# define KEY_SHIFT_LEFT XK_Shift_L
+# define KEY_SHIFT_RIGHT XK_Shift_R
+# define KEY_L XK_l
+# define KEY_Z XK_z
+# define KEY_F XK_f
+# define KEY_H XK_h
+# define KEY_D XK_d
+# define KEY_T XK_t
+# define KEY_S XK_s
+# define KEY_A XK_a
+# define KEY_X XK_x
+# define KEY_I XK_i
+# define KEY_V XK_v
+# define KEY_G XK_g
+# define KEY_PLUS XK_plus
+# define KEY_MINUS XK_minus
+# define KEY_ZERO XK_0
+# define KEY_ESC XK_Escape
+# define KEY_R XK_r
+# define KEY_P XK_p
+# define KEY_N XK_n
 
 typedef struct s_mouse
 {
-	int	left_pressed;
-	int	right_pressed;
-	int	middle_pressed;
-	int	last_x;
-	int	last_y;
-	int	middle_start_x;
-	int	middle_start_y;
-}	t_mouse;
+	int					left_pressed;
+	int					right_pressed;
+	int					middle_pressed;
+	int					last_x;
+	int					last_y;
+	int					middle_start_x;
+	int					middle_start_y;
+}						t_mouse;
 
 typedef struct s_keys
 {
-	int	up;
-	int	down;
-	int	left;
-	int	right;
-	int	ctrl_left;
-	int	ctrl_right;
-	int	shift_left;
-	int	shift_right;
-	int	l;
-	int	z;
-	int	f;
-	int	h;
-	int	d;
-	int	t;
-	int	s;
-	int	a;
-	int	x;
-	int	i;
-	int	v;
-	int	g;
-}	t_keys;
-
-
-typedef struct s_data	t_data;
-void		zoom_in(t_data *data);
-void		zoom_out(t_data *data);
-void		update_zoom(t_data *data);
-void		adjust_camera_to_map(t_data *data);
+	int					up;
+	int					down;
+	int					left;
+	int					right;
+	int					ctrl_left;
+	int					ctrl_right;
+	int					shift_left;
+	int					shift_right;
+	int					l;
+	int					z;
+	int					f;
+	int					h;
+	int					d;
+	int					t;
+	int					s;
+	int					a;
+	int					x;
+	int					i;
+	int					v;
+	int					g;
+}						t_keys;
 
 #endif

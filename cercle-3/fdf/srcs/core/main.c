@@ -6,16 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:53:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 18:33:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
-#include "gui.h"
-#include "projection.h"
-#include "events.h"
-#include <stdio.h>
-#include <sys/time.h>
+#include "core.h"
 
 static void	setup_hooks(t_data *data)
 {
@@ -34,10 +29,12 @@ static int	init_mlx_and_window(t_data *data)
 	if (!data->mlx_ptr)
 		return (0);
 	init_window_size(data);
-	data->win_ptr = mlx_new_window(data->mlx_ptr, data->win_width,
-			data->win_height, "FDF - Advanced Controls");
+	data->win_ptr = mlx_new_window(data->mlx_ptr, data->graphics.window.width,
+			data->graphics.window.height, "FDF - Advanced Controls");
 	if (!data->win_ptr)
 		return (0);
+	data->graphics.mlx_ptr = data->mlx_ptr;
+	data->graphics.win_ptr = data->win_ptr;
 	return (1);
 }
 
@@ -50,13 +47,15 @@ static int	init_map_and_image(t_data *data)
 		data->map = create_test_grid();
 	if (!data->map)
 		return (0);
-	data->img = mlx_new_image(data->mlx_ptr, data->win_width, data->win_height);
-	if (!data->img)
+	data->graphics.img = mlx_new_image(data->mlx_ptr, data->graphics.window.width, data->graphics.window.height);
+	if (!data->graphics.img)
 		return (0);
-	data->img_addr = mlx_get_data_addr(data->img, &data->img_bpp,
-			&data->img_line_len, &data->img_endian);
-	if (!data->img_addr)
+	data->graphics.img_addr = mlx_get_data_addr(data->graphics.img, &data->graphics.img_bpp,
+			&data->graphics.img_line_len, &data->graphics.img_endian);
+	if (!data->graphics.img_addr)
 		return (0);
+	data->graphics.map = data->map;
+	data->graphics.camera = &data->camera;
 	return (1);
 }
 
@@ -68,8 +67,8 @@ static int	init_and_render(t_data *data)
 		return (0);
 	draw_panel_background(data);
 	draw_grid(data);
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img, 0, 0);
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->gui_img, 0, 0);
+	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->graphics.img, 0, 0);
+	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->graphics.gui_img, 0, 0);
 	render_gui(data);
 	return (1);
 }
@@ -87,8 +86,13 @@ int	main(void)
 	gettimeofday(&tv, NULL);
 	data.last_frame_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	data.frame_in_progress = 0;
-	data.lod_level = DEFAULT_LOD_LEVEL;
-	data.render_mode = RENDER_LINES;
+	data.graphics.lod_level = DEFAULT_LOD_LEVEL;
+	data.graphics.render_mode = RENDER_LINES;
+	data.graphics.map_config.line_thickness = 1;
+	data.graphics.map_config.point_thickness = 0;
+	data.graphics.map_config.line_color = 0xFFFFFF;
+	data.graphics.map_config.point_color = 0xFFFFFF;
+	data.graphics.map_config.style = 0;
 	data.camera.use_z_divisor = 1;
 	if (!init_map_and_image(&data))
 		return (1);

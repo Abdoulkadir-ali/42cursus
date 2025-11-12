@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/16 00:00:00 by abdali            #+#    #+#              #
-#    Updated: 2025/11/10 21:58:48 by abdoali          ###   ########.fr        #
+#    Updated: 2025/11/12 15:00:35 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ LST_SRCS	= ft_lstaddback.c ft_lstaddfront.c ft_lstclear.c ft_lstdelone.c \
 			  ft_lstiter.c ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_lstsize.c
 MEM_SRCS	= ft_bzero.c ft_calloc.c ft_memchr.c ft_memcmp.c ft_memcpy.c \
 			  ft_memmove.c ft_memrchr.c ft_memrcpy.c ft_memset.c
-STR_SRCS	= ft_itoa.c ft_split.c ft_strchr.c ft_strdup.c ft_striteri.c \
+STR_SRCS	= ft_itoa.c ft_split.c ft_strchr.c ft_strcmp.c ft_strcpy.c ft_strdup.c ft_striteri.c \
 			  ft_strjoin.c ft_strlcat.c ft_strlcpy.c ft_strlen.c ft_strmapi.c \
 			  ft_strncmp.c ft_strndup.c ft_strnstr.c ft_strrchr.c ft_strtrim.c \
 			  ft_substr.c

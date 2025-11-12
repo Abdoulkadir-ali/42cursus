@@ -6,20 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 19:13:10 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 21:58:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:55:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-
-
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 42
-#endif
-
-#ifndef MAX_FDS
-# define MAX_FDS 1024
-#endif
+#include "libft.h"
 
 char	*extract_remainder(char *buffer, int newline_pos)
 {

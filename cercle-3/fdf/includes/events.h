@@ -6,15 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 22:35:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:29:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EVENTS_H
 # define EVENTS_H
 
-
-typedef struct s_data	t_data;
+# include <X11/keysym.h>
+# include "camera.h"
+# include "core.h"
 
 int		mouse_press(int button, int x, int y, t_data *data);
 int		mouse_release(int button, int x, int y, t_data *data);

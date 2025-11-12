@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/04 10:56:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:56:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "libft.h"
 
 static int	ft_get_null_print_len(t_flags *flags, int *len)

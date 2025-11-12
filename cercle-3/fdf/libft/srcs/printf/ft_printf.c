@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/10 21:49:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:55:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "libft.h"
 
 static void	ft_init_flags(t_flags *flags)
@@ -53,7 +52,7 @@ static int	ft_handle_format(va_list args, t_flags *flags)
 }
 
 static int	ft_process_format(const char *format, int *i, va_list args,
-	int *count)
+		int *count)
 {
 	t_flags	flags;
 

@@ -6,15 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/04 10:53:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:56:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "libft.h"
 
 static void	ft_calc_number_params(long n, t_flags *flags, int *num_len,
-	int *total_len)
+		int *total_len)
 {
 	long	tmp;
 
@@ -62,9 +61,9 @@ int	ft_print_number_with_flags(long n, t_flags *flags)
 
 int	ft_print_unsigned_with_flags(unsigned int n, t_flags *flags)
 {
-	int		count;
-	int		num_len;
-	int		total_len;
+	int	count;
+	int	num_len;
+	int	total_len;
 
 	num_len = ft_count_digits(n);
 	if (flags->has_precision && flags->precision == 0 && n == 0)
@@ -76,8 +75,7 @@ int	ft_print_unsigned_with_flags(unsigned int n, t_flags *flags)
 	if (!flags->minus && flags->width > total_len)
 		count += ft_print_width(flags->width - total_len, flags->zero, 0);
 	if (flags->has_precision)
-		count += ft_print_precision_zeros(ft_count_digits(n),
-				flags->precision);
+		count += ft_print_precision_zeros(ft_count_digits(n), flags->precision);
 	if (!(flags->has_precision && flags->precision == 0 && n == 0))
 		count += ft_putunbr_base(n, "0123456789");
 	if (flags->minus && flags->width > total_len)
