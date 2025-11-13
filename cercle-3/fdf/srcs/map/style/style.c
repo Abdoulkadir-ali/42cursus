@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 02:22:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 02:32:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,9 @@ void	apply_map_style(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			if (map->points.color[y][x] == 0xFFFFFF)
-			{
-				v = create_vec3(map->points.raw[y][x].z, map->min_z, map->max_z);
-				color = get_map_line_color(v, map->style.style);
-				map->points.color[y][x] = color;
-			}
+			v = create_vec3(map->points.raw[y][x].z, map->min_z, map->max_z);
+			color = get_map_line_color(v, map->style.style);
+			map->points.color[y][x] = color;
 			x++;
 		}
 		y++;
