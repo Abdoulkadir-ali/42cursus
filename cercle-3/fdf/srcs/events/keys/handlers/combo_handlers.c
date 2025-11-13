@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 22:55:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 02:48:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,18 +89,52 @@ static void	handle_combo_actions(int keycode, t_events *events)
 
 int	handle_plus(int keycode, t_events *events)
 {
+	int		old_lod;
+	float	old_z;
+	int		old_frust;
+	int		old_damp;
+	int		old_spline;
+
 	(void)keycode;
 	DBG("handle_plus called\n");
+	old_lod = events->lod_level;
+	old_z = events->camera->z_scale;
+	old_frust = events->camera->frustum_margin;
+	old_damp = events->camera->dampening_threshold;
+	old_spline = events->camera->spline_segments;
 	handle_combo_actions(XK_plus, events);
-	return (1);
+	if (old_lod != events->lod_level ||
+		fabs(old_z - events->camera->z_scale) > 0.0001 ||
+		old_frust != events->camera->frustum_margin ||
+		old_damp != events->camera->dampening_threshold ||
+		old_spline != events->camera->spline_segments)
+		return (1);
+	return (0);
 }
 
 int	handle_minus(int keycode, t_events *events)
 {
+	int		old_lod;
+	float	old_z;
+	int		old_frust;
+	int		old_damp;
+	int		old_spline;
+
 	(void)keycode;
 	DBG("handle_minus called\n");
+	old_lod = events->lod_level;
+	old_z = events->camera->z_scale;
+	old_frust = events->camera->frustum_margin;
+	old_damp = events->camera->dampening_threshold;
+	old_spline = events->camera->spline_segments;
 	handle_combo_actions(XK_minus, events);
-	return (1);
+	if (old_lod != events->lod_level ||
+		fabs(old_z - events->camera->z_scale) > 0.0001 ||
+		old_frust != events->camera->frustum_margin ||
+		old_damp != events->camera->dampening_threshold ||
+		old_spline != events->camera->spline_segments)
+		return (1);
+	return (0);
 }
 
 int	handle_0(int keycode, t_events *events)

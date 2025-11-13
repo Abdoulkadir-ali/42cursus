@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 01:47:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 02:44:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,8 @@ int	main(void)
 		return (1);
 	events = (t_events){&data.camera, &data.window, data.map, &data.graphics, &data.gui,
 		data.render_mode, data.lod_level, data.use_depth_culling,
-		data.fill_triangles};
+		data.fill_triangles, {0}};
+	init_key_actions(&events.key_maps);
 	setup_hooks(&events);
 	mlx_loop(data.mlx_ptr);
 	return (0);
