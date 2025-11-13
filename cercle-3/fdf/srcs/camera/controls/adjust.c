@@ -6,18 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 01:03:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:05:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "camera.h"
-
-static int	get_max_dimension(t_camera_context *ctx)
-{
-	if (ctx->map->height > ctx->map->width)
-		return (ctx->map->height);
-	return (ctx->map->width);
-}
 
 static double	calculate_ideal_zoom(t_camera_context *ctx)
 {
@@ -26,11 +19,14 @@ static double	calculate_ideal_zoom(t_camera_context *ctx)
 	double	scale;
 	int		max_dim;
 
-	max_dim = get_max_dimension(ctx);
-	scale_x = (ctx->window->width * DEFAULT_ZOOM_AVAILABLE_WIDTH)
-		/ (max_dim * DEFAULT_ZOOM_PADDING);
-	scale_y = (ctx->window->height * DEFAULT_ZOOM_AVAILABLE_HEIGHT)
-		/ (max_dim * DEFAULT_ZOOM_PADDING);
+	if (ctx->map->height > ctx->map->width)
+		max_dim = ctx->map->height;
+	else
+		max_dim = ctx->map->width;
+	scale_x = (ctx->window->width * DEFAULT_ZOOM_AVAILABLE_WIDTH) / (max_dim
+			* DEFAULT_ZOOM_PADDING);
+	scale_y = (ctx->window->height * DEFAULT_ZOOM_AVAILABLE_HEIGHT) / (max_dim
+			* DEFAULT_ZOOM_PADDING);
 	scale = scale_x;
 	if (scale_y < scale)
 		scale = scale_y;

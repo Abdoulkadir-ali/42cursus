@@ -6,17 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:24:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:44:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:02:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "camera.h"
 
-t_point	project_point(t_vec3d p3d, int color, t_camera *cam, t_projection_type type,
-		double z_divisor)
+t_point	project_point(t_vec3d p3d, int color, t_camera *cam, double z_divisor)
 {
-	t_point	p;
+	t_point				p;
+	t_projection_type	type;
 
+	type = cam->projection;
 	p.pos.x = p3d.x;
 	p.pos.y = p3d.y;
 	p.pos.z = p3d.z;

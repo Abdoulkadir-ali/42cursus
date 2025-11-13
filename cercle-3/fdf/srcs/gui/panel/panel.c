@@ -6,21 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 22:25:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:33:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
-#include <mlx.h>
-
-static void	gui_pixel_put(t_gui *gui, t_vec2 pos, int color)
+static void	gui_pixel_put(t_gui *gui, int x, int y, int color)
 {
 	char	*dst;
+	t_image	*img;
+	int		height;
 
-	if (pos.x < 0 || pos.x >= GUI_PANEL_WIDTH || pos.y < 0 || pos.y >= gui->window->height)
+	img = &gui->window->gui_img;
+	height = gui->window->height;
+	if (x < 0 || x >= GUI_PANEL_WIDTH || y < 0 || y >= height)
 		return ;
-	dst = gui->window->gui_img.img_addr + ((int)pos.y * gui->window->gui_img.img_line_len + (int)pos.x * (gui->window->gui_img.img_bpp / 8));
+	dst = img->img_addr + (y * img->img_line_len + x * (img->img_bpp / 8));
 	*(unsigned int *)dst = color;
 }
 
@@ -28,17 +30,15 @@ static void	draw_rect(t_gui *gui, t_vec2 pos, t_vec2 size, int color)
 {
 	int	x;
 	int	y;
+	int	height;
 
-	y = (int)pos.y;
-	while (y < (int)pos.y + (int)size.y && y < gui->window->height)
+	height = gui->window->height;
+	y = pos.y;
+	while (y < pos.y + size.y && y < height)
 	{
-		x = (int)pos.x;
-		while (x < (int)pos.x + (int)size.x && x < GUI_PANEL_WIDTH)
-		{
-			t_vec2 pixel_pos = create_vec2(x, y);
-			gui_pixel_put(gui, pixel_pos, color);
-			x++;
-		}
+		x = pos.x;
+		while (x < pos.x + size.x && x < GUI_PANEL_WIDTH)
+			gui_pixel_put(gui, x++, y, color);
 		y++;
 	}
 }
@@ -47,34 +47,33 @@ void	draw_panel_background(t_gui *gui)
 {
 	t_vec2	pos;
 	t_vec2	size;
-	int		bg_color;
-	int		accent;
+	int		height;
 	int		i;
 
-	bg_color = get_gui_theme(gui->gui_style).background;
-	accent = get_gui_theme(gui->gui_style).accent;
+	height = gui->window->height;
 	pos = create_vec2(0, 0);
-	size = create_vec2(GUI_PANEL_WIDTH, gui->window->height);
-	draw_rect(gui, pos, size, bg_color);
+	size = create_vec2(GUI_PANEL_WIDTH, height);
+	draw_rect(gui, pos, size, get_gui_theme(gui->gui_style).background);
 	i = 0;
 	while (i < 3)
 	{
-		pos = create_vec2(GUI_PANEL_WIDTH - 3 + i, 0);
-		size = create_vec2(1, gui->window->height);
-		draw_rect(gui, pos, size, accent);
-		i++;
+		pos = create_vec2(GUI_PANEL_WIDTH - 3 + i++, 0);
+		size = create_vec2(1, height);
+		draw_rect(gui, pos, size, get_gui_theme(gui->gui_style).accent);
 	}
 }
 
 void	render_gui(t_gui *gui)
 {
 	int	section_y;
+	int	height;
 
+	height = gui->window->height;
 	section_y = GUI_PADDING;
 	draw_controls_guide_at(gui, &section_y);
 	section_y += 20;
 	draw_performance_display_at(gui, &section_y);
-	section_y = gui->window->height - 220;
+	section_y = height - 220;
 	draw_projection_display_at(gui, &section_y);
 	section_y += 10;
 	draw_speed_display_at(gui, &section_y);

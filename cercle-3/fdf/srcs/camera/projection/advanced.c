@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:23:49 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 20:32:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:11:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ t_point	project_oblique(t_point p3d, t_camera *cam)
 	double	oblique_angle;
 	double	oblique_factor;
 
-	v.x = (double)p3d.pos.x;
-	v.y = (double)p3d.pos.y;
-	v.z = (double)p3d.pos.z;
+	v = create_vec3d((double)p3d.pos.x, (double)p3d.pos.y, (double)p3d.pos.z);
 	rotated = apply_rotation_centered(v, cam->rotation, cam->grid_center);
 	oblique_angle = 0.785398;
 	oblique_factor = 0.5;
@@ -44,9 +42,7 @@ t_point	project_camera_matrix(t_point p3d, t_camera *cam)
 	t_point	p2d;
 	double	f;
 
-	v.x = (double)p3d.pos.x;
-	v.y = (double)p3d.pos.y;
-	v.z = (double)p3d.pos.z;
+	v = create_vec3d((double)p3d.pos.x, (double)p3d.pos.y, (double)p3d.pos.z);
 	rotated = apply_rotation_centered(v, cam->rotation, cam->grid_center);
 	f = 1.0 / tan(1.047 / 2.0);
 	p2d.pos.x = (rotated.x * f / 1.333) * cam->scale * 10;
@@ -64,9 +60,7 @@ t_point	project_nonlinear(t_point p3d, t_camera *cam)
 	t_vec3d	rotated;
 	t_point	p2d;
 
-	v.x = (double)p3d.pos.x;
-	v.y = (double)p3d.pos.y;
-	v.z = (double)p3d.pos.z;
+	v = create_vec3d((double)p3d.pos.x, (double)p3d.pos.y, (double)p3d.pos.z);
 	rotated = apply_rotation_centered(v, cam->rotation, cam->grid_center);
 	p2d.pos.x = (rotated.x + sin(rotated.y * 0.05) * 5 - rotated.y)
 		* cos(0.523599) * cam->scale;

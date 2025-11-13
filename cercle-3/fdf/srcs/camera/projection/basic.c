@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:22:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 20:31:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:11:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "camera.h"
-
 
 t_point	project_isometric(t_point p3d, t_camera *cam)
 {
@@ -19,13 +18,11 @@ t_point	project_isometric(t_point p3d, t_camera *cam)
 	t_vec3d	rotated;
 	t_point	p2d;
 
-	v.x = (double)p3d.pos.x;
-	v.y = (double)p3d.pos.y;
-	v.z = (double)p3d.pos.z;
+	v = create_vec3d((double)p3d.pos.x, (double)p3d.pos.y, (double)p3d.pos.z);
 	rotated = apply_rotation_centered(v, cam->rotation, cam->grid_center);
 	p2d.pos.x = (rotated.x - rotated.y) * cos(0.523599) * cam->scale;
-	p2d.pos.y = (rotated.x + rotated.y) * sin(0.523599) * cam->scale
-		- rotated.z * cam->scale;
+	p2d.pos.y = (rotated.x + rotated.y) * sin(0.523599) * cam->scale - rotated.z
+		* cam->scale;
 	p2d.pos.x += cam->offset.x;
 	p2d.pos.y += cam->offset.y;
 	p2d.pos.z = rotated.z;
@@ -39,9 +36,7 @@ t_point	project_orthographic(t_point p3d, t_camera *cam)
 	t_vec3d	rotated;
 	t_point	p2d;
 
-	v.x = (double)p3d.pos.x;
-	v.y = (double)p3d.pos.y;
-	v.z = (double)p3d.pos.z;
+	v = create_vec3d((double)p3d.pos.x, (double)p3d.pos.y, (double)p3d.pos.z);
 	rotated = apply_rotation_centered(v, cam->rotation, cam->grid_center);
 	p2d.pos.x = rotated.x * cam->scale;
 	p2d.pos.y = -rotated.z * cam->scale;
@@ -60,9 +55,7 @@ t_point	project_perspective(t_point p3d, t_camera *cam)
 	double	perspective_factor;
 	double	depth;
 
-	v.x = (double)p3d.pos.x;
-	v.y = (double)p3d.pos.y;
-	v.z = (double)p3d.pos.z;
+	v = create_vec3d((double)p3d.pos.x, (double)p3d.pos.y, (double)p3d.pos.z);
 	rotated = apply_rotation_centered(v, cam->rotation, cam->grid_center);
 	depth = rotated.y + 200;
 	if (depth < 1)

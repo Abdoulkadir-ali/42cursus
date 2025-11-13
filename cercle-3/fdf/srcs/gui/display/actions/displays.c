@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:01:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:30:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	format_depth_str(int percent, char *str)
 
 static void	draw_performance_header(t_data *data, int *y)
 {
-	put_colored(data, GUI_PADDING, *y, "OPTIMIZATIONS", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, *y, (t_colored_text){"OPTIMIZATIONS", GUI_TITLE_COLOR});
 	*y += GUI_TITLE_HEIGHT;
 }
 
@@ -138,15 +138,15 @@ void	draw_dampening_display(t_data *data)
 	int		visible_percent;
 
 	y = data->window.height - 240;
-	put_colored(data, GUI_PADDING, y, "DEPTH DAMPENING", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"DEPTH DAMPENING", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
-	if (data->camera.dampening_threshold <= data->map->min_z)
+	if (data->camera.dampening_threshold <= data->map->min_max_z.x)
 		put_value(data, GUI_PADDING + 10, y, "OFF");
 	else
 	{
-		visible_percent = (int)(100.0 * (data->map->max_z
-					- data->camera.dampening_threshold) / (data->map->max_z
-					- data->map->min_z));
+		visible_percent = (int)(100.0 * (data->map->min_max_z.y
+					- data->camera.dampening_threshold) / (data->map->min_max_z.y
+					- data->map->min_max_z.x));
 		format_depth_str(visible_percent, depth_str);
 		put_value(data, GUI_PADDING + 10, y, depth_str);
 	}
@@ -159,10 +159,9 @@ void	draw_style_display(t_data *data)
 	char	*names[GUI_STYLE_COUNT] = {"TRON BLUE", "TRON ORANGE", "MATRIX", "CYBERPUNK", "NEON GRID"};
 	y = data->window.height - 240;
 	accent = get_gui_theme(data->camera.gui_style).accent;
-	put_colored(data, GUI_PADDING, y, "GUI STYLE", accent);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"GUI STYLE", accent});
 	y += GUI_TITLE_HEIGHT;
-	put_colored(data, GUI_PADDING + 10, y, names[data->camera.gui_style],
-		accent);
+	put_colored(&data->gui, GUI_PADDING + 10, y, (t_colored_text){names[data->camera.gui_style], accent});
 }
 
 void	draw_projection_display_at(t_data *data, int *section_y)
@@ -171,7 +170,7 @@ void	draw_projection_display_at(t_data *data, int *section_y)
 	char	*names[PROJ_COUNT] = {"Isometric", "Orthographic", "Perspective", "Oblique",
 		"Camera Matrix", "Nonlinear"};
 	y = *section_y;
-	put_colored(data, GUI_PADDING, y, "PROJECTION", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"PROJECTION", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
 	put_value(data, GUI_PADDING + 10, y, names[data->camera.projection]);
 	y += GUI_LINE_HEIGHT;
@@ -185,7 +184,7 @@ void	draw_speed_display_at(t_data *data, int *section_y)
 	char	zoom_str[10];
 
 	y = *section_y;
-	put_colored(data, GUI_PADDING, y, "SPEEDS", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"SPEEDS", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
 	put_text(data, GUI_PADDING, y, "Move:");
 	format_speed(data->camera.move_speed, move_str);
@@ -204,12 +203,12 @@ void	draw_map_name_display_at(t_data *data, int *section_y)
 	char	*map_name;
 
 	y = *section_y;
-	put_colored(data, GUI_PADDING, y, "MAP", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"MAP", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
-	if (data->graphics.map_manager.map_files && data->graphics.map_manager.current_index >= 0
-		&& data->graphics.map_manager.current_index < data->graphics.map_manager.count)
+	if (data->graphics.maps.map_files && data->graphics.maps.current_index >= 0
+		&& data->graphics.maps.current_index < data->graphics.maps.count)
 	{
-		map_name = data->graphics.map_manager.map_files[data->graphics.map_manager.current_index];
+		map_name = data->graphics.maps.map_files[data->graphics.maps.current_index];
 		put_value(data, GUI_PADDING + 10, y, map_name);
 	}
 	else

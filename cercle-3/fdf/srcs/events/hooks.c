@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 21:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 22:55:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:07:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void	setup_hooks(t_events *events)
 {
-	DBG("setup_hooks called\n");
+	
 	mlx_hook(events->window->ptr, 17, 0, cleanup_and_exit, events);
 	mlx_hook(events->window->ptr, 4, 1L << 2, mouse_press, events);
 	mlx_hook(events->window->ptr, 5, 1L << 3, mouse_release, events);

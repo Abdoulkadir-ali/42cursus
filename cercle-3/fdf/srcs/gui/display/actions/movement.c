@@ -19,7 +19,7 @@ void	draw_projection_display_at(t_data *data, int *section_y)
 	char	*names[PROJ_COUNT] = {"Isometric", "Orthographic", "Perspective", "Oblique",
 		"Camera Matrix", "Nonlinear"};
 	y = *section_y;
-	put_colored(data, GUI_PADDING, y, "PROJECTION", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"PROJECTION", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
 	put_value(data, GUI_PADDING + 10, y, names[data->camera.projection]);
 	y += GUI_LINE_HEIGHT;
@@ -33,7 +33,7 @@ void	draw_speed_display_at(t_data *data, int *section_y)
 	char	zoom_str[10];
 
 	y = *section_y;
-	put_colored(data, GUI_PADDING, y, "SPEEDS", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"SPEEDS", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
 	put_text(data, GUI_PADDING, y, "Move:");
 	format_speed(data->camera.move_speed, move_str);
@@ -52,12 +52,12 @@ void	draw_map_name_display_at(t_data *data, int *section_y)
 	char	*map_name;
 
 	y = *section_y;
-	put_colored(data, GUI_PADDING, y, "MAP", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"MAP", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
-	if (data->graphics.map_manager.map_files && data->graphics.map_manager.current_index >= 0
-		&& data->graphics.map_manager.current_index < data->graphics.map_manager.count)
+	if (data->maps.map_files && data->maps.current_index >= 0
+		&& data->maps.current_index < data->maps.count)
 	{
-		map_name = data->graphics.map_manager.map_files[data->graphics.map_manager.current_index];
+		map_name = data->maps.map_files[data->maps.current_index];
 		put_value(data, GUI_PADDING + 10, y, map_name);
 	}
 	else

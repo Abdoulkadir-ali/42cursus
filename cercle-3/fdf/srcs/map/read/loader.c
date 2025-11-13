@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 00:47:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:54:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ t_map	*load_map(char *filename)
 		y++;
 	}
 	calculate_min_max_z(map);
-	map->min_proj_z = map->min_z;
-	map->max_proj_z = map->max_z;
+	map->min_proj_z = map->min_max_z.x;
+	map->max_proj_z = map->min_max_z.y;
 	map->style.style = MAP_STYLE_GRADIENT;
 	apply_map_style(map);
 	map->style.style = 0;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:00:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:42:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,24 +56,19 @@ static void	handle_mouse_click(int button, int x, int y, t_mouse *mouse)
 
 static int	handle_mouse_scroll(int button, t_events *events)
 {
-	t_camera_context	ctx;
-
-	ctx.camera = events->camera;
-	ctx.map = events->map;
-	ctx.window = events->window;
 	if (button == MOUSE_SCROLL_UP)
 	{
-		if (events->graphics->keys.ctrl_left || events->graphics->keys.ctrl_right)
+		if (events->keys.ctrl_left || events->keys.ctrl_right)
 			return (adjust_zoom_speed(events, 1));
 		else
-			zoom_in(&ctx);
+			zoom_in(events->camera_ctx);
 	}
 	else if (button == MOUSE_SCROLL_DOWN)
 	{
-		if (events->graphics->keys.ctrl_left || events->graphics->keys.ctrl_right)
+		if (events->keys.ctrl_left || events->keys.ctrl_right)
 			return (adjust_zoom_speed(events, 0));
 		else
-			zoom_out(&ctx);
+			zoom_out(events->camera_ctx);
 	}
 	return (1);
 }
@@ -90,8 +85,8 @@ static void	handle_mouse_release(int button, t_mouse *mouse)
 
 int	mouse_press(int button, int x, int y, t_events *events)
 {
-	DBG("mouse_press: button %d at %d,%d\n", button, x, y);
-	handle_mouse_click(button, x, y, &events->graphics->mouse);
+	
+	handle_mouse_click(button, x, y, &events->mouse);
 	if (handle_mouse_scroll(button, events))
 		redraw(events);
 	return (0);
@@ -99,9 +94,9 @@ int	mouse_press(int button, int x, int y, t_events *events)
 
 int	mouse_release(int button, int x, int y, t_events *events)
 {
-	DBG("mouse_release: button %d at %d,%d\n", button, x, y);
+	
 	(void)x;
 	(void)y;
-	handle_mouse_release(button, &events->graphics->mouse);
+	handle_mouse_release(button, &events->mouse);
 	return (0);
 }

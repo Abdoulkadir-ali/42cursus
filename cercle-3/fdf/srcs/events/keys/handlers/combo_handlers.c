@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 02:48:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:42:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	handle_combo_actions(int keycode, t_events *events)
 {
 	t_keys	*keyboard;
 
-	keyboard = &events->graphics->keys;
+	keyboard = &events->keys;
 	if (keycode == XK_plus)
 	{
 		if (keyboard->l)
@@ -96,7 +96,7 @@ int	handle_plus(int keycode, t_events *events)
 	int		old_spline;
 
 	(void)keycode;
-	DBG("handle_plus called\n");
+	
 	old_lod = events->lod_level;
 	old_z = events->camera->z_scale;
 	old_frust = events->camera->frustum_margin;
@@ -121,7 +121,7 @@ int	handle_minus(int keycode, t_events *events)
 	int		old_spline;
 
 	(void)keycode;
-	DBG("handle_minus called\n");
+	
 	old_lod = events->lod_level;
 	old_z = events->camera->z_scale;
 	old_frust = events->camera->frustum_margin;
@@ -140,7 +140,7 @@ int	handle_minus(int keycode, t_events *events)
 int	handle_0(int keycode, t_events *events)
 {
 	(void)keycode;
-	DBG("handle_0 called\n");
+	
 	handle_combo_actions(XK_0, events);
 	return (1);
 }

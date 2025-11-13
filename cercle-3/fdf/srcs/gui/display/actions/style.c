@@ -36,15 +36,15 @@ void	draw_dampening_display(t_data *data)
 	int		visible_percent;
 
 	y = data->window.height - 240;
-	put_colored(data, GUI_PADDING, y, "DEPTH DAMPENING", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"DEPTH DAMPENING", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
-	if (data->camera.dampening_threshold <= data->map->min_z)
+	if (data->camera.dampening_threshold <= data->map->min_max_z.x)
 		put_value(data, GUI_PADDING + 10, y, "OFF");
 	else
 	{
-		visible_percent = (int)(100.0 * (data->map->max_z
-					- data->camera.dampening_threshold) / (data->map->max_z
-					- data->map->min_z));
+		visible_percent = (int)(100.0 * (data->map->min_max_z.y
+					- data->camera.dampening_threshold) / (data->map->min_max_z.y
+					- data->map->min_max_z.x));
 		format_depth_str(visible_percent, depth_str);
 		put_value(data, GUI_PADDING + 10, y, depth_str);
 	}
@@ -57,8 +57,7 @@ void	draw_style_display(t_data *data)
 	char	*names[GUI_STYLE_COUNT] = {"TRON BLUE", "TRON ORANGE", "MATRIX", "CYBERPUNK", "NEON GRID"};
 	y = data->window.height - 240;
 	accent = get_gui_theme(data->camera.gui_style).accent;
-	put_colored(data, GUI_PADDING, y, "GUI STYLE", accent);
+	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"GUI STYLE", accent});
 	y += GUI_TITLE_HEIGHT;
-	put_colored(data, GUI_PADDING + 10, y, names[data->camera.gui_style],
-		accent);
+	put_colored(&data->gui, GUI_PADDING + 10, y, (t_colored_text){names[data->camera.gui_style], accent});
 }

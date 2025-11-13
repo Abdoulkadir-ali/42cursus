@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 19:59:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:38:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	count_fdf_files(DIR *dir)
 	return (count);
 }
 
-void	init_map_list(t_map_manager *m)
+void	init_map_list(t_maps *m)
 {
 	DIR	*dir;
 	int	count;
@@ -66,7 +66,7 @@ void	init_map_list(t_map_manager *m)
 	m->current_index = 0;
 }
 
-void	load_map_files(t_map_manager *m, DIR *dir, int count)
+void	load_map_files(t_maps *m, DIR *dir, int count)
 {
 	struct dirent	*entry;
 	char			path[256];
@@ -89,10 +89,11 @@ void	load_map_files(t_map_manager *m, DIR *dir, int count)
 	}
 }
 
-void	cycle_map(t_map_manager *m, t_map **current_map)
+void	cycle_map(t_maps *m, t_map **current_map)
 {
 	if (!m->maps || m->count == 0)
 		return ;
 	m->current_index = (m->current_index + 1) % m->count;
-	*current_map = m->maps[m->current_index];
+	m->current_map = m->maps[m->current_index];
+	*current_map = m->current_map;
 }

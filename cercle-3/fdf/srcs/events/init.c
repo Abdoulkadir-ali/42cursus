@@ -6,9 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:53:06 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 20:59:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:50:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "events.h"
 
 void	init_mouse(t_mouse *mouse)
 {

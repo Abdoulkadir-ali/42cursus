@@ -6,19 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 15:46:10 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 20:21:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:39:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-
 
 void	draw_controls_guide_at(t_gui *gui, int *section_y)
 {
 	int	y;
 
 	y = *section_y;
-	put_colored(gui, GUI_PADDING, y, "CONTROLS", GUI_TITLE_COLOR);
+	put_colored(gui, GUI_PADDING, y, (t_colored_text){"CONTROLS", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
 	draw_mouse_controls(gui, &y);
 	draw_keyboard_controls(gui, &y);
@@ -31,14 +30,17 @@ void	draw_mouse_controls(t_gui *gui, int *y)
 {
 	const char *keys[] = {"LMB + Drag", "RMB + Drag", "MMB + Drag", "Shift + Drag", "Scroll", "Ctrl + Scroll"};
 	const char *texts[] = {"Obj Rotate", "Cam Rotate", "Color Shift", "Depth Cut", "Zoom", "Zoom Speed"};
-	int i = 0;
+	int	i;
 
+	i = 0;
 	put_text(gui, GUI_PADDING, *y, "Mouse:");
 	*y += GUI_LINE_HEIGHT;
 	while (i < 6)
 	{
-		put_key(gui, GUI_PADDING + 10, *y, (char *)keys[i]);
-		put_text(gui, GUI_PADDING + 120, *y, (char *)texts[i]);
+		put_key(gui, GUI_PADDING + 10, *y,
+			(char *)keys[i]);
+		put_text(gui, GUI_PADDING + 120, *y,
+			(char *)texts[i]);
 		*y += GUI_LINE_HEIGHT;
 		i++;
 	}
@@ -49,14 +51,17 @@ void	draw_keyboard_controls(t_gui *gui, int *y)
 {
 	const char *keys[] = {"Arrows", "Scroll", "Ctrl + Arrows"};
 	const char *texts[] = {"Move", "Zoom", "Rotate"};
-	int i = 0;
+	int	i;
 
+	i = 0;
 	put_text(gui, GUI_PADDING, *y, "Movement:");
 	*y += GUI_LINE_HEIGHT;
 	while (i < 3)
 	{
-		put_key(gui, GUI_PADDING + 10, *y, (char *)keys[i]);
-		put_text(gui, GUI_PADDING + 120, *y, (char *)texts[i]);
+		put_key(gui, GUI_PADDING + 10, *y,
+			(char *)keys[i]);
+		put_text(gui, GUI_PADDING + 120, *y,
+			(char *)texts[i]);
 		*y += GUI_LINE_HEIGHT;
 		i++;
 	}

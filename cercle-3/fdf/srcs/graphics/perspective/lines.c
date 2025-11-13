@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 20:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:45:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 11:03:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	is_point_visible(t_vec3d p, t_graphics *g)
 	int		threshold;
 	int		z;
 
-	projected = project_point(p, 0, g->camera, g->camera->projection, g->map->z_divisor);
+	projected = project_point(p, 0, g->camera, g->map->z_divisor);
 	threshold = g->camera->dampening_threshold;
 	if (threshold == 0)
 		return (1);

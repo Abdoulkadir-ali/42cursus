@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 22:55:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:42:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	handle_up(int keycode, t_events *events)
 	t_keys	*keyboard;
 
 	(void)keycode;
-	keyboard = &events->graphics->keys;
+	keyboard = &events->keys;
 	if (keyboard->ctrl_left || keyboard->ctrl_right)
 	{
 		adjust_move_speed(events, 1);
@@ -34,7 +34,7 @@ int	handle_down(int keycode, t_events *events)
 	t_keys	*keyboard;
 
 	(void)keycode;
-	keyboard = &events->graphics->keys;
+	keyboard = &events->keys;
 	if (keyboard->ctrl_left || keyboard->ctrl_right)
 	{
 		adjust_move_speed(events, 0);
@@ -50,8 +50,8 @@ int	handle_left(int keycode, t_events *events)
 	t_keys	*keyboard;
 
 	(void)keycode;
-	DBG("handle_left called\n");
-	keyboard = &events->graphics->keys;
+	
+	keyboard = &events->keys;
 	keyboard->left = 1;
 	return (0);
 }
@@ -61,8 +61,8 @@ int	handle_right(int keycode, t_events *events)
 	t_keys	*keyboard;
 
 	(void)keycode;
-	DBG("handle_right called\n");
-	keyboard = &events->graphics->keys;
+	
+	keyboard = &events->keys;
 	keyboard->right = 1;
 	return (0);
 }
@@ -77,24 +77,24 @@ static void	init_key_flags(t_events *events)
 	if (initialized)
 		return ;
 	initialized = 1;
-	key_flag_ptrs[XK_Up] = &events->graphics->keys.up;
-	key_flag_ptrs[XK_Down] = &events->graphics->keys.down;
-	key_flag_ptrs[XK_Left] = &events->graphics->keys.left;
-	key_flag_ptrs[XK_Right] = &events->graphics->keys.right;
-	key_flag_ptrs[XK_Control_L] = &events->graphics->keys.ctrl_left;
-	key_flag_ptrs[XK_Control_R] = &events->graphics->keys.ctrl_right;
-	key_flag_ptrs[XK_Shift_L] = &events->graphics->keys.shift_left;
-	key_flag_ptrs[XK_Shift_R] = &events->graphics->keys.shift_right;
-	key_flag_ptrs[XK_l] = &events->graphics->keys.l;
-	key_flag_ptrs[XK_L] = &events->graphics->keys.l;
-	key_flag_ptrs[XK_z] = &events->graphics->keys.z;
-	key_flag_ptrs[XK_Z] = &events->graphics->keys.z;
-	key_flag_ptrs[XK_f] = &events->graphics->keys.f;
-	key_flag_ptrs[XK_F] = &events->graphics->keys.f;
-	key_flag_ptrs[XK_d] = &events->graphics->keys.d;
-	key_flag_ptrs[XK_D] = &events->graphics->keys.d;
-	key_flag_ptrs[XK_t] = &events->graphics->keys.t;
-	key_flag_ptrs[XK_T] = &events->graphics->keys.t;
+	key_flag_ptrs[XK_Up] = &events->keys.up;
+	key_flag_ptrs[XK_Down] = &events->keys.down;
+	key_flag_ptrs[XK_Left] = &events->keys.left;
+	key_flag_ptrs[XK_Right] = &events->keys.right;
+	key_flag_ptrs[XK_Control_L] = &events->keys.ctrl_left;
+	key_flag_ptrs[XK_Control_R] = &events->keys.ctrl_right;
+	key_flag_ptrs[XK_Shift_L] = &events->keys.shift_left;
+	key_flag_ptrs[XK_Shift_R] = &events->keys.shift_right;
+	key_flag_ptrs[XK_l] = &events->keys.l;
+	key_flag_ptrs[XK_L] = &events->keys.l;
+	key_flag_ptrs[XK_z] = &events->keys.z;
+	key_flag_ptrs[XK_Z] = &events->keys.z;
+	key_flag_ptrs[XK_f] = &events->keys.f;
+	key_flag_ptrs[XK_F] = &events->keys.f;
+	key_flag_ptrs[XK_d] = &events->keys.d;
+	key_flag_ptrs[XK_D] = &events->keys.d;
+	key_flag_ptrs[XK_t] = &events->keys.t;
+	key_flag_ptrs[XK_T] = &events->keys.t;
 }
 
 static void	handle_button(int keycode, t_events *events, int value)

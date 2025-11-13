@@ -1,8 +1,8 @@
 #include "map.h"
 
-t_map_manager	init_map_manager(void)
+t_maps	init_maps(void)
 {
-	t_map_manager	m;
+	t_maps	m;
 
 	m.maps = NULL;
 	m.map_files = NULL;
@@ -17,6 +17,21 @@ t_map	*init_map(char *filename)
 
 	map = load_map(filename);
 	if (map)
-		// apply_map_style(map);
+		apply_map_style(map);
 	return (map);
+}
+
+t_map	*select_initial_map(t_maps *manager)
+{
+	init_map_list(manager);
+	if (manager->count > 0)
+	{
+		manager->current_map = manager->maps[0];
+		return (manager->current_map);
+	}
+	else
+	{
+		manager->current_map = create_test_grid();
+		return (manager->current_map);
+	}
 }

@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 02:32:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:19:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "map.h"
 
-void	cycle_map_style(t_map_manager *m)
+void	cycle_map_style(t_maps *m)
 {
 	t_map_style_config	c;
 
@@ -35,7 +35,7 @@ void	apply_colors(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			color = get_height_color(map->points.raw[y][x].z, map->min_z, map->max_z);
+			color = get_height_color(map->points.raw[y][x].z, map->min_max_z.x, map->min_max_z.y);
 			map->points.color[y][x] = color;
 			x++;
 		}
@@ -72,7 +72,7 @@ void	apply_map_style(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			v = create_vec3(map->points.raw[y][x].z, map->min_z, map->max_z);
+			v = create_vec3(map->points.raw[y][x].z, map->min_max_z.x, map->min_max_z.y);
 			color = get_map_line_color(v, map->style.style);
 			map->points.color[y][x] = color;
 			x++;

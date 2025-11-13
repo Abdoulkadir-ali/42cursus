@@ -6,90 +6,74 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 00:57:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 13:44:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "color.h"
 #include "core.h"
 #include "graphics.h"
-#include "color.h"
+#include "vectors.h"
 
-static void	init_bresenham(t_bresenham *b, t_point start, t_point end)
+static void	init_bresenham(t_bresenham *b, t_point s, t_point e)
 {
-	b->delta.x = abs((int)end.pos.x - (int)start.pos.x);
-	b->delta.y = abs((int)end.pos.y - (int)start.pos.y);
-	b->step.x = ((int)start.pos.x < (int)end.pos.x) ? 1 : -1;
-	b->step.y = ((int)start.pos.y < (int)end.pos.y) ? 1 : -1;
+	t_vec2	delta;
+
+	delta.x = e.pos.x - s.pos.x;
+	delta.y = e.pos.y - s.pos.y;
+	b->delta.x = abs(delta.x);
+	b->delta.y = abs(delta.y);
+	if (delta.x >= 0)
+		b->step.x = 1;
+	else
+		b->step.x = -1;
+	if (delta.y >= 0)
+		b->step.y = 1;
+	else
+		b->step.y = -1;
 	b->err = b->delta.x - b->delta.y;
-	b->p.x = (int)start.pos.x;
-	b->p.y = (int)start.pos.y;
+	b->p.x = s.pos.x;
+	b->p.y = s.pos.y;
 }
 
-int	z_buffer_test(t_graphics *g, int x, int y, float z)
+static void	init_line_state(t_line_draw_state *state, t_graphics *g,
+		t_point start, t_point end)
 {
-	int	index;
-
-	if (!g->render_config.use_depth_culling || !g->window->z_buffer)
-		return (1);
-	if (x < 0 || x >= g->window->width || y < 0 || y >= g->window->height)
-		return (0);
-	index = y * g->window->width + x;
-	if (z < g->window->z_buffer[index])
-	{
-		g->window->z_buffer[index] = z;
-		return (1);
-	}
-	return (0);
-}
-
-void	img_pixel_put_with_z(t_graphics *g, int x, int y, float z, int color)
-{
-	char	*dst;
-
-	(void)z;
-	// if (z_buffer_test(g, x, y, z))
-	{
-		dst = g->window->main_img.img_addr + (y * g->window->main_img.img_line_len
-				+ x * (g->window->main_img.img_bpp / 8));
-		*(unsigned int *)dst = color;
-	}
+	state->s_pos.x = start.pos.x;
+	state->s_pos.y = start.pos.y;
+	state->e_pos.x = end.pos.x;
+	state->e_pos.y = end.pos.y;
+	state->delta_total = state->e_pos;
+	vec2d_sub(&state->delta_total, state->s_pos);
+	state->total_dist = vec2d_len(state->delta_total);
+	state->c = g->camera;
+	init_bresenham(&state->b, start, end);
 }
 
 void	draw_line(t_graphics *g, t_point start, t_point end)
 {
-	t_bresenham b;
-	int color;
-	float total_dist;
-	float current_dist;
+	t_line_draw_state state;
 
-	DBG("draw_line start (%d,%d) to (%d,%d)\n", (int)start.pos.x, (int)start.pos.y, (int)end.pos.x, (int)end.pos.y);
-	init_bresenham(&b, start, end);
-	total_dist = sqrt((end.pos.x - start.pos.x) * (end.pos.x - start.pos.x)
-			+ (end.pos.y - start.pos.y) * (end.pos.y - start.pos.y));
+	init_line_state(&state, g, start, end);
 	while (1)
 	{
-		if (is_visible(b.p.x, b.p.y, g))
+		if (is_visible(state.b.p.x, state.b.p.y, g))
 		{
-			current_dist = sqrt((b.p.x - start.pos.x) * (b.p.x - start.pos.x)
-					+ (b.p.y - start.pos.y) * (b.p.y - start.pos.y));
-			color = interpolate_color(start.color, end.color, current_dist / (total_dist + 1e-6));
-			color = shift_color(color, g->camera->color_shift.x,
-					g->camera->color_shift.z, g->camera->color_shift.y);
-			img_pixel_put_with_z(g, b.p.x, b.p.y, 0.0, color);
+			calculate_color(&state, start, end);
+			img_pixel_put_with_z(g, state.b.p.x, state.b.p.y, 0.0, state.color);
 		}
-		if (b.p.x == (int)end.pos.x && b.p.y == (int)end.pos.y)
+		if (state.b.p.x == end.pos.x && state.b.p.y == end.pos.y)
 			break ;
-		b.e2 = 2 * b.err;
-		if (b.e2 > -b.delta.y)
+		state.b.e2 = 2 * state.b.err;
+		if (state.b.e2 > -state.b.delta.y)
 		{
-			b.err -= b.delta.y;
-			b.p.x += b.step.x;
+			state.b.err -= state.b.delta.y;
+			state.b.p.x += state.b.step.x;
 		}
-		if (b.e2 < b.delta.x)
+		if (state.b.e2 < state.b.delta.x)
 		{
-			b.err += b.delta.x;
-			b.p.y += b.step.y;
+			state.b.err += state.b.delta.x;
+			state.b.p.y += state.b.step.y;
 		}
 	}
-	DBG("draw_line end\n");
 }

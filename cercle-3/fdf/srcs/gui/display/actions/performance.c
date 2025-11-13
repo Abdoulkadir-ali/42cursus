@@ -15,7 +15,7 @@
 
 static void	draw_performance_header(t_data *data, int *y)
 {
-	put_colored(data, GUI_PADDING, *y, "OPTIMIZATIONS", GUI_TITLE_COLOR);
+	put_colored(&data->gui, GUI_PADDING, *y, (t_colored_text){"OPTIMIZATIONS", GUI_TITLE_COLOR});
 	*y += GUI_TITLE_HEIGHT;
 }
 
