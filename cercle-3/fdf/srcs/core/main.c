@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 01:08:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 01:47:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static int	init_and_render(t_data *data)
 	data->graphics.render_config.use_depth_culling = data->use_depth_culling;
 	data->graphics.render_config.fill_triangles = data->fill_triangles;
 	draw_panel_background(&data->gui);
-	ctx = {&data->camera, data->map, &data->window};
+	ctx = (t_camera_context){&data->camera, data->map, &data->window};
 	adjust_camera_to_map(&ctx);
 	draw_grid(&data->graphics);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr,
@@ -112,7 +112,7 @@ int	main(void)
 		return (1);
 	if (!init_and_render(&data))
 		return (1);
-	events = {&data.camera, &data.window, data.map, &data.graphics, &data.gui,
+	events = (t_events){&data.camera, &data.window, data.map, &data.graphics, &data.gui,
 		data.render_mode, data.lod_level, data.use_depth_culling,
 		data.fill_triangles};
 	setup_hooks(&events);

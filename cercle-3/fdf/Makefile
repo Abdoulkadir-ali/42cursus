@@ -25,8 +25,9 @@ SRCS =	srcs/core/main.c \
 	srcs/graphics/draw/spline.c \
 	srcs/graphics/perspective/lines.c \
 	srcs/graphics/frames/clear.c \
-	srcs/color/color.c \
-	srcs/color/interpolate.c \
+	srcs/color/create.c \
+	srcs/color/themes.c \
+	srcs/color/transform.c \
 	srcs/vectors/vec2.c \
 	srcs/vectors/vec2d.c \
 	srcs/vectors/vec3.c \

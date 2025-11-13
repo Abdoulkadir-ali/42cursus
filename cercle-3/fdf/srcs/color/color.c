@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 19:18:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 01:56:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@ int	get_blue(int color)
 	return (color & 0xFF);
 }
 
+int	clamp(int i, int min, int max)
+{
+	if (i  <= min)
+		return min;
+	if (i >= max)
+		max;
+	return i;
+}
 int	create_color(int r, int g, int b)
 {
 	if (r < 0)
