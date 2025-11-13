@@ -6,21 +6,33 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 01:03:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:06:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CAMERA_H
 # define CAMERA_H
 
-typedef struct s_window	t_window;
+/* ========== REQUIREMENTS ========== */
+# include <math.h>
 
-# include "window.h"
-# include "graphics.h"
-# include "gui.h"
+/* ========== PROJECT IMPORTS ========== */
 # include "map.h"
 # include "vectors.h"
-# include <math.h>
+
+typedef struct s_window	t_window;
+# include "window.h"
+
+/* ========== GUI STYLE ========== */
+typedef enum e_gui_style
+{
+	GUI_STYLE_TRON_BLUE,
+	GUI_STYLE_TRON_ORANGE,
+	GUI_STYLE_MATRIX,
+	GUI_STYLE_CYBERPUNK,
+	GUI_STYLE_NEON_GRID,
+	GUI_STYLE_COUNT
+}						t_gui_style;
 
 /* ========== CAMERA CONSTANTS ========== */
 # define DEFAULT_ZOOM_AVAILABLE_WIDTH 0.8
@@ -62,8 +74,7 @@ typedef struct s_camera
 	double				move_speed;
 	double				zoom_speed;
 	int					dampening_threshold;
-	double				pending_rot_x;
-	double				pending_rot_y;
+	t_vec2d				pending_rot;
 	double				z_scale;
 	int					frustum_margin;
 	int					spline_segments;
@@ -79,8 +90,14 @@ typedef struct s_camera_context
 	t_window			*window;
 }						t_camera_context;
 
+typedef struct s_camera_args
+{
+	t_map				*map;
+	t_window			*window;
+}						t_camera_args;
+
 t_point					project_point(t_vec3d p3d, int color, t_camera *cam,
-							t_projection_type type, double z_divisor);
+							double z_divisor);
 t_point					project_isometric(t_point p3d, t_camera *cam);
 t_point					project_orthographic(t_point p3d, t_camera *cam);
 t_point					project_perspective(t_point p3d, t_camera *cam);
@@ -101,6 +118,7 @@ void					zoom_in(t_camera_context *ctx);
 void					zoom_out(t_camera_context *ctx);
 void					update_zoom(t_camera_context *ctx);
 
-t_camera				init_camera(void);
+t_camera				*init_camera_object(void);
+t_camera_context		*init_camera(t_camera_args args);
 
 #endif

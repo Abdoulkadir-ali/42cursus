@@ -9,8 +9,10 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 # Source files organized by category
 SRCS =	srcs/core/main.c \
-	srcs/core/init.c \
 	srcs/core/cleanup.c \
+	srcs/core/defaults.c \
+	srcs/core/render.c \
+	srcs/core/events.c \
 	srcs/camera/init.c \
 	srcs/camera/controls/adjust.c \
 	srcs/camera/controls/rotate.c \
@@ -20,23 +22,41 @@ SRCS =	srcs/core/main.c \
 	srcs/camera/projection/advanced.c \
 	srcs/graphics/init.c \
 	srcs/graphics/graphics.c \
+	srcs/graphics/draw/grid.c \
 	srcs/graphics/draw/lines.c \
 	srcs/graphics/draw/triangle.c \
 	srcs/graphics/draw/spline.c \
+	srcs/graphics/draw/scanlines.c \
+	srcs/graphics/interpolate/lines.c \
+	srcs/graphics/interpolate/splines.c \
+	srcs/graphics/interpolate/triangle.c \
+	srcs/graphics/z_processing/lines.c \
+	srcs/graphics/z_processing/triangles.c \
 	srcs/graphics/perspective/lines.c \
 	srcs/graphics/frames/clear.c \
 	srcs/color/create.c \
 	srcs/color/transform.c \
-	srcs/vectors/vec2.c \
-	srcs/vectors/vec2d.c \
-	srcs/vectors/vec3.c \
-	srcs/vectors/vec3d.c \
+	srcs/vectors/vec2/init.c \
+	srcs/vectors/vec2/arithmetic.c \
+	srcs/vectors/vec2/distance.c \
+	srcs/vectors/vec2d/init.c \
+	srcs/vectors/vec2d/arithmetic.c \
+	srcs/vectors/vec2d/distance.c \
+	srcs/vectors/vec3/init.c \
+	srcs/vectors/vec3/arithmetic.c \
+	srcs/vectors/vec3/distance.c \
+	srcs/vectors/vec3d/init.c \
+	srcs/vectors/vec3d/arithmetic.c \
+	srcs/vectors/vec3d/distance.c \
 	srcs/map/build/grid.c \
+	srcs/map/init.c \
 	srcs/map/read/loader.c \
 	srcs/map/read/parser.c \
 	srcs/map/read/select.c \
 	srcs/map/style/style.c \
 	srcs/map/style/themes.c \
+	srcs/window/init.c \
+	srcs/events/init.c \
 	srcs/events/mouse/mouse_events.c \
 	srcs/events/mouse/mouse_move.c \
 	srcs/events/keys/key_events.c \
@@ -80,6 +100,8 @@ objs:
 	@mkdir -p objs/core
 	@mkdir -p objs/graphics
 	@mkdir -p objs/graphics/draw
+	@mkdir -p objs/graphics/interpolate
+	@mkdir -p objs/graphics/z_processing
 	@mkdir -p objs/graphics/perspective
 	@mkdir -p objs/graphics/frames
 	@mkdir -p objs/camera
@@ -90,11 +112,16 @@ objs:
 	@mkdir -p objs/map/build
 	@mkdir -p objs/map/read
 	@mkdir -p objs/map/style
+	@mkdir -p objs/window
 	@mkdir -p objs/events
 	@mkdir -p objs/events/mouse
 	@mkdir -p objs/events/keys
 	@mkdir -p objs/events/keys/handlers
 	@mkdir -p objs/vectors
+	@mkdir -p objs/vectors/vec2
+	@mkdir -p objs/vectors/vec2d
+	@mkdir -p objs/vectors/vec3
+	@mkdir -p objs/vectors/vec3d
 	@mkdir -p objs/events/keys/handlers
 	@mkdir -p objs/gui
 	@mkdir -p objs/gui/controls

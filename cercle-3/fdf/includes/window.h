@@ -6,14 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:51:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:09:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:39:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WINDOW_H
 # define WINDOW_H
-
-# include "camera.h"
 
 typedef struct s_image
 {
@@ -36,6 +34,10 @@ typedef struct s_window
 	float		*z_buffer;
 }				t_window;
 
-t_window		init_window(void *mlx_ptr);
+typedef struct s_data	t_data;
+
+t_window		*init_window(void *mlx_ptr);
+int				init_window_main_image(t_window *win, void *mlx);
+int				init_window_system(t_data *data);
 
 #endif

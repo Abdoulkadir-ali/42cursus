@@ -6,98 +6,103 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:05:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 13:15:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTORS_H
 # define VECTORS_H
 
-#ifndef ENABLEDEBUG
-# define ENABLEDEBUG 0
-#endif
-
-# define DBG(...) if (ENABLEDEBUG) { printf(__VA_ARGS__); fflush(stdout); }
+#include <math.h>
+#include <xmmintrin.h>
+#include "libft.h"
 
 typedef struct s_vec2
 {
-	int				x;
-	int				y;
-	struct s_vec2	(*add)(struct s_vec2, struct s_vec2);
-	struct s_vec2	(*sub)(struct s_vec2, struct s_vec2);
-	struct s_vec2	(*multiply)(struct s_vec2, struct s_vec2);
-	struct s_vec2	(*divide)(struct s_vec2, struct s_vec2);
-	struct s_vec2	(*multiply_scalar)(struct s_vec2, double);
-}					t_vec2;
+	int		x;
+	int		y;
+}			t_vec2;
 
 typedef struct s_vec2d
 {
-	double			x;
-	double			y;
-	struct s_vec2d	(*add)(struct s_vec2d, struct s_vec2d);
-	struct s_vec2d	(*sub)(struct s_vec2d, struct s_vec2d);
-	struct s_vec2d	(*multiply)(struct s_vec2d, struct s_vec2d);
-	struct s_vec2d	(*divide)(struct s_vec2d, struct s_vec2d);
-	struct s_vec2d	(*multiply_scalar)(struct s_vec2d, double);
-}					t_vec2d;
+	double	x;
+	double	y;
+}			t_vec2d;
 
 typedef struct s_vec3
 {
-	int				x;
-	int				y;
-	int				z;
-	struct s_vec3	(*add)(struct s_vec3, struct s_vec3);
-	struct s_vec3	(*sub)(struct s_vec3, struct s_vec3);
-	struct s_vec3	(*multiply)(struct s_vec3, struct s_vec3);
-	struct s_vec3	(*divide)(struct s_vec3, struct s_vec3);
-	struct s_vec3	(*multiply_scalar)(struct s_vec3, double);
-}					t_vec3;
+	int		x;
+	int		y;
+	int		z;
+}			t_vec3;
 
 typedef struct s_vec3d
 {
-	double			x;
-	double			y;
-	double			z;
-	struct s_vec3d	(*add)(struct s_vec3d, struct s_vec3d);
-	struct s_vec3d	(*sub)(struct s_vec3d, struct s_vec3d);
-	struct s_vec3d	(*multiply)(struct s_vec3d, struct s_vec3d);
-	struct s_vec3d	(*divide)(struct s_vec3d, struct s_vec3d);
-	struct s_vec3d	(*multiply_scalar)(struct s_vec3d, double);
-}					t_vec3d;
+	double	x;
+	double	y;
+	double	z;
+}			t_vec3d;
+
+typedef struct s_vec4d
+{
+	double	x;
+	double	y;
+	double	z;
+	double	w;
+}			t_vec4d;
 
 typedef struct s_point
 {
-	t_vec3			pos;
-	int				color;
-}					t_point;
+	t_vec3d	pos;
+	int		color;
+}			t_point;
 
-# define create_vec3(x, y, z) ((t_vec3){x, y, z, vec3_add, vec3_sub, vec3_multiply, vec3_divide, vec3_multiply_scalar})
-# define create_vec3d(x, y, z) ((t_vec3d){x, y, z, vec3d_add, vec3d_sub, vec3d_multiply, vec3d_divide, vec3d_multiply_scalar})
+t_vec2		create_vec2(int x, int y);
+t_vec2d		create_vec2d(double x, double y);
+t_vec3		create_vec3(int x, int y, int z);
+t_vec3d		create_vec3d(double x, double y, double z);
 
-# define create_vec2(x, y) ((t_vec2){x, y, vec2_add, vec2_sub, vec2_multiply, vec2_divide, vec2_multiply_scalar})
-# define create_vec2d(x, y) ((t_vec2d){x, y, vec2d_add, vec2d_sub, vec2d_multiply, vec2d_divide, vec2d_multiply_scalar})
+void		vec2_add(t_vec2 *self, t_vec2 other);
+void		vec2_sub(t_vec2 *self, t_vec2 other);
+void		vec2_multiply(t_vec2 *self, t_vec2 other);
+void		vec2_divide(t_vec2 *self, t_vec2 other);
+void		vec2_multiply_scalar(t_vec2 *self, double scalar);
 
-t_vec2				vec2_add(t_vec2 self, t_vec2 other);
-t_vec2				vec2_sub(t_vec2 self, t_vec2 other);
-t_vec2				vec2_multiply(t_vec2 self, t_vec2 other);
-t_vec2				vec2_divide(t_vec2 self, t_vec2 other);
-t_vec2				vec2_multiply_scalar(t_vec2 self, double scalar);
+int			vec2_len(t_vec2 v);
+int			vec2_min(t_vec2 v);
+int			vec2_max(t_vec2 v);
+t_vec2		vec2_minmax(int min, int max);
 
-t_vec2d				vec2d_add(t_vec2d self, t_vec2d other);
-t_vec2d				vec2d_sub(t_vec2d self, t_vec2d other);
-t_vec2d				vec2d_multiply(t_vec2d self, t_vec2d other);
-t_vec2d				vec2d_divide(t_vec2d self, t_vec2d other);
-t_vec2d				vec2d_multiply_scalar(t_vec2d self, double scalar);
+void		vec2d_add(t_vec2d *self, t_vec2d other);
+void		vec2d_sub(t_vec2d *self, t_vec2d other);
+void		vec2d_multiply(t_vec2d *self, t_vec2d other);
+void		vec2d_divide(t_vec2d *self, t_vec2d other);
+void		vec2d_multiply_scalar(t_vec2d *self, double scalar);
 
-t_vec3				vec3_add(t_vec3 self, t_vec3 other);
-t_vec3				vec3_sub(t_vec3 self, t_vec3 other);
-t_vec3				vec3_multiply(t_vec3 self, t_vec3 other);
-t_vec3				vec3_divide(t_vec3 self, t_vec3 other);
-t_vec3				vec3_multiply_scalar(t_vec3 self, double scalar);
+double		vec2d_len(t_vec2d v);
+double		vec2d_min(t_vec2d v);
+double		vec2d_max(t_vec2d v);
+t_vec2d		vec2d_minmax(int min, int max);
 
-t_vec3d				vec3d_add(t_vec3d self, t_vec3d other);
-t_vec3d				vec3d_sub(t_vec3d self, t_vec3d other);
-t_vec3d				vec3d_multiply(t_vec3d self, t_vec3d other);
-t_vec3d				vec3d_divide(t_vec3d self, t_vec3d other);
-t_vec3d				vec3d_multiply_scalar(t_vec3d self, double scalar);
+void		vec3_add(t_vec3 *self, t_vec3 other);
+void		vec3_sub(t_vec3 *self, t_vec3 other);
+void		vec3_multiply(t_vec3 *self, t_vec3 other);
+void		vec3_divide(t_vec3 *self, t_vec3 other);
+void		vec3_multiply_scalar(t_vec3 *self, double scalar);
+
+double				vec3_len(t_vec3 v);
+double				vec3_min(t_vec3 v);
+double				vec3_max(t_vec3 v);
+t_vec2				vec3_get_minmax_components(t_vec3 v);
+
+void		vec3d_add(t_vec3d *self, t_vec3d other);
+void		vec3d_sub(t_vec3d *self, t_vec3d other);
+void		vec3d_multiply(t_vec3d *self, t_vec3d other);
+void		vec3d_divide(t_vec3d *self, t_vec3d other);
+void		vec3d_multiply_scalar(t_vec3d *self, double scalar);
+
+double		vec3d_len(t_vec3d v);
+double		vec3d_min(t_vec3d v);
+double		vec3d_max(t_vec3d v);
+t_vec2d		vec3d_minmax(t_vec3d v);
 #endif

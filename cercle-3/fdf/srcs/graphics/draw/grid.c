@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:22:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 18:18:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,44 +146,10 @@ static void	draw_grid_section(t_graphics *g, int start_y, int end_y, int step)
 	}
 }
 
-static void	*thread_draw(void *arg)
-{
-	t_thread_data	*td;
-
-	td = (t_thread_data *)arg;
-	draw_grid_section(td->g, td->start_y, td->end_y, td->step);
-	return (NULL);
-}
-
 void	draw_grid(t_graphics *g)
 {
-	pthread_t		threads[NUM_THREADS];
-	t_thread_data	thread_data[NUM_THREADS];
-	int				rows_per_thread;
-	int				i;
 	int				step;
 
 	step = g->render_config.lod_level;
-	if (g->map->height < NUM_THREADS * 10)
-	{
-		draw_grid_section(g, 0, g->map->height, step);
-		return ;
-	}
-	rows_per_thread = g->map->height / NUM_THREADS;
-	i = 0;
-	while (i < NUM_THREADS)
-	{
-		thread_data[i].g = g;
-		thread_data[i].start_y = i * rows_per_thread;
-		thread_data[i].step = step;
-		if (i == NUM_THREADS - 1)
-			thread_data[i].end_y = g->map->height;
-		else
-			thread_data[i].end_y = (i + 1) * rows_per_thread;
-		pthread_create(&threads[i], NULL, thread_draw, &thread_data[i]);
-		i++;
-	}
-	i = 0;
-	while (i < NUM_THREADS)
-		pthread_join(threads[i++], NULL);
+	draw_grid_section(g, 0, g->map->height, step);
 }

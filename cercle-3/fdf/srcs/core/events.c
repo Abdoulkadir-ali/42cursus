@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:24:22 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:43:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 19:22:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,10 @@ t_events	*init_events(t_data *data)
 	events->window = data->window;
 	events->graphics = data->graphics;
 	events->gui = data->gui;
+	events->camera = data->camera;
 	events->camera_ctx = data->camera_ctx;
-	events->maps = &data->maps;
-	events->map = data->maps.current_map;
+	events->maps = &data->map_manager;
+	events->map = data->map_manager.current_map;
 	events->render_mode = data->graphics->render_config.render_mode;
 	events->lod_level = data->graphics->render_config.lod_level;
 	events->use_depth_culling = data->graphics->render_config.use_depth_culling;

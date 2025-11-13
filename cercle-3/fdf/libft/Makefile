@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/16 00:00:00 by abdali            #+#    #+#              #
-#    Updated: 2025/11/12 15:00:35 by abdoali          ###   ########.fr        #
+#    Updated: 2025/11/13 13:19:26 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ CHAR_SRCS	= ft_isalpha.c ft_isalnum.c ft_isascii.c ft_isdigit.c \
 			  ft_isprint.c ft_tolower.c ft_toupper.c
 FD_SRCS		= ft_putchar_fd.c ft_putendl_fd.c ft_putnbr_fd.c ft_putstr_fd.c \
 			  get_next_line.c get_next_line_utils.c
-INT_SRCS	= ft_atoi.c
+INT_SRCS	= ft_atoi.c ft_swap.c
 BASE_SRCS	= ft_atoi_base.c ft_check_base.c ft_itoa_base.c ft_nbrlen_base.c \
 			  ft_putnbr_base.c ft_putunbr_base.c ft_unbrlen_base.c
 LST_SRCS	= ft_lstaddback.c ft_lstaddfront.c ft_lstclear.c ft_lstdelone.c \

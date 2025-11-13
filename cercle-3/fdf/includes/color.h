@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:17 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 02:22:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 12:57:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_rgb
 }	t_rgb;
 
 int		clamp(int value, int min, int max);
+double	clamp_d(double value, double min, double max);
 int		get_red(int color);
 int		get_green(int color);
 int		get_blue(int color);

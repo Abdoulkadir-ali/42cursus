@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:36:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 18:20:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,39 +22,28 @@
 # include <stdlib.h>
 # include <sys/time.h>
 
-
-
 typedef struct s_data
 {
-	void		*mlx_ptr;
-	void		*win_ptr;
-	t_window	window;
-	t_graphics	graphics;
-	t_map		*map;
-	t_map		**maps;
-	char		**map_files;
-	int			map_count;
-	int			current_map_index;
-	t_gui		gui;
-	t_camera	camera;
-	long		last_frame_time;
-	int			frame_in_progress;
-	int			render_mode;
-	int			lod_level;
-	int			use_depth_culling;
-	int			fill_triangles;
-}				t_data;
+	void				*mlx_ptr;
+	void				*win_ptr;
+	t_window			*window;
+	t_graphics			*graphics;
+	t_maps				map_manager;
+	t_gui				*gui;
+	t_camera			*camera;
+	t_camera_context	*camera_ctx;
+}						t_data;
 
 /* ========== WINDOW CONSTANTS ========== */
 # define WINDOW_WIDTH_RATIO 0.85
 # define WINDOW_HEIGHT_RATIO 0.85
 # define MIN_WINDOW_WIDTH 1024
 # define MIN_WINDOW_HEIGHT 768
-# define MAX_WINDOW_WIDTH 2560
-# define MAX_WINDOW_HEIGHT 1440
+# define MAX_WINDOW_WIDTH 1920
+# define MAX_WINDOW_HEIGHT 1080
 
 /* ========== OPTIMIZATION DEFAULTS ========== */
-# define DEFAULT_LOD_LEVEL 1
+# define DEFAULT_LOD_LEVEL 2
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
 # define DEFAULT_DAMPENING_THRESHOLD 0
@@ -69,10 +58,12 @@ typedef struct s_data
 # define MIN_SPLINE_SEGMENTS 2
 # define MAX_SPLINE_SEGMENTS 50
 
-void			init_window_size(t_data *data);
-void			init_mouse(t_mouse *mouse);
-void			init_keys(t_keys *keys);
-void			init_map_config(t_data *data);
-int				cleanup_and_exit(t_events *events);
+void					init_window_size(t_data *data);
+void					init_mouse(t_mouse *mouse);
+void					init_keys(t_keys *keys);
+void					init_map_config(t_data *data);
+int						init_and_render(t_data *data);
+t_events				*init_events(t_data *data);
+int						cleanup_and_exit(t_events *events);
 
 #endif

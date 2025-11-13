@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 02:46:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 18:10:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <X11/keysym.h>
 
 /* ========== OPTIMIZATION DEFAULTS ========== */
-# define DEFAULT_LOD_LEVEL 1
+# define DEFAULT_LOD_LEVEL 2
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
 # define DEFAULT_DAMPENING_THRESHOLD 0
@@ -39,68 +39,145 @@
 # define MAX_SPLINE_SEGMENTS 50
 # define KEY_MAP_SIZE 0x10000
 
+# ifndef CONTROLS_H
+#  define CONTROLS_H
 
+#  define MOUSE_LEFT 1
+#  define MOUSE_MIDDLE 2
+#  define MOUSE_RIGHT 3
+#  define MOUSE_SCROLL_UP 4
+#  define MOUSE_SCROLL_DOWN 5
 
-typedef int			(*key_action_t)(int keycode, t_events *events);
+#  define KEY_UP_ARROW XK_Up
+#  define KEY_DOWN_ARROW XK_Down
+#  define KEY_LEFT_ARROW XK_Left
+#  define KEY_RIGHT_ARROW XK_Right
+#  define KEY_CTRL_LEFT XK_Control_L
+#  define KEY_CTRL_RIGHT XK_Control_R
+#  define KEY_SHIFT_LEFT XK_Shift_L
+#  define KEY_SHIFT_RIGHT XK_Shift_R
+#  define KEY_L XK_l
+#  define KEY_Z XK_z
+#  define KEY_F XK_f
+#  define KEY_H XK_h
+#  define KEY_D XK_d
+#  define KEY_T XK_t
+#  define KEY_S XK_s
+#  define KEY_A XK_a
+#  define KEY_X XK_x
+#  define KEY_I XK_i
+#  define KEY_V XK_v
+#  define KEY_G XK_g
+#  define KEY_PLUS XK_plus
+#  define KEY_MINUS XK_minus
+#  define KEY_ZERO XK_0
+#  define KEY_ESC XK_Escape
+#  define KEY_R XK_r
+#  define KEY_P XK_p
+#  define KEY_N XK_n
+
+typedef struct s_mouse
+{
+	int					left_pressed;
+	int					right_pressed;
+	int					middle_pressed;
+	int					last_x;
+	int					last_y;
+	int					middle_start_x;
+	int					middle_start_y;
+}						t_mouse;
+
+typedef struct s_keys
+{
+	int					up;
+	int					down;
+	int					left;
+	int					right;
+	int					ctrl_left;
+	int					ctrl_right;
+	int					shift_left;
+	int					shift_right;
+	int					l;
+	int					z;
+	int					f;
+	int					h;
+	int					d;
+	int					t;
+	int					s;
+	int					a;
+	int					x;
+	int					i;
+	int					v;
+	int					g;
+}						t_keys;
+
+# endif
+
+typedef int				(*key_action_t)(int keycode, t_events *events);
 
 typedef struct s_key_maps
 {
-	key_action_t	key_actions[KEY_MAP_SIZE];
-	key_action_t	key_releases[KEY_MAP_SIZE];
-}					t_key_maps;
+	key_action_t		key_actions[KEY_MAP_SIZE];
+	key_action_t		key_releases[KEY_MAP_SIZE];
+}						t_key_maps;
 
 typedef struct s_events
 {
-	t_camera		*camera;
-	t_window		*window;
-	t_map			*map;
-	t_graphics		*graphics;
-	t_gui			*gui;
-	int				render_mode;
-	int				lod_level;
-	int				use_depth_culling;
-	int				fill_triangles;
-	t_key_maps		key_maps;
-}					t_events;
+	t_camera			*camera;
+	t_window			*window;
+	t_map				*map;
+	t_maps				*maps;
+	t_graphics			*graphics;
+	t_gui				*gui;
+	t_camera_context	*camera_ctx;
+	int					render_mode;
+	int					lod_level;
+	int					use_depth_culling;
+	int					fill_triangles;
+	t_mouse				mouse;
+	t_keys				keys;
+	t_key_maps			key_maps;
+}						t_events;
 
-int					mouse_press(int button, int x, int y, t_events *events);
-int					mouse_release(int button, int x, int y, t_events *events);
-int					mouse_move(int x, int y, t_events *events);
+int						mouse_press(int button, int x, int y, t_events *events);
+int						mouse_release(int button, int x, int y,
+							t_events *events);
+int						mouse_move(int x, int y, t_events *events);
 
-int					key_press(int keycode, t_events *events);
-int					key_release(int keycode, t_events *events);
+int						key_press(int keycode, t_events *events);
+int						key_release(int keycode, t_events *events);
 
-int					loop_hook(t_events *events);
+int						loop_hook(t_events *events);
 
-int					process_movement(t_events *events);
+int						process_movement(t_events *events);
 
-void				cycle_projection(t_events *events);
-void				reset_view(t_events *events);
-void				adjust_move_speed(t_events *events, int increase);
-int					cleanup_and_exit(t_events *events);
-void				setup_hooks(t_events *events);
+void					cycle_projection(t_events *events);
+void					reset_view(t_events *events);
+void					adjust_move_speed(t_events *events, int increase);
+int						cleanup_and_exit(t_events *events);
+void					setup_hooks(t_events *events);
 
 /* Key action functions */
-int					handle_escape(int keycode, t_events *events);
-int					handle_r(int keycode, t_events *events);
-int					handle_p(int keycode, t_events *events);
-int					handle_n(int keycode, t_events *events);
-int					handle_s(int keycode, t_events *events);
-int					handle_a(int keycode, t_events *events);
-int					handle_x(int keycode, t_events *events);
-int					handle_i(int keycode, t_events *events);
-int					handle_v(int keycode, t_events *events);
-int					handle_g(int keycode, t_events *events);
-int					handle_plus(int keycode, t_events *events);
-int					handle_minus(int keycode, t_events *events);
-int					handle_0(int keycode, t_events *events);
-int					handle_up(int keycode, t_events *events);
-int					handle_down(int keycode, t_events *events);
-int					handle_left(int keycode, t_events *events);
-int					handle_right(int keycode, t_events *events);
-int					handle_press_flag(int keycode, t_events *events);
-int					handle_release_flag(int keycode, t_events *events);
+int						handle_escape(int keycode, t_events *events);
+int						handle_r(int keycode, t_events *events);
+int						handle_p(int keycode, t_events *events);
+int						handle_n(int keycode, t_events *events);
+int						handle_s(int keycode, t_events *events);
+int						handle_a(int keycode, t_events *events);
+int						handle_x(int keycode, t_events *events);
+int						handle_i(int keycode, t_events *events);
+int						handle_v(int keycode, t_events *events);
+int						handle_g(int keycode, t_events *events);
+int						handle_plus(int keycode, t_events *events);
+int						handle_minus(int keycode, t_events *events);
+int						handle_0(int keycode, t_events *events);
+int						handle_up(int keycode, t_events *events);
+int						handle_down(int keycode, t_events *events);
+int						handle_left(int keycode, t_events *events);
+int						handle_right(int keycode, t_events *events);
+int						handle_press_flag(int keycode, t_events *events);
+int						handle_release_flag(int keycode, t_events *events);
 
-void				init_key_actions(t_key_maps *key_maps);
+void					init_key_actions(t_key_maps *key_maps);
 
 #endif

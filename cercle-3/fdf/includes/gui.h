@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:48:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 15:52:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,46 +17,48 @@
 
 // Header imports
 # include "vectors.h"
+# include "window.h"
 # include "map.h"
 # include "camera.h"
-# include "window.h"
+# include "graphics.h"
 
 
-typedef struct s_camera	t_camera;
-typedef struct s_window	t_window;
-typedef struct s_render_config	t_render_config;
-typedef struct s_map_manager	t_map_manager;
+
+typedef struct s_gui_args
+{
+	t_window		*window;
+	t_camera		*camera;
+	t_maps			*maps;
+	t_render_config	*render_config;
+	t_map			*map;
+}					t_gui_args;
 
 typedef struct s_gui
 {
-	t_window			*window;
-	int					gui_style;
-	t_map_manager		*map_manager;
-	t_render_config		*render_config;
-	t_camera			*camera;
-	t_map				*map;
-}						t_gui;
+	t_window		*window;
+	int				gui_style;
+	t_maps			*maps;
+	t_render_config	*render_config;
+	t_camera		*camera;
+	t_map			*map;
+}					t_gui;
 
 /* ========== GUI STYLE ========== */
-typedef enum e_gui_style
-{
-	GUI_STYLE_TRON_BLUE,
-	GUI_STYLE_TRON_ORANGE,
-	GUI_STYLE_MATRIX,
-	GUI_STYLE_CYBERPUNK,
-	GUI_STYLE_NEON_GRID,
-	GUI_STYLE_COUNT
-}						t_gui_style;
-
 typedef struct s_gui_theme
 {
-	int					background;
-	int					border;
-	int					text_primary;
-	int					text_secondary;
-	int					accent;
-	int					highlight;
-}						t_gui_theme;
+	int				background;
+	int				border;
+	int				text_primary;
+	int				text_secondary;
+	int				accent;
+	int				highlight;
+}					t_gui_theme;
+
+typedef struct s_colored_text
+{
+	char			*text;
+	int				color;
+}					t_colored_text;
 
 /* ========== GUI CONSTANTS ========== */
 # define GUI_PANEL_WIDTH 280
@@ -73,36 +75,36 @@ typedef struct s_gui_theme
 # define GUI_KEY_COLOR 0xFFAA00
 
 /* ========== GUI FUNCTIONS ========== */
-void					render_gui(t_gui *gui);
-void					draw_panel_background(t_gui *gui);
-void					put_text(t_gui *gui, int x, int y, char *text);
-void					put_key(t_gui *gui, int x, int y, char *text);
-void					put_colored(t_gui *gui, int x, int y, char *text,
-							int color);
-void					put_value(t_gui *gui, int x, int y, char *text);
-void					format_speed(double speed, char *buffer);
-void					format_number(int num, char *buffer);
-void					format_float(double val, char *buffer);
-void					cycle_gui_style(t_gui *gui);
-t_gui_theme				get_gui_theme(t_gui_style style);
-t_gui_theme				get_tron_blue_theme(void);
-t_gui_theme				get_tron_orange_theme(void);
-t_gui_theme				get_matrix_theme(void);
-t_gui_theme				get_cyberpunk_theme(void);
-t_gui_theme				get_neon_grid_theme(void);
-void					draw_mouse_controls(t_gui *gui, int *y);
-void					draw_keyboard_controls(t_gui *gui, int *y);
-void					draw_action_keys(t_gui *gui, int *y);
-void					draw_optimization_keys(t_gui *gui, int *y);
-void					draw_controls_guide_at(t_gui *gui, int *y);
-void					draw_speed_display_at(t_gui *gui, int *y);
-void					draw_projection_display_at(t_gui *gui, int *y);
-void					draw_map_name_display_at(t_gui *gui, int *y);
-void					draw_performance_display_at(t_gui *gui, int *y);
-void					draw_dampening_display(t_gui *gui);
-void					draw_style_display(t_gui *gui);
+void				render_gui(t_gui *gui);
+void				draw_panel_background(t_gui *gui);
+void				put_text(t_gui *gui, int x, int y, char *text);
+void				put_key(t_gui *gui, int x, int y, char *text);
+void				put_colored(t_gui *gui, int x, int y,
+						t_colored_text colored);
+void				put_value(t_gui *gui, int x, int y, char *text);
+void				format_speed(double speed, char *buffer);
+void				format_number(int num, char *buffer);
+void				format_float(double val, char *buffer);
+void				cycle_gui_style(t_gui *gui);
+t_gui_theme			get_gui_theme(t_gui_style style);
+t_gui_theme			get_tron_blue_theme(void);
+t_gui_theme			get_tron_orange_theme(void);
+t_gui_theme			get_matrix_theme(void);
+t_gui_theme			get_cyberpunk_theme(void);
+t_gui_theme			get_neon_grid_theme(void);
+void				draw_mouse_controls(t_gui *gui, int *y);
+void				draw_keyboard_controls(t_gui *gui, int *y);
+void				draw_action_keys(t_gui *gui, int *y);
+void				draw_optimization_keys(t_gui *gui, int *y);
+void				draw_controls_guide_at(t_gui *gui, int *y);
+void				draw_speed_display_at(t_gui *gui, int *y);
+void				draw_projection_display_at(t_gui *gui, int *y);
+void				draw_map_name_display_at(t_gui *gui, int *y);
+void				draw_performance_display_at(t_gui *gui, int *y);
+void				draw_dampening_display(t_gui *gui);
+void				draw_style_display(t_gui *gui);
 
-t_gui					init_gui(t_window *window, t_camera *camera, t_map_manager *map_manager, t_render_config *render_config, t_map *map);
-int						init_gui_images(t_gui *gui);
+t_gui				*init_gui(t_gui_args args);
+int					init_gui_images(t_gui *gui);
 
 #endif

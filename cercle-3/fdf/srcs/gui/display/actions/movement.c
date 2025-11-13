@@ -54,10 +54,10 @@ void	draw_map_name_display_at(t_data *data, int *section_y)
 	y = *section_y;
 	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"MAP", GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
-	if (data->maps.map_files && data->maps.current_index >= 0
-		&& data->maps.current_index < data->maps.count)
+	if (data->map_manager.map_files && data->map_manager.current_index >= 0
+		&& data->map_manager.current_index < data->map_manager.count)
 	{
-		map_name = data->maps.map_files[data->maps.current_index];
+		map_name = data->map_manager.map_files[data->map_manager.current_index];
 		put_value(data, GUI_PADDING + 10, y, map_name);
 	}
 	else

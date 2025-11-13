@@ -6,24 +6,26 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:44:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 18:10:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GRAPHICS_H
 # define GRAPHICS_H
 
-# include "camera.h"
-# include "controls.h"
-# include "libft.h"
-# include "map.h"
-# include "vectors.h"
+// SYSTEM REQUIREMENTS
 # include <math.h>
-# include <mlx.h>
+# include "libft.h"
 
-typedef struct s_data	t_data;
-typedef struct s_camera	t_camera;
-typedef struct s_window	t_window;
+// PROJECT REQUIREMENTS
+# include "window.h"
+# include "map.h"
+# include "camera.h"
+# include "vectors.h"
+
+
+# define DEFAULT_LOD_LEVEL 2
+
 typedef struct s_events	t_events;
 
 typedef enum e_render_mode
@@ -49,13 +51,30 @@ typedef struct s_quad_triangle
 	t_point				p4;
 }						t_quad_triangle;
 
-typedef struct s_spline_points
+typedef struct s_spline
 {
+	t_point				p0;
 	t_point				p1;
 	t_point				p2;
 	t_point				p3;
-	t_point				p4;
-}						t_spline_points;
+}						t_spline;
+
+typedef struct s_triangle_interp
+{
+	t_triangle			triangle;
+	int					y;
+}						t_triangle_interp;
+
+typedef struct s_scanline_data
+{
+	int					x1;
+	int					x2;
+	int					y;
+	float				z1;
+	float				z2;
+	int					c1;
+	int					c2;
+}						t_scanline_data;
 
 typedef struct s_bresenham
 {
@@ -65,6 +84,20 @@ typedef struct s_bresenham
 	int					err;
 	int					e2;
 }						t_bresenham;
+
+typedef struct s_line_draw_state
+{
+	t_bresenham			b;
+	int					color;
+	t_vec2d				s_pos;
+	t_vec2d				e_pos;
+	t_vec2d				delta_total;
+	double				total_dist;
+	t_vec2d				current_pos;
+	t_vec2d				delta_current;
+	double				current_dist;
+	t_camera			*c;
+}						t_line_draw_state;
 
 typedef struct s_render_config
 {
@@ -84,13 +117,7 @@ typedef struct s_graphics
 {
 	t_window			*window;
 	t_camera			*camera;
-	t_mouse				mouse;
-	t_keys				keys;
-
-	t_map_manager		map_manager;
 	t_map				*map;
-
-	t_map_style_config	map_config;
 	t_render_config		render_config;
 	t_frame_data		frame_data;
 
@@ -104,27 +131,43 @@ typedef struct s_thread_data
 	int					step;
 }						t_thread_data;
 
+typedef struct s_graphics_args
+{
+	t_window			*window;
+	t_camera			*camera;
+	t_map				*map;
+}						t_graphics_args;
+
 int						should_draw_line(t_point p1, t_point p2, t_graphics *g);
 int						is_point_visible(t_vec3d p, t_graphics *g);
-void					draw_spline_segment(t_graphics *g, t_point p0,
-							t_point p1, t_point p2, t_point p3, int segments);
+void					draw_spline_segment(t_graphics *g, t_spline spline,
+							int segments);
+double					catmull_rom_interpolate(t_vec4d c, double t);
+t_point					catmull_rom_point(t_spline spline, double t);
+t_point					lerp_point(t_point p1, t_point p2, double t);
 void					draw_line(t_graphics *g, t_point p1, t_point p2);
-void					draw_filled_triangle(t_graphics *g, t_point p1,
-							t_point p2, t_point p3);
-void					draw_wireframe_triangle(t_graphics *g, t_point p1,
-							t_point p2, t_point p3);
-void					draw_quad_triangles(t_graphics *g, t_point p1,
-							t_point p2, t_point p3, t_point p4);
-void					clear_image(t_graphics *g);
-void					clear_z_buffer(t_graphics *g);
+void					calculate_color(t_line_draw_state *state, t_point start,
+							t_point end);
+void					draw_filled_triangle(t_graphics *g,
+							t_triangle triangle);
+void					draw_wireframe_triangle(t_graphics *g,
+							t_triangle triangle);
+void					draw_quad_triangles(t_graphics *g,
+							t_quad_triangle quad);
+t_scanline_data			interpolate_triangle_scanline(t_triangle_interp interp);
 int						z_buffer_test(t_graphics *g, int x, int y, float z);
+void					draw_horizontal_scanline_z(t_graphics *g,
+							t_scanline_data data);
 void					img_pixel_put_with_z(t_graphics *g, int x, int y,
 							float z, int color);
 int						is_visible(int x, int y, t_graphics *g);
 void					redraw(t_events *events);
 void					draw_grid(t_graphics *g);
+void					clear_image(t_graphics *g);
 
-t_window				init_window(void *mlx_ptr);
-t_graphics				init_graphics(t_window *window, t_camera *camera);
+t_window				*init_window(void *mlx_ptr);
+t_graphics				*init_graphics(t_graphics_args args);
+void					init_render_config(t_render_config *c);
+void					init_frame_data(t_frame_data *f);
 
 #endif

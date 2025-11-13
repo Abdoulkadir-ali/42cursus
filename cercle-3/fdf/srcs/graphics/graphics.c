@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:21:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 19:26:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,8 @@
 
 void	redraw(t_events *events)
 {
-	t_graphics *g;
+	t_graphics *g = events->graphics;
 
-	g = events->graphics;
-	g->map = events->map;
-	g->camera = events->camera;
 	g->render_config.render_mode = events->render_mode;
 	g->render_config.lod_level = events->lod_level;
 	g->render_config.use_depth_culling = events->use_depth_culling;
