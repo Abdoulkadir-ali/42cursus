@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:17:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 00:57:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ static void	draw_horizontal_scanline_z(t_graphics *g, int x1, int x2, int y,
 			t = (x2 == x1) ? 0 : (float)(x - x1) / (float)(x2 - x1);
 			z = z1 + t * (z2 - z1);
 			color = interpolate_color_simple(c1, c2, t);
+			color = shift_color(color, g->camera->color_shift.x,
+					g->camera->color_shift.z, g->camera->color_shift.y);
 			if (z_buffer_test(g, x, y, z))
 			{
 				offset = (y * g->window->main_img.img_line_len) + (x
