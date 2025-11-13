@@ -30,7 +30,7 @@ static void	draw_horizontal_line(t_graphics *g, int x, int y, t_point p1,
             if (next_x >= g->map->width || !is_point_visible(g->map->points.pos[y][next_x],
 			g))
 		return ;
-	p2 = project_point(g->map->points.pos[y][next_x], create_color(g->map->points.color[y][next_x].r, g->map->points.color[y][next_x].g, g->map->points.color[y][next_x].b), g->camera,
+	p2 = project_point(g->map->points.pos[y][next_x], g->map->points.color[y][next_x], g->camera,
 			g->camera->projection, g->map->z_divisor);
 	if (!should_draw_line(p1, p2, g))
 		return ;
@@ -38,12 +38,12 @@ static void	draw_horizontal_line(t_graphics *g, int x, int y, t_point p1,
 	{
 		prev_x = x - step;
 		if (prev_x >= 0)
-		p0 = project_point(g->map->points.pos[y][prev_x], create_color(g->map->points.color[y][prev_x].r, g->map->points.color[y][prev_x].g, g->map->points.color[y][prev_x].b), g->camera,
+		p0 = project_point(g->map->points.pos[y][prev_x], g->map->points.color[y][prev_x], g->camera,
 				g->camera->projection, g->map->z_divisor);
 		else
 			p0 = p1;
 		if (next_x + step < g->map->width)
-			p3 = project_point(g->map->points.pos[y][next_x + step], create_color(g->map->points.color[y][next_x + step].r, g->map->points.color[y][next_x + step].g, g->map->points.color[y][next_x + step].b), g->camera,
+			p3 = project_point(g->map->points.pos[y][next_x + step], g->map->points.color[y][next_x + step], g->camera,
 					g->camera->projection, g->map->z_divisor);
 		else
 			p3 = p2;
@@ -67,7 +67,7 @@ static void	draw_vertical_line(t_graphics *g, int x, int y, t_point p1,
 	if (next_y >= g->map->height || !is_point_visible(g->map->points.pos[next_y][x],
 			g))
 		return ;
-	p2 = project_point(g->map->points.pos[next_y][x], create_color(g->map->points.color[next_y][x].r, g->map->points.color[next_y][x].g, g->map->points.color[next_y][x].b), g->camera,
+	p2 = project_point(g->map->points.pos[next_y][x], g->map->points.color[next_y][x], g->camera,
 			g->camera->projection, g->map->z_divisor);
 	if (!should_draw_line(p1, p2, g))
 		return ;
@@ -75,12 +75,12 @@ static void	draw_vertical_line(t_graphics *g, int x, int y, t_point p1,
 	{
 		prev_y = y - step;
 		if (prev_y >= 0)
-			p0 = project_point(g->map->points.pos[prev_y][x], create_color(g->map->points.color[prev_y][x].r, g->map->points.color[prev_y][x].g, g->map->points.color[prev_y][x].b), g->camera,
+			p0 = project_point(g->map->points.pos[prev_y][x], g->map->points.color[prev_y][x], g->camera,
 					g->camera->projection, g->map->z_divisor);
 		else
 			p0 = p1;
 		if (next_y + step < g->map->height)
-			p3 = project_point(g->map->points.pos[next_y + step][x], create_color(g->map->points.color[next_y + step][x].r, g->map->points.color[next_y + step][x].g, g->map->points.color[next_y + step][x].b), g->camera,
+			p3 = project_point(g->map->points.pos[next_y + step][x], g->map->points.color[next_y + step][x], g->camera,
 					g->camera->projection, g->map->z_divisor);
 		else
 			p3 = p2;
@@ -99,13 +99,13 @@ static void	draw_triangle_quad(t_graphics *g, int x, int y, int step)
 
 	if (x + step >= g->map->width || y + step >= g->map->height)
 		return ;
-	p1 = project_point(g->map->points.pos[y][x], create_color(g->map->points.color[y][x].r, g->map->points.color[y][x].g, g->map->points.color[y][x].b), g->camera, g->camera->projection,
+	p1 = project_point(g->map->points.pos[y][x], g->map->points.color[y][x], g->camera, g->camera->projection,
 			g->map->z_divisor);
-	p2 = project_point(g->map->points.pos[y][x + step], create_color(g->map->points.color[y][x + step].r, g->map->points.color[y][x + step].g, g->map->points.color[y][x + step].b), g->camera,
+	p2 = project_point(g->map->points.pos[y][x + step], g->map->points.color[y][x + step], g->camera,
 			g->camera->projection, g->map->z_divisor);
-	p3 = project_point(g->map->points.pos[y + step][x], create_color(g->map->points.color[y + step][x].r, g->map->points.color[y + step][x].g, g->map->points.color[y + step][x].b), g->camera,
+	p3 = project_point(g->map->points.pos[y + step][x], g->map->points.color[y + step][x], g->camera,
 			g->camera->projection, g->map->z_divisor);
-	p4 = project_point(g->map->points.pos[y + step][x + step], create_color(g->map->points.color[y + step][x + step].r, g->map->points.color[y + step][x + step].g, g->map->points.color[y + step][x + step].b), g->camera,
+	p4 = project_point(g->map->points.pos[y + step][x + step], g->map->points.color[y + step][x + step], g->camera,
 			g->camera->projection, g->map->z_divisor);
 	draw_quad_triangles(g, p1, p2, p3, p4);
 }
@@ -134,7 +134,7 @@ static void	draw_grid_section(t_graphics *g, int start_y, int end_y, int step)
 				x += step;
 				continue ;
 			}
-			p1 = project_point(g->map->points.pos[y][x], create_color(g->map->points.color[y][x].r, g->map->points.color[y][x].g, g->map->points.color[y][x].b), g->camera,
+			p1 = project_point(g->map->points.pos[y][x], g->map->points.color[y][x], g->camera,
 					g->camera->projection, g->map->z_divisor);
 			draw_horizontal_line(g, x, y, p1, step);
 			draw_vertical_line(g, x, y, p1, step);

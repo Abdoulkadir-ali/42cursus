@@ -6,55 +6,61 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:24:11 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 01:57:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 02:25:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "color.h"
 
-int	interpolate_color(int color1, int color2, double ratio)
-{
-	int	r1;
-	int	g1;
-	int	b1;
-	int	r2;
-	int	g2;
-	int	b2;
-	int	r;
-	int	g;
-	int	b;
-
-	r1 = (color1 >> 16) & 0xFF;
-	g1 = (color1 >> 8) & 0xFF;
-	b1 = color1 & 0xFF;
-	r2 = (color2 >> 16) & 0xFF;
-	g2 = (color2 >> 8) & 0xFF;
-	b2 = color2 & 0xFF;
-	r = (int)(r1 * (1.0 - ratio) + r2 * ratio);
-	g = (int)(g1 * (1.0 - ratio) + g2 * ratio);
-	b = (int)(b1 * (1.0 - ratio) + b2 * ratio);
-	r = clamp(r, 0, 255);
-	g = clamp(g, 0, 255);
-	b = clamp(b, 0, 255);
-	return ((r << 16) | (g << 8) | b);
-}
-
-int	lerp(int c1, int c2, double t)
-{
-	return (interpolate_color(c1, c2, t));
-}
-
-int	shift_color(int color, int red_shift, int green_shift,  int blue_shift)
+int	shift_color(int color, int red_shift, int blue_shift, int green_shift)
 {
 	int	r;
 	int	g;
 	int	b;
 
-	r = ((color >> 16) & 0xFF) + red_shift;
-	g = ((color >> 8) & 0xFF) + green_shift;
-	b = (color & 0xFF) + blue_shift;
-	r = clamp(r, 0, 255);
-	g = clamp(g, 0, 255);
-	b = clamp(b, 0, 255);
-	return ((r << 16) | (g << 8) | b);
+	r = get_red(color) + red_shift;
+	g = get_green(color) + green_shift;
+	b = get_blue(color) + blue_shift;
+	return (create_color(r, g, b));
+}
+
+int	interpolate_color(int c1, int c2, double ratio)
+{
+	int	r;
+	int	g;
+	int	b;
+
+	r = get_red(c1) * (1.0 - ratio) + get_red(c2) * ratio;
+	g = get_green(c1) * (1.0 - ratio) + get_green(c2) * ratio;
+	b = get_blue(c1) * (1.0 - ratio) + get_blue(c2) * ratio;
+	return (create_color(r, g, b));
+}
+
+int	get_height_color(double z, int min_z, int max_z)
+{
+	int color_low;
+	int color_mid;
+	int color_high;
+	double ratio;
+	double effective_min;
+	double effective_max;
+
+	color_low = 0x0000FF;
+	color_mid = 0x00FF00;
+	color_high = 0xFF0000;
+	if (max_z == min_z)
+		return (color_mid);
+	effective_min = min_z + (max_z - min_z) * 0.05;
+	effective_max = min_z + (max_z - min_z) * 0.95;
+	if (effective_max == effective_min)
+		return (color_mid);
+	ratio = (z - effective_min) / (effective_max - effective_min);
+	if (ratio < 0)
+		ratio = 0;
+	if (ratio > 1)
+		ratio = 1;
+	if (ratio < 0.5)
+		return (interpolate_color(color_low, color_mid, ratio * 2.0));
+	else
+		return (interpolate_color(color_mid, color_high, (ratio - 0.5) * 2.0));
 }

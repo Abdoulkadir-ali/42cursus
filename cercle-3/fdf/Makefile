@@ -26,7 +26,6 @@ SRCS =	srcs/core/main.c \
 	srcs/graphics/perspective/lines.c \
 	srcs/graphics/frames/clear.c \
 	srcs/color/create.c \
-	srcs/color/themes.c \
 	srcs/color/transform.c \
 	srcs/vectors/vec2.c \
 	srcs/vectors/vec2d.c \
@@ -37,6 +36,7 @@ SRCS =	srcs/core/main.c \
 	srcs/map/read/parser.c \
 	srcs/map/read/select.c \
 	srcs/map/style/style.c \
+	srcs/map/style/themes.c \
 	srcs/events/mouse/mouse_events.c \
 	srcs/events/mouse/mouse_move.c \
 	srcs/events/keys/key_events.c \

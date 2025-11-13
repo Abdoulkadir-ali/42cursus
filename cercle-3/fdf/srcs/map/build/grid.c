@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 00:55:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 02:19:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,7 @@ static void	init_grid_points(t_map *map)
 			map->points.raw[y][x].y = y;
 			map->points.raw[y][x].z = x;
 			map->points.pos[y][x] = map->points.raw[y][x];
-			map->points.color[y][x].r = 255;
-			map->points.color[y][x].g = 255;
-			map->points.color[y][x].b = 255;
+			map->points.color[y][x] = 0xFFFFFF;
 			x++;
 		}
 		y++;
@@ -100,9 +98,8 @@ void	calculate_min_max_proj_z(t_map *map, t_camera *camera,
 		while (x < map->width)
 		{
 			p = project_point(map->points.pos[y][x],
-					create_color(map->points.color[y][x].r,
-						map->points.color[y][x].g, map->points.color[y][x].b),
-					camera, projection, z_divisor);
+					map->points.color[y][x], camera, projection,
+					z_divisor);
 			z = p.pos.z;
 			if (first)
 			{
@@ -139,7 +136,7 @@ t_map	*create_test_grid(void)
 	map->points.raw = malloc(sizeof(t_vec3d *) * map->height);
 	if (!map->points.raw)
 		return (NULL);
-	map->points.color = malloc(sizeof(t_rgb *) * map->height);
+	map->points.color = malloc(sizeof(int *) * map->height);
 	if (!map->points.color)
 		return (NULL);
 	y = 0;
@@ -151,13 +148,12 @@ t_map	*create_test_grid(void)
 		map->points.raw[y] = malloc(sizeof(t_vec3d) * map->width);
 		if (!map->points.raw[y])
 			return (NULL);
-		map->points.color[y] = malloc(sizeof(t_rgb) * map->width);
+		map->points.color[y] = malloc(sizeof(int) * map->width);
 		if (!map->points.color[y])
 			return (NULL);
 		y++;
 	}
 	init_grid_points(map);
-	// init_flat_pattern(map);
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_z;
 	map->max_proj_z = map->max_z;

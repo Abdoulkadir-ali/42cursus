@@ -1,30 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interpolate.c                                      :+:      :+:    :+:   */
+/*   themes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/10 15:13:56 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 19:34:13 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/13 12:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/13 02:22:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "color.h"
 
-inline int	interpolate_color(int color1, int color2, double ratio)
-{
-	int			r;
-	int			g;
-	int			b;
-	double		inv_ratio;
 
-	inv_ratio = 1.0 - ratio;
-	r = (int)(((color1 >> 16) & 0xFF) * inv_ratio
-			+ ((color2 >> 16) & 0xFF) * ratio);
-	g = (int)(((color1 >> 8) & 0xFF) * inv_ratio
-			+ ((color2 >> 8) & 0xFF) * ratio);
-	b = (int)((color1 & 0xFF) * inv_ratio
-			+ (color2 & 0xFF) * ratio);
-	return ((r << 16) | (g << 8) | b);
+int	get_solid_color(int z)
+{
+	(void)z;
+	return (0xFF6B35);
+}
+
+int	get_zebra_color(int z)
+{
+	if (z % 2 == 0)
+		return (0xFFFFFF);
+	return (0x00FFFF);
+}
+
+int	get_neon_color(int z)
+{
+	int	colors[5];
+
+	colors[0] = 0xFF00FF;
+	colors[1] = 0x00FFFF;
+	colors[2] = 0xFFFF00;
+	colors[3] = 0xFF0080;
+	colors[4] = 0x00FF80;
+	if (z < 0)
+		z = -z;
+	return (colors[z % 5]);
 }

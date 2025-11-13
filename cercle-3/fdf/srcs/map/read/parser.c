@@ -6,12 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 00:53:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 02:18:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map.h"
 #include "libft.h"
+#include "map.h"
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -76,7 +76,7 @@ int	allocate_map_points(t_map *map)
 	map->points.raw = malloc(sizeof(t_vec3d *) * map->height);
 	if (!map->points.raw)
 		return (0);
-	map->points.color = malloc(sizeof(t_rgb *) * map->height);
+	map->points.color = malloc(sizeof(int *) * map->height);
 	if (!map->points.color)
 		return (0);
 	y = 0;
@@ -88,7 +88,7 @@ int	allocate_map_points(t_map *map)
 		map->points.raw[y] = malloc(sizeof(t_vec3d) * map->width);
 		if (!map->points.raw[y])
 			return (0);
-		map->points.color[y] = malloc(sizeof(t_rgb) * map->width);
+		map->points.color[y] = malloc(sizeof(int) * map->width);
 		if (!map->points.color[y])
 			return (0);
 		x = 0;
@@ -97,7 +97,7 @@ int	allocate_map_points(t_map *map)
 			map->points.raw[y][x].x = x;
 			map->points.raw[y][x].y = y;
 			map->points.raw[y][x].z = 0;
-			map->points.color[y][x] = (t_rgb){255, 255, 255};
+			map->points.color[y][x] = 0xFFFFFF;
 			x++;
 		}
 		y++;
@@ -107,12 +107,11 @@ int	allocate_map_points(t_map *map)
 
 void	parse_map_data(t_map *map, int fd)
 {
-	char	*line;
-	char	**split;
-	char	**parts;
-	int		x;
-	int		y;
-	// int		color_val;
+	char *line;
+	char **split;
+	char **parts;
+	int x;
+	int y;
 
 	y = 0;
 	line = get_next_line(fd);
@@ -128,16 +127,11 @@ void	parse_map_data(t_map *map, int fd)
 				{
 					parts = ft_split(split[x], ',');
 					map->points.raw[y][x].z = ft_atoi(parts[0]);
-					// color_val = ft_atoi(parts[1]);
-					// map->points.color[y][x].r = get_red(color_val);
-					// map->points.color[y][x].g = get_green(color_val);
-					// map->points.color[y][x].b = get_blue(color_val);
+					map->points.color[y][x] = ft_atoi(parts[1]);
 					free_split(parts);
 				}
 				else
-				{
 					map->points.raw[y][x].z = ft_atoi(split[x]);
-				}
 				x++;
 			}
 			free_split(split);

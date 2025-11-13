@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 00:02:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 02:23:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef struct s_map_points
 {
 	t_vec3d					**pos;
 	t_vec3d					**raw;
-	t_rgb					**color;
+	int						**color;
 }							t_map_points;
 
 typedef struct s_map
@@ -70,6 +70,11 @@ typedef struct s_map_manager
 
 t_map						*create_test_grid(void);
 t_map						*load_map(char *filename);
+
+int							get_solid_color(int z);
+int							get_zebra_color(int z);
+int							get_neon_color(int z);
+
 void						free_map(t_map *map);
 void						calculate_min_max_z(t_map *map);
 void						init_map_list(t_map_manager *m);
