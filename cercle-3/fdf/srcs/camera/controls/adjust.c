@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 21:16:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 01:03:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,14 @@ void	adjust_camera_to_map(t_camera_context *ctx)
 	ctx->camera->grid_center.x = (ctx->map->width - 1) / 2.0;
 	ctx->camera->grid_center.y = (ctx->map->height - 1) / 2.0;
 	ctx->camera->grid_center.z = 0.0;
-	ctx->camera->color_shift.x = 0;
-	ctx->camera->color_shift.y = 0;
-	ctx->camera->color_shift.z = 0;
 	ctx->camera->dampening_threshold = 0.0;
+}
+
+void	reset_style(t_camera *camera)
+{
+	if (!camera)
+		return ;
+	camera->color_shift.x = 0;
+	camera->color_shift.y = 0;
+	camera->color_shift.z = 0;
 }

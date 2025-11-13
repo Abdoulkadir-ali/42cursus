@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:38:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 01:03:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ t_vec3d					rotate_y(t_vec3d v, double angle);
 t_vec3d					rotate_z(t_vec3d v, double angle);
 
 void					adjust_camera_to_map(t_camera_context *ctx);
+void					reset_style(t_camera *camera);
 void					zoom_in(t_camera_context *ctx);
 void					zoom_out(t_camera_context *ctx);
 void					update_zoom(t_camera_context *ctx);

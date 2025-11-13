@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 00:31:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 01:04:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	handle_r(int keycode, t_events *events)
 	(void)keycode;
 	DBG("handle_r called\n");
 	reset_view(events);
+	reset_style(events->camera);
 	return (1);
 }
 

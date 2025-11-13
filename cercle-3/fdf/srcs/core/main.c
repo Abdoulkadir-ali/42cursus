@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 23:43:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/13 01:08:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,17 @@ static int	init_map_and_image(t_data *data)
 		data->map = create_test_grid();
 	if (!data->map)
 		return (0);
-	data->window.main_img.img = mlx_new_image(data->mlx_ptr, data->window.width, data->window.height);
+	data->window.main_img.img = mlx_new_image(data->mlx_ptr, data->window.width,
+			data->window.height);
 	if (!data->window.main_img.img)
 		return (0);
-	data->window.main_img.img_addr = mlx_get_data_addr(data->window.main_img.img, &data->window.main_img.img_bpp,
-			&data->window.main_img.img_line_len, &data->window.main_img.img_endian);
+	data->window.main_img.img_addr = mlx_get_data_addr(data->window.main_img.img,
+			&data->window.main_img.img_bpp, &data->window.main_img.img_line_len,
+			&data->window.main_img.img_endian);
 	if (!data->window.main_img.img_addr)
 		return (0);
-	data->window.z_buffer = malloc(sizeof(float) * data->window.width * data->window.height);
+	data->window.z_buffer = malloc(sizeof(float) * data->window.width
+			* data->window.height);
 	if (!data->window.z_buffer)
 		return (0);
 	data->graphics.map = data->map;
@@ -54,7 +57,11 @@ static int	init_map_and_image(t_data *data)
 
 static int	init_and_render(t_data *data)
 {
-	data->gui = init_gui(&data->window, &data->camera, &data->graphics.map_manager, &data->graphics.render_config, data->map);
+	t_camera_context	ctx;
+
+	data->gui = init_gui(&data->window, &data->camera,
+			&data->graphics.map_manager, &data->graphics.render_config,
+			data->map);
 	if (!init_gui_images(&data->gui))
 		return (0);
 	data->graphics.map = data->map;
@@ -64,9 +71,13 @@ static int	init_and_render(t_data *data)
 	data->graphics.render_config.use_depth_culling = data->use_depth_culling;
 	data->graphics.render_config.fill_triangles = data->fill_triangles;
 	draw_panel_background(&data->gui);
+	ctx = {&data->camera, data->map, &data->window};
+	adjust_camera_to_map(&ctx);
 	draw_grid(&data->graphics);
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->window.main_img.img, 0, 0);
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->window.gui_img.img, 0, 0);
+	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr,
+		data->window.main_img.img, 0, 0);
+	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr,
+		data->window.gui_img.img, 0, 0);
 	render_gui(&data->gui);
 	return (1);
 }
@@ -75,6 +86,7 @@ int	main(void)
 {
 	t_data			data;
 	struct timeval	tv;
+	t_events		events;
 
 	if (!init_mlx_and_window(&data))
 		return (1);
@@ -100,17 +112,9 @@ int	main(void)
 		return (1);
 	if (!init_and_render(&data))
 		return (1);
-	t_events events = {
-		&data.camera,
-		&data.window,
-		data.map,
-		&data.graphics,
-		&data.gui,
-		data.render_mode,
-		data.lod_level,
-		data.use_depth_culling,
-		data.fill_triangles
-	};
+	events = {&data.camera, &data.window, data.map, &data.graphics, &data.gui,
+		data.render_mode, data.lod_level, data.use_depth_culling,
+		data.fill_triangles};
 	setup_hooks(&events);
 	mlx_loop(data.mlx_ptr);
 	return (0);
