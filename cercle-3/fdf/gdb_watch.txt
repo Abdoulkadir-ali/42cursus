@@ -1,0 +1,29 @@
+set pagination off
+set print pretty off
+
+# Break at draw_line and install a watchpoint for state.b.p.y
+break draw_line
+commands
+silent
+printf "[gdb] hit draw_line\n"
+# print addresses and initial value
+p &state
+p &state.b
+p &state.b.p
+set $addr = (void*)&state.b.p.y
+printf "[gdb] will watch address %p for writes\n", $addr
+watch *(int*)$addr
+continue
+end
+
+# When watchpoint triggers, print context
+commands
+silent
+printf "[gdb] watchpoint triggered\n"
+bt
+printf "[gdb] dumping 64 bytes around watch address\n"
+xx/32bx $addr-32
+quit
+end
+
+run maps/00_simple.fdf

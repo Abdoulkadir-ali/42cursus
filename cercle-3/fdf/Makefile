@@ -1,8 +1,10 @@
 NAME = fdf
 
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -I./includes -I./minilibx-linux -I./libft/includes -O3
-LDFLAGS = -L./minilibx-linux -lmlx -L./libft -lft -lX11 -lXext -lm -lpthread
+# Build with AddressSanitizer and debug info to catch memory errors during debugging.
+# This is temporary for debugging; restore original flags after investigation.
+CFLAGS = -Wall -Wextra -Werror -I./includes -I./minilibx-linux -I./libft/includes -g -O0 -fsanitize=address
+LDFLAGS = -L./minilibx-linux -lmlx -L./libft -lft -lX11 -lXext -lm -lpthread -fsanitize=address
 
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a

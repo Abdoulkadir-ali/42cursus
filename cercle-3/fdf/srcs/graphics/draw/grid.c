@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 18:18:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/14 15:11:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ static void	draw_horizontal_line(t_graphics *g, int x, int y, t_point p1,
 			g->map->points.color[y][next_x], g->camera, g->map->z_divisor);
 	if (!should_draw_line(p1, p2, g))
 		return ;
+	printf("[diag] draw_horizontal_line: p1=(%f,%f) p2=(%f,%f) next_x=%d\n",
+		p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y, next_x);
 	if (g->render_config.render_mode == RENDER_SPLINES)
 	{
 		prev_x = x - step;
@@ -119,12 +121,25 @@ static void	draw_grid_section(t_graphics *g, int start_y, int end_y, int step)
 	int		y;
 	t_point	p1;
 
+	printf("[diag] draw_grid_section: start=%d end=%d step=%d width=%d height=%d\n",
+		start_y, end_y, step, g->map ? g->map->width : 0, g->map ? g->map->height : 0);
+
 	y = start_y;
 	while (y < end_y)
 	{
+		printf("[diag] draw_grid_section row y=%d\n", y);
 		x = 0;
 		while (x < g->map->width)
 		{
+			printf("[diag] draw_grid_section inner row=%d x=%d\n", y, x);
+			if (y == 0 && x == 0 && g->camera)
+			{
+				printf("[diag] camera scale=%f proj=%d rot=(%f,%f,%f) offset=(%f,%f) center=(%f,%f,%f)\n",
+					g->camera->scale, g->camera->projection,
+					g->camera->rotation.x, g->camera->rotation.y, g->camera->rotation.z,
+					g->camera->offset.x, g->camera->offset.y,
+					g->camera->grid_center.x, g->camera->grid_center.y, g->camera->grid_center.z);
+			}
 			if (g->render_config.render_mode == RENDER_TRIANGLES)
 			{
 				draw_triangle_quad(g, x, y, step);
@@ -144,6 +159,7 @@ static void	draw_grid_section(t_graphics *g, int start_y, int end_y, int step)
 		}
 		y += step;
 	}
+	printf("[diag] draw_grid_section: done\n");
 }
 
 void	draw_grid(t_graphics *g)
@@ -151,5 +167,6 @@ void	draw_grid(t_graphics *g)
 	int				step;
 
 	step = g->render_config.lod_level;
+	printf("[diag] draw_grid: step=%d map=%p\n", step, (void *)g->map);
 	draw_grid_section(g, 0, g->map->height, step);
 }
