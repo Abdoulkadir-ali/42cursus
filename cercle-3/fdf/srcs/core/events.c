@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:24:22 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 19:22:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 20:20:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ t_events	*init_events(t_data *data)
 	events->window = data->window;
 	events->graphics = data->graphics;
 	events->gui = data->gui;
-	events->camera = data->camera;
-	events->camera_ctx = data->camera_ctx;
+	events->camera = data->camera_manager->camera;
+	events->camera_manager = data->camera_manager;
 	events->maps = &data->map_manager;
 	events->map = data->map_manager.current_map;
 	events->render_mode = data->graphics->render_config.render_mode;
@@ -32,5 +32,6 @@ t_events	*init_events(t_data *data)
 	events->fill_triangles = data->graphics->render_config.fill_triangles;
 	init_mouse(&events->mouse);
 	init_keys(&events->keys);
+	init_key_actions(&events->key_maps);
 	return (events);
 }

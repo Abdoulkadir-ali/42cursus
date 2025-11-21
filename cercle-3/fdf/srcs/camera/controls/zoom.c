@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:21:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 22:34:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 19:52:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "camera.h"
 
-void	zoom_in(t_camera_context *ctx)
+void	zoom_in(t_camera_manager *ctx)
 {
 	double	factor;
 
@@ -22,7 +22,7 @@ void	zoom_in(t_camera_context *ctx)
 		ctx->camera->target_scale = 100;
 }
 
-void	zoom_out(t_camera_context *ctx)
+void	zoom_out(t_camera_manager *ctx)
 {
 	double	factor;
 
@@ -30,7 +30,7 @@ void	zoom_out(t_camera_context *ctx)
 	ctx->camera->target_scale *= factor;
 }
 
-void	update_zoom(t_camera_context *ctx)
+void	update_zoom(t_camera_manager *ctx)
 {
 	ctx->camera->scale = ctx->camera->target_scale;
 }

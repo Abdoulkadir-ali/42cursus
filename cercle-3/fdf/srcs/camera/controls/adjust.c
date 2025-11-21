@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 11:05:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 19:52:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "camera.h"
 
-static double	calculate_ideal_zoom(t_camera_context *ctx)
+static double	calculate_ideal_zoom(t_camera_manager *ctx)
 {
 	double	scale_x;
 	double	scale_y;
@@ -37,7 +37,7 @@ static double	calculate_ideal_zoom(t_camera_context *ctx)
 	return (scale);
 }
 
-static void	calculate_ideal_position(t_camera_context *ctx)
+static void	calculate_ideal_position(t_camera_manager *ctx)
 {
 	double	y_adjust;
 
@@ -47,14 +47,14 @@ static void	calculate_ideal_position(t_camera_context *ctx)
 	ctx->camera->offset.y = (ctx->window->height / 2.0) - y_adjust;
 }
 
-static void	set_ideal_angle(t_camera_context *ctx)
+static void	set_ideal_angle(t_camera_manager *ctx)
 {
 	ctx->camera->rotation.x = DEFAULT_CAMERA_ROTATION_X;
 	ctx->camera->rotation.y = DEFAULT_CAMERA_ROTATION_Y;
 	ctx->camera->rotation.z = DEFAULT_CAMERA_ROTATION_Z;
 }
 
-void	adjust_camera_to_map(t_camera_context *ctx)
+void	adjust_camera_to_map(t_camera_manager *ctx)
 {
 	double	ideal_scale;
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:06:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 19:54:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,18 +82,20 @@ typedef struct s_camera
 	int					invert_movement;
 }						t_camera;
 
-/* ========== CAMERA CONTEXT ========== */
-typedef struct s_camera_context
+/* ========== CAMERA MANAGER ========== */
+typedef struct s_camera_manager
 {
 	t_camera			*camera;
 	t_map				*map;
 	t_window			*window;
-}						t_camera_context;
+}						t_camera_manager;
 
 typedef struct s_camera_args
 {
 	t_map				*map;
 	t_window			*window;
+	t_maps               *manager;
+	char                 *map_file;
 }						t_camera_args;
 
 t_point					project_point(t_vec3d p3d, int color, t_camera *cam,
@@ -112,13 +114,13 @@ t_vec3d					rotate_x(t_vec3d v, double angle);
 t_vec3d					rotate_y(t_vec3d v, double angle);
 t_vec3d					rotate_z(t_vec3d v, double angle);
 
-void					adjust_camera_to_map(t_camera_context *ctx);
+void					adjust_camera_to_map(t_camera_manager *ctx);
 void					reset_style(t_camera *camera);
-void					zoom_in(t_camera_context *ctx);
-void					zoom_out(t_camera_context *ctx);
-void					update_zoom(t_camera_context *ctx);
+void					zoom_in(t_camera_manager *ctx);
+void					zoom_out(t_camera_manager *ctx);
+void					update_zoom(t_camera_manager *ctx);
 
 t_camera				*init_camera_object(void);
-t_camera_context		*init_camera(t_camera_args args);
+t_camera_manager		*init_camera(t_camera_args args);
 
 #endif

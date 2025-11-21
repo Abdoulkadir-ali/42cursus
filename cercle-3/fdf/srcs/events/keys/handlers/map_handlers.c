@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 17:46:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 21:13:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,14 @@ int	handle_r(int keycode, t_events *events)
 int	handle_n(int keycode, t_events *events)
 {
 	(void)keycode;
-	
+	/* cycle the map list, update event and camera pointers, reset view */
 	cycle_map(events->maps);
+	if (events->maps)
+	{
+		events->map = events->maps->current_map;
+		if (events->camera_manager)
+			events->camera_manager->map = events->maps->current_map;
+	}
 	reset_view(events);
 	return (1);
 }

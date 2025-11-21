@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 18:10:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 19:52:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ typedef struct s_events
 	t_maps				*maps;
 	t_graphics			*graphics;
 	t_gui				*gui;
-	t_camera_context	*camera_ctx;
+	t_camera_manager	*camera_manager;
 	int					render_mode;
 	int					lod_level;
 	int					use_depth_culling;

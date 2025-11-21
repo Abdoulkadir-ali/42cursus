@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 11:54:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 20:10:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ t_map	*load_map(char *filename)
 	map = malloc(sizeof(t_map));
 	if (!map)
 		return (create_test_grid());
+	/* ensure z_divisor is initialized to a safe default to avoid garbage dividing */
+	map->z_divisor = 1.0;
 	map->width = width;
 	map->height = height;
 	if (!allocate_map_points(map))

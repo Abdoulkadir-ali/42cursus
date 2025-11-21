@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:42:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 19:51:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,14 @@ static int	handle_mouse_scroll(int button, t_events *events)
 		if (events->keys.ctrl_left || events->keys.ctrl_right)
 			return (adjust_zoom_speed(events, 1));
 		else
-			zoom_in(events->camera_ctx);
+			zoom_in(events->camera_manager);
 	}
 	else if (button == MOUSE_SCROLL_DOWN)
 	{
 		if (events->keys.ctrl_left || events->keys.ctrl_right)
 			return (adjust_zoom_speed(events, 0));
 		else
-			zoom_out(events->camera_ctx);
+			zoom_out(events->camera_manager);
 	}
 	return (1);
 }

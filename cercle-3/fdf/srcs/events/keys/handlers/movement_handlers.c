@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:42:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 20:59:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 #include <stdio.h>
+#include <math.h>
 
 void	cycle_projection(t_events *events)
 {
@@ -20,7 +21,7 @@ void	cycle_projection(t_events *events)
 
 void	reset_view(t_events *events)
 {
-	adjust_camera_to_map(events->camera_ctx);
+	adjust_camera_to_map(events->camera_manager);
 }
 
 void	adjust_move_speed(t_events *events, int increase)
@@ -65,8 +66,29 @@ int	process_movement(t_events *events)
 	{
 		vec2d_multiply_scalar(&v, speed);
 		delta = v;
-		
+
 		vec2d_add(&events->camera->offset, delta);
+
+		/* Defensive guards: prevent camera offset from becoming NaN/Inf or absurdly large
+		   which can later lead to integer overflows when projecting to screen coords. */
+		if (!isfinite(events->camera->offset.x) || !isfinite(events->camera->offset.y))
+		{
+			events->camera->offset.x = 0.0;
+			events->camera->offset.y = 0.0;
+		}
+		/* clamp to a reasonable range relative to window size if available */
+		if (events->window)
+		{
+			double max_off = (double)(events->window->width > events->window->height ?
+				events->window->width : events->window->height) * 100.0;
+			/* don't allow more than absolute safety clamp */
+			if (max_off > 500000.0)
+				max_off = 500000.0;
+			if (events->camera->offset.x > max_off) events->camera->offset.x = max_off;
+			if (events->camera->offset.x < -max_off) events->camera->offset.x = -max_off;
+			if (events->camera->offset.y > max_off) events->camera->offset.y = max_off;
+			if (events->camera->offset.y < -max_off) events->camera->offset.y = -max_off;
+		}
 		return (1);
 	}
 	return (0);
