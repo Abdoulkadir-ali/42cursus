@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:17 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 21:37:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:33:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ typedef struct s_rgb
 	int	r;
 	int	g;
 	int	b;
-}	t_rgb;
+}		t_rgb;
 
 int		clamp(int value, int min, int max);
 double	clamp_d(double value, double min, double max);
@@ -32,7 +32,7 @@ t_vec3	get_vec3(int color);
 int		create_color(int r, int g, int b);
 int		create_color_rgb(t_vec3 rgb);
 int		shift_color(int color, int red_shift, int blue_shift, int green_shift);
-int	create_color_wrap(int r, int g, int b);
+int		create_color_wrap(int r, int g, int b);
 
 int		interpolate_color(int color1, int color2, double ratio);
 int		get_height_color(double z, int min_z, int max_z);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:25:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:33:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,6 @@ typedef struct s_keys
 }						t_keys;
 
 # endif
-
-typedef int				(*key_action_t)(int keycode, t_events *events);
 
 typedef struct s_key_maps
 {

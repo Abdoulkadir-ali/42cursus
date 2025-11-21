@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 19:54:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:34:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 /* ========== PROJECT IMPORTS ========== */
 # include "map.h"
 # include "vectors.h"
-
-typedef struct s_window	t_window;
 # include "window.h"
 
 /* ========== GUI STYLE ========== */
@@ -94,8 +92,8 @@ typedef struct s_camera_args
 {
 	t_map				*map;
 	t_window			*window;
-	t_maps               *manager;
-	char                 *map_file;
+	t_maps				*manager;
+	char				*map_file;
 }						t_camera_args;
 
 t_point					project_point(t_vec3d p3d, int color, t_camera *cam,
