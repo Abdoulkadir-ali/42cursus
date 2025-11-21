@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:33:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:42:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef struct s_data
 # define MAX_WINDOW_HEIGHT 1080
 
 /* ========== OPTIMIZATION DEFAULTS ========== */
-# define DEFAULT_LOD_LEVEL 2
+# define DEFAULT_LOD_LEVEL 1
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
 # define DEFAULT_DAMPENING_THRESHOLD 0

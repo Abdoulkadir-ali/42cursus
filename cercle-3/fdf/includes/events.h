@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:33:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:42:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <X11/keysym.h>
 
 /* ========== OPTIMIZATION DEFAULTS ========== */
-# define DEFAULT_LOD_LEVEL 2
+# define DEFAULT_LOD_LEVEL 1
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
 # define DEFAULT_DAMPENING_THRESHOLD 0
@@ -113,6 +113,7 @@ typedef struct s_keys
 
 # endif
 
+typedef int				(*key_action_t)(int keycode, t_events *events);
 typedef struct s_key_maps
 {
 	key_action_t		key_actions[KEY_MAP_SIZE];

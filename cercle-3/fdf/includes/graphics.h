@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:33:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:42:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include "vectors.h"
 # include "window.h"
 
-# define DEFAULT_LOD_LEVEL 2
+# define DEFAULT_LOD_LEVEL 1
 
 typedef struct s_events	t_events;
 
@@ -157,8 +157,7 @@ t_scanline_data			interpolate_triangle_scanline(t_triangle_interp interp);
 int						z_buffer_test(t_graphics *g, int x, int y, float z);
 void					draw_horizontal_scanline_z(t_graphics *g,
 							t_scanline_data data);
-void					img_pixel_put_with_z(t_graphics *g, int x, int y,
-							float z, int color);
+void					img_pixel_put_with_z(t_graphics *g, t_point p);
 int						is_visible(int x, int y, t_graphics *g);
 void					redraw(t_events *events);
 void					draw_grid(t_graphics *g);

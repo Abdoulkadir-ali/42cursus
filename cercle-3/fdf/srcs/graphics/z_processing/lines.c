@@ -12,22 +12,23 @@
 
 #include "graphics.h"
 
-void	img_pixel_put_with_z(t_graphics *g, int x, int y, float z, int color)
+void	img_pixel_put_with_z(t_graphics *g, t_point p)
 {
 	char    *dst;
+	int     x;
+	int     y;
 
 	if (!g || !g->window)
 		return ;
 	if (!g->window->main_img.img_addr)
 		return ;
+	x = (int)round(p.pos.x);
+	y = (int)round(p.pos.y);
 	if (x < 0 || y < 0 || x >= g->window->width || y >= g->window->height)
 		return ;
-
-	/* perform z-buffer test (triangles.c provides z_buffer_test) */
-	if (!z_buffer_test(g, x, y, z))
+	if (!z_buffer_test(g, x, y, (float)p.pos.z))
 		return ;
-
 	dst = g->window->main_img.img_addr + (y * g->window->main_img.img_line_len
 			+ x * (g->window->main_img.img_bpp / 8));
-	*(unsigned int *)dst = color;
+	*(unsigned int *)dst = p.color;
 }
