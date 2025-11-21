@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:24:11 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 11:45:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 21:48:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	shift_color(int color, int red_shift, int blue_shift, int green_shift)
 	r = get_red(color) + red_shift;
 	g = get_green(color) + green_shift;
 	b = get_blue(color) + blue_shift;
-	return (create_color(r, g, b));
+	return (create_color_wrap(r, g, b));
 }
 
 int	interpolate_color(int c1, int c2, double ratio)

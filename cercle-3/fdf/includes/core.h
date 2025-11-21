@@ -6,21 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 19:52:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:24:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CORE_H
 # define CORE_H
 
-# include "events.h"
-# include "graphics.h"
-# include "gui.h"
 # include <X11/keysym.h>
 # include <mlx.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
+
+// MODULE IMPORTS
+# include "events.h"
+# include "graphics.h"
+# include "gui.h"
 
 typedef struct s_data
 {
@@ -57,12 +59,12 @@ typedef struct s_data
 # define MIN_SPLINE_SEGMENTS 2
 # define MAX_SPLINE_SEGMENTS 50
 
-void					init_window_size(t_data *data);
-void					init_mouse(t_mouse *mouse);
-void					init_keys(t_keys *keys);
-void					init_map_config(t_data *data);
+void					init_defaults(t_data *data);
+int						init_window_main_image(t_window *win, void *mlx);
+int						init_window_system(t_data *data);
 int						init_and_render(t_data *data);
-t_events				*init_events(t_data *data);
+void					init_window_size(t_data *data);
 int						cleanup_and_exit(t_events *events);
+int						main(int argc, char **argv);
 
 #endif

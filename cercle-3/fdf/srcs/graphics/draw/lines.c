@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 21:05:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 21:40:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,118 +17,99 @@
 #include "graphics.h"
 #include "color.h"
 #include <math.h>
-#include <limits.h>
 
-static int safe_to_int(double d)
+/* Inline fast pixel put with optional z-buffer test. This minimizes per-pixel
+ * function-call overhead. The caller must ensure coordinates are reasonable
+ * (we still check bounds per pixel once). */
+static inline void fast_put_pixel(t_graphics *g, int x, int y, float z, int color)
 {
-	if (!isfinite(d))
-		return 0;
-	if (d > (double)(INT_MAX - 4))
-		return INT_MAX - 4;
-	if (d < (double)(INT_MIN + 4))
-		return INT_MIN + 4;
-	return (int)lround(d);
-}
+	t_window *w = g->window;
+	unsigned int *dst;
+	int index;
 
-/* Frustum culling: quickly reject lines that are fully off-screen or absurdly long */
-static int is_line_visible(t_point s, t_point e, t_graphics *g)
-{
-	int sx = safe_to_int(s.pos.x);
-	int sy = safe_to_int(s.pos.y);
-	int ex = safe_to_int(e.pos.x);
-	int ey = safe_to_int(e.pos.y);
-
-	/* both left or both right */
-	if (sx < 0 && ex < 0)
-		return 0;
-	if (sx >= g->window->width && ex >= g->window->width)
-		return 0;
-	/* both above or both below */
-	if (sy < 0 && ey < 0)
-		return 0;
-	if (sy >= g->window->height && ey >= g->window->height)
-		return 0;
-
-	/* extremely long lines are likely invalid or caused by overflow/wrap */
-	if (abs(ex - sx) > 50000 || abs(ey - sy) > 50000)
-		return 0;
-
-	return 1;
-}
-
-typedef struct s_line_vars {
-	int     dx;
-	int     dy;
-	int     sx;
-	int     sy;
-	int     err;
-	double  z;
-	double  z_inc;
-	double  current_dist;
-	double  dist_inc;
-} t_line_vars;
-
-void    draw_line(t_graphics *g, t_point start, t_point end)
-{
-	t_line_vars v;
-	int         e2;
-	int         total_steps;
-
-	/* 1. Safe integer coordinates (avoid UB when values are huge/NaN) */
-	int xi = safe_to_int(start.pos.x);
-	int yi = safe_to_int(start.pos.y);
-	int xj = safe_to_int(end.pos.x);
-	int yj = safe_to_int(end.pos.y);
-	/* Cull lines that are fully off-screen or absurdly long */
-	if (!is_line_visible(start, end, g))
+	if (x < 0 || x >= w->width || y < 0 || y >= w->height)
 		return ;
 
-	/* 1. Setup Integer Bresenham */
-	v.dx = abs(xj - xi);
-	v.dy = abs(yj - yi);
-	v.sx = (xi < xj) ? 1 : -1;
-	v.sy = (yi < yj) ? 1 : -1;
-	v.err = v.dx - v.dy;
-
-	/* 2. Setup Fast Interpolation (Pre-calculate steps) */
-	total_steps = (v.dx > v.dy) ? v.dx : v.dy;
-	v.z = start.pos.z;
-	v.z_inc = 0;
-	v.current_dist = 0;
-	v.dist_inc = 0;
-
-	if (total_steps > 0)
+	if (g->render_config.use_depth_culling && w->z_buffer)
 	{
-		v.z_inc = (end.pos.z - start.pos.z) / (double)total_steps;
-		v.dist_inc = 1.0 / (double)total_steps;
+		index = y * w->width + x;
+		if (z >= w->z_buffer[index])
+			return ;
+		w->z_buffer[index] = z;
 	}
 
-	/* 3. Draw Loop (operate on safe ints) */
-	int step = 0;
-	int x = xi;
-	int y = yi;
+	dst = (unsigned int *)(w->main_img.img_addr + y * w->main_img.img_line_len + x * (w->main_img.img_bpp / 8));
+	*dst = (unsigned int)color;
+}
+
+/* Fast integer Bresenham with incremental color & z interpolation */
+void draw_line(t_graphics *g, t_point start, t_point end)
+{
+	int x0 = (int)lround(start.pos.x);
+	int y0 = (int)lround(start.pos.y);
+	int x1 = (int)lround(end.pos.x);
+	int y1 = (int)lround(end.pos.y);
+	int dx = abs(x1 - x0);
+	int dy = abs(y1 - y0);
+	int sx = (x0 < x1) ? 1 : -1;
+	int sy = (y0 < y1) ? 1 : -1;
+	int err = dx - dy;
+	int steps = (dx > dy) ? dx : dy;
+	int i = 0;
+
+	double zr = start.pos.z;
+	double zr_step = 0.0;
+	if (steps > 0)
+		zr_step = (end.pos.z - start.pos.z) / (double)steps;
+
+	/* incremental color components (wrap behavior) */
+	int sr = get_red(start.color);
+	int sgc = get_green(start.color);
+	int sb = get_blue(start.color);
+	int er = get_red(end.color);
+	int eg = get_green(end.color);
+	int eb = get_blue(end.color);
+	double dr = 0.0, dg = 0.0, db = 0.0;
+	double cr = sr, cg = sgc, cb = sb;
+	if (steps > 0)
+	{
+		dr = (double)(er - sr) / (double)steps;
+		dg = (double)(eg - sgc) / (double)steps;
+		db = (double)(eb - sb) / (double)steps;
+	}
+
+	int x = x0;
+	int y = y0;
+
 	while (1)
 	{
-		if (is_visible(x, y, g))
+		/* compose current color (wrap via & 0xFF to avoid function call) */
+		int ir = ((int)cr) & 0xFF;
+		int ig = ((int)cg) & 0xFF;
+		int ib = ((int)cb) & 0xFF;
+		int color = (ir << 16) | (ig << 8) | ib;
+
+		/* apply camera color shift by wrapping components */
+		if (g->camera->color_shift.x || g->camera->color_shift.y || g->camera->color_shift.z)
 		{
-			/* compute interpolated color using pre-calculated ratio (0.0 to 1.0) */
-			int color = interpolate_color(start.color, end.color, v.current_dist);
-			if (g->camera->color_shift.x || g->camera->color_shift.y || g->camera->color_shift.z)
-				color = shift_color(color, g->camera->color_shift.x, g->camera->color_shift.z, g->camera->color_shift.y);
-			img_pixel_put_with_z(g, x, y, (float)v.z, color);
+			ir = (ir + g->camera->color_shift.x) & 0xFF;
+			ig = (ig + g->camera->color_shift.y) & 0xFF;
+			ib = (ib + g->camera->color_shift.z) & 0xFF;
+			color = (ir << 16) | (ig << 8) | ib;
 		}
 
-		if (x == xj && y == yj)
-			break ;
+		fast_put_pixel(g, x, y, (float)zr, color);
 
-		/* Update Interpolators */
-		v.z += v.z_inc;
-		v.current_dist += v.dist_inc;
+		if (x == x1 && y == y1)
+			break;
 
-		/* Standard Bresenham Step */
-		e2 = 2 * v.err;
-		if (e2 > -v.dy) { v.err -= v.dy; x += v.sx; }
-		if (e2 < v.dx)  { v.err += v.dx; y += v.sy; }
-		step++;
+		int e2 = 2 * err;
+		if (e2 > -dy) { err -= dy; x += sx; }
+		if (e2 < dx)  { err += dx; y += sy; }
+
+		/* advance interpolants */
+		zr += zr_step;
+		cr += dr; cg += dg; cb += db;
+		i++;
 	}
 }

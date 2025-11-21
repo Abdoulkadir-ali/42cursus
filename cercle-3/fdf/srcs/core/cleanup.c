@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:45:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 21:50:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
+#include "graphics.h"
 
 static void	free_map_files(t_events *events)
 {
@@ -53,6 +54,7 @@ int	cleanup_and_exit(t_events *events)
 
 	free_cached_maps(events);
 	free_map_files(events);
+	cleanup_cache();
 	win = events->window;
 	mlx = events->window->mlx_ptr;
 	if (win->z_buffer)

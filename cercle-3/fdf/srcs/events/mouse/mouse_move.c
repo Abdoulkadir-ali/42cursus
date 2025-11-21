@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:42:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 21:37:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,7 @@ static void	handle_camera_rotation(int x, int y, t_events *events)
 	redraw(events);
 }
 
-static void	clamp_color_shift(t_events *events)
-{
-	if (events->camera->color_shift.x > 255)
-		events->camera->color_shift.x = 255;
-	if (events->camera->color_shift.x < -255)
-		events->camera->color_shift.x = -255;
-	if (events->camera->color_shift.z > 255)
-		events->camera->color_shift.z = 255;
-	if (events->camera->color_shift.z < -255)
-		events->camera->color_shift.z = -255;
-	if (events->camera->color_shift.y > 255)
-		events->camera->color_shift.y = 255;
-	if (events->camera->color_shift.y < -255)
-		events->camera->color_shift.y = -255;
-}
+/* color shift wrapping is handled during color creation; no clamping here */
 
 static void	handle_color_shift(int x, int y, t_events *events)
 {
@@ -71,7 +57,6 @@ static void	handle_color_shift(int x, int y, t_events *events)
 	events->camera->color_shift.x += dx * 2;
 	events->camera->color_shift.z -= dx * 2;
 	events->camera->color_shift.y -= dy * 2;
-	clamp_color_shift(events);
 	events->mouse.last_x = x;
 	events->mouse.last_y = y;
 	redraw(events);

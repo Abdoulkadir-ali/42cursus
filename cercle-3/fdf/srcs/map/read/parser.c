@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 02:18:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 21:55:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,20 @@
 #include "map.h"
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-static void	free_split(char **split)
+static char *skip_spaces(char *p)
 {
-	int	i;
-
-	if (!split)
-		return ;
-	i = 0;
-	while (split[i])
-	{
-		free(split[i]);
-		i++;
-	}
-	free(split);
-}
-
-static int	count_words(char **split)
-{
-	int	count;
-
-	count = 0;
-	while (split && split[count])
-		count++;
-	return (count);
+	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r'))
+		p++;
+	return (p);
 }
 
 void	get_map_dimensions(int fd, int *width, int *height)
 {
 	char	*line;
-	char	**split;
+	char	*p;
 
 	*width = 0;
 	*height = 0;
@@ -55,9 +39,16 @@ void	get_map_dimensions(int fd, int *width, int *height)
 			(*height)++;
 			if (*width == 0)
 			{
-				split = ft_split(line, ' ');
-				*width = count_words(split);
-				free_split(split);
+				p = line;
+				while (*p && *p != '\n')
+				{
+					p = skip_spaces(p);
+					if (*p == '\0' || *p == '\n')
+						break;
+					(*width)++;
+					while (*p && *p != '\n' && *p != ' ' && *p != '\t')
+						p++;
+				}
 			}
 		}
 		free(line);
@@ -107,11 +98,11 @@ int	allocate_map_points(t_map *map)
 
 void	parse_map_data(t_map *map, int fd)
 {
-	char *line;
-	char **split;
-	char **parts;
-	int x;
-	int y;
+	char    *line;
+	char    *p;
+	char    *end;
+	int     x;
+	int     y;
 
 	y = 0;
 	line = get_next_line(fd);
@@ -119,22 +110,31 @@ void	parse_map_data(t_map *map, int fd)
 	{
 		if (line[0] != '\n')
 		{
-			split = ft_split(line, ' ');
+			p = line;
 			x = 0;
-			while (split[x] && x < map->width)
+			while (x < map->width)
 			{
-				if (ft_strchr(split[x], ','))
+				p = skip_spaces(p);
+				if (!p || *p == '\0' || *p == '\n')
+					break;
+				/* parse z (decimal, possibly negative) */
+				long z = strtol(p, &end, 10);
+				if (end == p)
+					z = 0;
+				map->points.raw[y][x].z = (int)z;
+				p = end;
+				/* optional color after comma: allow hex (0x..) or decimal */
+				if (*p == ',')
 				{
-					parts = ft_split(split[x], ',');
-					map->points.raw[y][x].z = ft_atoi(parts[0]);
-					map->points.color[y][x] = ft_atoi(parts[1]);
-					free_split(parts);
+					p++;
+					long color = strtol(p, &end, 0);
+					if (end == p)
+						color = 0xFFFFFF;
+					map->points.color[y][x] = (int)color;
+					p = end;
 				}
-				else
-					map->points.raw[y][x].z = ft_atoi(split[x]);
 				x++;
 			}
-			free_split(split);
 			y++;
 		}
 		free(line);

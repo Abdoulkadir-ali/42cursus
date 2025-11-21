@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 19:52:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:25:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,18 +139,26 @@ typedef struct s_events
 	t_key_maps			key_maps;
 }						t_events;
 
+typedef struct s_events_args
+{
+	t_window			*window;
+	t_graphics			*graphics;
+	t_gui				*gui;
+	t_camera_manager	*camera_manager;
+	t_maps				*maps;
+	t_map				*map;
+}						t_events_args;
+
+/* Initialize events from a compact args struct */
+t_events				*init_events(t_events_args *args);
 int						mouse_press(int button, int x, int y, t_events *events);
 int						mouse_release(int button, int x, int y,
 							t_events *events);
 int						mouse_move(int x, int y, t_events *events);
-
 int						key_press(int keycode, t_events *events);
 int						key_release(int keycode, t_events *events);
-
 int						loop_hook(t_events *events);
-
 int						process_movement(t_events *events);
-
 void					cycle_projection(t_events *events);
 void					reset_view(t_events *events);
 void					adjust_move_speed(t_events *events, int increase);

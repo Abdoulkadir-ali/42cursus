@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 18:10:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:19:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,14 @@
 # define GRAPHICS_H
 
 // SYSTEM REQUIREMENTS
-# include <math.h>
 # include "libft.h"
+# include <math.h>
 
 // PROJECT REQUIREMENTS
-# include "window.h"
-# include "map.h"
 # include "camera.h"
+# include "map.h"
 # include "vectors.h"
-
+# include "window.h"
 
 # define DEFAULT_LOD_LEVEL 2
 
@@ -164,6 +163,12 @@ int						is_visible(int x, int y, t_graphics *g);
 void					redraw(t_events *events);
 void					draw_grid(t_graphics *g);
 void					clear_image(t_graphics *g);
+void					clear_z_buffer(t_graphics *g);
+
+/* Projection cache API: precompute projected vertices per-frame. */
+void					cache_projections(t_graphics *g);
+t_point					get_cached_proj(t_graphics *g, int x, int y);
+void					cleanup_cache(void);
 
 t_window				*init_window(void *mlx_ptr);
 t_graphics				*init_graphics(t_graphics_args args);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:52:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 22:22:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 # include "map.h"
 # include "camera.h"
 # include "graphics.h"
-
-
 
 typedef struct s_gui_args
 {
@@ -81,6 +79,7 @@ void				put_text(t_gui *gui, int x, int y, char *text);
 void				put_key(t_gui *gui, int x, int y, char *text);
 void				put_colored(t_gui *gui, int x, int y,
 						t_colored_text colored);
+void				redraw(t_events *events);
 void				put_value(t_gui *gui, int x, int y, char *text);
 void				format_speed(double speed, char *buffer);
 void				format_number(int num, char *buffer);

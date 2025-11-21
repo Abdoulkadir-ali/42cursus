@@ -10,12 +10,9 @@ LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 # Source files organized by category
-SRCS =	srcs/core/main.c \
-	srcs/core/cleanup.c \
-	srcs/core/defaults.c \
-	srcs/core/render.c \
-	srcs/core/events.c \
+SRCS =	srcs/core/cleanup.c \
 	srcs/camera/init.c \
+	srcs/core/main.c \
 	srcs/camera/controls/adjust.c \
 	srcs/camera/controls/rotate.c \
 	srcs/camera/controls/zoom.c \
@@ -23,6 +20,7 @@ SRCS =	srcs/core/main.c \
 	srcs/camera/projection/basic.c \
 	srcs/camera/projection/advanced.c \
 	srcs/graphics/init.c \
+	srcs/graphics/cache.c \
 	srcs/graphics/graphics.c \
 	srcs/graphics/draw/grid.c \
 	srcs/graphics/draw/lines.c \
@@ -58,7 +56,7 @@ SRCS =	srcs/core/main.c \
 	srcs/map/style/style.c \
 	srcs/map/style/themes.c \
 	srcs/window/init.c \
-	srcs/events/init.c \
+srcs/core/init.c \
 	srcs/events/mouse/mouse_events.c \
 	srcs/events/mouse/mouse_move.c \
 	srcs/events/keys/key_events.c \
@@ -68,7 +66,9 @@ SRCS =	srcs/core/main.c \
 	srcs/events/keys/handlers/toggle_handlers.c \
 	srcs/events/keys/handlers/flag_handlers.c \
 	srcs/events/hooks.c \
+	srcs/events/init.c \
 	srcs/gui/init.c \
+	srcs/gui/redraw.c \
 	srcs/gui/panel/panel.c \
 	srcs/gui/print/put.c \
 	srcs/gui/display/print/format.c \

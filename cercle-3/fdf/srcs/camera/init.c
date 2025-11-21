@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 02:50:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 21:13:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/21 21:48:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,9 @@ t_camera_manager	*init_camera(t_camera_args args)
 		return (NULL);
 	ctx->camera = init_camera_default(cam);
 	ctx->window = args.window;
-	/* Initialize map manager if provided; otherwise use provided map */
 	if (args.manager)
 	{
 		t_maps *mgr = args.manager;
-		/* If a single map filename was provided, load it into the manager
-		   (replace any existing contents). Otherwise, if the manager already
-		   contains a populated list (from init_map_list), preserve it. If the
-		   manager is empty, fall back to creating a test grid. */
 		if (args.map_file)
 		{
 			mgr->current_map = load_map(args.map_file);
@@ -78,7 +73,6 @@ t_camera_manager	*init_camera(t_camera_args args)
 		}
 		else if (mgr->maps && mgr->count > 0)
 		{
-			/* manager already populated by caller (e.g. init_map_list) */
 			mgr->current_index = 0;
 			mgr->current_map = mgr->maps[mgr->current_index];
 			ctx->map = mgr->current_map;
