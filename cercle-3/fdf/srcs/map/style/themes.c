@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:13:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:37:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "color.h"
+#include "map.h"
 
 int	get_solid_color(int z)
 {

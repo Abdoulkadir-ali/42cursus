@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:53:06 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:05:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:33:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ t_events	*init_events(t_events_args *args)
 		return (NULL);
 	events->window = args->window;
 	events->graphics = args->graphics;
-	events->gui = args->gui;
+	events->gui = *args->gui;
 	events->camera_manager = args->camera_manager;
 	events->camera = args->camera_manager ? args->camera_manager->camera : NULL;
 	events->maps = args->maps;

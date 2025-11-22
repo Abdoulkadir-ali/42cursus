@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 15:26:38 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 20:35:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:29:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-
-
 
 t_gui_theme	get_gui_theme(t_gui_style style)
 {

@@ -6,17 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 02:37:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:34:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EVENTS_H
 # define EVENTS_H
 
-# include "camera.h"
-# include "graphics.h"
 # include "gui.h"
 # include "libft.h"
+# include "camera.h"
+# include "graphics.h"
 # include "map.h"
 # include "window.h"
 # include <X11/keysym.h>
@@ -120,24 +120,6 @@ typedef struct s_key_maps
 	key_action_t		key_releases[KEY_MAP_SIZE];
 }						t_key_maps;
 
-typedef struct s_events
-{
-	t_camera			*camera;
-	t_window			*window;
-	t_map				*map;
-	t_maps				*maps;
-	t_graphics			*graphics;
-	t_gui				*gui;
-	t_camera_manager	*camera_manager;
-	int					render_mode;
-	int					lod_level;
-	int					use_depth_culling;
-	int					fill_triangles;
-	t_mouse				mouse;
-	t_keys				keys;
-	t_key_maps			key_maps;
-}						t_events;
-
 typedef struct s_events_args
 {
 	t_window			*window;
@@ -147,6 +129,24 @@ typedef struct s_events_args
 	t_maps				*maps;
 	t_map				*map;
 }						t_events_args;
+
+typedef struct s_events
+{
+	t_camera			*camera;
+	t_window			*window;
+	t_map				*map;
+	t_maps				*maps;
+	t_graphics			*graphics;
+	t_gui				gui;
+	t_camera_manager	*camera_manager;
+	int					render_mode;
+	int					lod_level;
+	int					use_depth_culling;
+	int					fill_triangles;
+	t_mouse				mouse;
+	t_keys				keys;
+	t_key_maps			key_maps;
+}						t_events;
 
 /* Initialize events from a compact args struct */
 t_events				*init_events(t_events_args *args);

@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 19:53:29 by abdoali          #+#    #+#             */
-/*   Updated: 2025/11/12 19:53:29 by abdoali         ###   ########.fr       */
+/*   Created: 2025/11/22 14:26:36 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/22 14:26:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-
 
 static void	format_depth_str(int percent, char *str)
 {

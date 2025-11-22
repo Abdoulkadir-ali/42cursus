@@ -6,20 +6,30 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:38:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_H
 # define MAP_H
 
+// LIBS
+# include <dirent.h>
+# include <fcntl.h>
+# include <limits.h>
+# include <math.h>
+# include <stdlib.h>
+# include <time.h>
+# include <unistd.h>
+
+// MODULES
+# include "libft.h"
 # include "color.h"
 # include "vectors.h"
-# include <dirent.h>
-# include <stdlib.h>
 
-/* Define Magic Number for "Empty/Invalid" points */
-# define BAD_VALUE -2000000000.0
+# ifndef BAD_VALUE
+#  define BAD_VALUE -2000000000.0
+# endif
 
 typedef enum e_map_style
 {
@@ -42,10 +52,10 @@ typedef struct s_map_style_config
 
 typedef struct s_map_points
 {
-    t_vec3d     *pos;   /* 1D Array: size = width * height */
-    t_vec3d     *raw;   /* 1D Array */
-    int         *color; /* 1D Array */
-}               t_map_points;
+	t_vec3d *pos; /* 1D Array: size = width * height */
+	t_vec3d *raw; /* 1D Array */
+	int *color;   /* 1D Array */
+}						t_map_points;
 
 typedef struct s_map
 {

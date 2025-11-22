@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 05:18:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:21:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:39:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	build_rz(t_vec3d rz[3], double cz, double sz)
 void	build_rotation_matrices(t_vec3d rx[3], t_vec3d ry[3], t_vec3d rz[3],
 		t_rot_ctx *ctx)
 {
-	build_rx(rx, ctx->cosv.x, ctx->sinv.x);
-	build_ry(ry, ctx->cosv.y, ctx->sinv.y);
-	build_rz(rz, ctx->cosv.z, ctx->sinv.z);
+	build_rx(rx, ctx->cos.x, ctx->sin.x);
+	build_ry(ry, ctx->cos.y, ctx->sin.y);
+	build_rz(rz, ctx->cos.z, ctx->sin.z);
 }

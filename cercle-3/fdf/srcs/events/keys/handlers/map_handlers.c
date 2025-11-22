@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:04:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:33:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	handle_n(int keycode, t_events *events)
 int	handle_s(int keycode, t_events *events)
 {
 	(void)keycode;
-	cycle_gui_style(events->gui);
+	cycle_gui_style(&events->gui);
 	return (1);
 }
 

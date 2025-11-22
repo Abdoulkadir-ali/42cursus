@@ -71,7 +71,7 @@ srcs/core/init.c \
 	srcs/gui/print/put.c \
 	srcs/gui/display/print/format.c \
 	srcs/gui/display/layout.c \
-	srcs/gui/display/layout_engine.c \
+	srcs/gui/display/layout.c \
 	srcs/gui/display/sections/guide.c \
 	srcs/gui/display/sections/movement.c \
 	srcs/gui/display/sections/performance.c \

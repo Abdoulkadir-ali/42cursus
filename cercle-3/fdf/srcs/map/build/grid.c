@@ -6,20 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:14:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:38:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "camera.h"
 #include "map.h"
-#include <fcntl.h>
-#include <math.h>
-#include <stdio.h>
 
 static void	init_grid_points(t_map *map)
 {
 	int	x;
 	int	y;
+	int	idx;
 
 	y = 0;
 	while (y < map->height)
@@ -27,7 +24,7 @@ static void	init_grid_points(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			int idx = y * map->width + x;
+			idx = y * map->width + x;
 			map->points.raw[idx].x = x;
 			map->points.raw[idx].y = y;
 			map->points.raw[idx].z = x;
@@ -59,6 +56,7 @@ void	calculate_min_max_z(t_map *map)
 	int	y;
 	int	z;
 	int	first;
+	int	idx;
 
 	first = 1;
 	y = 0;
@@ -67,7 +65,7 @@ void	calculate_min_max_z(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			int idx = y * map->width + x;
+			idx = y * map->width + x;
 			z = map->points.raw[idx].z;
 			if (first)
 			{
@@ -95,6 +93,7 @@ void	calculate_min_max_proj_z(t_map *map, t_camera *camera, double z_divisor)
 	int		y;
 	float	z;
 	int		first;
+	int		idx;
 
 	first = 1;
 	y = 0;
@@ -103,10 +102,9 @@ void	calculate_min_max_proj_z(t_map *map, t_camera *camera, double z_divisor)
 		x = 0;
 		while (x < map->width)
 		{
-			int idx = y * map->width + x;
-			z = project_point(map->points.pos[idx],
-					map->points.color[idx], camera,
-					z_divisor).pos.z;
+			idx = y * map->width + x;
+			z = project_point(map->points.pos[idx], map->points.color[idx],
+					camera, z_divisor).pos.z;
 			if (first)
 			{
 				map->min_proj_z = z;
@@ -128,11 +126,12 @@ void	calculate_min_max_proj_z(t_map *map, t_camera *camera, double z_divisor)
 
 static t_map	*allocate_map_arrays(t_map *map)
 {
-	size_t total = (size_t)map->width * (size_t)map->height;
+	size_t	total;
+
+	total = (size_t)map->width * (size_t)map->height;
 	map->points.pos = malloc(sizeof(t_vec3d) * total);
 	map->points.raw = malloc(sizeof(t_vec3d) * total);
 	map->points.color = malloc(sizeof(int) * total);
-
 	if (!map->points.pos || !map->points.raw || !map->points.color)
 		return (NULL);
 	return (map);

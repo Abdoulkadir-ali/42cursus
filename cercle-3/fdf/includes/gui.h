@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:24:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:37:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 # define GUI_H
 
 # include <mlx.h>
+# include <string.h>
 
 // Header imports
+# include "libft.h"
 # include "vectors.h"
 # include "window.h"
 # include "map.h"
 # include "camera.h"
 # include "graphics.h"
+
+typedef struct s_events				t_events;
 
 typedef struct s_gui_args
 {
@@ -40,7 +44,7 @@ typedef struct s_gui
 	t_camera		*camera;
 	t_map			*map;
 	int				fps;
-	int				last_win_height; /* Track resize events */
+	int				last_win_height;
 }					t_gui;
 
 /* ========== LAYOUT ENGINE CONTEXT ========== */
@@ -84,7 +88,7 @@ typedef struct s_colored_text
 # define GUI_KEY_COLOR 0xFFAA00
 
 /* ========== GUI FUNCTIONS ========== */
-void				render_gui(t_gui *gui);
+void				redraw(t_events *events);
 void				draw_panel_background(t_gui *gui);
 void				clear_gui(t_gui *gui);
 

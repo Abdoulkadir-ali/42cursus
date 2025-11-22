@@ -6,28 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:24:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:16:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:39:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "camera.h"
-#include "map.h" /* Ensure BAD_VALUE is visible */
-
-/* If BAD_VALUE isn't defined here, define it */
-#ifndef BAD_VALUE
-# define BAD_VALUE -2000000000.0
-#endif
-
 t_point	project_point(t_vec3d p3d, int color, t_camera *cam, double z_divisor)
 {
-    /* --- ADD THIS CHECK --- */
-    if (p3d.z <= BAD_VALUE + 1.0)
-        return ((t_point){.pos = {BAD_VALUE, BAD_VALUE, BAD_VALUE}, .color = color});
-    /* ---------------------- */
+	t_point				p;
+	t_projection_type	type;
 
-    t_point				p;
-    t_projection_type	type;
-
+	if (p3d.z <= BAD_VALUE + 1.0)
+		return ((t_point){.pos = {BAD_VALUE, BAD_VALUE, BAD_VALUE},
+			.color = color});
 	type = cam->projection;
 	p.pos.x = p3d.x;
 	p.pos.y = p3d.y;

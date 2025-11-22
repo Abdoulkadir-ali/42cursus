@@ -6,23 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:36:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "map.h"
-#include <limits.h>
-
-/* Define Magic Number locally if not in header */
-#ifndef BAD_VALUE
-# define BAD_VALUE -2000000000.0
-#endif
 
 static char	*skip_spaces(char *p)
 {
-	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r'
-			|| *p == '\v' || *p == '\f'))
+	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\v'
+			|| *p == '\f'))
 		p++;
 	return (p);
 }
@@ -84,21 +77,17 @@ int	allocate_map_points(t_map *map)
 	map->points.pos = malloc(sizeof(t_vec3d) * total);
 	map->points.raw = malloc(sizeof(t_vec3d) * total);
 	map->points.color = malloc(sizeof(int) * total);
-
 	if (!map->points.pos || !map->points.raw || !map->points.color)
 		return (0);
-
 	i = 0;
 	while (i < total)
 	{
 		/* CRITICAL: Initialize everything to BAD_VALUE.
-		   If a line is shorter than map->width, the tail remains BAD_VALUE. */
+			If a line is shorter than map->width, the tail remains BAD_VALUE. */
 		map->points.raw[i].z = BAD_VALUE;
-		
 		/* Pre-calculate grid coordinates for the cache */
 		map->points.raw[i].x = i % map->width;
 		map->points.raw[i].y = i / map->width;
-		
 		map->points.color[i] = 0xFFFFFF;
 		i++;
 	}
@@ -114,6 +103,8 @@ void	parse_map_data(t_map *map, int fd)
 	int		x;
 	int		y;
 	size_t	idx;
+	long	z;
+	long	color;
 
 	y = 0;
 	line = get_next_line(fd);
@@ -129,21 +120,19 @@ void	parse_map_data(t_map *map, int fd)
 				/* If line ends early, STOP. The rest is already BAD_VALUE */
 				if (!p || *p == '\0' || *p == '\n')
 					break ;
-				
 				/* Calculate 1D Index */
 				idx = (size_t)y * map->width + x;
-
-				long z = strtol(p, &end, 10);
-				if (end == p) z = 0;
-
+				z = strtol(p, &end, 10);
+				if (end == p)
+					z = 0;
 				map->points.raw[idx].z = (double)z;
-				
 				p = end;
 				if (*p == ',')
 				{
 					p++;
-					long color = strtol(p, &end, 0);
-					if (end == p) color = 0xFFFFFF;
+					color = strtol(p, &end, 0);
+					if (end == p)
+						color = 0xFFFFFF;
 					map->points.color[idx] = (int)color;
 					p = end;
 				}

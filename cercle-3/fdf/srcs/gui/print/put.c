@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 15:25:32 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:17:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:29:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
 #include "gui.h"
 
 void	put_text(t_gui *gui, int x, int y, char *text)

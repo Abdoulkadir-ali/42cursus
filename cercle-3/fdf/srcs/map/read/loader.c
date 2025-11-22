@@ -6,16 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:37:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "map.h"
-#include <fcntl.h>
-#include <stdio.h>
-#include <time.h>
-#include <unistd.h>
 
 t_map	*load_map(char *filename)
 {
@@ -25,6 +20,7 @@ t_map	*load_map(char *filename)
 	int		height;
 	clock_t	start;
 	clock_t	end;
+	size_t	total_size;
 
 	start = clock();
 	fd = open(filename, O_RDONLY);
@@ -37,7 +33,6 @@ t_map	*load_map(char *filename)
 	map = malloc(sizeof(t_map));
 	if (!map)
 		return (create_test_grid());
-	/* ensure z_divisor is initialized to a safe default to avoid garbage dividing */
 	map->z_divisor = 1.0;
 	map->width = width;
 	map->height = height;
@@ -51,13 +46,11 @@ t_map	*load_map(char *filename)
 	end = clock();
 	printf("Parsing time: %f seconds\n", (double)(end - start)
 		/ CLOCKS_PER_SEC);
-	
 	/* REPLACE THE NESTED WHILE LOOPS WITH THIS: */
 	/* Bulk copy raw data to pos data (Instant) */
-	size_t total_size = (size_t)map->width * (size_t)map->height;
+	total_size = (size_t)map->width * (size_t)map->height;
 	ft_memcpy(map->points.pos, map->points.raw, total_size * sizeof(t_vec3d));
 	/* ---------------------------------------- */
-	
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_max_z.x;
 	map->max_proj_z = map->min_max_z.y;
