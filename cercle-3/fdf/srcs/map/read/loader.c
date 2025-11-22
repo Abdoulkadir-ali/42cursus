@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:04:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,20 +52,11 @@ t_map	*load_map(char *filename)
 	printf("Parsing time: %f seconds\n", (double)(end - start)
 		/ CLOCKS_PER_SEC);
 	
-	/* REVERT: Manual 2D Copy */
-	int x, y_idx;
-	y_idx = 0;
-	while (y_idx < map->height)
-	{
-		x = 0;
-		while (x < map->width)
-		{
-			map->points.pos[y_idx][x] = map->points.raw[y_idx][x];
-			x++;
-		}
-		y_idx++;
-	}
-	/* ---------------------- */
+	/* REPLACE THE NESTED WHILE LOOPS WITH THIS: */
+	/* Bulk copy raw data to pos data (Instant) */
+	size_t total_size = (size_t)map->width * (size_t)map->height;
+	ft_memcpy(map->points.pos, map->points.raw, total_size * sizeof(t_vec3d));
+	/* ---------------------------------------- */
 	
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_max_z.x;

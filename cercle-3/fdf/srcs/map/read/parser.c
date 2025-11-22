@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:03:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 #include "map.h"
 #include <limits.h>
 
-#define BAD_VALUE -2000000000.0
+/* Define Magic Number locally if not in header */
+#ifndef BAD_VALUE
+# define BAD_VALUE -2000000000.0
+#endif
 
 static char	*skip_spaces(char *p)
 {
-	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\v'
-			|| *p == '\f'))
+	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r'
+			|| *p == '\v' || *p == '\f'))
 		p++;
 	return (p);
 }
@@ -41,6 +44,7 @@ static int	count_words(char *line)
 	return (count);
 }
 
+/* 1. SCAN PASS: Find the absolute maximum width */
 void	get_map_dimensions(int fd, int *width, int *height)
 {
 	char	*line;
@@ -53,13 +57,13 @@ void	get_map_dimensions(int fd, int *width, int *height)
 	{
 		if (line[0] != '\0')
 		{
+			/* Ignore empty lines at end of file */
 			if (line[0] == '\n' && line[1] == '\0')
 			{
 				free(line);
 				line = get_next_line(fd);
-				continue;
+				continue ;
 			}
-			
 			(*height)++;
 			curr_w = count_words(line);
 			if (curr_w > *width)
@@ -70,32 +74,38 @@ void	get_map_dimensions(int fd, int *width, int *height)
 	}
 }
 
+/* 2. ALLOCATION: Allocate ONE block and PAD with BAD_VALUE */
 int	allocate_map_points(t_map *map)
 {
-	int	y;
+	size_t	total;
+	size_t	i;
 
-	map->points.pos = malloc(sizeof(t_vec3d *) * map->height);
-	map->points.raw = malloc(sizeof(t_vec3d *) * map->height);
-	map->points.color = malloc(sizeof(int *) * map->height);
+	total = (size_t)map->height * (size_t)map->width;
+	map->points.pos = malloc(sizeof(t_vec3d) * total);
+	map->points.raw = malloc(sizeof(t_vec3d) * total);
+	map->points.color = malloc(sizeof(int) * total);
 
 	if (!map->points.pos || !map->points.raw || !map->points.color)
 		return (0);
 
-	y = 0;
-	while (y < map->height)
+	i = 0;
+	while (i < total)
 	{
-		map->points.pos[y] = malloc(sizeof(t_vec3d) * map->width);
-		map->points.raw[y] = malloc(sizeof(t_vec3d) * map->width);
-		map->points.color[y] = malloc(sizeof(int) * map->width);
-
-		if (!map->points.pos[y] || !map->points.raw[y] || !map->points.color[y])
-			return (0); // Cleanup would be needed in real implementation
-
-		y++;
+		/* CRITICAL: Initialize everything to BAD_VALUE.
+		   If a line is shorter than map->width, the tail remains BAD_VALUE. */
+		map->points.raw[i].z = BAD_VALUE;
+		
+		/* Pre-calculate grid coordinates for the cache */
+		map->points.raw[i].x = i % map->width;
+		map->points.raw[i].y = i / map->width;
+		
+		map->points.color[i] = 0xFFFFFF;
+		i++;
 	}
 	return (1);
 }
 
+/* 3. PARSING: Fill the data we have, leave the rest as BAD_VALUE */
 void	parse_map_data(t_map *map, int fd)
 {
 	char	*line;
@@ -103,6 +113,7 @@ void	parse_map_data(t_map *map, int fd)
 	char	*end;
 	int		x;
 	int		y;
+	size_t	idx;
 
 	y = 0;
 	line = get_next_line(fd);
@@ -115,37 +126,27 @@ void	parse_map_data(t_map *map, int fd)
 			while (x < map->width)
 			{
 				p = skip_spaces(p);
+				/* If line ends early, STOP. The rest is already BAD_VALUE */
 				if (!p || *p == '\0' || *p == '\n')
 					break ;
 				
+				/* Calculate 1D Index */
+				idx = (size_t)y * map->width + x;
+
 				long z = strtol(p, &end, 10);
-				if (end == p)
-					z = 0;
-				
-				map->points.raw[y][x].z = (double)z;
-				map->points.raw[y][x].x = x;
-				map->points.raw[y][x].y = y;
-				map->points.color[y][x] = 0xFFFFFF;
+				if (end == p) z = 0;
+
+				map->points.raw[idx].z = (double)z;
 				
 				p = end;
 				if (*p == ',')
 				{
 					p++;
 					long color = strtol(p, &end, 0);
-					if (end == p)
-						color = 0xFFFFFF;
-					map->points.color[y][x] = (int)color;
+					if (end == p) color = 0xFFFFFF;
+					map->points.color[idx] = (int)color;
 					p = end;
 				}
-				x++;
-			}
-			// Pad remaining columns with zeros if line is shorter
-			while (x < map->width)
-			{
-				map->points.raw[y][x].z = 0;
-				map->points.raw[y][x].x = x;
-				map->points.raw[y][x].y = y;
-				map->points.color[y][x] = 0xFFFFFF;
 				x++;
 			}
 			y++;

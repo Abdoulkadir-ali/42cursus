@@ -5,12 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/10 18:28:20 by abdoali           #+#    #+#             */
+/*   Created: 2025/11/10 18:28:20 by abdoali           ###   ########.fr       */
 /*   Updated: 2025/11/22 12:52:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "libft.h"
+#include <string.h>
 
 static void	gui_pixel_put(t_gui *gui, int x, int y, int color)
 {
@@ -63,12 +65,24 @@ void	draw_panel_background(t_gui *gui)
 	}
 }
 
+void	clear_gui(t_gui *gui)
+{
+	int		total_bytes;
+	char	*buffer;
+
+	total_bytes = gui->window->height * gui->window->gui_img.img_line_len;
+	buffer = gui->window->gui_img.img_addr;
+	memset(buffer, 0, total_bytes);
+}
+
 void	render_gui(t_gui *gui)
 {
 	int	section_y;
 	int	height;
 	int	footer_start;
 
+	clear_gui(gui);
+	draw_panel_background(gui);
 	height = gui->window->height;
 	section_y = GUI_PADDING;
 	draw_controls_guide_at(gui, &section_y);

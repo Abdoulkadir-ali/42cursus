@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:03:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:14:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,12 @@ static void	init_grid_points(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			map->points.raw[y][x].x = x;
-			map->points.raw[y][x].y = y;
-			map->points.raw[y][x].z = x;
-			map->points.pos[y][x] = map->points.raw[y][x];
-			map->points.color[y][x] = 0xFFFFFF;
+			int idx = y * map->width + x;
+			map->points.raw[idx].x = x;
+			map->points.raw[idx].y = y;
+			map->points.raw[idx].z = x;
+			map->points.pos[idx] = map->points.raw[idx];
+			map->points.color[idx] = 0xFFFFFF;
 			x++;
 		}
 		y++;
@@ -66,7 +67,8 @@ void	calculate_min_max_z(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			z = map->points.raw[y][x].z;
+			int idx = y * map->width + x;
+			z = map->points.raw[idx].z;
 			if (first)
 			{
 				map->min_max_z.x = z;
@@ -101,8 +103,9 @@ void	calculate_min_max_proj_z(t_map *map, t_camera *camera, double z_divisor)
 		x = 0;
 		while (x < map->width)
 		{
-			z = project_point(map->points.pos[y][x],
-					map->points.color[y][x], camera,
+			int idx = y * map->width + x;
+			z = project_point(map->points.pos[idx],
+					map->points.color[idx], camera,
 					z_divisor).pos.z;
 			if (first)
 			{
@@ -125,24 +128,13 @@ void	calculate_min_max_proj_z(t_map *map, t_camera *camera, double z_divisor)
 
 static t_map	*allocate_map_arrays(t_map *map)
 {
-	int	y;
-
-	map->points.pos = malloc(sizeof(t_vec3d *) * map->height);
-	map->points.raw = malloc(sizeof(t_vec3d *) * map->height);
-	map->points.color = malloc(sizeof(int *) * map->height);
+	size_t total = (size_t)map->width * (size_t)map->height;
+	map->points.pos = malloc(sizeof(t_vec3d) * total);
+	map->points.raw = malloc(sizeof(t_vec3d) * total);
+	map->points.color = malloc(sizeof(int) * total);
 
 	if (!map->points.pos || !map->points.raw || !map->points.color)
 		return (NULL);
-
-	for (y = 0; y < map->height; y++)
-	{
-		map->points.pos[y] = malloc(sizeof(t_vec3d) * map->width);
-		map->points.raw[y] = malloc(sizeof(t_vec3d) * map->width);
-		map->points.color[y] = malloc(sizeof(int) * map->width);
-
-		if (!map->points.pos[y] || !map->points.raw[y] || !map->points.color[y])
-			return (NULL);
-	}
 	return (map);
 }
 
@@ -166,27 +158,13 @@ t_map	*create_test_grid(void)
 
 void	free_map(t_map *map)
 {
-	int	y;
-
 	if (!map)
 		return ;
 	if (map->points.pos)
-	{
-		for (y = 0; y < map->height; y++)
-			free(map->points.pos[y]);
 		free(map->points.pos);
-	}
 	if (map->points.raw)
-	{
-		for (y = 0; y < map->height; y++)
-			free(map->points.raw[y]);
 		free(map->points.raw);
-	}
 	if (map->points.color)
-	{
-		for (y = 0; y < map->height; y++)
-			free(map->points.color[y]);
 		free(map->points.color);
-	}
 	free(map);
 }

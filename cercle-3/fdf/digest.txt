@@ -1400,7 +1400,7 @@ FILE: includes/map.h
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:03:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1436,10 +1436,10 @@ typedef struct s_map_style_config
 
 typedef struct s_map_points
 {
-	t_vec3d				**pos;
-	t_vec3d				**raw;
-	int					**color;
-}						t_map_points;
+    t_vec3d     *pos;   /* 1D Array: size = width * height */
+    t_vec3d     *raw;   /* 1D Array */
+    int         *color; /* 1D Array */
+}               t_map_points;
 
 typedef struct s_map
 {
@@ -5502,16 +5502,27 @@ FILE: srcs/camera/projection/projection.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:24:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:03:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:16:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "camera.h"
+#include "map.h" /* Ensure BAD_VALUE is visible */
+
+/* If BAD_VALUE isn't defined here, define it */
+#ifndef BAD_VALUE
+# define BAD_VALUE -2000000000.0
+#endif
 
 t_point	project_point(t_vec3d p3d, int color, t_camera *cam, double z_divisor)
 {
-	t_point				p;
-	t_projection_type	type;
+    /* --- ADD THIS CHECK --- */
+    if (p3d.z <= BAD_VALUE + 1.0)
+        return ((t_point){.pos = {BAD_VALUE, BAD_VALUE, BAD_VALUE}, .color = color});
+    /* ---------------------- */
+
+    t_point				p;
+    t_projection_type	type;
 
 	type = cam->projection;
 	p.pos.x = p3d.x;
@@ -6872,7 +6883,7 @@ FILE: srcs/graphics/cache.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 03:11:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:04:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:16:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -6930,18 +6941,18 @@ void	cache_projections(t_graphics *g)
 		x = 0;
 		while (x < g->map->width)
 		{
-			idx = y * g->map->width + x;
-			
-			/* Read from 2D Map -> Write to 1D Cache */
-			/* Check for BAD_VALUE to preserve safety */
-			if (g->map->points.pos[y][x].z <= BAD_VALUE)
+			idx = y * g->map->width + x; // 1D Index Math
+
+			/* Check BAD_VALUE in 1D Array */
+			if (g->map->points.pos[idx].z <= BAD_VALUE)
 			{
 				cached[idx].pos.x = BAD_VALUE;
 			}
 			else
 			{
-				cached[idx] = project_point(g->map->points.pos[y][x],
-						g->map->points.color[y][x], g->camera, g->map->z_divisor);
+				/* Pass 1D data to project_point */
+				cached[idx] = project_point(g->map->points.pos[idx],
+						g->map->points.color[idx], g->camera, g->map->z_divisor);
 			}
 			x++;
 		}
@@ -6954,11 +6965,20 @@ t_point	get_cached_proj(t_graphics *g, int x, int y)
     /* ... (keep existing bounds checks) ... */
 	if (cached && cached_map == g->map && x >= 0 && y >= 0 && x < cached_w && y < cached_h)
 	{
-		return (cached[y * cached_w + x]); /* Cache is 1D */
+		return (cached[y * cached_w + x]); // 1D Access
 	}
-    /* Fallback: Read from 2D Map */
-	return (project_point(g->map->points.pos[y][x], 
-			g->map->points.color[y][x],
+    /* Fallback */
+	size_t idx = y * g->map->width + x;
+    
+    /* Check RAW Z before projecting */
+    if (g->map->points.pos[idx].z <= BAD_VALUE + 1.0) /* Tolerance check */
+    {
+        return ((t_point){.pos = {BAD_VALUE, BAD_VALUE, BAD_VALUE}, .color = 0});
+    }
+    /* ------------------------ */
+
+	return (project_point(g->map->points.pos[idx], 
+			g->map->points.color[idx],
 			g->camera, g->map->z_divisor));
 }
 
@@ -7026,7 +7046,7 @@ FILE: srcs/graphics/draw/grid.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:03:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -7172,7 +7192,7 @@ void	draw_grid_section(t_graphics *g, int start_y, int end_y, int step)
 				continue ;
 			}
 			p1 = get_cached_proj(g, x, y);
-			if (!is_point_visible(g->map->points.pos[y][x], g))
+			if (!is_point_visible(g->map->points.pos[y * g->map->width + x], g))
 			{
 				x += step;
 				continue ;
@@ -8189,16 +8209,19 @@ FILE: srcs/graphics/perspective/lines.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 20:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 12:53:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:16:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/* Define a threshold that is definitely off-screen but safer than BAD_VALUE */
+#define DRAW_LIMIT -1000000.0
+
 int	is_point_visible(t_vec3d p, t_graphics *g)
 {
 	/* Don't render BAD_VALUE points */
-	if (p.z == BAD_VALUE)
+	if (p.z <= DRAW_LIMIT)
 		return (0);
 		
 	t_point	projected;
@@ -8236,7 +8259,7 @@ int	is_on_screen(int x, int y, t_graphics *g)
 int	should_draw_line(t_point p1, t_point p2, t_graphics *g)
 {
 	/* Check for BAD_VALUE points - don't draw lines to/from invalid points */
-	if (p1.pos.z == BAD_VALUE || p2.pos.z == BAD_VALUE)
+	if (p1.pos.z <= DRAW_LIMIT || p2.pos.z <= DRAW_LIMIT)
 		return (0);
 		
 	if (!is_on_screen(p1.pos.x, p1.pos.y, g) && !is_on_screen(p2.pos.x, p2.pos.y,
@@ -9522,12 +9545,14 @@ FILE: srcs/gui/panel/panel.c
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/10 18:28:20 by abdoali           #+#    #+#             */
+/*   Created: 2025/11/10 18:28:20 by abdoali           ###   ########.fr       */
 /*   Updated: 2025/11/22 12:52:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "libft.h"
+#include <string.h>
 
 static void	gui_pixel_put(t_gui *gui, int x, int y, int color)
 {
@@ -9580,12 +9605,24 @@ void	draw_panel_background(t_gui *gui)
 	}
 }
 
+void	clear_gui(t_gui *gui)
+{
+	int		total_bytes;
+	char	*buffer;
+
+	total_bytes = gui->window->height * gui->window->gui_img.img_line_len;
+	buffer = gui->window->gui_img.img_addr;
+	memset(buffer, 0, total_bytes);
+}
+
 void	render_gui(t_gui *gui)
 {
 	int	section_y;
 	int	height;
 	int	footer_start;
 
+	clear_gui(gui);
+	draw_panel_background(gui);
 	height = gui->window->height;
 	section_y = GUI_PADDING;
 	draw_controls_guide_at(gui, &section_y);
@@ -9616,7 +9653,7 @@ FILE: srcs/gui/print/put.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 15:25:32 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 11:36:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:17:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -9643,6 +9680,19 @@ void	put_colored(t_gui *gui, int x, int y, t_colored_text colored)
 
 void	put_value(t_gui *gui, int x, int y, char *text)
 {
+	int	i;
+	int	j;
+	int	len;
+
+	// Clear background rectangle
+	len = ft_strlen(text) * 8; // Approximate character width
+	for (i = 0; i < len; i++)
+	{
+		for (j = 0; j < 15; j++) // Approximate character height
+		{
+			mlx_pixel_put(gui->window->mlx_ptr, gui->window->ptr, x + i, y + j, 0x000000);
+		}
+	}
 	mlx_string_put(gui->window->mlx_ptr, gui->window->ptr, x, y,
 		GUI_VALUE_COLOR, text);
 }
@@ -9826,7 +9876,7 @@ FILE: srcs/map/read/loader.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:04:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -9872,20 +9922,11 @@ t_map	*load_map(char *filename)
 	printf("Parsing time: %f seconds\n", (double)(end - start)
 		/ CLOCKS_PER_SEC);
 	
-	/* REVERT: Manual 2D Copy */
-	int x, y_idx;
-	y_idx = 0;
-	while (y_idx < map->height)
-	{
-		x = 0;
-		while (x < map->width)
-		{
-			map->points.pos[y_idx][x] = map->points.raw[y_idx][x];
-			x++;
-		}
-		y_idx++;
-	}
-	/* ---------------------- */
+	/* REPLACE THE NESTED WHILE LOOPS WITH THIS: */
+	/* Bulk copy raw data to pos data (Instant) */
+	size_t total_size = (size_t)map->width * (size_t)map->height;
+	ft_memcpy(map->points.pos, map->points.raw, total_size * sizeof(t_vec3d));
+	/* ---------------------------------------- */
 	
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_max_z.x;
@@ -9909,7 +9950,7 @@ FILE: srcs/map/read/parser.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:03:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -9917,12 +9958,15 @@ FILE: srcs/map/read/parser.c
 #include "map.h"
 #include <limits.h>
 
-#define BAD_VALUE -2000000000.0
+/* Define Magic Number locally if not in header */
+#ifndef BAD_VALUE
+# define BAD_VALUE -2000000000.0
+#endif
 
 static char	*skip_spaces(char *p)
 {
-	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\v'
-			|| *p == '\f'))
+	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r'
+			|| *p == '\v' || *p == '\f'))
 		p++;
 	return (p);
 }
@@ -9944,6 +9988,7 @@ static int	count_words(char *line)
 	return (count);
 }
 
+/* 1. SCAN PASS: Find the absolute maximum width */
 void	get_map_dimensions(int fd, int *width, int *height)
 {
 	char	*line;
@@ -9956,13 +10001,13 @@ void	get_map_dimensions(int fd, int *width, int *height)
 	{
 		if (line[0] != '\0')
 		{
+			/* Ignore empty lines at end of file */
 			if (line[0] == '\n' && line[1] == '\0')
 			{
 				free(line);
 				line = get_next_line(fd);
-				continue;
+				continue ;
 			}
-			
 			(*height)++;
 			curr_w = count_words(line);
 			if (curr_w > *width)
@@ -9973,32 +10018,38 @@ void	get_map_dimensions(int fd, int *width, int *height)
 	}
 }
 
+/* 2. ALLOCATION: Allocate ONE block and PAD with BAD_VALUE */
 int	allocate_map_points(t_map *map)
 {
-	int	y;
+	size_t	total;
+	size_t	i;
 
-	map->points.pos = malloc(sizeof(t_vec3d *) * map->height);
-	map->points.raw = malloc(sizeof(t_vec3d *) * map->height);
-	map->points.color = malloc(sizeof(int *) * map->height);
+	total = (size_t)map->height * (size_t)map->width;
+	map->points.pos = malloc(sizeof(t_vec3d) * total);
+	map->points.raw = malloc(sizeof(t_vec3d) * total);
+	map->points.color = malloc(sizeof(int) * total);
 
 	if (!map->points.pos || !map->points.raw || !map->points.color)
 		return (0);
 
-	y = 0;
-	while (y < map->height)
+	i = 0;
+	while (i < total)
 	{
-		map->points.pos[y] = malloc(sizeof(t_vec3d) * map->width);
-		map->points.raw[y] = malloc(sizeof(t_vec3d) * map->width);
-		map->points.color[y] = malloc(sizeof(int) * map->width);
-
-		if (!map->points.pos[y] || !map->points.raw[y] || !map->points.color[y])
-			return (0); // Cleanup would be needed in real implementation
-
-		y++;
+		/* CRITICAL: Initialize everything to BAD_VALUE.
+		   If a line is shorter than map->width, the tail remains BAD_VALUE. */
+		map->points.raw[i].z = BAD_VALUE;
+		
+		/* Pre-calculate grid coordinates for the cache */
+		map->points.raw[i].x = i % map->width;
+		map->points.raw[i].y = i / map->width;
+		
+		map->points.color[i] = 0xFFFFFF;
+		i++;
 	}
 	return (1);
 }
 
+/* 3. PARSING: Fill the data we have, leave the rest as BAD_VALUE */
 void	parse_map_data(t_map *map, int fd)
 {
 	char	*line;
@@ -10006,6 +10057,7 @@ void	parse_map_data(t_map *map, int fd)
 	char	*end;
 	int		x;
 	int		y;
+	size_t	idx;
 
 	y = 0;
 	line = get_next_line(fd);
@@ -10018,37 +10070,27 @@ void	parse_map_data(t_map *map, int fd)
 			while (x < map->width)
 			{
 				p = skip_spaces(p);
+				/* If line ends early, STOP. The rest is already BAD_VALUE */
 				if (!p || *p == '\0' || *p == '\n')
 					break ;
 				
+				/* Calculate 1D Index */
+				idx = (size_t)y * map->width + x;
+
 				long z = strtol(p, &end, 10);
-				if (end == p)
-					z = 0;
-				
-				map->points.raw[y][x].z = (double)z;
-				map->points.raw[y][x].x = x;
-				map->points.raw[y][x].y = y;
-				map->points.color[y][x] = 0xFFFFFF;
+				if (end == p) z = 0;
+
+				map->points.raw[idx].z = (double)z;
 				
 				p = end;
 				if (*p == ',')
 				{
 					p++;
 					long color = strtol(p, &end, 0);
-					if (end == p)
-						color = 0xFFFFFF;
-					map->points.color[y][x] = (int)color;
+					if (end == p) color = 0xFFFFFF;
+					map->points.color[idx] = (int)color;
 					p = end;
 				}
-				x++;
-			}
-			// Pad remaining columns with zeros if line is shorter
-			while (x < map->width)
-			{
-				map->points.raw[y][x].z = 0;
-				map->points.raw[y][x].x = x;
-				map->points.raw[y][x].y = y;
-				map->points.color[y][x] = 0xFFFFFF;
 				x++;
 			}
 			y++;
@@ -10173,7 +10215,7 @@ FILE: srcs/map/style/style.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:03:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:10:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -10202,9 +10244,10 @@ void	apply_colors(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			color = get_height_color(map->points.raw[y][x].z,
+			int idx = y * map->width + x;
+			color = get_height_color(map->points.raw[idx].z,
 					map->min_max_z.x, map->min_max_z.y);
-			map->points.color[y][x] = color;
+			map->points.color[idx] = color;
 			x++;
 		}
 		y++;
@@ -10237,10 +10280,11 @@ void	apply_map_style(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			v = create_vec3(map->points.raw[y][x].z,
+			int idx = y * map->width + x;
+			v = create_vec3(map->points.raw[idx].z,
 					map->min_max_z.x, map->min_max_z.y);
 			color = get_map_line_color(v, map->style.style);
-			map->points.color[y][x] = color;
+			map->points.color[idx] = color;
 			x++;
 		}
 		y++;

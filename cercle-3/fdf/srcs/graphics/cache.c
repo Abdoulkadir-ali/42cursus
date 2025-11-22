@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 03:11:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:04:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:20:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,20 @@ void	cache_projections(t_graphics *g)
 		x = 0;
 		while (x < g->map->width)
 		{
-			idx = y * g->map->width + x;
-			
-			/* Read from 2D Map -> Write to 1D Cache */
-			/* Check for BAD_VALUE to preserve safety */
-			if (g->map->points.pos[y][x].z <= BAD_VALUE)
+			idx = y * g->map->width + x; // 1D Index Math
+
+			/* Check BAD_VALUE in 1D Array */
+			if (g->map->points.pos[idx].z <= BAD_VALUE + 1.0)
 			{
 				cached[idx].pos.x = BAD_VALUE;
+				cached[idx].pos.y = BAD_VALUE;
+				cached[idx].pos.z = BAD_VALUE;
 			}
 			else
 			{
-				cached[idx] = project_point(g->map->points.pos[y][x],
-						g->map->points.color[y][x], g->camera, g->map->z_divisor);
+				/* Pass 1D data to project_point */
+				cached[idx] = project_point(g->map->points.pos[idx],
+						g->map->points.color[idx], g->camera, g->map->z_divisor);
 			}
 			x++;
 		}
@@ -88,10 +90,19 @@ t_point	get_cached_proj(t_graphics *g, int x, int y)
     /* ... (keep existing bounds checks) ... */
 	if (cached && cached_map == g->map && x >= 0 && y >= 0 && x < cached_w && y < cached_h)
 	{
-		return (cached[y * cached_w + x]); /* Cache is 1D */
+		return (cached[y * cached_w + x]); // 1D Access
 	}
-    /* Fallback: Read from 2D Map */
-	return (project_point(g->map->points.pos[y][x], 
-			g->map->points.color[y][x],
+    /* Fallback */
+	size_t idx = y * g->map->width + x;
+    
+    /* Check RAW Z before projecting */
+    if (g->map->points.pos[idx].z <= BAD_VALUE + 1.0) /* Tolerance check */
+    {
+        return ((t_point){.pos = {BAD_VALUE, BAD_VALUE, BAD_VALUE}, .color = 0});
+    }
+    /* ------------------------ */
+
+	return (project_point(g->map->points.pos[idx], 
+			g->map->points.color[idx],
 			g->camera, g->map->z_divisor));
 }
