@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 04:11:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:53:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 
 # define NUM_THREADS 4
 # define DEFAULT_LOD_LEVEL 1
+#define FP_SHIFT 16
 
 typedef struct s_events	t_events;
 
