@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 04:11:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 14:24:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,17 @@ typedef struct s_gui
 	t_camera		*camera;
 	t_map			*map;
 	int				fps;
+	int				last_win_height; /* Track resize events */
 }					t_gui;
+
+/* ========== LAYOUT ENGINE CONTEXT ========== */
+typedef struct s_layout
+{
+	t_gui			*gui;
+	int				cursor_y;
+	int				padding;
+	int				panel_width;
+}					t_layout;
 
 /* ========== GUI STYLE ========== */
 typedef struct s_gui_theme
@@ -76,33 +86,41 @@ typedef struct s_colored_text
 /* ========== GUI FUNCTIONS ========== */
 void				render_gui(t_gui *gui);
 void				draw_panel_background(t_gui *gui);
+void				clear_gui(t_gui *gui);
+
+/* Text Helpers */
 void				put_text(t_gui *gui, int x, int y, char *text);
 void				put_key(t_gui *gui, int x, int y, char *text);
-void				put_colored(t_gui *gui, int x, int y,
-						t_colored_text colored);
-void				redraw(t_events *events);
 void				put_value(t_gui *gui, int x, int y, char *text);
+void				put_colored(t_gui *gui, int x, int y, t_colored_text colored);
+
+/* Formatting Helpers */
 void				format_speed(double speed, char *buffer);
 void				format_number(int num, char *buffer);
 void				format_float(double val, char *buffer);
+
+/* Layout Engine API */
+void				gui_layout_init(t_layout *l, t_gui *gui);
+void				gui_layout_add_spacer(t_layout *l, int size);
+void				gui_layout_title(t_layout *l, char *text);
+void				gui_layout_label(t_layout *l, char *text);
+void				gui_layout_key_value(t_layout *l, char *key, char *val);
+
+/* Section Drawers (Updated to use t_layout) */
+void				draw_controls_guide_layout(t_layout *l, t_gui *gui);
+void				draw_performance_display_layout(t_layout *l, t_gui *gui);
+void				draw_projection_display_layout(t_layout *l, t_gui *gui);
+void				draw_speed_display_layout(t_layout *l, t_gui *gui);
+void				draw_map_name_display_layout(t_layout *l, t_gui *gui);
+
 void				cycle_gui_style(t_gui *gui);
+
 t_gui_theme			get_gui_theme(t_gui_style style);
 t_gui_theme			get_tron_blue_theme(void);
 t_gui_theme			get_tron_orange_theme(void);
 t_gui_theme			get_matrix_theme(void);
 t_gui_theme			get_cyberpunk_theme(void);
 t_gui_theme			get_neon_grid_theme(void);
-void				draw_mouse_controls(t_gui *gui, int *y);
-void				draw_keyboard_controls(t_gui *gui, int *y);
-void				draw_action_keys(t_gui *gui, int *y);
-void				draw_optimization_keys(t_gui *gui, int *y);
-void				draw_controls_guide_at(t_gui *gui, int *y);
-void				draw_speed_display_at(t_gui *gui, int *y);
-void				draw_projection_display_at(t_gui *gui, int *y);
-void				draw_map_name_display_at(t_gui *gui, int *y);
-void				draw_performance_display_at(t_gui *gui, int *y);
-void				draw_dampening_display(t_gui *gui);
-void				draw_style_display(t_gui *gui);
 
 t_gui				*init_gui(t_gui_args args);
 int					init_gui_images(t_gui *gui);
