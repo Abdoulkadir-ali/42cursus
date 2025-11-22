@@ -1,8 +1,6 @@
 NAME = fdf
 
 CC = clang
-# Build with AddressSanitizer and debug info to catch memory errors during debugging.
-# This is temporary for debugging; restore original flags after investigation.
 CFLAGS = -Wall -Wextra -Werror -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math
 LDFLAGS = -L./minilibx-linux -lmlx -L./libft -lft -lX11 -lXext -lm -lpthread
 
@@ -21,7 +19,6 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/camera/projection/advanced.c \
 	srcs/graphics/init.c \
 	srcs/graphics/cache.c \
-	srcs/graphics/graphics.c \
 	srcs/graphics/draw/grid.c \
 	srcs/graphics/draw/lines.c \
 	srcs/graphics/draw/triangle.c \

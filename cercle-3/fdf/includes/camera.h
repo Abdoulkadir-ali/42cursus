@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:34:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 03:00:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_camera
 	t_vec3d				grid_center;
 	t_vec3				color_shift;
 	t_projection_type	projection;
+	t_vec3d				rotation_matrix[3];
 	int					gui_style;
 	double				scale;
 	double				target_scale;
@@ -105,12 +106,20 @@ t_point					project_oblique(t_point p3d, t_camera *cam);
 t_point					project_camera_matrix(t_point p3d, t_camera *cam);
 t_point					project_nonlinear(t_point p3d, t_camera *cam);
 
-t_vec3d					apply_rotation(t_vec3d v, t_vec3d rot);
-t_vec3d					apply_rotation_centered(t_vec3d v, t_vec3d rot,
-							t_vec3d center);
-t_vec3d					rotate_x(t_vec3d v, double angle);
-t_vec3d					rotate_y(t_vec3d v, double angle);
-t_vec3d					rotate_z(t_vec3d v, double angle);
+
+
+/* Matrix-based rotation helpers (compute once per frame) */
+void				update_rotation_matrix(t_camera *cam);
+t_vec3d				apply_rotation_with_matrix(t_vec3d v, t_camera *cam);
+t_vec3d				apply_rotation_centered_with_matrix(t_vec3d v, t_camera *cam);
+
+/* Rotation context: cached angles and trig values */
+typedef struct s_rot_ctx
+{
+	t_vec3d	rot;   /* rx, ry, rz */
+	t_vec3d	cosv;  /* cx, cy, cz */
+	t_vec3d	sinv;  /* sx, sy, sz */
+} t_rot_ctx;
 
 void					adjust_camera_to_map(t_camera_manager *ctx);
 void					reset_style(t_camera *camera);

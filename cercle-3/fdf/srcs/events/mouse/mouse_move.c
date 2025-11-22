@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 21:37:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 03:44:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static void	handle_object_vec3d(int x, int y, t_events *events)
 	factor = 0.005;
 	events->camera->rotation.z -= dx * factor;
 	events->camera->rotation.x -= dy * factor;
+	update_rotation_matrix(events->camera);
 	events->mouse.last_x = x;
 	events->mouse.last_y = y;
 	redraw(events);
@@ -40,6 +41,7 @@ static void	handle_camera_rotation(int x, int y, t_events *events)
 	factor = 0.005;
 	events->camera->rotation.z += dx * factor;
 	events->camera->rotation.x += dy * factor;
+	update_rotation_matrix(events->camera);
 	events->mouse.last_x = x;
 	events->mouse.last_y = y;
 	redraw(events);

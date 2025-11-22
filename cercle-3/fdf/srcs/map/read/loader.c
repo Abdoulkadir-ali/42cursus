@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 20:10:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 03:11:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <time.h>
 
 t_map	*load_map(char *filename)
 {
@@ -22,7 +23,10 @@ t_map	*load_map(char *filename)
 	int		fd;
 	int		width;
 	int		height;
+	clock_t	start;
+	clock_t	end;
 
+	start = clock();
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (create_test_grid());
@@ -44,6 +48,8 @@ t_map	*load_map(char *filename)
 		return (free_map(map), create_test_grid());
 	parse_map_data(map, fd);
 	close(fd);
+	end = clock();
+	printf("Parsing time: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 	int y = 0;
 	while (y < map->height)
 	{

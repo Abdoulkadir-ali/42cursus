@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:42:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 03:32:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include "vectors.h"
 # include "window.h"
 
+# define NUM_THREADS 4
 # define DEFAULT_LOD_LEVEL 1
 
 typedef struct s_events	t_events;
@@ -98,6 +99,24 @@ typedef struct s_line_draw_state
 	t_camera			*c;
 }						t_line_draw_state;
 
+typedef struct s_line_state
+{
+	t_vec2				start_pos;
+	t_vec2				end_pos;
+	t_vec2				delta;
+	t_vec2				sign;
+	int					err;
+	int					steps;
+	int					i;
+	double				zr;
+	double				zr_step;
+	t_vec3d				start_color;
+	t_vec3d				end_color;
+	t_vec3d				color_delta;
+	t_vec3d				current_color;
+	t_vec2				current_pos;
+}						t_line_state;
+
 typedef struct s_render_config
 {
 	t_render_mode		render_mode;
@@ -144,6 +163,8 @@ void					draw_spline_segment(t_graphics *g, t_spline spline,
 double					catmull_rom_interpolate(t_vec4d c, double t);
 t_point					catmull_rom_point(t_spline spline, double t);
 t_point					lerp_point(t_point p1, t_point p2, double t);
+void					draw_grid_section(t_graphics *g, int start_y, int end_y,
+							int step);
 void					draw_line(t_graphics *g, t_point p1, t_point p2);
 void					calculate_color(t_line_draw_state *state, t_point start,
 							t_point end);
@@ -161,6 +182,15 @@ void					img_pixel_put_with_z(t_graphics *g, t_point p);
 int						is_visible(int x, int y, t_graphics *g);
 void					redraw(t_events *events);
 void					draw_grid(t_graphics *g);
+void					draw_grid_section(t_graphics *g, int start_y, int end_y,
+							int step);
+void					draw_horizontal_line(t_graphics *g, int x, int y,
+							t_point p1, int step);
+void					draw_vertical_line(t_graphics *g, int x, int y,
+							t_point p1, int step);
+void					draw_triangle_quad(t_graphics *g, int x, int y,
+							int step);
+void					*thread_draw_routine(void *data);
 void					clear_image(t_graphics *g);
 void					clear_z_buffer(t_graphics *g);
 

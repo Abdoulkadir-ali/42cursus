@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 21:48:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 03:32:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,22 @@ int	get_blue(int color)
 	return (color & 0xFF);
 }
 
+t_vec3	get_vec3(int color)
+{
+	return ((t_vec3){get_red(color), get_green(color), get_blue(color)});
+}
+
 int	create_color(int r, int g, int b)
 {
 	r = clamp(r, 0, 255);
 	g = clamp(g, 0, 255);
 	b = clamp(b, 0, 255);
 	return ((r << 16) | (g << 8) | b);
+}
+
+int	create_color_rgb(t_vec3 rgb)
+{
+	return (create_color(rgb.x, rgb.y, rgb.z));
 }
 
 int	create_color_wrap(int r, int g, int b)

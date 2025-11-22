@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 11:33:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 03:17:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,18 @@ void	render_gui(t_gui *gui)
 {
 	int	section_y;
 	int	height;
+	int	footer_start;
 
 	height = gui->window->height;
 	section_y = GUI_PADDING;
 	draw_controls_guide_at(gui, &section_y);
 	section_y += 20;
 	draw_performance_display_at(gui, &section_y);
-	section_y = height - 220;
+	footer_start = height - 220;
+	if (section_y < footer_start)
+		section_y = footer_start;
+	else
+		section_y += 20; // Add padding if content pushed past the footer mark
 	draw_projection_display_at(gui, &section_y);
 	section_y += 10;
 	draw_speed_display_at(gui, &section_y);
