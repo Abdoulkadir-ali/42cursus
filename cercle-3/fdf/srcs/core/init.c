@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 21:52:25 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:24:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:04:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,11 @@ int	init_window_system(t_data *data)
 
 int	init_and_render(t_data *data)
 {
-	t_graphics			*g;
+	t_graphics *g;
 
-	data->gui = init_gui((t_gui_args){data->window, data->camera_manager->camera, &data->map_manager, &data->graphics->render_config, data->map_manager.current_map});
+	data->gui = init_gui((t_gui_args){data->window,
+			data->camera_manager->camera, &data->map_manager,
+			&data->graphics->render_config, data->map_manager.current_map});
 	if (!init_gui_images(data->gui))
 		return (0);
 	g = data->graphics;

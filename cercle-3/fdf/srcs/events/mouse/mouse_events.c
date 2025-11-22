@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 19:51:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:05:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ static void	handle_mouse_release(int button, t_mouse *mouse)
 
 int	mouse_press(int button, int x, int y, t_events *events)
 {
-	
 	handle_mouse_click(button, x, y, &events->mouse);
 	if (handle_mouse_scroll(button, events))
 		redraw(events);
@@ -94,7 +93,6 @@ int	mouse_press(int button, int x, int y, t_events *events)
 
 int	mouse_release(int button, int x, int y, t_events *events)
 {
-	
 	(void)x;
 	(void)y;
 	handle_mouse_release(button, &events->mouse);

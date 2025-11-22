@@ -6,18 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 04:33:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:13:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "map.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
 #include <ctype.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-static char *skip_spaces(char *p)
+static char	*skip_spaces(char *p)
 {
 	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r'))
 		p++;
@@ -44,7 +44,7 @@ void	get_map_dimensions(int fd, int *width, int *height)
 				{
 					p = skip_spaces(p);
 					if (*p == '\0' || *p == '\n')
-						break;
+						break ;
 					(*width)++;
 					while (*p && *p != '\n' && *p != ' ' && *p != '\t')
 						p++;
@@ -59,6 +59,7 @@ void	get_map_dimensions(int fd, int *width, int *height)
 int	allocate_map_points(t_map *map)
 {
 	int	total;
+	int	i;
 
 	total = map->height * map->width;
 	map->points.pos = malloc(sizeof(t_vec3d) * total);
@@ -70,7 +71,7 @@ int	allocate_map_points(t_map *map)
 	map->points.color = malloc(sizeof(int) * total);
 	if (!map->points.color)
 		return (0);
-	int i = 0;
+	i = 0;
 	while (i < total)
 	{
 		map->points.raw[i].x = i % map->width;
@@ -84,11 +85,11 @@ int	allocate_map_points(t_map *map)
 
 void	parse_map_data(t_map *map, int fd)
 {
-	char    *line;
-	char    *p;
-	char    *end;
-	int     x;
-	int     y;
+	char *line;
+	char *p;
+	char *end;
+	int x;
+	int y;
 
 	y = 0;
 	line = get_next_line(fd);
@@ -103,7 +104,7 @@ void	parse_map_data(t_map *map, int fd)
 				int index = y * map->width + x;
 				p = skip_spaces(p);
 				if (!p || *p == '\0' || *p == '\n')
-					break;
+					break ;
 				/* parse z (decimal, possibly negative) */
 				long z = strtol(p, &end, 10);
 				if (end == p)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 21:13:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:04:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,12 @@
 int	handle_escape(int keycode, t_events *events)
 {
 	(void)keycode;
-	
 	return (cleanup_and_exit(events));
 }
 
 int	handle_r(int keycode, t_events *events)
 {
 	(void)keycode;
-	
 	reset_view(events);
 	reset_style(events->camera);
 	return (1);
@@ -32,7 +30,6 @@ int	handle_r(int keycode, t_events *events)
 int	handle_n(int keycode, t_events *events)
 {
 	(void)keycode;
-	/* cycle the map list, update event and camera pointers, reset view */
 	cycle_map(events->maps);
 	if (events->maps)
 	{
@@ -47,7 +44,6 @@ int	handle_n(int keycode, t_events *events)
 int	handle_s(int keycode, t_events *events)
 {
 	(void)keycode;
-	
 	cycle_gui_style(events->gui);
 	return (1);
 }
@@ -55,7 +51,7 @@ int	handle_s(int keycode, t_events *events)
 int	handle_a(int keycode, t_events *events)
 {
 	(void)keycode;
-	
+
 	events->render_mode = (events->render_mode + 1) % RENDER_MODE_COUNT;
 	return (1);
 }

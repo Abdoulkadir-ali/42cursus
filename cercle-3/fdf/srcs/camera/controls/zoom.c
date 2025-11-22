@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:21:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:10:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:03:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,12 @@ void	zoom_out(t_camera_manager *ctx)
 
 void	update_zoom(t_camera_manager *ctx)
 {
+	double	diff;
+
 	if (!ctx || !ctx->camera)
 		return ;
 	{
-		double diff = ctx->camera->target_scale - ctx->camera->scale;
+		diff = ctx->camera->target_scale - ctx->camera->scale;
 		if (fabs(diff) < 0.001)
 			ctx->camera->scale = ctx->camera->target_scale;
 		else

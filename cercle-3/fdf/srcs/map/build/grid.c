@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 04:21:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:12:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void	init_grid_points(t_map *map)
 {
 	int	x;
 	int	y;
+	int	index;
 
 	y = 0;
 	while (y < map->height)
@@ -27,7 +28,7 @@ static void	init_grid_points(t_map *map)
 		x = 0;
 		while (x < map->width)
 		{
-			int index = y * map->width + x;
+			index = y * map->width + x;
 			map->points.raw[index].x = x;
 			map->points.raw[index].y = y;
 			map->points.raw[index].z = x;
@@ -105,7 +106,8 @@ void	calculate_min_max_proj_z(t_map *map, t_camera *camera, double z_divisor)
 		{
 			current_x = x;
 			z = project_point(map->points.pos[y * map->width + current_x],
-					map->points.color[y * map->width + current_x], camera, z_divisor).pos.z;
+					map->points.color[y * map->width + current_x], camera,
+					z_divisor).pos.z;
 			if (first)
 			{
 				map->min_proj_z = z;

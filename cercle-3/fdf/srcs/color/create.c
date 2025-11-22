@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:32:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:03:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,12 @@ int	create_color_rgb(t_vec3 rgb)
 
 int	create_color_wrap(int r, int g, int b)
 {
-    unsigned int rr = (unsigned int)r & 0xFF;
-    unsigned int gg = (unsigned int)g & 0xFF;
-    unsigned int bb = (unsigned int)b & 0xFF;
-    return ((rr << 16) | (gg << 8) | bb);
+	unsigned int	rr;
+	unsigned int	gg;
+	unsigned int	bb;
+
+	rr = (unsigned int)r & 0xFF;
+	gg = (unsigned int)g & 0xFF;
+	bb = (unsigned int)b & 0xFF;
+	return ((rr << 16) | (gg << 8) | bb);
 }

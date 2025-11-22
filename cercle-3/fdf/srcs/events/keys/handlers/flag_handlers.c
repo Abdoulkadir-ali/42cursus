@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:42:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:04:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ int	handle_left(int keycode, t_events *events)
 	t_keys	*keyboard;
 
 	(void)keycode;
-	
 	keyboard = &events->keys;
 	keyboard->left = 1;
 	return (0);
@@ -61,7 +60,6 @@ int	handle_right(int keycode, t_events *events)
 	t_keys	*keyboard;
 
 	(void)keycode;
-	
 	keyboard = &events->keys;
 	keyboard->right = 1;
 	return (0);

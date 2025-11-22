@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 04:00:34 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 04:03:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:05:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy)
 }
 
 static void	init_interpolation(t_point start, t_point end, int steps,
-				t_interp_data *data)
+		t_interp_data *data)
 {
 	t_vec3	start_rgb;
 	t_vec3	end_rgb;
@@ -54,7 +54,8 @@ static void	init_interpolation(t_point start, t_point end, int steps,
 	}
 }
 
-int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end, t_draw_line_ctx *dlc)
+int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end,
+		t_draw_line_ctx *dlc)
 {
 	dlc->start_pos.x = (int)start.pos.x;
 	dlc->start_pos.y = (int)start.pos.y;
@@ -71,12 +72,15 @@ int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end, t_draw_line_ct
 	else
 		dlc->sign.y = -1;
 	setup_pointers(g, &dlc->ctx, dlc->sign.x, dlc->sign.y);
-	if (dlc->start_pos.x < 0 || dlc->start_pos.x >= dlc->ctx.width || dlc->start_pos.y < 0 || dlc->start_pos.y >= dlc->ctx.height)
+	if (dlc->start_pos.x < 0 || dlc->start_pos.x >= dlc->ctx.width
+		|| dlc->start_pos.y < 0 || dlc->start_pos.y >= dlc->ctx.height)
 		return (0);
-	dlc->pixel_addr = g->window->main_img.img_addr + (dlc->start_pos.y * dlc->ctx.line_len) + (dlc->start_pos.x * dlc->ctx.bpp);
+	dlc->pixel_addr = g->window->main_img.img_addr + (dlc->start_pos.y
+			* dlc->ctx.line_len) + (dlc->start_pos.x * dlc->ctx.bpp);
 	dlc->z_addr = NULL;
 	if (g->window->z_buffer)
-		dlc->z_addr = g->window->z_buffer + (dlc->start_pos.y * dlc->ctx.width) + dlc->start_pos.x;
+		dlc->z_addr = g->window->z_buffer + (dlc->start_pos.y * dlc->ctx.width)
+			+ dlc->start_pos.x;
 	if (dlc->delta.x > dlc->delta.y)
 		dlc->steps = dlc->delta.x;
 	else

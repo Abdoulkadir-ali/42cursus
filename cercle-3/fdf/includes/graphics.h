@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 04:53:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:10:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,17 @@ typedef struct s_scanline_data
 	int					c1;
 	int					c2;
 }						t_scanline_data;
+
+/* Helper struct for edge walking */
+typedef struct s_edge
+{
+	double	x;
+	double	z;
+	double r, g, b;
+	double dx;         /* Slope X */
+	double dz;         /* Slope Z */
+	double dr, dg, db; /* Slope Colors */
+}			t_edge;
 
 typedef struct s_bresenham
 {

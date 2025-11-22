@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 02:50:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 21:48:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:03:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ t_camera_manager	*init_camera(t_camera_args args)
 {
 	t_camera_manager	*ctx;
 	t_camera			*cam;
+	t_maps				*mgr;
 
 	ctx = malloc(sizeof(t_camera_manager));
 	if (!ctx)
@@ -50,7 +51,7 @@ t_camera_manager	*init_camera(t_camera_args args)
 	ctx->window = args.window;
 	if (args.manager)
 	{
-		t_maps *mgr = args.manager;
+		mgr = args.manager;
 		if (args.map_file)
 		{
 			mgr->current_map = load_map(args.map_file);

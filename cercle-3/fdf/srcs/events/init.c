@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:53:06 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:30:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:05:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	init_keys(t_keys *keys)
 	keys->g = 0;
 }
 
-static void init_events_graphics(t_events *events)
+static void	init_events_graphics(t_events *events)
 {
 	if (events->graphics)
 	{
@@ -68,21 +68,21 @@ static void init_events_graphics(t_events *events)
 
 t_events	*init_events(t_events_args *args)
 {
-    t_events    *events;
+	t_events *events;
 
-    events = malloc(sizeof(t_events));
-    if (!events)
-        return (NULL);
-    events->window = args->window;
-    events->graphics = args->graphics;
-    events->gui = args->gui;
+	events = malloc(sizeof(t_events));
+	if (!events)
+		return (NULL);
+	events->window = args->window;
+	events->graphics = args->graphics;
+	events->gui = args->gui;
 	events->camera_manager = args->camera_manager;
 	events->camera = args->camera_manager ? args->camera_manager->camera : NULL;
-    events->maps = args->maps;
+	events->maps = args->maps;
 	events->map = args->map;
 	init_events_graphics(events);
 	init_mouse(&events->mouse);
 	init_keys(&events->keys);
-    init_key_actions(&events->key_maps);
-    return (events);
+	init_key_actions(&events->key_maps);
+	return (events);
 }

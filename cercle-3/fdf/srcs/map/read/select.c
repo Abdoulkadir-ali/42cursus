@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 17:46:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:13:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "camera.h"
-
 #include "graphics.h"
 #include "map.h"
 #include <dirent.h>

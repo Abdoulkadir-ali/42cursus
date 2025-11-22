@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:44:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:05:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ static void	handle_dampening(int x, int y, t_events *events)
 
 int	mouse_move(int x, int y, t_events *events)
 {
-	
 	if (events->keys.shift_left || events->keys.shift_right)
 	{
 		if (!events->mouse.middle_pressed)

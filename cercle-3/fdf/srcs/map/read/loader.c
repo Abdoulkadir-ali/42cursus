@@ -6,16 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 04:33:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 05:13:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map.h"
 #include "libft.h"
+#include "map.h"
 #include <fcntl.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 
 t_map	*load_map(char *filename)
 {
@@ -25,6 +25,7 @@ t_map	*load_map(char *filename)
 	int		height;
 	clock_t	start;
 	clock_t	end;
+	size_t	total_size;
 
 	start = clock();
 	fd = open(filename, O_RDONLY);
@@ -49,8 +50,9 @@ t_map	*load_map(char *filename)
 	parse_map_data(map, fd);
 	close(fd);
 	end = clock();
-	printf("Parsing time: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
-	size_t total_size = (size_t)map->width * (size_t)map->height;
+	printf("Parsing time: %f seconds\n", (double)(end - start)
+		/ CLOCKS_PER_SEC);
+	total_size = (size_t)map->width * (size_t)map->height;
 	ft_memcpy(map->points.pos, map->points.raw, total_size * sizeof(t_vec3d));
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_max_z.x;
