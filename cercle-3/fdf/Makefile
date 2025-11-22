@@ -21,6 +21,7 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/graphics/cache.c \
 	srcs/graphics/draw/grid.c \
 	srcs/graphics/draw/lines.c \
+	srcs/graphics/draw/lines_helpers.c \
 	srcs/graphics/draw/triangle.c \
 	srcs/graphics/draw/spline.c \
 	srcs/graphics/draw/scanlines.c \

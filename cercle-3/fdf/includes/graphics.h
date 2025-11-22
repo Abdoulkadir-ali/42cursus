@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:32:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:11:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,78 @@ typedef struct s_line_draw_state
 	t_camera			*c;
 }						t_line_draw_state;
 
+/* Helper to manage memory pointers for line drawing */
+typedef struct s_ptr_ctx
+{
+	char			*img_ptr;
+	float			*z_ptr;
+	int				step_x;
+	int				step_y;
+	int				z_step_x;
+	int				z_step_y;
+	int				bpp;
+	int				line_len;
+	int				width;
+	int				height;
+}					t_ptr_ctx;
+
+/* Struct for bresenham loop parameters */
+typedef struct s_bresenham_params
+{
+	t_vec2			start;
+	t_vec2			end;
+	t_vec2			delta;
+	t_vec2			sign;
+	t_ptr_ctx		ctx;
+	char			*pixel_addr;
+	float			*z_addr;
+	double			zr;
+	double			z_step_val;
+	double			r;
+	double			green;
+	double			b;
+	double			dr;
+	double			dg;
+	double			db;
+}					t_bresenham_params;
+
+/* Struct for pixel drawing parameters */
+typedef struct s_pixel_draw_params
+{
+	char			*pixel_addr;
+	float			*z_addr;
+	float			zr;
+	int				color;
+}					t_pixel_draw_params;
+
+/* Struct for interpolation data */
+typedef struct s_interp_data
+{
+	double			zr;
+	double			z_step_val;
+	double			r;
+	double			green;
+	double			b;
+	double			dr;
+	double			dg;
+	double			db;
+}					t_interp_data;
+
+/* Struct for draw_line local variables */
+typedef struct s_draw_line_ctx
+{
+	t_vec2			start_pos;
+	t_vec2			end_pos;
+	t_vec2			delta;
+	t_vec2			sign;
+	t_ptr_ctx		ctx;
+	char			*pixel_addr;
+	float			*z_addr;
+	int				steps;
+	t_interp_data	interp;
+	t_bresenham_params	p;
+}					t_draw_line_ctx;
+
 typedef struct s_line_state
 {
 	t_vec2				start_pos;
@@ -129,6 +201,9 @@ typedef struct s_frame_data
 {
 	long				last_frame_time;
 	int					frame_in_progress;
+	int					fps;
+	int					frame_count;
+	long				last_check;
 }						t_frame_data;
 
 typedef struct s_graphics
@@ -165,6 +240,7 @@ t_point					catmull_rom_point(t_spline spline, double t);
 t_point					lerp_point(t_point p1, t_point p2, double t);
 void					draw_grid_section(t_graphics *g, int start_y, int end_y,
 							int step);
+int						init_draw_line_ctx(t_graphics *g, t_point start, t_point end, t_draw_line_ctx *dlc);
 void					draw_line(t_graphics *g, t_point p1, t_point p2);
 void					calculate_color(t_line_draw_state *state, t_point start,
 							t_point end);

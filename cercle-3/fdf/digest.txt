@@ -1,6 +1,5 @@
 Directory structure:
 └── fdf/
-    ├── CODING_GUIDLINES.md
     ├── funcs.c
     ├── Makefile
     ├── includes/
@@ -133,6 +132,7 @@ Directory structure:
         │   ├── draw/
         │   │   ├── grid.c
         │   │   ├── lines.c
+        │   │   ├── lines_helpers.c
         │   │   ├── scanlines.c
         │   │   ├── spline.c
         │   │   └── triangle.c
@@ -201,17 +201,6 @@ Directory structure:
         └── window/
             ├── cleanup.c
             └── init.c
-
-================================================
-FILE: CODING_GUIDLINES.md
-================================================
-Please the guidelines are  :
-- Use struct if too much variables
-- Use ALWAYS VECTOR METHODS FROM THE VECTOR MODULE when available
-- Respect DRY concept
-- Before reimplementing, verify it'sn ot already implemented in another module from srcs/
-- Repspect norminette
-
 
 ================================================
 FILE: funcs.c
@@ -329,6 +318,7 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/graphics/cache.c \
 	srcs/graphics/draw/grid.c \
 	srcs/graphics/draw/lines.c \
+	srcs/graphics/draw/lines_helpers.c \
 	srcs/graphics/draw/triangle.c \
 	srcs/graphics/draw/spline.c \
 	srcs/graphics/draw/scanlines.c \
@@ -974,7 +964,7 @@ FILE: includes/graphics.h
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:32:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:11:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1067,6 +1057,78 @@ typedef struct s_line_draw_state
 	t_camera			*c;
 }						t_line_draw_state;
 
+/* Helper to manage memory pointers for line drawing */
+typedef struct s_ptr_ctx
+{
+	char			*img_ptr;
+	float			*z_ptr;
+	int				step_x;
+	int				step_y;
+	int				z_step_x;
+	int				z_step_y;
+	int				bpp;
+	int				line_len;
+	int				width;
+	int				height;
+}					t_ptr_ctx;
+
+/* Struct for bresenham loop parameters */
+typedef struct s_bresenham_params
+{
+	t_vec2			start;
+	t_vec2			end;
+	t_vec2			delta;
+	t_vec2			sign;
+	t_ptr_ctx		ctx;
+	char			*pixel_addr;
+	float			*z_addr;
+	double			zr;
+	double			z_step_val;
+	double			r;
+	double			green;
+	double			b;
+	double			dr;
+	double			dg;
+	double			db;
+}					t_bresenham_params;
+
+/* Struct for pixel drawing parameters */
+typedef struct s_pixel_draw_params
+{
+	char			*pixel_addr;
+	float			*z_addr;
+	float			zr;
+	int				color;
+}					t_pixel_draw_params;
+
+/* Struct for interpolation data */
+typedef struct s_interp_data
+{
+	double			zr;
+	double			z_step_val;
+	double			r;
+	double			green;
+	double			b;
+	double			dr;
+	double			dg;
+	double			db;
+}					t_interp_data;
+
+/* Struct for draw_line local variables */
+typedef struct s_draw_line_ctx
+{
+	t_vec2			start_pos;
+	t_vec2			end_pos;
+	t_vec2			delta;
+	t_vec2			sign;
+	t_ptr_ctx		ctx;
+	char			*pixel_addr;
+	float			*z_addr;
+	int				steps;
+	t_interp_data	interp;
+	t_bresenham_params	p;
+}					t_draw_line_ctx;
+
 typedef struct s_line_state
 {
 	t_vec2				start_pos;
@@ -1097,6 +1159,9 @@ typedef struct s_frame_data
 {
 	long				last_frame_time;
 	int					frame_in_progress;
+	int					fps;
+	int					frame_count;
+	long				last_check;
 }						t_frame_data;
 
 typedef struct s_graphics
@@ -1133,6 +1198,7 @@ t_point					catmull_rom_point(t_spline spline, double t);
 t_point					lerp_point(t_point p1, t_point p2, double t);
 void					draw_grid_section(t_graphics *g, int start_y, int end_y,
 							int step);
+int						init_draw_line_ctx(t_graphics *g, t_point start, t_point end, t_draw_line_ctx *dlc);
 void					draw_line(t_graphics *g, t_point p1, t_point p2);
 void					calculate_color(t_line_draw_state *state, t_point start,
 							t_point end);
@@ -1186,7 +1252,7 @@ FILE: includes/gui.h
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:33:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:11:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1219,6 +1285,7 @@ typedef struct s_gui
 	t_render_config	*render_config;
 	t_camera		*camera;
 	t_map			*map;
+	int				fps;
 }					t_gui;
 
 /* ========== GUI STYLE ========== */
@@ -5776,6 +5843,15 @@ FILE: srcs/events/keys/key_events.c
 #include "events.h"
 #include <stdio.h>
 #include <string.h>
+#include <sys/time.h>
+
+static long	get_time_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
 
 void	init_key_actions(t_key_maps *key_maps)
 {
@@ -5880,16 +5956,33 @@ int	key_release(int keycode, t_events *events)
 
 int	loop_hook(t_events *events)
 {
-	static int	frame = 0;
-	int	needs_redraw;
+	long	current_time;
+	t_frame_data *f;
 
-	needs_redraw = 0;
-	if (process_movement(events))
-		needs_redraw = 1;
-	needs_redraw++;
-	if (frame % 10 == 0)
-		redraw(events);
-	frame++;
+	f = &events->graphics->frame_data;
+	current_time = get_time_ms();
+
+	/* 1. Initialize timer if 0 */
+	if (f->last_check == 0)
+		f->last_check = current_time;
+
+	/* 2. Count Frames */
+	f->frame_count++;
+
+	/* 3. Every 0.5 second (500ms), update FPS and reset counter */
+	if (current_time - f->last_check >= 500)
+	{
+		f->fps = f->frame_count;
+		f->frame_count = 0;
+		f->last_check = current_time;
+	}
+
+	/* 4. Process Movement (Continuous) */
+	process_movement(events);
+
+	/* 5. ALWAYS Redraw (Uncapped Performance) */
+	redraw(events);
+
 	return (0);
 }
 
@@ -6734,7 +6827,7 @@ FILE: srcs/graphics/init.c
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:45 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:23:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:15:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -6752,6 +6845,9 @@ void	init_frame_data(t_frame_data *f)
 {
 	f->last_frame_time = 0;
 	f->frame_in_progress = 0;
+	f->fps = 0;
+	f->frame_count = 0;
+	f->last_check = 0;
 }
 
 t_graphics	*init_graphics(t_graphics_args args)
@@ -6965,8 +7061,8 @@ FILE: srcs/graphics/draw/lines.c
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/22 03:42:10 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:42:12 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/22 03:58:29 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/22 04:07:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -6974,114 +7070,215 @@ FILE: srcs/graphics/draw/lines.c
 #include "graphics.h"
 #include <math.h>
 
-static inline void	fast_put_pixel(t_graphics *g, int x, int y, float z,
-		int color)
-{
-	t_window		*w;
-	unsigned int	*dst;
-	int				index;
+/* Fixed Point Scale: 2^16 = 65536 */
+#define FP_SHIFT 16
 
-	w = g->window;
-	if (x < 0 || x >= w->width || y < 0 || y >= w->height)
-		return ;
-	if (g->render_config.use_depth_culling && w->z_buffer)
+static void	draw_pixel_fast(t_graphics *g, t_pixel_draw_params p)
+{
+	/* Z-Buffer Check:
+	   We cast the pointer to int* for atomic-like integer comparison if possible,
+	   but standard float comparison is fine here given memory bandwidth is the limit.
+	*/
+	if (!g->render_config.use_depth_culling || !p.z_addr || p.zr < *p.z_addr)
 	{
-		index = y * w->width + x;
-		if (z >= w->z_buffer[index])
-			return ;
-		w->z_buffer[index] = z;
+		if (g->render_config.use_depth_culling && p.z_addr)
+			*p.z_addr = p.zr;
+		*(unsigned int *)p.pixel_addr = p.color;
 	}
-	dst = (unsigned int *)(w->main_img.img_addr + y * w->main_img.img_line_len
-			+ x * (w->main_img.img_bpp / 8));
-	*dst = (unsigned int)color;
 }
 
-static void	init_line_state(t_line_state *state, t_point start, t_point end)
+static void	bresenham_fixed(t_graphics *g, t_bresenham_params p)
 {
-	t_vec2	diff;
-	t_vec3d	color_diff;
+	int		err;
+	int		e2;
+	t_vec2	current;
+	int		color;
+	
+	/* --- FIXED POINT SETUP --- */
+	/* Convert start values and steps to scaled integers */
+	int		fp_r = (int)(p.r * (1 << FP_SHIFT));
+	int		fp_g = (int)(p.green * (1 << FP_SHIFT));
+	int		fp_b = (int)(p.b * (1 << FP_SHIFT));
+	int		fp_dr = (int)(p.dr * (1 << FP_SHIFT));
+	int		fp_dg = (int)(p.dg * (1 << FP_SHIFT));
+	int		fp_db = (int)(p.db * (1 << FP_SHIFT));
 
-	state->start_pos = (t_vec2){(int)lround(start.pos.x),
-		(int)lround(start.pos.y)};
-	state->end_pos = (t_vec2){(int)lround(end.pos.x), (int)lround(end.pos.y)};
-	diff = state->end_pos;
-	vec2_sub(&diff, state->start_pos);
-	state->delta = (t_vec2){abs(diff.x), abs(diff.y)};
-	if (state->start_pos.x < state->end_pos.x)
-		state->sign.x = 1;
-	else
-		state->sign.x = -1;
-	if (state->start_pos.y < state->end_pos.y)
-		state->sign.y = 1;
-	else
-		state->sign.y = -1;
-	state->err = state->delta.x - state->delta.y;
-	state->steps = (state->delta.x > state->delta.y) ? state->delta.x : state->delta.y;
-	state->i = 0;
-	state->zr = start.pos.z;
-	state->zr_step = 0.0;
-	if (state->steps > 0)
-		state->zr_step = (end.pos.z - start.pos.z) / (double)state->steps;
-	state->start_color = (t_vec3d){get_vec3(start.color).x,
-		get_vec3(start.color).y, get_vec3(start.color).z};
-	state->end_color = (t_vec3d){get_vec3(end.color).x, get_vec3(end.color).y,
-		get_vec3(end.color).z};
-	if (state->steps > 0)
-	{
-		color_diff = state->end_color;
-		vec3d_sub(&color_diff, state->start_color);
-		vec3d_multiply_scalar(&color_diff, 1.0 / (double)state->steps);
-		state->color_delta = color_diff;
-	}
-	state->current_color = state->start_color;
-	state->current_pos = state->start_pos;
-}
+	/* We keep Z as float for precision in the buffer, but could fix-point it too.
+	   For now, color is the main CPU hog due to 3 components. */
+	
+	t_pixel_draw_params	pdp;
+	pdp.pixel_addr = p.pixel_addr;
+	pdp.z_addr = p.z_addr;
 
-static void	draw_line_state(t_graphics *g, t_line_state *state)
-{
-		t_vec3 color_vec;
-		int color;
-		int e2;
+	err = (int)p.delta.x - (int)p.delta.y;
+	current = p.start;
 
 	while (1)
 	{
-		color_vec = (t_vec3){(int)state->current_color.x,
-			(int)state->current_color.y, (int)state->current_color.z};
-		color = create_color_rgb(color_vec);
-		if (g->camera->color_shift.x || g->camera->color_shift.y
-			|| g->camera->color_shift.z)
-		{
-			color = shift_color(color, g->camera->color_shift.x,
+		/* BIT SHIFT to get actual integer color values (Fast!) */
+		color = create_color(fp_r >> FP_SHIFT, fp_g >> FP_SHIFT, fp_b >> FP_SHIFT);
+
+		/* Apply color shift only if active (avoids function call overhead if 0) */
+		if (g->camera->color_shift.x || g->camera->color_shift.y || g->camera->color_shift.z)
+			color = shift_color(color, g->camera->color_shift.x, 
 					g->camera->color_shift.y, g->camera->color_shift.z);
-		}
-		fast_put_pixel(g, state->current_pos.x, state->current_pos.y,
-			(float)state->zr, color);
-		if (state->current_pos.x == state->end_pos.x
-			&& state->current_pos.y == state->end_pos.y)
-			break ;
-		e2 = 2 * state->err;
-		if (e2 > -state->delta.y)
+
+		/* Draw */
+		pdp.pixel_addr = p.pixel_addr;
+		pdp.z_addr = p.z_addr;
+		pdp.zr = (float)p.zr;
+		pdp.color = color;
+		draw_pixel_fast(g, pdp);
+
+		/* Loop Break */
+		if (current.x == p.end.x && current.y == p.end.y)
+			break;
+
+		/* Error Correction & Pointer Walking */
+		e2 = 2 * err;
+		if (e2 > -p.delta.y)
 		{
-			state->err -= state->delta.y;
-			state->current_pos.x += state->sign.x;
+			err -= p.delta.y;
+			current.x += p.sign.x;
+			if (current.x < 0 || current.x >= p.ctx.width) break;
+			p.pixel_addr += p.ctx.step_x;
+			if (p.z_addr) p.z_addr += p.ctx.z_step_x;
 		}
-		if (e2 < state->delta.x)
+		if (e2 < p.delta.x)
 		{
-			state->err += state->delta.x;
-			state->current_pos.y += state->sign.y;
+			err += p.delta.x;
+			current.y += p.sign.y;
+			if (current.y < 0 || current.y >= p.ctx.height) break;
+			p.pixel_addr += p.ctx.step_y;
+			if (p.z_addr) p.z_addr += p.ctx.z_step_y;
 		}
-		state->zr += state->zr_step;
-		vec3d_add(&state->current_color, state->color_delta);
-		state->i++;
+
+		/* Increment Interpolators (Integer Addition) */
+		p.zr += p.z_step_val; /* Keep Z as float for buffer compatibility */
+		fp_r += fp_dr;
+		fp_g += fp_dg;
+		fp_b += fp_db;
 	}
 }
 
 void	draw_line(t_graphics *g, t_point start, t_point end)
 {
-	t_line_state state;
+	t_draw_line_ctx	dlc;
 
-	init_line_state(&state, start, end);
-	draw_line_state(g, &state);
+	if (!init_draw_line_ctx(g, start, end, &dlc))
+		return ;
+	
+	/* Pass data to the fixed-point loop */
+	dlc.p.start = dlc.start_pos;
+	dlc.p.end = dlc.end_pos;
+	dlc.p.delta = dlc.delta;
+	dlc.p.sign = dlc.sign;
+	dlc.p.ctx = dlc.ctx;
+	dlc.p.pixel_addr = dlc.pixel_addr;
+	dlc.p.z_addr = dlc.z_addr;
+	
+	/* Interpolation data */
+	dlc.p.zr = dlc.interp.zr;
+	dlc.p.z_step_val = dlc.interp.z_step_val;
+	dlc.p.r = dlc.interp.r;
+	dlc.p.green = dlc.interp.green;
+	dlc.p.b = dlc.interp.b;
+	dlc.p.dr = dlc.interp.dr;
+	dlc.p.dg = dlc.interp.dg;
+	dlc.p.db = dlc.interp.db;
+
+	bresenham_fixed(g, dlc.p);
+}
+
+
+================================================
+FILE: srcs/graphics/draw/lines_helpers.c
+================================================
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lines_helpers.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/22 04:00:34 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/22 04:03:47 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "graphics.h"
+
+static void	setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy)
+{
+	ctx->bpp = g->window->main_img.img_bpp / 8;
+	ctx->line_len = g->window->main_img.img_line_len;
+	ctx->width = g->window->width;
+	ctx->height = g->window->height;
+	ctx->step_x = sx * ctx->bpp;
+	ctx->step_y = sy * ctx->line_len;
+	ctx->z_step_x = sx;
+	ctx->z_step_y = sy * ctx->width;
+}
+
+static void	init_interpolation(t_point start, t_point end, int steps,
+				t_interp_data *data)
+{
+	t_vec3	start_rgb;
+	t_vec3	end_rgb;
+
+	data->zr = start.pos.z;
+	if (steps > 0)
+		data->z_step_val = (end.pos.z - start.pos.z) / steps;
+	else
+		data->z_step_val = 0;
+	start_rgb = get_vec3(start.color);
+	end_rgb = get_vec3(end.color);
+	data->r = start_rgb.x;
+	data->green = start_rgb.y;
+	data->b = start_rgb.z;
+	if (steps > 0)
+	{
+		data->dr = (end_rgb.x - data->r) / steps;
+		data->dg = (end_rgb.y - data->green) / steps;
+		data->db = (end_rgb.z - data->b) / steps;
+	}
+	else
+	{
+		data->dr = 0;
+		data->dg = 0;
+		data->db = 0;
+	}
+}
+
+int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end, t_draw_line_ctx *dlc)
+{
+	dlc->start_pos.x = (int)start.pos.x;
+	dlc->start_pos.y = (int)start.pos.y;
+	dlc->end_pos.x = (int)end.pos.x;
+	dlc->end_pos.y = (int)end.pos.y;
+	dlc->delta.x = abs(dlc->end_pos.x - dlc->start_pos.x);
+	dlc->delta.y = abs(dlc->end_pos.y - dlc->start_pos.y);
+	if (dlc->start_pos.x < dlc->end_pos.x)
+		dlc->sign.x = 1;
+	else
+		dlc->sign.x = -1;
+	if (dlc->start_pos.y < dlc->end_pos.y)
+		dlc->sign.y = 1;
+	else
+		dlc->sign.y = -1;
+	setup_pointers(g, &dlc->ctx, dlc->sign.x, dlc->sign.y);
+	if (dlc->start_pos.x < 0 || dlc->start_pos.x >= dlc->ctx.width || dlc->start_pos.y < 0 || dlc->start_pos.y >= dlc->ctx.height)
+		return (0);
+	dlc->pixel_addr = g->window->main_img.img_addr + (dlc->start_pos.y * dlc->ctx.line_len) + (dlc->start_pos.x * dlc->ctx.bpp);
+	dlc->z_addr = NULL;
+	if (g->window->z_buffer)
+		dlc->z_addr = g->window->z_buffer + (dlc->start_pos.y * dlc->ctx.width) + dlc->start_pos.x;
+	if (dlc->delta.x > dlc->delta.y)
+		dlc->steps = dlc->delta.x;
+	else
+		dlc->steps = dlc->delta.y;
+	init_interpolation(start, end, dlc->steps, &dlc->interp);
+	return (1);
 }
 
 
@@ -7718,6 +7915,7 @@ void	redraw(t_events *events)
         g->window->main_img.img, 0, 0);
     mlx_put_image_to_window(g->window->mlx_ptr, g->window->ptr,
         g->window->gui_img.img, 0, 0);
+    events->gui->fps = events->graphics->frame_data.fps;
     render_gui(events->gui);
 }
 
@@ -8076,6 +8274,15 @@ static void	draw_performance_header(t_data *data, int *y)
 	*y += GUI_TITLE_HEIGHT;
 }
 
+static void	draw_fps(t_data *data, int *y)
+{
+	char	buffer[20];
+
+	put_text(data, GUI_PADDING + 140, *y, "FPS:");
+	format_number(data->gui.fps, buffer);
+	put_value(data, GUI_PADDING + 180, *y, buffer);
+}
+
 static void	draw_performance_counts(t_data *data, int *y, char *buffer)
 {
 	int		total;
@@ -8179,6 +8386,7 @@ void	draw_performance_display_at(t_data *data, int *section_y)
 
 	y = *section_y;
 	draw_performance_header(data, &y);
+	draw_fps(data, &y);
 	draw_performance_counts(data, &y, buffer);
 	draw_performance_lod_zscale(data, &y, buffer);
 	draw_performance_strings(data, &y);
@@ -8604,6 +8812,16 @@ static void	draw_performance_header(t_gui *gui, int *y)
 	*y += GUI_TITLE_HEIGHT;
 }
 
+static void	draw_fps(t_gui *gui, int *y)
+{
+	char	buffer[20];
+
+	put_text(gui, GUI_PADDING + 140, *y, "FPS:");
+	format_number(gui->fps, buffer);
+	put_value(gui, GUI_PADDING + 180, *y, buffer);
+	*y += GUI_LINE_HEIGHT;
+}
+
 static void	draw_performance_counts(t_gui *gui, int *y, char *buffer)
 {
 	int		total;
@@ -8707,6 +8925,7 @@ void	draw_performance_display_at(t_gui *gui, int *section_y)
 
 	y = *section_y;
 	draw_performance_header(gui, &y);
+	draw_fps(gui, &y);
 	draw_performance_counts(gui, &y, buffer);
 	draw_performance_lod_zscale(gui, &y, buffer);
 	draw_performance_strings(gui, &y);

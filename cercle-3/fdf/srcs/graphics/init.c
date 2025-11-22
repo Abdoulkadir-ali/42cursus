@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:45 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:23:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:15:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ void	init_frame_data(t_frame_data *f)
 {
 	f->last_frame_time = 0;
 	f->frame_in_progress = 0;
+	f->fps = 0;
+	f->frame_count = 0;
+	f->last_check = 0;
 }
 
 t_graphics	*init_graphics(t_graphics_args args)

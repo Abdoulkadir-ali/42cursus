@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/22 03:42:10 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:48:00 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/22 03:58:29 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/22 04:21:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,128 +14,199 @@
 #include "graphics.h"
 #include <math.h>
 
-/* Helper to manage memory pointers */
-typedef struct s_ptr_ctx
-{
-	char			*img_ptr;
-	float			*z_ptr;
-	int				step_x;
-	int				step_y;
-	int				z_step_x;
-	int				z_step_y;
-	int				bpp;
-	int				line_len;
-	int				width;
-	int				height;
-}					t_ptr_ctx;
+/* Fixed Point Scale: 2^16 = 65536 */
+#define FP_SHIFT 16
 
-static void	setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy)
+static void	draw_pixel_fast(t_graphics *g, t_pixel_draw_params p)
 {
-	ctx->bpp = g->window->main_img.img_bpp / 8;
-	ctx->line_len = g->window->main_img.img_line_len;
-	ctx->width = g->window->width;
-	ctx->height = g->window->height;
-	/* Pre-calculate the memory jump size */
-	ctx->step_x = sx * ctx->bpp;
-	ctx->step_y = sy * ctx->line_len;
-	ctx->z_step_x = sx;
-	ctx->z_step_y = sy * ctx->width;
+	/* Z-Buffer Check:
+	   We cast the pointer to int* for atomic-like integer comparison if possible,
+	   but standard float comparison is fine here given memory bandwidth is the limit.
+	*/
+	if (!g->render_config.use_depth_culling || !p.z_addr || p.zr < *p.z_addr)
+	{
+		if (g->render_config.use_depth_culling && p.z_addr)
+			*p.z_addr = p.zr;
+		*(unsigned int *)p.pixel_addr = p.color;
+	}
 }
 
-void draw_line(t_graphics *g, t_point start, t_point end)
+static void	draw_pixel_fast_no_z(t_pixel_draw_params p)
 {
-	int x0 = (int)start.pos.x;
-	int y0 = (int)start.pos.y;
-	int x1 = (int)end.pos.x;
-	int y1 = (int)end.pos.y;
-	int dx = abs(x1 - x0);
-	int dy = abs(y1 - y0);
-	int sx = (x0 < x1) ? 1 : -1;
-	int sy = (y0 < y1) ? 1 : -1;
-	int err = dx - dy;
-	int e2;
+	*(unsigned int *)p.pixel_addr = p.color;
+}
 
-	/* Bounds check setup */
-	t_ptr_ctx ctx;
-	setup_pointers(g, &ctx, sx, sy);
-
-	/* If start point is off-screen, standard clipping should handle it, 
-	   but we add a safety return to prevent segfaults during pointer walking */
-	if (x0 < 0 || x0 >= ctx.width || y0 < 0 || y0 >= ctx.height)
-		return ;
-
-	/* Initialize Pointers */
-	char *pixel_addr = g->window->main_img.img_addr + (y0 * ctx.line_len) + (x0 * ctx.bpp);
-	float *z_addr = NULL;
-	if (g->window->z_buffer)
-		z_addr = g->window->z_buffer + (y0 * ctx.width) + x0;
-
-	/* Interpolation Setup (using doubles for precision, could be fixed-point) */
-	int steps = (dx > dy) ? dx : dy;
-	double zr = start.pos.z;
-	double z_step_val = (steps > 0) ? (end.pos.z - start.pos.z) / steps : 0;
+static void	bresenham_fixed(t_graphics *g, t_bresenham_params p)
+{
+	int		err;
+	int		e2;
+	t_vec2	current;
+	int		color;
 	
-	/* Color Interpolation Setup */
-	t_vec3 start_rgb = get_vec3(start.color);
-	t_vec3 end_rgb = get_vec3(end.color);
-	double r = start_rgb.x, g_val = start_rgb.y, b = start_rgb.z;
-	double dr = 0, dg = 0, db = 0;
-	if (steps > 0)
-	{
-		dr = (end_rgb.x - r) / steps;
-		dg = (end_rgb.y - g_val) / steps;
-		db = (end_rgb.z - b) / steps;
-	}
+	/* --- FIXED POINT SETUP --- */
+	/* Convert start values and steps to scaled integers */
+	int		fp_r = (int)(p.r * (1 << FP_SHIFT));
+	int		fp_g = (int)(p.green * (1 << FP_SHIFT));
+	int		fp_b = (int)(p.b * (1 << FP_SHIFT));
+	int		fp_dr = (int)(p.dr * (1 << FP_SHIFT));
+	int		fp_dg = (int)(p.dg * (1 << FP_SHIFT));
+	int		fp_db = (int)(p.db * (1 << FP_SHIFT));
 
-	int color;
-	int x = x0;
-	int y = y0;
+	/* We keep Z as float for precision in the buffer, but could fix-point it too.
+	   For now, color is the main CPU hog due to 3 components. */
+	
+	t_pixel_draw_params	pdp;
+	pdp.pixel_addr = p.pixel_addr;
+	pdp.z_addr = p.z_addr;
+
+	err = (int)p.delta.x - (int)p.delta.y;
+	current = p.start;
 
 	while (1)
 	{
-		/* 1. Z-Buffer Check using pointer */
-		if (!g->render_config.use_depth_culling || !z_addr || zr < *z_addr)
-		{
-			if (g->render_config.use_depth_culling && z_addr)
-				*z_addr = (float)zr;
+		/* BIT SHIFT to get actual integer color values (Fast!) */
+		color = create_color(fp_r >> FP_SHIFT, fp_g >> FP_SHIFT, fp_b >> FP_SHIFT);
 
-			/* 2. Color Composition */
-			color = create_color((int)r, (int)g_val, (int)b);
-			if (g->camera->color_shift.x || g->camera->color_shift.y || g->camera->color_shift.z)
-				color = shift_color(color, g->camera->color_shift.x, g->camera->color_shift.y, g->camera->color_shift.z);
+		/* Apply color shift only if active (avoids function call overhead if 0) */
+		if (g->camera->color_shift.x || g->camera->color_shift.y || g->camera->color_shift.z)
+			color = shift_color(color, g->camera->color_shift.x, 
+					g->camera->color_shift.y, g->camera->color_shift.z);
 
-			/* 3. Direct Memory Write (No multiplication!) */
-			*(unsigned int *)pixel_addr = color;
-		}
+		/* Draw */
+		pdp.pixel_addr = p.pixel_addr;
+		pdp.z_addr = p.z_addr;
+		pdp.zr = (float)p.zr;
+		pdp.color = color;
+		draw_pixel_fast(g, pdp);
 
-		if (x == x1 && y == y1) break;
+		/* Loop Break */
+		if (current.x == p.end.x && current.y == p.end.y)
+			break;
 
+		/* Error Correction & Pointer Walking */
 		e2 = 2 * err;
-		if (e2 > -dy)
+		if (e2 > -p.delta.y)
 		{
-			err -= dy;
-			x += sx;
-			/* Boundary Check: Break if we leave screen */
-			if (x < 0 || x >= ctx.width) break;
-			
-			/* Move pointers X step */
-			pixel_addr += ctx.step_x;
-			if (z_addr) z_addr += ctx.z_step_x;
+			err -= p.delta.y;
+			current.x += p.sign.x;
+			if (current.x < 0 || current.x >= p.ctx.width) break;
+			p.pixel_addr += p.ctx.step_x;
+			if (p.z_addr) p.z_addr += p.ctx.z_step_x;
 		}
-		if (e2 < dx)
+		if (e2 < p.delta.x)
 		{
-			err += dx;
-			y += sy;
-			/* Boundary Check */
-			if (y < 0 || y >= ctx.height) break;
+			err += p.delta.x;
+			current.y += p.sign.y;
+			if (current.y < 0 || current.y >= p.ctx.height) break;
+			p.pixel_addr += p.ctx.step_y;
+			if (p.z_addr) p.z_addr += p.ctx.z_step_y;
+		}
 
-			/* Move pointers Y step */
-			pixel_addr += ctx.step_y;
-			if (z_addr) z_addr += ctx.z_step_y;
-		}
-		
-		/* Increment Interpolators */
-		zr += z_step_val;
-		r += dr; g_val += dg; b += db;
+		/* Increment Interpolators (Integer Addition) */
+		p.zr += p.z_step_val; /* Keep Z as float for buffer compatibility */
+		fp_r += fp_dr;
+		fp_g += fp_dg;
+		fp_b += fp_db;
 	}
+}
+
+static void	bresenham_fixed_no_z(t_graphics *g, t_bresenham_params p)
+{
+	int		err;
+	int		e2;
+	t_vec2	current;
+	int		color;
+	
+	/* --- FIXED POINT SETUP --- */
+	/* Convert start values and steps to scaled integers */
+	int		fp_r = (int)(p.r * (1 << FP_SHIFT));
+	int		fp_g = (int)(p.green * (1 << FP_SHIFT));
+	int		fp_b = (int)(p.b * (1 << FP_SHIFT));
+	int		fp_dr = (int)(p.dr * (1 << FP_SHIFT));
+	int		fp_dg = (int)(p.dg * (1 << FP_SHIFT));
+	int		fp_db = (int)(p.db * (1 << FP_SHIFT));
+
+	/* We keep Z as float for precision in the buffer, but could fix-point it too.
+	   For now, color is the main CPU hog due to 3 components. */
+	
+	t_pixel_draw_params	pdp;
+	pdp.pixel_addr = p.pixel_addr;
+
+	err = (int)p.delta.x - (int)p.delta.y;
+	current = p.start;
+
+	while (1)
+	{
+		/* BIT SHIFT to get actual integer color values (Fast!) */
+		color = create_color(fp_r >> FP_SHIFT, fp_g >> FP_SHIFT, fp_b >> FP_SHIFT);
+
+		/* Apply color shift only if active (avoids function call overhead if 0) */
+		if (g->camera->color_shift.x || g->camera->color_shift.y || g->camera->color_shift.z)
+			color = shift_color(color, g->camera->color_shift.x, 
+					g->camera->color_shift.y, g->camera->color_shift.z);
+
+		/* Draw */
+		pdp.pixel_addr = p.pixel_addr;
+		pdp.color = color;
+		draw_pixel_fast_no_z(pdp);
+
+		/* Loop Break */
+		if (current.x == p.end.x && current.y == p.end.y)
+			break;
+
+		/* Error Correction & Pointer Walking */
+		e2 = 2 * err;
+		if (e2 > -p.delta.y)
+		{
+			err -= p.delta.y;
+			current.x += p.sign.x;
+			if (current.x < 0 || current.x >= p.ctx.width) break;
+			p.pixel_addr += p.ctx.step_x;
+		}
+		if (e2 < p.delta.x)
+		{
+			err += p.delta.x;
+			current.y += p.sign.y;
+			if (current.y < 0 || current.y >= p.ctx.height) break;
+			p.pixel_addr += p.ctx.step_y;
+		}
+
+		/* Increment Interpolators (Integer Addition) */
+		p.zr += p.z_step_val; /* Keep Z as float for buffer compatibility */
+		fp_r += fp_dr;
+		fp_g += fp_dg;
+		fp_b += fp_db;
+	}
+}
+
+void	draw_line(t_graphics *g, t_point start, t_point end)
+{
+	t_draw_line_ctx	dlc;
+
+	if (!init_draw_line_ctx(g, start, end, &dlc))
+		return ;
+	
+	/* Pass data to the fixed-point loop */
+	dlc.p.start = dlc.start_pos;
+	dlc.p.end = dlc.end_pos;
+	dlc.p.delta = dlc.delta;
+	dlc.p.sign = dlc.sign;
+	dlc.p.ctx = dlc.ctx;
+	dlc.p.pixel_addr = dlc.pixel_addr;
+	dlc.p.z_addr = dlc.z_addr;
+	
+	/* Interpolation data */
+	dlc.p.zr = dlc.interp.zr;
+	dlc.p.z_step_val = dlc.interp.z_step_val;
+	dlc.p.r = dlc.interp.r;
+	dlc.p.green = dlc.interp.green;
+	dlc.p.b = dlc.interp.b;
+	dlc.p.dr = dlc.interp.dr;
+	dlc.p.dg = dlc.interp.dg;
+	dlc.p.db = dlc.interp.db;
+
+	if (g->render_config.use_depth_culling)
+		bresenham_fixed(g, dlc.p);
+	else
+		bresenham_fixed_no_z(g, dlc.p);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:11:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:33:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,8 @@ t_map	*load_map(char *filename)
 	close(fd);
 	end = clock();
 	printf("Parsing time: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
-	int y = 0;
-	while (y < map->height)
-	{
-		int x = 0;
-		while (x < map->width)
-		{
-			map->points.pos[y][x] = map->points.raw[y][x];
-			x++;
-		}
-		y++;
-	}
+	size_t total_size = (size_t)map->width * (size_t)map->height;
+	ft_memcpy(map->points.pos, map->points.raw, total_size * sizeof(t_vec3d));
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_max_z.x;
 	map->max_proj_z = map->min_max_z.y;

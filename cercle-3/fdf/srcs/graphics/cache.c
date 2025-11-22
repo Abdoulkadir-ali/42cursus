@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 03:11:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:11:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:33:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,6 @@ void	cache_projections(t_graphics *g)
 {
 	int		w;
 	int		h;
-	int		x;
-	int		y;
-	t_point	*p;
 
 	if (!g || !g->map || !g->camera)
 		return ;
@@ -58,20 +55,13 @@ void	cache_projections(t_graphics *g)
 		cached_h = h;
 		cached_map = g->map;
 	}
-	p = cached;
-	x = 0;
-	y = 0;
-	while (y < h)
+	size_t total = (size_t)w * (size_t)h;
+	size_t i = 0;
+	while (i < total)
 	{
-		x = 0;
-		while (x < w)
-		{
-			*p = project_point(g->map->points.pos[y][x],
-					g->map->points.color[y][x], g->camera, g->map->z_divisor);
-			++p;
-			++x;
-		}
-		++y;
+		cached[i] = project_point(g->map->points.pos[i],
+				g->map->points.color[i], g->camera, g->map->z_divisor);
+		i++;
 	}
 }
 
@@ -88,6 +78,6 @@ t_point	get_cached_proj(t_graphics *g, int x, int y)
 		return (cached[idx]);
 	}
 	/* fallback */
-	return (project_point(g->map->points.pos[y][x], g->map->points.color[y][x],
+	return (project_point(g->map->points.pos[y * g->map->width + x], g->map->points.color[y * g->map->width + x],
 			g->camera, g->map->z_divisor));
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:32:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:19:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ typedef struct s_map_style_config
 
 typedef struct s_map_points
 {
-	t_vec3d				**pos;
-	t_vec3d				**raw;
-	int					**color;
+	t_vec3d				*pos;
+	t_vec3d				*raw;
+	int					*color;
 }						t_map_points;
 
 typedef struct s_map

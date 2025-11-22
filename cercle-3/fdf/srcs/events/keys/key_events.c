@@ -13,6 +13,15 @@
 #include "events.h"
 #include <stdio.h>
 #include <string.h>
+#include <sys/time.h>
+
+static long	get_time_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
 
 void	init_key_actions(t_key_maps *key_maps)
 {
@@ -117,15 +126,32 @@ int	key_release(int keycode, t_events *events)
 
 int	loop_hook(t_events *events)
 {
-	static int	frame = 0;
-	int	needs_redraw;
+	long	current_time;
+	t_frame_data *f;
 
-	needs_redraw = 0;
-	if (process_movement(events))
-		needs_redraw = 1;
-	needs_redraw++;
-	if (frame % 10 == 0)
-		redraw(events);
-	frame++;
+	f = &events->graphics->frame_data;
+	current_time = get_time_ms();
+
+	/* 1. Initialize timer if 0 */
+	if (f->last_check == 0)
+		f->last_check = current_time;
+
+	/* 2. Count Frames */
+	f->frame_count++;
+
+	/* 3. Every 0.5 second (500ms), update FPS and reset counter */
+	if (current_time - f->last_check >= 500)
+	{
+		f->fps = f->frame_count;
+		f->frame_count = 0;
+		f->last_check = current_time;
+	}
+
+	/* 4. Process Movement (Continuous) */
+	process_movement(events);
+
+	/* 5. ALWAYS Redraw (Uncapped Performance) */
+	redraw(events);
+
 	return (0);
 }

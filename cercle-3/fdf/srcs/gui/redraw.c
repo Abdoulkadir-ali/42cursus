@@ -32,5 +32,6 @@ void	redraw(t_events *events)
         g->window->main_img.img, 0, 0);
     mlx_put_image_to_window(g->window->mlx_ptr, g->window->ptr,
         g->window->gui_img.img, 0, 0);
+    events->gui->fps = events->graphics->frame_data.fps;
     render_gui(events->gui);
 }

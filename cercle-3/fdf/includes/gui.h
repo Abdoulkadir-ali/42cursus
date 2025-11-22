@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:33:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:11:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_gui
 	t_render_config	*render_config;
 	t_camera		*camera;
 	t_map			*map;
+	int				fps;
 }					t_gui;
 
 /* ========== GUI STYLE ========== */

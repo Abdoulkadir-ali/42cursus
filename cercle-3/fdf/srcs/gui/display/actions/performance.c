@@ -19,6 +19,15 @@ static void	draw_performance_header(t_data *data, int *y)
 	*y += GUI_TITLE_HEIGHT;
 }
 
+static void	draw_fps(t_data *data, int *y)
+{
+	char	buffer[20];
+
+	put_text(data, GUI_PADDING + 140, *y, "FPS:");
+	format_number(data->gui.fps, buffer);
+	put_value(data, GUI_PADDING + 180, *y, buffer);
+}
+
 static void	draw_performance_counts(t_data *data, int *y, char *buffer)
 {
 	int		total;
@@ -122,6 +131,7 @@ void	draw_performance_display_at(t_data *data, int *section_y)
 
 	y = *section_y;
 	draw_performance_header(data, &y);
+	draw_fps(data, &y);
 	draw_performance_counts(data, &y, buffer);
 	draw_performance_lod_zscale(data, &y, buffer);
 	draw_performance_strings(data, &y);

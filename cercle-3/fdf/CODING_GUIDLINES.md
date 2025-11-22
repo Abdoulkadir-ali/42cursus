@@ -1,8 +1,14 @@
 Please the guidelines are  :
 - Use struct if too much variables
 - Struct must ALWAYS be in HEADER FILES
+- If a function has more than 4 args, then use a STRUCT
+- If a function is using what seems ot be vectors, then use VECTORS directly (not int x, int y, or double x, double y)
 - NO PROTOTYPING in .C fiels, ALWAYS IN HEADER FILES
 - Use ALWAYS VECTOR METHODS FROM THE VECTOR MODULE when available
+- RESPECT NORMINETTE 
 - Respect DRY concept
+- No unecessary spaces, no unecessary new_lines, no unecessary brackets when it can be done in one line
+- NO TERNARIES
+- No COMMENTING (none whatsoever)
 - Before reimplementing, verify it'sn ot already implemented in another module from srcs/
 - Repspect norminette

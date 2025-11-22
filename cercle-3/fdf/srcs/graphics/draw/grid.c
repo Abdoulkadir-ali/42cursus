@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 03:25:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:20:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ void draw_grid_section(t_graphics *g, int start_y, int end_y, int step)
 			/* get the pre-projected point from cache */
 			p1 = get_cached_proj(g, x, y);
 			/* simple cull: continue if underlying 3D point is not in frustum */
-			if (!is_point_visible(g->map->points.pos[y][x], g))
+			if (!is_point_visible(g->map->points.pos[y * g->map->width + x], g))
 			{
 				x += step;
 				continue ;
