@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 04:20:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 04:36:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	draw_grid(t_graphics *g)
         args[i].g = g;
         args[i].step = step;
         args[i].start_y = i * h_step;
-        // Ensure the last thread covers any remainder pixels
         if (i == NUM_THREADS - 1)
             args[i].end_y = g->map->height;
         else
