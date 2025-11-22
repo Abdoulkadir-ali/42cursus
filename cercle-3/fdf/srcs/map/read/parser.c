@@ -6,50 +6,64 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:13:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:03:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "map.h"
-#include <ctype.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <limits.h>
+
+#define BAD_VALUE -2000000000.0
 
 static char	*skip_spaces(char *p)
 {
-	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r'))
+	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\v'
+			|| *p == '\f'))
 		p++;
 	return (p);
+}
+
+static int	count_words(char *line)
+{
+	int		count;
+	char	*p;
+
+	count = 0;
+	p = skip_spaces(line);
+	while (p && *p && *p != '\n')
+	{
+		count++;
+		while (*p && *p != ' ' && *p != '\t' && *p != '\n' && *p != '\r')
+			p++;
+		p = skip_spaces(p);
+	}
+	return (count);
 }
 
 void	get_map_dimensions(int fd, int *width, int *height)
 {
 	char	*line;
-	char	*p;
+	int		curr_w;
 
 	*width = 0;
 	*height = 0;
 	line = get_next_line(fd);
 	while (line)
 	{
-		if (line[0] != '\n')
+		if (line[0] != '\0')
 		{
-			(*height)++;
-			if (*width == 0)
+			if (line[0] == '\n' && line[1] == '\0')
 			{
-				p = line;
-				while (*p && *p != '\n')
-				{
-					p = skip_spaces(p);
-					if (*p == '\0' || *p == '\n')
-						break ;
-					(*width)++;
-					while (*p && *p != '\n' && *p != ' ' && *p != '\t')
-						p++;
-				}
+				free(line);
+				line = get_next_line(fd);
+				continue;
 			}
+			
+			(*height)++;
+			curr_w = count_words(line);
+			if (curr_w > *width)
+				*width = curr_w;
 		}
 		free(line);
 		line = get_next_line(fd);
@@ -58,69 +72,80 @@ void	get_map_dimensions(int fd, int *width, int *height)
 
 int	allocate_map_points(t_map *map)
 {
-	int	total;
-	int	i;
+	int	y;
 
-	total = map->height * map->width;
-	map->points.pos = malloc(sizeof(t_vec3d) * total);
-	if (!map->points.pos)
+	map->points.pos = malloc(sizeof(t_vec3d *) * map->height);
+	map->points.raw = malloc(sizeof(t_vec3d *) * map->height);
+	map->points.color = malloc(sizeof(int *) * map->height);
+
+	if (!map->points.pos || !map->points.raw || !map->points.color)
 		return (0);
-	map->points.raw = malloc(sizeof(t_vec3d) * total);
-	if (!map->points.raw)
-		return (0);
-	map->points.color = malloc(sizeof(int) * total);
-	if (!map->points.color)
-		return (0);
-	i = 0;
-	while (i < total)
+
+	y = 0;
+	while (y < map->height)
 	{
-		map->points.raw[i].x = i % map->width;
-		map->points.raw[i].y = i / map->width;
-		map->points.raw[i].z = 0;
-		map->points.color[i] = 0xFFFFFF;
-		i++;
+		map->points.pos[y] = malloc(sizeof(t_vec3d) * map->width);
+		map->points.raw[y] = malloc(sizeof(t_vec3d) * map->width);
+		map->points.color[y] = malloc(sizeof(int) * map->width);
+
+		if (!map->points.pos[y] || !map->points.raw[y] || !map->points.color[y])
+			return (0); // Cleanup would be needed in real implementation
+
+		y++;
 	}
 	return (1);
 }
 
 void	parse_map_data(t_map *map, int fd)
 {
-	char *line;
-	char *p;
-	char *end;
-	int x;
-	int y;
+	char	*line;
+	char	*p;
+	char	*end;
+	int		x;
+	int		y;
 
 	y = 0;
 	line = get_next_line(fd);
 	while (line && y < map->height)
 	{
-		if (line[0] != '\n')
+		if (line[0] != '\n' && line[0] != '\0')
 		{
 			p = line;
 			x = 0;
 			while (x < map->width)
 			{
-				int index = y * map->width + x;
 				p = skip_spaces(p);
 				if (!p || *p == '\0' || *p == '\n')
 					break ;
-				/* parse z (decimal, possibly negative) */
+				
 				long z = strtol(p, &end, 10);
 				if (end == p)
 					z = 0;
-				map->points.raw[index].z = (int)z;
+				
+				map->points.raw[y][x].z = (double)z;
+				map->points.raw[y][x].x = x;
+				map->points.raw[y][x].y = y;
+				map->points.color[y][x] = 0xFFFFFF;
+				
 				p = end;
-				/* optional color after comma: allow hex (0x..) or decimal */
 				if (*p == ',')
 				{
 					p++;
 					long color = strtol(p, &end, 0);
 					if (end == p)
 						color = 0xFFFFFF;
-					map->points.color[index] = (int)color;
+					map->points.color[y][x] = (int)color;
 					p = end;
 				}
+				x++;
+			}
+			// Pad remaining columns with zeros if line is shorter
+			while (x < map->width)
+			{
+				map->points.raw[y][x].z = 0;
+				map->points.raw[y][x].x = x;
+				map->points.raw[y][x].y = y;
+				map->points.color[y][x] = 0xFFFFFF;
 				x++;
 			}
 			y++;

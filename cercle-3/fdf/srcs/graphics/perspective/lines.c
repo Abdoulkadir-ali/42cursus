@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 20:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 11:03:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 12:53:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 int	is_point_visible(t_vec3d p, t_graphics *g)
 {
+	/* Don't render BAD_VALUE points */
+	if (p.z == BAD_VALUE)
+		return (0);
+		
 	t_point	projected;
 	int		threshold;
 	int		z;
@@ -48,6 +52,10 @@ int	is_on_screen(int x, int y, t_graphics *g)
 
 int	should_draw_line(t_point p1, t_point p2, t_graphics *g)
 {
+	/* Check for BAD_VALUE points - don't draw lines to/from invalid points */
+	if (p1.pos.z == BAD_VALUE || p2.pos.z == BAD_VALUE)
+		return (0);
+		
 	if (!is_on_screen(p1.pos.x, p1.pos.y, g) && !is_on_screen(p2.pos.x, p2.pos.y,
 			g))
 	{

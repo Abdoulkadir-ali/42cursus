@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:05:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:03:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void	draw_grid_section(t_graphics *g, int start_y, int end_y, int step)
 				continue ;
 			}
 			p1 = get_cached_proj(g, x, y);
-			if (!is_point_visible(g->map->points.pos[y * g->map->width + x], g))
+			if (!is_point_visible(g->map->points.pos[y][x], g))
 			{
 				x += step;
 				continue ;

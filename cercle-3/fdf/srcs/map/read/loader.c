@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:13:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/22 13:04:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ t_map	*load_map(char *filename)
 	int		height;
 	clock_t	start;
 	clock_t	end;
-	size_t	total_size;
 
 	start = clock();
 	fd = open(filename, O_RDONLY);
@@ -52,8 +51,22 @@ t_map	*load_map(char *filename)
 	end = clock();
 	printf("Parsing time: %f seconds\n", (double)(end - start)
 		/ CLOCKS_PER_SEC);
-	total_size = (size_t)map->width * (size_t)map->height;
-	ft_memcpy(map->points.pos, map->points.raw, total_size * sizeof(t_vec3d));
+	
+	/* REVERT: Manual 2D Copy */
+	int x, y_idx;
+	y_idx = 0;
+	while (y_idx < map->height)
+	{
+		x = 0;
+		while (x < map->width)
+		{
+			map->points.pos[y_idx][x] = map->points.raw[y_idx][x];
+			x++;
+		}
+		y_idx++;
+	}
+	/* ---------------------- */
+	
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_max_z.x;
 	map->max_proj_z = map->min_max_z.y;
