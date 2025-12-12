@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 17:14:19 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:26:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:53:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(int argc, char **argv)
 		return (0);
 	init_stacks(&stacks, argv + 1);
 	stacks.verbose = 0;
+	debug_line_stacks(stacks, "Initial state:", NULL);
 	line = get_next_line(0);
 	while (line && ft_strcmp(line, "\n"))
 	{
@@ -44,6 +45,7 @@ int	main(int argc, char **argv)
 			free_stacks(stacks);
 			return (1);
 		}
+		debug_line_stacks(stacks, "After:", line);
 		free(line);
 		line = get_next_line(0);
 	}

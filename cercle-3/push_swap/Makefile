@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/12 00:00:00 by abdoali           #+#    #+#              #
-#    Updated: 2025/12/12 22:47:15 by abdoali          ###   ########.fr        #
+#    Updated: 2025/12/12 23:48:23 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,9 @@ NAME		= push_swap
 CHECKER		= checker
 
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -I includes -I srcs/libft/includes
+CFLAGS		= -Wall -Wextra -Werror
+INCLUDES	= -I includes -I srcs/libft/includes
+DEBUG_FLAGS	=
 
 # Directories
 SRC_DIR		= srcs/push_swap
@@ -39,7 +41,8 @@ COMMON_SRCS	= parsing/stacks/check.c \
 			  helper/lst/ft_clear.c \
 			  helper/stacks/free.c \
 			  helper/display/ft_print_lst.c \
-			  helper/display/ft_puterr.c
+			  helper/display/ft_puterr.c \
+			  helper/display/ft_debug_stacks.c
 
 ALGO_SRCS	= algo/cost.c \
 			  algo/target.c \
@@ -100,13 +103,13 @@ all: $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEBUG_FLAGS) -c $< -o $@
 
 $(NAME): $(MAIN_OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(MAIN_OBJ) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEBUG_FLAGS) $(MAIN_OBJ) $(LIBFT) -o $(NAME)
 
 $(CHECKER): $(CHECKER_OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(CHECKER_OBJ) $(LIBFT) -o $(CHECKER)
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEBUG_FLAGS) $(CHECKER_OBJ) $(LIBFT) -o $(CHECKER)
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR)

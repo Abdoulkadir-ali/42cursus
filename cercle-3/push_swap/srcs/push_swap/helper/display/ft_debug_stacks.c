@@ -1,43 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_lst.c                                     :+:      :+:    :+:   */
+/*   ft_debug_stacks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/12 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:43:45 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/12 23:40:47 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/12 23:53:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static void	print_stack_values(t_nodes *stack)
+void	debug_stacks(t_stacks s)
 {
-	int	size;
+	print_stack(s.a, "stack a");
+	print_stack(s.b, "stack b");
+}
 
-	if (!stack)
+void	debug_line_stacks(t_stacks s, char *line, char *instruction)
+{
+	if (!DEBUG)
 		return ;
-	size = ft_size(stack);
-	while (size)
+	ft_putstr_fd(line, 2);
+	if (instruction)
 	{
-		ft_putnbr_fd(stack->v, 1);
-		ft_putstr_fd(", ", 1);
-		stack = stack->next;
-		size--;
+		ft_putstr_fd(" ", 2);
+		ft_putstr_fd(instruction, 2);
 	}
-	ft_putstr_fd("\b\b", 1);
+	ft_putstr_fd("\n", 2);
+	debug_stacks(s);
+	ft_putstr_fd("\n", 2);
 }
-
-void	print_stack(t_nodes *stack, char *name)
-{
-	ft_putstr_fd(name, 1);
-	ft_putstr_fd(" : ", 1);
-	if (!stack)
-		ft_putstr_fd("(empty)", 1);
-	else
-		print_stack_values(stack);
-	ft_putstr_fd("\n", 1);
-}
-
-

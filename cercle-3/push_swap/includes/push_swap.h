@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 19:33:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:27:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:53:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ int					parse_number(char **p, int *value);
 // DISPLAY
 void				print_stack(t_nodes *stack, char *name);
 void				debug_stacks(t_stacks s);
+void					debug_line_stacks(t_stacks s, char *line, char *instruction);
 int					ft_puterr(char *str);
 
 // HELPER

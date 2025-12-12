@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 19:45:56 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:12:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:49:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,9 @@ int	main(int argc, char **argv)
 		init_stacks(&stacks, argv);
 	if (!stacks.a)
 		return (ft_puterr("Error\n"));
-	if (DEBUG)
-	{
-		ft_putstr_fd("Before :\n", 1);
-		debug_stacks(stacks);
-	}
+    debug_line_stacks(stacks, "Before state:\n");
 	push_swap(&stacks);
-	if (DEBUG)
-	{
-		ft_putstr_fd("After :\n", 1);
-		debug_stacks(stacks);
-	}
+    debug_line_stacks(stacks, "After state:\n");
 	free_stacks(stacks);
 	return (0);
 }

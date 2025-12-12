@@ -7,6 +7,7 @@ ITERATIONS=${2:-10}
 # Paths (Edit if your checker has a different name)
 PUSH_SWAP="./push_swap"
 CHECKER="./checker_linux" # Or your own ./checker if you made one
+BONUS_CHECKER="./checker" # Your own bonus checker
 
 # Colors
 GREEN='\033[0;32m'
@@ -34,6 +35,16 @@ else
     echo -e "${YELLOW}Warning: $CHECKER not found. Sorting validation will be skipped.${RESET}"
 fi
 
+# Check if bonus checker exists and is executable
+if [ -f "$BONUS_CHECKER" ]; then
+    if [ ! -x "$BONUS_CHECKER" ]; then
+        echo -e "${YELLOW}Warning: $BONUS_CHECKER is not executable. Making it executable...${RESET}"
+        chmod +x "$BONUS_CHECKER" 2>/dev/null || {
+            echo -e "${YELLOW}Warning: Cannot make $BONUS_CHECKER executable.${RESET}"
+        }
+    fi
+fi
+
 echo -e "${BLUE}Testing push_swap with $LIST_LEN numbers for $ITERATIONS iterations...${RESET}"
 echo "------------------------------------------------"
 
@@ -51,6 +62,8 @@ for ((i=1; i<=ITERATIONS; i++)); do
     
     # Verification (Optional: only if checker exists)
     STATUS=""
+    BONUS_STATUS=""
+    
     if [ -f "$CHECKER" ]; then
         CHECK_RESULT=$($PUSH_SWAP $ARG | $CHECKER $ARG 2>&1)
         if [ "$CHECK_RESULT" == "OK" ]; then
@@ -80,6 +93,28 @@ for ((i=1; i<=ITERATIONS; i++)); do
             exit 1
         fi
     fi
+    
+    # Bonus checker verification
+    if [ -f "$BONUS_CHECKER" ] && [ -x "$BONUS_CHECKER" ]; then
+        BONUS_RESULT=$($PUSH_SWAP $ARG | $BONUS_CHECKER $ARG 2>&1)
+        if [ "$BONUS_RESULT" == "OK" ]; then
+            BONUS_STATUS="${GREEN}[OK]${RESET}"
+        elif [ "$BONUS_RESULT" == "KO" ]; then
+            BONUS_STATUS="${RED}[KO]${RESET}"
+            echo ""
+            echo -e "${RED}╔════════════════════════════════════════════════╗${RESET}"
+            echo -e "${RED}║  ERROR: Bonus checker failed on run $i!       ║${RESET}"
+            echo -e "${RED}╚════════════════════════════════════════════════╝${RESET}"
+            echo -e "${YELLOW}Arguments:${RESET} $ARG"
+            echo -e "${YELLOW}Moves:${RESET} $MOVES"
+            echo -e "${YELLOW}Bonus checker result:${RESET} KO"
+            echo ""
+            echo -e "${RED}Aborting test suite.${RESET}"
+            exit 1
+        else
+            BONUS_STATUS="${RED}[ERR]${RESET}"
+        fi
+    fi
 
     # Update Stats
     TOTAL=$((TOTAL + MOVES))
@@ -87,7 +122,7 @@ for ((i=1; i<=ITERATIONS; i++)); do
     if (( MOVES > MAX )); then MAX=$MOVES; fi
 
     # Print current run
-    printf "Run %2d: ${YELLOW}%4d${RESET} moves %b\n" "$i" "$MOVES" "$STATUS"
+    printf "Run %2d: ${YELLOW}%4d${RESET} moves %b %b\n" "$i" "$MOVES" "$STATUS" "$BONUS_STATUS"
 done
 
 # Calculate Average
