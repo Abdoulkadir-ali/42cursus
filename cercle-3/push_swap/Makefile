@@ -1,234 +1,151 @@
-NAME = push_swap
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/12/12 00:00:00 by abdoali           #+#    #+#              #
+#    Updated: 2025/12/12 22:47:15 by abdoali          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -I includes -I srcs/libft/includes
+NAME		= push_swap
+CHECKER		= checker
 
-LIBFT_DIR = srcs/libft
-LIBFT = $(LIBFT_DIR)/libft.a
+CC			= gcc
+CFLAGS		= -Wall -Wextra -Werror -I includes -I srcs/libft/includes
 
-SRC_DIR = srcs/push_swap
-SRC = $(SRC_DIR)/parsing/stacks/check.c \
-      $(SRC_DIR)/parsing/stacks/parser.c \
-      $(SRC_DIR)/parsing/stacks/test.c \
-      $(SRC_DIR)/parsing/stacks/main.c \
-      $(SRC_DIR)/main/main.c \
-	  $(SRC_DIR)/parsing/moves/parser.c \
-      $(SRC_DIR)/moves/push.c \
-      $(SRC_DIR)/moves/rotate.c \
-	  $(SRC_DIR)/moves/reverse_rotate.c \
-      $(SRC_DIR)/moves/swap.c \
-      $(SRC_DIR)/moves/test.c \
-      $(SRC_DIR)/helper/display/ft_print_lst.c \
-      $(SRC_DIR)/helper/display/ft_puterr.c \
-      $(SRC_DIR)/parsing/stacks/parse_int.c \
-      $(SRC_DIR)/helper/lst/ft_new.c \
-      $(SRC_DIR)/helper/lst/ft_add_back.c \
-      $(SRC_DIR)/helper/lst/ft_add_front.c \
-      $(SRC_DIR)/helper/lst/ft_size.c \
-      $(SRC_DIR)/helper/lst/ft_last.c \
-      $(SRC_DIR)/helper/lst/ft_delone.c \
-      $(SRC_DIR)/helper/lst/ft_clear.c \
-      $(SRC_DIR)/helper/stacks/free.c \
-      $(SRC_DIR)/algo/cost.c \
-      $(SRC_DIR)/algo/target.c \
-      $(SRC_DIR)/algo/moves.c \
-      $(SRC_DIR)/algo/sort.c \
-      $(SRC_DIR)/algo/push_swap.c \
-      $(SRC_DIR)/checker/checker.c \
+# Directories
+SRC_DIR		= srcs/push_swap
+OBJ_DIR		= obj
+LIBFT_DIR	= srcs/libft
+LIBFT		= $(LIBFT_DIR)/libft.a
 
-OBJ_DIR = obj
-OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+# Common source files (shared by multiple targets)
+COMMON_SRCS	= parsing/stacks/check.c \
+			  parsing/stacks/parser.c \
+			  parsing/stacks/parse_int.c \
+			  moves/push.c \
+			  moves/rotate.c \
+			  moves/reverse_rotate.c \
+			  moves/swap.c \
+			  helper/lst/ft_new.c \
+			  helper/lst/ft_add_back.c \
+			  helper/lst/ft_add_front.c \
+			  helper/lst/ft_size.c \
+			  helper/lst/ft_last.c \
+			  helper/lst/ft_delone.c \
+			  helper/lst/ft_clear.c \
+			  helper/stacks/free.c \
+			  helper/display/ft_print_lst.c \
+			  helper/display/ft_puterr.c
 
-TEST_OBJ = $(OBJ_DIR)/parsing/stacks/check.o \
-			$(OBJ_DIR)/parsing/stacks/parser.o \
-			$(OBJ_DIR)/parsing/stacks/test.o \
-			$(OBJ_DIR)/helper/lst/ft_new.o \
-			$(OBJ_DIR)/helper/lst/ft_add_back.o \
-			$(OBJ_DIR)/helper/lst/ft_add_front.o \
-			$(OBJ_DIR)/helper/lst/ft_clear.o \
-			$(OBJ_DIR)/helper/stacks/free.o \
-			$(OBJ_DIR)/helper/lst/ft_delone.o \
-			$(OBJ_DIR)/helper/lst/ft_size.o \
-			$(OBJ_DIR)/helper/lst/ft_last.o \
-			$(OBJ_DIR)/helper/display/ft_puterr.o \
-			$(OBJ_DIR)/parsing/stacks/parse_int.o
+ALGO_SRCS	= algo/cost.c \
+			  algo/target.c \
+			  algo/moves.c \
+			  algo/sort.c \
+			  algo/push_swap.c
 
-MOVES_TEST_OBJ = $(OBJ_DIR)/parsing/stacks/check.o \
-				 $(OBJ_DIR)/parsing/stacks/parser.o \
-				 $(OBJ_DIR)/moves/test.o \
-				 $(OBJ_DIR)/parsing/moves/parser.o \
-				 $(OBJ_DIR)/moves/push.o \
-				 $(OBJ_DIR)/moves/rotate.o \
-				 $(OBJ_DIR)/moves/reverse_rotate.o \
-				 $(OBJ_DIR)/moves/swap.o \
-				 $(OBJ_DIR)/helper/lst/ft_new.o \
-				 $(OBJ_DIR)/helper/lst/ft_add_back.o \
-				 $(OBJ_DIR)/helper/lst/ft_add_front.o \
-				 $(OBJ_DIR)/helper/lst/ft_clear.o \
-				 $(OBJ_DIR)/helper/stacks/free.o \
-				 $(OBJ_DIR)/helper/lst/ft_delone.o \
-				 $(OBJ_DIR)/helper/lst/ft_size.o \
-				 $(OBJ_DIR)/helper/lst/ft_last.o \
-				 $(OBJ_DIR)/helper/display/ft_print_lst.o \
-				 $(OBJ_DIR)/helper/display/ft_puterr.o \
-				 $(OBJ_DIR)/algo/sort.o \
-				 $(OBJ_DIR)/algo/cost.o \
-				 $(OBJ_DIR)/algo/target.o \
-				 $(OBJ_DIR)/algo/moves.o \
-				 $(OBJ_DIR)/parsing/stacks/parse_int.o
+# Main program sources
+MAIN_SRCS	= main/main.c $(COMMON_SRCS) $(ALGO_SRCS)
 
-ALGO_TEST_OBJ = $(OBJ_DIR)/parsing/stacks/check.o \
-				$(OBJ_DIR)/parsing/stacks/parser.o \
-				$(OBJ_DIR)/algo/tests/main.o \
-				$(OBJ_DIR)/parsing/moves/parser.o \
-				$(OBJ_DIR)/moves/push.o \
-				$(OBJ_DIR)/moves/rotate.o \
-				$(OBJ_DIR)/moves/reverse_rotate.o \
-				$(OBJ_DIR)/moves/swap.o \
-				$(OBJ_DIR)/helper/lst/ft_new.o \
-				$(OBJ_DIR)/helper/lst/ft_add_back.o \
-				$(OBJ_DIR)/helper/lst/ft_add_front.o \
-				$(OBJ_DIR)/helper/lst/ft_clear.o \
-				$(OBJ_DIR)/helper/stacks/free.o \
-				$(OBJ_DIR)/helper/lst/ft_delone.o \
-				$(OBJ_DIR)/helper/lst/ft_size.o \
-				$(OBJ_DIR)/helper/lst/ft_last.o \
-				$(OBJ_DIR)/helper/display/ft_print_lst.o \
-				$(OBJ_DIR)/helper/display/ft_puterr.o \
-				$(OBJ_DIR)/algo/sort.o \
-				$(OBJ_DIR)/algo/cost.o \
-				$(OBJ_DIR)/algo/target.o \
-				$(OBJ_DIR)/algo/moves.o \
-				$(OBJ_DIR)/algo/push_swap.o \
-				$(OBJ_DIR)/parsing/stacks/parse_int.o
+# Checker sources
+CHECKER_SRCS = checker/checker.c \
+			   parsing/moves/parser.c \
+			   $(COMMON_SRCS) $(ALGO_SRCS)
 
-COST_TEST_OBJ = $(OBJ_DIR)/parsing/stacks/check.o \
-				$(OBJ_DIR)/parsing/stacks/parser.o \
-				$(OBJ_DIR)/algo/tests/cost.o \
-				$(OBJ_DIR)/parsing/moves/parser.o \
-				$(OBJ_DIR)/moves/push.o \
-				$(OBJ_DIR)/moves/rotate.o \
-				$(OBJ_DIR)/moves/reverse_rotate.o \
-				$(OBJ_DIR)/moves/swap.o \
-				$(OBJ_DIR)/helper/lst/ft_new.o \
-				$(OBJ_DIR)/helper/lst/ft_add_back.o \
-				$(OBJ_DIR)/helper/lst/ft_add_front.o \
-				$(OBJ_DIR)/helper/lst/ft_clear.o \
-				$(OBJ_DIR)/helper/stacks/free.o \
-				$(OBJ_DIR)/helper/lst/ft_delone.o \
-				$(OBJ_DIR)/helper/lst/ft_size.o \
-				$(OBJ_DIR)/helper/lst/ft_last.o \
-				$(OBJ_DIR)/helper/display/ft_print_lst.o \
-				$(OBJ_DIR)/helper/display/ft_puterr.o \
-				$(OBJ_DIR)/algo/sort.o \
-				$(OBJ_DIR)/algo/cost.o \
-				$(OBJ_DIR)/algo/target.o \
-				$(OBJ_DIR)/algo/moves.o \
-				$(OBJ_DIR)/algo/push_swap.o \
-				$(OBJ_DIR)/parsing/stacks/parse_int.o
+# Test sources
+TEST_PARSER_SRCS = parsing/stacks/test.c \
+				   parsing/stacks/check.c \
+				   parsing/stacks/parser.c \
+				   parsing/stacks/parse_int.c \
+				   helper/lst/ft_new.c \
+				   helper/lst/ft_add_back.c \
+				   helper/lst/ft_add_front.c \
+				   helper/lst/ft_clear.c \
+				   helper/lst/ft_delone.c \
+				   helper/lst/ft_size.c \
+				   helper/lst/ft_last.c \
+				   helper/stacks/free.c \
+				   helper/display/ft_puterr.c
 
-TARGET_TEST_OBJ = $(OBJ_DIR)/parsing/stacks/check.o \
-				$(OBJ_DIR)/parsing/stacks/parser.o \
-				$(OBJ_DIR)/algo/tests/target.o \
-				$(OBJ_DIR)/parsing/moves/parser.o \
-				$(OBJ_DIR)/moves/push.o \
-				$(OBJ_DIR)/moves/rotate.o \
-				$(OBJ_DIR)/moves/reverse_rotate.o \
-				$(OBJ_DIR)/moves/swap.o \
-				$(OBJ_DIR)/helper/lst/ft_new.o \
-				$(OBJ_DIR)/helper/lst/ft_add_back.o \
-				$(OBJ_DIR)/helper/lst/ft_add_front.o \
-				$(OBJ_DIR)/helper/lst/ft_clear.o \
-				$(OBJ_DIR)/helper/stacks/free.o \
-				$(OBJ_DIR)/helper/lst/ft_delone.o \
-				$(OBJ_DIR)/helper/lst/ft_size.o \
-				$(OBJ_DIR)/helper/lst/ft_last.o \
-				$(OBJ_DIR)/helper/display/ft_print_lst.o \
-				$(OBJ_DIR)/helper/display/ft_puterr.o \
-				$(OBJ_DIR)/algo/sort.o \
-				$(OBJ_DIR)/algo/cost.o \
-				$(OBJ_DIR)/algo/target.o \
-				$(OBJ_DIR)/algo/moves.o \
-				$(OBJ_DIR)/algo/push_swap.o \
-				$(OBJ_DIR)/parsing/stacks/parse_int.o
+TEST_MOVE_SRCS = moves/test.c \
+				 parsing/moves/parser.c \
+				 $(COMMON_SRCS) $(ALGO_SRCS)
 
-CHECKER_OBJ = $(OBJ_DIR)/parsing/stacks/check.o \
-				 $(OBJ_DIR)/parsing/stacks/parser.o \
-				 $(OBJ_DIR)/checker/checker.o \
-				 $(OBJ_DIR)/parsing/moves/parser.o \
-				 $(OBJ_DIR)/moves/push.o \
-				 $(OBJ_DIR)/moves/rotate.o \
-				 $(OBJ_DIR)/moves/reverse_rotate.o \
-				 $(OBJ_DIR)/moves/swap.o \
-				 $(OBJ_DIR)/helper/lst/ft_new.o \
-				 $(OBJ_DIR)/helper/lst/ft_add_back.o \
-				 $(OBJ_DIR)/helper/lst/ft_add_front.o \
-				 $(OBJ_DIR)/helper/lst/ft_clear.o \
-				 $(OBJ_DIR)/helper/stacks/free.o \
-				 $(OBJ_DIR)/helper/lst/ft_delone.o \
-				 $(OBJ_DIR)/helper/lst/ft_size.o \
-				 $(OBJ_DIR)/helper/lst/ft_last.o \
-				 $(OBJ_DIR)/helper/display/ft_print_lst.o \
-				 $(OBJ_DIR)/helper/display/ft_puterr.o \
-				 $(OBJ_DIR)/algo/sort.o \
-				 $(OBJ_DIR)/algo/cost.o \
-				 $(OBJ_DIR)/algo/target.o \
-				 $(OBJ_DIR)/algo/moves.o \
-				 $(OBJ_DIR)/parsing/stacks/parse_int.o
+TEST_ALGO_SRCS = algo/tests/main.c \
+				 parsing/moves/parser.c \
+				 $(COMMON_SRCS) $(ALGO_SRCS)
 
+TEST_COST_SRCS = algo/tests/cost.c \
+				 parsing/moves/parser.c \
+				 $(COMMON_SRCS) $(ALGO_SRCS)
 
-BONUS_SRC = $(SRC_DIR)/checker/checker.c \
-			$(SRC_DIR)/checker/parser.c \
+TEST_TARGET_SRCS = algo/tests/target.c \
+				   parsing/moves/parser.c \
+				   $(COMMON_SRCS) $(ALGO_SRCS)
 
+# Object files
+MAIN_OBJ		= $(MAIN_SRCS:%.c=$(OBJ_DIR)/%.o)
+CHECKER_OBJ		= $(CHECKER_SRCS:%.c=$(OBJ_DIR)/%.o)
+TEST_PARSER_OBJ	= $(TEST_PARSER_SRCS:%.c=$(OBJ_DIR)/%.o)
+TEST_MOVE_OBJ	= $(TEST_MOVE_SRCS:%.c=$(OBJ_DIR)/%.o)
+TEST_ALGO_OBJ	= $(TEST_ALGO_SRCS:%.c=$(OBJ_DIR)/%.o)
+TEST_COST_OBJ	= $(TEST_COST_SRCS:%.c=$(OBJ_DIR)/%.o)
+TEST_TARGET_OBJ	= $(TEST_TARGET_SRCS:%.c=$(OBJ_DIR)/%.o)
 
-
+# Rules
 all: $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(filter-out $(OBJ_DIR)/parsing/stacks/test.o $(OBJ_DIR)/moves/test.o $(OBJ_DIR)/checker/checker.o $(OBJ_DIR)/parsing/moves/parser.o $(OBJ_DIR)/checker/test.o, $(OBJ)) $(LIBFT)
-	$(CC) $(CFLAGS) $(filter-out $(OBJ_DIR)/parsing/stacks/test.o $(OBJ_DIR)/moves/test.o $(OBJ_DIR)/parsing/stacks/main.o $(OBJ_DIR)/checker/checker.o $(OBJ_DIR)/parsing/moves/parser.o $(OBJ_DIR)/checker/test.o, $(OBJ)) $(LIBFT) -o $(NAME)
+$(NAME): $(MAIN_OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) $(MAIN_OBJ) $(LIBFT) -o $(NAME)
 
-checker: $(filter-out $(OBJ_DIR)/parsing/stacks/test.o $(OBJ_DIR)/moves/test.o $(OBJ_DIR)/main/main.o $(OBJ_DIR)/parsing/stacks/main.o, $(OBJ)) $(LIBFT)
-	$(CC) $(CFLAGS) $(filter-out $(OBJ_DIR)/parsing/stacks/test.o $(OBJ_DIR)/moves/test.o $(OBJ_DIR)/main/main.o $(OBJ_DIR)/parsing/stacks/main.o $(OBJ_DIR)/checker/checker.o $(OBJ_DIR)/parsing/moves/parser.o $(OBJ_DIR)/checker/test.o, $(OBJ)) obj/checker/checker.o obj/parsing/moves/parser.o $(LIBFT) -o checker
-
-test: tests/parser tests/move tests/algo tests/cost tests/target
-
-tests/parser: $(TEST_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(TEST_OBJ) $(LIBFT) -o tests/parser
-
-tests/move: $(MOVES_TEST_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(MOVES_TEST_OBJ) $(LIBFT) -o tests/move
-
-tests/algo: $(ALGO_TEST_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(ALGO_TEST_OBJ) $(LIBFT) -o tests/algo
-
-tests/cost: $(COST_TEST_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(COST_TEST_OBJ) $(LIBFT) -o tests/cost
-
-tests/target: $(TARGET_TEST_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(TARGET_TEST_OBJ) $(LIBFT) -o tests/target
+$(CHECKER): $(CHECKER_OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) $(CHECKER_OBJ) $(LIBFT) -o $(CHECKER)
 
 $(LIBFT):
-	make -C $(LIBFT_DIR)
+	@make -C $(LIBFT_DIR)
 
+# Test targets
+test: tests/parser tests/move tests/algo tests/cost tests/target
+
+tests/parser: $(TEST_PARSER_OBJ) $(LIBFT)
+	@mkdir -p tests
+	$(CC) $(CFLAGS) $(TEST_PARSER_OBJ) $(LIBFT) -o $@
+
+tests/move: $(TEST_MOVE_OBJ) $(LIBFT)
+	@mkdir -p tests
+	$(CC) $(CFLAGS) $(TEST_MOVE_OBJ) $(LIBFT) -o $@
+
+tests/algo: $(TEST_ALGO_OBJ) $(LIBFT)
+	@mkdir -p tests
+	$(CC) $(CFLAGS) $(TEST_ALGO_OBJ) $(LIBFT) -o $@
+
+tests/cost: $(TEST_COST_OBJ) $(LIBFT)
+	@mkdir -p tests
+	$(CC) $(CFLAGS) $(TEST_COST_OBJ) $(LIBFT) -o $@
+
+tests/target: $(TEST_TARGET_OBJ) $(LIBFT)
+	@mkdir -p tests
+	$(CC) $(CFLAGS) $(TEST_TARGET_OBJ) $(LIBFT) -o $@
+
+# Clean targets
 clean:
-	rm -rf $(OBJ_DIR)
-	make clean -C $(LIBFT_DIR)
+	@rm -rf $(OBJ_DIR)
+	@make clean -C $(LIBFT_DIR)
 
 fclean: clean
-	rm -f $(NAME) checker tests/parser tests/move tests/algo tests/cost tests/target
-	make fclean -C $(LIBFT_DIR)
+	@rm -f $(NAME) $(CHECKER)
+	@rm -rf tests
+	@make fclean -C $(LIBFT_DIR)
 
 re: fclean all
 
-bonus: checker
+bonus: $(CHECKER)
 
-.PHONY: all clean fclean re test checker bonus
+.PHONY: all clean fclean re test bonus

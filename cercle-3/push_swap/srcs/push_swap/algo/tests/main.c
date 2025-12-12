@@ -6,11 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 22:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 22:26:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 22:44:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+static void	print_status(t_stacks *stacks, char *title)
+{
+	ft_putstr_fd(title, 1);
+	print_stack(stacks->a, "Stack A");
+	print_stack(stacks->b, "Stack B");
+	ft_putstr_fd("Sorted: ", 1);
+	if (is_sorted(stacks->a))
+		ft_putstr_fd("YES\n", 1);
+	else
+		ft_putstr_fd("NO\n", 1);
+}
 
 static void	test_sorting(char **argv)
 {
@@ -25,23 +37,9 @@ static void	test_sorting(char **argv)
 		ft_putstr_fd("Error: Failed to parse input\n", 2);
 		return ;
 	}
-	ft_putstr_fd("\n=== BEFORE SORTING ===\n", 1);
-	print_stack(stacks.a, "Stack A");
-	print_stack(stacks.b, "Stack B");
-	ft_putstr_fd("Sorted: ", 1);
-	if (is_sorted(stacks.a))
-		ft_putstr_fd("YES\n", 1);
-	else
-		ft_putstr_fd("NO\n", 1);
+	print_status(&stacks, "\n=== BEFORE SORTING ===\n");
 	push_swap(&stacks);
-	ft_putstr_fd("\n=== AFTER SORTING ===\n", 1);
-	print_stack(stacks.a, "Stack A");
-	print_stack(stacks.b, "Stack B");
-	ft_putstr_fd("Sorted: ", 1);
-	if (is_sorted(stacks.a))
-		ft_putstr_fd("YES\n", 1);
-	else
-		ft_putstr_fd("NO\n", 1);
+	print_status(&stacks, "\n=== AFTER SORTING ===\n");
 	free_stacks(stacks);
 }
 

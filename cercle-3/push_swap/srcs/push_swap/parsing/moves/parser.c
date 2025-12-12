@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 17:14:24 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 21:49:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 22:44:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,19 @@ static int	execute_push(t_stacks *s, char *line)
 	return (1);
 }
 
+static int	execute_reverse_rotate(t_stacks *s, char *line)
+{
+	if (ft_strcmp(line, "rra\n") == 0)
+		rra(s);
+	else if (ft_strcmp(line, "rrb\n") == 0)
+		rrb(s);
+	else if (ft_strcmp(line, "rrr\n") == 0)
+		rrr(s);
+	else
+		return (0);
+	return (1);
+}
+
 static int	execute_rotate(t_stacks *s, char *line)
 {
 	if (ft_strcmp(line, "ra\n") == 0)
@@ -44,14 +57,8 @@ static int	execute_rotate(t_stacks *s, char *line)
 		rb(s);
 	else if (ft_strcmp(line, "rr\n") == 0)
 		rr(s);
-	else if (ft_strcmp(line, "rra\n") == 0)
-		rra(s);
-	else if (ft_strcmp(line, "rrb\n") == 0)
-		rrb(s);
-	else if (ft_strcmp(line, "rrr\n") == 0)
-		rrr(s);
 	else
-		return (0);
+		return (execute_reverse_rotate(s, line));
 	return (1);
 }
 
