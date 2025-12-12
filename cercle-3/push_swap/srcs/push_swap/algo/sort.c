@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 14:51:13 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:22:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:27:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	is_sorted(t_nodes *stack)
 		return (1);
 	prev_val = stack->v;
 	curr = stack->next;
-	while (size)
+	while (size > 1)
 	{
 		curr_val = curr->v;
 		if (!cmp(prev_val, curr_val))
@@ -46,7 +46,7 @@ int	is_sorted(t_nodes *stack)
 	return (1);
 }
 
-static void	sort_three(t_stacks *s)
+void	sort_three(t_stacks *s)
 {
 	t_sort_three_ctx	ctx;
 

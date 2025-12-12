@@ -21,6 +21,19 @@ if [ ! -f "$PUSH_SWAP" ]; then
     exit 1
 fi
 
+# Check if checker exists and is executable
+if [ -f "$CHECKER" ]; then
+    if [ ! -x "$CHECKER" ]; then
+        echo -e "${YELLOW}Warning: $CHECKER is not executable. Making it executable...${RESET}"
+        chmod +x "$CHECKER" 2>/dev/null || {
+            echo -e "${RED}Error: Cannot make $CHECKER executable. Please run: chmod +x $CHECKER${RESET}"
+            exit 1
+        }
+    fi
+else
+    echo -e "${YELLOW}Warning: $CHECKER not found. Sorting validation will be skipped.${RESET}"
+fi
+
 echo -e "${BLUE}Testing push_swap with $LIST_LEN numbers for $ITERATIONS iterations...${RESET}"
 echo "------------------------------------------------"
 
@@ -39,13 +52,31 @@ for ((i=1; i<=ITERATIONS; i++)); do
     # Verification (Optional: only if checker exists)
     STATUS=""
     if [ -f "$CHECKER" ]; then
-        CHECK_RESULT=$($PUSH_SWAP $ARG | $CHECKER $ARG)
+        CHECK_RESULT=$($PUSH_SWAP $ARG | $CHECKER $ARG 2>&1)
         if [ "$CHECK_RESULT" == "OK" ]; then
             STATUS="${GREEN}[OK]${RESET}"
+        elif [ "$CHECK_RESULT" == "KO" ]; then
+            STATUS="${RED}[KO - NOT SORTED]${RESET}"
+            echo ""
+            echo -e "${RED}╔════════════════════════════════════════════════╗${RESET}"
+            echo -e "${RED}║  ERROR: List not properly sorted on run $i!   ║${RESET}"
+            echo -e "${RED}╚════════════════════════════════════════════════╝${RESET}"
+            echo -e "${YELLOW}Arguments:${RESET} $ARG"
+            echo -e "${YELLOW}Moves:${RESET} $MOVES"
+            echo -e "${YELLOW}Checker result:${RESET} KO"
+            echo ""
+            echo -e "${RED}Aborting test suite.${RESET}"
+            exit 1
         else
-            STATUS="${RED}[KO]${RESET}"
-            echo -e "${RED}Error: List not sorted on run $i!${RESET}"
-            echo "Args: $ARG"
+            STATUS="${RED}[ERROR]${RESET}"
+            echo ""
+            echo -e "${RED}╔════════════════════════════════════════════════╗${RESET}"
+            echo -e "${RED}║  ERROR: Checker returned unexpected result!   ║${RESET}"
+            echo -e "${RED}╚════════════════════════════════════════════════╝${RESET}"
+            echo -e "${YELLOW}Arguments:${RESET} $ARG"
+            echo -e "${YELLOW}Checker output:${RESET} $CHECK_RESULT"
+            echo ""
+            echo -e "${RED}Aborting test suite.${RESET}"
             exit 1
         fi
     fi

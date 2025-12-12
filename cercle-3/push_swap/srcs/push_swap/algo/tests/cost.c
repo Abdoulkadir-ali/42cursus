@@ -6,27 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 23:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 22:39:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:24:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-static void	init_indices(t_nodes *stack, int len)
-{
-	int		i;
-	t_nodes	*curr;
-
-	i = 0;
-	curr = stack;
-	while (i < len && curr)
-	{
-		curr->meta.index = i;
-		curr->meta.above_median = (i < len / 2);
-		curr = curr->next;
-		i++;
-	}
-}
 
 static void	display_costs(t_stacks *stacks)
 {
@@ -76,11 +60,11 @@ static void	calculate_all_costs(t_stacks *stacks, t_cost_test_ctx *ctx)
 	ctx->i = 0;
 	while (ctx->i < ctx->len_b)
 	{
-		calculate_cost(stacks, &ctx->curr->meta);
+		calculate_cost(stacks, &ctx->curr->meta, 0);
 		ctx->curr = ctx->curr->next;
 		ctx->i++;
 	}
-	set_cheapest_node(stacks);
+	set_cheapest_node(stacks->b);
 }
 
 int	main(int argc, char **argv)

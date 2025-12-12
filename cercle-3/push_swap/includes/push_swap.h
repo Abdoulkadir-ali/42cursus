@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 19:33:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:22:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:27:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ void				execute_moves(t_stacks *stacks, t_nodes *cheapest_node);
 // SORT - Main sorting algorithm
 void				push_swap(t_stacks *s);
 void				turk_algorithm(t_stacks *s);
+void				sort_three(t_stacks *s);
 int					is_sorted(t_nodes *stack);
 int					cmp(int a, int b);
 

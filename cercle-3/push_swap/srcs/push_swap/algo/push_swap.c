@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 21:10:43 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:22:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:27:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,22 @@ static void	finalize_a_stack(t_push_swap_ctx *ctx, t_stacks *s)
 void	push_swap(t_stacks *s)
 {
 	t_push_swap_ctx	ctx;
+	int				size;
 
 	if (is_sorted(s->a))
 		return ;
+	size = ft_size(s->a);
+	if (size == 2)
+	{
+		if (s->a->v > s->a->next->v)
+			sa(s);
+		return ;
+	}
+	if (size == 3)
+	{
+		sort_three(s);
+		return ;
+	}
 	turk_algorithm(s);
 	process_b_stack(&ctx, s);
 	finalize_a_stack(&ctx, s);
