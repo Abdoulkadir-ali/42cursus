@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 14:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 22:44:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:19:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 void	find_target(t_stacks *s, t_nodes *node_a)
 {
 	t_target_ctx	ctx;
+	t_nodes			*max_node;
 
 	ctx.stack_b = s->b;
 	node_a->meta.target = NULL;
 	if (!ctx.stack_b)
 		return ;
 	ctx.target = NULL;
+	max_node = NULL;
 	ctx.curr_b = ctx.stack_b;
 	ctx.size = ft_size(ctx.stack_b);
 	if (ASCENDING)
@@ -29,14 +31,18 @@ void	find_target(t_stacks *s, t_nodes *node_a)
 		ctx.best_match = INT_MAX;
 	while (ctx.size--)
 	{
-		if (!cmp(node_a->v, ctx.curr_b->v) && !cmp(ctx.best_match,
+		if (!cmp(node_a->v, ctx.curr_b->v) && cmp(ctx.best_match,
 				ctx.curr_b->v))
 		{
 			ctx.best_match = ctx.curr_b->v;
 			ctx.target = ctx.curr_b;
 		}
+		if (!max_node || ctx.curr_b->v > max_node->v)
+			max_node = ctx.curr_b;
 		ctx.curr_b = ctx.curr_b->next;
 	}
+	if (!ctx.target)
+		ctx.target = max_node;
 	node_a->meta.target = ctx.target;
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 19:33:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 22:43:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:22:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,8 +173,9 @@ void				set_b_targets(t_stacks *s);
 t_nodes				*find_extreme(t_nodes *stack);
 
 // COST - Calculate and find minimum cost node
-void				calculate_cost(t_stacks *s, t_node_meta *meta_a);
-void				set_cheapest_node(t_stacks *s);
+void				calculate_cost(t_stacks *s, t_node_meta *meta_a, int to_b);
+void				set_cheapest_node(t_nodes *stack);
+void				init_indices(t_nodes *stack, int len);
 
 // MOVES - Execute the optimal move sequence
 void				execute_moves(t_stacks *stacks, t_nodes *cheapest_node);

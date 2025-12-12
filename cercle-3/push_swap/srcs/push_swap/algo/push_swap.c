@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 21:10:43 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 21:36:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:22:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static void	init_indices(t_nodes *stack, int len)
+void	init_indices(t_nodes *stack, int len)
 {
 	int		i;
 	t_nodes	*curr;
@@ -22,7 +22,7 @@ static void	init_indices(t_nodes *stack, int len)
 	while (i < len && curr)
 	{
 		curr->meta.index = i;
-		curr->meta.above_median = (i < len / 2);
+		curr->meta.above_median = (i <= len / 2);
 		curr = curr->next;
 		i++;
 	}
@@ -41,10 +41,10 @@ static void	process_b_stack(t_push_swap_ctx *ctx, t_stacks *s)
 		ctx->size = ctx->len_b;
 		while (ctx->size--)
 		{
-			calculate_cost(s, &ctx->cheap->meta);
+			calculate_cost(s, &ctx->cheap->meta, 0);
 			ctx->cheap = ctx->cheap->next;
 		}
-		set_cheapest_node(s);
+		set_cheapest_node(s->b);
 		ctx->cheap = s->b;
 		ctx->size = ctx->len_b;
 		while (ctx->size-- && !ctx->cheap->meta.is_cheapest)

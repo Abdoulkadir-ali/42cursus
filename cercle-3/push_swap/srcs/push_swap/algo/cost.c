@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 14:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 21:57:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:22:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,25 @@ static int	max_val(int a, int b)
 	return (b);
 }
 
-void	calculate_cost(t_stacks *s, t_node_meta *meta_a)
+void	calculate_cost(t_stacks *s, t_node_meta *meta_a, int to_b)
 {
 	t_cost_ctx	ctx;
 	t_node_meta	*meta_b;
-	int			len_a;
-	int			len_b;
+	int			len_src;
+	int			len_tgt;
 
 	if (!meta_a || !meta_a->target)
 		return ;
-	len_a = ft_size(s->a);
-	len_b = ft_size(s->b);
+	if (to_b)
+	{
+		len_src = ft_size(s->a);
+		len_tgt = ft_size(s->b);
+	}
+	else
+	{
+		len_src = ft_size(s->b);
+		len_tgt = ft_size(s->a);
+	}
 	meta_b = &meta_a->target->meta;
 	ctx.meta_a = meta_a;
 	ctx.meta_b = meta_b;
@@ -38,35 +46,36 @@ void	calculate_cost(t_stacks *s, t_node_meta *meta_a)
 	if (ctx.meta_a->above_median && ctx.meta_b->above_median)
 		ctx.meta_a->push_cost = max_val(ctx.cost_a, ctx.cost_b);
 	else if (!ctx.meta_a->above_median && !ctx.meta_b->above_median)
-		ctx.meta_a->push_cost = max_val(len_a - ctx.cost_a, len_b - ctx.cost_b);
+		ctx.meta_a->push_cost = max_val(len_src - ctx.cost_a, len_tgt - ctx.cost_b);
 	else if (ctx.meta_a->above_median && !ctx.meta_b->above_median)
-		ctx.meta_a->push_cost = ctx.cost_a + (len_b - ctx.cost_b);
+		ctx.meta_a->push_cost = ctx.cost_a + (len_tgt - ctx.cost_b);
 	else
-		ctx.meta_a->push_cost = (len_a - ctx.cost_a) + ctx.cost_b;
+		ctx.meta_a->push_cost = (len_src - ctx.cost_a) + ctx.cost_b;
 }
 
-void	set_cheapest_node(t_stacks *s)
+void	set_cheapest_node(t_nodes *stack)
 {
-	t_set_cheapest_ctx	ctx;
+	t_nodes	*curr;
+	t_nodes	*cheapest;
+	long	min_cost;
+	int		size;
 
-	if (!s->b)
+	if (!stack)
 		return ;
-	ctx.len_b = ft_size(s->b);
-	ctx.curr = s->b;
-	ctx.cheapest = s->b;
-	ctx.cheapest_cost = INT_MAX;
-	ctx.size = ctx.len_b;
-	while (ctx.size)
+	curr = stack;
+	cheapest = stack;
+	min_cost = LONG_MAX;
+	size = ft_size(stack);
+	while (size--)
 	{
-		ctx.curr->meta.is_cheapest = 0;
-		if (ctx.curr->meta.push_cost < ctx.cheapest_cost)
+		curr->meta.is_cheapest = 0;
+		if (curr->meta.push_cost < min_cost)
 		{
-			ctx.cheapest_cost = ctx.curr->meta.push_cost;
-			ctx.cheapest = ctx.curr;
+			min_cost = curr->meta.push_cost;
+			cheapest = curr;
 		}
-		ctx.curr = ctx.curr->next;
-		ctx.size--;
+		curr = curr->next;
 	}
-	if (ctx.cheapest)
-		ctx.cheapest->meta.is_cheapest = 1;
+	if (cheapest)
+		cheapest->meta.is_cheapest = 1;
 }
