@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:27:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:47:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	reset_view(t_events *events)
 int	handle_p(int keycode, t_events *events)
 {
 	(void)keycode;
-
 	cycle_projection(events);
 	return (1);
 }

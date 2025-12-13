@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:25:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:39:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ int	handle_s(int keycode, t_events *events)
 int	handle_a(int keycode, t_events *events)
 {
 	(void)keycode;
-
 	events->render_mode = (events->render_mode + 1) % RENDER_MODE_COUNT;
 	return (1);
 }

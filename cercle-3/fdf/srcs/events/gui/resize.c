@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 13:32:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:13:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:53:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
-int handle_resize(t_events *events)
+int	handle_resize(t_events *events)
 {
-    redraw(events);
-    return (0);
+	redraw(events);
+	return (0);
 }

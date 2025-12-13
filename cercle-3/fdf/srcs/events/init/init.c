@@ -6,12 +6,22 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:53:06 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:33:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:55:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
-#include <stdlib.h>
+
+void	setup_hooks(t_events *e)
+{
+	mlx_hook(e->window->ptr, 17, 0, cleanup_and_exit, e);
+	mlx_hook(e->window->ptr, 4, 1L << 2, mouse_press, e);
+	mlx_hook(e->window->ptr, 5, 1L << 3, mouse_release, e);
+	mlx_hook(e->window->ptr, 6, 1L << 6, mouse_move, e);
+	mlx_hook(e->window->ptr, 2, 1L << 0, key_press, e);
+	mlx_hook(e->window->ptr, 3, 1L << 1, key_release, e);
+	mlx_loop_hook(e->window->mlx_ptr, loop_hook, e);
+}
 
 void	init_mouse(t_mouse *mouse)
 {
@@ -48,41 +58,44 @@ void	init_keys(t_keys *keys)
 	keys->g = 0;
 }
 
-static void	init_events_graphics(t_events *events)
+static void	init_events_graphics(t_events *e)
 {
-	if (events->graphics)
+	if (e->graphics)
 	{
-		events->render_mode = events->graphics->render_config.render_mode;
-		events->lod_level = events->graphics->render_config.lod_level;
-		events->use_depth_culling = events->graphics->render_config.use_depth_culling;
-		events->fill_triangles = events->graphics->render_config.fill_triangles;
+		e->render_mode = e->graphics->render_config.render_mode;
+		e->lod_level = e->graphics->render_config.lod_level;
+		e->use_depth_culling = e->graphics->render_config.use_depth_culling;
+		e->fill_triangles = e->graphics->render_config.fill_triangles;
 	}
 	else
 	{
-		events->render_mode = 0;
-		events->lod_level = DEFAULT_LOD_LEVEL;
-		events->use_depth_culling = 1;
-		events->fill_triangles = 0;
+		e->render_mode = 0;
+		e->lod_level = DEFAULT_LOD_LEVEL;
+		e->use_depth_culling = 1;
+		e->fill_triangles = 0;
 	}
 }
 
 t_events	*init_events(t_events_args *args)
 {
-	t_events *events;
+	t_events	*e;
 
-	events = malloc(sizeof(t_events));
-	if (!events)
+	e = malloc(sizeof(t_e));
+	if (!e)
 		return (NULL);
-	events->window = args->window;
-	events->graphics = args->graphics;
-	events->gui = *args->gui;
-	events->camera_manager = args->camera_manager;
-	events->camera = args->camera_manager ? args->camera_manager->camera : NULL;
-	events->maps = args->maps;
-	events->map = args->map;
-	init_events_graphics(events);
-	init_mouse(&events->mouse);
-	init_keys(&events->keys);
-	init_key_actions(&events->key_maps);
-	return (events);
+	e->window = args->window;
+	e->graphics = args->graphics;
+	e->gui = *args->gui;
+	e->camera_manager = args->camera_manager;
+	if (args->camera_manager)
+		e->camera = args->camera_manager->camera;
+	else
+		e->camera = NULL;
+	e->maps = args->maps;
+	e->map = args->map;
+	init_events_graphics(e);
+	init_mouse(&e->mouse);
+	init_keys(&e->keys);
+	init_key_actions(&e->key_maps);
+	return (e);
 }

@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mouse_move.c                                       :+:      :+:    :+:   */
+/*   move.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:05:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:49:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
-#include <stdio.h>
 
 static void	handle_object_vec3d(int x, int y, t_events *events)
 {
@@ -46,8 +45,6 @@ static void	handle_camera_rotation(int x, int y, t_events *events)
 	events->mouse.last_y = y;
 	redraw(events);
 }
-
-/* color shift wrapping is handled during color creation; no clamping here */
 
 static void	handle_color_shift(int x, int y, t_events *events)
 {

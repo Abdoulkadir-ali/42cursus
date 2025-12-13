@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:27:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:40:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	handle_v(int keycode, t_events *events)
 int	handle_g(int keycode, t_events *events)
 {
 	(void)keycode;
-
 	events->fill_triangles = !events->fill_triangles;
 	return (1);
 }

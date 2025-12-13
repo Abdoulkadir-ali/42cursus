@@ -61,17 +61,26 @@ SRCS =	srcs/core/cleanup.c \
 srcs/core/init.c \
 	srcs/events/mouse/events.c \
 	srcs/events/mouse/move.c \
+	srcs/events/mouse/handlers.c \
+	srcs/events/mouse/press.c \
 	srcs/events/keys/events.c \
 	srcs/events/keys/handlers/combos/combo.c \
 	srcs/events/keys/handlers/combos/helper.c \
-	srcs/events/keys/handlers/map/map.c \
-	srcs/events/keys/handlers/map/helper.c \
-	srcs/events/keys/handlers/toggle/toggle.c \
 	srcs/events/keys/handlers/flags/flag.c \
 	srcs/events/keys/handlers/flags/helper.c \
 	srcs/events/keys/handlers/flags/modifiers.c \
+	srcs/events/keys/handlers/gui/gui.c \
+	srcs/events/keys/handlers/map/map.c \
+	srcs/events/keys/handlers/map/helper.c \
+	srcs/events/keys/handlers/toggle/toggle.c \
 	srcs/events/keys/handlers/view/camera.c \
 	srcs/events/keys/handlers/view/helper.c \
+	srcs/events/keys/init/helper.c \
+	srcs/events/keys/init/init.c \
+	srcs/events/keys/init/keys.c \
+	srcs/events/keys/init/releases.c \
+	srcs/events/gui/resize.c \
+	srcs/events/init/init.c \
 	srcs/events/hooks.c \
 	srcs/events/init.c \
 	srcs/gui/init.c \

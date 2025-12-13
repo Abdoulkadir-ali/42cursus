@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:34:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:51:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 # include "libft.h"
 # include "map.h"
 # include "window.h"
-
 
 /* ========== OPTIMIZATION DEFAULTS ========== */
 # define DEFAULT_LOD_LEVEL 1
@@ -171,6 +170,10 @@ typedef struct s_events
 
 /* Initialize events from a compact args struct */
 t_events				*init_events(t_events_args *args);
+void					handle_mouse_release(int button, t_mouse *mouse);
+int						handle_mouse_scroll(int button, t_events *events);
+void					handle_mouse_click(int button, int x, int y,
+							t_mouse *mouse);
 int						mouse_press(int button, int x, int y, t_events *events);
 int						mouse_release(int button, int x, int y,
 							t_events *events);
@@ -209,12 +212,16 @@ int						handle_release_flag(int keycode, t_events *events);
 void					init_key_flags(t_events *events);
 void					handle_button(int keycode, t_events *events, int value);
 
+void					init_key_actions_press(t_key_maps *key_maps);
+void					init_key_actions_release(t_key_maps *key_maps);
+void					set_key_actions(t_key_maps *key_maps);
+void					set_key_releases(t_key_maps *key_maps);
+void					calculate_fps(t_events *events);
+
 void					clamp_values(t_events *events);
 void					apply_plus_changes(t_events *events);
 void					apply_minus_changes(t_events *events);
 void					apply_zero_changes(t_events *events);
 int						check_if_changed(t_events *events, t_combo_ctx *ctx);
-
-void					init_key_actions(t_key_maps *key_maps);
 
 #endif

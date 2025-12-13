@@ -1,19 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gui.c                                              :+:      :+:    :+:   */
+/*   press.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/13 11:25:31 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:39:43 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/10 15:14:16 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/13 11:48:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "events.h"
 
-int	handle_escape(int keycode, t_events *events)
+int	mouse_press(int button, int x, int y, t_events *events)
 {
-	(void)keycode;
-	return (cleanup_and_exit(events));
+	handle_mouse_click(button, x, y, &events->mouse);
+	if (handle_mouse_scroll(button, events))
+		redraw(events);
+	return (0);
+}
+
+int	mouse_release(int button, int x, int y, t_events *events)
+{
+	(void)x;
+	(void)y;
+	handle_mouse_release(button, &events->mouse);
+	return (0);
 }
