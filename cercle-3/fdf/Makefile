@@ -179,6 +179,7 @@ objs:
 	@mkdir -p objs/gui/display/print
 	@mkdir -p objs/gui/print
 	@mkdir -p objs/gui/style
+	@mkdir -p objs/gui/layout
 	@mkdir -p objs/projection
 
 # Compile object files
