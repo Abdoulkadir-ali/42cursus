@@ -6,12 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 19:33:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:53:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 01:17:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PUSH_SWAP
-# define PUSH_SWAP
+#ifndef PUSH_SWAP_H
+# define PUSH_SWAP_H
 
 # ifndef DEBUG
 #  define DEBUG 0
@@ -59,6 +59,8 @@ typedef struct s_cost_ctx
 	t_node_meta		*meta_b;
 	int				cost_a;
 	int				cost_b;
+	int				len_src;
+	int				len_tgt;
 }					t_cost_ctx;
 
 // COST_TEST - Context struct for cost test visualizer
@@ -152,8 +154,14 @@ int					parse_number(char **p, int *value);
 // DISPLAY
 void				print_stack(t_nodes *stack, char *name);
 void				debug_stacks(t_stacks s);
-void					debug_line_stacks(t_stacks s, char *line, char *instruction);
+void				debug_line_stacks(t_stacks s, char *line,
+						char *instruction);
 int					ft_puterr(char *str);
+
+// TEST HELPERS
+t_nodes				*get_node_by_index(t_nodes *stack, int index);
+void				display_specific_target(t_stacks *stacks, int index);
+void				display_targets(t_stacks *stacks);
 
 // HELPER
 long				parse_int(const char *str, int *error);
@@ -172,11 +180,24 @@ void				find_target(t_stacks *s, t_nodes *node_a);
 void				set_target_nodes(t_stacks *s);
 void				set_b_targets(t_stacks *s);
 t_nodes				*find_extreme(t_nodes *stack);
+void				init_target_ctx(t_target_ctx *ctx, t_nodes *stack_b);
+t_nodes				*find_max_node(t_nodes *stack_b);
+void				search_best_target(t_target_ctx *ctx, t_nodes *node_a);
+void				init_b_targets_ctx(t_set_b_targets_ctx *ctx, t_stacks *s);
+void				find_target_for_b(t_set_b_targets_ctx *ctx);
+void				init_extreme_search(int *extreme_val,
+						t_nodes **extreme_node, t_nodes *stack);
+void				search_extreme_node(t_nodes *stack, int *extreme_val,
+						t_nodes **extreme_node);
 
 // COST - Calculate and find minimum cost node
 void				calculate_cost(t_stacks *s, t_node_meta *meta_a, int to_b);
 void				set_cheapest_node(t_nodes *stack);
 void				init_indices(t_nodes *stack, int len);
+int					max_val(int a, int b);
+void				init_cost_ctx(t_cost_ctx *ctx, t_node_meta *meta_a,
+						int len_src, int len_tgt);
+void				compute_push_cost(t_cost_ctx *ctx);
 
 // MOVES - Execute the optimal move sequence
 void				execute_moves(t_stacks *stacks, t_nodes *cheapest_node);
@@ -187,6 +208,9 @@ void				turk_algorithm(t_stacks *s);
 void				sort_three(t_stacks *s);
 int					is_sorted(t_nodes *stack);
 int					cmp(int a, int b);
+void				process_a_to_b(t_stacks *s);
+void				move_a_to_b(t_stacks *s, t_nodes *cheap);
+t_nodes				*find_cheapest(t_nodes *stack);
 
 // CHECKER
 int					execute_instruction(t_stacks *s, char *line);

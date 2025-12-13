@@ -6,46 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 16:52:22 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 22:43:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 00:33:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-static int	is_space(char c)
-{
-	return (c == ' ' || (c >= 9 && c <= 13));
-}
-
-int	parse_number(char **p, int *value)
-{
-	char	*start;
-	char	temp;
-	int		error;
-	long	val;
-
-	while (is_space(**p))
-		(*p)++;
-	if (!**p)
-		return (0);
-	start = *p;
-	if (**p == '+' || **p == '-')
-		(*p)++;
-	if (!ft_isdigit(**p))
-		return (-1);
-	while (ft_isdigit(**p))
-		(*p)++;
-	if (**p && !is_space(**p))
-		return (-1);
-	temp = **p;
-	**p = '\0';
-	val = parse_int(start, &error);
-	**p = temp;
-	if (error)
-		return (-1);
-	*value = (int)val;
-	return (1);
-}
 
 static int	process_string(t_stacks *stacks, char *str)
 {

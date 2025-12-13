@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 14:51:13 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:27:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 00:33:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,42 +71,9 @@ void	sort_three(t_stacks *s)
 		rra(s);
 }
 
-static void	move_a_to_b(t_stacks *s, t_nodes *cheap)
-{
-	if (!cheap || !cheap->meta.target)
-		return ;
-	if (cheap->meta.above_median && cheap->meta.target->meta.above_median)
-	{
-		while (s->a != cheap && s->b != cheap->meta.target)
-			rr(s);
-	}
-	else if (!cheap->meta.above_median && !cheap->meta.target->meta.above_median)
-	{
-		while (s->a != cheap && s->b != cheap->meta.target)
-			rrr(s);
-	}
-	while (s->a != cheap)
-	{
-		if (cheap->meta.above_median)
-			ra(s);
-		else
-			rra(s);
-	}
-	while (s->b != cheap->meta.target)
-	{
-		if (cheap->meta.target->meta.above_median)
-			rb(s);
-		else
-			rrb(s);
-	}
-	pb(s);
-}
-
-static void	process_a_to_b(t_stacks *s)
+void	process_a_to_b(t_stacks *s)
 {
 	t_nodes	*curr;
-	t_nodes	*cheapest;
-	long	min_cost;
 	int		size;
 
 	while (ft_size(s->a) > 3)
@@ -121,21 +88,7 @@ static void	process_a_to_b(t_stacks *s)
 			calculate_cost(s, &curr->meta, 1);
 			curr = curr->next;
 		}
-		cheapest = NULL;
-		min_cost = LONG_MAX;
-		curr = s->a;
-		size = ft_size(s->a);
-		while (size--)
-		{
-			if (curr->meta.push_cost < min_cost)
-			{
-				min_cost = curr->meta.push_cost;
-				cheapest = curr;
-			}
-			curr = curr->next;
-		}
-		if (cheapest)
-			move_a_to_b(s, cheapest);
+		move_a_to_b(s, find_cheapest(s->a));
 	}
 }
 

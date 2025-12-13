@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 17:18:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 20:33:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 00:33:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,24 @@ long	parse_int(const char *str, int *error)
 		return (0);
 	}
 	return (res);
+}
+
+int	parse_number(char **p, int *value)
+{
+	int		error;
+	long	result;
+
+	while (is_space(**p))
+		(*p)++;
+	if (**p == '\0')
+		return (0);
+	result = parse_int(*p, &error);
+	if (error)
+		return (-1);
+	*value = (int)result;
+	if (**p == '+' || **p == '-')
+		(*p)++;
+	while (ft_isdigit(**p))
+		(*p)++;
+	return (1);
 }

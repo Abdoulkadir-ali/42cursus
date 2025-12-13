@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:43:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/12 23:59:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,3 @@ void	print_stack(t_nodes *stack, char *name)
 		print_stack_values(stack);
 	ft_putstr_fd("\n", 1);
 }
-
-

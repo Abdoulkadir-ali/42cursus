@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/12 00:00:00 by abdoali           #+#    #+#              #
-#    Updated: 2025/12/12 23:48:23 by abdoali          ###   ########.fr        #
+#    Updated: 2025/12/13 01:15:01 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,10 +44,13 @@ COMMON_SRCS	= parsing/stacks/check.c \
 			  helper/display/ft_puterr.c \
 			  helper/display/ft_debug_stacks.c
 
-ALGO_SRCS	= algo/cost.c \
-			  algo/target.c \
+ALGO_SRCS	= algo/cost/cost.c \
+			  algo/cost/helper.c \
+			  algo/target/target.c \
+			  algo/target/helper.c \
 			  algo/moves.c \
-			  algo/sort.c \
+			  algo/sort/sort.c \
+			  algo/sort/helper.c \
 			  algo/push_swap.c
 
 # Main program sources
@@ -85,7 +88,8 @@ TEST_COST_SRCS = algo/tests/cost.c \
 				 parsing/moves/parser.c \
 				 $(COMMON_SRCS) $(ALGO_SRCS)
 
-TEST_TARGET_SRCS = algo/tests/target.c \
+TEST_TARGET_SRCS = algo/tests/target/target.c \
+				   algo/tests/target/helper.c \
 				   parsing/moves/parser.c \
 				   $(COMMON_SRCS) $(ALGO_SRCS)
 
