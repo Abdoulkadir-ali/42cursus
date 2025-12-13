@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 15:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:10:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:10:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	draw_grid(t_graphics *g)
 	}
 }
 
-void	draw_horizontal_line(t_graphics *g, int x, int y, t_point p1, int step)
+void	draw_horizontal_line(t_graphics *g, t_draw_line_params params)
 {
 	t_point	p0;
 	t_point	p2;
@@ -61,31 +61,31 @@ void	draw_horizontal_line(t_graphics *g, int x, int y, t_point p1, int step)
 	int		next_x;
 	int		prev_x;
 
-	next_x = x + step;
+	next_x = params.x + params.step;
 	if (next_x >= g->map->width)
 		return ;
-	p2 = get_cached_proj(g, next_x, y);
-	if (!should_draw_line(p1, p2, g))
+	p2 = get_cached_proj(g, next_x, params.y);
+	if (!should_draw_line(params.p1, p2, g))
 		return ;
 	if (g->render_config.render_mode == RENDER_SPLINES)
 	{
-		prev_x = x - step;
+		prev_x = params.x - params.step;
 		if (prev_x >= 0)
-			p0 = get_cached_proj(g, prev_x, y);
+			p0 = get_cached_proj(g, prev_x, params.y);
 		else
-			p0 = p1;
-		if (next_x + step < g->map->width)
-			p3 = get_cached_proj(g, next_x + step, y);
+			p0 = params.p1;
+		if (next_x + params.step < g->map->width)
+			p3 = get_cached_proj(g, next_x + params.step, params.y);
 		else
 			p3 = p2;
-		draw_spline_segment(g, (t_spline){p0, p1, p2, p3},
+		draw_spline_segment(g, (t_spline){p0, params.p1, p2, p3},
 			g->camera->spline_segments);
 	}
 	else if (g->render_config.render_mode == RENDER_LINES)
-		draw_line(g, p1, p2);
+		draw_line(g, params.p1, p2);
 }
 
-void	draw_vertical_line(t_graphics *g, int x, int y, t_point p1, int step)
+void	draw_vertical_line(t_graphics *g, t_draw_line_params params)
 {
 	t_point	p0;
 	t_point	p2;
@@ -93,28 +93,28 @@ void	draw_vertical_line(t_graphics *g, int x, int y, t_point p1, int step)
 	int		next_y;
 	int		prev_y;
 
-	next_y = y + step;
+	next_y = params.y + params.step;
 	if (next_y >= g->map->height)
 		return ;
-	p2 = get_cached_proj(g, x, next_y);
-	if (!should_draw_line(p1, p2, g))
+	p2 = get_cached_proj(g, params.x, next_y);
+	if (!should_draw_line(params.p1, p2, g))
 		return ;
 	if (g->render_config.render_mode == RENDER_SPLINES)
 	{
-		prev_y = y - step;
+		prev_y = params.y - params.step;
 		if (prev_y >= 0)
-			p0 = get_cached_proj(g, x, prev_y);
+			p0 = get_cached_proj(g, params.x, prev_y);
 		else
-			p0 = p1;
-		if (next_y + step < g->map->height)
-			p3 = get_cached_proj(g, x, next_y + step);
+			p0 = params.p1;
+		if (next_y + params.step < g->map->height)
+			p3 = get_cached_proj(g, params.x, next_y + params.step);
 		else
 			p3 = p2;
-		draw_spline_segment(g, (t_spline){p0, p1, p2, p3},
+		draw_spline_segment(g, (t_spline){p0, params.p1, p2, p3},
 			g->camera->spline_segments);
 	}
 	else if (g->render_config.render_mode == RENDER_LINES)
-		draw_line(g, p1, p2);
+		draw_line(g, params.p1, p2);
 }
 
 void	draw_triangle_quad(t_graphics *g, int x, int y, int step)
@@ -157,8 +157,8 @@ void	draw_grid_section(t_graphics *g, int start_y, int end_y, int step)
 				x += step;
 				continue ;
 			}
-			draw_horizontal_line(g, x, y, p1, step);
-			draw_vertical_line(g, x, y, p1, step);
+			draw_horizontal_line(g, (t_draw_line_params){x, y, p1, step});
+			draw_vertical_line(g, (t_draw_line_params){x, y, p1, step});
 			x += step;
 		}
 		y += step;

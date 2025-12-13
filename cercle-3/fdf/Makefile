@@ -12,7 +12,10 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/camera/init.c \
 	srcs/core/main.c \
 	srcs/camera/controls/adjust.c \
-	srcs/camera/controls/rotate.c \
+	srcs/camera/controls/rotate/build.c \
+	srcs/camera/controls/rotate/init.c \
+	srcs/camera/controls/rotate/multiply.c \
+	srcs/camera/controls/rotate/rotate.c \
 	srcs/camera/controls/zoom.c \
 	srcs/camera/projection/projection.c \
 	srcs/camera/projection/basic.c \
@@ -34,6 +37,7 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/graphics/frames/clear.c \
 	srcs/color/create.c \
 	srcs/color/transform.c \
+	srcs/color/get.c \
 	srcs/vectors/vec2/init.c \
 	srcs/vectors/vec2/arithmetic.c \
 	srcs/vectors/vec2/distance.c \
@@ -55,14 +59,19 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/map/style/themes.c \
 	srcs/window/init.c \
 srcs/core/init.c \
-	srcs/events/mouse/mouse_events.c \
-	srcs/events/mouse/mouse_move.c \
-	srcs/events/keys/key_events.c \
-	srcs/events/keys/handlers/combo_handlers.c \
-	srcs/events/keys/handlers/movement_handlers.c \
-	srcs/events/keys/handlers/map_handlers.c \
-	srcs/events/keys/handlers/toggle_handlers.c \
-	srcs/events/keys/handlers/flag_handlers.c \
+	srcs/events/mouse/events.c \
+	srcs/events/mouse/move.c \
+	srcs/events/keys/events.c \
+	srcs/events/keys/handlers/combos/combo.c \
+	srcs/events/keys/handlers/combos/helper.c \
+	srcs/events/keys/handlers/map/map.c \
+	srcs/events/keys/handlers/map/helper.c \
+	srcs/events/keys/handlers/toggle/toggle.c \
+	srcs/events/keys/handlers/flags/flag.c \
+	srcs/events/keys/handlers/flags/helper.c \
+	srcs/events/keys/handlers/flags/modifiers.c \
+	srcs/events/keys/handlers/view/camera.c \
+	srcs/events/keys/handlers/view/helper.c \
 	srcs/events/hooks.c \
 	srcs/events/init.c \
 	srcs/gui/init.c \
@@ -70,7 +79,6 @@ srcs/core/init.c \
 	srcs/gui/panel/panel.c \
 	srcs/gui/print/put.c \
 	srcs/gui/display/print/format.c \
-	srcs/gui/display/layout.c \
 	srcs/gui/display/layout.c \
 	srcs/gui/display/sections/guide.c \
 	srcs/gui/display/sections/movement.c \
@@ -107,6 +115,7 @@ objs:
 	@mkdir -p objs/graphics/frames
 	@mkdir -p objs/camera
 	@mkdir -p objs/camera/controls
+	@mkdir -p objs/camera/controls/rotate
 	@mkdir -p objs/camera/projection
 	@mkdir -p objs/color
 	@mkdir -p objs/map
@@ -118,6 +127,11 @@ objs:
 	@mkdir -p objs/events/mouse
 	@mkdir -p objs/events/keys
 	@mkdir -p objs/events/keys/handlers
+	@mkdir -p objs/events/keys/handlers/view
+	@mkdir -p objs/events/keys/handlers/combos
+	@mkdir -p objs/events/keys/handlers/map
+	@mkdir -p objs/events/keys/handlers/toggle
+	@mkdir -p objs/events/keys/handlers/flags
 	@mkdir -p objs/vectors
 	@mkdir -p objs/vectors/vec2
 	@mkdir -p objs/vectors/vec2d

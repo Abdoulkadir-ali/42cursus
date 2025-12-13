@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 02:50:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:03:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:14:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,68 +35,82 @@ t_camera	*init_camera_default(t_camera *cam)
 	return (cam);
 }
 
-t_camera_manager	*init_camera(t_camera_args args)
+static int	init_manager_with_file(t_maps *mgr, char *map_file)
+{
+	mgr->current_map = load_map(map_file);
+	if (!mgr->current_map)
+		return (0);
+	mgr->map_files = malloc(sizeof(char *));
+	mgr->maps = malloc(sizeof(t_map *));
+	if (!mgr->map_files || !mgr->maps)
+	{
+		if (mgr->map_files)
+			free(mgr->map_files);
+		if (mgr->maps)
+			free(mgr->maps);
+		return (0);
+	}
+	mgr->map_files[0] = ft_strdup(map_file);
+	mgr->maps[0] = mgr->current_map;
+	mgr->count = 1;
+	mgr->current_index = 0;
+	return (1);
+}
+
+static int	init_manager_with_test_grid(t_maps *mgr)
+{
+	mgr->current_map = create_test_grid();
+	if (!mgr->current_map)
+		return (0);
+	mgr->map_files = NULL;
+	mgr->maps = &mgr->current_map;
+	mgr->count = 1;
+	mgr->current_index = 0;
+	return (1);
+}
+
+static t_camera_manager	*allocate_camera_manager(t_camera_args args)
 {
 	t_camera_manager	*ctx;
 	t_camera			*cam;
-	t_maps				*mgr;
 
 	ctx = malloc(sizeof(t_camera_manager));
 	if (!ctx)
 		return (NULL);
 	cam = malloc(sizeof(t_camera));
 	if (!cam)
+	{
+		free(ctx);
 		return (NULL);
+	}
 	ctx->camera = init_camera_default(cam);
 	ctx->window = args.window;
-	if (args.manager)
+	return (ctx);
+}
+
+t_camera_manager	*init_camera(t_camera_args args)
+{
+	t_camera_manager	*ctx;
+	t_maps				*mgr;
+
+	ctx = allocate_camera_manager(args);
+	if (!ctx)
+		return (NULL);
+	if (!args.manager)
+		return (ctx->map = args.map, ctx);
+	mgr = args.manager;
+	if (args.map_file)
 	{
-		mgr = args.manager;
-		if (args.map_file)
-		{
-			mgr->current_map = load_map(args.map_file);
-			if (!mgr->current_map)
-			{
-				free(cam);
-				free(ctx);
-				return (NULL);
-			}
-			mgr->map_files = malloc(sizeof(char *));
-			mgr->maps = malloc(sizeof(t_map *));
-			if (mgr->map_files && mgr->maps)
-			{
-				mgr->map_files[0] = ft_strdup(args.map_file);
-				mgr->maps[0] = mgr->current_map;
-				mgr->count = 1;
-				mgr->current_index = 0;
-			}
-			ctx->map = mgr->current_map;
-		}
-		else if (mgr->maps && mgr->count > 0)
-		{
-			mgr->current_index = 0;
-			mgr->current_map = mgr->maps[mgr->current_index];
-			ctx->map = mgr->current_map;
-		}
-		else
-		{
-			mgr->current_map = create_test_grid();
-			if (!mgr->current_map)
-			{
-				free(cam);
-				free(ctx);
-				return (NULL);
-			}
-			mgr->map_files = NULL;
-			mgr->maps = &mgr->current_map;
-			mgr->count = 1;
-			mgr->current_index = 0;
-			ctx->map = mgr->current_map;
-		}
+		if (!init_manager_with_file(mgr, args.map_file))
+			return (free(ctx->camera), free(ctx), NULL);
 	}
-	else
+	else if (mgr->maps && mgr->count > 0)
 	{
-		ctx->map = args.map;
+		mgr->current_index = 0;
+		mgr->current_map = mgr->maps[0];
 	}
+	else if (!init_manager_with_test_grid(mgr))
+		return (free(ctx->camera), free(ctx), NULL);
+	ctx->map = mgr->current_map;
 	return (ctx);
 }

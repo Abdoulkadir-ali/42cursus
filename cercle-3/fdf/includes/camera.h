@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:39:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:17:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,9 @@ t_point					project_camera_matrix(t_point p3d, t_camera *cam);
 t_point					project_nonlinear(t_point p3d, t_camera *cam);
 
 void					update_rotation_matrix(t_camera *cam);
+void					compose_rotation_matrix(t_camera *cam, t_rot_ctx *ctx);
+void					build_rotation_matrices(t_vec3d rx[3], t_vec3d ry[3],
+							t_vec3d rz[3], t_rot_ctx *ctx);
 t_vec3d					apply_rotation_with_matrix(t_vec3d v, t_camera *cam);
 t_vec3d					apply_rotation_centered_with_matrix(t_vec3d v,
 							t_camera *cam);

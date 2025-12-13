@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:03:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:11:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,6 @@ int	clamp(int value, int min, int max)
 	if (value > max)
 		return (max);
 	return (value);
-}
-
-int	get_red(int color)
-{
-	return ((color >> 16) & 0xFF);
-}
-
-int	get_green(int color)
-{
-	return ((color >> 8) & 0xFF);
-}
-
-int	get_blue(int color)
-{
-	return (color & 0xFF);
-}
-
-t_vec3	get_vec3(int color)
-{
-	return ((t_vec3){get_red(color), get_green(color), get_blue(color)});
 }
 
 int	create_color(int r, int g, int b)

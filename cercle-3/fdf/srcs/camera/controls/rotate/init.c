@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rotate_helpers.c                                   :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 05:18:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:39:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:17:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ static void	init_rot_ctx(t_rot_ctx *c, t_camera *cam)
 	c->sin = create_vec3d(sin(c->rot.x), sin(c->rot.y), sin(c->rot.z));
 }
 
-void	update_rotation_matrix_helper(t_camera *cam)
+void	update_rotation_matrix(t_camera *cam)
 {
 	t_rot_ctx	ctx;
 
 	if (!cam)
 		return ;
 	init_rot_ctx(&ctx, cam);
-	compose_rotation_matrix_helper(cam, &ctx);
+	compose_rotation_matrix(cam, &ctx);
 }

@@ -6,9 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:29:46 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:37:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:13:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "events.h"
+#include "graphics.h"
+#include "gui.h"
+
+void	redraw_panel(t_events *events);
 
 void	redraw(t_events *events)
 {
@@ -33,5 +39,5 @@ void	redraw(t_events *events)
 	mlx_put_image_to_window(g->window->mlx_ptr, g->window->ptr,
 		g->window->gui_img.img, 0, 0);
 	events->gui.fps = events->graphics->frame_data.fps;
-	redraw(events);
+	redraw_gui(events);
 }

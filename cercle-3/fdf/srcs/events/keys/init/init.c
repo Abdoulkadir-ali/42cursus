@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "events.h"
-#include <stdio.h>
-#include <string.h>
-#include <sys/time.h>
 
 static long	get_time_ms(void)
 {
@@ -29,7 +26,7 @@ void	init_key_actions(t_key_maps *key_maps)
 	ft_memset(key_maps->key_releases, 0, sizeof(key_maps->key_releases));
 	ft_memcpy(
 		key_maps->key_actions,
-		&(key_action_t[KEY_MAP_SIZE]){[XK_Escape] = handle_escape,
+		&(t_key_action[KEY_MAP_SIZE]){[XK_Escape] = handle_escape,
 			[XK_R] = handle_r, [XK_r] = handle_r, [XK_p] = handle_p,
 			[XK_P] = handle_p, [XK_n] = handle_n, [XK_N] = handle_n,
 			[XK_s] = handle_s, [XK_S] = handle_s, [XK_a] = handle_a,
@@ -50,7 +47,7 @@ void	init_key_actions(t_key_maps *key_maps)
 			[XK_Right] = handle_right},
 		sizeof(key_maps->key_actions));
 	ft_memcpy(key_maps->key_releases,
-		&(key_action_t[KEY_MAP_SIZE]){[XK_Up] = handle_release_flag,
+		&(t_key_action[KEY_MAP_SIZE]){[XK_Up] = handle_release_flag,
 		[XK_Down] = handle_release_flag, [XK_Left] = handle_release_flag,
 		[XK_Right] = handle_release_flag, [XK_Control_L] = handle_release_flag,
 		[XK_Control_R] = handle_release_flag,
@@ -65,7 +62,7 @@ void	init_key_actions(t_key_maps *key_maps)
 
 int	key_press(int keycode, t_events *events)
 {
-	key_action_t	action;
+	t_key_action	action;
 	int				redraw_needed;
 
 	if (keycode >= 0 && keycode < KEY_MAP_SIZE)
@@ -84,7 +81,7 @@ int	key_press(int keycode, t_events *events)
 
 int	key_release(int keycode, t_events *events)
 {
-	key_action_t	action;
+	t_key_action	action;
 
 	if (keycode >= 0 && keycode < KEY_MAP_SIZE)
 	{

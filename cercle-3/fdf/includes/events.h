@@ -6,20 +6,24 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:34:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:34:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EVENTS_H
 # define EVENTS_H
 
-# include "gui.h"
-# include "libft.h"
+# include <X11/keysym.h>
+# include <math.h>
+
+/* ========== PACKAGES ========== */
 # include "camera.h"
 # include "graphics.h"
+# include "gui.h"
+# include "libft.h"
 # include "map.h"
 # include "window.h"
-# include <X11/keysym.h>
+
 
 /* ========== OPTIMIZATION DEFAULTS ========== */
 # define DEFAULT_LOD_LEVEL 1
@@ -111,13 +115,30 @@ typedef struct s_keys
 	int					g;
 }						t_keys;
 
+typedef struct s_movement_ctx
+{
+	t_vec2d				v;
+	int					m;
+	double				speed;
+}						t_movement_ctx;
+
+typedef struct s_combo_ctx
+{
+	int					old_lod;
+	float				old_z;
+	int					old_frust;
+	int					old_damp;
+	int					old_spline;
+}						t_combo_ctx;
+
 # endif
 
-typedef int				(*key_action_t)(int keycode, t_events *events);
+typedef int				(*t_key_action)(int keycode, t_events *events);
+
 typedef struct s_key_maps
 {
-	key_action_t		key_actions[KEY_MAP_SIZE];
-	key_action_t		key_releases[KEY_MAP_SIZE];
+	t_key_action		key_actions[KEY_MAP_SIZE];
+	t_key_action		key_releases[KEY_MAP_SIZE];
 }						t_key_maps;
 
 typedef struct s_events_args
@@ -184,6 +205,15 @@ int						handle_left(int keycode, t_events *events);
 int						handle_right(int keycode, t_events *events);
 int						handle_press_flag(int keycode, t_events *events);
 int						handle_release_flag(int keycode, t_events *events);
+
+void					init_key_flags(t_events *events);
+void					handle_button(int keycode, t_events *events, int value);
+
+void					clamp_values(t_events *events);
+void					apply_plus_changes(t_events *events);
+void					apply_minus_changes(t_events *events);
+void					apply_zero_changes(t_events *events);
+int						check_if_changed(t_events *events, t_combo_ctx *ctx);
 
 void					init_key_actions(t_key_maps *key_maps);
 

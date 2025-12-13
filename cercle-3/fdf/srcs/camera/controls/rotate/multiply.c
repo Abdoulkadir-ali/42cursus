@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rotate_matrix_helpers.c                            :+:      :+:    :+:   */
+/*   multiply.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 05:18:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:21:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:09:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	mat_mul(const t_vec3d a[3], const t_vec3d b[3], t_vec3d out[3])
 	}
 }
 
-void	mat_vec_mul_helper(const t_vec3d m[3], t_vec3d v, t_vec3d *result)
+void	mat_vec_mul(const t_vec3d m[3], t_vec3d v, t_vec3d *result)
 {
 	t_vec3d	tmp;
 
@@ -40,7 +40,7 @@ void	mat_vec_mul_helper(const t_vec3d m[3], t_vec3d v, t_vec3d *result)
 	vec3d_add(result, tmp);
 }
 
-void	compose_rotation_matrix_helper(t_camera *cam, t_rot_ctx *ctx)
+void	compose_rotation_matrix(t_camera *cam, t_rot_ctx *ctx)
 {
 	t_vec3d	rx[3];
 	t_vec3d	ry[3];

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:38:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:06:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 # include <unistd.h>
 
 // MODULES
-# include "libft.h"
 # include "color.h"
+# include "libft.h"
 # include "vectors.h"
 
 # ifndef BAD_VALUE
@@ -52,9 +52,9 @@ typedef struct s_map_style_config
 
 typedef struct s_map_points
 {
-	t_vec3d *pos; /* 1D Array: size = width * height */
-	t_vec3d *raw; /* 1D Array */
-	int *color;   /* 1D Array */
+	t_vec3d				*pos;
+	t_vec3d				*raw;
+	int					*color;
 }						t_map_points;
 
 typedef struct s_map

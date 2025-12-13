@@ -6,9 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:28:37 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:37:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:13:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "gui.h"
+#include "vectors.h"
+#include "events.h"
 
 static void	check_gui_resize(t_gui *gui)
 {
@@ -78,7 +82,7 @@ void	clear_gui(t_gui *gui)
 	ft_memset(buffer, 0, total_bytes);
 }
 
-void	redraw(t_events *events)
+void	redraw_gui(t_events *events)
 {
 	t_layout	l;
 	t_gui		*gui;
