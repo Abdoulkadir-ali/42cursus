@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:53:06 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:01:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 18:28:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,6 @@ t_events	*init_events(t_events_args *args)
 	init_mouse(&e->mouse);
 	init_keys(&e->keys);
 	set_key_actions(&e->key_maps);
+	set_key_releases(&e->key_maps);
 	return (e);
 }

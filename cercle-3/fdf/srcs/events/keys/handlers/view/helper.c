@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:01:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 18:21:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ void	calculate_movement_vector(t_movement_ctx *ctx, t_events *events)
 	t_keys	*keyboard;
 
 	keyboard = &events->keys;
-	if (keyboard->up)
+	if (keyboard->up && !keyboard->down)
 		vec2d_add(&ctx->v, create_vec2d(0, -1 * ctx->m));
-	if (keyboard->down)
+	else if (keyboard->down && !keyboard->up)
 		vec2d_add(&ctx->v, create_vec2d(0, 1 * ctx->m));
-	if (keyboard->left)
+	if (keyboard->left && !keyboard->right)
 		vec2d_add(&ctx->v, create_vec2d(-1 * ctx->m, 0));
-	if (keyboard->right)
+	else if (keyboard->right && !keyboard->left)
 		vec2d_add(&ctx->v, create_vec2d(1 * ctx->m, 0));
 }
 

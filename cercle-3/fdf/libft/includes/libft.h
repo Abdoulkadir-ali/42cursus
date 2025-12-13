@@ -6,13 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2025/11/13 13:19:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 18:33:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
+# include <stdarg.h>
+# include <stddef.h>
+# include <stdint.h>
 # include <stdlib.h>
 # include <unistd.h>
 
@@ -25,7 +28,6 @@
 # endif
 
 # include "libft.h"
-# include <stdarg.h>
 # include <unistd.h>
 
 /* Flags structure for bonus handling */

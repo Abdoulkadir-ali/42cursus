@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:06:45 by abdali            #+#    #+#             */
-/*   Updated: 2025/11/12 15:12:50 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/13 18:32:34 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/13 18:35:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdint.h>
-#include <stddef.h>
+#include "libft.h"
 
 static void	ft_memset_handle_small(char **p, unsigned char byte, size_t *n)
 {
@@ -24,7 +23,7 @@ static void	ft_memset_handle_align(char **p, unsigned char byte, size_t *n)
 	size_t	alignment_offset;
 	size_t	leading_bytes;
 
-	alignment_offset = (uintptr_t)*p % sizeof(uint64_t);
+	alignment_offset = (uintptr_t)(*p) % sizeof(uint64_t);
 	if (!alignment_offset)
 		return ;
 	leading_bytes = sizeof(uint64_t) - alignment_offset;
