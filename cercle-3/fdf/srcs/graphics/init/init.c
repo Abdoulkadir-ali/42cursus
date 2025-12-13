@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:45 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:12:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 12:05:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ t_graphics	*init_graphics(t_graphics_args args)
 	g->window = args.window;
 	g->camera = args.camera;
 	g->map = args.map;
+	g->cache = (t_cache){NULL, 0, 0, NULL};
 	init_render_config(&g->render_config);
 	init_frame_data(&g->frame_data);
 	return (g);

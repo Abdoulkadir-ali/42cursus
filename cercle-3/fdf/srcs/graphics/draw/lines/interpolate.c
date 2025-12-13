@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lines_helpers.c                                    :+:      :+:    :+:   */
+/*   interpolate.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 04:00:34 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:05:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 12:14:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,37 +54,3 @@ static void	init_interpolation(t_point start, t_point end, int steps,
 	}
 }
 
-int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end,
-		t_draw_line_ctx *dlc)
-{
-	dlc->start_pos.x = (int)start.pos.x;
-	dlc->start_pos.y = (int)start.pos.y;
-	dlc->end_pos.x = (int)end.pos.x;
-	dlc->end_pos.y = (int)end.pos.y;
-	dlc->delta.x = abs(dlc->end_pos.x - dlc->start_pos.x);
-	dlc->delta.y = abs(dlc->end_pos.y - dlc->start_pos.y);
-	if (dlc->start_pos.x < dlc->end_pos.x)
-		dlc->sign.x = 1;
-	else
-		dlc->sign.x = -1;
-	if (dlc->start_pos.y < dlc->end_pos.y)
-		dlc->sign.y = 1;
-	else
-		dlc->sign.y = -1;
-	setup_pointers(g, &dlc->ctx, dlc->sign.x, dlc->sign.y);
-	if (dlc->start_pos.x < 0 || dlc->start_pos.x >= dlc->ctx.width
-		|| dlc->start_pos.y < 0 || dlc->start_pos.y >= dlc->ctx.height)
-		return (0);
-	dlc->pixel_addr = g->window->main_img.img_addr + (dlc->start_pos.y
-			* dlc->ctx.line_len) + (dlc->start_pos.x * dlc->ctx.bpp);
-	dlc->z_addr = NULL;
-	if (g->window->z_buffer)
-		dlc->z_addr = g->window->z_buffer + (dlc->start_pos.y * dlc->ctx.width)
-			+ dlc->start_pos.x;
-	if (dlc->delta.x > dlc->delta.y)
-		dlc->steps = dlc->delta.x;
-	else
-		dlc->steps = dlc->delta.y;
-	init_interpolation(start, end, dlc->steps, &dlc->interp);
-	return (1);
-}

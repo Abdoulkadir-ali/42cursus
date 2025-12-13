@@ -6,10 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:40:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:47:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 12:01:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/time.h>
 #include "events.h"
 
 static long	get_time_ms(void)

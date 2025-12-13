@@ -1,11 +1,11 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clear.c                                            :+:      :+:    :+:   */
+/*   helper.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 18:26:26 by abdoali           #+#    #+#             */
+/*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
 /*   Updated: 2025/12/13 12:12:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -13,26 +13,34 @@
 #include "graphics.h"
 #include <immintrin.h>
 
-void	clear_z_buffer(t_graphics *g)
+void	clear_z_buffer_simd(t_clear_z_ctx *ctx)
 {
-	t_clear_z_ctx	ctx;
-
-	if (!g->window->z_buffer)
-		return ;
-	ctx.total = g->window->width * g->window->height;
-	ctx.z_buffer = g->window->z_buffer;
-	ctx.max_depth = _mm256_set1_ps(1e30f);
-	clear_z_buffer_simd(&ctx);
-	clear_z_buffer_remainder(&ctx);
+	ctx->i = 0;
+	while (ctx->i <= ctx->total - 8)
+	{
+		_mm256_storeu_ps(&ctx->z_buffer[ctx->i], ctx->max_depth);
+		ctx->i += 8;
+	}
 }
 
-void	clear_image(t_graphics *g)
+void	clear_z_buffer_remainder(t_clear_z_ctx *ctx)
 {
-	t_clear_img_ctx	ctx;
+	while (ctx->i < ctx->total)
+		ctx->z_buffer[ctx->i++] = 1e30f;
+}
 
-	ctx.total_bytes = g->window->height * g->window->main_img.img_line_len;
-	ctx.buffer = g->window->main_img.img_addr;
-	ctx.zeros = _mm256_setzero_si256();
-	clear_image_simd(&ctx);
-	clear_image_remainder(&ctx);
+void	clear_image_simd(t_clear_img_ctx *ctx)
+{
+	ctx->i = 0;
+	while (ctx->i <= ctx->total_bytes - 32)
+	{
+		_mm256_storeu_si256((__m256i *)&ctx->buffer[ctx->i], ctx->zeros);
+		ctx->i += 32;
+	}
+}
+
+void	clear_image_remainder(t_clear_img_ctx *ctx)
+{
+	while (ctx->i < ctx->total_bytes)
+		ctx->buffer[ctx->i++] = 0;
 }

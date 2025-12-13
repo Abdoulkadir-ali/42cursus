@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:12:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 12:05:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	cleanup_and_exit(t_events *events)
 
 	free_cached_maps(events);
 	free_map_files(events);
-	cleanup_cache();
+	cleanup_cache(events->graphics);
 	win = events->window;
 	mlx = events->window->mlx_ptr;
 	if (win->z_buffer)

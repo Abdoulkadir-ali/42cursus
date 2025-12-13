@@ -1,20 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gui.c                                              :+:      :+:    :+:   */
+/*   threads.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/13 11:25:31 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:01:14 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/13 12:47:02 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/13 12:49:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "events.h"
+#include "graphics.h"
 
-int	handle_escape(int keycode, t_events *events)
+void	*thread_draw_routine(void *data)
 {
-	(void)keycode;
-	return (cleanup_and_exit(events));
+	t_thread_data	*d;
+
+	d = (t_thread_data *)data;
+	draw_grid_section(d->g, d->start_y, d->end_y, d->step);
+	return (NULL);
+}
+
+void	join_threads(pthread_t *threads)
+{
+	int	i;
+
+	i = 0;
+	while (i < NUM_THREADS)
+	{
+		pthread_join(threads[i], NULL);
+		i++;
+	}
 }

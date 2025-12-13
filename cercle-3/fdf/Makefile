@@ -22,7 +22,10 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/camera/projection/advanced.c \
 	srcs/graphics/init.c \
 	srcs/graphics/cache.c \
-	srcs/graphics/draw/grid.c \
+	srcs/graphics/draw/grid/grid.c \
+	srcs/graphics/draw/grid/threads.c \
+	srcs/graphics/draw/grid/draw/quad.c \
+	srcs/graphics/draw/grid/draw/segment.c \
 	srcs/graphics/draw/lines.c \
 	srcs/graphics/draw/lines_helpers.c \
 	srcs/graphics/draw/triangle.c \
@@ -35,6 +38,7 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/graphics/z_processing/triangles.c \
 	srcs/graphics/perspective/lines.c \
 	srcs/graphics/frames/clear.c \
+	srcs/graphics/frames/helper.c \
 	srcs/color/create.c \
 	srcs/color/transform.c \
 	srcs/color/get.c \
@@ -59,11 +63,9 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/map/style/themes.c \
 	srcs/window/init.c \
 srcs/core/init.c \
-	srcs/events/mouse/events.c \
 	srcs/events/mouse/move.c \
 	srcs/events/mouse/handlers.c \
 	srcs/events/mouse/press.c \
-	srcs/events/keys/events.c \
 	srcs/events/keys/handlers/combos/combo.c \
 	srcs/events/keys/handlers/combos/helper.c \
 	srcs/events/keys/handlers/flags/flag.c \
@@ -81,8 +83,6 @@ srcs/core/init.c \
 	srcs/events/keys/init/releases.c \
 	srcs/events/gui/resize.c \
 	srcs/events/init/init.c \
-	srcs/events/hooks.c \
-	srcs/events/init.c \
 	srcs/gui/init.c \
 	srcs/gui/redraw.c \
 	srcs/gui/panel/panel.c \
@@ -118,6 +118,8 @@ objs:
 	@mkdir -p objs/core
 	@mkdir -p objs/graphics
 	@mkdir -p objs/graphics/draw
+	@mkdir -p objs/graphics/draw/grid
+	@mkdir -p objs/graphics/draw/grid/draw
 	@mkdir -p objs/graphics/interpolate
 	@mkdir -p objs/graphics/z_processing
 	@mkdir -p objs/graphics/perspective
@@ -141,6 +143,10 @@ objs:
 	@mkdir -p objs/events/keys/handlers/map
 	@mkdir -p objs/events/keys/handlers/toggle
 	@mkdir -p objs/events/keys/handlers/flags
+	@mkdir -p objs/events/keys/handlers/gui
+	@mkdir -p objs/events/keys/init
+	@mkdir -p objs/events/gui
+	@mkdir -p objs/events/init
 	@mkdir -p objs/vectors
 	@mkdir -p objs/vectors/vec2
 	@mkdir -p objs/vectors/vec2d

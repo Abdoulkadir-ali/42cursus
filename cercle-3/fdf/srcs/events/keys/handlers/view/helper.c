@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:27:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 12:01:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	adjust_move_speed(t_events *events, int increase)
 	}
 }
 
-static void	init_movement_ctx(t_movement_ctx *ctx, t_events *events)
+void	init_movement_ctx(t_movement_ctx *ctx, t_events *events)
 {
 	ctx->v = create_vec2d(0, 0);
 	ctx->m = 1;
@@ -37,7 +37,7 @@ static void	init_movement_ctx(t_movement_ctx *ctx, t_events *events)
 	ctx->speed = events->camera->move_speed;
 }
 
-static void	calculate_movement_vector(t_movement_ctx *ctx, t_events *events)
+void	calculate_movement_vector(t_movement_ctx *ctx, t_events *events)
 {
 	t_keys	*keyboard;
 
@@ -52,7 +52,7 @@ static void	calculate_movement_vector(t_movement_ctx *ctx, t_events *events)
 		vec2d_add(&ctx->v, create_vec2d(1 * ctx->m, 0));
 }
 
-static void	apply_movement(t_movement_ctx *ctx, t_events *events)
+void	apply_movement(t_movement_ctx *ctx, t_events *events)
 {
 	t_vec2d	delta;
 
@@ -67,7 +67,7 @@ static void	apply_movement(t_movement_ctx *ctx, t_events *events)
 	}
 }
 
-static void	clamp_offset(t_events *events)
+void	clamp_offset(t_events *events)
 {
 	double	max_off;
 

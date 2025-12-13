@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:51:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 12:01:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ int						handle_up(int keycode, t_events *events);
 int						handle_down(int keycode, t_events *events);
 int						handle_left(int keycode, t_events *events);
 int						handle_right(int keycode, t_events *events);
+int						handle_horizontal(int keycode, t_events *events, int left);
 int						handle_press_flag(int keycode, t_events *events);
 int						handle_release_flag(int keycode, t_events *events);
 
@@ -223,5 +224,10 @@ void					apply_plus_changes(t_events *events);
 void					apply_minus_changes(t_events *events);
 void					apply_zero_changes(t_events *events);
 int						check_if_changed(t_events *events, t_combo_ctx *ctx);
+
+void					init_movement_ctx(t_movement_ctx *ctx, t_events *events);
+void					calculate_movement_vector(t_movement_ctx *ctx, t_events *events);
+void					apply_movement(t_movement_ctx *ctx, t_events *events);
+void					clamp_offset(t_events *events);
 
 #endif

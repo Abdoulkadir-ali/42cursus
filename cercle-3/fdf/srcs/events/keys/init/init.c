@@ -53,3 +53,5 @@ int	key_release(int keycode, t_events *events)
 int	loop_hook(t_events *events)
 {
 	calculate_fps(events);
+	return (0);
+}
