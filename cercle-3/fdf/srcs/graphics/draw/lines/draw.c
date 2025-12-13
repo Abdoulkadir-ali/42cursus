@@ -5,31 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/13 12:13:09 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:15:30 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/13 13:46:12 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/13 14:49:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
-static void	draw_pixel_fast(t_graphics *g, t_pixel_draw_params p)
-{
-	if (!g->render_config.use_depth_culling || !p.z_addr || p.zr < *p.z_addr)
-	{
-		if (g->render_config.use_depth_culling && p.z_addr)
-			*p.z_addr = p.zr;
-		*(unsigned int *)p.pixel_addr = p.color;
-	}
-}
-
-static void	draw_pixel_fast_no_z(t_pixel_draw_params p)
-{
-	*(unsigned int *)p.pixel_addr = p.color;
-}
-
-
-int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end,
-		t_draw_line_ctx *dlc)
+static void	set_line_positions(t_point start, t_point end, t_draw_line_ctx *dlc)
 {
 	dlc->start_pos.x = (int)start.pos.x;
 	dlc->start_pos.y = (int)start.pos.y;
@@ -45,46 +28,52 @@ int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end,
 		dlc->sign.y = 1;
 	else
 		dlc->sign.y = -1;
-	setup_pointers(g, &dlc->ctx, dlc->sign.x, dlc->sign.y);
+}
+
+static int	is_line_visible(t_draw_line_ctx *dlc)
+{
 	if (dlc->start_pos.x < 0 || dlc->start_pos.x >= dlc->ctx.width
 		|| dlc->start_pos.y < 0 || dlc->start_pos.y >= dlc->ctx.height)
 		return (0);
-	dlc->pixel_addr = g->window->main_img.img_addr + (dlc->start_pos.y
-			* dlc->ctx.line_len) + (dlc->start_pos.x * dlc->ctx.bpp);
+	return (1);
+}
+
+static void	set_line_pointers(t_graphics *g,
+		t_draw_line_ctx *dlc)
+{
+	dlc->pixel_addr = g->window->main_img.img_addr
+		+ (dlc->start_pos.y * dlc->ctx.line_len)
+		+ (dlc->start_pos.x * dlc->ctx.bpp);
 	dlc->z_addr = NULL;
 	if (g->window->z_buffer)
-		dlc->z_addr = g->window->z_buffer + (dlc->start_pos.y * dlc->ctx.width)
+		dlc->z_addr = g->window->z_buffer
+			+ (dlc->start_pos.y * dlc->ctx.width)
 			+ dlc->start_pos.x;
 	if (dlc->delta.x > dlc->delta.y)
 		dlc->steps = dlc->delta.x;
 	else
 		dlc->steps = dlc->delta.y;
+}
+
+int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end,
+		t_draw_line_ctx *dlc)
+{
+	set_line_positions(start, end, dlc);
+	setup_pointers(g, &dlc->ctx, dlc->sign.x, dlc->sign.y);
+	if (!is_line_visible(dlc))
+		return (0);
+	set_line_pointers(g, dlc);
 	init_interpolation(start, end, dlc->steps, &dlc->interp);
 	return (1);
 }
 
 void	draw_line(t_graphics *g, t_point start, t_point end)
 {
-	t_draw_line_ctx dlc;
+	t_draw_line_ctx	dlc;
 
 	if (!init_draw_line_ctx(g, start, end, &dlc))
 		return ;
-
-	dlc.p.start = dlc.start_pos;
-	dlc.p.end = dlc.end_pos;
-	dlc.p.delta = dlc.delta;
-	dlc.p.sign = dlc.sign;
-	dlc.p.ctx = dlc.ctx;
-	dlc.p.pixel_addr = dlc.pixel_addr;
-	dlc.p.z_addr = dlc.z_addr;
-	dlc.p.zr = dlc.interp.zr;
-	dlc.p.z_step_val = dlc.interp.z_step_val;
-	dlc.p.r = dlc.interp.r;
-	dlc.p.green = dlc.interp.green;
-	dlc.p.b = dlc.interp.b;
-	dlc.p.dr = dlc.interp.dr;
-	dlc.p.dg = dlc.interp.dg;
-	dlc.p.db = dlc.interp.db;
+	fill_bresenham_params(&dlc);
 	if (g->render_config.use_depth_culling)
 	{
 		if (g->camera->color_shift.x || g->camera->color_shift.y

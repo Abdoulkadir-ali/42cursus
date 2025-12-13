@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 12:47:02 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:49:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 14:57:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
+#include <pthread.h>
 
 void	*thread_draw_routine(void *data)
 {

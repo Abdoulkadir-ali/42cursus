@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 13:10:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 15:00:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include "libft.h"
 # include <math.h>
 # include <immintrin.h>
+
+# define FP_16 65536.0
 
 // PROJECT REQUIREMENTS
 # include "camera.h"
@@ -96,14 +98,6 @@ typedef struct s_scanline_draw_ctx
 	float				*z_ptr;
 }						t_scanline_draw_ctx;
 
-typedef struct s_rasterize_ctx
-{
-	t_edge				e1;
-	t_edge				e2;
-	int					y_start;
-	int					y_end;
-}						t_rasterize_ctx;
-
 /* Helper struct for edge walking */
 typedef struct s_edge
 {
@@ -118,6 +112,14 @@ typedef struct s_edge
 	double				dg;
 	double				db;
 }						t_edge;
+
+typedef struct s_rasterize_ctx
+{
+	t_edge				e1;
+	t_edge				e2;
+	int					y_start;
+	int					y_end;
+}						t_rasterize_ctx;
 
 typedef struct s_bresenham
 {
@@ -337,15 +339,24 @@ t_point					catmull_rom_point(t_spline spline, double t);
 t_point					lerp_point(t_point p1, t_point p2, double t);
 void					draw_grid_section(t_graphics *g, int start_y, int end_y,
 							int step);
+void					draw_pixel_fast(t_graphics *g, t_pixel_draw_params p);
+void					draw_pixel_fast_no_z(t_pixel_draw_params p);
+void					fill_bresenham_params(t_draw_line_ctx *dlc);
+void					setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy);
+void					init_interpolation(t_point start, t_point end, int steps,
+							t_interp_data *data);
 int						init_draw_line_ctx(t_graphics *g, t_point start,
 							t_point end, t_draw_line_ctx *dlc);
 void					draw_line(t_graphics *g, t_point p1, t_point p2);
+void					swap_points(t_point *a, t_point *b);
 void					calculate_color(t_line_draw_state *state, t_point start,
 							t_point end);
 void					draw_filled_triangle(t_graphics *g,
 							t_triangle triangle);
 void					draw_wireframe_triangle(t_graphics *g,
 							t_triangle triangle);
+void					setup_edge(t_edge *e, t_point top, t_point bot);
+void					step_edge(t_edge *e);
 void					draw_quad_triangles(t_graphics *g,
 							t_quad_triangle quad);
 void					rasterize_flat_bottom(t_graphics *g, t_point top,
@@ -433,7 +444,7 @@ typedef struct s_segment_ctx
 	int                 max_coord;
 	int                 next_x;
 	int                 next_y;
-	t_vec               tmp_vec;
+	t_vec2               tmp_vec;
 }                       t_segment_ctx;
 
 #endif

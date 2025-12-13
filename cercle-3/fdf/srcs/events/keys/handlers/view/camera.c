@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:47:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 17:57:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,10 @@ int	handle_p(int keycode, t_events *events)
 
 int	process_movement(t_events *events)
 {
-	struct s_movement_ctx	ctx;
+	t_movement_ctx	ctx;
 
+	if (!events || !events->camera)
+		return (0);
 	init_movement_ctx(&ctx, events);
 	calculate_movement_vector(&ctx, events);
 	if (ctx.v.x != 0 || ctx.v.y != 0)

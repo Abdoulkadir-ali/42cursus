@@ -6,38 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:36:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 15:33:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "map.h"
 
-static char	*skip_spaces(char *p)
-{
-	while (p && *p && (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\v'
-			|| *p == '\f'))
-		p++;
-	return (p);
-}
-
-static int	count_words(char *line)
-{
-	int		count;
-	char	*p;
-
-	count = 0;
-	p = skip_spaces(line);
-	while (p && *p && *p != '\n')
-	{
-		count++;
-		while (*p && *p != ' ' && *p != '\t' && *p != '\n' && *p != '\r')
-			p++;
-		p = skip_spaces(p);
-	}
-	return (count);
-}
-
-/* 1. SCAN PASS: Find the absolute maximum width */
 void	get_map_dimensions(int fd, int *width, int *height)
 {
 	char	*line;
@@ -48,15 +22,8 @@ void	get_map_dimensions(int fd, int *width, int *height)
 	line = get_next_line(fd);
 	while (line)
 	{
-		if (line[0] != '\0')
+		if (!is_empty_line(line))
 		{
-			/* Ignore empty lines at end of file */
-			if (line[0] == '\n' && line[1] == '\0')
-			{
-				free(line);
-				line = get_next_line(fd);
-				continue ;
-			}
 			(*height)++;
 			curr_w = count_words(line);
 			if (curr_w > *width)
@@ -67,7 +34,6 @@ void	get_map_dimensions(int fd, int *width, int *height)
 	}
 }
 
-/* 2. ALLOCATION: Allocate ONE block and PAD with BAD_VALUE */
 int	allocate_map_points(t_map *map)
 {
 	size_t	total;
@@ -82,10 +48,7 @@ int	allocate_map_points(t_map *map)
 	i = 0;
 	while (i < total)
 	{
-		/* CRITICAL: Initialize everything to BAD_VALUE.
-			If a line is shorter than map->width, the tail remains BAD_VALUE. */
 		map->points.raw[i].z = BAD_VALUE;
-		/* Pre-calculate grid coordinates for the cache */
 		map->points.raw[i].x = i % map->width;
 		map->points.raw[i].y = i / map->width;
 		map->points.color[i] = 0xFFFFFF;
@@ -94,50 +57,18 @@ int	allocate_map_points(t_map *map)
 	return (1);
 }
 
-/* 3. PARSING: Fill the data we have, leave the rest as BAD_VALUE */
 void	parse_map_data(t_map *map, int fd)
 {
 	char	*line;
-	char	*p;
-	char	*end;
-	int		x;
 	int		y;
-	size_t	idx;
-	long	z;
-	long	color;
 
 	y = 0;
 	line = get_next_line(fd);
 	while (line && y < map->height)
 	{
-		if (line[0] != '\n' && line[0] != '\0')
+		if (!is_empty_line(line))
 		{
-			p = line;
-			x = 0;
-			while (x < map->width)
-			{
-				p = skip_spaces(p);
-				/* If line ends early, STOP. The rest is already BAD_VALUE */
-				if (!p || *p == '\0' || *p == '\n')
-					break ;
-				/* Calculate 1D Index */
-				idx = (size_t)y * map->width + x;
-				z = strtol(p, &end, 10);
-				if (end == p)
-					z = 0;
-				map->points.raw[idx].z = (double)z;
-				p = end;
-				if (*p == ',')
-				{
-					p++;
-					color = strtol(p, &end, 0);
-					if (end == p)
-						color = 0xFFFFFF;
-					map->points.color[idx] = (int)color;
-					p = end;
-				}
-				x++;
-			}
+			parse_line(line, map, y);
 			y++;
 		}
 		free(line);

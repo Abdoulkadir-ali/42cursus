@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:40:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:01:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 17:50:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ void	calculate_fps(t_events *events)
 	if (f->last_check == 0)
 		f->last_check = current_time;
 	f->frame_count++;
-	if (current_time - f->last_check >= 500)
+	if (current_time - f->last_check >= 250)
 	{
-		f->fps = f->frame_count;
+		f->fps = (f->frame_count * 1000) / (current_time - f->last_check);
 		f->frame_count = 0;
 		f->last_check = current_time;
 	}

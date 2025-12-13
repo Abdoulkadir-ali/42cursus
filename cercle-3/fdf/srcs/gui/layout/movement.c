@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:45:50 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:26:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 16:56:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,14 @@
 
 void	draw_projection_display_layout(t_layout *l, t_gui *gui)
 {
-	char	*names[PROJ_COUNT] = {"Isometric", "Orthographic", "Perspective", "Oblique",
-		"Camera Matrix", "Nonlinear"};
+	char	*names[PROJ_COUNT];
 
+	names[0] = "Isometric";
+	names[1] = "Orthographic";
+	names[2] = "Perspective";
+	names[3] = "Oblique";
+	names[4] = "Camera Matrix";
+	names[5] = "Nonlinear";
 	gui_layout_title(l, "PROJECTION");
 	gui_layout_label(l, names[gui->camera->projection]);
 }
@@ -47,4 +52,3 @@ void	draw_map_name_display_layout(t_layout *l, t_gui *gui)
 	else
 		gui_layout_label(l, "Test Grid");
 }
-

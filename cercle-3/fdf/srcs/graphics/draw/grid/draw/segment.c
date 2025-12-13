@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 12:46:31 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 13:11:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 14:57:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
-static void compute_next_coords(t_segment_ctx *ctx, t_draw_line_params params,
+static void	compute_next_coords(t_segment_ctx *ctx, t_draw_line_params params,
 		int is_horizontal)
 {
 	if (is_horizontal)
@@ -27,7 +27,7 @@ static void compute_next_coords(t_segment_ctx *ctx, t_draw_line_params params,
 	}
 }
 
-static void compute_prev_next(t_segment_ctx *ctx, t_graphics *g,
+static void	compute_prev_next(t_segment_ctx *ctx, t_graphics *g,
 		t_draw_line_params params, int is_horizontal)
 {
 	if (is_horizontal)
@@ -44,7 +44,7 @@ static void compute_prev_next(t_segment_ctx *ctx, t_graphics *g,
 	}
 }
 
-static void compute_p0_p3(t_segment_ctx *ctx, t_graphics *g,
+static void	compute_p0_p3(t_segment_ctx *ctx, t_graphics *g,
 		t_draw_line_params params, t_point p2)
 {
 	if (ctx->prev_coord >= 0)
@@ -67,10 +67,12 @@ static void compute_p0_p3(t_segment_ctx *ctx, t_graphics *g,
 		ctx->p3 = p2;
 }
 
-void    draw_segment(t_graphics *g, t_draw_line_params params, int is_horizontal)
+void	draw_segment(t_graphics *g, t_draw_line_params params,
+		int is_horizontal)
 {
-	t_segment_ctx    ctx;
-	t_point          p2;
+	t_segment_ctx	ctx;
+	t_point			p2;
+	t_spline		spline;
 
 	compute_next_coords(&ctx, params, is_horizontal);
 	if (ctx.next_x >= g->map->width || ctx.next_y >= g->map->height)
@@ -80,10 +82,10 @@ void    draw_segment(t_graphics *g, t_draw_line_params params, int is_horizontal
 		return ;
 	if (g->render_config.render_mode == RENDER_SPLINES)
 	{
-		compute_prev_next(&ctx, g, params, is_horizontal);
+		compute_prev_next(&ctx, g, params, params.step == 1);
 		compute_p0_p3(&ctx, g, params, p2);
-		draw_spline_segment(g, (t_spline){ctx.p0, params.p1, p2, ctx.p3},
-			g->camera->spline_segments);
+		spline = (t_spline){ctx.p0, params.p1, p2, ctx.p3};
+		draw_spline_segment(g, spline, g->camera->spline_segments);
 	}
 	else if (g->render_config.render_mode == RENDER_LINES)
 		draw_line(g, params.p1, p2);

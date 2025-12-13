@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 20:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:58:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 17:18:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,30 +16,26 @@
 
 int	is_point_visible(t_vec3d p, t_graphics *g)
 {
+	int		threshold;
+	double	raw_z;
+
 	if (p.z <= DRAW_LIMIT)
 		return (0);
-		
-	t_point	projected;
-	int		threshold;
-	int		z;
-
-	projected = project_point(p, 0, g->camera, g->map->z_divisor);
 	threshold = g->camera->dampening_threshold;
 	if (threshold == 0)
 		return (1);
-	z = projected.pos.z;
+	raw_z = p.z;
 	if (threshold < 0)
-		return (z >= -threshold);
+		return (raw_z >= -threshold);
 	else
-		return (z <= threshold);
+		return (raw_z <= threshold);
 }
 
 int	is_visible(int x, int y, t_graphics *g)
 {
 	(void)x;
 	(void)y;
-	return (x >= 0 && x < g->window->width && y >= 0
-		&& y < g->window->height);
+	return (x >= 0 && x < g->window->width && y >= 0 && y < g->window->height);
 }
 
 int	is_on_screen(int x, int y, t_graphics *g)
@@ -53,12 +49,12 @@ int	is_on_screen(int x, int y, t_graphics *g)
 
 int	should_draw_line(t_point p1, t_point p2, t_graphics *g)
 {
-	if (p1.pos.x <= DRAW_LIMIT || p1.pos.y <= DRAW_LIMIT || p1.pos.z <= DRAW_LIMIT ||
-		p2.pos.x <= DRAW_LIMIT || p2.pos.y <= DRAW_LIMIT || p2.pos.z <= DRAW_LIMIT)
+	if (p1.pos.x <= DRAW_LIMIT || p1.pos.y <= DRAW_LIMIT
+		|| p1.pos.z <= DRAW_LIMIT || p2.pos.x <= DRAW_LIMIT
+		|| p2.pos.y <= DRAW_LIMIT || p2.pos.z <= DRAW_LIMIT)
 		return (0);
-		
-	if (!is_on_screen(p1.pos.x, p1.pos.y, g) && !is_on_screen(p2.pos.x, p2.pos.y,
-			g))
+	if (!is_on_screen(p1.pos.x, p1.pos.y, g) && !is_on_screen(p2.pos.x,
+			p2.pos.y, g))
 	{
 		if ((p1.pos.x < 0 && p2.pos.x < 0) || (p1.pos.x > g->window->width
 				&& p2.pos.x > g->window->width) || (p1.pos.y < 0

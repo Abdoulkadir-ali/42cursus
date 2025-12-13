@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   scanlines.c                                        :+:      :+:    :+:   */
+/*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 13:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:35:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 15:00:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
-static void	draw_scanline_loop(t_graphics *g, t_scanline_draw_ctx *ctx)
+void	draw_scanline_loop(t_graphics *g, t_scanline_draw_ctx *ctx)
 {
 	while (ctx->x <= ctx->end_x)
 	{

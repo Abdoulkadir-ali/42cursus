@@ -20,23 +20,31 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/camera/projection/projection.c \
 	srcs/camera/projection/basic.c \
 	srcs/camera/projection/advanced.c \
-	srcs/graphics/init.c \
-	srcs/graphics/cache.c \
+	srcs/graphics/init/init.c \
+	srcs/graphics/cache/cache.c \
+	srcs/graphics/cache/helper.c \
 	srcs/graphics/draw/grid/grid.c \
 	srcs/graphics/draw/grid/threads.c \
 	srcs/graphics/draw/grid/draw/quad.c \
 	srcs/graphics/draw/grid/draw/segment.c \
-	srcs/graphics/draw/lines.c \
-	srcs/graphics/draw/lines_helpers.c \
-	srcs/graphics/draw/triangle.c \
-	srcs/graphics/draw/spline.c \
-	srcs/graphics/draw/scanlines.c \
-	srcs/graphics/interpolate/lines.c \
-	srcs/graphics/interpolate/splines.c \
-	srcs/graphics/interpolate/triangle.c \
-	srcs/graphics/z_processing/lines.c \
-	srcs/graphics/z_processing/triangles.c \
+	srcs/graphics/draw/lines/draw.c \
+	srcs/graphics/draw/lines/helper.c \
+	srcs/graphics/draw/lines/bresenham/fixed.c \
+	srcs/graphics/draw/lines/bresenham/fixed_shifted.c \
+	srcs/graphics/draw/lines/bresenham/helper.c \
+	srcs/graphics/draw/lines/bresenham/no_z.c \
+	srcs/graphics/draw/lines/bresenham/no_z_shifted.c \
+	srcs/graphics/draw/triangle/draw.c \
+	srcs/graphics/draw/triangle/helper.c \
+	srcs/graphics/draw/triangle/rasterizer/rasterizer.c \
+	srcs/graphics/draw/triangle/rasterizer/helper.c \
+	srcs/graphics/draw/splines/draw.c \
+	srcs/graphics/draw/scanlines/draw.c \
+	srcs/graphics/draw/scanlines/helper.c \
+	srcs/graphics/draw/z_processing/lines.c \
+	srcs/graphics/draw/z_processing/triangles.c \
 	srcs/graphics/perspective/lines.c \
+	srcs/graphics/perspective/helper.c \
 	srcs/graphics/frames/clear.c \
 	srcs/graphics/frames/helper.c \
 	srcs/color/create.c \
@@ -55,9 +63,12 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/vectors/vec3d/arithmetic.c \
 	srcs/vectors/vec3d/distance.c \
 	srcs/map/build/grid.c \
+	srcs/map/build/helper.c \
+	srcs/map/build/minmax.c \
 	srcs/map/init.c \
 	srcs/map/read/loader.c \
 	srcs/map/read/parser.c \
+	srcs/map/read/helper.c \
 	srcs/map/read/select.c \
 	srcs/map/style/style.c \
 	srcs/map/style/themes.c \
@@ -73,7 +84,6 @@ srcs/core/init.c \
 	srcs/events/keys/handlers/flags/modifiers.c \
 	srcs/events/keys/handlers/gui/gui.c \
 	srcs/events/keys/handlers/map/map.c \
-	srcs/events/keys/handlers/map/helper.c \
 	srcs/events/keys/handlers/toggle/toggle.c \
 	srcs/events/keys/handlers/view/camera.c \
 	srcs/events/keys/handlers/view/helper.c \
@@ -87,14 +97,14 @@ srcs/core/init.c \
 	srcs/gui/redraw.c \
 	srcs/gui/panel/panel.c \
 	srcs/gui/print/put.c \
-	srcs/gui/display/print/format.c \
-	srcs/gui/display/layout.c \
-	srcs/gui/display/sections/guide.c \
-	srcs/gui/display/sections/movement.c \
-	srcs/gui/display/sections/performance.c \
-	srcs/gui/display/sections/style.c \
-	srcs/gui/style/style.c \
-	srcs/gui/style/select.c \
+	srcs/gui/print/format.c \
+	srcs/gui/layout/layout.c \
+	srcs/gui/layout/guide.c \
+	srcs/gui/layout/movement.c \
+	srcs/gui/layout/performance.c \
+	srcs/gui/layout/style.c \
+	srcs/gui/layout/theme.c \
+	srcs/gui/layout/utils.c \
 
 
 # Object files in objs directory
@@ -117,9 +127,18 @@ $(MLX_LIB):
 objs:
 	@mkdir -p objs/core
 	@mkdir -p objs/graphics
+	@mkdir -p objs/graphics/init
+	@mkdir -p objs/graphics/cache
 	@mkdir -p objs/graphics/draw
 	@mkdir -p objs/graphics/draw/grid
 	@mkdir -p objs/graphics/draw/grid/draw
+	@mkdir -p objs/graphics/draw/lines
+	@mkdir -p objs/graphics/draw/lines/bresenham
+	@mkdir -p objs/graphics/draw/triangle
+	@mkdir -p objs/graphics/draw/triangle/rasterizer
+	@mkdir -p objs/graphics/draw/scanlines
+	@mkdir -p objs/graphics/draw/splines
+	@mkdir -p objs/graphics/draw/z_processing
 	@mkdir -p objs/graphics/interpolate
 	@mkdir -p objs/graphics/z_processing
 	@mkdir -p objs/graphics/perspective

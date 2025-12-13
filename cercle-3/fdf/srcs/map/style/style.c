@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 13:10:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 16:45:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,23 @@ void	cycle_map_style(t_maps *m)
 
 void	apply_colors(t_map *map)
 {
-	int	x;
-	int	y;
-	int	color;
+	t_vec3	pos;
+	int		color;
+	int		idx;
 
-	y = 0;
-	while (y < map->height)
+	pos.y = 0;
+	while (pos.y < map->height)
 	{
-		x = 0;
-		while (x < map->width)
+		pos.x = 0;
+		while (pos.x < map->width)
 		{
-			int idx = y * map->width + x;
-			color = get_height_color(map->points.raw[idx].z,
-					map->min_max_z.x, map->min_max_z.y);
+			idx = (int)pos.y * map->width + (int)pos.x;
+			color = get_height_color(map->points.raw[idx].z, map->min_max_z.x,
+					map->min_max_z.y);
 			map->points.color[idx] = color;
-			x++;
+			pos.x++;
 		}
-		y++;
+		pos.y++;
 	}
 }
 
@@ -60,24 +60,24 @@ int	get_map_line_color(t_vec3 v, t_map_style style)
 
 void	apply_map_style(t_map *map)
 {
-	int		x;
-	int		y;
+	t_vec3	pos;
 	t_vec3	v;
 	int		color;
+	int		idx;
 
-	y = 0;
-	while (y < map->height)
+	pos.y = 0;
+	while (pos.y < map->height)
 	{
-		x = 0;
-		while (x < map->width)
+		pos.x = 0;
+		while (pos.x < map->width)
 		{
-			int idx = y * map->width + x;
-			v = create_vec3(map->points.raw[idx].z,
-					map->min_max_z.x, map->min_max_z.y);
+			idx = (int)pos.y * map->width + (int)pos.x;
+			v = create_vec3(map->points.raw[idx].z, map->min_max_z.x,
+					map->min_max_z.y);
 			color = get_map_line_color(v, map->style.style);
 			map->points.color[idx] = color;
-			x++;
+			pos.x++;
 		}
-		y++;
+		pos.y++;
 	}
 }

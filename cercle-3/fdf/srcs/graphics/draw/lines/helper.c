@@ -1,18 +1,52 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interpolate.c                                      :+:      :+:    :+:   */
+/*   helper.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/22 04:00:34 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 13:27:39 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/13 13:27:15 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/13 15:06:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
-static void	setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy)
+void	draw_pixel_fast(t_graphics *g, t_pixel_draw_params p)
+{
+	if (!g->render_config.use_depth_culling || !p.z_addr || p.zr < *p.z_addr)
+	{
+		if (g->render_config.use_depth_culling && p.z_addr)
+			*p.z_addr = p.zr;
+		*(unsigned int *)p.pixel_addr = p.color;
+	}
+}
+
+void	draw_pixel_fast_no_z(t_pixel_draw_params p)
+{
+	*(unsigned int *)p.pixel_addr = p.color;
+}
+
+void	fill_bresenham_params(t_draw_line_ctx *dlc)
+{
+	dlc->p.start = dlc->start_pos;
+	dlc->p.end = dlc->end_pos;
+	dlc->p.delta = dlc->delta;
+	dlc->p.sign = dlc->sign;
+	dlc->p.ctx = dlc->ctx;
+	dlc->p.pixel_addr = dlc->pixel_addr;
+	dlc->p.z_addr = dlc->z_addr;
+	dlc->p.zr = dlc->interp.zr;
+	dlc->p.z_step_val = dlc->interp.z_step_val;
+	dlc->p.r = dlc->interp.r;
+	dlc->p.green = dlc->interp.green;
+	dlc->p.b = dlc->interp.b;
+	dlc->p.dr = dlc->interp.dr;
+	dlc->p.dg = dlc->interp.dg;
+	dlc->p.db = dlc->interp.db;
+}
+
+void	setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy)
 {
 	ctx->bpp = g->window->main_img.img_bpp / 8;
 	ctx->line_len = g->window->main_img.img_line_len;
@@ -24,7 +58,7 @@ static void	setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy)
 	ctx->z_step_y = sy * ctx->width;
 }
 
-static void	init_interpolation(t_point start, t_point end, int steps,
+void	init_interpolation(t_point start, t_point end, int steps,
 		t_interp_data *data)
 {
 	t_vec3	start_rgb;

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/22 14:26:36 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:26:39 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/12 19:45:55 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/13 16:56:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,35 +28,43 @@ static void	format_depth_str(int percent, char *str)
 	str[11] = '\0';
 }
 
-void	draw_dampening_display(t_data *data)
+void	draw_dampening_display(t_gui *gui)
 {
 	int		y;
 	char	depth_str[20];
 	int		visible_percent;
 
-	y = data->window.height - 240;
-	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"DEPTH DAMPENING", GUI_TITLE_COLOR});
+	y = gui->window->height - 240;
+	put_colored(gui, GUI_PADDING, y, (t_colored_text){"DEPTH DAMPENING",
+		GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
-	if (data->camera.dampening_threshold <= data->map->min_max_z.x)
-		put_value(data, GUI_PADDING + 10, y, "OFF");
+	if (gui->camera->dampening_threshold <= gui->map->min_max_z.x)
+		put_value(gui, GUI_PADDING + 10, y, "OFF");
 	else
 	{
-		visible_percent = (int)(100.0 * (data->map->min_max_z.y
-					- data->camera.dampening_threshold) / (data->map->min_max_z.y
-					- data->map->min_max_z.x));
+		visible_percent = (int)(100.0 * (gui->map->min_max_z.y
+					- gui->camera->dampening_threshold) / (gui->map->min_max_z.y
+					- gui->map->min_max_z.x));
 		format_depth_str(visible_percent, depth_str);
-		put_value(data, GUI_PADDING + 10, y, depth_str);
+		put_value(gui, GUI_PADDING + 10, y, depth_str);
 	}
 }
 
-void	draw_style_display(t_data *data)
+void	draw_style_display(t_gui *gui)
 {
 	int		y;
 	int		accent;
-	char	*names[GUI_STYLE_COUNT] = {"TRON BLUE", "TRON ORANGE", "MATRIX", "CYBERPUNK", "NEON GRID"};
-	y = data->window.height - 240;
-	accent = get_gui_theme(data->camera.gui_style).accent;
-	put_colored(&data->gui, GUI_PADDING, y, (t_colored_text){"GUI STYLE", accent});
+	char	*names[GUI_STYLE_COUNT];
+
+	names[0] = "TRON BLUE";
+	names[1] = "TRON ORANGE";
+	names[2] = "MATRIX";
+	names[3] = "CYBERPUNK";
+	names[4] = "NEON GRID";
+	y = gui->window->height - 240;
+	accent = get_gui_theme(gui->gui_style).accent;
+	put_colored(gui, GUI_PADDING, y, (t_colored_text){"GUI STYLE", accent});
 	y += GUI_TITLE_HEIGHT;
-	put_colored(&data->gui, GUI_PADDING + 10, y, (t_colored_text){names[data->camera.gui_style], accent});
+	put_colored(gui, GUI_PADDING + 10, y,
+		(t_colored_text){names[gui->gui_style], accent});
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:27:34 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:27:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 16:44:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ void	gui_layout_add_spacer(t_layout *l, int size)
 
 void	gui_layout_title(t_layout *l, char *text)
 {
-	put_colored(l->gui, GUI_PADDING, l->cursor_y,
-		(t_colored_text){text, GUI_TITLE_COLOR});
+	put_colored(l->gui, GUI_PADDING, l->cursor_y, (t_colored_text){text,
+		GUI_TITLE_COLOR});
 	l->cursor_y += GUI_TITLE_HEIGHT;
 }
 

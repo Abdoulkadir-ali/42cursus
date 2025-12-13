@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:36:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 14:50:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	draw_filled_triangle(t_graphics *g, t_triangle t)
 {
 	double	ratio;
-		t_point p4;
+	t_point	p4;
 
 	if (t.p1.pos.y > t.p2.pos.y)
 		swap_points(&t.p1, &t.p2);

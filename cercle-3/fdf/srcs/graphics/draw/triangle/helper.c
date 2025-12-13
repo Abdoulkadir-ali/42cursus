@@ -6,13 +6,22 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:36:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 15:00:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
-static void	setup_edge(t_edge *e, t_point top, t_point bot)
+void	swap_points(t_point *a, t_point *b)
+{
+	t_point	t;
+
+	t = *a;
+	*a = *b;
+	*b = t;
+}
+
+void	setup_edge(t_edge *e, t_point top, t_point bot)
 {
 	int		height;
 	double	inv_h;
@@ -33,20 +42,11 @@ static void	setup_edge(t_edge *e, t_point top, t_point bot)
 	e->db = (get_blue(bot.color) - e->b) * inv_h;
 }
 
-static void	step_edge(t_edge *e)
+void	step_edge(t_edge *e)
 {
 	e->x += e->dx;
 	e->z += e->dz;
 	e->r += e->dr;
 	e->g += e->dg;
 	e->b += e->db;
-}
-
-static void	swap_points(t_point *a, t_point *b)
-{
-	t_point	t;
-
-	t = *a;
-	*a = *b;
-	*b = t;
 }

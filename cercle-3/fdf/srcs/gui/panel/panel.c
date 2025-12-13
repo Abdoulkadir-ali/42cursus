@@ -6,13 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:28:37 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:13:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 17:00:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "vectors.h"
 #include "events.h"
+#include "gui.h"
 
 static void	check_gui_resize(t_gui *gui)
 {
@@ -88,7 +87,6 @@ void	redraw_gui(t_events *events)
 	t_gui		*gui;
 
 	gui = &events->gui;
-
 	check_gui_resize(gui);
 	clear_gui(gui);
 	draw_panel_background(gui);

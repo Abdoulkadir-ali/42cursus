@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:06:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 16:58:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,32 @@ typedef struct s_map
 	t_map_style_config	style;
 }						t_map;
 
+typedef struct s_min_max_ctx
+{
+	t_vec2				pos;
+	float				z;
+	int					first;
+	size_t				idx;
+}						t_min_max_ctx;
+
+typedef struct s_find_min_max_ctx
+{
+	t_vec2				pos;
+	float				val;
+	int					first;
+	size_t				idx;
+	float				min_val;
+	float				max_val;
+}						t_find_min_max_ctx;
+
+typedef struct s_process_proj_row_ctx
+{
+	t_min_max_ctx		*min_max_ctx;
+	t_map				*map;
+	double				z_divisor;
+	int					y;
+}						t_process_proj_row_ctx;
+
 typedef struct s_maps
 {
 	t_map				**maps;
@@ -85,6 +111,10 @@ int						get_solid_color(int z);
 int						get_zebra_color(int z);
 int						get_neon_color(int z);
 
+void					init_grid_points(t_map *map);
+void					calculate_z_divisor(t_map *map);
+t_map					*allocate_map_arrays(t_map *map);
+void					find_min_max_z(t_map *map, float *min, float *max);
 void					free_map(t_map *map);
 void					calculate_min_max_z(t_map *map);
 void					init_map_list(t_maps *m);
@@ -93,6 +123,11 @@ void					cycle_map(t_maps *m);
 void					apply_map_style(t_map *map);
 int						get_map_line_color(t_vec3 v, t_map_style style);
 void					cycle_map_style(t_maps *m);
+char					*skip_spaces(char *p);
+int						count_words(char *line);
+int						is_empty_line(char *line);
+char					*parse_point(char *p, t_map *map, size_t idx);
+void					parse_line(char *line, t_map *map, int y);
 int						allocate_map_points(t_map *map);
 void					parse_map_data(t_map *map, int fd);
 void					get_map_dimensions(int fd, int *width, int *height);

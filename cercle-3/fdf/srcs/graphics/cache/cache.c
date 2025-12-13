@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 03:11:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:10:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 14:57:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,6 @@ void	cache_projections(t_graphics *g)
 		fill_cache(g);
 }
 
-t_point	get_cached_proj(t_graphics *g, int x, int y)
-{
-	int	valid;
-
-	valid = x >= 0 && y >= 0 && x < g->cache.width && y < g->cache.height;
-	if (g->cache.points && g->cache.map == g->map && valid)
-		return (g->cache.points[y * g->cache.width + x]);
-	return (get_fallback_proj(g, x, y));
-}
-
 t_point	get_fallback_proj(t_graphics *g, int x, int y)
 {
 	size_t	idx;
@@ -62,4 +52,14 @@ t_point	get_fallback_proj(t_graphics *g, int x, int y)
 	}
 	return (project_point(g->map->points.pos[idx], g->map->points.color[idx],
 			g->camera, g->map->z_divisor));
+}
+
+t_point	get_cached_proj(t_graphics *g, int x, int y)
+{
+	int	valid;
+
+	valid = x >= 0 && y >= 0 && x < g->cache.width && y < g->cache.height;
+	if (g->cache.points && g->cache.map == g->map && valid)
+		return (g->cache.points[y * g->cache.width + x]);
+	return (get_fallback_proj(g, x, y));
 }

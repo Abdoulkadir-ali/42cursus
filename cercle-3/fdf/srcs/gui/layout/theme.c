@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   style.c                                            :+:      :+:    :+:   */
+/*   theme.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:29:30 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/13 16:30:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/13 16:27:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ t_gui_theme	get_cyberpunk_theme(void)
 
 t_gui_theme	get_neon_grid_theme(void)
 {
-	t_gui_theme theme;
+	t_gui_theme	theme;
 
 	theme.background = 0x000A14;
 	theme.border = 0x00FFFF;

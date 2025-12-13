@@ -6,141 +6,76 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:10:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/13 16:58:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "map.h"
 #include "camera.h"
+#include "map.h"
 
-static void	init_grid_points(t_map *map)
+static void	handle_min_max(t_process_proj_row_ctx *p)
 {
-	int	x;
-	int	y;
-	int	idx;
-
-	y = 0;
-	while (y < map->height)
+	if (p->min_max_ctx->first)
 	{
-		x = 0;
-		while (x < map->width)
-		{
-			idx = y * map->width + x;
-			map->points.raw[idx].x = x;
-			map->points.raw[idx].y = y;
-			map->points.raw[idx].z = x;
-			map->points.pos[idx] = map->points.raw[idx];
-			map->points.color[idx] = 0xFFFFFF;
-			x++;
-		}
-		y++;
+		p->map->min_proj_z = p->min_max_ctx->z;
+		p->map->max_proj_z = p->min_max_ctx->z;
+		p->min_max_ctx->first = 0;
+	}
+	else
+	{
+		if (p->min_max_ctx->z < p->map->min_proj_z)
+			p->map->min_proj_z = p->min_max_ctx->z;
+		if (p->min_max_ctx->z > p->map->max_proj_z)
+			p->map->max_proj_z = p->min_max_ctx->z;
 	}
 }
 
-static void	calculate_z_divisor(t_map *map)
+static void	process_proj_row(t_process_proj_row_ctx *p, t_camera *camera)
 {
-	if (map->min_max_z.y - map->min_max_z.x > 50)
-		map->z_divisor = (map->min_max_z.y - map->min_max_z.x) / 10.0;
-	else
-		map->z_divisor = 1.0;
-	if (abs(map->min_max_z.y) > abs(map->min_max_z.x))
-		map->z_divisor = abs(map->min_max_z.y) / 10.0;
-	else
-		map->z_divisor = abs(map->min_max_z.x) / 10.0;
-	if (map->z_divisor < 1.0)
-		map->z_divisor = 1.0;
-}
+	size_t	idx;
+	t_vec3d	pos;
+	int		color;
 
-void	calculate_min_max_z(t_map *map)
-{
-	int	x;
-	int	y;
-	int	z;
-	int	first;
-	int	idx;
-
-	first = 1;
-	y = 0;
-	while (y < map->height)
+	p->min_max_ctx->pos.y = p->y;
+	p->min_max_ctx->pos.x = 0;
+	while (p->min_max_ctx->pos.x < p->map->width)
 	{
-		x = 0;
-		while (x < map->width)
-		{
-			idx = y * map->width + x;
-			z = map->points.raw[idx].z;
-			if (first)
-			{
-				map->min_max_z.x = z;
-				map->min_max_z.y = z;
-				first = 0;
-			}
-			else
-			{
-				if (z < map->min_max_z.x)
-					map->min_max_z.x = z;
-				if (z > map->min_max_z.y)
-					map->min_max_z.y = z;
-			}
-			x++;
-		}
-		y++;
+		idx = (size_t)p->min_max_ctx->pos.y * p->map->width
+			+ p->min_max_ctx->pos.x;
+		p->min_max_ctx->idx = idx;
+		pos = p->map->points.pos[idx];
+		color = p->map->points.color[idx];
+		p->min_max_ctx->z = project_point(pos, color, camera,
+				p->z_divisor).pos.z;
+		handle_min_max(p);
+		p->min_max_ctx->pos.x++;
 	}
-	calculate_z_divisor(map);
 }
 
 void	calculate_min_max_proj_z(t_map *map, t_camera *camera, double z_divisor)
 {
-	int		x;
-	int		y;
-	float	z;
-	int		first;
-	int		idx;
+	t_min_max_ctx			ctx;
+	int						y;
+	t_process_proj_row_ctx	p;
 
-	first = 1;
+	ctx.first = 1;
 	y = 0;
 	while (y < map->height)
 	{
-		x = 0;
-		while (x < map->width)
-		{
-			idx = y * map->width + x;
-			z = project_point(map->points.pos[idx], map->points.color[idx],
-					camera, z_divisor).pos.z;
-			if (first)
-			{
-				map->min_proj_z = z;
-				map->max_proj_z = z;
-				first = 0;
-			}
-			else
-			{
-				if (z < map->min_proj_z)
-					map->min_proj_z = z;
-				if (z > map->max_proj_z)
-					map->max_proj_z = z;
-			}
-			x++;
-		}
+		p.min_max_ctx = &ctx;
+		p.map = map;
+		p.z_divisor = z_divisor;
+		p.y = y;
+		process_proj_row(&p, camera);
 		y++;
 	}
-}
-
-static t_map	*allocate_map_arrays(t_map *map)
-{
-	size_t	total;
-
-	total = (size_t)map->width * (size_t)map->height;
-	map->points.pos = malloc(sizeof(t_vec3d) * total);
-	map->points.raw = malloc(sizeof(t_vec3d) * total);
-	map->points.color = malloc(sizeof(int) * total);
-	if (!map->points.pos || !map->points.raw || !map->points.color)
-		return (NULL);
-	return (map);
 }
 
 t_map	*create_test_grid(void)
 {
 	t_map	*map;
+	float	min_z;
+	float	max_z;
 
 	map = malloc(sizeof(t_map));
 	if (!map)
@@ -150,7 +85,10 @@ t_map	*create_test_grid(void)
 	if (!allocate_map_arrays(map))
 		return (NULL);
 	init_grid_points(map);
-	calculate_min_max_z(map);
+	find_min_max_z(map, &min_z, &max_z);
+	map->min_max_z.x = min_z;
+	map->min_max_z.y = max_z;
+	calculate_z_divisor(map);
 	map->min_proj_z = map->min_max_z.x;
 	map->max_proj_z = map->min_max_z.y;
 	return (map);
