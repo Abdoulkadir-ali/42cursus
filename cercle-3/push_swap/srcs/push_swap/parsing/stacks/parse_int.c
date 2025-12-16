@@ -6,32 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 17:18:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 00:33:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/16 17:13:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-static int	is_space(char c)
-{
-	return (c == ' ' || (c >= 9 && c <= 13));
-}
-
-static int	parse_sign(const char **str)
-{
-	int	sign;
-
-	sign = 1;
-	while (is_space(**str))
-		(*str)++;
-	while (**str == '+' || **str == '-')
-	{
-		if (**str == '-')
-			sign = -sign;
-		(*str)++;
-	}
-	return (sign);
-}
 
 static long	parse_digits(const char **str, int *error)
 {
@@ -60,11 +39,17 @@ static long	parse_digits(const char **str, int *error)
 
 long	parse_int(const char *str, int *error)
 {
-	int		sign;
 	long	res;
+	int		sign;
 
 	*error = 0;
-	sign = parse_sign(&str);
+	sign = 1;
+	while (*str == '+' || *str == '-')
+	{
+		if (*str == '-')
+			sign = -sign;
+		str++;
+	}
 	res = parse_digits(&str, error);
 	if (*error)
 		return (0);
@@ -75,24 +60,4 @@ long	parse_int(const char *str, int *error)
 		return (0);
 	}
 	return (res);
-}
-
-int	parse_number(char **p, int *value)
-{
-	int		error;
-	long	result;
-
-	while (is_space(**p))
-		(*p)++;
-	if (**p == '\0')
-		return (0);
-	result = parse_int(*p, &error);
-	if (error)
-		return (-1);
-	*value = (int)result;
-	if (**p == '+' || **p == '-')
-		(*p)++;
-	while (ft_isdigit(**p))
-		(*p)++;
-	return (1);
 }
