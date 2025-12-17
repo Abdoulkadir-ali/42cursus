@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 19:33:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 01:17:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/17 12:19:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 
 # ifndef ASCENDING
 #  define ASCENDING 1
+# endif
+
+# ifndef MULTIPLE_SIGN_INVALID
+#  define MULTIPLE_SIGN_INVALID 1
 # endif
 
 # include "libft.h"
