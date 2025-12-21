@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:05:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 15:32:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,15 @@ int	cleanup_and_exit(t_events *events)
 {
 	t_window	*win;
 	void		*mlx;
+	int i;
+
 
 	free_cached_maps(events);
 	free_map_files(events);
 	cleanup_cache(events->graphics);
 	if (events->graphics->horizon_buffer)
 		free(events->graphics->horizon_buffer);
-	// Free tessellated LOD maps
-	int i = 0;
+	i = 0;
 	while (i < 8)
 	{
 		if (events->graphics->lod_maps[i])

@@ -29,5 +29,6 @@ unsigned char	get_blue(unsigned int color)
 
 t_vec3	get_color_vec3(unsigned int color)
 {
-	return ((t_vec3){(int)get_red(color), (int)get_green(color), (int)get_blue(color)});
+	return ((t_vec3){(int)get_red(color), (int)get_green(color),
+			(int)get_blue(color)});
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 13:32:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 15:15:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,9 @@ int	handle_resize(t_events *events)
 	XGetWindowAttributes((Display *)mlx->display, (Window)win_list->window, &attrs);
 	if ((size_t)attrs.width != win->width || (size_t)attrs.height != win->height)
 	{
-		recenter_camera_on_resize(events->camera, win->width, win->height,
-			attrs.width, attrs.height);
+		t_vec2 old_size = {win->width, win->height};
+		t_vec2 new_size = {attrs.width, attrs.height};
+		recenter_camera_on_resize(events->camera, old_size, new_size);
 		win->width = attrs.width;
 		win->height = attrs.height;
 		free_buffers(win);

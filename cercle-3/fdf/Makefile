@@ -1,7 +1,7 @@
 NAME = fdf
 
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math -mavx -march=native
+CFLAGS = -Wall -Wextra -Werror -I. -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math -mavx -march=native
 LDFLAGS = -L./minilibx-linux -lmlx -L./libft -lft -lX11 -lXext -lm -lpthread
 
 LIBFT_DIR = ./libft

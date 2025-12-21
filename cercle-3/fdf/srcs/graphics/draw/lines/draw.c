@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:46:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 16:50:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,5 +119,6 @@ void	draw_line_clipped(t_graphics *g, t_point start, t_point end,
 
 void	draw_line(t_graphics *g, t_point start, t_point end)
 {
-	draw_line_clipped(g, start, end, 0, g->window->width);
+	t_clipping_bounds bounds = {0, g->window->width};
+	draw_line_clipped(g, start, end, bounds.min_x, bounds.max_x);
 }

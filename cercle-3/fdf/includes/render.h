@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/17 21:05:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 16:43:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,8 @@ void					reset_style(t_camera *camera);
 void					zoom_in(t_camera_manager *ctx);
 void					zoom_out(t_camera_manager *ctx);
 void					update_zoom(t_camera_manager *ctx);
-void					recenter_camera_on_resize(t_camera *cam, int old_w,
-							int old_h, int new_w, int new_h);
+void					recenter_camera_on_resize(t_camera *cam, t_vec2 old_size,
+							t_vec2 new_size);
 
 
 

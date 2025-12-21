@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 16:47:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ typedef enum e_render_mode
 	RENDER_TRIANGLES,
 	RENDER_MODE_COUNT
 }							t_render_mode;
+typedef struct s_clipping_bounds
+{
+        int                                     min_x;
+        int                                     max_x;
+}                                                       t_clipping_bounds;
+
 
 typedef struct s_triangle
 {
