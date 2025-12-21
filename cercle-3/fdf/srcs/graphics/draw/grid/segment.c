@@ -27,52 +27,13 @@ static void	compute_next_coords(t_segment_ctx *ctx, t_draw_line_params params,
 	}
 }
 
-static void	compute_prev_next(t_segment_ctx *ctx, t_graphics *g,
-		t_draw_line_params params, int is_horizontal)
-{
-	if (is_horizontal)
-	{
-		ctx->prev_coord = params.x - params.step;
-		ctx->next_coord = ctx->next_x + params.step;
-		ctx->max_coord = (int)g->map->width;
-	}
-	else
-	{
-		ctx->prev_coord = params.y - params.step;
-		ctx->next_coord = ctx->next_y + params.step;
-		ctx->max_coord = (int)g->map->height;
-	}
-}
 
-static void	compute_p0_p3(t_segment_ctx *ctx, t_graphics *g,
-		t_draw_line_params params, t_point p2)
-{
-	if (ctx->prev_coord >= 0)
-	{
-		if (ctx->prev_coord == params.x - params.step)
-			ctx->p0 = get_cached_proj(g, ctx->prev_coord, params.y);
-		else
-			ctx->p0 = get_cached_proj(g, params.x, ctx->prev_coord);
-	}
-	else
-		ctx->p0 = params.p1;
-	if (ctx->next_coord < (size_t)ctx->max_coord)
-	{
-		if (ctx->next_coord == ctx->next_x + params.step)
-			ctx->p3 = get_cached_proj(g, ctx->next_coord, params.y);
-		else
-			ctx->p3 = get_cached_proj(g, params.x, ctx->next_coord);
-	}
-	else
-		ctx->p3 = p2;
-}
 
 void	draw_segment(t_graphics *g, t_draw_line_params params,
 		int is_horizontal)
 {
 	t_segment_ctx	ctx;
 	t_point			p2;
-	t_spline		spline;
 
 	compute_next_coords(&ctx, params, is_horizontal);
 	if (ctx.next_x >= g->map->width || ctx.next_y >= g->map->height)
@@ -128,7 +89,13 @@ void	draw_segment(t_graphics *g, t_draw_line_params params,
 				unsigned int bb = b1 + (unsigned int)((b2c - b1) * t);
 				color = (rr << 16) | (gg << 8) | bb;
 			}
-				curr = project_point(v_curr, color, g->camera, g->map->z_divisor);
+				// Apply Z Divisor if enabled
+				if (g->camera->use_z_divisor && g->map->z_divisor != 0.0)
+					v_curr.z /= g->map->z_divisor;
+					
+				t_point p_input = {v_curr, color};
+				// Z-Scale applied in apply_transform
+				curr = apply_transform(p_input, g->camera);
 				
 				// Visibility Check (On Segment) needed?
 				// If p1 and p2 were onscreen, midpoints likely on screen.
@@ -149,13 +116,7 @@ void	draw_segment(t_graphics *g, t_draw_line_params params,
 	p2 = get_cached_proj(g, ctx.next_x, ctx.next_y);
 	if (!should_draw_line(params.p1, p2, g))
 		return ;
-	if (g->render_config.render_mode == RENDER_SPLINES)
-	{
-		compute_prev_next(&ctx, g, params, params.step == 1);
-		compute_p0_p3(&ctx, g, params, p2);
-		spline = (t_spline){ctx.p0, params.p1, p2, ctx.p3};
-		draw_spline_segment(g, spline, g->camera->spline_segments);
-	}
+
 	else if (g->render_config.render_mode == RENDER_LINES)
 		draw_line(g, params.p1, p2);
 }

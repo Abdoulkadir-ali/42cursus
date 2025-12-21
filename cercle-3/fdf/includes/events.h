@@ -29,7 +29,6 @@
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
 # define DEFAULT_DAMPENING_THRESHOLD 0
-# define DEFAULT_SPLINE_SEGMENTS 10
 # define MIN_LOD_LEVEL 1
 # define MAX_LOD_LEVEL 10
 # define MIN_Z_SCALE 0.1
@@ -38,8 +37,6 @@
 # define MAX_FRUSTUM_MARGIN 500
 # define MIN_DAMPENING_THRESHOLD -100
 # define MAX_DAMPENING_THRESHOLD 100
-# define MIN_SPLINE_SEGMENTS 2
-# define MAX_SPLINE_SEGMENTS 50
 # define KEY_MAP_SIZE 0x10000
 
 # ifndef CONTROLS_H
@@ -131,7 +128,6 @@ typedef struct s_combo_ctx
 	float				old_z;
 	unsigned int		old_frust;
 	unsigned int		old_damp;
-	unsigned int		old_spline;
 	double				old_alpha;
 }						t_combo_ctx;
 
@@ -167,7 +163,7 @@ typedef struct s_events
 	int					render_mode;
 	float				lod_value;
 	int					use_depth_culling;
-	int					fill_triangles;
+	int					filled;
 	t_mouse				mouse;
 	t_keys				keys;
 	t_key_maps			key_maps;

@@ -52,7 +52,7 @@ void	draw_wireframe_triangle(t_graphics *g, t_triangle t)
 
 void	draw_quad_triangles(t_graphics *g, t_quad_triangle quad)
 {
-	if (g->render_config.fill_triangles)
+	if (g->render_config.filled)
 	{
 		draw_filled_triangle(g, (t_triangle){quad.p1, quad.p2, quad.p3});
 		draw_filled_triangle(g, (t_triangle){quad.p2, quad.p4, quad.p3});
@@ -66,7 +66,7 @@ void	draw_quad_triangles(t_graphics *g, t_quad_triangle quad)
 
 void	draw_triangle(t_graphics *g, t_point p1, t_point p2, t_point p3)
 {
-	if (g->render_config.fill_triangles)
+	if (g->render_config.filled)
 		draw_filled_triangle(g, (t_triangle){p1, p2, p3});
 	else
 		draw_wireframe_triangle(g, (t_triangle){p1, p2, p3});

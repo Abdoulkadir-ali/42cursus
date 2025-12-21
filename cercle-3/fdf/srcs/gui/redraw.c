@@ -24,7 +24,7 @@ void	redraw(t_events *events)
 	g->render_config.render_mode = events->render_mode;
 	g->render_config.lod_value = events->lod_value;
 	g->render_config.use_depth_culling = events->use_depth_culling;
-	g->render_config.fill_triangles = events->fill_triangles;
+	g->render_config.filled = events->filled;
 	g->dirty = 1;
 	render_scene(g);
 

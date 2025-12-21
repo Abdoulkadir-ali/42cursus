@@ -36,7 +36,6 @@ typedef struct s_graphics	t_graphics;
 # define DEFAULT_DAMPENING_THRESHOLD 0
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
-# define DEFAULT_SPLINE_SEGMENTS 10
 
 typedef enum e_gui_style
 {
@@ -74,7 +73,6 @@ typedef struct s_camera
 	t_vec2d				pending_rot;
 	double				z_scale;
 	unsigned int		frustum_margin;
-	unsigned int		spline_segments;
 	int					use_z_divisor;
 	int					invert_movement;
 	double				alpha;
@@ -125,13 +123,7 @@ void					update_zoom(t_camera_manager *ctx);
 void					recenter_camera_on_resize(t_camera *cam, int old_w,
 							int old_h, int new_w, int new_h);
 
-/* ========== PIPELINE PROTOTYPES ========== */
-/* 
-** The main entry point for transforming a 3D point to 2D screen coordinates.
-** Applies: Model -> View -> Projection transformations.
-*/
-t_point		project_point(t_vec3d p3d, int color, t_camera *cam,
-				double z_divisor);
+
 
 /* Orchestrates the full rendering pipeline */
 void		render_scene(t_graphics *g);

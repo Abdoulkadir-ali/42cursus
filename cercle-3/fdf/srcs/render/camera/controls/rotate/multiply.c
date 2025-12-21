@@ -49,8 +49,13 @@ void	compose_rotation_matrix(t_camera *cam, t_rot_ctx *ctx)
 	t_vec3d	out[3];
 
 	build_rotation_matrices(rx, ry, rz, ctx);
-	mat_mul(ry, rx, tmp);
-	mat_mul(rz, tmp, out);
+	
+	/* Desired Order: Rx * Ry * Rz * P */
+	/* 1. tmp = Ry * Rz */
+	mat_mul(ry, rz, tmp);
+	/* 2. out = Rx * tmp = Rx * Ry * Rz */
+	mat_mul(rx, tmp, out);
+	
 	cam->rotation_matrix[0] = out[0];
 	cam->rotation_matrix[1] = out[1];
 	cam->rotation_matrix[2] = out[2];

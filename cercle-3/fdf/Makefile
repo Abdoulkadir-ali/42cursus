@@ -70,7 +70,6 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/graphics/draw/triangle/helper.c \
 	srcs/graphics/draw/triangle/rasterizer/rasterizer.c \
 	srcs/graphics/draw/triangle/rasterizer/helper.c \
-	srcs/graphics/draw/splines/draw.c \
 	srcs/graphics/draw/triangle/scanlines/draw.c \
 	srcs/graphics/draw/triangle/scanlines/helper.c \
 	srcs/graphics/frames/clear.c \
@@ -147,7 +146,6 @@ objs:
 	@mkdir -p objs/graphics/draw/triangle
 	@mkdir -p objs/graphics/draw/triangle/rasterizer
 	@mkdir -p objs/graphics/draw/triangle/scanlines
-	@mkdir -p objs/graphics/draw/splines
 	@mkdir -p objs/graphics/frames
 	@mkdir -p objs/render
 	@mkdir -p objs/render/camera

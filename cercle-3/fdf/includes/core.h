@@ -48,7 +48,6 @@ typedef struct s_data
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
 # define DEFAULT_DAMPENING_THRESHOLD 0
-# define DEFAULT_SPLINE_SEGMENTS 10
 # define MIN_LOD_LEVEL 1
 # define MAX_LOD_LEVEL 10
 # define MIN_Z_SCALE 0.1
@@ -56,8 +55,6 @@ typedef struct s_data
 # define MAX_FRUSTUM_MARGIN 500
 # define MIN_DAMPENING_THRESHOLD -100
 # define MAX_DAMPENING_THRESHOLD 100
-# define MIN_SPLINE_SEGMENTS 2
-# define MAX_SPLINE_SEGMENTS 50
 
 void					init_defaults(t_data *data);
 int						init_window_main_image(t_window *win, void *mlx);

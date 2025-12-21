@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "core.h"
+#include <X11/Xlib.h>
 
 static int	init_data_and_window(t_data *data, int argc)
 {
@@ -75,6 +76,7 @@ int	main(int argc, char **argv)
 	t_data		data;
 	t_events	*events;
 
+	XInitThreads();
 	if (!init_data_and_window(&data, argc))
 		return (1);
 	if (!init_camera_and_graphics(&data, argc, argv))

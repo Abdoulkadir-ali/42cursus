@@ -46,7 +46,7 @@ static void	calculate_ideal_position(t_camera_manager *ctx)
 
 static void	set_ideal_angle(t_camera_manager *ctx)
 {
-	ctx->camera->rotation.x = 30.0; // Tilt
+	ctx->camera->rotation.x = 35.264; // True Isometric Tilt (arctan(1/sqrt(2)))
 	ctx->camera->rotation.y = 0.0;
 	ctx->camera->rotation.z = 45.0; // Spin floor for diamond view
 }

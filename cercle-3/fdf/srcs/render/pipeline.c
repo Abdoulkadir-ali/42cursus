@@ -13,31 +13,7 @@
 #include "render.h"
 #include "graphics.h"
 
-static t_point	prepare_point(t_vec3d p3d, int color, t_camera *cam,
-		double z_divisor)
-{
-	t_point	p;
 
-	p.pos.x = p3d.x;
-	p.pos.y = p3d.y;
-	p.pos.z = p3d.z;
-	p.color = color;
-	if (cam->use_z_divisor && z_divisor != 0.0)
-		p.pos.z /= z_divisor;
-	p.pos.z *= cam->z_scale;
-	return (p);
-}
-
-t_point	project_point(t_vec3d p3d, int color, t_camera *cam, double z_divisor)
-{
-	t_point	p;
-
-	if (p3d.z <= BAD_VALUE + 1.0)
-		return ((t_point){.pos = {BAD_VALUE, BAD_VALUE, BAD_VALUE},
-			.color = color});
-	p = prepare_point(p3d, color, cam, z_divisor);
-	return (project_unified(p, cam));
-}
 
 static float	calculate_zoom_bias(float raw_log)
 {
@@ -83,20 +59,43 @@ static void	apply_tesselation(t_graphics *g, int level)
 	g->render_config.tesselation_level = level;
 	if (g->render_config.tesselation_level > MAX_DETAIL_LEVEL)
 		g->render_config.tesselation_level = MAX_DETAIL_LEVEL;
+
 	min = (t_vec2){0, 0};
 	max = (t_vec2){g->base_map->width, g->base_map->height};
 	get_visible_map_bounds(g, &min, &max);
+
+	// Cache Check
+	if (g->tesselated_map 
+		&& g->render_config.last_tess_level == g->render_config.tesselation_level
+		&& g->render_config.last_tess_min.x == min.x
+		&& g->render_config.last_tess_min.y == min.y
+		&& g->render_config.last_tess_max.x == max.x
+		&& g->render_config.last_tess_max.y == max.y)
+	{
+		g->map = g->tesselated_map;
+		return ;
+	}
+
 	if (g->tesselated_map)
 		free_map(g->tesselated_map);
+	
 	g->tesselated_map = generate_tesselated_submap(g->base_map, min, max,
-			g->render_config.tesselation_level,
-			g->render_config.max_tesselation_points);
+			g->render_config.tesselation_level);
+	
 	if (g->tesselated_map)
+	{
 		g->map = g->tesselated_map;
+		// Update Cache
+		g->render_config.last_tess_level = g->render_config.tesselation_level;
+		g->render_config.last_tess_min = min;
+		g->render_config.last_tess_max = max;
+	}
 	else
 	{
 		g->map = g->base_map;
 		g->render_config.use_tesselation = 0;
+		// Invalidate Cache
+		g->render_config.last_tess_level = -100;
 	}
 }
 
@@ -106,7 +105,6 @@ static void	apply_lod(t_graphics *g, int level)
 
 	step = 1 << abs(level);
 	g->render_config.lod_value = (float)step;
-	g->render_config.detail_step = (float)step;
 	g->map = g->base_map;
 	if (g->tesselated_map)
 	{
@@ -131,7 +129,6 @@ static void	geometry_processing(t_graphics *g)
 	level = g->render_config.detail_level;
 	g->render_config.use_tesselation = 0;
 	g->render_config.lod_value = 1.0f;
-	g->render_config.detail_step = 1.0f;
 	if (level > 0)
 		apply_tesselation(g, level);
 	else if (level < 0)

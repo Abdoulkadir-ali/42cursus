@@ -14,7 +14,7 @@
 
 t_camera	*init_camera_default(t_camera *cam)
 {
-	cam->rotation = create_vec3d(30.0, 0.0, 45.0);
+	cam->rotation = create_vec3d(35.264, 0.0, 45.0);
 	cam->offset = create_vec2d(0.0, 0.0);
 	cam->grid_center = create_vec3d(0.0, 0.0, 0.0);
 	cam->color_shift = create_vec3(0, 0, 0);
@@ -28,7 +28,7 @@ t_camera	*init_camera_default(t_camera *cam)
 	cam->pending_rot = create_vec2d(0.0, 0.0);
 	cam->z_scale = 0.5;
 	cam->frustum_margin = DEFAULT_FRUSTUM_MARGIN;
-	cam->spline_segments = DEFAULT_SPLINE_SEGMENTS;
+
 	cam->use_z_divisor = 1;
 	cam->invert_movement = 1;
 	cam->alpha = 90.0;

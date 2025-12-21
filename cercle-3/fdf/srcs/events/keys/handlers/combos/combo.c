@@ -23,7 +23,6 @@ static void	store_old_values(t_combo_ctx *ctx, t_events *events)
 	ctx->old_z = events->camera->z_scale;
 	ctx->old_frust = events->camera->frustum_margin;
 	ctx->old_damp = events->camera->dampening_threshold;
-	ctx->old_spline = events->camera->spline_segments;
 	ctx->old_alpha = events->camera->alpha;
 }
 

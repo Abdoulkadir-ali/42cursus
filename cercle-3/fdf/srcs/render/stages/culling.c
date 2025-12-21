@@ -76,6 +76,21 @@ static void	update_bounds(t_point p, t_vec2 *min, t_vec2 *max)
 		max->y = p.pos.y;
 }
 
+static t_point	project_helper(t_vec3d p3d, int color, t_graphics *g)
+{
+	t_point	p;
+
+	if (p3d.z <= BAD_VALUE + 1.0)
+		return ((t_point){.pos = {BAD_VALUE, BAD_VALUE, BAD_VALUE},
+			.color = color});
+	
+	if (g->camera->use_z_divisor && g->map->z_divisor != 0.0)
+		p3d.z /= g->map->z_divisor;
+	
+	p = (t_point){p3d, color};
+	return (apply_transform(p, g->camera));
+}
+
 int	is_map_visible(t_graphics *g)
 {
 	t_vec3d	c[8];
@@ -86,6 +101,10 @@ int	is_map_visible(t_graphics *g)
 
 	if (!g || !g->map)
 		return (0);
+	
+	/* Ensure matrix is up to date for culling */
+	calculate_transform_matrix(g->camera);
+
 	c[0] = (t_vec3d){0, 0, g->map->min_max_z.x};
 	c[1] = (t_vec3d){g->map->width, 0, g->map->min_max_z.x};
 	c[2] = (t_vec3d){0, g->map->height, g->map->min_max_z.x};
@@ -99,7 +118,7 @@ int	is_map_visible(t_graphics *g)
 	i = 0;
 	while (i < 8)
 	{
-		p = project_point(c[i], 0, g->camera, g->map->z_divisor);
+		p = project_helper(c[i], 0, g);
 		if (p.pos.x > BAD_VALUE + 10)
 			update_bounds(p, &min, &max);
 		i++;
@@ -136,7 +155,7 @@ void	get_visible_map_bounds(t_graphics *g, t_vec2 *min, t_vec2 *max)
 		while (x < g->base_map->width)
 		{
 			p3d = g->base_map->points.pos[y * g->base_map->width + x];
-			p = project_point(p3d, 0, g->camera, g->base_map->z_divisor);
+			p = project_helper(p3d, 0, g);
 			
 			if (p.pos.x > BAD_VALUE + 10 && is_on_screen((int)p.pos.x, (int)p.pos.y, g))
 			{

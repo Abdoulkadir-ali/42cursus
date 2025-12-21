@@ -150,12 +150,19 @@ t_point	apply_transform(t_point p, t_camera *cam)
 	float		x, y, w;
 
 	/* 1. Pre-Matrix Adjustments (Model Space) */
-	t_vec3d effective_center = cam->grid_center;
-	effective_center.z *= cam->z_scale;
-	
-	v.x = p.pos.x - effective_center.x;
-	v.y = p.pos.y - effective_center.y;
-	v.z = p.pos.z - effective_center.z;
+	/* 1. Pre-Matrix Adjustments (Model Space) */
+	t_vec3d effective_center_scaled;
+	t_vec3d scaled_pos;
+
+	effective_center_scaled = cam->grid_center;
+	effective_center_scaled.z *= cam->z_scale;
+
+	scaled_pos = p.pos;
+	scaled_pos.z *= cam->z_scale;
+
+	v.x = p.pos.x - effective_center_scaled.x;
+	v.y = p.pos.y - effective_center_scaled.y;
+	v.z = scaled_pos.z - effective_center_scaled.z;
 	
 	/* 2. Matrix Application (MVP + ScreenScale) */
 	m = &cam->transform_matrix;
@@ -196,66 +203,171 @@ t_point	project_unified(t_point p3d, t_camera *cam)
 	return (apply_transform(p3d, cam));
 }
 
+/*
+** SIMD Optimized Scanline Transformer (AVX2 / Double Precision)
+** Processes 4 points (t_vec3d) at a time.
+*/
 void	transform_scanline(t_graphics *g, t_point *out, size_t row_idx, size_t width)
 {
 	size_t		i;
 	t_vec3d		*in_pos;
 	unsigned int *in_col;
 	t_camera	*cam;
+	t_matrix4	*m;
 	
 	in_pos = g->map->points.pos;
 	in_col = g->map->points.color;
 	cam = g->camera;
-	i = 0;
+	m = &cam->transform_matrix;
 	
-	/* Process in chunks of 4 */
+	/* Constants for vectorization */
+	/* 1. Rot Matrix Columns for Z-calc */
+	__m256d rot0 = _mm256_set1_pd(cam->rotation_matrix[2].x);
+	__m256d rot1 = _mm256_set1_pd(cam->rotation_matrix[2].y);
+	__m256d rot2 = _mm256_set1_pd(cam->rotation_matrix[2].z);
+	__m256d vdist = _mm256_set1_pd(cam->view_dist);
+	
+	/* 2. Transform Matrix Columns */
+	__m256d m00 = _mm256_set1_pd(m->m[0][0]);
+	__m256d m01 = _mm256_set1_pd(m->m[0][1]);
+	__m256d m02 = _mm256_set1_pd(m->m[0][2]);
+	__m256d m03 = _mm256_set1_pd(m->m[0][3]);
+
+	__m256d m10 = _mm256_set1_pd(m->m[1][0]);
+	__m256d m11 = _mm256_set1_pd(m->m[1][1]);
+	__m256d m12 = _mm256_set1_pd(m->m[1][2]);
+	__m256d m13 = _mm256_set1_pd(m->m[1][3]);
+
+	__m256d m30 = _mm256_set1_pd(m->m[3][0]);
+	__m256d m31 = _mm256_set1_pd(m->m[3][1]);
+	__m256d m32 = _mm256_set1_pd(m->m[3][2]);
+	__m256d m33 = _mm256_set1_pd(m->m[3][3]);
+
+	/* 3. Center/Scale Adjustments */
+	t_vec3d eff_center = cam->grid_center;
+	eff_center.z *= cam->z_scale;
+	__m256d cx = _mm256_set1_pd(eff_center.x);
+	__m256d cy = _mm256_set1_pd(eff_center.y);
+	__m256d cz = _mm256_set1_pd(eff_center.z);
+	__m256d z_scale = _mm256_set1_pd(cam->z_scale);
+	
+	/* 4. Offsets */
+	__m256d off_x = _mm256_set1_pd(cam->offset.x);
+	__m256d off_y = _mm256_set1_pd(cam->offset.y);
+
+	/* 5. Culling Thresholds */
+	// We check if points are valid (z > BAD_VALUE + 1.0)
+	// We can use vector comparison later, but strict equivalence with scalar is safer for BAD_VALUE.
+	// Actually, let's just process normally and mask? No, complex.
+	// Let's rely on standard loop for remainder and SIMD for bulk.
+	// NOTE: Input data might contain BAD_VALUE. We must be careful not to create NaNs if possible, 
+	// or just let them propagate and check result? 
+	// Standard loop checked `in_pos[idx].z > BAD_VALUE`. 
+	
+	i = 0;
 	while (i < width - 3)
 	{
-		size_t idx0 = row_idx + i;
-		size_t idx1 = row_idx + i + 1;
-		size_t idx2 = row_idx + i + 2;
-		size_t idx3 = row_idx + i + 3;
+		size_t idx = row_idx + i;
 
-		/* P0 */
-		if (in_pos[idx0].z > BAD_VALUE + 1.0)
+		/* Check validity of 4 points scalarly (Branch prediction handles this well if coherent) */
+		// If mostly valid (which is true for maps), this is fine.
+		// If we encounter gaps, we might want to skip SIMD or mask.
+		// For FDF maps, points are usually all valid or invalid (holes).
+		// Let's load effectively.
+		
+		// Load 4 points (AoS). 
+		// Structure: x0 y0 z0 | x1 y1 z1 | x2 y2 z2 | x3 y3 z3
+		double *ptr = (double *)&in_pos[idx];
+		
+		/* De-interleave Logic:
+		   Use set_pd to load specific doubles into vectors.
+		*/
+		
+		// r0: [x0, y0, z0, x1]
+		// r1: [y1, z1, x2, y2]
+		// r2: [z2, x3, y3, z3]
+		
+		// Extract Xs:
+		// x0 from r0[0]
+		// x1 from r0[3]
+		// x2 from r1[2]
+		// x3 from r2[1]
+		// Blend is painful for this pattern.
+		
+		// Optimized Scalar Load for Register Fill might be faster than complex shuffle?
+		__m256d vx = _mm256_set_pd(ptr[9], ptr[6], ptr[3], ptr[0]); // x3, x2, x1, x0 (Reverse order for correct index mapping 3,2,1,0)
+		__m256d vy = _mm256_set_pd(ptr[10], ptr[7], ptr[4], ptr[1]);
+		__m256d vz = _mm256_set_pd(ptr[11], ptr[8], ptr[5], ptr[2]);
+		
+		// Prepare Model Space: v.x - cx ...
+		vz = _mm256_mul_pd(vz, z_scale); // z * z_scale
+		
+		__m256d dx = _mm256_sub_pd(vx, cx);
+		__m256d dy = _mm256_sub_pd(vy, cy);
+		__m256d dz = _mm256_sub_pd(vz, cz);
+		
+		// Transform (MVP):
+		// res_x = dx*m00 + dy*m01 + dz*m02 + m03
+		__m256d res_x = _mm256_fmadd_pd(dx, m00, _mm256_fmadd_pd(dy, m01, _mm256_fmadd_pd(dz, m02, m03)));
+		__m256d res_y = _mm256_fmadd_pd(dx, m10, _mm256_fmadd_pd(dy, m11, _mm256_fmadd_pd(dz, m12, m13)));
+		__m256d res_w = _mm256_fmadd_pd(dx, m30, _mm256_fmadd_pd(dy, m31, _mm256_fmadd_pd(dz, m32, m33)));
+		
+		// Perspective Divide
+		__m256d ones = _mm256_set1_pd(1.0);
+		// Check for W != 0? DIV by 0 gives Inf, which is handled or clipped later.
+		// Usually W is > near_plane.
+		__m256d inv_w = _mm256_div_pd(ones, res_w);
+		res_x = _mm256_mul_pd(res_x, inv_w);
+		res_y = _mm256_mul_pd(res_y, inv_w);
+		
+		// Screen Offset
+		res_x = _mm256_add_pd(res_x, off_x);
+		res_y = _mm256_add_pd(res_y, off_y);
+		
+		// Calculate Z (View Space)
+		// z = dx*rot0 + dy*rot1 + dz*rot2 - view_dist
+		__m256d final_z = _mm256_fmadd_pd(dx, rot0, _mm256_fmadd_pd(dy, rot1, _mm256_fmadd_pd(dz, rot2, _mm256_setzero_pd())));
+		final_z = _mm256_sub_pd(final_z, vdist);
+		
+		// Validity Check (BAD_VALUE)
+		// scalar check again? Or store BAD if input was BAD?
+		// We trust user data mostly.
+		// If input Z was BAD_VALUE, 'vz' would be bad. 
+		// For now store results.
+		
+		// Store results (Structure of Arrays -> Array of Structs)
+		// We have 4x X, 4x Y, 4x Z. We need to write to `t_point *out`.
+		// `t_point` is `pos` (3 doubles) + `color` (int/padding).
+		// Sizeof t_point = 24 + 4 + 4(padding) = 32 bytes.
+		// Ideally we write directly.
+		
+		double buf_x[4], buf_y[4], buf_z[4];
+		_mm256_storeu_pd(buf_x, res_x);
+		_mm256_storeu_pd(buf_y, res_y);
+		_mm256_storeu_pd(buf_z, final_z);
+		
+		// Loop unroll store
+		int k = 0;
+		while (k < 4)
 		{
-			t_point p = {in_pos[idx0], in_col[idx0]};
-			out[idx0] = apply_transform(p, cam);
-		}
-		else
-			out[idx0].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
+			out[idx + k].pos.x = buf_x[k];
+			out[idx + k].pos.y = buf_y[k];
+			out[idx + k].pos.z = buf_z[k];
+			out[idx + k].color = in_col[idx + k];
+			
+			// Optional: Restore validity check?
+			// If input was BAD_VALUE, projected might be nonsense.
+			// Let's keep original safe check?
+			if (in_pos[idx + k].z <= BAD_VALUE + 1.0)
+				out[idx + k].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
 
-		/* P1 */
-		if (in_pos[idx1].z > BAD_VALUE + 1.0)
-		{
-			t_point p = {in_pos[idx1], in_col[idx1]};
-			out[idx1] = apply_transform(p, cam);
+			k++;
 		}
-		else
-			out[idx1].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
-			
-		/* P2 */
-		if (in_pos[idx2].z > BAD_VALUE + 1.0)
-		{
-			t_point p = {in_pos[idx2], in_col[idx2]};
-			out[idx2] = apply_transform(p, cam);
-		}
-		else
-			out[idx2].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
-			
-		/* P3 */
-		if (in_pos[idx3].z > BAD_VALUE + 1.0)
-		{
-			t_point p = {in_pos[idx3], in_col[idx3]};
-			out[idx3] = apply_transform(p, cam);
-		}
-		else
-			out[idx3].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
 		
 		i += 4;
 	}
-	
-	/* Handle Remainder */
+
+	/* Handle Remainder scalars */
 	while (i < width)
 	{
 		size_t idx = row_idx + i;

@@ -27,93 +27,68 @@ static int	get_point(t_graphics *g, int x, int y, t_point *p)
 
 /*
 ** Draws primitives relative to (x,y) in directions (dx, dy).
-** This handles Lines, Splines, and Triangles.
+** This handles Lines, and Triangles.
 ** Step is the LOD stride.
 */
 static void	draw_surface_primitive(t_graphics *g, int x, int y, int dx, int dy, t_thread_data *t)
 {
 	t_point	curr, h_next, v_next, diag;
 	int		has_curr, has_h, has_v, has_diag;
-	// Note: dx/dy are +/- step.
+    // Margin to catch lines entering the strip from slightly outside
+    int margin = 50; 
 
+	// 1. Fetch Current
 	has_curr = get_point(g, x, y, &curr);
-	has_h = get_point(g, x + dx, y, &h_next);
-	has_v = get_point(g, x, y + dy, &v_next);
-	has_diag = get_point(g, x + dx, y + dy, &diag);
-
 	if (!has_curr) return;
 
-	// Pre-calculate indices for batched access if needed
-	if (has_curr && g->cache.points && x >= 0 && y >= 0 
-		&& (size_t)x < g->cache.width && (size_t)y < g->cache.height)
-	{
-		// Indices calculated but not used - removed to fix compilation warnings
-	}
+	// 2. Early Bounds Check (Optimization)
+	// If current point is far outside the strip, we skip fetching neighbors and processing.
+	// Only apply if we are reasonably sure neighbors won't bridge the gap.
+	// 50 pixels margin is generous.
+	if ((int)curr.pos.x < (int)t->min_visible_x - margin 
+		|| (int)curr.pos.x > (int)t->max_visible_x + margin)
+		return ;
 
-	// 1. HORIZONTAL CONNECTION
-	if (dx != 0 && has_h)
+	// 3. Fetch Neighbors (Lazy)
+	has_h = get_point(g, x + dx, y, &h_next);
+	has_v = get_point(g, x, y + dy, &v_next);
+    
+    // Diag only needed for Triangles
+    has_diag = 0;
+	if ((g->render_config.render_mode == RENDER_TRIANGLES || (g->render_config.render_mode == RENDER_LINES && g->render_config.filled)))
+        has_diag = get_point(g, x + dx, y + dy, &diag);
+
+	// 4. HORIZONTAL CONNECTION
+	if (g->render_config.render_mode == RENDER_LINES && !g->render_config.filled)
 	{
-		if (g->render_config.render_mode == RENDER_SPLINES)
-		{
-			// Need 4 points: p0(x-dx), p1(curr), p2(next), p3(next+dx)
-			t_point p0, p3;
-			if (!get_point(g, x - dx, y, &p0)) p0 = curr; // Clamp start
-			if (!get_point(g, x + dx * 2, y, &p3)) p3 = h_next; // Clamp end
-			t_spline s = {p0, curr, h_next, p3};
-			draw_spline_segment(g, s, g->camera->spline_segments);
-		}
-		else
+		if (dx != 0 && has_h)
 		{
 			if (!((curr.pos.x < t->min_visible_x && h_next.pos.x < t->min_visible_x) ||
-				  (curr.pos.x >= t->max_visible_x && h_next.pos.x >= t->max_visible_x)))
+					(curr.pos.x >= t->max_visible_x && h_next.pos.x >= t->max_visible_x)))
 				draw_line_clipped(g, curr, h_next, t->min_visible_x, t->max_visible_x);
 		}
 	}
 
-	// 2. VERTICAL CONNECTION
-	if (dy != 0 && has_v)
+	// 5. VERTICAL CONNECTION
+	if (g->render_config.render_mode == RENDER_LINES && !g->render_config.filled)
 	{
-		if (g->render_config.render_mode == RENDER_SPLINES)
-		{
-			t_point p0, p3;
-			if (!get_point(g, x, y - dy, &p0)) p0 = curr;
-			if (!get_point(g, x, y + dy * 2, &p3)) p3 = v_next;
-			t_spline s = {p0, curr, v_next, p3};
-			draw_spline_segment(g, s, g->camera->spline_segments);
-		}
-		else
+		if (dy != 0 && has_v)
 		{
 			if (!((curr.pos.x < t->min_visible_x && v_next.pos.x < t->min_visible_x) ||
-				  (curr.pos.x >= t->max_visible_x && v_next.pos.x >= t->max_visible_x)))
+					(curr.pos.x >= t->max_visible_x && v_next.pos.x >= t->max_visible_x)))
 				draw_line_clipped(g, curr, v_next, t->min_visible_x, t->max_visible_x);
 		}
 	}
 
-	// 3. TRIANGLE GRID (Quad)
-	if (g->render_config.render_mode == RENDER_TRIANGLES)
+	// 6. TRIANGLE / FILLED GRID
+	if (g->render_config.render_mode == RENDER_TRIANGLES || (g->render_config.render_mode == RENDER_LINES && g->render_config.filled))
 	{
-		// Draw 2 triangles covering the quad defined by (x,y) -> (x+dx, y+dy)
-		// Only if we have necessary corners.
-		
-		// Tri 1: curr, h_next, v_next
+		// Need quad?
 		if (has_h && has_v)
-		{
-			// Check Visibility of whole triangle? Or check individual edges/vertices?
-			// Clipping handles it partially. We just call draw_triangle.
-			// draw_triangle doesn't take clip bounds yet... 
-			// We might need to implement Clipped Triangle or just trust Z-buffer/bounds?
-			// User asked for "work also for triangle wireframe".
-			// Wireframe uses draw_line internally.
-			// If we call draw_triangle, it dispatches to fill or wire.
-			// Let's assume draw_triangle handles internal logic.
 			draw_triangle(g, curr, h_next, v_next);
-		}
 		
-		// Tri 2: h_next, diag, v_next (The other half)
 		if (has_h && has_v && has_diag)
-		{
 			draw_triangle(g, h_next, diag, v_next);
-		}
 	}
 }
 

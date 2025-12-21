@@ -16,8 +16,8 @@ void	init_defaults(t_data *data)
 {
 	data->graphics->render_config.render_mode = RENDER_LINES;
 	data->graphics->render_config.lod_value = DEFAULT_LOD_LEVEL;
-	data->graphics->render_config.use_depth_culling = 0;
-	data->graphics->render_config.fill_triangles = 1;
+	data->graphics->render_config.use_depth_culling = 1;
+	data->graphics->render_config.filled = 0;
 }
 
 int	init_window_main_image(t_window *win, void *mlx)

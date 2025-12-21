@@ -16,7 +16,7 @@ void	init_render_config(t_render_config *c)
 {
 	c->render_mode = RENDER_LINES;
 	c->use_depth_culling = 1;
-	c->fill_triangles = 1;
+	c->filled = 0;
 	c->lod_value = DEFAULT_LOD_LEVEL;
 	c->use_tesselation = 1;
 	c->tesselation_level = 1;
@@ -24,9 +24,11 @@ void	init_render_config(t_render_config *c)
 	c->use_horizon_culling = 0;
 	c->use_adaptive_logic = 1;
 	c->target_tesselation_points = DEFAULT_TARGET_POINTS;
-	c->detail_step = 5.0f;
-	c->max_tesselation_points = MAX_TESSELATION_POINTS;
+
 	c->detail_level = 0;
+	c->last_tess_level = -100;
+	c->last_tess_min = (t_vec2){-1, -1};
+	c->last_tess_max = (t_vec2){-1, -1};
 }
 
 void	init_frame_data(t_frame_data *f)
@@ -53,7 +55,7 @@ t_graphics	*init_graphics(t_graphics_args args)
 	while (i < 8)
 		g->lod_maps[i++] = NULL;
 	g->map = args.map;
-	g->cache = (t_cache){NULL, 0, 0, NULL, 0, {{0, 0, 0}, {0, 0, 0}, 0}};
+	g->cache = (t_cache){NULL, 0, 0, NULL, 0, {{0, 0, 0}, {0, 0, 0}, 0, 0, 0}};
 	g->dirty = 1;
 	g->horizon_buffer = malloc(sizeof(int) * g->window->width);
 	if (!g->horizon_buffer)

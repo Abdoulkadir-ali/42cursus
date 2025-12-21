@@ -16,50 +16,32 @@
 // Forward declaration if not in geometry.h yet, but should be added.
 // t_map *tesselate_mesh(t_map *src);
 
-t_map	*generate_tesselated_map(t_map *base, int level, size_t max_points)
+t_map	*generate_tesselated_map(t_map *base, int level)
 {
 	t_map	*current;
 	t_map	*next;
 	int		i;
-	size_t	next_points;
 
 	if (!base || level < 1)
 		return (NULL);
-	
-	// We don't want to modify base, so we start the loop by creating first level
-	// But to support reuse of 'tesselate_mesh', we treat base as level 0 input.
 	
 	current = NULL;
 	i = 0;
 	while (i < level)
 	{
-		// determine source for this step
 		t_map *src = (i == 0) ? base : current;
-
-		// Check predicted size: (w*2-1) * (h*2-1)
-		size_t new_w = src->width * 2 - 1;
-		size_t new_h = src->height * 2 - 1;
-		next_points = new_w * new_h;
-
-		if (next_points > max_points)
-		{
-			// Limit reached. If we have a current map (from prev levels), return it.
-			// If this is the very first level, we can't do anything (or return NULL).
-			// User requested "Roof of 300 000 points".
-			break ; 
-		}
 
 		next = tesselate_mesh(src);
 		if (!next)
 		{
-			// Allocation failed?
-			if (current) free_map(current);
-			return (NULL);
+			// Allocation failed for next level.
+			// Return current level (best effort) if it exists.
+			// If even first level failed (current==NULL), return NULL.
+			return (current);
 		}
 
-		// Update iteration variables
 		if (current)
-			free_map(current); // free previous intermediate
+			free_map(current);
 		current = next;
 		i++;
 	}
@@ -124,7 +106,7 @@ t_map	*extract_submap(t_map *src, t_vec2 min, t_vec2 max)
 	return (sub);
 }
 
-t_map	*generate_tesselated_submap(t_map *base, t_vec2 min, t_vec2 max, int level, size_t max_points)
+t_map	*generate_tesselated_submap(t_map *base, t_vec2 min, t_vec2 max, int level)
 {
 	t_map	*sub;
 	t_map	*tess;
@@ -134,7 +116,7 @@ t_map	*generate_tesselated_submap(t_map *base, t_vec2 min, t_vec2 max, int level
 	if (!sub) return (NULL);
 	
 	// 2. Tesselate it
-	tess = generate_tesselated_map(sub, level, max_points);
+	tess = generate_tesselated_map(sub, level);
 	
 	// 3. Clean up intermediate sub-map base
 	// Note: We need to free 'sub' but NOT the data if 'tess' reuses it?

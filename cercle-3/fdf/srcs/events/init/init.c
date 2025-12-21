@@ -66,14 +66,14 @@ static void	init_events_graphics(t_events *e)
 		e->render_mode = e->graphics->render_config.render_mode;
 		e->lod_value = e->graphics->render_config.lod_value;
 		e->use_depth_culling = e->graphics->render_config.use_depth_culling;
-		e->fill_triangles = e->graphics->render_config.fill_triangles;
+		e->filled = e->graphics->render_config.filled;
 	}
 	else
 	{
 		e->render_mode = 0;
 		e->lod_value = DEFAULT_LOD_LEVEL;
 		e->use_depth_culling = 1;
-		e->fill_triangles = 0;
+		e->filled = 0;
 	}
 }
 

@@ -29,7 +29,6 @@
 # define FP_SHIFT 16
 # define FP_16 65536.0
 #define DRAW_LIMIT -1000000.0
-# define MAX_TESSELATION_POINTS 1000000UL
 # define DEFAULT_TARGET_POINTS 1000000UL
 # define MAX_DETAIL_LEVEL 7
 # define MIN_DETAIL_LEVEL -5
@@ -42,7 +41,6 @@ typedef struct s_events		t_events;
 typedef enum e_render_mode
 {
 	RENDER_LINES,
-	RENDER_SPLINES,
 	RENDER_TRIANGLES,
 	RENDER_MODE_COUNT
 }							t_render_mode;
@@ -61,14 +59,6 @@ typedef struct s_quad_triangle
 	t_point					p3;
 	t_point					p4;
 }							t_quad_triangle;
-
-typedef struct s_spline
-{
-	t_point					p0;
-	t_point					p1;
-	t_point					p2;
-	t_point					p3;
-}							t_spline;
 
 typedef struct s_triangle_interp
 {
@@ -260,17 +250,18 @@ typedef struct s_render_config
 {
 	t_render_mode			render_mode;
 	int						use_depth_culling;
-	int						fill_triangles;
+	int						filled;
 	float					lod_value;
-	float					detail_step; // Unified Step Size for Adaptive Logic
 	int						use_tesselation;
 	int						tesselation_level;
-	size_t					max_tesselation_points;
 	size_t					target_tesselation_points; // User Control for floor details
 	int						max_tesselation_level; // Cleanup: Limit recursive depth logic
 	int						use_horizon_culling;
 	int						use_adaptive_logic; // New: Manual vs Auto
-	int						detail_level; // Unified Level: [-5 (LOD) ... 0 (Base) ... +5 (Tess)]
+	int						detail_level;
+	t_vec2					last_tess_min;
+	t_vec2					last_tess_max;
+	int						last_tess_level;
 }							t_render_config;
 
 typedef struct s_frame_data
@@ -288,6 +279,8 @@ typedef struct s_camera_state
 	t_vec3d					position;
 	t_vec3d					rotation;
 	double					scale;
+	double					z_scale_val;
+	double					alpha;
 }							t_camera_state;
 
 /* Projection cache */
@@ -369,6 +362,25 @@ typedef struct s_draw_line_params
 /* Moved to renderer module */
 
 t_point						lerp_point(t_point p1, t_point p2, double t);
+
+static inline unsigned int	create_color_fast(int r, int g, int b)
+{
+	return ((((r < 0 ? 0 : (r > 255 ? 255 : r)) & 0xFF) << 16)
+		| (((g < 0 ? 0 : (g > 255 ? 255 : g)) & 0xFF) << 8)
+		| ((b < 0 ? 0 : (b > 255 ? 255 : b)) & 0xFF));
+}
+
+static inline unsigned int	shift_color_fast(unsigned int c, int rs, int gs, int bs)
+{
+	int r = (c >> 16) & 0xFF;
+	int g = (c >> 8) & 0xFF;
+	int b = c & 0xFF;
+
+	r += rs; if (r < 0) r = 0; else if (r > 255) r = 255;
+	g += gs; if (g < 0) g = 0; else if (g > 255) g = 255;
+	b += bs; if (b < 0) b = 0; else if (b > 255) b = 255;
+	return ((r << 16) | (g << 8) | b);
+}
 /* Inline pixel drawing for performance */
 static inline void	draw_pixel_fast_no_z(t_pixel_draw_params p)
 {
@@ -395,7 +407,6 @@ void						draw_pixel(t_graphics *graphics, t_point point);
 void						draw_line(t_graphics *graphics, t_point start, t_point end);
 void						draw_line_clipped(t_graphics *g, t_point start,
 								t_point end, size_t min_x, size_t max_x);
-void						draw_spline_segment(t_graphics *g, t_spline spline, int segments);
 void						draw_triangle(t_graphics *g, t_point p1, t_point p2, t_point p3);
 void						swap_points(t_point *a, t_point *b);
 void						calculate_color(t_line_draw_state *state,

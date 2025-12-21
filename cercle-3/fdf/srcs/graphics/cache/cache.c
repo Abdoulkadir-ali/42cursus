@@ -34,7 +34,9 @@ static int	camera_state_changed(t_graphics *g)
 		|| g->cache.cam_state.rotation.x != g->camera->rotation.x
 		|| g->cache.cam_state.rotation.y != g->camera->rotation.y
 		|| g->cache.cam_state.rotation.z != g->camera->rotation.z
-		|| g->cache.cam_state.scale != g->camera->scale);
+		|| g->cache.cam_state.scale != g->camera->scale
+		|| g->cache.cam_state.z_scale_val != g->camera->z_scale
+		|| g->cache.cam_state.alpha != g->camera->alpha);
 }
 
 void	cache_projections(t_graphics *g)
@@ -54,6 +56,8 @@ void	cache_projections(t_graphics *g)
 		g->cache.cam_state.position.y = g->camera->offset.y;
 		g->cache.cam_state.rotation = g->camera->rotation;
 		g->cache.cam_state.scale = g->camera->scale;
+		g->cache.cam_state.z_scale_val = g->camera->z_scale;
+		g->cache.cam_state.alpha = g->camera->alpha;
 		g->cache.cache_valid = 1;
 	}
 }
@@ -72,8 +76,11 @@ t_point	get_fallback_proj(t_graphics *g, int x, int y)
 		bad_point.color = 0;
 		return (bad_point);
 	}
-	return (project_point(g->map->points.pos[idx], g->map->points.color[idx],
-			g->camera, g->map->z_divisor));
+	t_vec3d p3d = g->map->points.pos[idx];
+	if (g->camera->use_z_divisor && g->map->z_divisor != 0.0)
+		p3d.z /= g->map->z_divisor;
+	t_point p_in = {p3d, g->map->points.color[idx]};
+	return (apply_transform(p_in, g->camera));
 }
 
 t_point	get_cached_proj(t_graphics *g, int x, int y)

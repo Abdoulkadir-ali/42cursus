@@ -36,6 +36,8 @@ int	handle_v(int keycode, t_events *events)
 int	handle_g(int keycode, t_events *events)
 {
 	(void)keycode;
-	events->fill_triangles = !events->fill_triangles;
+	events->filled = !events->filled;
+	if (events->graphics)
+		events->graphics->render_config.filled = events->filled;
 	return (1);
 }

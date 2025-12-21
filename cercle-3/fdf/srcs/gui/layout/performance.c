@@ -14,27 +14,36 @@
 
 static void	display_point_stats(t_layout *l, t_gui *gui, char *buffer)
 {
-	int		total;
-	int		rendered;
+	size_t	total;
+	size_t	active;
+	int		level;
 
-	total = gui->map->width * gui->map->height;
-	// Use lod_value (float)
-	if (gui->render_config->lod_value > 0)
-		rendered = total / (gui->render_config->lod_value * gui->render_config->lod_value);
+	total = (size_t)gui->map->width * (size_t)gui->map->height;
+	level = gui->render_config->detail_level;
+	
+	/* Calculate Active Points based on Level */
+	if (level > 0)
+	{
+		double multiplier = pow(4.0, (double)level);
+		active = (size_t)(total * multiplier);
+	}
 	else
-		rendered = total;
-	format_number(total, buffer);
-	gui_layout_key_value(l, "Total:", buffer);
-	format_number(rendered, buffer);
-	gui_layout_key_value(l, "Rendered:", buffer);
+	{
+		float lod = gui->render_config->lod_value;
+		if (lod < 1.0f) lod = 1.0f;
+		active = (size_t)(total / (lod * lod)); 
+	}
+
+	format_number((long long)total, buffer);
+	gui_layout_key_value(l, "Raw map points:", buffer);
+	format_number((long long)active, buffer);
+	gui_layout_key_value(l, "Active points:", buffer);
 }
 
 
 
 static void	display_scale_options(t_layout *l, t_gui *gui, char *buffer)
 {
-	format_float(gui->render_config->detail_step, buffer);
-	gui_layout_key_value(l, "Detail Step (L/T):", buffer);
 	format_float(gui->camera->z_scale, buffer);
 	gui_layout_key_value(l, "Z-Scale (Z):", buffer);
 }
@@ -69,23 +78,18 @@ static void	display_algorithm_info(t_layout *l, t_gui *gui, char *buffer)
 {
 	if (gui->render_config->render_mode == RENDER_LINES)
 		gui_layout_key_value(l, "Algorithm (K):", "Lines");
-	else if (gui->render_config->render_mode == RENDER_SPLINES)
-	{
-		gui_layout_key_value(l, "Algorithm (K):", "Splines");
-		format_number(gui->camera->spline_segments, buffer);
-		gui_layout_key_value(l, "Segments (T):", buffer);
-	}
 	else
-	{
 		gui_layout_key_value(l, "Algorithm (K):", "Triangles");
-		if (gui->render_config->fill_triangles)
-			gui_layout_key_value(l, "Fill Tri (G):", "Filled");
-		else
-			gui_layout_key_value(l, "Fill Tri (G):", "Wireframe");
-		int w = (int)(gui->map->width / gui->render_config->lod_value);
-		int h = (int)(gui->map->height / gui->render_config->lod_value);
-		format_number(w * h * 2, buffer);
-		gui_layout_key_value(l, "Tri Count:", buffer);
+
+	if (gui->render_config->filled)
+		gui_layout_key_value(l, "Filled (G):", "Yes");
+	else
+		gui_layout_key_value(l, "Filled (G):", "No");
+
+	(void)buffer;
+	if (gui->render_config->render_mode != RENDER_LINES)
+	{
+		// Tri Count display removed as requested
 	}
 }
 
@@ -118,29 +122,6 @@ static void	display_tesselation_info(t_layout *l, t_gui *gui, char *buffer)
 
 	format_number((long long)gui->render_config->target_tesselation_points, buffer);
 	gui_layout_key_value(l, "Target Pts (B+/-):", buffer);
-	
-	size_t	active_points = 0;
-	if (gui->map)
-	{
-		size_t base_points = (size_t)gui->map->width * (size_t)gui->map->height;
-		
-		if (level > 0)
-		{
-			// Approximation: Each level quadruples the density (2x width * 2x height)
-			double multiplier = pow(4.0, (double)level);
-			active_points = (size_t)(base_points * multiplier);
-		}
-		else
-		{
-			float lod = gui->render_config->lod_value;
-			if (lod < 1.0f) lod = 1.0f;
-			// Accurate estimate: Base / (lod^2)
-			active_points = (size_t)(base_points / (lod * lod)); 
-		}
-	}
-	
-	format_number((long long)active_points, buffer);
-	gui_layout_key_value(l, "Active Points:", buffer);
 }
 
 void	draw_performance_display_layout(t_layout *l, t_gui *gui)

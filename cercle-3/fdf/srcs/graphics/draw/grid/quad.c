@@ -59,7 +59,8 @@ void	draw_grid_row(t_graphics *g, int y, float lod_value)
 		if (g->cache.points == NULL || idx >= total_points)
 			break ;
 
-		if (g->render_config.render_mode == RENDER_TRIANGLES)
+		if (g->render_config.render_mode == RENDER_TRIANGLES
+			|| (g->render_config.render_mode == RENDER_LINES && g->render_config.filled))
 		{
 			draw_triangle_quad(g, x, y, step_int);
 			x += step_int;

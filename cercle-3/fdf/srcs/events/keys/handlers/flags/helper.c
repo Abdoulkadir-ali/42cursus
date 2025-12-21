@@ -16,6 +16,8 @@ static void	set_arrows(int keycode, t_events *events, int value)
 {
 	if (keycode == XK_Up)
 		events->keys.up = value;
+	else if (keycode == XK_Down)
+		events->keys.down = value;
 	else if (keycode == KEY_G)
 		events->keys.g = value;
 	else if (keycode == KEY_B)

@@ -30,10 +30,6 @@ void	clamp_values(t_events *events)
 		events->camera->dampening_threshold = MIN_DAMPENING_THRESHOLD;
 	if (events->camera->dampening_threshold > MAX_DAMPENING_THRESHOLD)
 		events->camera->dampening_threshold = MAX_DAMPENING_THRESHOLD;
-	if (events->camera->spline_segments < (unsigned int)MIN_SPLINE_SEGMENTS)
-		events->camera->spline_segments = MIN_SPLINE_SEGMENTS;
-	if (events->camera->spline_segments > MAX_SPLINE_SEGMENTS)
-		events->camera->spline_segments = MAX_SPLINE_SEGMENTS;
 	// Alpha Clamping (Unified Projection)
 	if (events->camera->alpha > 179.0)
 		events->camera->alpha = 179.0;
@@ -49,21 +45,15 @@ void	apply_plus_changes(t_events *events)
 	keyboard = &events->keys;
 	if (keyboard->a)
 		events->camera->alpha += 2.0;
-	else if (keyboard->l)
-		events->graphics->render_config.detail_step += 0.5;
 	else if (keyboard->z)
 		events->camera->z_scale += 0.1;
 	else if (keyboard->f)
 		events->camera->frustum_margin += 10;
 	else if (keyboard->d)
 		events->camera->dampening_threshold += 5;
-	else if (keyboard->t)
-		events->graphics->render_config.detail_step += 0.5;
 	else if (keyboard->b)
 	{
 		events->graphics->render_config.target_tesselation_points += 1000;
-		if (events->graphics->render_config.target_tesselation_points > MAX_TESSELATION_POINTS)
-			events->graphics->render_config.target_tesselation_points = MAX_TESSELATION_POINTS;
 	}
 	else if (keyboard->d)
 	{
@@ -80,16 +70,12 @@ void	apply_minus_changes(t_events *events)
 	keyboard = &events->keys;
 	if (keyboard->a)
 		events->camera->alpha -= 2.0;
-	else if (keyboard->l)
-		events->graphics->render_config.detail_step -= 0.5;
 	else if (keyboard->z)
 		events->camera->z_scale -= 0.1;
 	else if (keyboard->f)
 		events->camera->frustum_margin -= 10;
 	else if (keyboard->d)
 		events->camera->dampening_threshold -= 5;
-	else if (keyboard->t)
-		events->graphics->render_config.detail_step -= 0.5;
 	else if (keyboard->b)
 	{
 		events->graphics->render_config.target_tesselation_points -= 1000;
@@ -102,9 +88,6 @@ void	apply_minus_changes(t_events *events)
 			events->graphics->render_config.detail_level--;
 	}
 	
-	if (events->graphics->render_config.detail_step < 0.1f)
-		events->graphics->render_config.detail_step = 0.1f;
-		
 	clamp_values(events);
 }
 
@@ -113,16 +96,12 @@ void	apply_zero_changes(t_events *events)
 	t_keys	*keyboard;
 
 	keyboard = &events->keys;
-	if (keyboard->l)
-		events->graphics->render_config.detail_step = 5.0f;
-	else if (keyboard->z)
+	if (keyboard->z)
 		events->camera->z_scale = DEFAULT_Z_SCALE;
 	else if (keyboard->f)
 		events->camera->frustum_margin = DEFAULT_FRUSTUM_MARGIN;
 	else if (keyboard->d)
 		events->camera->dampening_threshold = DEFAULT_DAMPENING_THRESHOLD;
-	else if (keyboard->t)
-		events->graphics->render_config.detail_step = 5.0f;
 }
 
 int	check_if_changed(t_events *events, t_combo_ctx *ctx)
@@ -131,7 +110,7 @@ int	check_if_changed(t_events *events, t_combo_ctx *ctx)
 		|| fabs(ctx->old_z - events->camera->z_scale) > 0.0001
 		|| ctx->old_frust != events->camera->frustum_margin
 		|| ctx->old_damp != events->camera->dampening_threshold
-		|| ctx->old_spline != events->camera->spline_segments
+
 		|| fabs(ctx->old_alpha - events->camera->alpha) > 0.001
 		// We should track detail_step changes too, but ctx struct update is out of scope.
 		// Since we modify the step directly, this function just needs to return 1 if anything changed.

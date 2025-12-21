@@ -201,9 +201,9 @@ t_map					*init_map(char *filename);
 t_map					*create_test_grid(void);
 t_map					*load_map(char *filename);
 t_map					*tesselate_mesh(t_map *src);
-t_map					*generate_tesselated_map(t_map *base, int level, size_t max_points);
+t_map					*generate_tesselated_map(t_map *base, int level);
 t_map					*extract_submap(t_map *src, t_vec2 min, t_vec2 max);
-t_map					*generate_tesselated_submap(t_map *base, t_vec2 min, t_vec2 max, int level, size_t max_points);
+t_map					*generate_tesselated_submap(t_map *base, t_vec2 min, t_vec2 max, int level);
 void					free_map(t_map *map);
 
 /* Map Data Processing */
