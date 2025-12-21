@@ -119,7 +119,7 @@ static void	geometry_processing(t_graphics *g)
 	// Filled surfaces look much better with tesselation
 	// Automatically use higher detail for filled/triangle modes
 	if (g->render_config.filled || g->render_config.render_mode == RENDER_TRIANGLES)
-		min_level_for_mode = 2;  // At least 2 levels of tesselation for smooth fills
+		min_level_for_mode = 2;
 	else
 		min_level_for_mode = MIN_DETAIL_LEVEL;
 
@@ -138,7 +138,7 @@ static void	geometry_processing(t_graphics *g)
 	if (level < min_level_for_mode)
 	{
 		level = min_level_for_mode;
-		g->render_config.detail_level = level; // Update config so GUI shows correct level
+		g->render_config.detail_level = level;
 	}
 		
 	g->render_config.use_tesselation = 0;
@@ -146,8 +146,6 @@ static void	geometry_processing(t_graphics *g)
 	if (level > 0)
 	{
 		apply_tesselation(g, level);
-		// Tesselated maps already have the detail baked in
-		// Always use lod_value=1.0 to draw ALL cells without skipping
 		g->render_config.lod_value = 1.0f;
 	}
 	else if (level < 0)
