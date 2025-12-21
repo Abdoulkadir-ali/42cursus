@@ -13,8 +13,6 @@
 #include "render.h"
 #include "graphics.h"
 
-
-
 static float	calculate_zoom_bias(float raw_log)
 {
 	if (raw_log > 0)
@@ -116,21 +114,42 @@ static void	apply_lod(t_graphics *g, int level)
 static void	geometry_processing(t_graphics *g)
 {
 	int	level;
+	int	min_level_for_mode;
+
+	// Filled surfaces look much better with tesselation
+	// Automatically use higher detail for filled/triangle modes
+	if (g->render_config.filled || g->render_config.render_mode == RENDER_TRIANGLES)
+		min_level_for_mode = 2;  // At least 2 levels of tesselation for smooth fills
+	else
+		min_level_for_mode = MIN_DETAIL_LEVEL;
 
 	if (g->render_config.use_adaptive_logic)
 	{
 		level = calculate_adaptive_level(g);
 		if (level > MAX_DETAIL_LEVEL)
 			level = MAX_DETAIL_LEVEL;
-		if (level < MIN_DETAIL_LEVEL)
-			level = MIN_DETAIL_LEVEL;
+		if (level < min_level_for_mode)
+			level = min_level_for_mode;
 		g->render_config.detail_level = level;
 	}
 	level = g->render_config.detail_level;
+	
+	// Enforce minimum detail for filled modes even in manual mode
+	if (level < min_level_for_mode)
+	{
+		level = min_level_for_mode;
+		g->render_config.detail_level = level; // Update config so GUI shows correct level
+	}
+		
 	g->render_config.use_tesselation = 0;
 	g->render_config.lod_value = 1.0f;
 	if (level > 0)
+	{
 		apply_tesselation(g, level);
+		// Tesselated maps already have the detail baked in
+		// Always use lod_value=1.0 to draw ALL cells without skipping
+		g->render_config.lod_value = 1.0f;
+	}
 	else if (level < 0)
 		apply_lod(g, level);
 	else

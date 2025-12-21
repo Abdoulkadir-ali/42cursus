@@ -42,12 +42,14 @@ static void	draw_surface_primitive(t_graphics *g, int x, int y, int dx, int dy, 
 	if (!has_curr) return;
 
 	// 2. Early Bounds Check (Optimization)
-	// If current point is far outside the strip, we skip fetching neighbors and processing.
-	// Only apply if we are reasonably sure neighbors won't bridge the gap.
-	// 50 pixels margin is generous.
-	if ((int)curr.pos.x < (int)t->min_visible_x - margin 
-		|| (int)curr.pos.x > (int)t->max_visible_x + margin)
-		return ;
+	// Only apply for filled/triangle modes. In wireframe, lines can cross the strip
+	// even if the start point is outside, so we need to check both endpoints.
+	if ((g->render_config.filled || g->render_config.render_mode == RENDER_TRIANGLES))
+	{
+		if ((int)curr.pos.x < (int)t->min_visible_x - margin 
+			|| (int)curr.pos.x > (int)t->max_visible_x + margin)
+			return ;
+	}
 
 	// 3. Fetch Neighbors (Lazy)
 	has_h = get_point(g, x + dx, y, &h_next);
