@@ -43,30 +43,16 @@ typedef struct s_fill_cache_thread_data
 static void	*fill_cache_thread(void *arg)
 {
 	t_fill_cache_thread_data	*data;
-	t_fill_cache_ctx			ctx;
 	size_t						row_base;
+	size_t						y;
 
 	data = (t_fill_cache_thread_data *)arg;
-	ctx.y = data->start_y;
-	while (ctx.y < data->end_y)
+	y = data->start_y;
+	while (y < data->end_y)
 	{
-		row_base = ctx.y * data->g->map->width;
-		ctx.x = 0;
-		while (ctx.x < data->g->map->width)
-		{
-			ctx.idx = row_base + ctx.x;
-			if (data->g->map->points.pos[ctx.idx].z <= BAD_VALUE + 1.0)
-				data->g->cache.points[ctx.idx].pos = create_vec3d(BAD_VALUE,
-						BAD_VALUE, BAD_VALUE);
-			else
-			{
-				t_point input_point = {data->g->map->points.pos[ctx.idx], data->g->map->points.color[ctx.idx]};
-				ctx.projected = apply_transform(input_point, data->g->camera);
-				data->g->cache.points[ctx.idx] = ctx.projected;
-			}
-			ctx.x++;
-		}
-		ctx.y++;
+		row_base = y * data->g->map->width;
+		transform_scanline(data->g, data->g->cache.points, row_base, data->g->map->width);
+		y++;
 	}
 	return (NULL);
 }

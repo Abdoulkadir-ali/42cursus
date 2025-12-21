@@ -140,6 +140,7 @@ t_matrix4	get_projection_matrix(t_camera *cam, float aspect);
 t_point		project_unified(t_point p3d, t_camera *cam);
 void		calculate_transform_matrix(t_camera *cam);
 t_point		apply_transform(t_point p, t_camera *cam);
+void		transform_scanline(t_graphics *g, t_point *out, size_t row_idx, size_t width);
 
 /* Culling Stages */
 int			is_point_visible(t_vec3d p, t_graphics *g);

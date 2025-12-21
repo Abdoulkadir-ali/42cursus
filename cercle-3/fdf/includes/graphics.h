@@ -369,9 +369,21 @@ typedef struct s_draw_line_params
 /* Moved to renderer module */
 
 t_point						lerp_point(t_point p1, t_point p2, double t);
-void						draw_pixel_fast(t_graphics *g,
-								t_pixel_draw_params p);
-void						draw_pixel_fast_no_z(t_pixel_draw_params p);
+/* Inline pixel drawing for performance */
+static inline void	draw_pixel_fast_no_z(t_pixel_draw_params p)
+{
+	*(unsigned int *)p.pixel_addr = p.color;
+}
+
+static inline void	draw_pixel_fast(t_graphics *g, t_pixel_draw_params p)
+{
+	if (!g->render_config.use_depth_culling || !p.z_addr || p.zr < *p.z_addr)
+	{
+		if (g->render_config.use_depth_culling && p.z_addr)
+			*p.z_addr = p.zr;
+		*(unsigned int *)p.pixel_addr = p.color;
+	}
+}
 void						fill_bresenham_params(t_draw_line_ctx *dlc);
 void						setup_pointers(t_graphics *g, t_ptr_ctx *ctx,
 								int sx, int sy);

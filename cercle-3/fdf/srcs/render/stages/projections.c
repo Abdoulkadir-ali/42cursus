@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "render.h"
+#include "graphics.h"
 
 /*
 ** Helper to convert degrees to radians
@@ -195,8 +196,80 @@ t_point	apply_transform(t_point p, t_camera *cam)
 */
 t_point	project_unified(t_point p3d, t_camera *cam)
 {
-	/* Ensure matrix is up to date? Caller responsibility for bulk. */
-	/* For single point, we just calc it. */
 	calculate_transform_matrix(cam);
 	return (apply_transform(p3d, cam));
+}
+
+void	transform_scanline(t_graphics *g, t_point *out, size_t row_idx, size_t width)
+{
+	size_t		i;
+	t_vec3d		*in_pos;
+	unsigned int *in_col;
+	t_camera	*cam;
+	
+	in_pos = g->map->points.pos;
+	in_col = g->map->points.color;
+	cam = g->camera;
+	i = 0;
+	
+	/* Process in chunks of 4 */
+	while (i < width - 3)
+	{
+		size_t idx0 = row_idx + i;
+		size_t idx1 = row_idx + i + 1;
+		size_t idx2 = row_idx + i + 2;
+		size_t idx3 = row_idx + i + 3;
+
+		/* P0 */
+		if (in_pos[idx0].z > BAD_VALUE + 1.0)
+		{
+			t_point p = {in_pos[idx0], in_col[idx0]};
+			out[idx0] = apply_transform(p, cam);
+		}
+		else
+			out[idx0].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
+
+		/* P1 */
+		if (in_pos[idx1].z > BAD_VALUE + 1.0)
+		{
+			t_point p = {in_pos[idx1], in_col[idx1]};
+			out[idx1] = apply_transform(p, cam);
+		}
+		else
+			out[idx1].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
+			
+		/* P2 */
+		if (in_pos[idx2].z > BAD_VALUE + 1.0)
+		{
+			t_point p = {in_pos[idx2], in_col[idx2]};
+			out[idx2] = apply_transform(p, cam);
+		}
+		else
+			out[idx2].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
+			
+		/* P3 */
+		if (in_pos[idx3].z > BAD_VALUE + 1.0)
+		{
+			t_point p = {in_pos[idx3], in_col[idx3]};
+			out[idx3] = apply_transform(p, cam);
+		}
+		else
+			out[idx3].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
+		
+		i += 4;
+	}
+	
+	/* Handle Remainder */
+	while (i < width)
+	{
+		size_t idx = row_idx + i;
+		if (in_pos[idx].z > BAD_VALUE + 1.0)
+		{
+			t_point p = {in_pos[idx], in_col[idx]};
+			out[idx] = apply_transform(p, cam);
+		}
+		else
+			out[idx].pos = create_vec3d(BAD_VALUE, BAD_VALUE, BAD_VALUE);
+		i++;
+	}
 }

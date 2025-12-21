@@ -23,14 +23,19 @@ double	clamp_d(double value, double min, double max)
 
 unsigned int	shift_color(unsigned int color, int r_shift, int g_shift, int b_shift)
 {
-	unsigned char	r;
-	unsigned char	g;
-	unsigned char	b;
+	int	r;
+	int	g;
+	int	b;
 
-	r = get_red(color) + r_shift;
-	g = get_green(color) + g_shift;
-	b = get_blue(color) + b_shift;
-	return (create_color(r, g, b));
+	r = ((color >> 16) & 0xFF) + r_shift;
+	g = ((color >> 8) & 0xFF) + g_shift;
+	b = (color & 0xFF) + b_shift;
+
+	if (r < 0) r = 0; else if (r > 255) r = 255;
+	if (g < 0) g = 0; else if (g > 255) g = 255;
+	if (b < 0) b = 0; else if (b > 255) b = 255;
+
+	return (((unsigned int)r << 16) | ((unsigned int)g << 8) | (unsigned int)b);
 }
 
 unsigned int	interpolate_color(unsigned int c1, unsigned int c2, double ratio)
