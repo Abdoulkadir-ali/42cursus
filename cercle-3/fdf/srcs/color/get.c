@@ -12,22 +12,22 @@
 
 #include "color.h"
 
-int	get_red(int color)
+unsigned char	get_red(unsigned int color)
 {
 	return ((color >> 16) & 0xFF);
 }
 
-int	get_green(int color)
+unsigned char	get_green(unsigned int color)
 {
 	return ((color >> 8) & 0xFF);
 }
 
-int	get_blue(int color)
+unsigned char	get_blue(unsigned int color)
 {
 	return (color & 0xFF);
 }
 
-t_vec3	get_vec3(int color)
+t_vec3	get_color_vec3(unsigned int color)
 {
-	return ((t_vec3){get_red(color), get_green(color), get_blue(color)});
+	return ((t_vec3){(int)get_red(color), (int)get_green(color), (int)get_blue(color)});
 }

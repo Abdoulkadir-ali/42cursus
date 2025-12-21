@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 18:30:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@
 # include <math.h>
 
 /* ========== PACKAGES ========== */
-# include "camera.h"
+/* ========== PACKAGES ========== */
+# include "render.h"
 # include "graphics.h"
 # include "gui.h"
 # include "libft.h"
-# include "map.h"
+# include "geometry.h"
 # include "window.h"
 
 /* ========== OPTIMIZATION DEFAULTS ========== */
-# define DEFAULT_LOD_LEVEL 1
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
 # define DEFAULT_DAMPENING_THRESHOLD 0
@@ -78,6 +78,9 @@
 #  define KEY_R XK_r
 #  define KEY_P XK_p
 #  define KEY_N XK_n
+#  define KEY_BRACKET_LEFT XK_bracketleft
+#  define KEY_BRACKET_RIGHT XK_bracketright
+#  define KEY_B XK_b
 
 typedef struct s_mouse
 {
@@ -112,6 +115,7 @@ typedef struct s_keys
 	int					i;
 	int					v;
 	int					g;
+	int					b;
 }						t_keys;
 
 typedef struct s_movement_ctx
@@ -123,11 +127,12 @@ typedef struct s_movement_ctx
 
 typedef struct s_combo_ctx
 {
-	int					old_lod;
+	float				old_lod;
 	float				old_z;
-	int					old_frust;
-	int					old_damp;
-	int					old_spline;
+	unsigned int		old_frust;
+	unsigned int		old_damp;
+	unsigned int		old_spline;
+	double				old_alpha;
 }						t_combo_ctx;
 
 # endif
@@ -160,7 +165,7 @@ typedef struct s_events
 	t_gui				gui;
 	t_camera_manager	*camera_manager;
 	int					render_mode;
-	int					lod_level;
+	float				lod_value;
 	int					use_depth_culling;
 	int					fill_triangles;
 	t_mouse				mouse;
@@ -187,6 +192,7 @@ void					reset_view(t_events *events);
 void					adjust_move_speed(t_events *events, int increase);
 int						cleanup_and_exit(t_events *events);
 void					setup_hooks(t_events *events);
+int						handle_resize(t_events *events);
 
 /* Key action functions */
 int						handle_escape(int keycode, t_events *events);
@@ -194,7 +200,7 @@ int						handle_r(int keycode, t_events *events);
 int						handle_p(int keycode, t_events *events);
 int						handle_n(int keycode, t_events *events);
 int						handle_s(int keycode, t_events *events);
-int						handle_a(int keycode, t_events *events);
+int						handle_m(int keycode, t_events *events);
 int						handle_x(int keycode, t_events *events);
 int						handle_i(int keycode, t_events *events);
 int						handle_v(int keycode, t_events *events);
@@ -213,6 +219,17 @@ int						handle_release_flag(int keycode, t_events *events);
 
 void					init_key_flags(t_events *events);
 void					handle_button(int keycode, t_events *events, int value);
+
+/* Toggle Helpers */ // Cleanup
+int						handle_t(int keycode, t_events *events);
+int						handle_j(int keycode, t_events *events);
+int						handle_tesselation_up(int keycode, t_events *events);
+int						handle_tesselation_down(int keycode, t_events *events);
+int						handle_lod_up(int keycode, t_events *events);
+int						handle_lod_down(int keycode, t_events *events);
+int						handle_bracket(int keycode, t_events *events);
+int						handle_manual_mode(int keycode, t_events *events);
+void					handle_tesselation_points(int keycode, t_graphics *g);
 
 void					init_key_actions_press(t_key_maps *key_maps);
 void					init_key_actions_release(t_key_maps *key_maps);

@@ -44,7 +44,7 @@ typedef struct s_data
 # define MAX_WINDOW_HEIGHT 1080
 
 /* ========== OPTIMIZATION DEFAULTS ========== */
-# define DEFAULT_LOD_LEVEL 1
+# define DEFAULT_BG_COLOR 0x000000
 # define DEFAULT_Z_SCALE 1.0
 # define DEFAULT_FRUSTUM_MARGIN 50
 # define DEFAULT_DAMPENING_THRESHOLD 0

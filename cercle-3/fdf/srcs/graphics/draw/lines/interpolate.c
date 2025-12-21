@@ -35,8 +35,8 @@ static void	init_interpolation(t_point start, t_point end, int steps,
 		data->z_step_val = (end.pos.z - start.pos.z) / steps;
 	else
 		data->z_step_val = 0;
-	start_rgb = get_vec3(start.color);
-	end_rgb = get_vec3(end.color);
+	start_rgb = get_color_vec3(start.color);
+	end_rgb = get_color_vec3(end.color);
 	data->r = start_rgb.x;
 	data->green = start_rgb.y;
 	data->b = start_rgb.z;

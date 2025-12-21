@@ -21,23 +21,23 @@ double	clamp_d(double value, double min, double max)
 	return (value);
 }
 
-int	shift_color(int color, int red_shift, int blue_shift, int green_shift)
+unsigned int	shift_color(unsigned int color, int r_shift, int g_shift, int b_shift)
 {
-	int	r;
-	int	g;
-	int	b;
+	unsigned char	r;
+	unsigned char	g;
+	unsigned char	b;
 
-	r = get_red(color) + red_shift;
-	g = get_green(color) + green_shift;
-	b = get_blue(color) + blue_shift;
-	return (create_color_wrap(r, g, b));
+	r = get_red(color) + r_shift;
+	g = get_green(color) + g_shift;
+	b = get_blue(color) + b_shift;
+	return (create_color(r, g, b));
 }
 
-int	interpolate_color(int c1, int c2, double ratio)
+unsigned int	interpolate_color(unsigned int c1, unsigned int c2, double ratio)
 {
-	int	r;
-	int	g;
-	int	b;
+	unsigned char	r;
+	unsigned char	g;
+	unsigned char	b;
 
 	r = get_red(c1) * (1.0 - ratio) + get_red(c2) * ratio;
 	g = get_green(c1) * (1.0 - ratio) + get_green(c2) * ratio;
@@ -45,7 +45,7 @@ int	interpolate_color(int c1, int c2, double ratio)
 	return (create_color(r, g, b));
 }
 
-int	get_height_color(double z, int min_z, int max_z)
+unsigned int	get_height_color(double z, int min_z, int max_z)
 {
 	t_vec3	colors;
 	double	ratio;

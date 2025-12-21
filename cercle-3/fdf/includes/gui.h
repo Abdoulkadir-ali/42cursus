@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:13:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 00:23:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 # include <string.h>
 
 // Header imports
-# include "camera.h"
+// Header imports
+# include "render.h"
 # include "graphics.h"
 # include "libft.h"
-# include "map.h"
-# include "vectors.h"
+# include "geometry.h"
 # include "window.h"
 
 typedef struct s_events	t_events;
@@ -44,7 +44,7 @@ typedef struct s_gui
 	t_camera			*camera;
 	t_map				*map;
 	int					fps;
-	int					last_win_height;
+	size_t				last_win_height;
 }						t_gui;
 
 /* ========== LAYOUT ENGINE CONTEXT ========== */
@@ -101,7 +101,7 @@ void					put_colored(t_gui *gui, int x, int y,
 
 /* Formatting Helpers */
 void					format_speed(double speed, char *buffer);
-void					format_number(int num, char *buffer);
+void					format_number(long long num, char *buffer);
 void					format_float(double val, char *buffer);
 
 /* Layout Engine API */

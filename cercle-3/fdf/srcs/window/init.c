@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:51:46 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 05:13:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 00:39:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,20 @@ t_window	*init_window(void *mlx_ptr)
 	if (!win)
 		return (NULL);
 	mlx_get_screen_size(mlx_ptr, &screen_w, &screen_h);
+	if (screen_w == 0) screen_w = 1920;
+	if (screen_h == 0) screen_h = 1080;
 	calculated_w = (int)(screen_w * WINDOW_WIDTH_RATIO);
 	calculated_h = (int)(screen_h * WINDOW_HEIGHT_RATIO);
 	win->width = clamp(calculated_w, MIN_WINDOW_WIDTH, MAX_WINDOW_WIDTH);
-	if (win->width > screen_w - 50)
-		win->width = screen_w - 50;
+	{
+		size_t max_w = (screen_w > 50) ? (size_t)(screen_w - 50) : MIN_WINDOW_WIDTH;
+		if (win->width > max_w) win->width = max_w;
+	}
 	win->height = clamp(calculated_h, MIN_WINDOW_HEIGHT, MAX_WINDOW_HEIGHT);
-	if (win->height > screen_h - 50)
-		win->height = screen_h - 50;
+	{
+		size_t max_h = (screen_h > 50) ? (size_t)(screen_h - 50) : MIN_WINDOW_HEIGHT;
+		if (win->height > max_h) win->height = max_h;
+	}
 	win->mlx_ptr = mlx_ptr;
 	win->ptr = NULL;
 	init_window_images(win);

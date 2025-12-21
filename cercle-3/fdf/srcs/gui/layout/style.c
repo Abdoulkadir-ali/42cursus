@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:45:55 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 16:56:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	draw_dampening_display(t_gui *gui)
 	put_colored(gui, GUI_PADDING, y, (t_colored_text){"DEPTH DAMPENING",
 		GUI_TITLE_COLOR});
 	y += GUI_TITLE_HEIGHT;
-	if (gui->camera->dampening_threshold <= gui->map->min_max_z.x)
+	if ((int)gui->camera->dampening_threshold <= gui->map->min_max_z.x)
 		put_value(gui, GUI_PADDING + 10, y, "OFF");
 	else
 	{

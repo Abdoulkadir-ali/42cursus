@@ -20,9 +20,9 @@ static void	display_fps_stats(t_layout *l, t_gui *gui, char *buffer)
 	format_number(gui->fps, buffer);
 	gui_layout_key_value(l, "FPS:", buffer);
 	total = gui->map->width * gui->map->height;
-	if (gui->render_config->lod_level > 0)
-		rendered = total / (gui->render_config->lod_level
-				* gui->render_config->lod_level);
+	// Use lod_value (float)
+	if (gui->render_config->lod_value > 0)
+		rendered = total / (gui->render_config->lod_value * gui->render_config->lod_value);
 	else
 		rendered = total;
 	format_number(total, buffer);
@@ -33,8 +33,8 @@ static void	display_fps_stats(t_layout *l, t_gui *gui, char *buffer)
 
 static void	display_scale_options(t_layout *l, t_gui *gui, char *buffer)
 {
-	format_number(gui->render_config->lod_level, buffer);
-	gui_layout_key_value(l, "LOD (L):", buffer);
+	format_float(gui->render_config->detail_step, buffer);
+	gui_layout_key_value(l, "Detail Step (L/T):", buffer);
 	format_float(gui->camera->z_scale, buffer);
 	gui_layout_key_value(l, "Z-Scale (Z):", buffer);
 }
@@ -49,37 +49,98 @@ static void	display_toggle_options(t_layout *l, t_gui *gui, char *buffer)
 		gui_layout_key_value(l, "Invert Move (I):", "Camera");
 	else
 		gui_layout_key_value(l, "Invert Move (I):", "Object");
-	if (gui->render_config->use_depth_culling)
-		gui_layout_key_value(l, "Depth Cull (V):", "ON");
+	if (gui->render_config->use_horizon_culling)
+		gui_layout_key_value(l, "Ray Cast (J):", "ON");
 	else
-		gui_layout_key_value(l, "Depth Cull (V):", "OFF");
-	format_number(gui->camera->frustum_margin, buffer);
-	gui_layout_key_value(l, "Frustum (F):", buffer);
-	format_number(gui->camera->dampening_threshold, buffer);
-	gui_layout_key_value(l, "Depth (D):", buffer);
+		gui_layout_key_value(l, "Ray Cast (J):", "OFF");
+
+	// Add LOD info here if Manual
+	if (!gui->render_config->use_adaptive_logic)
+	{
+		if (gui->render_config->lod_value > 1.01f)
+			format_float(gui->render_config->lod_value, buffer);
+		else
+			ft_strcpy(buffer, "1.0");
+		gui_layout_key_value(l, "Manual LOD (Hm/End):", buffer);
+	}
 }
 
 static void	display_algorithm_info(t_layout *l, t_gui *gui, char *buffer)
 {
 	if (gui->render_config->render_mode == RENDER_LINES)
-		gui_layout_key_value(l, "Algorithm (A):", "Lines");
+		gui_layout_key_value(l, "Algorithm (K):", "Lines");
 	else if (gui->render_config->render_mode == RENDER_SPLINES)
 	{
-		gui_layout_key_value(l, "Algorithm (A):", "Splines");
+		gui_layout_key_value(l, "Algorithm (K):", "Splines");
 		format_number(gui->camera->spline_segments, buffer);
 		gui_layout_key_value(l, "Segments (T):", buffer);
 	}
 	else
 	{
-		gui_layout_key_value(l, "Algorithm (A):", "Triangles");
+		gui_layout_key_value(l, "Algorithm (K):", "Triangles");
 		if (gui->render_config->fill_triangles)
 			gui_layout_key_value(l, "Fill Tri (G):", "Filled");
 		else
 			gui_layout_key_value(l, "Fill Tri (G):", "Wireframe");
-		format_number((gui->map->width / gui->render_config->lod_level)
-			* (gui->map->height / gui->render_config->lod_level) * 2, buffer);
+		int w = (int)(gui->map->width / gui->render_config->lod_value);
+		int h = (int)(gui->map->height / gui->render_config->lod_value);
+		format_number(w * h * 2, buffer);
 		gui_layout_key_value(l, "Tri Count:", buffer);
 	}
+}
+
+static void	display_tesselation_info(t_layout *l, t_gui *gui, char *buffer)
+{
+	int		level;
+	char	*type_str;
+
+	level = gui->render_config->detail_level;
+	if (level > 0)
+	{
+		type_str = " (TESS)";
+		buffer[0] = '+';
+		format_number(level, buffer + 1);
+	}
+	else 
+	{
+		if (level < 0) type_str = " (LOD)";
+		else type_str = " (BASE)";
+		format_number(level, buffer);
+	}
+	
+	ft_strlcat(buffer, type_str, 50);
+	gui_layout_key_value(l, "Detail Level:", buffer);
+
+	if (gui->render_config->use_adaptive_logic)
+		gui_layout_key_value(l, "Mode (M):", "AUTO");
+	else
+		gui_layout_key_value(l, "Mode (M):", "MANUAL");
+
+	format_number((long long)gui->render_config->target_tesselation_points, buffer);
+	gui_layout_key_value(l, "Target Pts (B+/-):", buffer);
+	
+	size_t	active_points = 0;
+	if (gui->map)
+	{
+		size_t base_points = (size_t)gui->map->width * (size_t)gui->map->height;
+		
+		if (level > 0)
+		{
+			// Approximation: Each level quadruples the density (2x width * 2x height)
+			double multiplier = pow(4.0, (double)level);
+			active_points = (size_t)(base_points * multiplier);
+		}
+		else
+		{
+			float lod = gui->render_config->lod_value;
+			if (lod < 1.0f) lod = 1.0f;
+			// Accurate estimate: Base / (lod^2)
+			active_points = (size_t)(base_points / (lod * lod)); 
+		}
+	}
+	
+	format_number((long long)active_points, buffer);
+	gui_layout_key_value(l, "Active Points:", buffer);
 }
 
 void	draw_performance_display_layout(t_layout *l, t_gui *gui)
@@ -91,4 +152,5 @@ void	draw_performance_display_layout(t_layout *l, t_gui *gui)
 	display_scale_options(l, gui, buffer);
 	display_toggle_options(l, gui, buffer);
 	display_algorithm_info(l, gui, buffer);
+	display_tesselation_info(l, gui, buffer);
 }

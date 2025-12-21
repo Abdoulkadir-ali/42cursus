@@ -13,28 +13,28 @@
 #ifndef COLOR_H
 # define COLOR_H
 
-# include "vectors.h"
+# include "geometry.h"
 
 typedef struct s_rgb
 {
-	int	r;
-	int	g;
-	int	b;
+	unsigned char	r;
+	unsigned char	g;
+	unsigned char	b;
 }		t_rgb;
 
-int		clamp(int value, int min, int max);
-double	clamp_d(double value, double min, double max);
-int		get_red(int color);
-int		get_green(int color);
-int		get_blue(int color);
-t_vec3	get_vec3(int color);
+int				clamp(int value, int min, int max);
+double			clamp_d(double value, double min, double max);
+unsigned char	get_red(unsigned int color);
+unsigned char	get_green(unsigned int color);
+unsigned char	get_blue(unsigned int color);
+t_vec3			get_color_vec3(unsigned int color);
 
-int		create_color(int r, int g, int b);
-int		create_color_rgb(t_vec3 rgb);
-int		shift_color(int color, int red_shift, int blue_shift, int green_shift);
-int		create_color_wrap(int r, int g, int b);
+unsigned int	create_color(unsigned char r, unsigned char g, unsigned char b);
+unsigned int	create_color_rgb(t_vec3 rgb);
+unsigned int	shift_color(unsigned int color, int r_shift, int g_shift, int b_shift);
+unsigned int	create_color_wrap(int r, int g, int b);
 
-int		interpolate_color(int color1, int color2, double ratio);
-int		get_height_color(double z, int min_z, int max_z);
+unsigned int	interpolate_color(unsigned int color1, unsigned int color2, double ratio);
+unsigned int	get_height_color(double z, int min_z, int max_z);
 
 #endif

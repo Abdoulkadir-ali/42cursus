@@ -32,4 +32,6 @@ void	set_key_releases(t_key_maps *key_maps)
 	key_maps->key_releases[XK_D] = handle_release_flag;
 	key_maps->key_releases[XK_t] = handle_release_flag;
 	key_maps->key_releases[XK_T] = handle_release_flag;
+	key_maps->key_releases[XK_a] = handle_release_flag;
+	key_maps->key_releases[XK_A] = handle_release_flag;
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:46:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 14:49:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ static void	set_line_positions(t_point start, t_point end, t_draw_line_ctx *dlc)
 
 static int	is_line_visible(t_draw_line_ctx *dlc)
 {
-	if (dlc->start_pos.x < 0 || dlc->start_pos.x >= dlc->ctx.width
-		|| dlc->start_pos.y < 0 || dlc->start_pos.y >= dlc->ctx.height)
+	if (dlc->start_pos.x < 0 || dlc->start_pos.x >= (int)dlc->ctx.width
+		|| dlc->start_pos.y < 0 || dlc->start_pos.y >= (int)dlc->ctx.height)
 		return (0);
 	return (1);
 }
@@ -67,27 +67,57 @@ int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end,
 	return (1);
 }
 
-void	draw_line(t_graphics *g, t_point start, t_point end)
+void	draw_line_clipped(t_graphics *g, t_point start, t_point end,
+		size_t min_x, size_t max_x)
 {
 	t_draw_line_ctx	dlc;
 
 	if (!init_draw_line_ctx(g, start, end, &dlc))
 		return ;
 	fill_bresenham_params(&dlc);
-	if (g->render_config.use_depth_culling)
+	dlc.p.min_x = min_x;
+	dlc.p.max_x = max_x;
+	if (g->render_config.use_horizon_culling)
 	{
-		if (g->camera->color_shift.x || g->camera->color_shift.y
-			|| g->camera->color_shift.z)
-			bresenham_fixed_shifted(g, dlc.p);
+		if (g->render_config.use_depth_culling)
+		{
+			if (g->camera->color_shift.x || g->camera->color_shift.y
+				|| g->camera->color_shift.z)
+				bresenham_raycast(g, &dlc.p, B_USE_Z | B_COLOR_SHIFT);
+			else
+				bresenham_raycast(g, &dlc.p, B_USE_Z);
+		}
 		else
-			bresenham_fixed(g, dlc.p);
+		{
+			if (g->camera->color_shift.x || g->camera->color_shift.y
+				|| g->camera->color_shift.z)
+				bresenham_raycast(g, &dlc.p, B_COLOR_SHIFT);
+			else
+				bresenham_raycast(g, &dlc.p, 0);
+		}
 	}
 	else
 	{
-		if (g->camera->color_shift.x || g->camera->color_shift.y
-			|| g->camera->color_shift.z)
-			bresenham_fixed_no_z_shifted(g, dlc.p);
+		if (g->render_config.use_depth_culling)
+		{
+			if (g->camera->color_shift.x || g->camera->color_shift.y
+				|| g->camera->color_shift.z)
+				bresenham(g, &dlc.p, B_USE_Z | B_COLOR_SHIFT);
+			else
+				bresenham(g, &dlc.p, B_USE_Z);
+		}
 		else
-			bresenham_fixed_no_z(dlc.p);
+		{
+			if (g->camera->color_shift.x || g->camera->color_shift.y
+				|| g->camera->color_shift.z)
+				bresenham(g, &dlc.p, B_COLOR_SHIFT);
+			else
+				bresenham(g, &dlc.p, 0);
+		}
 	}
+}
+
+void	draw_line(t_graphics *g, t_point start, t_point end)
+{
+	draw_line_clipped(g, start, end, 0, g->window->width);
 }

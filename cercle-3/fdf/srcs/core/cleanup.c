@@ -14,7 +14,7 @@
 
 static void	free_map_files(t_events *events)
 {
-	int	i;
+	size_t	i;
 
 	if (events->maps->map_files)
 	{
@@ -31,9 +31,9 @@ static void	free_map_files(t_events *events)
 
 static void	free_cached_maps(t_events *events)
 {
-	int	i;
+	size_t	i;
 
-	if (events->maps->maps)
+	if (events && events->maps)
 	{
 		i = 0;
 		while (i < events->maps->count)
@@ -54,6 +54,16 @@ int	cleanup_and_exit(t_events *events)
 	free_cached_maps(events);
 	free_map_files(events);
 	cleanup_cache(events->graphics);
+	if (events->graphics->horizon_buffer)
+		free(events->graphics->horizon_buffer);
+	// Free tessellated LOD maps
+	int i = 0;
+	while (i < 8)
+	{
+		if (events->graphics->lod_maps[i])
+			free_map(events->graphics->lod_maps[i]);
+		i++;
+	}
 	win = events->window;
 	mlx = events->window->mlx_ptr;
 	if (win->z_buffer)

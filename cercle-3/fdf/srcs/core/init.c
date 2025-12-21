@@ -15,7 +15,7 @@
 void	init_defaults(t_data *data)
 {
 	data->graphics->render_config.render_mode = RENDER_LINES;
-	data->graphics->render_config.lod_level = DEFAULT_LOD_LEVEL;
+	data->graphics->render_config.lod_value = DEFAULT_LOD_LEVEL;
 	data->graphics->render_config.use_depth_culling = 0;
 	data->graphics->render_config.fill_triangles = 1;
 }
@@ -25,11 +25,18 @@ int	init_window_main_image(t_window *win, void *mlx)
 	t_image	*main_img;
 
 	main_img = &win->main_img;
+	int		bpp;
+	int		line_len;
+	int		endian;
+
 	main_img->img = mlx_new_image(mlx, win->width, win->height);
 	if (!main_img->img)
 		return (0);
-	main_img->img_addr = mlx_get_data_addr(main_img->img, &main_img->img_bpp,
-			&main_img->img_line_len, &main_img->img_endian);
+	main_img->img_addr = mlx_get_data_addr(main_img->img, &bpp,
+			&line_len, &endian);
+	main_img->img_bpp = (size_t)bpp;
+	main_img->img_line_len = (size_t)line_len;
+	main_img->img_endian = endian;
 	if (!main_img->img_addr)
 		return (0);
 	win->z_buffer = malloc(sizeof(float) * win->width * win->height);

@@ -21,27 +21,17 @@ int	clamp(int value, int min, int max)
 	return (value);
 }
 
-int	create_color(int r, int g, int b)
+unsigned int	create_color(unsigned char r, unsigned char g, unsigned char b)
 {
-	r = clamp(r, 0, 255);
-	g = clamp(g, 0, 255);
-	b = clamp(b, 0, 255);
-	return ((r << 16) | (g << 8) | b);
+	return (((unsigned int)r << 16) | ((unsigned int)g << 8) | (unsigned int)b);
 }
 
-int	create_color_rgb(t_vec3 rgb)
+unsigned int	create_color_rgb(t_vec3 rgb)
 {
-	return (create_color(rgb.x, rgb.y, rgb.z));
+	return (create_color((unsigned char)rgb.x, (unsigned char)rgb.y, (unsigned char)rgb.z));
 }
 
-int	create_color_wrap(int r, int g, int b)
+unsigned int	create_color_wrap(int r, int g, int b)
 {
-	unsigned int	rr;
-	unsigned int	gg;
-	unsigned int	bb;
-
-	rr = (unsigned int)r & 0xFF;
-	gg = (unsigned int)g & 0xFF;
-	bb = (unsigned int)b & 0xFF;
-	return ((rr << 16) | (gg << 8) | bb);
+	return (create_color((unsigned char)r, (unsigned char)g, (unsigned char)b));
 }

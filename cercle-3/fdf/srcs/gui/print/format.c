@@ -44,10 +44,10 @@ void	format_speed(double speed, char *buffer)
 	buffer[6] = '\0';
 }
 
-void	format_number(int num, char *buffer)
+void	format_number(long long num, char *buffer)
 {
-	int	i;
-	int	temp;
+	long long	val;
+	int			i;
 
 	if (num == 0)
 	{
@@ -56,21 +56,36 @@ void	format_number(int num, char *buffer)
 		return ;
 	}
 	i = 0;
-	temp = num;
-	while (temp > 0)
+	val = num;
+	if (val < 0)
 	{
-		buffer[i++] = '0' + (temp % 10);
-		temp /= 10;
+		buffer[i++] = '-';
+		val = -val;
+	}
+	// We need to write digits in reverse order after the sign
+	// Pointer arithmetic for reversal needs to skip the sign
+	int start_reversal = i;
+	
+	while (val > 0)
+	{
+		buffer[i++] = '0' + (val % 10);
+		val /= 10;
 	}
 	buffer[i] = '\0';
-	temp = 0;
-	while (temp < i / 2)
+	
+	// Reverse the digits part only
+	int end = i - 1;
+	int start = start_reversal;
+	char tmp_char;
+	while (start < end)
 	{
-		buffer[temp] ^= buffer[i - 1 - temp];
-		buffer[i - 1 - temp] ^= buffer[temp];
-		buffer[temp] ^= buffer[i - 1 - temp];
-		temp++;
+		tmp_char = buffer[start];
+		buffer[start] = buffer[end];
+		buffer[end] = tmp_char;
+		start++;
+		end--;
 	}
+	return ;
 }
 
 void	format_float(double val, char *buffer)

@@ -11,11 +11,15 @@
 /* ************************************************************************** */
 
 #include "graphics.h"
+#include "render.h"
 
 void	draw_filled_triangle(t_graphics *g, t_triangle t)
 {
 	double	ratio;
 	t_point	p4;
+
+	if (g->render_config.use_depth_culling && is_backface(t.p1, t.p2, t.p3))
+		return ;
 
 	if (t.p1.pos.y > t.p2.pos.y)
 		swap_points(&t.p1, &t.p2);
@@ -58,4 +62,12 @@ void	draw_quad_triangles(t_graphics *g, t_quad_triangle quad)
 		draw_wireframe_triangle(g, (t_triangle){quad.p1, quad.p2, quad.p3});
 		draw_wireframe_triangle(g, (t_triangle){quad.p2, quad.p4, quad.p3});
 	}
+}
+
+void	draw_triangle(t_graphics *g, t_point p1, t_point p2, t_point p3)
+{
+	if (g->render_config.fill_triangles)
+		draw_filled_triangle(g, (t_triangle){p1, p2, p3});
+	else
+		draw_wireframe_triangle(g, (t_triangle){p1, p2, p3});
 }

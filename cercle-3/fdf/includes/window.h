@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:51:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 22:32:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 00:23:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ typedef struct s_image
 {
 	void				*img;
 	char				*img_addr;
-	int					img_bpp;
-	int					img_line_len;
+	size_t				img_bpp;
+	size_t				img_line_len;
 	int					img_endian;
 }						t_image;
 
@@ -26,13 +26,24 @@ typedef struct s_window
 {
 	void				*mlx_ptr;
 	void				*ptr;
-	int					width;
-	int					height;
+	size_t				width;
+	size_t				height;
 
 	t_image				main_img;
 	t_image				gui_img;
 	float				*z_buffer;
 }						t_window;
+
+typedef struct s_mlx_win_list
+{
+	void				*window;
+	void				*gc;
+}						t_mlx_win_list;
+
+typedef struct s_mlx_ptr
+{
+	void				*display;
+}						t_mlx_ptr;
 
 typedef struct s_data	t_data;
 

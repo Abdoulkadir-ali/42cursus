@@ -9,71 +9,76 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 # Source files organized by category
 SRCS =	srcs/core/cleanup.c \
-	srcs/camera/init.c \
+	srcs/core/init.c \
 	srcs/core/main.c \
-	srcs/camera/controls/adjust.c \
-	srcs/camera/controls/rotate/build.c \
-	srcs/camera/controls/rotate/init.c \
-	srcs/camera/controls/rotate/multiply.c \
-	srcs/camera/controls/rotate/rotate.c \
-	srcs/camera/controls/zoom.c \
-	srcs/camera/projection/projection.c \
-	srcs/camera/projection/basic.c \
-	srcs/camera/projection/advanced.c \
+	srcs/render/camera/init.c \
+	srcs/render/camera/controls/adjust.c \
+	srcs/render/camera/controls/rotate/build.c \
+	srcs/render/camera/controls/rotate/init.c \
+	srcs/render/camera/controls/rotate/multiply.c \
+	srcs/render/camera/controls/rotate/rotate.c \
+	srcs/render/camera/controls/zoom.c \
+	srcs/render/camera/controls/center.c \
+	srcs/render/pipeline.c \
+	srcs/render/stages/projections.c \
+	srcs/render/stages/culling.c \
+	srcs/render/optimization/lines.c \
+	srcs/render/optimization/triangles.c \
+	srcs/geometry/matrix.c \
+	srcs/geometry/tesselation/tesselation.c \
+	srcs/geometry/tesselation/manager.c \
+	srcs/geometry/vectors/vec2/init.c \
+	srcs/geometry/vectors/vec2/arithmetic.c \
+	srcs/geometry/vectors/vec2/distance.c \
+	srcs/geometry/vectors/vec2d/init.c \
+	srcs/geometry/vectors/vec2d/arithmetic.c \
+	srcs/geometry/vectors/vec2d/distance.c \
+	srcs/geometry/vectors/vec3/init.c \
+	srcs/geometry/vectors/vec3/arithmetic.c \
+	srcs/geometry/vectors/vec3/distance.c \
+	srcs/geometry/vectors/vec3d/init.c \
+	srcs/geometry/vectors/vec3d/arithmetic.c \
+	srcs/geometry/vectors/vec3d/distance.c \
+	srcs/geometry/vectors/vecu2/init.c \
+	srcs/geometry/vectors/vecu2/arithmetic.c \
+	srcs/geometry/vectors/vecu2/distance.c \
+	srcs/geometry/vectors/vecu3/init.c \
+	srcs/geometry/vectors/vecu3/arithmetic.c \
+	srcs/geometry/vectors/vecu3/distance.c \
+	srcs/geometry/map/build/grid.c \
+	srcs/geometry/map/build/helper.c \
+	srcs/geometry/map/build/minmax.c \
+	srcs/geometry/map/init.c \
+	srcs/geometry/map/read/loader.c \
+	srcs/geometry/map/read/parser.c \
+	srcs/geometry/map/read/helper.c \
+	srcs/geometry/map/read/select.c \
+	srcs/geometry/map/style/style.c \
+	srcs/geometry/map/style/themes.c \
 	srcs/graphics/init/init.c \
 	srcs/graphics/cache/cache.c \
 	srcs/graphics/cache/helper.c \
 	srcs/graphics/draw/grid/grid.c \
 	srcs/graphics/draw/grid/threads.c \
-	srcs/graphics/draw/grid/draw/quad.c \
-	srcs/graphics/draw/grid/draw/segment.c \
+	srcs/graphics/draw/grid/quad.c \
+	srcs/graphics/draw/grid/segment.c \
 	srcs/graphics/draw/lines/draw.c \
 	srcs/graphics/draw/lines/helper.c \
-	srcs/graphics/draw/lines/bresenham/fixed.c \
-	srcs/graphics/draw/lines/bresenham/fixed_shifted.c \
+	srcs/graphics/draw/lines/bresenham/bresenham.c \
 	srcs/graphics/draw/lines/bresenham/helper.c \
-	srcs/graphics/draw/lines/bresenham/no_z.c \
-	srcs/graphics/draw/lines/bresenham/no_z_shifted.c \
 	srcs/graphics/draw/triangle/draw.c \
 	srcs/graphics/draw/triangle/helper.c \
 	srcs/graphics/draw/triangle/rasterizer/rasterizer.c \
 	srcs/graphics/draw/triangle/rasterizer/helper.c \
 	srcs/graphics/draw/splines/draw.c \
-	srcs/graphics/draw/scanlines/draw.c \
-	srcs/graphics/draw/scanlines/helper.c \
-	srcs/graphics/draw/z_processing/lines.c \
-	srcs/graphics/draw/z_processing/triangles.c \
-	srcs/graphics/perspective/lines.c \
-	srcs/graphics/perspective/helper.c \
+	srcs/graphics/draw/triangle/scanlines/draw.c \
+	srcs/graphics/draw/triangle/scanlines/helper.c \
 	srcs/graphics/frames/clear.c \
 	srcs/graphics/frames/helper.c \
 	srcs/color/create.c \
 	srcs/color/transform.c \
 	srcs/color/get.c \
-	srcs/vectors/vec2/init.c \
-	srcs/vectors/vec2/arithmetic.c \
-	srcs/vectors/vec2/distance.c \
-	srcs/vectors/vec2d/init.c \
-	srcs/vectors/vec2d/arithmetic.c \
-	srcs/vectors/vec2d/distance.c \
-	srcs/vectors/vec3/init.c \
-	srcs/vectors/vec3/arithmetic.c \
-	srcs/vectors/vec3/distance.c \
-	srcs/vectors/vec3d/init.c \
-	srcs/vectors/vec3d/arithmetic.c \
-	srcs/vectors/vec3d/distance.c \
-	srcs/map/build/grid.c \
-	srcs/map/build/helper.c \
-	srcs/map/build/minmax.c \
-	srcs/map/init.c \
-	srcs/map/read/loader.c \
-	srcs/map/read/parser.c \
-	srcs/map/read/helper.c \
-	srcs/map/read/select.c \
-	srcs/map/style/style.c \
-	srcs/map/style/themes.c \
 	srcs/window/init.c \
-srcs/core/init.c \
 	srcs/events/mouse/move.c \
 	srcs/events/mouse/handlers.c \
 	srcs/events/mouse/press.c \
@@ -84,9 +89,12 @@ srcs/core/init.c \
 	srcs/events/keys/handlers/flags/modifiers.c \
 	srcs/events/keys/handlers/gui/gui.c \
 	srcs/events/keys/handlers/map/map.c \
+	srcs/events/keys/handlers/toggle/tesselation.c \
+	srcs/events/keys/handlers/toggle/points.c \
 	srcs/events/keys/handlers/toggle/toggle.c \
 	srcs/events/keys/handlers/view/camera.c \
 	srcs/events/keys/handlers/view/helper.c \
+	srcs/events/keys/handlers/view/fisheye.c \
 	srcs/events/keys/init/helper.c \
 	srcs/events/keys/init/init.c \
 	srcs/events/keys/init/keys.c \
@@ -105,6 +113,7 @@ srcs/core/init.c \
 	srcs/gui/layout/style.c \
 	srcs/gui/layout/theme.c \
 	srcs/gui/layout/utils.c \
+	
 
 
 # Object files in objs directory
@@ -136,22 +145,29 @@ objs:
 	@mkdir -p objs/graphics/draw/lines/bresenham
 	@mkdir -p objs/graphics/draw/triangle
 	@mkdir -p objs/graphics/draw/triangle/rasterizer
-	@mkdir -p objs/graphics/draw/scanlines
+	@mkdir -p objs/graphics/draw/triangle/scanlines
 	@mkdir -p objs/graphics/draw/splines
-	@mkdir -p objs/graphics/draw/z_processing
-	@mkdir -p objs/graphics/interpolate
-	@mkdir -p objs/graphics/z_processing
-	@mkdir -p objs/graphics/perspective
 	@mkdir -p objs/graphics/frames
-	@mkdir -p objs/camera
-	@mkdir -p objs/camera/controls
-	@mkdir -p objs/camera/controls/rotate
-	@mkdir -p objs/camera/projection
+	@mkdir -p objs/render
+	@mkdir -p objs/render/camera
+	@mkdir -p objs/render/camera/controls
+	@mkdir -p objs/render/camera/controls/rotate
+	@mkdir -p objs/render/optimization
+	@mkdir -p objs/render/stages
+	@mkdir -p objs/geometry
+	@mkdir -p objs/geometry/tesselation
+	@mkdir -p objs/geometry/vectors
+	@mkdir -p objs/geometry/vectors/vec2
+	@mkdir -p objs/geometry/vectors/vec2d
+	@mkdir -p objs/geometry/vectors/vec3
+	@mkdir -p objs/geometry/vectors/vec3d
+	@mkdir -p objs/geometry/vectors/vecu2
+	@mkdir -p objs/geometry/vectors/vecu3
+	@mkdir -p objs/geometry/map
+	@mkdir -p objs/geometry/map/build
+	@mkdir -p objs/geometry/map/read
+	@mkdir -p objs/geometry/map/style
 	@mkdir -p objs/color
-	@mkdir -p objs/map
-	@mkdir -p objs/map/build
-	@mkdir -p objs/map/read
-	@mkdir -p objs/map/style
 	@mkdir -p objs/window
 	@mkdir -p objs/events
 	@mkdir -p objs/events/mouse
@@ -166,12 +182,6 @@ objs:
 	@mkdir -p objs/events/keys/init
 	@mkdir -p objs/events/gui
 	@mkdir -p objs/events/init
-	@mkdir -p objs/vectors
-	@mkdir -p objs/vectors/vec2
-	@mkdir -p objs/vectors/vec2d
-	@mkdir -p objs/vectors/vec3
-	@mkdir -p objs/vectors/vec3d
-	@mkdir -p objs/events/keys/handlers
 	@mkdir -p objs/gui
 	@mkdir -p objs/gui/controls
 	@mkdir -p objs/gui/display/sections
@@ -180,7 +190,6 @@ objs:
 	@mkdir -p objs/gui/print
 	@mkdir -p objs/gui/style
 	@mkdir -p objs/gui/layout
-	@mkdir -p objs/projection
 
 # Compile object files
 objs/%.o: srcs/%.c includes/fdf.h | objs

@@ -29,8 +29,15 @@ int	handle_n(int keycode, t_events *events)
 		events->map = events->maps->current_map;
 		if (events->camera_manager)
 			events->camera_manager->map = events->maps->current_map;
+		if (events->graphics)
+		{
+			events->graphics->base_map = events->maps->current_map;
+			events->graphics->map = events->maps->current_map;
+			events->graphics->dirty = 1;
+		}
+		events->gui.map = events->maps->current_map;
 	}
-	adjust_camera_to_map(events->camera_manager);
+	center_camera_on_map(events->camera_manager);
 	return (1);
 }
 
@@ -41,7 +48,7 @@ int	handle_s(int keycode, t_events *events)
 	return (1);
 }
 
-int	handle_a(int keycode, t_events *events)
+int	handle_m(int keycode, t_events *events)
 {
 	(void)keycode;
 	events->render_mode = (events->render_mode + 1) % RENDER_MODE_COUNT;

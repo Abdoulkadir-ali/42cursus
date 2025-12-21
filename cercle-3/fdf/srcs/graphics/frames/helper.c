@@ -16,7 +16,7 @@
 void	clear_z_buffer_simd(t_clear_z_ctx *ctx)
 {
 	ctx->i = 0;
-	while (ctx->i <= ctx->total - 8)
+	while (ctx->i < ctx->total - 7)
 	{
 		_mm256_storeu_ps(&ctx->z_buffer[ctx->i], ctx->max_depth);
 		ctx->i += 8;
@@ -32,7 +32,7 @@ void	clear_z_buffer_remainder(t_clear_z_ctx *ctx)
 void	clear_image_simd(t_clear_img_ctx *ctx)
 {
 	ctx->i = 0;
-	while (ctx->i <= ctx->total_bytes - 32)
+	while (ctx->i < ctx->total_bytes - 31)
 	{
 		_mm256_storeu_si256((__m256i *)&ctx->buffer[ctx->i], ctx->zeros);
 		ctx->i += 32;

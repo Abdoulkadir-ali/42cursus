@@ -22,15 +22,14 @@
 
 /* NON DEPENDANT */
 # include "color.h"
-# include "vectors.h"
+# include "geometry.h"
 # include "window.h"
 
 /* ========== PROJECT HEADERS ========== */
-# include "camera.h"
+# include "render.h"
 # include "core.h"
 # include "events.h"
 # include "graphics.h"
 # include "gui.h"
-# include "map.h"
 
 #endif

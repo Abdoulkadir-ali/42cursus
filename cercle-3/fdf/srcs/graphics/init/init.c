@@ -15,9 +15,18 @@
 void	init_render_config(t_render_config *c)
 {
 	c->render_mode = RENDER_LINES;
-	c->use_depth_culling = 0;
+	c->use_depth_culling = 1;
 	c->fill_triangles = 1;
-	c->lod_level = DEFAULT_LOD_LEVEL;
+	c->lod_value = DEFAULT_LOD_LEVEL;
+	c->use_tesselation = 1;
+	c->tesselation_level = 1;
+	c->max_tesselation_level = 5;
+	c->use_horizon_culling = 0;
+	c->use_adaptive_logic = 1;
+	c->target_tesselation_points = DEFAULT_TARGET_POINTS;
+	c->detail_step = 5.0f;
+	c->max_tesselation_points = MAX_TESSELATION_POINTS;
+	c->detail_level = 0;
 }
 
 void	init_frame_data(t_frame_data *f)
@@ -38,8 +47,20 @@ t_graphics	*init_graphics(t_graphics_args args)
 		return (NULL);
 	g->window = args.window;
 	g->camera = args.camera;
+	g->base_map = args.map;
+	g->tesselated_map = NULL;
+	int i = 0;
+	while (i < 8)
+		g->lod_maps[i++] = NULL;
 	g->map = args.map;
-	g->cache = (t_cache){NULL, 0, 0, NULL};
+	g->cache = (t_cache){NULL, 0, 0, NULL, 0, {{0, 0, 0}, {0, 0, 0}, 0}};
+	g->dirty = 1;
+	g->horizon_buffer = malloc(sizeof(int) * g->window->width);
+	if (!g->horizon_buffer)
+	{
+		free(g);
+		return (NULL);
+	}
 	init_render_config(&g->render_config);
 	init_frame_data(&g->frame_data);
 	return (g);

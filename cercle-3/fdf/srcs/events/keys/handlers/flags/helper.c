@@ -16,8 +16,10 @@ static void	set_arrows(int keycode, t_events *events, int value)
 {
 	if (keycode == XK_Up)
 		events->keys.up = value;
-	else if (keycode == XK_Down)
-		events->keys.down = value;
+	else if (keycode == KEY_G)
+		events->keys.g = value;
+	else if (keycode == KEY_B)
+		events->keys.b = value;
 	else if (keycode == XK_Left)
 		events->keys.left = value;
 	else if (keycode == XK_Right)
@@ -48,6 +50,8 @@ static void	set_letters(int keycode, t_events *events, int value)
 		events->keys.d = value;
 	else if (keycode == XK_t || keycode == XK_T)
 		events->keys.t = value;
+	else if (keycode == XK_a || keycode == XK_A)
+		events->keys.a = value;
 }
 
 void	init_key_flags(t_events *events)

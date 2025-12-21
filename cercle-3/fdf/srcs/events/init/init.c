@@ -20,6 +20,7 @@ void	setup_hooks(t_events *e)
 	mlx_hook(e->window->ptr, 6, 1L << 6, mouse_move, e);
 	mlx_hook(e->window->ptr, 2, 1L << 0, key_press, e);
 	mlx_hook(e->window->ptr, 3, 1L << 1, key_release, e);
+	mlx_hook(e->window->ptr, 22, 1L << 17, handle_resize, e);
 	mlx_loop_hook(e->window->mlx_ptr, loop_hook, e);
 }
 
@@ -63,14 +64,14 @@ static void	init_events_graphics(t_events *e)
 	if (e->graphics)
 	{
 		e->render_mode = e->graphics->render_config.render_mode;
-		e->lod_level = e->graphics->render_config.lod_level;
+		e->lod_value = e->graphics->render_config.lod_value;
 		e->use_depth_culling = e->graphics->render_config.use_depth_culling;
 		e->fill_triangles = e->graphics->render_config.fill_triangles;
 	}
 	else
 	{
 		e->render_mode = 0;
-		e->lod_level = DEFAULT_LOD_LEVEL;
+		e->lod_value = DEFAULT_LOD_LEVEL;
 		e->use_depth_culling = 1;
 		e->fill_triangles = 0;
 	}

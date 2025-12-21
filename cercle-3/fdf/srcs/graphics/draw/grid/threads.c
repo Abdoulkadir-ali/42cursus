@@ -18,7 +18,7 @@ void	*thread_draw_routine(void *data)
 	t_thread_data	*d;
 
 	d = (t_thread_data *)data;
-	draw_grid_section(d->g, d->start_y, d->end_y, d->step);
+	draw_grid_section(d->g, d->start_y, d->end_y, d->lod_value);
 	return (NULL);
 }
 

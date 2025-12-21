@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 15:40:28 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 16:06:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,14 @@ int	init_gui_images(t_gui *gui)
 			GUI_PANEL_WIDTH, gui->window->height);
 	if (!gui->window->gui_img.img)
 		return (0);
+	int	bpp;
+	int	line_len;
+
 	gui->window->gui_img.img_addr = mlx_get_data_addr(gui->window->gui_img.img,
-			&gui->window->gui_img.img_bpp, &gui->window->gui_img.img_line_len,
+			&bpp, &line_len,
 			&gui->window->gui_img.img_endian);
+	gui->window->gui_img.img_bpp = (size_t)bpp;
+	gui->window->gui_img.img_line_len = (size_t)line_len;
 	if (!gui->window->gui_img.img_addr)
 		return (0);
 	return (1);

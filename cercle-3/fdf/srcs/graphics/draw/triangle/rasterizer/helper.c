@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 12:38:46 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:39:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	rasterize_span(t_graphics *g, t_rasterize_ctx *ctx)
 	y = ctx->y_start;
 	while (y < ctx->y_end)
 	{
-		if (y >= g->window->height)
+		if (y >= (int)g->window->height)
 			break ;
 		data = create_scanline_from_edges(ctx, y);
 		draw_horizontal_scanline_z(g, data);
