@@ -102,4 +102,5 @@ void	redraw_gui(t_events *events)
 	draw_speed_display_layout(&l, gui);
 	gui_layout_add_spacer(&l, 10);
 	draw_map_name_display_layout(&l, gui);
+	draw_transform_stats(gui);
 }

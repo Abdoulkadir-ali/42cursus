@@ -112,6 +112,7 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/gui/layout/performance.c \
 	srcs/gui/layout/style.c \
 	srcs/gui/layout/theme.c \
+	srcs/gui/layout/transform.c \
 	srcs/gui/layout/utils.c \
 	
 

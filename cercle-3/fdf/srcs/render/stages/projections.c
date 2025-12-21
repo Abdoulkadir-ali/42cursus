@@ -122,6 +122,7 @@ void	calculate_transform_matrix(t_camera *cam)
 		if (tan_half < 0.001f) tan_half = 0.001f;
 		cam_dist = 500.0f / tan_half; 
 	}
+	cam->view_dist = cam_dist;
 	t_matrix4 translate = matrix_translation(0, 0, -cam_dist);
 	
 	/* View = Translate * Rotate */
@@ -137,12 +138,7 @@ void	calculate_transform_matrix(t_camera *cam)
 	scale_factor *= cam->scale;
 	
 	t_matrix4 screen_scale = matrix_scale(scale_factor, scale_factor, 1.0f);
-	
-	/* MVP = Screen * Proj * View */
-	/* Order: Proj * View works for column vector v: P * V * v */
 	mvp = matrix_multiply(proj, view);
-	
-	/* We fold the 'screen scale' into the matrix to save muls later */
 	cam->transform_matrix = matrix_multiply(screen_scale, mvp);
 }
 
@@ -151,7 +147,7 @@ t_point	apply_transform(t_point p, t_camera *cam)
 	t_vec3d		v;
 	t_point		res;
 	t_matrix4	*m;
-	float		x, y, z, w;
+	float		x, y, w;
 
 	/* 1. Pre-Matrix Adjustments (Model Space) */
 	t_vec3d effective_center = cam->grid_center;
@@ -165,7 +161,6 @@ t_point	apply_transform(t_point p, t_camera *cam)
 	m = &cam->transform_matrix;
 	x = (float)v.x * m->m[0][0] + (float)v.y * m->m[0][1] + (float)v.z * m->m[0][2] + m->m[0][3];
 	y = (float)v.x * m->m[1][0] + (float)v.y * m->m[1][1] + (float)v.z * m->m[1][2] + m->m[1][3];
-	z = (float)v.x * m->m[2][0] + (float)v.y * m->m[2][1] + (float)v.z * m->m[2][2] + m->m[2][3];
 	w = (float)v.x * m->m[3][0] + (float)v.y * m->m[3][1] + (float)v.z * m->m[3][2] + m->m[3][3];
 
 	/* 3. Perspective Divide */
@@ -179,12 +174,13 @@ t_point	apply_transform(t_point p, t_camera *cam)
 	/* 4. Post-Matrix Offset (Screen Center) */
 	res.pos.x = x + cam->offset.x;
 	res.pos.y = y + cam->offset.y;
-	res.pos.z = z; /* View Space Z from Matrix usually, or just Z? */
-	/* Correction: Our matrix Z row (2) outputs -1 etc. */
-	/* We need the Z before projection for depth sorting usually. */
-	/* But with existing logic, let's trust the Z output from matrix if P is correct. */
-	/* The 'z' computed above is affected by Z-normalization in P matrix. */
-	/* Should be fine for z-buffer. */
+	
+	/* 5. Calculate View-Space Z for Z-Buffer (Legacy Behavior) */
+	/* view_z = (Rot * v).z - cam_dist */
+	/* Uses 3x3 rotation matrix directly since it's available and correct */
+	res.pos.z = v.x * cam->rotation_matrix[2].x + 
+				v.y * cam->rotation_matrix[2].y + 
+				v.z * cam->rotation_matrix[2].z - cam->view_dist;
 	
 	res.color = p.color;
 	return (res);

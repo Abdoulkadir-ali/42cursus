@@ -78,6 +78,7 @@ typedef struct s_camera
 	int					use_z_divisor;
 	int					invert_movement;
 	double				alpha;
+	float				view_dist;
 	t_matrix4			transform_matrix;
 }						t_camera;
 

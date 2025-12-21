@@ -12,13 +12,11 @@
 
 #include "gui.h"
 
-static void	display_fps_stats(t_layout *l, t_gui *gui, char *buffer)
+static void	display_point_stats(t_layout *l, t_gui *gui, char *buffer)
 {
 	int		total;
 	int		rendered;
 
-	format_number(gui->fps, buffer);
-	gui_layout_key_value(l, "FPS:", buffer);
 	total = gui->map->width * gui->map->height;
 	// Use lod_value (float)
 	if (gui->render_config->lod_value > 0)
@@ -30,6 +28,8 @@ static void	display_fps_stats(t_layout *l, t_gui *gui, char *buffer)
 	format_number(rendered, buffer);
 	gui_layout_key_value(l, "Rendered:", buffer);
 }
+
+
 
 static void	display_scale_options(t_layout *l, t_gui *gui, char *buffer)
 {
@@ -148,7 +148,7 @@ void	draw_performance_display_layout(t_layout *l, t_gui *gui)
 	char	buffer[50];
 
 	gui_layout_title(l, "OPTIMIZATIONS");
-	display_fps_stats(l, gui, buffer);
+	display_point_stats(l, gui, buffer);
 	display_scale_options(l, gui, buffer);
 	display_toggle_options(l, gui, buffer);
 	display_algorithm_info(l, gui, buffer);

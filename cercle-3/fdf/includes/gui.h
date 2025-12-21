@@ -54,6 +54,7 @@ typedef struct s_layout
 	int					cursor_y;
 	int					padding;
 	int					panel_width;
+	int					x_start;
 }						t_layout;
 
 /* ========== GUI STYLE ========== */
@@ -118,6 +119,7 @@ void					draw_performance_display_layout(t_layout *l,
 void					draw_projection_display_layout(t_layout *l, t_gui *gui);
 void					draw_speed_display_layout(t_layout *l, t_gui *gui);
 void					draw_map_name_display_layout(t_layout *l, t_gui *gui);
+void					draw_transform_stats(t_gui *gui);
 
 void					cycle_gui_style(t_gui *gui);
 
