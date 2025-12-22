@@ -14,16 +14,13 @@
 # define GEOMETRY_H
 
 /* ========== IMPORTS ========== */
+# include "define.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <math.h>
 # include <time.h>
 # include <xmmintrin.h>
-
-# ifndef BAD_VALUE
-#  define BAD_VALUE -2000000000.0
-# endif
 
 /* ========== VECTORS ========== */
 

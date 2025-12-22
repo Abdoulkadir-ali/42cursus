@@ -21,12 +21,10 @@ static void	handle_object_vec3d(int x, int y, t_events *events)
 	dx = x - events->mouse.last_x;
 	dy = y - events->mouse.last_y;
 	factor = 0.005;
-	events->camera->rotation.z -= dx * factor;
-	events->camera->rotation.x -= dy * factor;
-	update_rotation_matrix(events->camera);
+	events->camera->target_rotation.z -= dx * factor;
+	events->camera->target_rotation.x -= dy * factor;
 	events->mouse.last_x = x;
 	events->mouse.last_y = y;
-	redraw(events);
 }
 
 static void	handle_camera_rotation(int x, int y, t_events *events)
@@ -38,12 +36,10 @@ static void	handle_camera_rotation(int x, int y, t_events *events)
 	dx = x - events->mouse.last_x;
 	dy = y - events->mouse.last_y;
 	factor = 0.005;
-	events->camera->rotation.z += dx * factor;
-	events->camera->rotation.x += dy * factor;
-	update_rotation_matrix(events->camera);
+	events->camera->target_rotation.z += dx * factor;
+	events->camera->target_rotation.x += dy * factor;
 	events->mouse.last_x = x;
 	events->mouse.last_y = y;
-	redraw(events);
 }
 
 static void	handle_color_shift(int x, int y, t_events *events)

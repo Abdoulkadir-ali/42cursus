@@ -19,21 +19,12 @@
 # include <math.h>
 
 // PROJECT REQUIREMENTS
+# include "define.h"
 # include "geometry.h"
 # include "render.h"
 # include "window.h"
 
-# define NUM_THREADS 8
-# define DEFAULT_LOD_LEVEL 1.0
-# define FP_SHIFT 16
-# define FP_16 65536.0
-# define DRAW_LIMIT -1000000.0
-# define DEFAULT_TARGET_POINTS 1000000UL
-# define MAX_DETAIL_LEVEL 7
-# define MIN_DETAIL_LEVEL -5
 
-# define B_USE_Z 1
-# define B_COLOR_SHIFT 2
 
 typedef struct s_events		t_events;
 

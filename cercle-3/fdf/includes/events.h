@@ -17,6 +17,7 @@
 # include <math.h>
 
 /* ========== PACKAGES ========== */
+# include "define.h"
 # include "geometry.h"
 # include "graphics.h"
 # include "gui.h"
@@ -24,20 +25,7 @@
 # include "render.h"
 # include "window.h"
 
-/* ========== OPTIMIZATION DEFAULTS ========== */
-# define DEFAULT_Z_SCALE 1.0
-# define DEFAULT_FRUSTUM_MARGIN 50
-# define DEFAULT_DAMPENING_THRESHOLD 0
-# define MIN_LOD_LEVEL 1
-# define MAX_LOD_LEVEL 10
-# define MIN_Z_SCALE 0.1
-# define MAX_Z_SCALE 5.0
-# define MIN_FRUSTUM_MARGIN 0
-# define MAX_FRUSTUM_MARGIN 500
-# define MIN_DAMPENING_THRESHOLD -100
-# define MAX_DAMPENING_THRESHOLD 100
-# define KEY_MAP_SIZE 0x10000
-
+/* ========== CONTROLS ========== */
 # ifndef CONTROLS_H
 #  define CONTROLS_H
 
@@ -77,6 +65,13 @@
 #  define KEY_BRACKET_LEFT XK_bracketleft
 #  define KEY_BRACKET_RIGHT XK_bracketright
 #  define KEY_B XK_b
+#  define KEY_Y XK_y
+#  define KEY_W XK_w
+#  define KEY_1 XK_1
+#  define KEY_2 XK_2
+#  define KEY_3 XK_3
+
+# endif
 
 typedef struct s_mouse
 {
@@ -112,6 +107,8 @@ typedef struct s_keys
 	int					v;
 	int					g;
 	int					b;
+	int					w;
+	int					y;
 }						t_keys;
 
 typedef struct s_movement_ctx
@@ -128,9 +125,8 @@ typedef struct s_combo_ctx
 	unsigned int		old_frust;
 	unsigned int		old_damp;
 	double				old_alpha;
+	double				old_rot_speed;
 }						t_combo_ctx;
-
-# endif
 
 typedef int				(*t_key_action)(int keycode, t_events *events);
 
@@ -182,6 +178,7 @@ int						key_press(int keycode, t_events *events);
 int						key_release(int keycode, t_events *events);
 int						loop_hook(t_events *events);
 int						process_movement(t_events *events);
+int						process_rotation(t_events *events);
 void					cycle_projection(t_events *events);
 void					reset_view(t_events *events);
 void					adjust_move_speed(t_events *events, int increase);
@@ -200,6 +197,13 @@ int						handle_x(int keycode, t_events *events);
 int						handle_i(int keycode, t_events *events);
 int						handle_v(int keycode, t_events *events);
 int						handle_g(int keycode, t_events *events);
+int						handle_w(int keycode, t_events *events);
+int						handle_rot_x(int keycode, t_events *events);
+int						handle_rot_y(int keycode, t_events *events);
+int						handle_rot_z(int keycode, t_events *events);
+int						handle_1(int keycode, t_events *events);
+int						handle_2(int keycode, t_events *events);
+int						handle_3(int keycode, t_events *events);
 int						handle_plus(int keycode, t_events *events);
 int						handle_minus(int keycode, t_events *events);
 int						handle_0(int keycode, t_events *events);

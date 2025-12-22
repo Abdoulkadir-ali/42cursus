@@ -41,14 +41,22 @@ static void	set_key_actions_1(t_key_maps *key_maps)
 
 static void	set_key_actions_2(t_key_maps *key_maps)
 {
-	key_maps->key_actions[XK_x] = handle_x;
-	key_maps->key_actions[XK_X] = handle_x;
+	key_maps->key_actions[XK_x] = handle_press_flag;
+	key_maps->key_actions[XK_X] = handle_press_flag;
+	key_maps->key_releases[XK_x] = handle_release_flag;
+	key_maps->key_releases[XK_X] = handle_release_flag;
+	key_maps->key_actions[XK_y] = handle_press_flag;
+	key_maps->key_actions[XK_Y] = handle_press_flag;
+	key_maps->key_releases[XK_y] = handle_release_flag;
+	key_maps->key_releases[XK_Y] = handle_release_flag;
 	key_maps->key_actions[XK_i] = handle_i;
 	key_maps->key_actions[XK_I] = handle_i;
 	key_maps->key_actions[XK_v] = handle_v;
 	key_maps->key_actions[XK_V] = handle_v;
 	key_maps->key_actions[XK_g] = handle_g;
 	key_maps->key_actions[XK_G] = handle_g;
+	key_maps->key_actions[XK_w] = handle_press_flag;
+	key_maps->key_actions[XK_W] = handle_press_flag;
 	key_maps->key_actions[XK_Control_L] = handle_press_flag;
 	key_maps->key_actions[XK_Control_R] = handle_press_flag;
 }
@@ -61,10 +69,16 @@ static void	set_key_actions_3(t_key_maps *key_maps)
 	key_maps->key_actions[XK_L] = handle_press_flag;
 	key_maps->key_actions[XK_z] = handle_press_flag;
 	key_maps->key_actions[XK_Z] = handle_press_flag;
+	key_maps->key_releases[XK_z] = handle_release_flag;
+	key_maps->key_releases[XK_Z] = handle_release_flag;
 	key_maps->key_actions[XK_f] = handle_press_flag;
 	key_maps->key_actions[XK_F] = handle_press_flag;
 	key_maps->key_actions[KEY_B] = handle_press_flag;
 	key_maps->key_releases[KEY_B] = handle_release_flag;
+	key_maps->key_actions[XK_w] = handle_press_flag;
+	key_maps->key_actions[XK_W] = handle_press_flag;
+	key_maps->key_releases[XK_w] = handle_release_flag;
+	key_maps->key_releases[XK_W] = handle_release_flag;
 	key_maps->key_actions[XK_d] = handle_press_flag;
 	key_maps->key_actions[XK_D] = handle_press_flag;
 }
@@ -91,6 +105,9 @@ static void	set_key_actions_4(t_key_maps *key_maps)
 	key_maps->key_actions[XK_bracketright] = handle_bracket;
 	key_maps->key_actions[XK_comma] = handle_bracket; // <
 	key_maps->key_actions[XK_period] = handle_bracket; // >
+	key_maps->key_actions[XK_1] = handle_1;
+	key_maps->key_actions[XK_2] = handle_2;
+	key_maps->key_actions[XK_3] = handle_3;
 }
 
 void	set_key_actions(t_key_maps *key_maps)

@@ -45,8 +45,6 @@ void	apply_plus_changes(t_events *events)
 	keyboard = &events->keys;
 	if (keyboard->a)
 		events->camera->alpha += 2.0;
-	else if (keyboard->z)
-		events->camera->z_scale += 0.1;
 	else if (keyboard->f)
 		events->camera->frustum_margin += 10;
 	else if (keyboard->d)
@@ -60,6 +58,8 @@ void	apply_plus_changes(t_events *events)
 		if (events->graphics->render_config.detail_level < MAX_DETAIL_LEVEL)
 			events->graphics->render_config.detail_level++;
 	}
+	else if (keyboard->w)
+		events->camera->rotation_speed += DEFAULT_ROTATION_SPEED * 0.2;
 	clamp_values(events);
 }
 
@@ -70,8 +70,6 @@ void	apply_minus_changes(t_events *events)
 	keyboard = &events->keys;
 	if (keyboard->a)
 		events->camera->alpha -= 2.0;
-	else if (keyboard->z)
-		events->camera->z_scale -= 0.1;
 	else if (keyboard->f)
 		events->camera->frustum_margin -= 10;
 	else if (keyboard->d)
@@ -87,6 +85,12 @@ void	apply_minus_changes(t_events *events)
 		if (events->graphics->render_config.detail_level > MIN_DETAIL_LEVEL)
 			events->graphics->render_config.detail_level--;
 	}
+	else if (keyboard->w)
+	{
+		events->camera->rotation_speed -= DEFAULT_ROTATION_SPEED * 0.2;
+		if (events->camera->rotation_speed < DEFAULT_ROTATION_SPEED * 0.1)
+			events->camera->rotation_speed = DEFAULT_ROTATION_SPEED * 0.1;
+	}
 	
 	clamp_values(events);
 }
@@ -96,9 +100,7 @@ void	apply_zero_changes(t_events *events)
 	t_keys	*keyboard;
 
 	keyboard = &events->keys;
-	if (keyboard->z)
-		events->camera->z_scale = DEFAULT_Z_SCALE;
-	else if (keyboard->f)
+	if (keyboard->f)
 		events->camera->frustum_margin = DEFAULT_FRUSTUM_MARGIN;
 	else if (keyboard->d)
 		events->camera->dampening_threshold = DEFAULT_DAMPENING_THRESHOLD;
@@ -110,7 +112,7 @@ int	check_if_changed(t_events *events, t_combo_ctx *ctx)
 		|| fabs(ctx->old_z - events->camera->z_scale) > 0.0001
 		|| ctx->old_frust != events->camera->frustum_margin
 		|| ctx->old_damp != events->camera->dampening_threshold
-
+		|| fabs(ctx->old_rot_speed - events->camera->rotation_speed) > 0.0001
 		|| fabs(ctx->old_alpha - events->camera->alpha) > 0.001
 		// We should track detail_step changes too, but ctx struct update is out of scope.
 		// Since we modify the step directly, this function just needs to return 1 if anything changed.

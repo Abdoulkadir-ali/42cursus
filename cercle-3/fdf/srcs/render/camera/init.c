@@ -32,6 +32,8 @@ t_camera	*init_camera_default(t_camera *cam)
 	cam->use_z_divisor = 1;
 	cam->invert_movement = 1;
 	cam->alpha = 90.0;
+	cam->rotation_speed = DEFAULT_ROTATION_SPEED;
+	cam->target_rotation = cam->rotation;
 	return (cam);
 }
 

@@ -17,25 +17,12 @@
 # include <math.h>
 
 /* ========== MODULE IMPORTS ========== */
+# include "define.h"
 # include "geometry.h"
 # include "window.h"
 
 /* Forward declaration for circular dependency with Graphics */
 typedef struct s_graphics	t_graphics;
-
-/* ========== CAMERA CONSTANTS ========== */
-# define DEFAULT_ZOOM_AVAILABLE_WIDTH 0.8
-# define DEFAULT_ZOOM_AVAILABLE_HEIGHT 0.8
-# define DEFAULT_ZOOM_PADDING 1.0
-# define DEFAULT_ZOOM_MIN 0.1
-# define DEFAULT_ZOOM_MAX 10.0
-# define DEFAULT_Y_ADJUST_FACTOR 0.5
-# define DEFAULT_CAMERA_ROTATION_X 0.0
-# define DEFAULT_CAMERA_ROTATION_Y 0.0
-# define DEFAULT_CAMERA_ROTATION_Z 0.0
-# define DEFAULT_DAMPENING_THRESHOLD 0
-# define DEFAULT_Z_SCALE 1.0
-# define DEFAULT_FRUSTUM_MARGIN 50
 
 typedef enum e_gui_style
 {
@@ -77,6 +64,8 @@ typedef struct s_camera
 	int						invert_movement;
 	double					alpha;
 	float					view_dist;
+	double					rotation_speed;
+	t_vec3d					target_rotation;
 	t_matrix4				transform_matrix;
 }							t_camera;
 

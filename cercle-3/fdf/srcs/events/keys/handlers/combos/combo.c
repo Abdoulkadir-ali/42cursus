@@ -24,6 +24,7 @@ static void	store_old_values(t_combo_ctx *ctx, t_events *events)
 	ctx->old_frust = events->camera->frustum_margin;
 	ctx->old_damp = events->camera->dampening_threshold;
 	ctx->old_alpha = events->camera->alpha;
+	ctx->old_rot_speed = events->camera->rotation_speed;
 }
 
 int	handle_plus(int keycode, t_events *events)

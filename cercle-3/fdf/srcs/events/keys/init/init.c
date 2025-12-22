@@ -65,6 +65,8 @@ int	loop_hook(t_events *events)
 	}
 	if (process_movement(events))
 		needs_redraw = 1;
+	if (process_rotation(events))
+		needs_redraw = 1;
 	if (needs_redraw)
 		redraw(events);
 	return (0);

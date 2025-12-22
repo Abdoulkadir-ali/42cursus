@@ -20,6 +20,7 @@
 # include <sys/time.h>
 
 // MODULE IMPORTS
+# include "define.h"
 # include "events.h"
 # include "graphics.h"
 # include "gui.h"
@@ -34,27 +35,6 @@ typedef struct s_data
 	t_gui				*gui;
 	t_camera_manager	*camera_manager;
 }						t_data;
-
-/* ========== WINDOW CONSTANTS ========== */
-# define WINDOW_WIDTH_RATIO 0.85
-# define WINDOW_HEIGHT_RATIO 0.85
-# define MIN_WINDOW_WIDTH 1024
-# define MIN_WINDOW_HEIGHT 768
-# define MAX_WINDOW_WIDTH 1920
-# define MAX_WINDOW_HEIGHT 1080
-
-/* ========== OPTIMIZATION DEFAULTS ========== */
-# define DEFAULT_BG_COLOR 0x000000
-# define DEFAULT_Z_SCALE 1.0
-# define DEFAULT_FRUSTUM_MARGIN 50
-# define DEFAULT_DAMPENING_THRESHOLD 0
-# define MIN_LOD_LEVEL 1
-# define MAX_LOD_LEVEL 10
-# define MIN_Z_SCALE 0.1
-# define MIN_FRUSTUM_MARGIN 0
-# define MAX_FRUSTUM_MARGIN 500
-# define MIN_DAMPENING_THRESHOLD -100
-# define MAX_DAMPENING_THRESHOLD 100
 
 void					init_defaults(t_data *data);
 int						init_window_main_image(t_window *win, void *mlx);

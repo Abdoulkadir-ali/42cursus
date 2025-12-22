@@ -34,4 +34,5 @@ void	redraw(t_events *events)
 		g->window->gui_img.img, 0, 0);
 	events->gui.fps = events->graphics->frame_data.fps;
 	redraw_gui(events);
+	draw_axis_indicator(&events->gui);
 }

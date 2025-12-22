@@ -17,6 +17,7 @@
 # include <string.h>
 
 // Header imports
+# include "define.h"
 # include "geometry.h"
 # include "graphics.h"
 # include "libft.h"
@@ -73,20 +74,6 @@ typedef struct s_colored_text
 	int					color;
 }						t_colored_text;
 
-/* ========== GUI CONSTANTS ========== */
-# define GUI_PANEL_WIDTH 280
-# define GUI_PADDING 15
-# define GUI_LINE_HEIGHT 18
-# define GUI_TITLE_HEIGHT 25
-
-// Colors
-# define GUI_BG_COLOR 0x1A1A1A
-# define GUI_BORDER_COLOR 0x404040
-# define GUI_TEXT_COLOR 0xE0E0E0
-# define GUI_TITLE_COLOR 0x00D4FF
-# define GUI_VALUE_COLOR 0x00FF88
-# define GUI_KEY_COLOR 0xFFAA00
-
 /* ========== GUI FUNCTIONS ========== */
 void					redraw_gui(t_events *events);
 void					draw_panel_background(t_gui *gui);
@@ -103,6 +90,9 @@ void					put_colored(t_gui *gui, int x, int y,
 void					format_speed(double speed, char *buffer);
 void					format_number(long long num, char *buffer);
 void					format_float(double val, char *buffer);
+
+/* Axis Indicator */
+void					draw_axis_indicator(t_gui *gui);
 
 /* Layout Engine API */
 void					gui_layout_init(t_layout *l, t_gui *gui);

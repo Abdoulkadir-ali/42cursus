@@ -15,6 +15,8 @@
 int	handle_r(int keycode, t_events *events)
 {
 	(void)keycode;
+	events->camera->target_rotation = create_vec3d(35.264 * M_PI / 180.0,
+		0.0, 45.0 * M_PI / 180.0);
 	reset_view(events);
 	reset_style(events->camera);
 	return (1);

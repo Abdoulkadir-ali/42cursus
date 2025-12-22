@@ -24,6 +24,9 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/render/stages/culling.c \
 	srcs/render/optimization/lines.c \
 	srcs/render/optimization/triangles.c \
+	srcs/geometry/color/create.c \
+	srcs/geometry/color/get.c \
+	srcs/geometry/color/transform.c \
 	srcs/geometry/matrix.c \
 	srcs/geometry/tesselation/tesselation.c \
 	srcs/geometry/tesselation/manager.c \
@@ -55,7 +58,6 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/geometry/map/read/select.c \
 	srcs/geometry/map/style/style.c \
 	srcs/geometry/map/style/themes.c \
-	srcs/geometry/color/create.c \
 	srcs/graphics/init/init.c \
 	srcs/graphics/cache/cache.c \
 	srcs/graphics/cache/helper.c \
@@ -75,8 +77,6 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/graphics/draw/triangle/scanlines/helper.c \
 	srcs/graphics/frames/clear.c \
 	srcs/graphics/frames/helper.c \
-	srcs/color/transform.c \
-	srcs/color/get.c \
 	srcs/window/init.c \
 	srcs/events/mouse/move.c \
 	srcs/events/mouse/handlers.c \
@@ -94,6 +94,9 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/events/keys/handlers/view/camera.c \
 	srcs/events/keys/handlers/view/helper.c \
 	srcs/events/keys/handlers/view/fisheye.c \
+	srcs/events/keys/handlers/view/rotate_axis.c \
+	srcs/events/keys/handlers/view/rotation.c \
+	srcs/events/keys/handlers/view/align.c \
 	srcs/events/keys/init/helper.c \
 	srcs/events/keys/init/init.c \
 	srcs/events/keys/init/keys.c \
@@ -102,6 +105,7 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/events/init/init.c \
 	srcs/gui/init.c \
 	srcs/gui/redraw.c \
+	srcs/gui/axis_indicator.c \
 	srcs/gui/panel/panel.c \
 	srcs/gui/print/put.c \
 	srcs/gui/print/format.c \
@@ -154,6 +158,7 @@ objs:
 	@mkdir -p objs/render/optimization
 	@mkdir -p objs/render/stages
 	@mkdir -p objs/geometry
+	@mkdir -p objs/geometry/color
 	@mkdir -p objs/geometry/tesselation
 	@mkdir -p objs/geometry/vectors
 	@mkdir -p objs/geometry/vectors/vec2
@@ -166,7 +171,6 @@ objs:
 	@mkdir -p objs/geometry/map/build
 	@mkdir -p objs/geometry/map/read
 	@mkdir -p objs/geometry/map/style
-	@mkdir -p objs/color
 	@mkdir -p objs/window
 	@mkdir -p objs/events
 	@mkdir -p objs/events/mouse

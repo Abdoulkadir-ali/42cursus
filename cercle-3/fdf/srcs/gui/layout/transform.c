@@ -20,12 +20,26 @@ static void	display_pos_stats(t_layout *l, t_gui *gui, char *buffer)
 	gui_layout_key_value(l, "Offset Y:", buffer);
 }
 
+static int	normalize_angle(double radians)
+{
+	int	degrees;
+
+	degrees = (int)(radians * 180.0 / M_PI);
+	degrees = degrees % 360;
+	if (degrees < 0)
+		degrees += 360;
+	return (degrees);
+}
+
 static void	display_rot_stats(t_layout *l, t_gui *gui, char *buffer)
 {
-	int rot_x = (int)(gui->camera->rotation.x * 180.0 / M_PI);
-	int rot_y = (int)(gui->camera->rotation.y * 180.0 / M_PI);
-	int rot_z = (int)(gui->camera->rotation.z * 180.0 / M_PI);
+	int rot_x;
+	int rot_y;
+	int rot_z;
 
+	rot_x = normalize_angle(gui->camera->rotation.x);
+	rot_y = normalize_angle(gui->camera->rotation.y);
+	rot_z = normalize_angle(gui->camera->rotation.z);
 	format_number(rot_x, buffer);
 	gui_layout_key_value(l, "Rot X (deg):", buffer);
 	format_number(rot_y, buffer);

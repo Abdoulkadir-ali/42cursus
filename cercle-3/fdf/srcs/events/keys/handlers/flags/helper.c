@@ -44,8 +44,6 @@ static void	set_letters(int keycode, t_events *events, int value)
 {
 	if (keycode == XK_l || keycode == XK_L)
 		events->keys.l = value;
-	else if (keycode == XK_z || keycode == XK_Z)
-		events->keys.z = value;
 	else if (keycode == XK_f || keycode == XK_F)
 		events->keys.f = value;
 	else if (keycode == XK_d || keycode == XK_D)
@@ -54,6 +52,14 @@ static void	set_letters(int keycode, t_events *events, int value)
 		events->keys.t = value;
 	else if (keycode == XK_a || keycode == XK_A)
 		events->keys.a = value;
+	else if (keycode == XK_w || keycode == XK_W)
+		events->keys.w = value;
+	else if (keycode == XK_x || keycode == XK_X)
+		events->keys.x = value;
+	else if (keycode == XK_y || keycode == XK_Y)
+		events->keys.y = value;
+	else if (keycode == XK_z || keycode == XK_Z)
+		events->keys.z = value;
 }
 
 void	init_key_flags(t_events *events)
