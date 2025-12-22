@@ -160,40 +160,36 @@ Example:
 
 ### Controls
 
+#### Rotation (New)
+- **X / Y / Z**: Continuous rotation along axes
+- **Q / E / U**: Align View (Side / Front / Top)
+- **W + (+/-)**: Adjust Rotation Speed
+- **R**: Reset Rotation & View
+
 #### Camera Movement
-- **Arrow Keys**: Rotate view (X/Y axes)
-- **Q/E**: Rotate around Z-axis
-- **WASD**: Translate camera position
-- **Mouse Drag**: Rotate view (alternative to arrow keys)
+- **Arrow Keys**: Translate camera position
+- **Mouse Drag**: Rotate view (Left/Right Click)
+- **Scroll**: Zoom In/Out
 
 #### Zoom and Scale
-- **Mouse Wheel**: Zoom in/out
 - **+/- Keys**: Adjust zoom level
-- **Page Up/Down**: Fine zoom adjustment
-- **Z/X**: Adjust Z-axis scaling
+- **Page Up/Down**: Adjust Tesselation
+- **Home/End**: Adjust LOD
 
-#### Projection Controls
-- **P**: Toggle between Parallel and Conic projection
-- **A/S**: Adjust projection angle α (shear for parallel, FOV for conic)
+#### Projection & Parameters
+- **P**: Toggle Projection (Parallel/Conic)
+- **A + (+/-)**: Adjust Alpha (Angle/FOV)
+- **D + (+/-)**: Adjust Dampening/Detail
+- **F + (+/-)**: Adjust Frustum Margin
 
-#### Map Navigation
-- **Tab**: Cycle through available maps
-- **Space**: Reset camera to default position
-
-#### Style Controls
-- **C**: Cycle through color styles
-- **G**: Cycle through GUI themes
-- **T**: Toggle tessellation on/off
-
-#### Optimization
-- **O**: Toggle optimization features
-- **L**: Adjust level-of-detail
-- **F**: Adjust frustum culling margin
-
-#### Miscellaneous
-- **H**: Toggle help panel
-- **I**: Toggle information display
-- **ESC**: Exit program
+#### Styles & Misc
+- **Space**: Reset Camera
+- **Tab**: Cycle Maps
+- **C**: Cycle Colors (if enabled)
+- **S**: Cycle GUI Themes
+- **I**: Toggle Info
+- **H**: Toggle Help
+- **ESC**: Exit
 
 ## Project Structure
 
