@@ -70,6 +70,12 @@
 #  define KEY_1 XK_1
 #  define KEY_2 XK_2
 #  define KEY_3 XK_3
+#  define KEY_7 XK_7
+#  define KEY_8 XK_8
+#  define KEY_9 XK_9
+#  define KEY_Q XK_q
+#  define KEY_E XK_e
+#  define KEY_U XK_u
 
 # endif
 

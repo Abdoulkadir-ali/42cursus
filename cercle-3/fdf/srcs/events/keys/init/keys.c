@@ -108,6 +108,13 @@ static void	set_key_actions_4(t_key_maps *key_maps)
 	key_maps->key_actions[XK_1] = handle_1;
 	key_maps->key_actions[XK_2] = handle_2;
 	key_maps->key_actions[XK_3] = handle_3;
+	// Align Keys (Q, E, U)
+	key_maps->key_actions[XK_q] = handle_1; // Align X
+	key_maps->key_actions[XK_Q] = handle_1;
+	key_maps->key_actions[XK_e] = handle_2; // Align Y
+	key_maps->key_actions[XK_E] = handle_2;
+	key_maps->key_actions[XK_u] = handle_3; // Align Z
+	key_maps->key_actions[XK_U] = handle_3;
 }
 
 void	set_key_actions(t_key_maps *key_maps)

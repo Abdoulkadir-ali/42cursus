@@ -17,7 +17,7 @@ void	draw_controls_guide_layout(t_layout *l, t_gui *gui)
 	(void)gui;
 	gui_layout_title(l, "ROTATION");
 	gui_layout_key_value(l, "X/Y/Z", "Rotate Axis");
-	gui_layout_key_value(l, "1/2/3", "X/Y/Z Align");
+	gui_layout_key_value(l, "Q/E/U", "Align");
 	gui_layout_key_value(l, "R", "Reset View");
 	gui_layout_key_value(l, "W + +/-", "Rot Speed");
 	gui_layout_add_spacer(l, 5);
