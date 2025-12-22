@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:46:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 16:50:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 17:47:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,15 +68,15 @@ int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end,
 }
 
 void	draw_line_clipped(t_graphics *g, t_point start, t_point end,
-		size_t min_x, size_t max_x)
+		t_clipping_bounds bounds)
 {
 	t_draw_line_ctx	dlc;
 
 	if (!init_draw_line_ctx(g, start, end, &dlc))
 		return ;
 	fill_bresenham_params(&dlc);
-	dlc.p.min_x = min_x;
-	dlc.p.max_x = max_x;
+	dlc.p.min_x = bounds.min_x;
+	dlc.p.max_x = bounds.max_x;
 	if (g->render_config.use_horizon_culling)
 	{
 		if (g->render_config.use_depth_culling)
@@ -120,5 +120,5 @@ void	draw_line_clipped(t_graphics *g, t_point start, t_point end,
 void	draw_line(t_graphics *g, t_point start, t_point end)
 {
 	t_clipping_bounds bounds = {0, g->window->width};
-	draw_line_clipped(g, start, end, bounds.min_x, bounds.max_x);
+	draw_line_clipped(g, start, end, bounds);
 }

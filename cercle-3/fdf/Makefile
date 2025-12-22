@@ -55,6 +55,7 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/geometry/map/read/select.c \
 	srcs/geometry/map/style/style.c \
 	srcs/geometry/map/style/themes.c \
+	srcs/geometry/color/create.c \
 	srcs/graphics/init/init.c \
 	srcs/graphics/cache/cache.c \
 	srcs/graphics/cache/helper.c \
@@ -74,7 +75,6 @@ SRCS =	srcs/core/cleanup.c \
 	srcs/graphics/draw/triangle/scanlines/helper.c \
 	srcs/graphics/frames/clear.c \
 	srcs/graphics/frames/helper.c \
-	srcs/color/create.c \
 	srcs/color/transform.c \
 	srcs/color/get.c \
 	srcs/window/init.c \

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 16:47:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 18:00:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,23 +18,22 @@
 # include <immintrin.h>
 # include <math.h>
 
-
 // PROJECT REQUIREMENTS
-# include "render.h"
 # include "geometry.h"
+# include "render.h"
 # include "window.h"
 
 # define NUM_THREADS 8
 # define DEFAULT_LOD_LEVEL 1.0
 # define FP_SHIFT 16
 # define FP_16 65536.0
-#define DRAW_LIMIT -1000000.0
+# define DRAW_LIMIT -1000000.0
 # define DEFAULT_TARGET_POINTS 1000000UL
 # define MAX_DETAIL_LEVEL 7
 # define MIN_DETAIL_LEVEL -5
 
-# define B_USE_Z 		1
-# define B_COLOR_SHIFT 	2
+# define B_USE_Z 1
+# define B_COLOR_SHIFT 2
 
 typedef struct s_events		t_events;
 
@@ -46,10 +45,9 @@ typedef enum e_render_mode
 }							t_render_mode;
 typedef struct s_clipping_bounds
 {
-        int                                     min_x;
-        int                                     max_x;
-}                                                       t_clipping_bounds;
-
+	int						min_x;
+	int						max_x;
+}							t_clipping_bounds;
 
 typedef struct s_triangle
 {
@@ -260,10 +258,10 @@ typedef struct s_render_config
 	float					lod_value;
 	int						use_tesselation;
 	int						tesselation_level;
-	size_t					target_tesselation_points; // User Control for floor details
-	int						max_tesselation_level; // Cleanup: Limit recursive depth logic
+	size_t					target_tesselation_points;
+	int						max_tesselation_level;
 	int						use_horizon_culling;
-	int						use_adaptive_logic; // New: Manual vs Auto
+	int						use_adaptive_logic;
 	int						detail_level;
 	t_vec2					last_tess_min;
 	t_vec2					last_tess_max;
@@ -330,12 +328,12 @@ typedef struct s_graphics
 	t_camera				*camera;
 	t_map					*map;
 	t_map					*base_map;
-	t_map					*tesselated_map; // Pending removal or keep as pointer to current
-	t_map					*lod_maps[8]; // Cache for levels 0-7
+	t_map					*tesselated_map;
+	t_map					*lod_maps[8];
 	t_render_config			render_config;
 	t_frame_data			frame_data;
 	t_cache					cache;
-	int						*horizon_buffer; // Floating Horizon Buffer (Int optimized)
+	int						*horizon_buffer;
 	int						dirty;
 }							t_graphics;
 
@@ -345,7 +343,7 @@ typedef struct s_thread_data
 	size_t					start_y;
 	size_t					end_y;
 	float					lod_value;
-	size_t					min_visible_x; // Optimization: Strip Rendering
+	size_t					min_visible_x;
 	size_t					max_visible_x;
 }							t_thread_data;
 
@@ -369,25 +367,6 @@ typedef struct s_draw_line_params
 
 t_point						lerp_point(t_point p1, t_point p2, double t);
 
-static inline unsigned int	create_color_fast(int r, int g, int b)
-{
-	return ((((r < 0 ? 0 : (r > 255 ? 255 : r)) & 0xFF) << 16)
-		| (((g < 0 ? 0 : (g > 255 ? 255 : g)) & 0xFF) << 8)
-		| ((b < 0 ? 0 : (b > 255 ? 255 : b)) & 0xFF));
-}
-
-static inline unsigned int	shift_color_fast(unsigned int c, int rs, int gs, int bs)
-{
-	int r = (c >> 16) & 0xFF;
-	int g = (c >> 8) & 0xFF;
-	int b = c & 0xFF;
-
-	r += rs; if (r < 0) r = 0; else if (r > 255) r = 255;
-	g += gs; if (g < 0) g = 0; else if (g > 255) g = 255;
-	b += bs; if (b < 0) b = 0; else if (b > 255) b = 255;
-	return ((r << 16) | (g << 8) | b);
-}
-/* Inline pixel drawing for performance */
 static inline void	draw_pixel_fast_no_z(t_pixel_draw_params p)
 {
 	*(unsigned int *)p.pixel_addr = p.color;
@@ -410,10 +389,12 @@ void						init_interpolation(t_point start, t_point end,
 int							init_draw_line_ctx(t_graphics *g, t_point start,
 								t_point end, t_draw_line_ctx *dlc);
 void						draw_pixel(t_graphics *graphics, t_point point);
-void						draw_line(t_graphics *graphics, t_point start, t_point end);
+void						draw_line(t_graphics *graphics, t_point start,
+								t_point end);
 void						draw_line_clipped(t_graphics *g, t_point start,
-								t_point end, size_t min_x, size_t max_x);
-void						draw_triangle(t_graphics *g, t_point p1, t_point p2, t_point p3);
+								t_point end, t_clipping_bounds bounds);
+void						draw_triangle(t_graphics *g, t_point p1, t_point p2,
+								t_point p3);
 void						swap_points(t_point *a, t_point *b);
 void						calculate_color(t_line_draw_state *state,
 								t_point start, t_point end);
@@ -432,8 +413,8 @@ void						rasterize_flat_top(t_graphics *g, t_point t1,
 void						setup_rasterization_context(t_rasterize_ctx *ctx,
 								t_point p1, t_point p2, t_point p3);
 void						setup_rasterization_context_flat_top(
-								t_rasterize_ctx *ctx, t_point p1,
-								t_point p2, t_point p3);
+								t_rasterize_ctx *ctx, t_point p1, t_point p2,
+								t_point p3);
 void						handle_y_clipping(t_rasterize_ctx *ctx);
 t_scanline_data				create_scanline_from_edges(t_rasterize_ctx *ctx,
 								int y);
@@ -470,7 +451,8 @@ void						draw_triangle_quad(t_graphics *g, int x, int y,
 								int step);
 void						draw_segment(t_graphics *g,
 								t_draw_line_params params, int is_horizontal);
-void						draw_grid_row(t_graphics *g, int y, float lod_value);
+void						draw_grid_row(t_graphics *g, int y,
+								float lod_value);
 void						join_threads(pthread_t *threads);
 void						*thread_draw_routine(void *data);
 void						clear_image(t_graphics *g);
@@ -497,8 +479,8 @@ static inline t_point	get_cached_proj_unsafe(t_graphics *g, int x, int y)
 	return (g->cache.points[y * g->cache.width + x]);
 }
 
-void						bresenham(t_graphics *g,
-								t_bresenham_params *p, int flags);
+void						bresenham(t_graphics *g, t_bresenham_params *p,
+								int flags);
 void						bresenham_raycast(t_graphics *g,
 								t_bresenham_params *p, int flags);
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:31 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 15:27:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 17:43:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
 # include "window.h"
 
 /* ========== PROJECT HEADERS ========== */
-# include "render.h"
 # include "core.h"
 # include "events.h"
 # include "graphics.h"
 # include "gui.h"
+# include "render.h"
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:23:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 17:43:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@
 # include <string.h>
 
 // Header imports
-// Header imports
-# include "render.h"
+# include "geometry.h"
 # include "graphics.h"
 # include "libft.h"
-# include "geometry.h"
+# include "render.h"
 # include "window.h"
 
 typedef struct s_events	t_events;

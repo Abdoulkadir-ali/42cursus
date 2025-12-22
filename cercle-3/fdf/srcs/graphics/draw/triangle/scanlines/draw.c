@@ -21,7 +21,7 @@ static void	draw_scanline_z_flat(t_graphics *g, t_scanline_draw_ctx *ctx)
 		if (g->render_config.use_depth_culling && *(ctx->z_ptr) > ctx->z)
 		{
 			*(ctx->z_ptr) = ctx->z;
-			color = create_color_fast(ctx->color_ctx.rgb1.x >> 16,
+			color = create_color(ctx->color_ctx.rgb1.x >> 16,
 					ctx->color_ctx.rgb1.y >> 16, ctx->color_ctx.rgb1.z >> 16);
 			*(unsigned int *)ctx->pixel_addr = color;
 		}
@@ -47,9 +47,9 @@ static void	draw_scanline_z_shifted(t_graphics *g, t_scanline_draw_ctx *ctx)
 		if (g->render_config.use_depth_culling && *(ctx->z_ptr) > ctx->z)
 		{
 			*(ctx->z_ptr) = ctx->z;
-			color = create_color_fast(ctx->color_ctx.rgb1.x >> 16,
+			color = create_color(ctx->color_ctx.rgb1.x >> 16,
 					ctx->color_ctx.rgb1.y >> 16, ctx->color_ctx.rgb1.z >> 16);
-			color = shift_color_fast(color, rx, ry, rz);
+			color = shift_color(color, rx, ry, rz);
 			*(unsigned int *)ctx->pixel_addr = color;
 		}
 		ctx->color_ctx.rgb1.x += ctx->color_ctx.drgb.x;
@@ -77,7 +77,7 @@ static void	draw_scanline_fast_flat(t_graphics *g, t_scanline_draw_ctx *ctx)
 
 	while (ctx->x <= ctx->end_x)
 	{
-		color = create_color_fast(ctx->color_ctx.rgb1.x >> 16,
+		color = create_color(ctx->color_ctx.rgb1.x >> 16,
 				ctx->color_ctx.rgb1.y >> 16, ctx->color_ctx.rgb1.z >> 16);
 		*(unsigned int *)ctx->pixel_addr = color;
 		ctx->color_ctx.rgb1.x += ctx->color_ctx.drgb.x;
@@ -97,9 +97,9 @@ static void	draw_scanline_fast_shifted(t_graphics *g, t_scanline_draw_ctx *ctx)
 
 	while (ctx->x <= ctx->end_x)
 	{
-		color = create_color_fast(ctx->color_ctx.rgb1.x >> 16,
+		color = create_color(ctx->color_ctx.rgb1.x >> 16,
 				ctx->color_ctx.rgb1.y >> 16, ctx->color_ctx.rgb1.z >> 16);
-		color = shift_color_fast(color, rx, ry, rz);
+		color = shift_color(color, rx, ry, rz);
 		*(unsigned int *)ctx->pixel_addr = color;
 		
 		ctx->color_ctx.rgb1.x += ctx->color_ctx.drgb.x;

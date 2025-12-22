@@ -1,34 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create.c                                           :+:      :+:    :+:   */
+/*   get.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/10 15:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 17:52:40 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/13 11:11:41 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/21 17:01:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "color.h"
+#include "geometry.h"
 
-int	clamp(int value, int min, int max)
+unsigned char	get_red(unsigned int color)
 {
-	if (value < min)
-		return (min);
-	if (value > max)
-		return (max);
-	return (value);
+	return ((color >> 16) & 0xFF);
 }
 
-unsigned int	create_color_rgb(t_vec3 rgb)
+unsigned char	get_green(unsigned int color)
 {
-	return (create_color((unsigned char)rgb.x, (unsigned char)rgb.y, (unsigned char)rgb.z));
+	return ((color >> 8) & 0xFF);
 }
 
-unsigned int	create_color_wrap(int r, int g, int b)
+unsigned char	get_blue(unsigned int color)
 {
-	return (create_color((unsigned char)r, (unsigned char)g, (unsigned char)b));
+	return (color & 0xFF);
 }
 
-
+t_vec3	get_color_vec3(unsigned int color)
+{
+	return ((t_vec3){(int)get_red(color), (int)get_green(color),
+			(int)get_blue(color)});
+}

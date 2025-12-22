@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 17:43:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,11 @@
 # include <math.h>
 
 /* ========== PACKAGES ========== */
-/* ========== PACKAGES ========== */
-# include "render.h"
+# include "geometry.h"
 # include "graphics.h"
 # include "gui.h"
 # include "libft.h"
-# include "geometry.h"
+# include "render.h"
 # include "window.h"
 
 /* ========== OPTIMIZATION DEFAULTS ========== */

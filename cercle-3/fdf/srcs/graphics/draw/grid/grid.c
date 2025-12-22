@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:16:55 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 16:47:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/21 17:48:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void	draw_surface_primitive(t_graphics *g, int x, int y, int dx, int dy, 
 					(curr.pos.x >= t->max_visible_x && h_next.pos.x >= t->max_visible_x)))
 			{
 				t_clipping_bounds bounds = {t->min_visible_x, t->max_visible_x};
-				draw_line_clipped(g, curr, h_next, bounds.min_x, bounds.max_x);
+				draw_line_clipped(g, curr, h_next, bounds);
 			}
 		}
 	}
@@ -83,7 +83,7 @@ static void	draw_surface_primitive(t_graphics *g, int x, int y, int dx, int dy, 
 					(curr.pos.x >= t->max_visible_x && v_next.pos.x >= t->max_visible_x)))
 			{
 				t_clipping_bounds bounds = {t->min_visible_x, t->max_visible_x};
-				draw_line_clipped(g, curr, v_next, bounds.min_x, bounds.max_x);
+				draw_line_clipped(g, curr, v_next, bounds);
 			}
 		}
 	}
