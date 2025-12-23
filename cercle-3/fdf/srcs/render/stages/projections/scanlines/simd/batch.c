@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 17:32:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:01:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:25:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 #include "render.h"
 
-void	transform_simd_batch(t_transform_batch_ctx *batch_ctx)
+void	transform_simd_batch(t_batch_ctx *batch_ctx)
 {
 	t_simd_batch_ctx	bctx;
 

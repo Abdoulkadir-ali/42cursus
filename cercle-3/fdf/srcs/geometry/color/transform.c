@@ -6,21 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:24:11 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 21:10:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:42:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
-#include "color.h"
-
-double	clamp_d(double value, double min, double max)
-{
-	if (value < min)
-		return (min);
-	if (value > max)
-		return (max);
-	return (value);
-}
 
 void	clamp_color(t_vec3 *color, int min, int max)
 {

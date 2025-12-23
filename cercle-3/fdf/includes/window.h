@@ -6,12 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:51:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:14:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:42:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WINDOW_H
 # define WINDOW_H
+
+# include "math.h"
 
 typedef struct s_image
 {

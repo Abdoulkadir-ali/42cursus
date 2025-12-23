@@ -6,12 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 20:49:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:32:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "color.h"
-#include "graphics.h"
 #include "render.h"
 
 static void	update_bounds(t_point p, t_vec2 *min, t_vec2 *max)

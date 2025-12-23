@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:16:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:42:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 /* ========== MODULE IMPORTS ========== */
 # include "define.h"
 # include "geometry.h"
+# include "math.h"
 # include "window.h"
 
 /* Forward declaration for circular dependency with Graphics */
@@ -154,7 +155,7 @@ typedef struct s_transform_batch_ctx
 	size_t					row_idx;
 	size_t					i;
 	t_simd_ctx				*ctx;
-}							t_transform_batch_ctx;
+}							t_batch_ctx;
 
 typedef struct s_handle_remainder_ctx
 {
@@ -171,7 +172,7 @@ typedef struct s_transform_scanline_ctx
 	t_camera				*cam;
 	t_matrix4				*m;
 	t_simd_ctx				ctx;
-	t_transform_batch_ctx	batch_ctx;
+	t_batch_ctx				batch_ctx;
 	t_handle_remainder_ctx	rem_ctx;
 }							t_transform_scanline_ctx;
 
@@ -224,18 +225,16 @@ void						transform_scanline(t_graphics *g, t_point *out,
 
 void						setup_simd_constants(t_camera *cam, t_matrix4 *m,
 								t_simd_ctx *ctx);
-void						transform_simd_batch(
-																				t_transform_batch_ctx *batch_ctx);
-void						transform_simd_batch_store(
-																				t_simd_batch_ctx *bctx, t_graphics *g,
-																				t_point *out);
+void						transform_simd_batch(t_batch_ctx *batch_ctx);
+void						transform_simd_batch_store(t_simd_batch_ctx *bctx,
+								t_graphics *g, t_point *out);
 void						handle_remainder(t_handle_remainder_ctx *ctx);
 
 __m256d						matrix_row_mul(t_simd_vec3 vec, t_simd_vec4 mat);
 __m256d						vector_dot(t_simd_vec3 vec, t_simd_vec3 v);
 
 void						load_simd_vectors(t_simd_batch_ctx *bctx,
-								t_transform_batch_ctx *batch_ctx);
+								t_batch_ctx *batch_ctx);
 void						apply_scaling_centering(t_simd_batch_ctx *bctx,
 								t_simd_ctx *ctx);
 void						apply_simd_matrix_transform(t_simd_batch_ctx *bctx,

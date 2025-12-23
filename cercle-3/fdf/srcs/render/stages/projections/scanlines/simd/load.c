@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 17:32:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:01:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:25:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "render.h"
 
 void	load_simd_vectors(t_simd_batch_ctx *bctx,
-		t_transform_batch_ctx *batch_ctx)
+		t_batch_ctx *batch_ctx)
 {
 	bctx->idx = batch_ctx->row_idx + batch_ctx->i;
 	bctx->ptr = (double *)&batch_ctx->g->map->points.pos[bctx->idx];

@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 22:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 17:52:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:28:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "color.h"
 #include "geometry.h"
 
 t_map	*tesselate_mesh(t_map *src)

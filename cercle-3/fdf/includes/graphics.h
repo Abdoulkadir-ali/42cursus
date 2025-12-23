@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:17:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:42:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 // PROJECT REQUIREMENTS
 # include "define.h"
 # include "geometry.h"
+# include "math.h"
 # include "render.h"
 # include "window.h"
 
@@ -119,6 +120,13 @@ typedef struct s_rasterize_ctx
 	int						y_start;
 	int						y_end;
 }							t_rasterize_ctx;
+
+typedef struct s_rasterize_points
+{
+	t_point					p1;
+	t_point					p2;
+	t_point					p3;
+}							t_rasterize_points;
 
 typedef struct s_bresenham
 {
@@ -515,10 +523,10 @@ void						rasterize_flat_bottom(t_graphics *g, t_point top,
 void						rasterize_flat_top(t_graphics *g, t_point t1,
 								t_point t2, t_point bot);
 void						setup_rasterization_context(t_rasterize_ctx *ctx,
-								t_point p1, t_point p2, t_point p3);
-void						setup_rasterization_context_flat_top(t_rasterize_ctx *ctx,
-																t_rasterize_ctx *ctx, t_point p1, t_point p2,
-																t_point p3);
+								t_rasterize_points points);
+void						setup_rasterization_context_flat_top(
+								t_rasterize_ctx *ctx,
+								t_rasterize_points points);
 t_scanline_data				create_scanline_from_edges(t_rasterize_ctx *ctx,
 								int y);
 void						rasterize_span(t_graphics *g, t_rasterize_ctx *ctx);

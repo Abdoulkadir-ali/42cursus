@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:22:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
-#include <pthread.h>
 
 void	init_cache(t_graphics *g)
 {

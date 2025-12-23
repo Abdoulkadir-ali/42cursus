@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:14:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:42:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "geometry.h"
 # include "graphics.h"
 # include "libft.h"
+# include "math.h"
 # include "render.h"
 # include "window.h"
 

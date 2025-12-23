@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:02 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 12:40:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:43:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "geometry.h"
+#include "math.h"
 
 t_vec3	create_vec3(int x, int y, int z)
 {

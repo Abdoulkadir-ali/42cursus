@@ -6,28 +6,28 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 12:38:46 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:33:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
-void	setup_rasterization_context(t_rasterize_ctx *ctx, t_point p1,
-		t_point p2, t_point p3)
+void	setup_rasterization_context(
+		t_rasterize_ctx *ctx, t_rasterize_points points)
 {
-	ctx->y_start = (int)p1.pos.y;
-	ctx->y_end = (int)p2.pos.y;
-	setup_edge(&ctx->e1, p1, p2);
-	setup_edge(&ctx->e2, p1, p3);
+	ctx->y_start = (int)points.p1.pos.y;
+	ctx->y_end = (int)points.p2.pos.y;
+	setup_edge(&ctx->e1, points.p1, points.p2);
+	setup_edge(&ctx->e2, points.p1, points.p3);
 }
 
-void	setup_rasterization_context_flat_top(t_rasterize_ctx *ctx,
-		t_point p1, t_point p2, t_point p3)
+void	setup_rasterization_context_flat_top(
+		t_rasterize_ctx *ctx, t_rasterize_points points)
 {
-	ctx->y_start = (int)p1.pos.y;
-	ctx->y_end = (int)p3.pos.y;
-	setup_edge(&ctx->e1, p1, p3);
-	setup_edge(&ctx->e2, p2, p3);
+	ctx->y_start = (int)points.p1.pos.y;
+	ctx->y_end = (int)points.p3.pos.y;
+	setup_edge(&ctx->e1, points.p1, points.p3);
+	setup_edge(&ctx->e2, points.p2, points.p3);
 }
 
 void	handle_y_clipping(t_rasterize_ctx *ctx)
