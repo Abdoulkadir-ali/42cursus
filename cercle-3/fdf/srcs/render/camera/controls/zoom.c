@@ -6,11 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:21:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 17:18:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:53:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+
+double	fabs(double x);
 
 void	zoom_in(t_camera_manager *ctx)
 {

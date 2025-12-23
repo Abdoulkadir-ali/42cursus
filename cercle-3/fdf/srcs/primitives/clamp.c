@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:02 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:43:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "math.h"
+#include "primitives.h"
 
 void	clamp_float(float *value, float min, float max)
 {

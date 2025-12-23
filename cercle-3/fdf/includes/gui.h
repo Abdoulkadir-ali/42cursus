@@ -21,7 +21,7 @@
 # include "geometry.h"
 # include "graphics.h"
 # include "libft.h"
-# include "math.h"
+# include "primitives.h"
 # include "render.h"
 # include "window.h"
 

@@ -6,11 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:41:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:41:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:50:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <math.h>
 #include "gui.h"
+
+double	pow(double x, double y);
 
 void	display_point_stats(t_layout *l, t_gui *gui, char *buffer)
 {

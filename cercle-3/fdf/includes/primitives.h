@@ -6,12 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 22:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:43:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:49:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MATH_H
 # define MATH_H
+
+# include "define.h"
+# include <math.h>
 
 /* ========== VECTORS ========== */
 

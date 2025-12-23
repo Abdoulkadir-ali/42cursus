@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:42:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:53:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 // PROJECT REQUIREMENTS
 # include "define.h"
 # include "geometry.h"
-# include "math.h"
+# include "primitives.h"
 # include "render.h"
 # include "window.h"
 
@@ -530,6 +530,7 @@ void						setup_rasterization_context_flat_top(
 t_scanline_data				create_scanline_from_edges(t_rasterize_ctx *ctx,
 								int y);
 void						rasterize_span(t_graphics *g, t_rasterize_ctx *ctx);
+void						handle_y_clipping(t_rasterize_ctx *ctx);
 
 int							z_buffer_test(t_graphics *g, t_vec2 v, float z);
 void						draw_horizontal_scanline_z(t_graphics *g,

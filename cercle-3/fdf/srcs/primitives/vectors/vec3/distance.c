@@ -5,28 +5,45 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/21 00:55:00 by abdoali          ###   ########.fr       */
-/*   Updated: 2025/12/21 00:55:00 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/13 12:45:43 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "geometry.h"
+#include "primitives.h"
 
-unsigned int	vecu2_len(t_vecu2 v)
+double	sqrt(double x);
+
+double	vec3_len(t_vec3 v)
 {
-	return ((unsigned int)sqrt(v.x * v.x + v.y * v.y));
+	return (sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
 }
 
-unsigned int	vecu2_min(t_vecu2 v)
+double	vec3_min(t_vec3 v)
 {
-	if (v.x < v.y)
-		return (v.x);
-	return (v.y);
+	double	min;
+
+	min = v.x;
+	if (v.y < min)
+		min = v.y;
+	if (v.z < min)
+		min = v.z;
+	return (min);
 }
 
-unsigned int	vecu2_max(t_vecu2 v)
+double	vec3_max(t_vec3 v)
 {
-	if (v.x > v.y)
-		return (v.x);
-	return (v.y);
+	double	max;
+
+	max = v.x;
+	if (v.y > max)
+		max = v.y;
+	if (v.z > max)
+		max = v.z;
+	return (max);
+}
+
+t_vec2	vec3_get_minmax_components(t_vec3 v)
+{
+	return (create_vec2(vec3_min(v), vec3_max(v)));
 }

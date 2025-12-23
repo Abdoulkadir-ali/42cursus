@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:02 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 12:40:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "geometry.h"
+#include "primitives.h"
 
-t_vec3d	create_vec3d(double x, double y, double z)
+t_vec2d	create_vec2d(double x, double y)
 {
-	return ((t_vec3d){x, y, z});
+	return ((t_vec2d){x, y});
 }

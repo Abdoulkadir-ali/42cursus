@@ -23,7 +23,7 @@
 /* NON DEPENDANT */
 
 # include "geometry.h"
-# include "math.h"
+# include "primitives.h"
 # include "window.h"
 
 /* ========== PROJECT HEADERS ========== */

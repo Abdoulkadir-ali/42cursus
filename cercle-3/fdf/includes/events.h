@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:42:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:49:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 # include <sys/time.h>
 
 /* ========== PACKAGES ========== */
+# include "libft.h"
+# include "primitives.h"
 # include "define.h"
 # include "geometry.h"
 # include "graphics.h"
 # include "gui.h"
-# include "libft.h"
-# include "math.h"
 # include "render.h"
 # include "window.h"
 

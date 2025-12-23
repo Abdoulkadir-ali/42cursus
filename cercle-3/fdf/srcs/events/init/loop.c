@@ -6,11 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 19:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:03:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:46:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
+
+double	fabs(double x);
 
 int	loop_hook(t_events *events)
 {

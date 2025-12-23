@@ -6,20 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:27:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:42:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:47:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+double	floor(double x);
+double	fabs(double x);
+
 void	clamp_values(t_events *events)
 {
 	clamp_float(&events->lod_value, MIN_LOD_LEVEL, MAX_LOD_LEVEL);
 	clamp_double(&events->camera->z_scale, MIN_Z_SCALE, MAX_Z_SCALE);
-	clamp_uint(&events->camera->frustum_margin,
-		MIN_FRUSTUM_MARGIN, MAX_FRUSTUM_MARGIN);
-	clamp_uint(&events->camera->dampening_threshold,
-		MIN_DAMPENING_THRESHOLD, MAX_DAMPENING_THRESHOLD);
+	clamp_uint(&events->camera->frustum_margin, MIN_FRUSTUM_MARGIN,
+		MAX_FRUSTUM_MARGIN);
+	clamp_uint(&events->camera->dampening_threshold, MIN_DAMPENING_THRESHOLD,
+		MAX_DAMPENING_THRESHOLD);
 	clamp_double(&events->camera->alpha, 1.0, 180.0);
 	events->camera->z_scale = floor(events->camera->z_scale * 10.0) / 10.0;
 }

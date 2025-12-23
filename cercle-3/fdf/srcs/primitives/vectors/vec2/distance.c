@@ -5,38 +5,35 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/13 12:45:43 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 14:46:52 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/13 11:28:02 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "geometry.h"
+#include "primitives.h"
 
-double	vec3d_min(t_vec3d v)
+double	sqrt(double x);
+
+int	vec2_len(t_vec2 v)
 {
-	double	min;
-
-	min = v.x;
-	if (v.y < min)
-		min = v.y;
-	if (v.z < min)
-		min = v.z;
-	return (min);
+	return ((int)sqrt(v.x * v.x + v.y * v.y));
 }
 
-double	vec3d_max(t_vec3d v)
+int	vec2_min(t_vec2 v)
 {
-	double	max;
-
-	max = v.x;
-	if (v.y > max)
-		max = v.y;
-	if (v.z > max)
-		max = v.z;
-	return (max);
+	if (v.x < v.y)
+		return (v.x);
+	return (v.y);
 }
 
-t_vec2d	vec3d_minmax(t_vec3d v)
+int	vec2_max(t_vec2 v)
 {
-	return (create_vec2d(vec3d_min(v), vec3d_max(v)));
+	if (v.x > v.y)
+		return (v.x);
+	return (v.y);
+}
+
+t_vec2	vec2_minmax(int min, int max)
+{
+	return (create_vec2(min, max));
 }

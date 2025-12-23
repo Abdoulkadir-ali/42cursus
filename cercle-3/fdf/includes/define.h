@@ -6,14 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 11:43:55 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:42:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:49:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DEFINE_H
 # define DEFINE_H
-
-# include "math.h"
 
 /* ========== GEOMETRY CONSTANTS ========== */
 # ifndef BAD_VALUE

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "graphics.h"
 #include "render.h"
 
 static void	update_bounds(t_point p, t_vec2 *min, t_vec2 *max)

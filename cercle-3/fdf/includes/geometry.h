@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:42:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:48:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 /* ========== IMPORTS ========== */
 # include "libft.h"
-# include "math.h"
+# include "primitives.h"
+# include "define.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <math.h>
@@ -23,12 +24,6 @@
 # include <xmmintrin.h>
 
 /* ========== VECTORS ========== */
-
-typedef struct s_point
-{
-	t_vec3d				pos;
-	t_vec3				color;
-}						t_point;
 
 typedef struct s_matrix4
 {

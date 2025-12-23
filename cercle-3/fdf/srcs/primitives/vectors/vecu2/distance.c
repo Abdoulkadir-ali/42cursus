@@ -1,18 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   distance.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/13 11:28:02 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 12:40:26 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/21 00:55:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "geometry.h"
+#include "primitives.h"
 
-t_vec2d	create_vec2d(double x, double y)
+double	sqrt(double x);
+
+unsigned int	vecu2_len(t_vecu2 v)
 {
-	return ((t_vec2d){x, y});
+	return ((unsigned int)sqrt(v.x * v.x + v.y * v.y));
+}
+
+unsigned int	vecu2_min(t_vecu2 v)
+{
+	if (v.x < v.y)
+		return (v.x);
+	return (v.y);
+}
+
+unsigned int	vecu2_max(t_vecu2 v)
+{
+	if (v.x > v.y)
+		return (v.x);
+	return (v.y);
 }

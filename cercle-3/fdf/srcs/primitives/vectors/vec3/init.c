@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:02 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 12:40:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "geometry.h"
+#include "primitives.h"
 
-t_vec2	create_vec2(int x, int y)
+t_vec3	create_vec3(int x, int y, int z)
 {
-	return ((t_vec2){x, y});
+	return ((t_vec3){x, y, z});
 }

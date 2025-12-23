@@ -1,25 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/21 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:50:53 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/13 11:28:02 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "primitives.h"
 
-
-int	normalize_angle(double radians)
+t_vec3d	create_vec3d(double x, double y, double z)
 {
-	int	degrees;
-
-	degrees = (int)(radians * 180.0 / M_PI);
-	degrees = degrees % 360;
-	if (degrees < 0)
-		degrees += 360;
-	return (degrees);
+	return ((t_vec3d){x, y, z});
 }

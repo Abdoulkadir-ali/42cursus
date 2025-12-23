@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:42:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:49:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include "events.h"
 # include "graphics.h"
 # include "gui.h"
-# include "math.h"
+# include "primitives.h"
 
 typedef struct s_data
 {
