@@ -83,6 +83,7 @@ Get **FDF** running on your Linux machine in seconds.
 - **GCC / Clang** compiler
 - **Make**
 - **X11** development libraries (`libx11-dev`, `libxext-dev`)
+- **MiniLibX** (download from the official repository and place in the `minilibx-linux/` directory)
 
 ### **Build Instructions**
 
