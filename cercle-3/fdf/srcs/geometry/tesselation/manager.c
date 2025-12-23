@@ -55,7 +55,7 @@ static t_map	*alloc_submap(t_map *src, int w, int h)
 	size = w * h;
 	sub->points.pos = malloc(sizeof(t_vec3d) * size);
 	sub->points.raw = malloc(sizeof(t_vec3d) * size);
-	sub->points.color = malloc(sizeof(int) * size);
+	sub->points.color = malloc(sizeof(t_vec3) * size);
 	if (!sub->points.pos || !sub->points.raw || !sub->points.color)
 	{
 		if (sub->points.pos)

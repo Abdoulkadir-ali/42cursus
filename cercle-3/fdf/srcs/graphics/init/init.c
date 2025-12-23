@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:45 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:05:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 20:06:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	init_render_config(t_render_config *c)
 	c->use_horizon_culling = 0;
 	c->use_adaptive_logic = 1;
 	c->target_tesselation_points = DEFAULT_TARGET_POINTS;
-
 	c->detail_level = 0;
 	c->last_tess_level = -100;
 	c->last_tess_min = (t_vec2){-1, -1};
@@ -43,6 +42,7 @@ void	init_frame_data(t_frame_data *f)
 t_graphics	*init_graphics(t_graphics_args args)
 {
 	t_graphics	*g;
+	int			i;
 
 	g = malloc(sizeof(t_graphics));
 	if (!g)
@@ -51,7 +51,7 @@ t_graphics	*init_graphics(t_graphics_args args)
 	g->camera = args.camera;
 	g->base_map = args.map;
 	g->tesselated_map = NULL;
-	int i = 0;
+	i = 0;
 	while (i < 8)
 		g->lod_maps[i++] = NULL;
 	g->map = args.map;

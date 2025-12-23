@@ -59,7 +59,7 @@ char	*parse_point(char *p, t_map *map, size_t idx)
 		color = strtol(p, &end, 0);
 		if (end == p)
 			color = 0xFFFFFF;
-		map->points.color[idx] = (int)color;
+		map->points.color[idx] = int_color_to_rgb((unsigned int)color);
 		p = end;
 	}
 	return (p);

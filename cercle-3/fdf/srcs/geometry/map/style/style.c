@@ -15,7 +15,7 @@
 void	apply_colors(t_map *map)
 {
 	t_vec3	pos;
-	int		color;
+	t_vec3	color;
 	int		idx;
 
 	pos.y = 0;
@@ -34,7 +34,7 @@ void	apply_colors(t_map *map)
 	}
 }
 
-unsigned int	get_map_line_color(t_vec3 v, t_map_style style)
+t_vec3	get_map_line_color(t_vec3 v, t_map_style style)
 {
 	if (style == MAP_STYLE_GRADIENT)
 		return (get_height_color(v.x, v.y, v.z));
@@ -44,14 +44,14 @@ unsigned int	get_map_line_color(t_vec3 v, t_map_style style)
 		return (get_zebra_color(v.x));
 	else if (style == MAP_STYLE_NEON)
 		return (get_neon_color(v.x));
-	return (0xFFFFFF);
+	return (create_color(255, 255, 255));
 }
 
 void	apply_map_style(t_map *map)
 {
 	t_vec3	pos;
 	t_vec3	v;
-	int		color;
+	t_vec3	color;
 	int		idx;
 
 	pos.y = 0;

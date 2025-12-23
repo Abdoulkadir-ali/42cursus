@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 15:00:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 20:03:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ void	setup_edge(t_edge *e, t_point top, t_point bot)
 	inv_h = 1.0 / height;
 	e->x = top.pos.x;
 	e->z = top.pos.z;
-	e->r = get_red(top.color);
-	e->g = get_green(top.color);
-	e->b = get_blue(top.color);
+	e->r = top.color.x;
+	e->g = top.color.y;
+	e->b = top.color.z;
 	e->dx = (bot.pos.x - top.pos.x) * inv_h;
 	e->dz = (bot.pos.z - top.pos.z) * inv_h;
-	e->dr = (get_red(bot.color) - e->r) * inv_h;
-	e->dg = (get_green(bot.color) - e->g) * inv_h;
-	e->db = (get_blue(bot.color) - e->b) * inv_h;
+	e->dr = (bot.color.x - e->r) * inv_h;
+	e->dg = (bot.color.y - e->g) * inv_h;
+	e->db = (bot.color.z - e->b) * inv_h;
 }
 
 void	step_edge(t_edge *e)

@@ -43,7 +43,7 @@ int	allocate_map_points(t_map *map)
 	total = map->height * map->width;
 	map->points.pos = malloc(sizeof(t_vec3d) * total);
 	map->points.raw = malloc(sizeof(t_vec3d) * total);
-	map->points.color = malloc(sizeof(unsigned int) * total);
+	map->points.color = malloc(sizeof(t_vec3) * total);
 	if (!map->points.pos || !map->points.raw || !map->points.color)
 		return (0);
 	i = 0;
@@ -52,7 +52,7 @@ int	allocate_map_points(t_map *map)
 		map->points.raw[i].z = BAD_VALUE;
 		map->points.raw[i].x = i % map->width;
 		map->points.raw[i].y = i / map->width;
-		map->points.color[i] = 0xFFFFFF;
+		map->points.color[i] = create_color(255, 255, 255);
 		i++;
 	}
 	return (1);

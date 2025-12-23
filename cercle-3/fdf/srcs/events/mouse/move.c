@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:57:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 20:09:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,15 @@ static void	handle_camera_rotation(int x, int y, t_events *events)
 
 static void	handle_color_shift(int x, int y, t_events *events)
 {
-	int	dx;
-	int	dy;
+	t_vec2	delta;
+	t_vec3	shift;
 
-	dx = x - events->mouse.last_x;
-	dy = y - events->mouse.last_y;
-	events->camera->color_shift.x += dx * 2;
-	events->camera->color_shift.z -= dx * 2;
-	events->camera->color_shift.y -= dy * 2;
+	delta.x = x - events->mouse.last_x;
+	delta.y = y - events->mouse.last_y;
+	shift.x = delta.x * 2;
+	shift.y = -delta.y * 2;
+	shift.z = -delta.x * 2;
+	vec3_add(&events->camera->color_shift, shift);
 	events->mouse.last_x = x;
 	events->mouse.last_y = y;
 	redraw(events);

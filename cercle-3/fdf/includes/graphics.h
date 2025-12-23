@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 17:10:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:17:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "libft.h"
 # include <immintrin.h>
 # include <math.h>
+# include <pthread.h>
 
 // PROJECT REQUIREMENTS
 # include "define.h"
@@ -66,8 +67,8 @@ typedef struct s_scanline_data
 	int						y;
 	float					z1;
 	float					z2;
-	int						c1;
-	int						c2;
+	t_vec3					c1;
+	t_vec3					c2;
 }							t_scanline_data;
 
 typedef struct s_scanline_color_ctx
@@ -87,6 +88,14 @@ typedef struct s_scanline_draw_ctx
 	char					*pixel_addr;
 	float					*z_ptr;
 }							t_scanline_draw_ctx;
+
+typedef struct s_scanline_ctx
+{
+	t_scanline_color_ctx	color_ctx;
+	t_scanline_draw_ctx		draw_ctx;
+	float					dz;
+	int						len;
+}							t_scanline_ctx;
 
 /* Helper struct for edge walking */
 typedef struct s_edge
@@ -336,6 +345,74 @@ typedef struct s_thread_data
 	size_t					max_visible_x;
 }							t_thread_data;
 
+typedef struct s_draw_surface_ctx
+{
+	t_graphics				*g;
+	t_vec2					pos;
+	t_vec2					dir;
+	t_thread_data			*t;
+	t_point					curr;
+	t_point					h_next;
+	t_point					v_next;
+	t_point					diag;
+	int						has_curr;
+	int						has_h;
+	int						has_v;
+	int						has_diag;
+	int						margin;
+}							t_draw_surface_ctx;
+
+typedef struct s_thread_raycast_ctx
+{
+	t_thread_data			*t;
+	t_graphics				*g;
+	int						w;
+	int						h;
+	t_vec2					peak;
+	t_vec2					current;
+	int						step;
+}							t_thread_raycast_ctx;
+
+typedef struct s_get_peak_ctx
+{
+	int						w;
+	int						h;
+	float					max_y;
+	t_vec2					peak;
+	t_point					p;
+	int						xs[3];
+	int						ys[3];
+	int						xi;
+	int						yi;
+}							t_get_peak_ctx;
+
+typedef struct s_tessellation_ctx
+{
+	int						steps;
+	int						max_steps;
+	long					total_base;
+	t_vec3d					v1;
+	t_vec3d					v2;
+	t_vec3					c1;
+	t_vec3					c2;
+	t_point					prev;
+	t_point					curr;
+	int						k;
+	float					t;
+	t_vec3d					v_curr;
+	t_vec3					color;
+	unsigned int			r1;
+	unsigned int			g1c;
+	unsigned int			b1;
+	unsigned int			r2c;
+	unsigned int			g2c;
+	unsigned int			b2c;
+	unsigned int			rr;
+	unsigned int			gg;
+	unsigned int			bb;
+	t_point					p_input;
+}							t_tessellation_ctx;
+
 typedef struct s_graphics_args
 {
 	t_window				*window;
@@ -345,34 +422,76 @@ typedef struct s_graphics_args
 
 typedef struct s_draw_line_params
 {
-	int						x;
-	int						y;
+	t_vec2					pos;
 	t_point					p1;
 	int						step;
 }							t_draw_line_params;
 
+typedef struct s_fill_cache_thread_data
+{
+	t_graphics				*g;
+	size_t					start_y;
+	size_t					end_y;
+}							t_fill_cache_thread_data;
+
+typedef struct s_grid_row_ctx
+{
+	size_t					x;
+	size_t					next_x;
+	int						step_int;
+	size_t					idx;
+	size_t					row_base;
+	size_t					total_points;
+}							t_grid_row_ctx;
+
+typedef struct s_segment_ctx
+{
+	t_point					p0;
+	t_point					p3;
+	int						prev_coord;
+	size_t					next_coord;
+	int						max_coord;
+	size_t					next_x;
+	size_t					next_y;
+	t_vec2					tmp_vec;
+}							t_segment_ctx;
+
+void						draw_tessellated_segment(t_segment_ctx *ctx,
+								t_graphics *g, t_draw_line_params params);
+void						draw_standard_segment(t_segment_ctx *ctx,
+								t_graphics *g, t_draw_line_params params);
+void						compute_next_coords(t_segment_ctx *ctx,
+								t_draw_line_params params, int is_horizontal);
+t_tessellation_ctx			init_tessellation_ctx(t_segment_ctx *ctx,
+								t_graphics *g, t_draw_line_params params);
+
+typedef struct s_triangle_quad_ctx
+{
+	t_point					p1;
+	t_point					p2;
+	t_point					p3;
+	t_point					p4;
+	size_t					idx;
+	size_t					next_row_idx;
+}							t_triangle_quad_ctx;
+
 /* Perspective Helper */
 /* Moved to renderer module */
 
-static inline void	draw_pixel_fast_no_z(t_pixel_draw_params p)
-{
-	*(unsigned int *)p.pixel_addr = p.color;
-}
-
-static inline void	draw_pixel_fast(t_graphics *g, t_pixel_draw_params p)
-{
-	if (!g->render_config.use_depth_culling || !p.z_addr || p.zr < *p.z_addr)
-	{
-		if (g->render_config.use_depth_culling && p.z_addr)
-			*p.z_addr = p.zr;
-		*(unsigned int *)p.pixel_addr = p.color;
-	}
-}
+/* Pixel Drawing */
+void						draw_pixel_fast_no_z(t_pixel_draw_params p);
+void						draw_pixel_fast(t_graphics *g,
+								t_pixel_draw_params p);
 void						fill_bresenham_params(t_draw_line_ctx *dlc);
 void						setup_pointers(t_graphics *g, t_ptr_ctx *ctx,
 								int sx, int sy);
 void						init_interpolation(t_point start, t_point end,
 								int steps, t_interp_data *data);
+void						set_line_positions(t_point start, t_point end,
+								t_draw_line_ctx *dlc);
+int							is_line_visible(t_draw_line_ctx *dlc);
+void						set_line_pointers(t_graphics *g,
+								t_draw_line_ctx *dlc);
 int							init_draw_line_ctx(t_graphics *g, t_point start,
 								t_point end, t_draw_line_ctx *dlc);
 
@@ -398,13 +517,13 @@ void						rasterize_flat_top(t_graphics *g, t_point t1,
 void						setup_rasterization_context(t_rasterize_ctx *ctx,
 								t_point p1, t_point p2, t_point p3);
 void						setup_rasterization_context_flat_top(t_rasterize_ctx *ctx,
-								t_point p1, t_point p2, t_point p3);
-void						handle_y_clipping(t_rasterize_ctx *ctx);
+																t_rasterize_ctx *ctx, t_point p1, t_point p2,
+																t_point p3);
 t_scanline_data				create_scanline_from_edges(t_rasterize_ctx *ctx,
 								int y);
 void						rasterize_span(t_graphics *g, t_rasterize_ctx *ctx);
 
-int							z_buffer_test(t_graphics *g, int x, int y, float z);
+int							z_buffer_test(t_graphics *g, t_vec2 v, float z);
 void						draw_horizontal_scanline_z(t_graphics *g,
 								t_scanline_data data);
 void						swap_scanline_data(t_scanline_data *data);
@@ -430,6 +549,10 @@ void						draw_triangle_quad(t_graphics *g, int x, int y,
 								int step);
 void						draw_segment(t_graphics *g,
 								t_draw_line_params params, int is_horizontal);
+void						init_grid_row_ctx(t_grid_row_ctx *ctx,
+								t_graphics *g, int y, float lod_value);
+void						process_grid_row_point(t_graphics *g,
+								t_grid_row_ctx *ctx, int y);
 void						draw_grid_row(t_graphics *g, int y,
 								float lod_value);
 void						join_threads(pthread_t *threads);
@@ -447,44 +570,58 @@ void						cleanup_cache(t_graphics *g);
 void						init_cache(t_graphics *g);
 void						fill_cache(t_graphics *g);
 
-/* Inline fast-path cache access - no bounds checking for hot loops */
-static inline t_point	get_cached_proj_fast(t_graphics *g, size_t idx)
-{
-	return (g->cache.points[idx]);
-}
-
-static inline t_point	get_cached_proj_unsafe(t_graphics *g, int x, int y)
-{
-	return (g->cache.points[y * g->cache.width + x]);
-}
+void						bresenham_fast(t_graphics *g,
+								t_bresenham_params *p);
+void						bresenham_z(t_graphics *g, t_bresenham_params *p);
+void						bresenham_shift_no_z(t_graphics *g,
+								t_bresenham_params *p);
+void						bresenham_shift_z(t_graphics *g,
+								t_bresenham_params *p);
+void						bresenham_raycast_fast(t_graphics *g,
+								t_bresenham_params *p);
+void						bresenham_raycast_z(t_graphics *g,
+								t_bresenham_params *p);
+void						bresenham_raycast_shift_no_z(t_graphics *g,
+								t_bresenham_params *p);
+void						bresenham_raycast_shift_z(t_graphics *g,
+								t_bresenham_params *p);
 
 void						bresenham(t_graphics *g, t_bresenham_params *p,
 								int flags);
 void						bresenham_raycast(t_graphics *g,
 								t_bresenham_params *p, int flags);
+void						draw_scanline_z_flat(t_graphics *g,
+								t_scanline_draw_ctx *ctx);
+void						draw_scanline_z_shifted(t_graphics *g,
+								t_scanline_draw_ctx *ctx);
+void						draw_scanline_fast_flat(t_scanline_draw_ctx *ctx);
+void						draw_scanline_fast_shifted(t_graphics *g,
+								t_scanline_draw_ctx *ctx);
 
-void						init_bresenham_ctx(t_bresenham_ctx *ctx,
-								t_bresenham_params *p);
+// Color processing utilities
+unsigned int				process_flat_color(t_scanline_draw_ctx *ctx);
+unsigned int				process_shifted_color(t_scanline_draw_ctx *ctx,
+								t_vec3 shift);
 void						update_bresenham_colors(t_bresenham_ctx *ctx,
 								t_bresenham_params *p);
 int							bresenham_iter(t_bresenham_ctx *ctx,
 								t_bresenham_params *p);
-
-t_window					*init_window(void *mlx_ptr);
+void						init_bresenham_ctx(t_bresenham_ctx *ctx,
+								t_bresenham_params *p);
+int							raycast_process_pixel(t_graphics *g,
+								t_bresenham_ctx *ctx, t_bresenham_params *p,
+								int shifted);
 t_graphics					*init_graphics(t_graphics_args args);
-void						init_render_config(t_render_config *c);
 void						init_frame_data(t_frame_data *f);
 
-typedef struct s_segment_ctx
-{
-	t_point					p0;
-	t_point					p3;
-	int						prev_coord;
-	size_t					next_coord;
-	int						max_coord;
-	size_t					next_x;
-	size_t					next_y;
-	t_vec2					tmp_vec;
-}							t_segment_ctx;
+void						draw_grid_raycast_threaded(t_graphics *g);
+void						draw_grid_threaded(t_graphics *g);
+int							get_point(t_graphics *g, int x, int y, t_point *p);
+t_vec2						get_peak_indices(t_graphics *g);
+void						*thread_raycast_routine(void *data);
+void						check_visibility(t_draw_surface_ctx *ctx);
+void						draw_surface_primitive(t_draw_surface_ctx *ctx);
+t_draw_surface_ctx			init_draw_surface_ctx(t_graphics *g, t_vec2 pos,
+								t_vec2 dir, t_thread_data *t);
 
 #endif

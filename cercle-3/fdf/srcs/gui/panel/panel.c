@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:28:37 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 18:21:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	draw_rect(t_gui *gui, t_vec2 pos, t_vec2 size, int color)
 	if (!img->img_addr)
 		return ;
 	y = pos.y;
-		while (y < pos.y + size.y && y < (int)gui->window->height)
+	while (y < pos.y + size.y && y < (int)gui->window->height)
 	{
 		x = pos.x;
 		while (x < pos.x + size.x && x < GUI_PANEL_WIDTH)
@@ -93,7 +93,7 @@ void	redraw_gui(t_events *events)
 	mlx_put_image_to_window(gui->window->mlx_ptr, gui->window->ptr,
 		gui->window->gui_img.img, 0, 0);
 	gui_layout_init(&l, gui);
-	draw_controls_guide_layout(&l, gui);
+	draw_controls_guide_layout(&l);
 	gui_layout_add_spacer(&l, 20);
 	draw_performance_display_layout(&l, gui);
 	gui_layout_add_spacer(&l, 20);

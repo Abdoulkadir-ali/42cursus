@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 14:23:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:14:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,26 @@
 # include <string.h>
 
 // Header imports
+
 # include "geometry.h"
 # include "graphics.h"
 # include "libft.h"
 # include "render.h"
 # include "window.h"
 
+# define AXIS_SIZE 40
+# define AXIS_MARGIN 20
+# define AXIS_SIZE 40
+# define AXIS_MARGIN 20
+
 typedef struct s_events	t_events;
+
+typedef struct s_axis_info
+{
+	t_vec3d				axis;
+	int					color;
+	char				label;
+}						t_axis_info;
 
 typedef struct s_gui_args
 {
@@ -67,6 +80,15 @@ typedef struct s_gui_theme
 	int					highlight;
 }						t_gui_theme;
 
+typedef struct s_point_stats_ctx
+{
+	size_t				total;
+	size_t				active;
+	int					level;
+	double				multiplier;
+	float				lod;
+}						t_point_stats_ctx;
+
 typedef struct s_colored_text
 {
 	char				*text;
@@ -89,9 +111,14 @@ void					put_colored(t_gui *gui, int x, int y,
 void					format_speed(double speed, char *buffer);
 void					format_number(long long num, char *buffer);
 void					format_float(double val, char *buffer);
+void					format_depth_str(int percent, char *str);
+int						normalize_angle(double radians);
 
 /* Axis Indicator */
 void					draw_axis_indicator(t_gui *gui);
+void					draw_axis_line(t_gui *gui, t_vec2 center, t_vec3d axis,
+							int color);
+void					draw_axis_labels(t_gui *gui, t_vec2 center);
 
 /* Layout Engine API */
 void					gui_layout_init(t_layout *l, t_gui *gui);
@@ -101,12 +128,27 @@ void					gui_layout_label(t_layout *l, char *text);
 void					gui_layout_key_value(t_layout *l, char *key, char *val);
 
 /* Section Drawers (Updated to use t_layout) */
-void					draw_controls_guide_layout(t_layout *l, t_gui *gui);
+void					draw_controls_guide_layout(t_layout *l);
 void					draw_performance_display_layout(t_layout *l,
 							t_gui *gui);
 void					draw_projection_display_layout(t_layout *l, t_gui *gui);
 void					draw_speed_display_layout(t_layout *l, t_gui *gui);
 void					draw_map_name_display_layout(t_layout *l, t_gui *gui);
+void					display_point_stats(t_layout *l, t_gui *gui,
+							char *buffer);
+void					display_toggle_options(t_layout *l, t_gui *gui,
+							char *buffer);
+void					display_algorithm_info(t_layout *l, t_gui *gui);
+void					display_tesselation_info(t_layout *l, t_gui *gui,
+							char *buffer);
+void					display_fps_stats(t_layout *l, t_gui *gui,
+							char *buffer);
+void					display_pos_stats(t_layout *l, t_gui *gui,
+							char *buffer);
+void					display_rot_stats(t_layout *l, t_gui *gui,
+							char *buffer);
+void					display_scale_stats(t_layout *l, t_gui *gui,
+							char *buffer);
 void					draw_transform_stats(t_gui *gui);
 
 void					cycle_gui_style(t_gui *gui);

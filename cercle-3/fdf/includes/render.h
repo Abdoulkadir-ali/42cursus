@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:01:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:16:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,13 +224,15 @@ void						transform_scanline(t_graphics *g, t_point *out,
 
 void						setup_simd_constants(t_camera *cam, t_matrix4 *m,
 								t_simd_ctx *ctx);
-void						transform_simd_batch(t_transform_batch_ctx *batch_ctx);
-void						transform_simd_batch_store(t_simd_batch_ctx *bctx,
-								t_graphics *g, t_point *out);
+void						transform_simd_batch(
+																				t_transform_batch_ctx *batch_ctx);
+void						transform_simd_batch_store(
+																				t_simd_batch_ctx *bctx, t_graphics *g,
+																				t_point *out);
 void						handle_remainder(t_handle_remainder_ctx *ctx);
 
-__m256d					matrix_row_mul(t_simd_vec3 vec, t_simd_vec4 mat);
-__m256d					vector_dot(t_simd_vec3 vec, t_simd_vec3 v);
+__m256d						matrix_row_mul(t_simd_vec3 vec, t_simd_vec4 mat);
+__m256d						vector_dot(t_simd_vec3 vec, t_simd_vec3 v);
 
 void						load_simd_vectors(t_simd_batch_ctx *bctx,
 								t_transform_batch_ctx *batch_ctx);
@@ -246,7 +248,8 @@ void						compute_final_z(t_simd_batch_ctx *bctx,
 /* Culling Stages */
 
 int							is_on_screen(t_vec2 pos, t_graphics *g);
-t_point						project_helper(t_vec3d p3d, int color, t_graphics *g);
+t_point						project_helper(t_vec3d p3d, int color,
+								t_graphics *g);
 int							is_map_visible(t_graphics *g);
 void						get_visible_map_bounds(t_graphics *g, t_vec2 *min,
 								t_vec2 *max);

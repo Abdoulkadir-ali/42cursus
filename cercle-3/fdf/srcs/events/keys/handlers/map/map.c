@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 17:50:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 19:08:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	handle_r(int keycode, t_events *events)
 {
 	(void)keycode;
 	events->camera->target_rotation = create_vec3d(35.264 * M_PI / 180.0,
-		0.0, 45.0 * M_PI / 180.0);
+			0.0, 45.0 * M_PI / 180.0);
 	reset_view(events);
 	reset_style(events->camera);
 	return (1);

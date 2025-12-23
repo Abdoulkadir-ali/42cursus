@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:26:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 12:12:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 21:48:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
-#include <immintrin.h>
-#include <pthread.h>
 
 void	clear_z_buffer(t_graphics *g)
 {

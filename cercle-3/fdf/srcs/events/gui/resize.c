@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 13:32:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 15:15:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 18:46:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,16 @@ static void	free_buffers(t_window *win)
 
 static int	recreate_buffers(t_window *win)
 {
-	if (!init_window_main_image(win, win->mlx_ptr))
-		return (0);
-	win->gui_img.img = mlx_new_image(win->mlx_ptr, GUI_PANEL_WIDTH, win->height);
-	if (!win->gui_img.img)
-		return (0);
 	int	bpp;
 	int	line_len;
 
-	win->gui_img.img_addr = mlx_get_data_addr(win->gui_img.img,
-			&bpp, &line_len,
+	if (!init_window_main_image(win, win->mlx_ptr))
+		return (0);
+	win->gui_img.img = mlx_new_image(win->mlx_ptr, GUI_PANEL_WIDTH,
+			win->height);
+	if (!win->gui_img.img)
+		return (0);
+	win->gui_img.img_addr = mlx_get_data_addr(win->gui_img.img, &bpp, &line_len,
 			&win->gui_img.img_endian);
 	win->gui_img.img_bpp = (size_t)bpp;
 	win->gui_img.img_line_len = (size_t)line_len;
@@ -51,24 +51,23 @@ static int	recreate_buffers(t_window *win)
 
 int	handle_resize(t_events *events)
 {
-	t_window		*win;
-	XWindowAttributes	attrs;
-	t_mlx_ptr		*mlx;
-	t_mlx_win_list		*win_list;
+	t_resize_ctx	ctx;
 
-	win = events->window;
-	mlx = (t_mlx_ptr *)win->mlx_ptr;
-	win_list = (t_mlx_win_list *)win->ptr;
-	XGetWindowAttributes((Display *)mlx->display, (Window)win_list->window, &attrs);
-	if ((size_t)attrs.width != win->width || (size_t)attrs.height != win->height)
+	ctx.win = events->window;
+	ctx.mlx = (t_mlx_ptr *)ctx.win->mlx_ptr;
+	ctx.win_list = (t_mlx_win_list *)ctx.win->ptr;
+	XGetWindowAttributes((Display *)ctx.mlx->display,
+		(Window)ctx.win_list->window, &ctx.attrs);
+	if ((size_t)ctx.attrs.width != ctx.win->width
+		|| (size_t)ctx.attrs.height != ctx.win->height)
 	{
-		t_vec2 old_size = {win->width, win->height};
-		t_vec2 new_size = {attrs.width, attrs.height};
-		recenter_camera_on_resize(events->camera, old_size, new_size);
-		win->width = attrs.width;
-		win->height = attrs.height;
-		free_buffers(win);
-		if (!recreate_buffers(win))
+		ctx.old_size = (t_vec2){ctx.win->width, ctx.win->height};
+		ctx.new_size = (t_vec2){ctx.attrs.width, ctx.attrs.height};
+		recenter_camera_on_resize(events->camera, ctx.old_size, ctx.new_size);
+		ctx.win->width = ctx.attrs.width;
+		ctx.win->height = ctx.attrs.height;
+		free_buffers(ctx.win);
+		if (!recreate_buffers(ctx.win))
 			cleanup_and_exit(events);
 		redraw(events);
 	}

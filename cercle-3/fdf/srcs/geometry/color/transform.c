@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:24:11 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 16:45:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 21:10:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
+#include "color.h"
 
 double	clamp_d(double value, double min, double max)
 {
@@ -21,53 +22,62 @@ double	clamp_d(double value, double min, double max)
 	return (value);
 }
 
-unsigned int	shift_color(unsigned int color, int r_shift, int g_shift,
-		int b_shift)
+void	clamp_color(t_vec3 *color, int min, int max)
 {
-	int	r;
-	int	g;
-	int	b;
-
-	r = (unsigned char)(((color >> 16) & 0xFF) + r_shift);
-	g = (unsigned char)(((color >> 8) & 0xFF) + g_shift);
-	b = (unsigned char)((color & 0xFF) + b_shift);
-	return (((unsigned int)r << 16) | ((unsigned int)g << 8) | (unsigned int)b);
+	color->x = clamp((int)color->x, min, max);
+	color->y = clamp((int)color->y, min, max);
+	color->z = clamp((int)color->z, min, max);
 }
 
-unsigned int	interpolate_color(unsigned int c1, unsigned int c2,
-		double ratio)
+t_vec3	shift_color(t_vec3 color, t_vec3 shift)
 {
-	unsigned char	r;
-	unsigned char	g;
-	unsigned char	b;
-
-	r = get_red(c1) * (1.0 - ratio) + get_red(c2) * ratio;
-	g = get_green(c1) * (1.0 - ratio) + get_green(c2) * ratio;
-	b = get_blue(c1) * (1.0 - ratio) + get_blue(c2) * ratio;
-	return (create_color(r, g, b));
+	vec3_add(&color, shift);
+	clamp_color(&color, 0, 255);
+	return (color);
 }
 
-unsigned int	get_height_color(double z, int min_z, int max_z)
+t_vec3	interpolate_color(t_vec3 c1, t_vec3 c2, double ratio)
 {
-	t_vec3	colors;
-	double	ratio;
-	double	shift;
-	double	effective_z;
-	double	max_effective;
+	t_vec3	res1;
+	t_vec3	res2;
+	int		factor1;
+	int		factor2;
 
-	colors = create_vec3(0x0000FF, 0x00FF00, 0xFF0000);
+	factor1 = (int)((1.0 - ratio) * 256);
+	factor2 = (int)(ratio * 256);
+	res1 = c1;
+	res2 = c2;
+	vec3_multiply_scalar(&res1, factor1);
+	vec3_multiply_scalar(&res2, factor2);
+	vec3_add(&res1, res2);
+	vec3_divide(&res1, create_color(256, 256, 256));
+	clamp_color(&res1, 0, 255);
+	return (res1);
+}
+
+t_vec3	get_height_color(double z, int min_z, int max_z)
+{
+	t_vec3				c_low;
+	t_vec3				c_mid;
+	t_vec3				c_high;
+	t_height_color_ctx	ctx;
+
+	c_low = create_color(0, 0, 255);
+	c_mid = create_color(0, 255, 0);
+	c_high = create_color(255, 0, 0);
 	if (max_z == min_z)
-		return (colors.y);
-	shift = 0;
+		return (c_mid);
+	ctx.shift = 0;
 	if (min_z < 0)
-		shift = -min_z;
-	effective_z = z + shift;
-	max_effective = max_z + shift;
-	if (max_effective <= 0)
-		return (colors.y);
-	ratio = clamp_d(log(effective_z + 1) / log(max_effective + 1), 0.0, 1.0);
-	if (ratio < 0.5)
-		return (interpolate_color(colors.x, colors.y, ratio * 2.0));
+		ctx.shift = -min_z;
+	ctx.effective_z = z + ctx.shift;
+	ctx.max_effective = max_z + ctx.shift;
+	if (ctx.max_effective <= 0)
+		return (c_mid);
+	ctx.ratio = clamp_d(log(ctx.effective_z + 1) / log(ctx.max_effective + 1),
+			0.0, 1.0);
+	if (ctx.ratio < 0.5)
+		return (interpolate_color(c_low, c_mid, ctx.ratio * 2.0));
 	else
-		return (interpolate_color(colors.y, colors.z, (ratio - 0.5) * 2.0));
+		return (interpolate_color(c_mid, c_high, (ctx.ratio - 0.5) * 2.0));
 }

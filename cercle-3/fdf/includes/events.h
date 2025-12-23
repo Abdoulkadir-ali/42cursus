@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 14:23:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:14:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <X11/Xlib.h>
 # include <X11/keysym.h>
 # include <math.h>
+# include <sys/time.h>
 
 /* ========== PACKAGES ========== */
 # include "define.h"
@@ -135,6 +136,16 @@ typedef struct s_combo_ctx
 	double				old_rot_speed;
 }						t_combo_ctx;
 
+typedef struct s_resize_ctx
+{
+	t_window			*win;
+	XWindowAttributes	attrs;
+	t_mlx_ptr			*mlx;
+	t_mlx_win_list		*win_list;
+	t_vec2				old_size;
+	t_vec2				new_size;
+}						t_resize_ctx;
+
 typedef int				(*t_key_action)(int keycode, t_events *events);
 
 typedef struct s_key_maps
@@ -173,6 +184,8 @@ typedef struct s_events
 
 /* Initialize events from a compact args struct */
 t_events				*init_events(t_events_args *args);
+void					init_mouse(t_mouse *mouse);
+void					init_keys(t_keys *keys);
 void					handle_mouse_release(int button, t_mouse *mouse);
 int						handle_mouse_scroll(int button, t_events *events);
 void					handle_mouse_click(int button, int x, int y,
@@ -218,8 +231,13 @@ int						handle_horizontal(int keycode, t_events *events,
 							int left);
 int						handle_press_flag(int keycode, t_events *events);
 int						handle_release_flag(int keycode, t_events *events);
-
 void					handle_button(int keycode, t_events *events, int value);
+
+void					set_key_actions_1(t_key_maps *key_maps);
+void					set_key_actions_2(t_key_maps *key_maps);
+void					set_key_actions_3(t_key_maps *key_maps);
+void					set_key_actions_4(t_key_maps *key_maps);
+void					set_key_actions_5(t_key_maps *key_maps);
 
 /* Toggle Helpers */ // Cleanup
 int						handle_t(int keycode, t_events *events);

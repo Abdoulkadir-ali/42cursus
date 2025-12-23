@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 19:55:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ void	init_bresenham_ctx(t_bresenham_ctx *ctx, t_bresenham_params *p)
 	ctx->current = p->start;
 }
 
-void	update_bresenham_colors(t_bresenham_ctx *ctx,
-		t_bresenham_params *p)
+void	update_bresenham_colors(t_bresenham_ctx *ctx, t_bresenham_params *p)
 {
 	p->zr += p->z_step_val;
 	ctx->fp_r += ctx->fp_dr;

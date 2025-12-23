@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 11:42:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 19:22:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,6 @@ void	init_cache(t_graphics *g)
 	}
 }
 
-typedef struct s_fill_cache_thread_data
-{
-	t_graphics	*g;
-	size_t		start_y;
-	size_t		end_y;
-}				t_fill_cache_thread_data;
-
 static void	*fill_cache_thread(void *arg)
 {
 	t_fill_cache_thread_data	*data;
@@ -51,7 +44,8 @@ static void	*fill_cache_thread(void *arg)
 	while (y < data->end_y)
 	{
 		row_base = y * data->g->map->width;
-		transform_scanline(data->g, data->g->cache.points, row_base, data->g->map->width);
+		transform_scanline(data->g, data->g->cache.points, row_base,
+			data->g->map->width);
 		y++;
 	}
 	return (NULL);

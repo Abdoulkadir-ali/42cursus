@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 12:02:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/22 12:02:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 18:45:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,26 +24,21 @@ static double	lerp_angle(double current, double target, double factor)
 	return (current + delta * factor);
 }
 
-int	process_rotation(t_events *events)
+static void	handle_rotation_keys(t_events *events, t_vec3d *target,
+						double speed)
 {
-	t_vec3d	*rot;
-	t_vec3d	*target;
-	double	factor;
-	double	speed;
-	int		changed;
-
-	if (!events || !events->camera)
-		return (0);
-	rot = &events->camera->rotation;
-	target = &events->camera->target_rotation;
-	speed = events->camera->rotation_speed;
 	if (events->keys.x)
 		target->x += speed;
 	if (events->keys.y)
 		target->y += speed;
 	if (events->keys.z)
 		target->z += speed;
-	factor = 0.25;
+}
+
+static int	apply_rotation_lerp(t_vec3d *rot, t_vec3d *target, double factor)
+{
+	int	changed;
+
 	changed = 0;
 	if (fabs(rot->x - target->x) > 0.001)
 	{
@@ -60,6 +55,23 @@ int	process_rotation(t_events *events)
 		rot->z = lerp_angle(rot->z, target->z, factor);
 		changed = 1;
 	}
+	return (changed);
+}
+
+int	process_rotation(t_events *events)
+{
+	t_vec3d	*rot;
+	t_vec3d	*target;
+	double	factor;
+	int		changed;
+
+	if (!events || !events->camera)
+		return (0);
+	rot = &events->camera->rotation;
+	target = &events->camera->target_rotation;
+	handle_rotation_keys(events, target, events->camera->rotation_speed);
+	factor = 0.25;
+	changed = apply_rotation_lerp(rot, target, factor);
 	if (changed)
 		update_rotation_matrix(events->camera);
 	return (changed);

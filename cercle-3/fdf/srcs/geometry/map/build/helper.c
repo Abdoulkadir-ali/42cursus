@@ -28,7 +28,7 @@ void	init_grid_points(t_map *map)
 			map->points.raw[idx].y = pos.y;
 			map->points.raw[idx].z = pos.x;
 			map->points.pos[idx] = map->points.raw[idx];
-			map->points.color[idx] = 0xFFFFFF;
+			map->points.color[idx] = create_color(255, 255, 255);
 			pos.x++;
 		}
 		pos.y++;
@@ -53,7 +53,7 @@ t_map	*allocate_map_arrays(t_map *map)
 	total = (size_t)map->width * (size_t)map->height;
 	map->points.pos = malloc(sizeof(t_vec3d) * total);
 	map->points.raw = malloc(sizeof(t_vec3d) * total);
-	map->points.color = malloc(sizeof(int) * total);
+	map->points.color = malloc(sizeof(t_vec3) * total);
 	if (!map->points.pos || !map->points.raw || !map->points.color)
 		return (NULL);
 	return (map);

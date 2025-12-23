@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:27:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:36:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 18:46:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ static void	set_letters(int keycode, t_events *events, int value)
 	else if (keycode == XK_h || keycode == XK_H)
 		events->keys.h = value;
 }
-
-
 
 void	handle_button(int keycode, t_events *events, int value)
 {

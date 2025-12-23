@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 16:18:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:17:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define GEOMETRY_H
 
 /* ========== IMPORTS ========== */
+# include "color.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
@@ -65,7 +66,7 @@ typedef struct s_vecu3
 typedef struct s_point
 {
 	t_vec3d				pos;
-	unsigned int		color;
+	t_vec3				color;
 }						t_point;
 
 typedef struct s_matrix4
@@ -82,9 +83,9 @@ typedef struct s_tess_diagonal_ctx
 	t_vec3d				p4;
 	t_vec3d				res1;
 	t_vec3d				res2;
-	t_vec2				colors1;
-	t_vec2				colors2;
-	t_vec2				col_vec;
+	t_vec3				colors1;
+	t_vec3				colors2;
+	t_vec3				col_vec;
 }						t_tess_diagonal_ctx;
 
 /* Vector Constructors */
@@ -154,9 +155,6 @@ unsigned int			vecu3_len(t_vecu3 v);
 unsigned int			vecu3_min(t_vecu3 v);
 unsigned int			vecu3_max(t_vecu3 v);
 
-/* ========== MODULES ========== */
-# include "color.h"
-
 /* ========== MAPS / MESHES ========== */
 
 typedef enum e_map_style
@@ -173,8 +171,8 @@ typedef struct s_map_style_config
 {
 	int					line_thickness;
 	int					point_thickness;
-	unsigned int		line_color;
-	unsigned int		point_color;
+	t_vec3				line_color;
+	t_vec3				point_color;
 	int					style;
 }						t_map_style_config;
 
@@ -182,7 +180,7 @@ typedef struct s_map_points
 {
 	t_vec3d				*pos;
 	t_vec3d				*raw;
-	unsigned int		*color;
+	t_vec3				*color;
 }						t_map_points;
 
 typedef struct s_map
@@ -223,7 +221,7 @@ void					compute_tesselated_point(t_map *src, t_map *dst, int x,
 							int y);
 t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
 void					set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos,
-							int color);
+							t_vec3 color);
 t_map					*extract_submap(t_map *src, t_vec2 min, t_vec2 max);
 t_map					*generate_tesselated_submap(t_map *base, t_vec2 min,
 							t_vec2 max, int level);
@@ -239,14 +237,14 @@ void					cycle_map(t_maps *m);
 
 t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
 void					set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos,
-							int color);
+							t_vec3 color);
 void					init_diagonal_ctx(t_tess_diagonal_ctx *ctx, t_map *src);
 
 /* Parsing Helper Utils (Internal? Exposing for now) */
-unsigned int			get_solid_color(int z);
-unsigned int			get_zebra_color(int z);
-unsigned int			get_neon_color(int z);
-unsigned int			get_map_line_color(t_vec3 v, t_map_style style);
+t_vec3					get_solid_color(int z);
+t_vec3					get_zebra_color(int z);
+t_vec3					get_neon_color(int z);
+t_vec3					get_map_line_color(t_vec3 v, t_map_style style);
 int						allocate_map_points(t_map *map);
 void					parse_map_data(t_map *map, int fd);
 void					get_map_dimensions(int fd, size_t *width,

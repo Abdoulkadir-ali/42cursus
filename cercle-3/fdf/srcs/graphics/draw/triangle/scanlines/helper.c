@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:33:24 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/23 22:05:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/23 22:13:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	swap_scanline_data(t_scanline_data *data)
 {
 	float	tmp_z;
-	int		tmp_c;
+	t_vec3	tmp_c;
 
 	ft_swap(&data->x1, &data->x2);
 	tmp_z = data->z1;
@@ -29,12 +29,12 @@ void	swap_scanline_data(t_scanline_data *data)
 void	init_scanline_colors(t_scanline_data data, int len,
 		t_scanline_color_ctx *ctx)
 {
-	ctx->rgb1.x = get_red(data.c1) * FP_16;
-	ctx->rgb1.y = get_green(data.c1) * FP_16;
-	ctx->rgb1.z = get_blue(data.c1) * FP_16;
-	ctx->rgb2.x = get_red(data.c2) * FP_16;
-	ctx->rgb2.y = get_green(data.c2) * FP_16;
-	ctx->rgb2.z = get_blue(data.c2) * FP_16;
+	ctx->rgb1.x = data.c1.x * FP_16;
+	ctx->rgb1.y = data.c1.y * FP_16;
+	ctx->rgb1.z = data.c1.z * FP_16;
+	ctx->rgb2.x = data.c2.x * FP_16;
+	ctx->rgb2.y = data.c2.y * FP_16;
+	ctx->rgb2.z = data.c2.z * FP_16;
 	ctx->drgb.x = (ctx->rgb2.x - ctx->rgb1.x) / len;
 	ctx->drgb.y = (ctx->rgb2.y - ctx->rgb1.y) / len;
 	ctx->drgb.z = (ctx->rgb2.z - ctx->rgb1.z) / len;

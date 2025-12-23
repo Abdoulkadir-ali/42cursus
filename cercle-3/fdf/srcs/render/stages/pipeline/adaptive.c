@@ -45,5 +45,5 @@ int	calculate_adaptive_level(t_graphics *g)
 		base_pts = 1.0f;
 	ideal = (log2f((float)g->render_config.target_tesselation_points / base_pts)
 			* 0.5f) + calculate_zoom_bias(log2f(ratio));
-	return ((int)roundf(ideal));
+	return (roundf(ideal));
 }

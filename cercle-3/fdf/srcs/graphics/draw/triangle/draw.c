@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 14:50:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 20:03:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,6 @@ void	draw_filled_triangle(t_graphics *g, t_triangle t)
 
 	if (g->render_config.use_depth_culling && is_backface(t.p1, t.p2, t.p3))
 		return ;
-
-	// Note: Horizon buffer culling is NOT used for filled triangles.
-	// The horizon buffer is designed for wireframe raycasting (front-to-back line drawing).
-	// For filled triangles, the Z-buffer provides correct per-pixel depth testing
-	// for arbitrary 3D geometry, including complex shapes like pyramids.
-
 	if (t.p1.pos.y > t.p2.pos.y)
 		swap_points(&t.p1, &t.p2);
 	if (t.p1.pos.y > t.p3.pos.y)

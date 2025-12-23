@@ -12,26 +12,26 @@
 
 #include "geometry.h"
 
-unsigned int	get_solid_color(int z)
+t_vec3	get_solid_color(int z)
 {
 	(void)z;
-	return (0xFFFFFF);
+	return (create_color(255, 255, 255));
 }
 
-unsigned int	get_zebra_color(int z)
+t_vec3	get_zebra_color(int z)
 {
 	if (z % 2 == 0)
-		return (0xFFFFFF);
+		return (create_color(255, 255, 255));
 	else
-		return (0x000000);
+		return (create_color(0, 0, 0));
 }
 
-unsigned int	get_neon_color(int z)
+t_vec3	get_neon_color(int z)
 {
 	if (z > 0)
-		return (0x00FF00);
+		return (create_color(0, 255, 0));
 	else if (z < 0)
-		return (0xFF0000);
+		return (create_color(255, 0, 0));
 	else
-		return (0x0000FF);
+		return (create_color(0, 0, 255));
 }

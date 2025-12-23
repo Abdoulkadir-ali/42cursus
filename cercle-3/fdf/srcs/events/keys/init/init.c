@@ -49,25 +49,3 @@ int	key_release(int keycode, t_events *events)
 	}
 	return (0);
 }
-
-int	loop_hook(t_events *events)
-{
-	int	needs_redraw;
-
-	calculate_fps(events);
-	needs_redraw = 0;
-	if (events->camera_manager)
-	{
-		update_zoom(events->camera_manager);
-		if (fabs(events->camera_manager->camera->scale
-				- events->camera_manager->camera->target_scale) > 0.001)
-			needs_redraw = 1;
-	}
-	if (process_movement(events))
-		needs_redraw = 1;
-	if (process_rotation(events))
-		needs_redraw = 1;
-	if (needs_redraw)
-		redraw(events);
-	return (0);
-}

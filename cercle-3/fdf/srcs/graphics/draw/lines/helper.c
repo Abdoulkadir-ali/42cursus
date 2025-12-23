@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:27:15 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 15:06:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 22:12:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
-
-
 
 void	fill_bresenham_params(t_draw_line_ctx *dlc)
 {
@@ -56,8 +54,8 @@ void	init_interpolation(t_point start, t_point end, int steps,
 		data->z_step_val = (end.pos.z - start.pos.z) / steps;
 	else
 		data->z_step_val = 0;
-	start_rgb = get_color_vec3(start.color);
-	end_rgb = get_color_vec3(end.color);
+	start_rgb = start.color;
+	end_rgb = end.color;
 	data->r = start_rgb.x;
 	data->green = start_rgb.y;
 	data->b = start_rgb.z;
