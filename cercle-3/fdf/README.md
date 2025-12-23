@@ -32,7 +32,7 @@ Explore terrains with smooth real-time rotations, dual projection modes, dynamic
 ---
 
 ## 🎮 **Controls**
-
+s
 Navigate your world with precision using keyboard and mouse inputs.
 
 ### **Camera Movement & View**
