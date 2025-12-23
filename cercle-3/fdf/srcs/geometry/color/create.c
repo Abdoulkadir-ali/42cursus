@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 17:52:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 15:02:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ unsigned int	create_color(int r, int g, int b)
 	rr = clamp(r, 0, 255);
 	gg = clamp(g, 0, 255);
 	bb = clamp(b, 0, 255);
-	return ((((unsigned int)rr) << 16) | (((unsigned int)gg) << 8) | ((unsigned int)bb));
+	return ((((unsigned int)rr) << 16) | (((unsigned int)gg) << 8)
+		| ((unsigned int)bb));
 }
 
 unsigned int	create_color_rgb(t_vec3 rgb)

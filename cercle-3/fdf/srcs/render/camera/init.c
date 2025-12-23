@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 02:50:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:14:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:47:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ t_camera	*init_camera_default(t_camera *cam)
 	cam->pending_rot = create_vec2d(0.0, 0.0);
 	cam->z_scale = 0.5;
 	cam->frustum_margin = DEFAULT_FRUSTUM_MARGIN;
-
 	cam->use_z_divisor = 1;
 	cam->invert_movement = 1;
 	cam->alpha = 90.0;
@@ -87,7 +86,6 @@ static t_camera_manager	*allocate_camera_manager(t_camera_args args)
 	}
 	ctx->camera = init_camera_default(cam);
 	ctx->window = args.window;
-	// Initialize offset to screen center
 	if (ctx->window)
 	{
 		ctx->camera->offset.x = ctx->window->width / 2.0;

@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 17:00:36 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 15:07:00 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/23 13:40:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/23 13:40:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
-#include <stdlib.h>
 
 void	vec3_add(t_vec3 *self, t_vec3 other)
 {
@@ -36,17 +35,12 @@ void	vec3_multiply(t_vec3 *self, t_vec3 other)
 
 void	vec3_divide(t_vec3 *self, t_vec3 other)
 {
-	if (other.x != 0 && other.y != 0 && other.z != 0)
-	{
+	if (other.x != 0)
 		self->x /= other.x;
+	if (other.y != 0)
 		self->y /= other.y;
+	if (other.z != 0)
 		self->z /= other.z;
-	}
-	else
-	{
-		ft_putstr_fd("Zero division error\n", 2);
-		exit(1);
-	}
 }
 
 void	vec3_multiply_scalar(t_vec3 *self, int scalar)

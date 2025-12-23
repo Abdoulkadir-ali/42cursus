@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 18:00:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 17:10:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 # include "geometry.h"
 # include "render.h"
 # include "window.h"
-
-
 
 typedef struct s_events		t_events;
 
@@ -356,8 +354,6 @@ typedef struct s_draw_line_params
 /* Perspective Helper */
 /* Moved to renderer module */
 
-t_point						lerp_point(t_point p1, t_point p2, double t);
-
 static inline void	draw_pixel_fast_no_z(t_pixel_draw_params p)
 {
 	*(unsigned int *)p.pixel_addr = p.color;
@@ -379,7 +375,7 @@ void						init_interpolation(t_point start, t_point end,
 								int steps, t_interp_data *data);
 int							init_draw_line_ctx(t_graphics *g, t_point start,
 								t_point end, t_draw_line_ctx *dlc);
-void						draw_pixel(t_graphics *graphics, t_point point);
+
 void						draw_line(t_graphics *graphics, t_point start,
 								t_point end);
 void						draw_line_clipped(t_graphics *g, t_point start,
@@ -387,8 +383,6 @@ void						draw_line_clipped(t_graphics *g, t_point start,
 void						draw_triangle(t_graphics *g, t_point p1, t_point p2,
 								t_point p3);
 void						swap_points(t_point *a, t_point *b);
-void						calculate_color(t_line_draw_state *state,
-								t_point start, t_point end);
 void						draw_filled_triangle(t_graphics *g,
 								t_triangle triangle);
 void						draw_wireframe_triangle(t_graphics *g,
@@ -403,15 +397,13 @@ void						rasterize_flat_top(t_graphics *g, t_point t1,
 								t_point t2, t_point bot);
 void						setup_rasterization_context(t_rasterize_ctx *ctx,
 								t_point p1, t_point p2, t_point p3);
-void						setup_rasterization_context_flat_top(
-								t_rasterize_ctx *ctx, t_point p1, t_point p2,
-								t_point p3);
+void						setup_rasterization_context_flat_top(t_rasterize_ctx *ctx,
+								t_point p1, t_point p2, t_point p3);
 void						handle_y_clipping(t_rasterize_ctx *ctx);
 t_scanline_data				create_scanline_from_edges(t_rasterize_ctx *ctx,
 								int y);
 void						rasterize_span(t_graphics *g, t_rasterize_ctx *ctx);
-t_scanline_data				interpolate_triangle_scanline(
-								t_triangle_interp interp);
+
 int							z_buffer_test(t_graphics *g, int x, int y, float z);
 void						draw_horizontal_scanline_z(t_graphics *g,
 								t_scanline_data data);
@@ -424,20 +416,16 @@ void						init_scanline_pointers(t_graphics *g,
 void						clip_scanline_left(t_scanline_draw_ctx *ctx,
 								float dz);
 int							clip_scanline_right(int end_x, size_t win_w);
-void						draw_scanline_pixel(t_graphics *g,
-								t_scanline_draw_ctx *ctx);
+
 void						draw_scanline_loop(t_graphics *g,
 								t_scanline_draw_ctx *ctx);
-int							is_on_screen(int x, int y, t_graphics *g);
+int							is_on_screen(t_vec2 pos, t_graphics *g);
 int							is_visible(int x, int y, t_graphics *g);
 void						redraw(t_events *events);
 void						draw_grid(t_graphics *g);
 void						draw_grid_section(t_graphics *g, int start_y,
 								int end_y, float lod_value);
-void						draw_horizontal_line(t_graphics *g,
-								t_draw_line_params params);
-void						draw_vertical_line(t_graphics *g,
-								t_draw_line_params params);
+
 void						draw_triangle_quad(t_graphics *g, int x, int y,
 								int step);
 void						draw_segment(t_graphics *g,

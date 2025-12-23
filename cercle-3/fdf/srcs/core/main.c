@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "core.h"
-#include <X11/Xlib.h>
 
 static int	init_data_and_window(t_data *data, int argc)
 {

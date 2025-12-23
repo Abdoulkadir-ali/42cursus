@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 17:00:36 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/21 19:26:21 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/10 19:45:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/21 17:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,12 @@ void	vec3d_multiply(t_vec3d *self, t_vec3d other)
 
 void	vec3d_divide(t_vec3d *self, t_vec3d other)
 {
-	if (other.x != 0.0 && other.y != 0.0 && other.z != 0.0)
-	{
+	if (other.x != 0)
 		self->x /= other.x;
+	if (other.y != 0)
 		self->y /= other.y;
+	if (other.z != 0)
 		self->z /= other.z;
-	}
-	else
-	{
-		ft_putstr_fd("Zero division error\n", 2);
-		exit(1);
-	}
 }
 
 void	vec3d_multiply_scalar(t_vec3d *self, double scalar)

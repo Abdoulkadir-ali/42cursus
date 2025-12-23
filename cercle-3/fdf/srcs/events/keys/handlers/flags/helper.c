@@ -60,12 +60,11 @@ static void	set_letters(int keycode, t_events *events, int value)
 		events->keys.y = value;
 	else if (keycode == XK_z || keycode == XK_Z)
 		events->keys.z = value;
+	else if (keycode == XK_h || keycode == XK_H)
+		events->keys.h = value;
 }
 
-void	init_key_flags(t_events *events)
-{
-	(void)events;
-}
+
 
 void	handle_button(int keycode, t_events *events, int value)
 {

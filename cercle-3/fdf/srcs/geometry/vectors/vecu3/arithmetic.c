@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/21 00:50:00 by abdoali          ###   ########.fr       */
-/*   Updated: 2025/12/21 00:50:00 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/23 13:42:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/23 13:42:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,12 @@ void	vecu3_multiply(t_vecu3 *self, t_vecu3 other)
 
 void	vecu3_divide(t_vecu3 *self, t_vecu3 other)
 {
-	if (other.x != 0 && other.y != 0 && other.z != 0)
-	{
+	if (other.x != 0)
 		self->x /= other.x;
+	if (other.y != 0)
 		self->y /= other.y;
+	if (other.z != 0)
 		self->z /= other.z;
-	}
-	else
-	{
-		ft_putstr_fd("Zero division error\n", 2);
-		exit(1);
-	}
 }
 
 void	vecu3_multiply_scalar(t_vecu3 *self, unsigned int scalar)

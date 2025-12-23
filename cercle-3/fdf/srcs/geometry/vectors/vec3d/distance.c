@@ -6,16 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:45:43 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/13 13:11:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 14:46:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
-
-double	vec3d_len(t_vec3d v)
-{
-	return (sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
-}
 
 double	vec3d_min(t_vec3d v)
 {

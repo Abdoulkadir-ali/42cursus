@@ -50,15 +50,10 @@ static void	finalize_map(t_map *map)
 	calculate_min_max_z(map);
 	map->min_proj_z = map->min_max_z.x;
 	map->max_proj_z = map->min_max_z.y;
-	
-	// Heuristic for Z-Divisor
-	// If range is large, default divisor should act to normalize it partially.
-	// E.g. Range 100 -> Divisor 10?
 	if (map->max_proj_z - map->min_proj_z > 10.0)
 		map->z_divisor = (map->max_proj_z - map->min_proj_z) / 10.0;
 	else
 		map->z_divisor = 1.0;
-		
 	map->style.style = MAP_STYLE_GRADIENT;
 	apply_map_style(map);
 	map->style.style = 0;

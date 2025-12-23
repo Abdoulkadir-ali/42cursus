@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 17:43:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 18:01:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define RENDER_H
 
 /* ========== REQUIREMENTS ========== */
+# include <immintrin.h>
 # include <math.h>
 
 /* ========== MODULE IMPORTS ========== */
@@ -76,6 +77,104 @@ typedef struct s_rot_ctx
 	t_vec3d					sin;
 }							t_rot_ctx;
 
+typedef struct s_simd_ctx
+{
+	__m256d					rot[3];
+	__m256d					vdist;
+	__m256d					m[4][4];
+	__m256d					cx;
+	__m256d					cy;
+	__m256d					cz;
+	__m256d					z_scale;
+	__m256d					off_x;
+	__m256d					off_y;
+}							t_simd_ctx;
+
+typedef struct s_simd_vec3
+{
+	__m256d					x;
+	__m256d					y;
+	__m256d					z;
+}							t_simd_vec3;
+
+typedef struct s_simd_vec4
+{
+	__m256d					m[4];
+}							t_simd_vec4;
+
+typedef struct s_transform_ctx
+{
+	t_matrix4				rot;
+	t_matrix4				view;
+	t_matrix4				proj;
+	t_matrix4				mvp;
+	float					scale_factor;
+	t_matrix4				screen_scale;
+}							t_transform_ctx;
+
+typedef struct s_update_ctx
+{
+	t_vec2					*min;
+	t_vec2					*max;
+}							t_update_ctx;
+
+typedef struct s_matrix_result
+{
+	float					x;
+	float					y;
+	float					w;
+}							t_matrix_result;
+
+typedef struct s_simd_batch_ctx
+{
+	size_t					idx;
+	double					*ptr;
+	__m256d					vx;
+	__m256d					vy;
+	__m256d					vz;
+	__m256d					dx;
+	__m256d					dy;
+	__m256d					dz;
+	__m256d					res_x;
+	__m256d					res_y;
+	__m256d					res_w;
+	__m256d					ones;
+	__m256d					inv_w;
+	__m256d					final_z;
+	double					buf_x[4];
+	double					buf_y[4];
+	double					buf_z[4];
+	int						k;
+}							t_simd_batch_ctx;
+
+typedef struct s_transform_batch_ctx
+{
+	t_graphics				*g;
+	t_point					*out;
+	size_t					row_idx;
+	size_t					i;
+	t_simd_ctx				*ctx;
+}							t_transform_batch_ctx;
+
+typedef struct s_handle_remainder_ctx
+{
+	t_graphics				*g;
+	t_point					*out;
+	size_t					row_idx;
+	size_t					i;
+	size_t					width;
+}							t_handle_remainder_ctx;
+
+typedef struct s_transform_scanline_ctx
+{
+	size_t					i;
+	t_camera				*cam;
+	t_matrix4				*m;
+	t_simd_ctx				ctx;
+	t_transform_batch_ctx	batch_ctx;
+	t_handle_remainder_ctx	rem_ctx;
+}							t_transform_scanline_ctx;
+
 typedef struct s_camera_manager
 {
 	t_camera				*camera;
@@ -92,7 +191,7 @@ typedef struct s_camera_args
 }							t_camera_args;
 
 /* ========== CAMERA PROTOTYPES ========== */
-t_camera					*init_camera_object(void);
+
 t_camera_manager			*init_camera(t_camera_args args);
 
 void						update_rotation_matrix(t_camera *cam);
@@ -101,8 +200,6 @@ void						compose_rotation_matrix(t_camera *cam,
 void						build_rotation_matrices(t_vec3d rx[3],
 								t_vec3d ry[3], t_vec3d rz[3], t_rot_ctx *ctx);
 t_vec3d						apply_rotation_with_matrix(t_vec3d v,
-								t_camera *cam);
-t_vec3d						apply_rotation_centered_with_matrix(t_vec3d v,
 								t_camera *cam);
 
 void						adjust_camera_to_map(t_camera_manager *ctx);
@@ -119,16 +216,37 @@ void						render_scene(t_graphics *g);
 
 /* Unified Data-Driven Projection */
 t_matrix4					get_projection_matrix(t_camera *cam, float aspect);
-t_point						project_unified(t_point p3d, t_camera *cam);
+
 void						calculate_transform_matrix(t_camera *cam);
 t_point						apply_transform(t_point p, t_camera *cam);
 void						transform_scanline(t_graphics *g, t_point *out,
 								size_t row_idx, size_t width);
 
+void						setup_simd_constants(t_camera *cam, t_matrix4 *m,
+								t_simd_ctx *ctx);
+void						transform_simd_batch(t_transform_batch_ctx *batch_ctx);
+void						transform_simd_batch_store(t_simd_batch_ctx *bctx,
+								t_graphics *g, t_point *out);
+void						handle_remainder(t_handle_remainder_ctx *ctx);
+
+__m256d					matrix_row_mul(t_simd_vec3 vec, t_simd_vec4 mat);
+__m256d					vector_dot(t_simd_vec3 vec, t_simd_vec3 v);
+
+void						load_simd_vectors(t_simd_batch_ctx *bctx,
+								t_transform_batch_ctx *batch_ctx);
+void						apply_scaling_centering(t_simd_batch_ctx *bctx,
+								t_simd_ctx *ctx);
+void						apply_simd_matrix_transform(t_simd_batch_ctx *bctx,
+								t_simd_ctx *ctx);
+void						apply_perspective_offsets(t_simd_batch_ctx *bctx,
+								t_simd_ctx *ctx);
+void						compute_final_z(t_simd_batch_ctx *bctx,
+								t_simd_ctx *ctx);
+
 /* Culling Stages */
-int							is_point_visible(t_vec3d p, t_graphics *g);
-int							is_visible(int x, int y, t_graphics *g);
-int							is_on_screen(int x, int y, t_graphics *g);
+
+int							is_on_screen(t_vec2 pos, t_graphics *g);
+t_point						project_helper(t_vec3d p3d, int color, t_graphics *g);
 int							is_map_visible(t_graphics *g);
 void						get_visible_map_bounds(t_graphics *g, t_vec2 *min,
 								t_vec2 *max);
@@ -136,5 +254,12 @@ void						get_visible_map_bounds(t_graphics *g, t_vec2 *min,
 int							should_draw_line(t_point p1, t_point p2,
 								t_graphics *g);
 int							is_backface(t_point p1, t_point p2, t_point p3);
+
+void						geometry_processing(t_graphics *g);
+void						rasterization(t_graphics *g);
+
+int							calculate_adaptive_level(t_graphics *g);
+void						apply_tesselation(t_graphics *g, int level);
+void						apply_lod(t_graphics *g, int level);
 
 #endif

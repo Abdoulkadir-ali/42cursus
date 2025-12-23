@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 17:43:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 14:22:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CORE_H
 # define CORE_H
 
+# include <X11/Xlib.h>
 # include <X11/keysym.h>
 # include <mlx.h>
 # include <stdio.h>
@@ -37,10 +38,9 @@ typedef struct s_data
 }						t_data;
 
 void					init_defaults(t_data *data);
-int						init_window_main_image(t_window *win, void *mlx);
-int						init_window_system(t_data *data);
+int						init_window_main_image(t_window *window, void *mlx_ptr);
+t_window				*init_window(void *mlx_ptr);
 int						init_and_render(t_data *data);
-void					init_window_size(t_data *data);
 int						cleanup_and_exit(t_events *events);
 int						main(int argc, char **argv);
 

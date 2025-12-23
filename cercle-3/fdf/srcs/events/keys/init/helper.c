@@ -21,17 +21,7 @@ static long	get_time_ms(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	init_key_actions_press(t_key_maps *key_maps)
-{
-	ft_memset(key_maps->key_actions, 0, sizeof(key_maps->key_actions));
-	set_key_actions(key_maps);
-}
 
-void	init_key_actions_release(t_key_maps *key_maps)
-{
-	ft_memset(key_maps->key_releases, 0, sizeof(key_maps->key_releases));
-	set_key_releases(key_maps);
-}
 
 void	calculate_fps(t_events *events)
 {

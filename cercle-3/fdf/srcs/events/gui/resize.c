@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "events.h"
-#include <X11/Xlib.h>
 
 static void	free_buffers(t_window *win)
 {

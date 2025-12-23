@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 17:43:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 14:23:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EVENTS_H
 # define EVENTS_H
 
+# include <X11/Xlib.h>
 # include <X11/keysym.h>
 # include <math.h>
 
@@ -199,14 +200,10 @@ int						handle_p(int keycode, t_events *events);
 int						handle_n(int keycode, t_events *events);
 int						handle_s(int keycode, t_events *events);
 int						handle_m(int keycode, t_events *events);
-int						handle_x(int keycode, t_events *events);
 int						handle_i(int keycode, t_events *events);
 int						handle_v(int keycode, t_events *events);
 int						handle_g(int keycode, t_events *events);
-int						handle_w(int keycode, t_events *events);
-int						handle_rot_x(int keycode, t_events *events);
-int						handle_rot_y(int keycode, t_events *events);
-int						handle_rot_z(int keycode, t_events *events);
+
 int						handle_1(int keycode, t_events *events);
 int						handle_2(int keycode, t_events *events);
 int						handle_3(int keycode, t_events *events);
@@ -222,7 +219,6 @@ int						handle_horizontal(int keycode, t_events *events,
 int						handle_press_flag(int keycode, t_events *events);
 int						handle_release_flag(int keycode, t_events *events);
 
-void					init_key_flags(t_events *events);
 void					handle_button(int keycode, t_events *events, int value);
 
 /* Toggle Helpers */ // Cleanup
@@ -236,8 +232,6 @@ int						handle_bracket(int keycode, t_events *events);
 int						handle_manual_mode(int keycode, t_events *events);
 void					handle_tesselation_points(int keycode, t_graphics *g);
 
-void					init_key_actions_press(t_key_maps *key_maps);
-void					init_key_actions_release(t_key_maps *key_maps);
 void					set_key_actions(t_key_maps *key_maps);
 void					set_key_releases(t_key_maps *key_maps);
 void					calculate_fps(t_events *events);

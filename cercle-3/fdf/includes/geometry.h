@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 17:43:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:18:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define GEOMETRY_H
 
 /* ========== IMPORTS ========== */
-# include "define.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
@@ -74,6 +73,20 @@ typedef struct s_matrix4
 	float				m[4][4];
 }						t_matrix4;
 
+typedef struct s_tess_diagonal_ctx
+{
+	int					idx;
+	t_vec3d				p1;
+	t_vec3d				p2;
+	t_vec3d				p3;
+	t_vec3d				p4;
+	t_vec3d				res1;
+	t_vec3d				res2;
+	t_vec2				colors1;
+	t_vec2				colors2;
+	t_vec2				col_vec;
+}						t_tess_diagonal_ctx;
+
 /* Vector Constructors */
 t_vec2					create_vec2(int x, int y);
 t_vec2d					create_vec2d(double x, double y);
@@ -83,8 +96,11 @@ t_vec3d					create_vec3d(double x, double y, double z);
 /* Vector Operations */
 void					vec2_add(t_vec2 *self, t_vec2 other);
 void					vec2_sub(t_vec2 *self, t_vec2 other);
+void					vec2_add(t_vec2 *self, t_vec2 other);
+void					vec2_sub(t_vec2 *self, t_vec2 other);
 void					vec2_multiply(t_vec2 *self, t_vec2 other);
 void					vec2_divide(t_vec2 *self, t_vec2 other);
+
 void					vec2_multiply_scalar(t_vec2 *self, int scalar);
 int						vec2_len(t_vec2 v);
 int						vec2_min(t_vec2 v);
@@ -97,19 +113,18 @@ void					vec2d_divide(t_vec2d *self, t_vec2d other);
 void					vec2d_multiply_scalar(t_vec2d *self, double scalar);
 double					vec2d_len(t_vec2d v);
 
+double					vec3_len(t_vec3 v);
 void					vec3_add(t_vec3 *self, t_vec3 other);
 void					vec3_sub(t_vec3 *self, t_vec3 other);
 void					vec3_multiply(t_vec3 *self, t_vec3 other);
 void					vec3_divide(t_vec3 *self, t_vec3 other);
 void					vec3_multiply_scalar(t_vec3 *self, int scalar);
-double					vec3_len(t_vec3 v);
 
 void					vec3d_add(t_vec3d *self, t_vec3d other);
 void					vec3d_sub(t_vec3d *self, t_vec3d other);
 void					vec3d_multiply(t_vec3d *self, t_vec3d other);
 void					vec3d_divide(t_vec3d *self, t_vec3d other);
 void					vec3d_multiply_scalar(t_vec3d *self, double scalar);
-double					vec3d_len(t_vec3d v);
 
 /* Unsigned Vectors */
 t_vecu2					create_vecu2(unsigned int x, unsigned int y);
@@ -135,7 +150,9 @@ unsigned int			vecu2_len(t_vecu2 v);
 unsigned int			vecu2_min(t_vecu2 v);
 unsigned int			vecu2_max(t_vecu2 v);
 
-double					vecu3_len(t_vecu3 v);
+unsigned int			vecu3_len(t_vecu3 v);
+unsigned int			vecu3_min(t_vecu3 v);
+unsigned int			vecu3_max(t_vecu3 v);
 
 /* ========== MODULES ========== */
 # include "color.h"
@@ -190,15 +207,23 @@ typedef struct s_maps
 }						t_maps;
 
 /* Map Management */
-t_maps					init_maps(void);
 void					init_map_list(t_maps *m);
+size_t					count_fdf_files(DIR *dir);
 void					load_map_files(t_maps *m, DIR *dir, size_t count);
-t_map					*select_initial_map(t_maps *manager);
-t_map					*init_map(char *filename);
+
 t_map					*create_test_grid(void);
 t_map					*load_map(char *filename);
 t_map					*tesselate_mesh(t_map *src);
-t_map					*generate_tesselated_map(t_map *base, int level);
+t_map					*init_tesselated_map(t_map *src, size_t *new_w,
+							size_t *new_h);
+int						allocate_tesselated_points(t_map *dst);
+void					fill_tesselated_points(t_map *dst, t_map *src);
+void					finalize_tesselated_map(t_map *dst, t_map *src);
+void					compute_tesselated_point(t_map *src, t_map *dst, int x,
+							int y);
+t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
+void					set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos,
+							int color);
 t_map					*extract_submap(t_map *src, t_vec2 min, t_vec2 max);
 t_map					*generate_tesselated_submap(t_map *base, t_vec2 min,
 							t_vec2 max, int level);
@@ -209,8 +234,13 @@ void					find_min_max_z(t_map *map, float *min, float *max);
 void					calculate_min_max_z(t_map *map);
 void					calculate_z_divisor(t_map *map);
 void					apply_map_style(t_map *map);
-void					cycle_map_style(t_maps *m);
+
 void					cycle_map(t_maps *m);
+
+t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
+void					set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos,
+							int color);
+void					init_diagonal_ctx(t_tess_diagonal_ctx *ctx, t_map *src);
 
 /* Parsing Helper Utils (Internal? Exposing for now) */
 unsigned int			get_solid_color(int z);

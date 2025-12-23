@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:59:50 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:26:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:47:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ void	img_pixel_put_with_z(t_graphics *g, t_point p)
 		return ;
 	x = (int)round(p.pos.x);
 	y = (int)round(p.pos.y);
-	if (x < 0 || y < 0 || x >= (int)g->window->width || y >= (int)g->window->height)
+	if (x < 0 || y < 0 || x >= (int)g->window->width
+		|| y >= (int)g->window->height)
 		return ;
 	if (!z_buffer_test(g, x, y, (float)p.pos.z))
 		return ;

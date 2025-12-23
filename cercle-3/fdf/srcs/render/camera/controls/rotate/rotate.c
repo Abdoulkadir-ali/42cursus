@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 03:10:37 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:09:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:48:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,4 @@ t_vec3d	apply_rotation_with_matrix(t_vec3d v, t_camera *cam)
 	if (!cam)
 		return (v);
 	return (mat_vec_mul(cam->rotation_matrix, v));
-}
-
-t_vec3d	apply_rotation_centered_with_matrix(t_vec3d v, t_camera *cam)
-{
-	t_vec3d	centered;
-	t_vec3d	rotated;
-
-	centered = v;
-	vec3d_sub(&centered, cam->grid_center);
-	rotated = apply_rotation_with_matrix(centered, cam);
-
-	return (rotated);
 }

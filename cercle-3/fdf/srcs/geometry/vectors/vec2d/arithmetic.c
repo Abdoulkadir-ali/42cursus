@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 17:00:36 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 15:07:06 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/10 19:45:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/21 17:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
-#include <stdlib.h>
 
 void	vec2d_add(t_vec2d *self, t_vec2d other)
 {
@@ -33,16 +32,10 @@ void	vec2d_multiply(t_vec2d *self, t_vec2d other)
 
 void	vec2d_divide(t_vec2d *self, t_vec2d other)
 {
-	if (other.x != 0.0 && other.y != 0.0)
-	{
+	if (other.x != 0)
 		self->x /= other.x;
+	if (other.y != 0)
 		self->y /= other.y;
-	}
-	else
-	{
-		ft_putstr_fd("Zero division error\n", 2);
-		exit(1);
-	}
 }
 
 void	vec2d_multiply_scalar(t_vec2d *self, double scalar)

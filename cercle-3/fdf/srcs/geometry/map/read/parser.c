@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 15:33:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 15:28:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
+#include "define.h"
 
 void	get_map_dimensions(int fd, size_t *width, size_t *height)
 {

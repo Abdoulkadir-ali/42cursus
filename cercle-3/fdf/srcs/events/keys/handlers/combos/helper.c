@@ -53,11 +53,8 @@ void	apply_plus_changes(t_events *events)
 	{
 		events->graphics->render_config.target_tesselation_points += 1000;
 	}
-	else if (keyboard->d)
-	{
-		if (events->graphics->render_config.detail_level < MAX_DETAIL_LEVEL)
-			events->graphics->render_config.detail_level++;
-	}
+	else if (keyboard->h)
+		events->camera->z_scale += 0.1;
 	else if (keyboard->w)
 		events->camera->rotation_speed += DEFAULT_ROTATION_SPEED * 0.2;
 	clamp_values(events);
@@ -80,11 +77,8 @@ void	apply_minus_changes(t_events *events)
 		if (events->graphics->render_config.target_tesselation_points < 1000)
 			events->graphics->render_config.target_tesselation_points = 1000;
 	}
-	else if (keyboard->d)
-	{
-		if (events->graphics->render_config.detail_level > MIN_DETAIL_LEVEL)
-			events->graphics->render_config.detail_level--;
-	}
+	else if (keyboard->h)
+		events->camera->z_scale -= 0.1;
 	else if (keyboard->w)
 	{
 		events->camera->rotation_speed -= DEFAULT_ROTATION_SPEED * 0.2;

@@ -6,83 +6,60 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:26:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 17:44:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
-static int	is_fdf_file(const char *filename)
+static void	init_no_maps(t_maps *m)
 {
-	int	len;
-
-	len = ft_strlen(filename);
-	if (len < 4)
-		return (0);
-	return (ft_strncmp(filename + len - 4, ".fdf", 4) == 0);
+	m->map_files = NULL;
+	m->maps = NULL;
+	m->count = 0;
 }
 
-static size_t	count_fdf_files(DIR *dir)
+static void	allocate_maps(t_maps *m, size_t count)
 {
-	struct dirent	*entry;
-	size_t			count;
+	m->map_files = malloc(sizeof(char *) * count);
+	m->maps = malloc(sizeof(t_map *) * count);
+	m->count = count;
+}
 
-	count = 0;
-	entry = readdir(dir);
-	while (entry)
-	{
-		if (is_fdf_file(entry->d_name))
-			count++;
-		entry = readdir(dir);
-	}
-	return (count);
+static void	init_test_map(t_maps *m)
+{
+	m->current_map = create_test_grid();
+	m->maps = malloc(sizeof(t_map *));
+	m->maps[0] = m->current_map;
+	m->map_files = NULL;
+	m->count = 1;
+	m->current_index = 0;
 }
 
 void	init_map_list(t_maps *m)
 {
-	DIR	*dir;
+	DIR		*dir;
 	size_t	count;
 
 	dir = opendir("maps/test_maps");
 	if (!dir)
 	{
-		m->map_files = NULL;
-		m->maps = NULL;
-		m->count = 0;
+		init_no_maps(m);
 		return ;
 	}
 	count = count_fdf_files(dir);
 	closedir(dir);
-	m->map_files = malloc(sizeof(char *) * count);
-	m->maps = malloc(sizeof(t_map *) * count);
-	m->count = count;
+	if (count == 0)
+	{
+		init_test_map(m);
+		return ;
+	}
+	allocate_maps(m, count);
 	dir = opendir("maps/test_maps");
-	load_map_files(m, dir, (size_t)count);
+	load_map_files(m, dir, count);
 	closedir(dir);
 	m->current_index = 0;
-}
-
-void	load_map_files(t_maps *m, DIR *dir, size_t count)
-{
-	struct dirent	*entry;
-	char			path[256];
-	size_t			i;
-
-	i = 0;
-	rewinddir(dir);
-	entry = readdir(dir);
-	while (entry && i < count)
-	{
-		if (is_fdf_file(entry->d_name))
-		{
-			m->map_files[i] = ft_strdup(entry->d_name);
-			ft_strlcpy(path, "maps/test_maps/", sizeof(path));
-			ft_strlcat(path, entry->d_name, sizeof(path));
-			m->maps[i] = load_map(path);
-			i++;
-		}
-		entry = readdir(dir);
-	}
+	m->current_map = m->maps[0];
 }
 
 void	cycle_map(t_maps *m)

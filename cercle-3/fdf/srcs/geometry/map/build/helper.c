@@ -37,15 +37,12 @@ void	init_grid_points(t_map *map)
 
 void	calculate_z_divisor(t_map *map)
 {
-	if (map->min_max_z.y - map->min_max_z.x > 50)
-		map->z_divisor = (map->min_max_z.y - map->min_max_z.x) / 10.0;
+	float	range;
+
+	range = map->min_max_z.y - map->min_max_z.x;
+	if (range > 10.0)
+		map->z_divisor = range / 10.0;
 	else
-		map->z_divisor = 1.0;
-	if (abs(map->min_max_z.y) > abs(map->min_max_z.x))
-		map->z_divisor = abs(map->min_max_z.y) / 10.0;
-	else
-		map->z_divisor = abs(map->min_max_z.x) / 10.0;
-	if (map->z_divisor < 1.0)
 		map->z_divisor = 1.0;
 }
 

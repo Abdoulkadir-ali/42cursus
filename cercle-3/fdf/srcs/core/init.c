@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 21:52:25 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:19:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 14:26:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,16 @@ void	init_defaults(t_data *data)
 int	init_window_main_image(t_window *win, void *mlx)
 {
 	t_image	*main_img;
-
-	main_img = &win->main_img;
 	int		bpp;
 	int		line_len;
 	int		endian;
 
+	main_img = &win->main_img;
 	main_img->img = mlx_new_image(mlx, win->width, win->height);
 	if (!main_img->img)
 		return (0);
-	main_img->img_addr = mlx_get_data_addr(main_img->img, &bpp,
-			&line_len, &endian);
+	main_img->img_addr = mlx_get_data_addr(main_img->img, &bpp, &line_len,
+			&endian);
 	main_img->img_bpp = (size_t)bpp;
 	main_img->img_line_len = (size_t)line_len;
 	main_img->img_endian = endian;

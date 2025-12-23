@@ -6,22 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:26:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 14:46:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
-
-void	cycle_map_style(t_maps *m)
-{
-	t_map_style_config	c;
-
-	if (!m->maps || m->count == 0)
-		return ;
-	c = m->maps[m->current_index]->style;
-	c.style = (c.style + 1) % MAP_STYLE_COUNT;
-	m->maps[m->current_index]->style = c;
-}
 
 void	apply_colors(t_map *map)
 {

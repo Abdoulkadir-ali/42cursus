@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:24:11 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 17:01:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 16:45:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,21 @@ double	clamp_d(double value, double min, double max)
 	return (value);
 }
 
-unsigned int	shift_color(unsigned int color, int r_shift, int g_shift, int b_shift)
+unsigned int	shift_color(unsigned int color, int r_shift, int g_shift,
+		int b_shift)
 {
 	int	r;
 	int	g;
 	int	b;
 
-	r = ((color >> 16) & 0xFF) + r_shift;
-	g = ((color >> 8) & 0xFF) + g_shift;
-	b = (color & 0xFF) + b_shift;
-
-	if (r < 0) r = 0; else if (r > 255) r = 255;
-	if (g < 0) g = 0; else if (g > 255) g = 255;
-	if (b < 0) b = 0; else if (b > 255) b = 255;
-
+	r = (unsigned char)(((color >> 16) & 0xFF) + r_shift);
+	g = (unsigned char)(((color >> 8) & 0xFF) + g_shift);
+	b = (unsigned char)((color & 0xFF) + b_shift);
 	return (((unsigned int)r << 16) | ((unsigned int)g << 8) | (unsigned int)b);
 }
 
-unsigned int	interpolate_color(unsigned int c1, unsigned int c2, double ratio)
+unsigned int	interpolate_color(unsigned int c1, unsigned int c2,
+		double ratio)
 {
 	unsigned char	r;
 	unsigned char	g;

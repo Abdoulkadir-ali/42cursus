@@ -26,6 +26,7 @@ int	handle_p(int keycode, t_events *events)
 {
 	(void)keycode;
 	cycle_projection(events);
+	events->graphics->dirty = 1;
 	return (1);
 }
 

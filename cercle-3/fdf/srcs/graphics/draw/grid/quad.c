@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 15:19:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 17:58:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,8 @@ void	draw_triangle_quad(t_graphics *g, int x, int y, int step)
 	p2 = g->cache.points[idx + step];
 	p3 = g->cache.points[next_row_idx];
 	p4 = g->cache.points[next_row_idx + step];
-	if (!is_on_screen(p1.pos.x, p1.pos.y, g) && !is_on_screen(p2.pos.x,
-			p2.pos.y, g) && !is_on_screen(p3.pos.x, p3.pos.y, g)
-		&& !is_on_screen(p4.pos.x, p4.pos.y, g))
+	if (!is_on_screen((t_vec2){p1.pos.x, p1.pos.y}, g) && !is_on_screen((t_vec2){p2.pos.x, p2.pos.y}, g)
+		&& !is_on_screen((t_vec2){p3.pos.x, p3.pos.y}, g) && !is_on_screen((t_vec2){p4.pos.x, p4.pos.y}, g))
 		return ;
 	draw_quad_triangles(g, (t_quad_triangle){p1, p2, p3, p4});
 }

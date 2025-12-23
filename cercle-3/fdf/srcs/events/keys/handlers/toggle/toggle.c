@@ -12,12 +12,7 @@
 
 #include "events.h"
 
-int	handle_x(int keycode, t_events *events)
-{
-	(void)keycode;
-	events->camera->use_z_divisor = !events->camera->use_z_divisor;
-	return (1);
-}
+
 
 int	handle_i(int keycode, t_events *events)
 {

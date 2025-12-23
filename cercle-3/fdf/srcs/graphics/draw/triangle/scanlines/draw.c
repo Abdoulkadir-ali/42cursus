@@ -126,11 +126,7 @@ void	draw_scanline_loop(t_graphics *g, t_scanline_draw_ctx *ctx)
 		draw_scanline_fast(g, ctx);
 }
 
-void	draw_scanline_pixel(t_graphics *g, t_scanline_draw_ctx *ctx)
-{
-	(void)g;
-	(void)ctx;
-}
+
 
 void	draw_horizontal_scanline_z(t_graphics *g, t_scanline_data data)
 {

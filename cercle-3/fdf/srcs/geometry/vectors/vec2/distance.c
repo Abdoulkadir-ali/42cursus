@@ -12,8 +12,6 @@
 
 #include "geometry.h"
 
-#include <math.h>
-
 int	vec2_len(t_vec2 v)
 {
 	return ((int)sqrt(v.x * v.x + v.y * v.y));

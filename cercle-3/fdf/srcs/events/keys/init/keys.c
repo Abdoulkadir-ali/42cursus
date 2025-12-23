@@ -25,8 +25,8 @@ static void	set_key_actions_1(t_key_maps *key_maps)
 	key_maps->key_actions[XK_S] = handle_s;
 	key_maps->key_actions[XK_a] = handle_press_flag;
 	key_maps->key_actions[XK_A] = handle_press_flag;
-	key_maps->key_actions[XK_h] = NULL;
-	key_maps->key_actions[XK_H] = NULL;
+	key_maps->key_actions[XK_h] = handle_press_flag;
+	key_maps->key_actions[XK_H] = handle_press_flag;
 	key_maps->key_actions[XK_k] = handle_m;
 	key_maps->key_actions[XK_K] = handle_m;
 	key_maps->key_actions[XK_j] = handle_j; // Ray Casting (Horizon)

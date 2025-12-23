@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:11:41 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 17:01:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 15:02:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,5 @@ unsigned char	get_blue(unsigned int color)
 t_vec3	get_color_vec3(unsigned int color)
 {
 	return ((t_vec3){(int)get_red(color), (int)get_green(color),
-			(int)get_blue(color)});
+		(int)get_blue(color)});
 }

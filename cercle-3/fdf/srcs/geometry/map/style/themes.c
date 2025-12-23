@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/22 14:37:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 14:46:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 unsigned int	get_solid_color(int z)
 {
 	(void)z;
-	return (0xFFFFFF); // White
+	return (0xFFFFFF);
 }
 
 unsigned int	get_zebra_color(int z)
@@ -29,9 +29,9 @@ unsigned int	get_zebra_color(int z)
 unsigned int	get_neon_color(int z)
 {
 	if (z > 0)
-		return (0x00FF00); // Green
+		return (0x00FF00);
 	else if (z < 0)
-		return (0xFF0000); // Red
+		return (0xFF0000);
 	else
-		return (0x0000FF); // Blue
+		return (0x0000FF);
 }
