@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:52:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 23:11:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 # include <math.h>
 
 /* ========== MODULE IMPORTS ========== */
-#include "math.h"
 # include "define.h"
 # include "geometry.h"
+# include "math.h"
 # include "primitives.h"
 # include "window.h"
 

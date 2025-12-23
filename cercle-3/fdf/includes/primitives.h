@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   math.h                                             :+:      :+:    :+:   */
+/*   primitives.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/23 22:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:49:35 by abdoali          ###   ########.fr       */
+/*   Created: 2025/12/23 23:11:23 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/23 23:12:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MATH_H
-# define MATH_H
+#ifndef PRIMITIVES_H
+# define PRIMITIVES_H
 
 # include "define.h"
 # include <math.h>

@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 12:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:47:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/23 23:12:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
-
 
 int	handle_1(int keycode, t_events *events)
 {
