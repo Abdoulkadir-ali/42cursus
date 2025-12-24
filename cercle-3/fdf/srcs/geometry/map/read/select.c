@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 17:44:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 02:53:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@ static void	init_test_map(t_maps *m)
 	m->current_index = 0;
 }
 
-void	init_map_list(t_maps *m)
+void	init_map_list(t_maps *m, char *dir_path)
 {
 	DIR		*dir;
 	size_t	count;
 
-	dir = opendir("maps/test_maps");
+	dir = opendir(dir_path);
 	if (!dir)
 	{
 		init_no_maps(m);
@@ -55,8 +55,8 @@ void	init_map_list(t_maps *m)
 		return ;
 	}
 	allocate_maps(m, count);
-	dir = opendir("maps/test_maps");
-	load_map_files(m, dir, count);
+	dir = opendir(dir_path);
+	load_map_files(m, dir, count, dir_path);
 	closedir(dir);
 	m->current_index = 0;
 	m->current_map = m->maps[0];

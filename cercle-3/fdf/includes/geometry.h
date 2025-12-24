@@ -19,6 +19,7 @@
 # include "primitives.h"
 # include <dirent.h>
 # include <fcntl.h>
+# include <sys/stat.h>
 # include <math.h>
 # include <time.h>
 # include <xmmintrin.h>
@@ -175,9 +176,11 @@ t_vec3					interpolate_color(t_vec3 color1, t_vec3 color2,
 							double ratio);
 t_vec3					get_height_color(double z, int min_z, int max_z);
 
-void					init_map_list(t_maps *m);
+void					init_map_list(t_maps *m, char *dir_path);
 size_t					count_fdf_files(DIR *dir);
-void					load_map_files(t_maps *m, DIR *dir, size_t count);
+void					load_map_files(t_maps *m, DIR *dir, size_t count,
+							char *dir_path);
+int						is_directory(const char *path);
 
 t_map					*create_test_grid(void);
 t_map					*load_map(char *filename);

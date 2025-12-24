@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 00:35:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/24 02:32:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 03:05:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,5 @@ int	handle_g(int keycode, t_events *events)
 	params.octaves = 4;
 	params.persistence = 0.5;
 	params.seed = time(NULL);
-	ft_printf("Map regeneration is disabled. ");
-	ft_printf("Use the Python generator instead.\n");
 	return (0);
 }

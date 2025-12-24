@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 23:11:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 03:19:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,10 @@ typedef struct s_camera_args
 
 /* ========== CAMERA PROTOTYPES ========== */
 
+t_camera					*init_camera_default(t_camera *cam);
 t_camera_manager			*init_camera(t_camera_args args);
+t_camera_manager			*allocate_camera_manager(t_camera_args args);
+int							setup_map_source(t_maps *mgr, t_camera_args args);
 
 void						update_rotation_matrix(t_camera *cam);
 void						compose_rotation_matrix(t_camera *cam,

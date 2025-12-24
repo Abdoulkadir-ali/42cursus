@@ -166,6 +166,7 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/render/camera/controls/rotate/rotate.c \
 		srcs/render/camera/controls/zoom.c \
 		srcs/render/camera/init.c \
+		srcs/render/camera/map_init.c \
 		srcs/render/optimization/lines.c \
 		srcs/render/optimization/triangles.c \
 		srcs/render/stages/culling/bounds.c \

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:19:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 03:05:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ t_map	*generate_runtime_map(t_gen_params params)
 	heights = generate_heightmap(params);
 	if (!heights)
 		return (NULL);
-	ft_printf("Runtime map generated (%dx%d)\n", params.width, params.height);
 	map = allocate_and_fill_map(params, heights);
 	free_heightmap(heights, params.height);
 	return (map);

@@ -38,7 +38,7 @@ class PerlinNoise:
                 surflet(int_x, int_y + 1) + surflet(int_x + 1, int_y + 1))
 
 class MapGenerator:
-    def __init__(self, folder_path="maps/test_maps"):
+    def __init__(self, folder_path="maps/generated_maps"):
         self.folder_path = folder_path
         self._ensure_folder_exists()
         self.noise_gen = PerlinNoise()
@@ -93,7 +93,6 @@ class MapGenerator:
         try:
             print(f"Loading image '{image_path}'...")
             img = Image.open(image_path).convert('RGB')
-            img = img.transpose(Image.FLIP_TOP_BOTTOM)  # Flip to correct orientation
             orig_w, orig_h = img.size
             aspect = orig_w / orig_h
             
@@ -162,7 +161,6 @@ class MapGenerator:
 
     def process_images(self, image_path, width, height, z_scale):
         if os.path.isdir(image_path):
-            # Process all image files in the directory
             import glob
             image_extensions = ["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.tiff", "*.gif"]
             image_files = []
@@ -189,7 +187,7 @@ class MapGenerator:
 
 
 def main():
-    folder_path = "../maps/test_maps"
+    folder_path = "./maps/generated_maps"
     parser = argparse.ArgumentParser(description="Generate FDF maps from noise or images.")
     parser.add_argument("name", nargs='?', default=None, help=f"Output filename (saved to {folder_path} by default, generates unique name if not provided)")
     parser.add_argument("--width", "-w", type=int, default=1000, help="Map width")
@@ -198,11 +196,9 @@ def main():
     parser.add_argument("--mode", "-m", choices=["noise", "image", "flat"], default="noise", help="Generation mode")
     parser.add_argument("--image", "-i", type=str, help="Input image path (required for image mode)")
     parser.add_argument("--folder", "-f", type=str, default=folder_path, help="Default output folder")
-
     args = parser.parse_args()
 
     generator = MapGenerator(folder_path=args.folder)
-
     if args.mode == "image":
         generator.process_images(args.image, args.width, args.height, args.scale)
     else:
@@ -216,7 +212,6 @@ def main():
         else:
             print("Invalid mode.")
             sys.exit(1)
-
         generator.save_map(data, args.name)
 
 

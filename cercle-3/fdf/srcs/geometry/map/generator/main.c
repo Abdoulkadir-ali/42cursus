@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:10:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 03:05:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@ int	main(int argc, char **argv)
 	int				**map;
 
 	params = parse_args(argc, argv, &filename);
-	ft_printf("Generating map %dx%d (Scale: %.1f, Z: %.1f, Seed: %d)\n",
-		params.width, params.height, params.scale, params.z_scale, params.seed);
 	map = generate_heightmap(params);
 	if (map)
 	{
@@ -55,9 +53,6 @@ int	main(int argc, char **argv)
 		free_heightmap(map, params.height);
 	}
 	else
-	{
-		ft_printf("Error: Memory allocation failed.\n");
 		return (1);
-	}
 	return (0);
 }

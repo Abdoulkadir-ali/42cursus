@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 11:43:55 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:49:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 02:56:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 /* ========== GEOMETRY CONSTANTS ========== */
 # ifndef BAD_VALUE
 #  define BAD_VALUE -2000000000.0
+# endif
+
+# ifndef MAPS_DIR
+#  define MAPS_DIR "maps/generated_maps/"
 # endif
 
 /* ========== WINDOW CONSTANTS ========== */

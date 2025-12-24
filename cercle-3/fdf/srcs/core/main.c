@@ -20,7 +20,7 @@ static int	init_data_and_window(t_data *data, int argc)
 	if (!init_window_main_image(data->window, data->mlx_ptr))
 		return (0);
 	if (argc == 1)
-		init_map_list(&data->map_manager);
+		init_map_list(&data->map_manager, MAPS_DIR);
 	return (1);
 }
 

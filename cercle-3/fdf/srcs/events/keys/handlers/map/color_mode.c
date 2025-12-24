@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 00:55:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/24 02:32:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 03:06:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,5 @@ int	handle_c(int keycode, t_events *events)
 		cleanup_cache(events->graphics);
 		events->graphics->dirty = 1;
 	}
-	if (map->style.style == MAP_STYLE_RAW)
-		ft_printf("Map Style switched to: RAW (Source Color)\n");
-	else
-		ft_printf("Map Style switched to: Theme (Height)\n");
 	return (1);
 }
