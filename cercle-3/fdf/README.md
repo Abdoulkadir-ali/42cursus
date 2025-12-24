@@ -97,10 +97,15 @@ cd fdf
 make
 
 # 3. Run FDF
+./fdf <file.fdf>        # Load a specific map file
+./fdf <folder_name>     # Load all maps in a directory (cycle using TAB)
+
+# Example:
 ./fdf maps/42.fdf
+./fdf maps/test_maps/
 ```
 
-> 💡 **Tip:** If you run `./fdf` without arguments, it will automatically load all maps from the `maps/` directory for quick cycling!
+> 💡 **Tip:** If you run `./fdf` without arguments, it defaults to loading maps from `maps/generated_maps/`!
 
 ---
 
