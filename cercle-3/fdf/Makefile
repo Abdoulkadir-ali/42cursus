@@ -182,11 +182,7 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/render/stages/projections/scanlines/simd/transform.c \
 		srcs/render/stages/projections/transform.c \
 		srcs/render/stages/projections/view.c  \
-		srcs/window/init.c \
-		srcs/geometry/map/generator/noise.c \
-		srcs/geometry/map/generator/builder.c \
-		srcs/geometry/map/generator/writer.c \
-		srcs/geometry/map/generator/runtime.c
+		srcs/window/init.c
 	
 
 

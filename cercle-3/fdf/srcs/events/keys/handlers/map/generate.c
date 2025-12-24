@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@student.42.fr>    +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 00:35:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/24 00:35:00 by antigravity      ###   ########.fr       */
+/*   Updated: 2025/12/24 01:54:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,8 @@ int	handle_g(int keycode, t_events *events)
 	params.persistence = 0.5;
 	params.seed = time(NULL);
 
-	ft_printf("Regenerating map %dx%d (Seed: %d)...\n", params.width, params.height, params.seed);
-
-	new_map = generate_runtime_map(params);
-	if (!new_map)
-	{
-		ft_printf("Error: Map generation failed.\n");
-		return (0);
-	}
+	ft_printf("Map regeneration is disabled. Use the Python generator instead.\n");
+	return (0);
 	// Integrate into Map Manager
 	if (events->maps && events->maps->maps && events->maps->count > 0)
 	{
