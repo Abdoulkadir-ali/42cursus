@@ -35,6 +35,8 @@ void	draw_controls_guide_layout(t_layout *l)
 	gui_layout_key_value(l, "V", "Depth Cull");
 	gui_layout_key_value(l, "T", "Tessellation");
 	gui_layout_key_value(l, "PgUp/Dn", "Tes Level");
+	gui_layout_key_value(l, "G", "Gen Map (Noise)");
+	gui_layout_key_value(l, "C", "Color Mode");
 	gui_layout_add_spacer(l, 5);
 	gui_layout_title(l, "OPTIMIZATIONS");
 	gui_layout_key_value(l, "+ / -", "Adjust Values");

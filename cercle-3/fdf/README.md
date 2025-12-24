@@ -68,7 +68,8 @@ Navigate your world with precision using keyboard and mouse inputs.
 | :--- | :--- |
 | `TAB` | **Cycle Maps** (Next/Prev in directory) |
 | `S` | **Cycle GUI Themes** |
-| `C` | **Cycle Color Palettes** |
+| `C` | **Toggle Color Mode** (Height-Color vs Source-Color) |
+| `G` | **Generate New Map** (Press Key or Click GUI Button) |
 | `I` | Toggle Info Overlay |
 | `H` | Toggle Help Menu |
 | `ESC` | **Exit Application** |
@@ -139,6 +140,35 @@ FDF reads `.fdf` files, a simple text-based format for 3D grids.
 0 10 20 10  0
 0 10 10 10  0
 0  0  0  0  0
+```
+
+---
+
+---
+
+## 🌋 **Map Generator Tools**
+
+FDF includes powerful tools to create your own maps beyond the standard set.
+
+### **1. Runtime Generator (Built-in)**
+Generate infinite unique terrains instantly while the app is running.
+- **Trigger**: Press `G` or click the **"GENERATE MAP"** button in the control panel.
+- **Tech**: Uses recursive 4-octave Perlin Noise to create realistic mountain ranges and valleys on the fly.
+
+### **2. Scripted Generator (Python)**
+Found in `generator/generate.py`, this script allows advanced map creation:
+
+**Convert Images to Maps:**
+Turn any image into a 3D terrain where brightness = height.
+```bash
+python3 generator/generate.py --mode image --image maps/texture.jpg --width 200 --height 200
+```
+*Supports batch processing of directories!*
+
+**Generate Huge Noise Maps:**
+Create massive maps for stress testing performance.
+```bash
+python3 generator/generate.py --mode noise --width 1000 --height 1000 --scale 50
 ```
 
 ---

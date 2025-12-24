@@ -21,8 +21,8 @@ static void	init_no_maps(t_maps *m)
 
 static void	allocate_maps(t_maps *m, size_t count)
 {
-	m->map_files = malloc(sizeof(char *) * count);
-	m->maps = malloc(sizeof(t_map *) * count);
+	m->map_files = ft_calloc(count, sizeof(char *));
+	m->maps = ft_calloc(count, sizeof(t_map *));
 	m->count = count;
 }
 

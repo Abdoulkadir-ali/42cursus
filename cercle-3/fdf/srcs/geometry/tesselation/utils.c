@@ -22,7 +22,7 @@ t_vec3d	mix_pos(t_vec3d p1, t_vec3d p2, double ratio)
 	return (res);
 }
 
-void	set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos, t_vec3 color)
+void	set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos, t_vec3 color, t_vec3 source_color)
 {
 	int	idx;
 
@@ -30,6 +30,7 @@ void	set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos, t_vec3 color)
 	dst->points.raw[idx] = pos;
 	dst->points.pos[idx] = pos;
 	dst->points.color[idx] = color;
+	dst->points.source_color[idx] = source_color;
 }
 
 void	init_diagonal_ctx(t_tess_diagonal_ctx *ctx, t_map *src)

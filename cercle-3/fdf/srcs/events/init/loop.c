@@ -31,6 +31,11 @@ int	loop_hook(t_events *events)
 		needs_redraw = 1;
 	if (process_rotation(events))
 		needs_redraw = 1;
+	if (events->graphics && events->graphics->dirty)
+	{
+		needs_redraw = 1;
+		events->graphics->dirty = 0;
+	}
 	if (needs_redraw)
 		redraw(events);
 	return (0);

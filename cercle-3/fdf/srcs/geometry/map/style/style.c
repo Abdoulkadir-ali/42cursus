@@ -61,10 +61,17 @@ void	apply_map_style(t_map *map)
 		while (pos.x < (int)map->width)
 		{
 			idx = (int)pos.y * map->width + (int)pos.x;
-			v = create_vec3(map->points.raw[idx].z, map->min_max_z.x,
-					map->min_max_z.y);
-			color = get_map_line_color(v, map->style.style);
-			map->points.color[idx] = color;
+			if (map->style.style == MAP_STYLE_RAW)
+			{
+				map->points.color[idx] = map->points.source_color[idx];
+			}
+			else
+			{
+				v = create_vec3(map->points.raw[idx].z, map->min_max_z.x,
+						map->min_max_z.y);
+				color = get_map_line_color(v, map->style.style);
+				map->points.color[idx] = color;
+			}
 			pos.x++;
 		}
 		pos.y++;

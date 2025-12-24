@@ -112,4 +112,6 @@ void	set_key_actions_5(t_key_maps *key_maps)
 	key_maps->key_actions[XK_E] = handle_2;
 	key_maps->key_actions[XK_u] = handle_3;
 	key_maps->key_actions[XK_U] = handle_3;
+	key_maps->key_actions[XK_c] = handle_c;
+	key_maps->key_actions[XK_C] = handle_c;
 }

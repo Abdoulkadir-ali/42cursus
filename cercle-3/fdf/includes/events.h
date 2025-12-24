@@ -61,6 +61,7 @@
 #  define KEY_PLUS XK_plus
 #  define KEY_MINUS XK_minus
 #  define KEY_ZERO XK_0
+#  define KEY_C XK_c
 #  define KEY_ESC XK_Escape
 #  define KEY_R XK_r
 #  define KEY_P XK_p
@@ -217,6 +218,7 @@ int						handle_m(int keycode, t_events *events);
 int						handle_i(int keycode, t_events *events);
 int						handle_v(int keycode, t_events *events);
 int						handle_g(int keycode, t_events *events);
+int						handle_c(int keycode, t_events *events);
 
 int						handle_1(int keycode, t_events *events);
 int						handle_2(int keycode, t_events *events);

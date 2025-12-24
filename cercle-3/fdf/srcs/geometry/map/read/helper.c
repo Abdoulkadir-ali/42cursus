@@ -60,8 +60,11 @@ char	*parse_point(char *p, t_map *map, size_t idx)
 		if (end == p)
 			color = 0xFFFFFF;
 		map->points.color[idx] = int_color_to_rgb((unsigned int)color);
+		map->points.source_color[idx] = map->points.color[idx];
 		p = end;
 	}
+	else
+		map->points.source_color[idx] = create_color(255, 255, 255);
 	return (p);
 }
 

@@ -12,11 +12,3 @@
 
 #include "events.h"
 
-int	handle_g(int keycode, t_events *events)
-{
-	(void)keycode;
-	events->filled = !events->filled;
-	if (events->graphics)
-		events->graphics->render_config.filled = events->filled;
-	return (1);
-}

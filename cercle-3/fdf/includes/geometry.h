@@ -53,6 +53,7 @@ typedef enum e_map_style
 	MAP_STYLE_SOLID,
 	MAP_STYLE_ZEBRA,
 	MAP_STYLE_NEON,
+	MAP_STYLE_RAW,
 	MAP_STYLE_COUNT
 }						t_map_style;
 
@@ -70,6 +71,7 @@ typedef struct s_map_points
 	t_vec3d				*pos;
 	t_vec3d				*raw;
 	t_vec3				*color;
+	t_vec3				*source_color;
 }						t_map_points;
 
 typedef struct s_map
@@ -138,8 +140,6 @@ void					finalize_tesselated_map(t_map *dst, t_map *src);
 void					compute_tesselated_point(t_map *src, t_map *dst, int x,
 							int y);
 t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
-void					set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos,
-							t_vec3 color);
 t_map					*extract_submap(t_map *src, t_vec2 min, t_vec2 max);
 t_map					*generate_tesselated_submap(t_map *base, t_vec2 min,
 							t_vec2 max, int level);
@@ -154,8 +154,7 @@ void					apply_map_style(t_map *map);
 void					cycle_map(t_maps *m);
 
 t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
-void					set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos,
-							t_vec3 color);
+void					set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos, t_vec3 color, t_vec3 source_color);
 void					init_diagonal_ctx(t_tess_diagonal_ctx *ctx, t_map *src);
 
 /* Parsing Helper Utils (Internal? Exposing for now) */

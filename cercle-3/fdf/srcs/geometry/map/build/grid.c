@@ -46,5 +46,7 @@ void	free_map(t_map *map)
 		free(map->points.raw);
 	if (map->points.color)
 		free(map->points.color);
+	if (map->points.source_color)
+		free(map->points.source_color);
 	free(map);
 }

@@ -90,9 +90,19 @@ void	redraw_gui(t_events *events)
 	check_gui_resize(gui);
 	clear_gui(gui);
 	draw_panel_background(gui);
+	/* Draw Generate Button at Bottom */
+	{
+		int btn_y = gui->window->height - 45;
+		t_vec2 pos = create_vec2(15, btn_y);
+		t_vec2 size = create_vec2(GUI_PANEL_WIDTH - 30, 30);
+		draw_rect(gui, pos, size, 0x303030); /* Dark Grey Button */
+		put_text(gui, 80, btn_y + 20, "GENERATE MAP");
+	}
+
 	mlx_put_image_to_window(gui->window->mlx_ptr, gui->window->ptr,
 		gui->window->gui_img.img, 0, 0);
 	gui_layout_init(&l, gui);
+	l.cursor_y += 40; /* Push layout down */
 	draw_controls_guide_layout(&l);
 	gui_layout_add_spacer(&l, 20);
 	draw_performance_display_layout(&l, gui);

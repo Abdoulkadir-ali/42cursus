@@ -27,6 +27,8 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/events/keys/handlers/flags/modifiers.c \
 		srcs/events/keys/handlers/gui/gui.c \
 		srcs/events/keys/handlers/map/map.c \
+		srcs/events/keys/handlers/map/generate.c \
+		srcs/events/keys/handlers/map/color_mode.c \
 		srcs/events/keys/handlers/toggle/camera.c \
 		srcs/events/keys/handlers/toggle/depth.c \
 		srcs/events/keys/handlers/toggle/filled.c \
@@ -181,6 +183,10 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/render/stages/projections/transform.c \
 		srcs/render/stages/projections/view.c  \
 		srcs/window/init.c \
+		srcs/geometry/map/generator/noise.c \
+		srcs/geometry/map/generator/builder.c \
+		srcs/geometry/map/generator/writer.c \
+		srcs/geometry/map/generator/runtime.c
 	
 
 
@@ -227,4 +233,10 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re objs
+
+generate: $(LIBFT)
+	@echo "Building fdf_gen..."
+	@$(CC) $(CFLAGS) srcs/geometry/map/generator/main.c srcs/geometry/map/generator/noise.c srcs/geometry/map/generator/builder.c srcs/geometry/map/generator/writer.c $(LDFLAGS) -o fdf_gen
+	@echo "Generator created successfully!"
+
+.PHONY: all clean fclean re objs generate

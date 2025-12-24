@@ -56,7 +56,9 @@ static t_map	*alloc_submap(t_map *src, int w, int h)
 	sub->points.pos = malloc(sizeof(t_vec3d) * size);
 	sub->points.raw = malloc(sizeof(t_vec3d) * size);
 	sub->points.color = malloc(sizeof(t_vec3) * size);
-	if (!sub->points.pos || !sub->points.raw || !sub->points.color)
+	sub->points.source_color = malloc(sizeof(t_vec3) * size);
+	if (!sub->points.pos || !sub->points.raw || !sub->points.color
+		|| !sub->points.source_color)
 	{
 		if (sub->points.pos)
 			free(sub->points.pos);
@@ -64,6 +66,8 @@ static t_map	*alloc_submap(t_map *src, int w, int h)
 			free(sub->points.raw);
 		if (sub->points.color)
 			free(sub->points.color);
+		if (sub->points.source_color)
+			free(sub->points.source_color);
 		free(sub);
 		return (NULL);
 	}
@@ -88,6 +92,7 @@ static void	copy_submap(t_map *sub, t_map *src, int w, t_vec2 min)
 			sub->points.pos[indices.x] = src->points.pos[indices.y];
 			sub->points.raw[indices.x] = src->points.raw[indices.y];
 			sub->points.color[indices.x] = src->points.color[indices.y];
+			sub->points.source_color[indices.x] = src->points.source_color[indices.y];
 			pos.x++;
 		}
 		pos.y++;

@@ -56,7 +56,6 @@ static void	finalize_map(t_map *map)
 		map->z_divisor = 1.0;
 	map->style.style = MAP_STYLE_GRADIENT;
 	apply_map_style(map);
-	map->style.style = 0;
 }
 
 t_map	*load_map(char *filename)
