@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:48:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 02:42:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # define GEOMETRY_H
 
 /* ========== IMPORTS ========== */
+# include "define.h"
 # include "libft.h"
 # include "primitives.h"
-# include "define.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <math.h>
@@ -42,7 +42,57 @@ typedef struct s_tess_diagonal_ctx
 	t_vec3				colors1;
 	t_vec3				colors2;
 	t_vec3				col_vec;
+	t_vec3				col_vec1;
+	t_vec3				col_vec2;
+	t_vec3				sc1;
+	t_vec3				sc2;
+	t_vec3				sc3;
+	t_vec3				sc4;
+	t_vec3				scol_vec1;
+	t_vec3				scol_vec2;
+	t_vec3				final_source;
 }						t_tess_diagonal_ctx;
+
+typedef struct s_tess_horizontal_ctx
+{
+	int					idx;
+	t_vec3d				p1;
+	t_vec3d				p2;
+	t_vec3				c1;
+	t_vec3				c2;
+	t_vec3				sc1;
+	t_vec3				sc2;
+}						t_tess_horizontal_ctx;
+
+typedef struct s_tess_vertical_ctx
+{
+	int					idx;
+	t_vec3d				p1;
+	t_vec3d				p2;
+	t_vec3				col1;
+	t_vec3				col2;
+	t_vec3				sc1;
+	t_vec3				sc2;
+}						t_tess_vertical_ctx;
+
+typedef struct s_tess_direct_ctx
+{
+	int					idx;
+}						t_tess_direct_ctx;
+
+typedef struct s_tess_compute_ctx
+{
+	t_vec2				dst_pos;
+	t_vec2				src_pos;
+}						t_tess_compute_ctx;
+
+typedef struct s_set_point_ctx
+{
+	t_vec2				dst_pos;
+	t_vec3d				pos;
+	t_vec3				color;
+	t_vec3				source_color;
+}						t_set_point_ctx;
 
 /* ========== MAPS / MESHES ========== */
 
@@ -137,12 +187,13 @@ t_map					*init_tesselated_map(t_map *src, size_t *new_w,
 int						allocate_tesselated_points(t_map *dst);
 void					fill_tesselated_points(t_map *dst, t_map *src);
 void					finalize_tesselated_map(t_map *dst, t_map *src);
-void					compute_tesselated_point(t_map *src, t_map *dst, int x,
-							int y);
+void					compute_tesselated_point(t_map *src, t_map *dst,
+							t_vec2 pos);
 t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
 t_map					*extract_submap(t_map *src, t_vec2 min, t_vec2 max);
-t_map					*generate_tesselated_submap(t_map *base, t_vec2 min,
-							t_vec2 max, int level);
+t_map					*generate_tesselated_map(t_map *base, int level);
+t_map	*generate_tesselated_submap(t_map *base, t_vec2 min,
+		t_vec2 max, int level);
 void					free_map(t_map *map);
 
 /* Map Data Processing */
@@ -154,7 +205,15 @@ void					apply_map_style(t_map *map);
 void					cycle_map(t_maps *m);
 
 t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
-void					set_point(t_map *dst, t_vec2 dst_pos, t_vec3d pos, t_vec3 color, t_vec3 source_color);
+void					set_point(t_map *dst, t_set_point_ctx ctx);
+void					handle_direct_copy(t_map *src, t_map *dst,
+							t_vec2 dst_pos, t_vec2 src_pos);
+void					handle_horizontal_interp(t_map *src, t_map *dst,
+							t_vec2 dst_pos, t_vec2 src_pos);
+void					handle_vertical_interp(t_map *src, t_map *dst,
+							t_vec2 dst_pos, t_vec2 src_pos);
+void					handle_diagonal_interp(t_map *src, t_map *dst,
+							t_vec2 dst_pos, t_vec2 src_pos);
 void					init_diagonal_ctx(t_tess_diagonal_ctx *ctx, t_map *src);
 
 /* Parsing Helper Utils (Internal? Exposing for now) */

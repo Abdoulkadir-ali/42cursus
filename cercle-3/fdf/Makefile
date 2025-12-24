@@ -7,7 +7,6 @@ LDFLAGS = -L./minilibx-linux -lmlx -L./libft -lft -lX11 -lXext -lm -lpthread
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-# Source files organized by category
 #SRCS = $(shell find srcs -name "*.c" | sort) if you want to go faster, but it can be dangerous
 
 SRCS =	srcs/core/cleanup.c \
@@ -31,7 +30,6 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/events/keys/handlers/map/color_mode.c \
 		srcs/events/keys/handlers/toggle/camera.c \
 		srcs/events/keys/handlers/toggle/depth.c \
-		srcs/events/keys/handlers/toggle/filled.c \
 		srcs/events/keys/handlers/toggle/optimizations.c \
 		srcs/events/keys/handlers/toggle/tesselation/bracket.c \
 		srcs/events/keys/handlers/toggle/tesselation/level.c \
@@ -63,11 +61,16 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/geometry/map/style/style.c \
 		srcs/geometry/map/style/themes.c \
 		srcs/geometry/matrix/matrix.c \
-		srcs/geometry/tesselation/handlers.c \
+		srcs/geometry/tesselation/compute.c \
+		srcs/geometry/tesselation/diagonal.c \
+		srcs/geometry/tesselation/direct.c \
 		srcs/geometry/tesselation/helper.c \
+		srcs/geometry/tesselation/horizontal.c \
 		srcs/geometry/tesselation/manager.c \
+		srcs/geometry/tesselation/submap.c \
 		srcs/geometry/tesselation/tesselation.c \
 		srcs/geometry/tesselation/utils.c \
+		srcs/geometry/tesselation/vertical.c \
 		srcs/graphics/cache/cache.c \
 		srcs/graphics/cache/helper.c \
 		srcs/graphics/draw/grid/quad/quad.c \
@@ -126,7 +129,10 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/gui/layout/transform/scale.c \
 		srcs/gui/layout/transform/transform.c \
 		srcs/gui/layout/transform/utils.c \
-		srcs/gui/panel/panel.c \
+		srcs/gui/panel/clear.c \
+		srcs/gui/panel/draw.c \
+		srcs/gui/panel/redraw.c \
+		srcs/gui/panel/resize.c \
 		srcs/gui/print/format/format.c \
 		srcs/gui/print/format/nbr.c \
 		srcs/gui/print/put.c \
@@ -186,7 +192,6 @@ SRCS =	srcs/core/cleanup.c \
 	
 
 
-# Object files in objs directory
 OBJS = $(SRCS:srcs/%.c=objs/%.o)
 
 MLX_DIR = ./minilibx-linux
@@ -202,11 +207,9 @@ $(MLX_LIB):
 	@echo "Building MinilibX..."
 	@make -C $(MLX_DIR) 2>/dev/null || make -C $(MLX_DIR)
 
-# Create necessary subdirectories in objs
 objs:
 	@mkdir -p $(dir $(OBJS))
 
-# Compile object files
 objs/%.o: srcs/%.c includes/fdf.h | objs
 	@echo "Compiling $<..."
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -228,7 +231,6 @@ fclean: clean
 	@make -C $(LIBFT_DIR) fclean
 
 re: fclean all
-
 
 generate: $(LIBFT)
 	@echo "Building fdf_gen..."

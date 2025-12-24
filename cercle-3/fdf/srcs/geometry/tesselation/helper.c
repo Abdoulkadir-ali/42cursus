@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:30:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 02:27:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,18 @@ void	fill_tesselated_points(t_map *dst, t_map *src)
 {
 	size_t	y;
 	size_t	x;
+	t_vec2	pos;
 
 	y = 0;
 	while (y < dst->height)
 	{
 		x = 0;
 		while (x < dst->width)
-			compute_tesselated_point(src, dst, x++, y);
+		{
+			pos.x = x++;
+			pos.y = y;
+			compute_tesselated_point(src, dst, pos);
+		}
 		y++;
 	}
 }

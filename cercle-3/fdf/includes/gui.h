@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:42:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 02:41:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ typedef struct s_colored_text
 void					redraw_gui(t_events *events);
 void					draw_panel_background(t_gui *gui);
 void					clear_gui(t_gui *gui);
+void					draw_rect(t_gui *gui, t_vec2 pos, t_vec2 size,
+							int color);
 
 /* Text Helpers */
 void					put_text(t_gui *gui, int x, int y, char *text);

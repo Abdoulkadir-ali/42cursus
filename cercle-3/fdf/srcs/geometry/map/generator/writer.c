@@ -3,21 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   writer.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@student.42.fr>    +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/24 00:01:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/24 00:01:00 by antigravity      ###   ########.fr       */
+/*   Created: 2025/12/24 02:25:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/24 02:16:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 
+static void	write_row(int fd, int *row, int w)
+{
+	t_vec2	pos;
+	char	*str;
+
+	pos.x = 0;
+	while (pos.x < w)
+	{
+		str = ft_itoa(row[pos.x]);
+		write(fd, str, ft_strlen(str));
+		free(str);
+		if (pos.x < w - 1)
+			write(fd, " ", 1);
+		pos.x++;
+	}
+	write(fd, "\n", 1);
+}
+
 void	save_map_to_file(int **map, int w, int h, char *filename)
 {
 	int		fd;
-	int		x;
-	int		y;
-	char	*str;
+	t_vec2	pos;
 
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
@@ -26,21 +42,11 @@ void	save_map_to_file(int **map, int w, int h, char *filename)
 		return ;
 	}
 	ft_printf("Saving map to %s...\n", filename);
-	y = 0;
-	while (y < h)
+	pos.y = 0;
+	while (pos.y < h)
 	{
-		x = 0;
-		while (x < w)
-		{
-			str = ft_itoa(map[y][x]);
-			write(fd, str, ft_strlen(str));
-			free(str);
-			if (x < w - 1)
-				write(fd, " ", 1);
-			x++;
-		}
-		write(fd, "\n", 1);
-		y++;
+		write_row(fd, map[pos.y], w);
+		pos.y++;
 	}
 	close(fd);
 	ft_printf("Done!\n");
