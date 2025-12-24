@@ -16,7 +16,7 @@ t_gui	*init_gui(t_gui_args args)
 {
 	t_gui	*gui;
 
-	gui = malloc(sizeof(t_gui));
+	gui = ft_calloc(1, sizeof(t_gui));
 	if (!gui)
 		return (NULL);
 	gui->window = args.window;

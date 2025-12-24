@@ -65,7 +65,7 @@ int	init_and_render(t_data *data)
 	data->gui = init_gui((t_gui_args){data->window,
 			data->camera_manager->camera, &data->map_manager,
 			&data->graphics->render_config, data->map_manager.current_map});
-	if (!init_gui_images(data->gui))
+	if (!data->gui)
 		return (0);
 	g = data->graphics;
 	g->map = data->map_manager.current_map;

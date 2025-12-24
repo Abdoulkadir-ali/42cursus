@@ -75,6 +75,8 @@ int	handle_g(int keycode, t_events *events)
 	{
 		events->camera_manager->map = new_map;
 		adjust_camera_to_map(events->camera_manager);
+		update_rotation_matrix(events->camera_manager->camera);
+		calculate_transform_matrix(events->camera_manager->camera);
 	}
 	events->gui.map = new_map;
 	events->graphics->dirty = 1;

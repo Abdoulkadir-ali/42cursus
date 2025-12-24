@@ -34,7 +34,7 @@ t_events	*init_events(t_events_args *args)
 {
 	t_events	*e;
 
-	e = malloc(sizeof(t_events));
+	e = ft_calloc(1, sizeof(t_events));
 	if (!e)
 		return (NULL);
 	e->window = args->window;

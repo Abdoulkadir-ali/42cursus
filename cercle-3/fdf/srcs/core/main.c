@@ -67,6 +67,8 @@ static int	init_events_and_hooks(t_data *data, t_events **events)
 		return (0);
 	setup_hooks(*events);
 	redraw(*events);
+	if (data->gui)
+		free(data->gui);
 	return (1);
 }
 

@@ -118,5 +118,7 @@ t_camera_manager	*init_camera(t_camera_args args)
 	else if (!init_manager_with_test_grid(mgr))
 		return (free(ctx->camera), free(ctx), NULL);
 	ctx->map = mgr->current_map;
+	update_rotation_matrix(ctx->camera);
+	calculate_transform_matrix(ctx->camera);
 	return (ctx);
 }
