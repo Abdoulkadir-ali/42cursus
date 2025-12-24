@@ -103,21 +103,16 @@ class MapGenerator:
                 new_w = width
                 new_h = int(width / aspect)
             
-            img = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+            img = img.resize((new_w, new_h), Image.LANCZOS)
             print(f"Resizing to {new_w}x{new_h} (aspect ratio preserved)...")
-            
             data = [[(0, "0xFFFFFF") for _ in range(new_w)] for _ in range(new_h)]
             pixels = img.load()
-            
             for y in range(new_h):
                 for x in range(new_w):
                     r, g, b = pixels[x, y]
-                    # Luminance for height
                     lum = 0.299 * r + 0.587 * g + 0.114 * b
                     val = lum / 255.0
                     height_val = int(val * z_scale)
-                    
-                    # RGB to Hex String
                     hex_color = "0x{:02X}{:02X}{:02X}".format(r, g, b)
                     data[y][x] = (height_val, hex_color)
             
