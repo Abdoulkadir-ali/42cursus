@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:42:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 15:21:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,12 @@
 # include "primitives.h"
 # include <dirent.h>
 # include <fcntl.h>
-# include <sys/stat.h>
 # include <math.h>
+# include <sys/stat.h>
 # include <time.h>
 # include <xmmintrin.h>
 
 /* ========== VECTORS ========== */
-
-typedef struct s_matrix4
-{
-	float				m[4][4];
-}						t_matrix4;
 
 typedef struct s_tess_diagonal_ctx
 {
@@ -264,11 +259,5 @@ typedef struct s_find_min_max_ctx
 	float				min_val;
 	float				max_val;
 }						t_find_min_max_ctx;
-
-/* Matrix Operations */
-t_matrix4				matrix_identity(void);
-t_matrix4				matrix_multiply(t_matrix4 a, t_matrix4 b);
-t_matrix4				matrix_translation(float x, float y, float z);
-t_matrix4				matrix_scale(float x, float y, float z);
 
 #endif

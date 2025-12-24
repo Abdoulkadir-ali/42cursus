@@ -24,7 +24,7 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/events/keys/handlers/flags/flag.c \
 		srcs/events/keys/handlers/flags/helper.c \
 		srcs/events/keys/handlers/flags/modifiers.c \
-		srcs/events/keys/handlers/gui/gui.c \
+		srcs/events/keys/handlers/gui/leave.c \
 		srcs/events/keys/handlers/map/map.c \
 		srcs/events/keys/handlers/map/generate.c \
 		srcs/events/keys/handlers/map/color_mode.c \
@@ -60,7 +60,6 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/geometry/map/read/select.c \
 		srcs/geometry/map/style/style.c \
 		srcs/geometry/map/style/themes.c \
-		srcs/geometry/matrix/matrix.c \
 		srcs/geometry/tesselation/compute.c \
 		srcs/geometry/tesselation/diagonal.c \
 		srcs/geometry/tesselation/direct.c \
@@ -157,6 +156,7 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/primitives/vectors/vecu3/arithmetic.c \
 		srcs/primitives/vectors/vecu3/distance.c \
 		srcs/primitives/vectors/vecu3/init.c \
+		srcs/primitives/matrix/matrix.c \
 		srcs/render/camera/controls/adjust.c \
 		srcs/render/camera/controls/center.c \
 		srcs/render/camera/controls/reset_style.c \

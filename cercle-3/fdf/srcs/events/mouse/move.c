@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:48:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 15:19:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
-
-double	sqrt(double x);
 
 static void	handle_object_vec3d(int x, int y, t_events *events)
 {

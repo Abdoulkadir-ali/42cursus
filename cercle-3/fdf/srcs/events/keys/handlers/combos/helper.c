@@ -6,14 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:27:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:47:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 15:17:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
-
-double	floor(double x);
-double	fabs(double x);
 
 void	clamp_values(t_events *events)
 {

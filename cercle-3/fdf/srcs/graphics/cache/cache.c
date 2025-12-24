@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 03:11:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:27:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 15:24:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
-#include <immintrin.h>
-#include <stdlib.h>
 
 void	cleanup_cache(t_graphics *g)
 {

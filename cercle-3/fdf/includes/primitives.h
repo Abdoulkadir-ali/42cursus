@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 23:11:23 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 23:12:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 15:28:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PRIMITIVES_H
 
 # include "define.h"
+# include "libft.h"
 # include <math.h>
 
 /* ========== VECTORS ========== */
@@ -62,6 +63,11 @@ typedef struct s_point
 	t_vec3d			pos;
 	t_vec3			color;
 }					t_point;
+
+typedef struct s_matrix4
+{
+	float				m[4][4];
+}						t_matrix4;
 
 /* Vector Constructors */
 t_vec2				create_vec2(int x, int y);
@@ -125,6 +131,12 @@ unsigned int		vecu2_max(t_vecu2 v);
 unsigned int		vecu3_len(t_vecu3 v);
 unsigned int		vecu3_min(t_vecu3 v);
 unsigned int		vecu3_max(t_vecu3 v);
+
+/* Matrix Operations */
+t_matrix4			matrix_identity(void);
+t_matrix4			matrix_multiply(t_matrix4 a, t_matrix4 b);
+t_matrix4			matrix_translation(float x, float y, float z);
+t_matrix4			matrix_scale(float x, float y, float z);
 
 /* ========== CLAMP ========== */
 
