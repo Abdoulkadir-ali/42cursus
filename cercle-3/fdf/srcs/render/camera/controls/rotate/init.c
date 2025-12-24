@@ -6,14 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 05:18:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:53:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 21:38:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
-
-double	cos(double x);
-double	sin(double x);
 
 static void	init_rot_ctx(t_rot_ctx *c, t_camera *cam)
 {

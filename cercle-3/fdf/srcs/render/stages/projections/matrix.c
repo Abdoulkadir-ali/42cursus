@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:04:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 21:39:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,6 @@ static t_matrix4	get_conic_matrix(t_camera *cam, float aspect)
 t_matrix4	get_projection_matrix(t_camera *cam, float aspect)
 {
 	if (cam->projection == PROJ_PARALLEL)
-	{
 		return (get_parallel_matrix(cam, aspect));
-	}
-	else
-	{
-		return (get_conic_matrix(cam, aspect));
-	}
+	return (get_conic_matrix(cam, aspect));
 }
