@@ -65,7 +65,8 @@ make test
 - [Push Swap Tutorial Video 1](https://www.youtube.com/watch?v=wRvipSG4Mmk): Educational video explaining push_swap concepts and basic operations
 - [Push Swap Tutorial Video 2](https://www.youtube.com/watch?v=OaG81sDEpVk): Advanced push_swap techniques and algorithm implementations
 - [42 Cursus Push Swap Guide](https://42-cursus.gitbook.io/guide/2-rank-02/push_swap): Official 42 school guide and documentation for the push_swap project
-- [Push Swap: The Least Amount of Moves with Two Stacks](https://medium.com/@jamierobertdawson/push-swap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a): In-depth article on optimizing push_swap algorithms for minimum operationsap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a): In-depth article on optimizing push_swap algorithms for minimum operations
+- [Push Swap: The Least Amount of Moves with Two Stacks](https://medium.com/@jamierobertdawson/push-swap-the-least-amount-of-moves-with-two-stacks-d1e76a71789a): In-depth article on optimizing push_swap algorithms for minimum 
+- [Push swap tester](https://github.com/LeoFu9487/push_swap_tester): Push swap thorough tester
 
 
 ### Utilisation de l'IA
