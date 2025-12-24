@@ -6,17 +6,16 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/12 00:00:00 by abdoali           #+#    #+#              #
-#    Updated: 2025/12/13 01:15:01 by abdoali          ###   ########.fr        #
+#    Updated: 2025/12/24 20:06:30 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= push_swap
 CHECKER		= checker
 
-CC			= gcc
+CC		= gcc
 CFLAGS		= -Wall -Wextra -Werror
 INCLUDES	= -I includes -I srcs/libft/includes
-DEBUG_FLAGS	=
 
 # Directories
 SRC_DIR		= srcs/push_swap
@@ -24,8 +23,8 @@ OBJ_DIR		= obj
 LIBFT_DIR	= srcs/libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
-# Common source files (shared by multiple targets)
-COMMON_SRCS	= parsing/stacks/check.c \
+# Source files
+SRCS		= parsing/stacks/check.c \
 			  parsing/stacks/parser.c \
 			  parsing/stacks/parse_int.c \
 			  moves/push.c \
@@ -42,9 +41,8 @@ COMMON_SRCS	= parsing/stacks/check.c \
 			  helper/stacks/free.c \
 			  helper/display/ft_print_lst.c \
 			  helper/display/ft_puterr.c \
-			  helper/display/ft_debug_stacks.c
-
-ALGO_SRCS	= algo/cost/cost.c \
+			  helper/display/ft_debug_stacks.c \
+			  algo/cost/cost.c \
 			  algo/cost/helper.c \
 			  algo/target/target.c \
 			  algo/target/helper.c \
@@ -53,106 +51,39 @@ ALGO_SRCS	= algo/cost/cost.c \
 			  algo/sort/helper.c \
 			  algo/push_swap.c
 
-# Main program sources
-MAIN_SRCS	= main/main.c $(COMMON_SRCS) $(ALGO_SRCS)
-
-# Checker sources
-CHECKER_SRCS = checker/checker.c \
-			   parsing/moves/parser.c \
-			   $(COMMON_SRCS) $(ALGO_SRCS)
-
-# Test sources
-TEST_PARSER_SRCS = parsing/stacks/test.c \
-				   parsing/stacks/check.c \
-				   parsing/stacks/parser.c \
-				   parsing/stacks/parse_int.c \
-				   helper/lst/ft_new.c \
-				   helper/lst/ft_add_back.c \
-				   helper/lst/ft_add_front.c \
-				   helper/lst/ft_clear.c \
-				   helper/lst/ft_delone.c \
-				   helper/lst/ft_size.c \
-				   helper/lst/ft_last.c \
-				   helper/stacks/free.c \
-				   helper/display/ft_puterr.c
-
-TEST_MOVE_SRCS = moves/test.c \
-				 parsing/moves/parser.c \
-				 $(COMMON_SRCS) $(ALGO_SRCS)
-
-TEST_ALGO_SRCS = algo/tests/main.c \
-				 parsing/moves/parser.c \
-				 $(COMMON_SRCS) $(ALGO_SRCS)
-
-TEST_COST_SRCS = algo/tests/cost.c \
-				 parsing/moves/parser.c \
-				 $(COMMON_SRCS) $(ALGO_SRCS)
-
-TEST_TARGET_SRCS = algo/tests/target/target.c \
-				   algo/tests/target/helper.c \
-				   parsing/moves/parser.c \
-				   $(COMMON_SRCS) $(ALGO_SRCS)
+MAIN_SRCS	= main/main.c $(SRCS)
+CHECKER_SRCS	= checker/checker.c parsing/moves/parser.c $(SRCS)
 
 # Object files
-MAIN_OBJ		= $(MAIN_SRCS:%.c=$(OBJ_DIR)/%.o)
-CHECKER_OBJ		= $(CHECKER_SRCS:%.c=$(OBJ_DIR)/%.o)
-TEST_PARSER_OBJ	= $(TEST_PARSER_SRCS:%.c=$(OBJ_DIR)/%.o)
-TEST_MOVE_OBJ	= $(TEST_MOVE_SRCS:%.c=$(OBJ_DIR)/%.o)
-TEST_ALGO_OBJ	= $(TEST_ALGO_SRCS:%.c=$(OBJ_DIR)/%.o)
-TEST_COST_OBJ	= $(TEST_COST_SRCS:%.c=$(OBJ_DIR)/%.o)
-TEST_TARGET_OBJ	= $(TEST_TARGET_SRCS:%.c=$(OBJ_DIR)/%.o)
+MAIN_OBJ	= $(MAIN_SRCS:%.c=$(OBJ_DIR)/%.o)
+CHECKER_OBJ	= $(CHECKER_SRCS:%.c=$(OBJ_DIR)/%.o)
 
 # Rules
 all: $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEBUG_FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(NAME): $(MAIN_OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEBUG_FLAGS) $(MAIN_OBJ) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(MAIN_OBJ) $(LIBFT) -o $(NAME)
 
 $(CHECKER): $(CHECKER_OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEBUG_FLAGS) $(CHECKER_OBJ) $(LIBFT) -o $(CHECKER)
+	$(CC) $(CFLAGS) $(CHECKER_OBJ) $(LIBFT) -o $(CHECKER)
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR)
 
-# Test targets
-test: tests/parser tests/move tests/algo tests/cost tests/target
-
-tests/parser: $(TEST_PARSER_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(TEST_PARSER_OBJ) $(LIBFT) -o $@
-
-tests/move: $(TEST_MOVE_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(TEST_MOVE_OBJ) $(LIBFT) -o $@
-
-tests/algo: $(TEST_ALGO_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(TEST_ALGO_OBJ) $(LIBFT) -o $@
-
-tests/cost: $(TEST_COST_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(TEST_COST_OBJ) $(LIBFT) -o $@
-
-tests/target: $(TEST_TARGET_OBJ) $(LIBFT)
-	@mkdir -p tests
-	$(CC) $(CFLAGS) $(TEST_TARGET_OBJ) $(LIBFT) -o $@
-
-# Clean targets
 clean:
 	@rm -rf $(OBJ_DIR)
 	@make clean -C $(LIBFT_DIR)
 
 fclean: clean
 	@rm -f $(NAME) $(CHECKER)
-	@rm -rf tests
 	@make fclean -C $(LIBFT_DIR)
 
 re: fclean all
 
 bonus: $(CHECKER)
 
-.PHONY: all clean fclean re test bonus
+.PHONY: all clean fclean re bonus

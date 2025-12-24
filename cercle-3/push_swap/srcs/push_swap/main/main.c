@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 19:45:56 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 00:33:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 20:45:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int	main(int argc, char **argv)
 	t_stacks	stacks;
 	char		**args;
 
-	stacks = (t_stacks){NULL, NULL, 0};
 	if (argc < 2)
-		return (ft_puterr("Error\n"));
+		return (0);
+	stacks = (t_stacks){NULL, NULL, 0};
 	argv++;
 	if (argc == 2)
 	{
