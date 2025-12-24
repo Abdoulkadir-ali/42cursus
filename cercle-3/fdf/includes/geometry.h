@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:42:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/24 02:42:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,8 +192,8 @@ void					compute_tesselated_point(t_map *src, t_map *dst,
 t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
 t_map					*extract_submap(t_map *src, t_vec2 min, t_vec2 max);
 t_map					*generate_tesselated_map(t_map *base, int level);
-t_map	*generate_tesselated_submap(t_map *base, t_vec2 min,
-		t_vec2 max, int level);
+t_map					*generate_tesselated_submap(t_map *base, t_vec2 min,
+							t_vec2 max, int level);
 void					free_map(t_map *map);
 
 /* Map Data Processing */
