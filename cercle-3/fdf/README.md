@@ -90,8 +90,9 @@ Get **FDF** running on your Linux machine in seconds.
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/Abdoulkadir-ali/42cursus.git fdf
-cd fdf
+# 📥 Clone the repository
+git clone https://github.com/Abdoulkadir-ali/42cursus
+cd cercle-3/fdf
 
 # 2. Compile the project
 make

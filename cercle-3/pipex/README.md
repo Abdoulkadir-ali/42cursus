@@ -244,7 +244,7 @@ The program gracefully handles numerous error scenarios:
 
 **Found a bug? Have a suggestion?**
 
-🐛 [Report Issues](https://github.com/yourusername/pipex/issues) • 💡 [Submit Ideas](https://github.com/yourusername/pipex/discussions)
+🐛 [Report Issues](https://github.com/Abdoulkadir-ali/pipex/issues) • 💡 [Submit Ideas](https://github.com/Abdoulkadir-ali/pipex/discussions)
 
 </div>
 
@@ -252,8 +252,10 @@ The program gracefully handles numerous error scenarios:
 
 ```bash
 # Fork and clone
-git clone https://github.com/yourusername/pipex.git
-cd pipex
+# 📥 Clone the repository
+git clone https://github.com/Abdoulkadir-ali/42cursus
+cd cercle-3/pipex
+
 
 # Create feature branch
 git checkout -b feature/amazing-improvement
@@ -271,10 +273,10 @@ git push origin feature/amazing-improvement
 
 <div align="center">
 
-![GitHub repo size](https://img.shields.io/github/repo-size/yourusername/pipex?style=flat-square)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/yourusername/pipex?style=flat-square)
-![GitHub language count](https://img.shields.io/github/languages/count/yourusername/pipex?style=flat-square)
-![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/pipex?style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/Abdoulkadir-ali/pipex?style=flat-square)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Abdoulkadir-ali/pipex?style=flat-square)
+![GitHub language count](https://img.shields.io/github/languages/count/Abdoulkadir-ali/pipex?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/Abdoulkadir-ali/pipex?style=flat-square)
 
 </div>
 
