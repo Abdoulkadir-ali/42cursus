@@ -11,7 +11,7 @@
 
 *An efficient sorting algorithm using two stacks and limited operations*
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/yourusername/push_swap/actions)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/Adoulkadir-ali/push_swap/actions)
 [![Norminette](https://img.shields.io/badge/norminette-passing-brightgreen?style=flat-square)](https://github.com/42School/norminette)
 [![Score](https://img.shields.io/badge/score-125%2F100-brightgreen?style=flat-square)](#)
 
@@ -331,8 +331,8 @@ We love contributions! Here's how you can help:
 
 ```bash
 # 📥 Clone the repository
-git clone https://github.com/yourusername/push_swap.git
-cd push_swap
+git clone https://github.com/Abdoulkadir-ali/42cursus
+cd cercle-3/push_swap
 
 # 🏗️ Build and test
 make && make test
@@ -403,7 +403,7 @@ Found a bug? Please report it with:
 **Questions? Suggestions?** Feel free to reach out!
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourprofile)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourusername)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Adoulkadir-ali)
 
 ---
 
