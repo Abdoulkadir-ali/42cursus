@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 03:05:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:37:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
-#include "graphics.h"
 
 static void	fill_map_from_heights(t_map *map, int **heights)
 {
@@ -21,10 +20,10 @@ static void	fill_map_from_heights(t_map *map, int **heights)
 
 	i = 0;
 	pos.y = 0;
-	while (pos.y < map->height)
+	while (pos.y < (int)map->height)
 	{
 		pos.x = 0;
-		while (pos.x < map->width)
+		while (pos.x < (int)map->width)
 		{
 			z = heights[pos.y][pos.x];
 			map->points.pos[i].x = (double)pos.x;

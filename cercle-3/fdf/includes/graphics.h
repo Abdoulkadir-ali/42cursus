@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 15:24:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:57:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,7 +341,7 @@ typedef struct s_graphics
 	t_frame_data			frame_data;
 	t_cache					cache;
 	int						*horizon_buffer;
-	int						dirty;
+	int						needs_refresh;
 }							t_graphics;
 
 typedef struct s_thread_data

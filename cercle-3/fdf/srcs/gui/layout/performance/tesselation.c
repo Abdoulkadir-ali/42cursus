@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:41:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:29:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:13:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,5 @@ void	display_tesselation_info(t_layout *l, t_gui *gui, char *buffer)
 		gui_layout_key_value(l, "Mode (M):", "MANUAL");
 	format_number((long long)gui->render_config->target_tesselation_points,
 		buffer);
-	gui_layout_key_value(l, "Target Pts (B+/-):", buffer);
+	gui_layout_key_value(l, "Target Pts:", buffer);
 }

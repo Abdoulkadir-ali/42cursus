@@ -6,27 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 15:38:24 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:06:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:08:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-
-void	format_depth_str(int percent, char *str)
-{
-	str[0] = '0' + (percent / 10);
-	str[1] = '0' + (percent % 10);
-	str[2] = '%';
-	str[3] = ' ';
-	str[4] = 'v';
-	str[5] = 'i';
-	str[6] = 's';
-	str[7] = 'i';
-	str[8] = 'b';
-	str[9] = 'l';
-	str[10] = 'e';
-	str[11] = '\0';
-}
 
 void	format_speed(double speed, char *buffer)
 {
@@ -55,7 +39,12 @@ void	format_float(double val, char *buffer)
 	if (decimal < 0)
 		decimal = -decimal;
 	i = 0;
-	if (whole >= 10)
+	if (whole >= 100)
+	{
+		buffer[i++] = '0' + (whole / 100);
+		buffer[i++] = '0' + ((whole / 10) % 10);
+	}
+	else if (whole >= 10)
 		buffer[i++] = '0' + (whole / 10);
 	buffer[i++] = '0' + (whole % 10);
 	buffer[i++] = '.';

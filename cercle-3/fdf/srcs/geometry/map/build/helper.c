@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 15:11:34 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:30:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:17:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ void	calculate_z_divisor(t_map *map)
 
 	range = map->min_max_z.y - map->min_max_z.x;
 	if (range > 10.0)
-		map->z_divisor = range / 10.0;
+		map->z_divisor = (unsigned int)(range / 10.0 + 0.5);
 	else
-		map->z_divisor = 1.0;
+		map->z_divisor = 1;
 }
 
 t_map	*allocate_map_arrays(t_map *map)

@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 19:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:46:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:57:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
-
-double	fabs(double x);
 
 int	loop_hook(t_events *events)
 {
@@ -31,10 +29,10 @@ int	loop_hook(t_events *events)
 		needs_redraw = 1;
 	if (process_rotation(events))
 		needs_redraw = 1;
-	if (events->graphics && events->graphics->dirty)
+	if (events->graphics && events->graphics->needs_refresh)
 	{
 		needs_redraw = 1;
-		events->graphics->dirty = 0;
+		events->graphics->needs_refresh = 0;
 	}
 	if (needs_redraw)
 		redraw(events);

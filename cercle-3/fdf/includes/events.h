@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:49:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:17:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ typedef struct s_keys
 	int					b;
 	int					w;
 	int					y;
+	int					c;
+	int					k;
 }						t_keys;
 
 typedef struct s_movement_ctx
@@ -130,12 +132,10 @@ typedef struct s_movement_ctx
 
 typedef struct s_combo_ctx
 {
-	float				old_lod;
 	float				old_z;
-	unsigned int		old_frust;
-	unsigned int		old_damp;
 	double				old_alpha;
 	double				old_rot_speed;
+	unsigned int		old_z_divisor;
 }						t_combo_ctx;
 
 typedef struct s_resize_ctx
@@ -214,10 +214,11 @@ int						handle_r(int keycode, t_events *events);
 int						handle_p(int keycode, t_events *events);
 int						handle_n(int keycode, t_events *events);
 int						handle_s(int keycode, t_events *events);
-int						handle_m(int keycode, t_events *events);
+int						handle_k(int keycode, t_events *events);
 int						handle_i(int keycode, t_events *events);
 int						handle_v(int keycode, t_events *events);
 int						handle_g(int keycode, t_events *events);
+int						handle_h(int keycode, t_events *events);
 int						handle_c(int keycode, t_events *events);
 
 int						handle_1(int keycode, t_events *events);

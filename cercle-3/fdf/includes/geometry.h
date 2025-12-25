@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 15:21:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 23:19:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,18 @@
 # define GEOMETRY_H
 
 /* ========== IMPORTS ========== */
-# include "define.h"
-# include "libft.h"
-# include "primitives.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <math.h>
+# include <stdlib.h>
 # include <sys/stat.h>
 # include <time.h>
 # include <xmmintrin.h>
+
+/* ========== IMPORTS ========== */
+# include "define.h"
+# include "libft.h"
+# include "primitives.h"
 
 /* ========== VECTORS ========== */
 
@@ -127,7 +130,7 @@ typedef struct s_map
 	t_vec2				min_max_z;
 	int					min_proj_z;
 	int					max_proj_z;
-	double				z_divisor;
+	unsigned int		z_divisor;
 	t_map_points		points;
 	t_map_style_config	style;
 }						t_map;
@@ -139,6 +142,8 @@ typedef struct s_maps
 	size_t				count;
 	int					current_index;
 	t_map				*current_map;
+	int					generated_id;
+	int					is_generating;
 }						t_maps;
 
 typedef struct s_height_color_ctx
@@ -201,6 +206,7 @@ void					calculate_z_divisor(t_map *map);
 void					apply_map_style(t_map *map);
 
 void					cycle_map(t_maps *m);
+t_map					*generate_and_replace_map(t_maps *maps);
 
 t_vec3d					mix_pos(t_vec3d p1, t_vec3d p2, double ratio);
 void					set_point(t_map *dst, t_set_point_ctx ctx);
@@ -246,7 +252,7 @@ typedef struct s_process_proj_row_ctx
 {
 	t_min_max_ctx		*min_max_ctx;
 	t_map				*map;
-	double				z_divisor;
+	unsigned int		z_divisor;
 	int					y;
 }						t_process_proj_row_ctx;
 

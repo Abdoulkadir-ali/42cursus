@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 20:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:59:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:18:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static t_vec3d	interpolate_position(t_vec3d v1, t_vec3d v2, float t)
 
 static t_point	create_point(t_vec3d v_curr, t_vec3 color, t_graphics *g)
 {
-	if (g->camera->use_z_divisor && g->map->z_divisor != 0.0)
-		v_curr.z /= g->map->z_divisor;
+	if (g->camera->use_z_divisor && g->map->z_divisor != 0)
+		v_curr.z /= (double)g->map->z_divisor;
 	return ((t_point){.pos = v_curr, .color = color});
 }
 

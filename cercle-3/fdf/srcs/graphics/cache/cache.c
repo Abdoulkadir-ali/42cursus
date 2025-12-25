@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 03:11:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 15:24:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:18:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ t_point	get_fallback_proj(t_graphics *g, int x, int y)
 		return (bad_point);
 	}
 	p3d = g->map->points.pos[idx];
-	if (g->camera->use_z_divisor && g->map->z_divisor != 0.0)
-		p3d.z /= g->map->z_divisor;
+	if (g->camera->use_z_divisor && g->map->z_divisor != 0)
+		p3d.z /= (double)g->map->z_divisor;
 	p_in.pos = p3d;
 	p_in.color = g->map->points.color[idx];
 	return (apply_transform(p_in, g->camera));
@@ -86,11 +86,8 @@ t_point	get_fallback_proj(t_graphics *g, int x, int y)
 
 t_point	get_cached_proj(t_graphics *g, int x, int y)
 {
-	int	valid;
-
-	valid = x >= 0 && y >= 0 && (size_t)x < g->cache.width
-		&& (size_t)y < g->cache.height;
-	if (g->cache.points && g->cache.map == g->map && valid)
+	if (g->cache.points && g->cache.map == g->map && x >= 0 && y >= 0
+		&& (size_t)x < g->cache.width && (size_t)y < g->cache.height)
 		return (g->cache.points[y * g->cache.width + x]);
 	return (get_fallback_proj(g, x, y));
 }

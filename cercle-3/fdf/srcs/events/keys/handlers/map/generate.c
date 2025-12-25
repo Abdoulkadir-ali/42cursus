@@ -6,29 +6,39 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 00:35:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/24 03:05:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 23:19:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 #include "generator.h"
-#include "graphics.h"
 
 int	handle_g(int keycode, t_events *events)
 {
-	t_gen_params	params;
+	t_map	*new_map;
 
 	(void)keycode;
-	params.width = events->map->width;
-	params.height = events->map->height;
-	if (params.width < 50)
-		params.width = 50;
-	if (params.height < 50)
-		params.height = 50;
-	params.scale = 4.0;
-	params.z_scale = 20.0;
-	params.octaves = 4;
-	params.persistence = 0.5;
-	params.seed = time(NULL);
-	return (0);
+	new_map = generate_and_replace_map(events->maps);
+	if (!new_map)
+		return (0);
+	events->map = new_map;
+	events->gui.map = new_map;
+	if (events->camera_manager)
+	{
+		events->camera_manager->map = new_map;
+		center_camera_on_map(events->camera_manager);
+	}
+	if (events->graphics)
+	{
+		if (events->graphics->tesselated_map)
+		{
+			free_map(events->graphics->tesselated_map);
+			events->graphics->tesselated_map = NULL;
+		}
+		cleanup_cache(events->graphics);
+		events->graphics->base_map = new_map;
+		events->graphics->map = new_map;
+		events->graphics->needs_refresh = 1;
+	}
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 23:50:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/24 02:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:36:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ float			grad(t_noise_state *state, int hash, float x, float y);
 /* builder.c */
 int				**generate_heightmap(t_gen_params params);
 void			free_heightmap(int **map, int height);
+int				**allocate_map(int height, int width);
+
+/* octave.c */
+float			get_octave_noise(float x, float y, t_gen_params p,
+					t_noise_state *noise);
 
 /* writer.c */
 void			save_map_to_file(int **map, int w, int h, char *filename);

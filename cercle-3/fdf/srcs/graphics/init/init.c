@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:45 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 20:06:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:57:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_graphics	*init_graphics(t_graphics_args args)
 		g->lod_maps[i++] = NULL;
 	g->map = args.map;
 	g->cache = (t_cache){NULL, 0, 0, NULL, 0, {{0, 0, 0}, {0, 0, 0}, 0, 0, 0}};
-	g->dirty = 1;
+	g->needs_refresh = 1;
 	g->horizon_buffer = malloc(sizeof(int) * g->window->width);
 	if (!g->horizon_buffer)
 	{

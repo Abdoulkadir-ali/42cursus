@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 15:09:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 23:18:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static t_map	*init_map_structure(size_t width, size_t height)
 	map = malloc(sizeof(t_map));
 	if (!map)
 		return (create_test_grid());
-	map->z_divisor = 1.0;
+	map->z_divisor = 1;
 	map->width = width;
 	map->height = height;
 	if (!allocate_map_points(map))
@@ -51,9 +51,10 @@ static void	finalize_map(t_map *map)
 	map->min_proj_z = map->min_max_z.x;
 	map->max_proj_z = map->min_max_z.y;
 	if (map->max_proj_z - map->min_proj_z > 10.0)
-		map->z_divisor = (map->max_proj_z - map->min_proj_z) / 10.0;
+		map->z_divisor = (unsigned int)((map->max_proj_z - map->min_proj_z)
+				/ 10.0 + 0.5);
 	else
-		map->z_divisor = 1.0;
+		map->z_divisor = 1;
 	map->style.style = MAP_STYLE_GRADIENT;
 	apply_map_style(map);
 }

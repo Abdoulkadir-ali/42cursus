@@ -6,14 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:24:11 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:48:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 19:11:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <math.h>
 #include "geometry.h"
-
-double	log(double x);
 
 void	clamp_color(t_vec3 *color, int min, int max)
 {

@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render.c                                           :+:      :+:    :+:   */
+/*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/23 17:36:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:08:37 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/12 15:46:10 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/25 23:18:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "render.h"
-#include "graphics.h"
+#include "gui.h"
 
-void	render_scene(t_graphics *g)
+void	draw_controls_guide_layout(t_layout *l, t_gui *gui)
 {
-	if (!g || !g->map || !g->camera)
-		return ;
-	if (!is_map_visible(g))
-	{
-		clear_frame_buffers(g);
-		return ;
-	}
-	geometry_processing(g);
-	rasterization(g);
+	draw_rotation_section(l);
+	gui_layout_add_spacer(l, 5);
+	gui_layout_title(l, "CONTROLS");
+	draw_mouse_controls(l);
+	gui_layout_add_spacer(l, 5);
+	draw_keyboard_controls(l);
+	gui_layout_add_spacer(l, 5);
+	draw_combos_section(l, gui);
+	gui_layout_add_spacer(l, 5);
+	draw_optimizations_section(l);
 }

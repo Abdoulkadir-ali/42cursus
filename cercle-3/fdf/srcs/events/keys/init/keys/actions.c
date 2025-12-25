@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set.c                                              :+:      :+:    :+:   */
+/*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:00:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:24:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,12 @@ void	set_key_actions_1(t_key_maps *key_maps)
 	key_maps->key_actions[XK_P] = handle_p;
 	key_maps->key_actions[XK_n] = handle_n;
 	key_maps->key_actions[XK_N] = handle_n;
-	key_maps->key_actions[XK_s] = handle_s;
-	key_maps->key_actions[XK_S] = handle_s;
 	key_maps->key_actions[XK_a] = handle_press_flag;
 	key_maps->key_actions[XK_A] = handle_press_flag;
-	key_maps->key_actions[XK_h] = handle_press_flag;
-	key_maps->key_actions[XK_H] = handle_press_flag;
-	key_maps->key_actions[XK_k] = handle_m;
-	key_maps->key_actions[XK_K] = handle_m;
+	key_maps->key_actions[XK_h] = handle_h;
+	key_maps->key_actions[XK_H] = handle_h;
+	key_maps->key_actions[XK_k] = handle_k;
+	key_maps->key_actions[XK_K] = handle_k;
 	key_maps->key_actions[XK_j] = handle_j;
 	key_maps->key_actions[XK_J] = handle_j;
 	key_maps->key_actions[XK_m] = handle_manual_mode;
@@ -47,8 +45,8 @@ void	set_key_actions_2(t_key_maps *key_maps)
 	key_maps->key_releases[XK_Y] = handle_release_flag;
 	key_maps->key_actions[XK_i] = handle_i;
 	key_maps->key_actions[XK_I] = handle_i;
-	key_maps->key_actions[XK_v] = handle_v;
-	key_maps->key_actions[XK_V] = handle_v;
+	key_maps->key_actions[XK_v] = handle_press_flag;
+	key_maps->key_actions[XK_V] = handle_press_flag;
 	key_maps->key_actions[XK_g] = handle_g;
 	key_maps->key_actions[XK_G] = handle_g;
 	key_maps->key_actions[XK_w] = handle_press_flag;
@@ -67,22 +65,18 @@ void	set_key_actions_3(t_key_maps *key_maps)
 	key_maps->key_actions[XK_Z] = handle_press_flag;
 	key_maps->key_releases[XK_z] = handle_release_flag;
 	key_maps->key_releases[XK_Z] = handle_release_flag;
-	key_maps->key_actions[XK_f] = handle_press_flag;
-	key_maps->key_actions[XK_F] = handle_press_flag;
-	key_maps->key_actions[KEY_B] = handle_press_flag;
-	key_maps->key_releases[KEY_B] = handle_release_flag;
+	key_maps->key_actions[XK_t] = handle_press_flag;
+	key_maps->key_actions[XK_T] = handle_press_flag;
+	key_maps->key_releases[XK_t] = handle_release_flag;
+	key_maps->key_releases[XK_T] = handle_release_flag;
 	key_maps->key_actions[XK_w] = handle_press_flag;
 	key_maps->key_actions[XK_W] = handle_press_flag;
 	key_maps->key_releases[XK_w] = handle_release_flag;
 	key_maps->key_releases[XK_W] = handle_release_flag;
-	key_maps->key_actions[XK_d] = handle_press_flag;
-	key_maps->key_actions[XK_D] = handle_press_flag;
 }
 
 void	set_key_actions_4(t_key_maps *key_maps)
 {
-	key_maps->key_actions[XK_t] = handle_t;
-	key_maps->key_actions[XK_T] = handle_t;
 	key_maps->key_actions[XK_Page_Up] = handle_tesselation_up;
 	key_maps->key_actions[XK_Page_Down] = handle_tesselation_down;
 	key_maps->key_actions[XK_Home] = handle_lod_up;
@@ -114,4 +108,6 @@ void	set_key_actions_5(t_key_maps *key_maps)
 	key_maps->key_actions[XK_U] = handle_3;
 	key_maps->key_actions[XK_c] = handle_c;
 	key_maps->key_actions[XK_C] = handle_c;
+	key_maps->key_actions[XK_s] = handle_s;
+	key_maps->key_actions[XK_S] = handle_s;
 }

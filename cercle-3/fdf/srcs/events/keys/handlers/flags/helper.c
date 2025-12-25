@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:27:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:33:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 21:13:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static void	set_arrows(int keycode, t_events *events, int value)
 		events->keys.up = value;
 	else if (keycode == XK_Down)
 		events->keys.down = value;
-	else if (keycode == KEY_G)
+	else if (keycode == XK_g)
 		events->keys.g = value;
-	else if (keycode == KEY_B)
+	else if (keycode == XK_b)
 		events->keys.b = value;
 	else if (keycode == XK_Left)
 		events->keys.left = value;
@@ -63,6 +63,10 @@ static void	set_letters(int keycode, t_events *events, int value)
 		events->keys.z = value;
 	else if (keycode == XK_h || keycode == XK_H)
 		events->keys.h = value;
+	else if (keycode == XK_c || keycode == XK_C)
+		events->keys.c = value;
+	else if (keycode == XK_k || keycode == XK_K)
+		events->keys.k = value;
 }
 
 void	handle_button(int keycode, t_events *events, int value)

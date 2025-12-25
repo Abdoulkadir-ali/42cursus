@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:32:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:18:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ t_point	project_helper(t_vec3d p3d, int color, t_graphics *g)
 	if (p3d.z <= BAD_VALUE + 1.0)
 		return ((t_point){.pos = {BAD_VALUE, BAD_VALUE, BAD_VALUE},
 			.color = int_color_to_rgb(color)});
-	if (g->camera->use_z_divisor && g->map->z_divisor != 0.0)
-		p3d.z /= g->map->z_divisor;
+	if (g->camera->use_z_divisor && g->map->z_divisor != 0)
+		p3d.z /= (double)g->map->z_divisor;
 	p = (t_point){.pos = p3d, .color = int_color_to_rgb(color)};
 	return (apply_transform(p, g->camera));
 }

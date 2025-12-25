@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:26:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 21:48:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 19:19:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	clear_z_buffer(t_graphics *g)
 		return ;
 	ctx.total = g->window->width * g->window->height;
 	ctx.z_buffer = g->window->z_buffer;
-	ctx.max_depth = _mm256_set1_ps(1e30f);
+	ctx.max_depth = _mm256_set1_ps(1.0e30f);
 	clear_z_buffer_simd(&ctx);
 	clear_z_buffer_remainder(&ctx);
 }

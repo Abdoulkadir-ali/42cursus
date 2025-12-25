@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:31:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 19:23:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,10 @@
 
 void	init_cache(t_graphics *g)
 {
-	int		needs_update;
 	size_t	size;
 
-	needs_update = g->cache.map != g->map || g->cache.width != g->map->width
-		|| g->cache.height != g->map->height;
-	if (needs_update)
+	if (g->cache.map != g->map || g->cache.width != g->map->width
+		|| g->cache.height != g->map->height)
 	{
 		cleanup_cache(g);
 		size = sizeof(t_point) * g->map->width * g->map->height;

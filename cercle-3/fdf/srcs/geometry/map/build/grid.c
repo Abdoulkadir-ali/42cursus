@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:26:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 19:15:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
-#include "geometry.h"
 
 t_map	*create_test_grid(void)
 {

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:18:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:57:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	handle_lod_up(int keycode, t_events *events)
 			events->graphics->map = events->graphics->base_map;
 		}
 	}
-	events->graphics->dirty = 1;
+	events->graphics->needs_refresh = 1;
 	return (1);
 }
 
@@ -48,6 +48,6 @@ int	handle_lod_down(int keycode, t_events *events)
 		events->graphics->render_config.lod_value /= 2.0f;
 	if (events->graphics->render_config.lod_value < 1.0f)
 		events->graphics->render_config.lod_value = 1.0f;
-	events->graphics->dirty = 1;
+	events->graphics->needs_refresh = 1;
 	return (1);
 }

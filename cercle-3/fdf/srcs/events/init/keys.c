@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:07:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 19:45:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,9 @@ void	init_keys(t_keys *keys)
 	keys->i = 0;
 	keys->v = 0;
 	keys->g = 0;
+	keys->b = 0;
+	keys->w = 0;
+	keys->y = 0;
+	keys->c = 0;
+	keys->k = 0;
 }

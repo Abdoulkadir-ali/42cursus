@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:29:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 19:19:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	clear_z_buffer_simd(t_clear_z_ctx *ctx)
 void	clear_z_buffer_remainder(t_clear_z_ctx *ctx)
 {
 	while (ctx->i < ctx->total)
-		ctx->z_buffer[ctx->i++] = 1e30f;
+		ctx->z_buffer[ctx->i++] = 1.0e30f;
 }
 
 void	clear_image_simd(t_clear_img_ctx *ctx)

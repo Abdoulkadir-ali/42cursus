@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:53:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:52:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static void	init_no_maps(t_maps *m)
 	m->map_files = NULL;
 	m->maps = NULL;
 	m->count = 0;
+	m->generated_id = 0;
 }
 
 static void	allocate_maps(t_maps *m, size_t count)
@@ -24,6 +25,7 @@ static void	allocate_maps(t_maps *m, size_t count)
 	m->map_files = ft_calloc(count, sizeof(char *));
 	m->maps = ft_calloc(count, sizeof(t_map *));
 	m->count = count;
+	m->generated_id = 0;
 }
 
 static void	init_test_map(t_maps *m)
@@ -34,6 +36,7 @@ static void	init_test_map(t_maps *m)
 	m->map_files = NULL;
 	m->count = 1;
 	m->current_index = 0;
+	m->generated_id = 0;
 }
 
 void	init_map_list(t_maps *m, char *dir_path)
@@ -60,6 +63,8 @@ void	init_map_list(t_maps *m, char *dir_path)
 	closedir(dir);
 	m->current_index = 0;
 	m->current_map = m->maps[0];
+	m->generated_id = 0;
+	m->is_generating = 0;
 }
 
 void	cycle_map(t_maps *m)

@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   depth.c                                            :+:      :+:    :+:   */
+/*   helper.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:12:32 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/12 15:46:10 by abdoali           #+#    #+#             */
+/*   Updated: 2025/12/25 20:13:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "events.h"
+#include "gui.h"
 
-int	handle_v(int keycode, t_events *events)
+void	draw_combo_value(t_layout *l, char *key, char *prefix, char *buffer)
 {
-	(void)keycode;
-	events->use_depth_culling = !events->use_depth_culling;
-	return (1);
+	char	*joined;
+
+	joined = ft_strjoin(prefix, buffer);
+	gui_layout_key_value(l, key, joined);
+	free(joined);
 }

@@ -29,8 +29,8 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/events/keys/handlers/map/generate.c \
 		srcs/events/keys/handlers/map/color_mode.c \
 		srcs/events/keys/handlers/toggle/camera.c \
-		srcs/events/keys/handlers/toggle/depth.c \
 		srcs/events/keys/handlers/toggle/optimizations.c \
+		srcs/events/keys/handlers/toggle/filled.c \
 		srcs/events/keys/handlers/toggle/tesselation/bracket.c \
 		srcs/events/keys/handlers/toggle/tesselation/level.c \
 		srcs/events/keys/handlers/toggle/tesselation/lod.c \
@@ -58,8 +58,18 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/geometry/map/read/loader.c \
 		srcs/geometry/map/read/parser.c \
 		srcs/geometry/map/read/select.c \
+		srcs/geometry/map/generate.c \
 		srcs/geometry/map/style/style.c \
 		srcs/geometry/map/style/themes.c \
+		srcs/geometry/map/generator/alloc.c \
+		srcs/geometry/map/generator/atof.c \
+		srcs/geometry/map/generator/builder.c \
+		srcs/geometry/map/generator/generator.c \
+		srcs/geometry/map/generator/init.c \
+		srcs/geometry/map/generator/interpolate.c \
+		srcs/geometry/map/generator/noise.c \
+		srcs/geometry/map/generator/octave.c \
+		srcs/geometry/map/generator/writer.c \
 		srcs/geometry/tesselation/compute.c \
 		srcs/geometry/tesselation/diagonal.c \
 		srcs/geometry/tesselation/direct.c \
@@ -120,7 +130,9 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/gui/layout/performance/projection.c \
 		srcs/gui/layout/performance/tesselation.c \
 		srcs/gui/layout/style.c \
-		srcs/gui/layout/titles.c \
+		srcs/gui/layout/titles/draw.c \
+		srcs/gui/layout/titles/section.c \
+		srcs/gui/layout/titles/helper.c \
 		srcs/gui/layout/transform/fps.c \
 		srcs/gui/layout/transform/movement.c \
 		srcs/gui/layout/transform/pos.c \
@@ -131,7 +143,6 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/gui/panel/clear.c \
 		srcs/gui/panel/draw.c \
 		srcs/gui/panel/redraw.c \
-		srcs/gui/panel/resize.c \
 		srcs/gui/print/format/format.c \
 		srcs/gui/print/format/nbr.c \
 		srcs/gui/print/put.c \

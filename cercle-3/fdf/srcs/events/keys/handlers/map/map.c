@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:47:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 23:02:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 int	handle_r(int keycode, t_events *events)
 {
 	(void)keycode;
-	events->camera->target_rotation = create_vec3d(35.264 * M_PI / 180.0,
-			0.0, 45.0 * M_PI / 180.0);
+	events->camera->target_rotation = create_vec3d(35.264 * M_PI / 180.0, 0.0,
+			45.0 * M_PI / 180.0);
 	reset_view(events);
 	reset_style(events->camera);
 	return (1);
@@ -35,7 +35,7 @@ int	handle_n(int keycode, t_events *events)
 		{
 			events->graphics->base_map = events->maps->current_map;
 			events->graphics->map = events->maps->current_map;
-			events->graphics->dirty = 1;
+			events->graphics->needs_refresh = 1;
 		}
 		events->gui.map = events->maps->current_map;
 	}
@@ -50,9 +50,11 @@ int	handle_s(int keycode, t_events *events)
 	return (1);
 }
 
-int	handle_m(int keycode, t_events *events)
+int	handle_k(int keycode, t_events *events)
 {
 	(void)keycode;
 	events->render_mode = (events->render_mode + 1) % RENDER_MODE_COUNT;
+	if (events->graphics)
+		events->graphics->needs_refresh = 1;
 	return (1);
 }

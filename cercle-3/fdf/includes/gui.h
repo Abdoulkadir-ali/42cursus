@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:39 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:42:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 22:26:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,8 @@ typedef struct s_colored_text
 void					redraw_gui(t_events *events);
 void					draw_panel_background(t_gui *gui);
 void					clear_gui(t_gui *gui);
-void					draw_rect(t_gui *gui,
-							t_vec2 pos, t_vec2 size, int color);
+void					draw_rect(t_gui *gui, t_vec2 pos, t_vec2 size,
+							int color);
 
 /* Text Helpers */
 void					put_text(t_gui *gui, int x, int y, char *text);
@@ -114,7 +114,6 @@ void					put_colored(t_gui *gui, int x, int y,
 void					format_speed(double speed, char *buffer);
 void					format_number(long long num, char *buffer);
 void					format_float(double val, char *buffer);
-void					format_depth_str(int percent, char *str);
 int						normalize_angle(double radians);
 
 /* Axis Indicator */
@@ -122,6 +121,11 @@ void					draw_axis_indicator(t_gui *gui);
 void					draw_axis_line(t_gui *gui, t_vec2 center, t_vec3d axis,
 							int color);
 void					draw_axis_labels(t_gui *gui, t_vec2 center);
+void					draw_rotation_section(t_layout *l);
+void					draw_mouse_controls(t_layout *l);
+void					draw_keyboard_controls(t_layout *l);
+void					draw_combos_section(t_layout *l, t_gui *gui);
+void					draw_optimizations_section(t_layout *l);
 
 /* Layout Engine API */
 void					gui_layout_init(t_layout *l, t_gui *gui);
@@ -131,12 +135,12 @@ void					gui_layout_label(t_layout *l, char *text);
 void					gui_layout_key_value(t_layout *l, char *key, char *val);
 
 /* Section Drawers (Updated to use t_layout) */
-void					draw_controls_guide_layout(t_layout *l);
+void					draw_controls_guide_layout(t_layout *l, t_gui *gui);
 void					draw_performance_display_layout(t_layout *l,
 							t_gui *gui);
 void					draw_projection_display_layout(t_layout *l, t_gui *gui);
 void					draw_speed_display_layout(t_layout *l, t_gui *gui);
-void					draw_map_name_display_layout(t_layout *l, t_gui *gui);
+void					draw_map_layout(t_layout *l, t_gui *gui);
 void					display_point_stats(t_layout *l, t_gui *gui,
 							char *buffer);
 void					display_toggle_options(t_layout *l, t_gui *gui,
