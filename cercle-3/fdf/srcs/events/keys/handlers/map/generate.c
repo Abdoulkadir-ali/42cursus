@@ -6,21 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 00:35:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/25 23:19:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/25 23:30:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 #include "generator.h"
 
-int	handle_g(int keycode, t_events *events)
+static void	update_map_state(t_events *events, t_map *new_map)
 {
-	t_map	*new_map;
-
-	(void)keycode;
-	new_map = generate_and_replace_map(events->maps);
-	if (!new_map)
-		return (0);
 	events->map = new_map;
 	events->gui.map = new_map;
 	if (events->camera_manager)
@@ -40,5 +34,16 @@ int	handle_g(int keycode, t_events *events)
 		events->graphics->map = new_map;
 		events->graphics->needs_refresh = 1;
 	}
+}
+
+int	handle_g(int keycode, t_events *events)
+{
+	t_map	*new_map;
+
+	(void)keycode;
+	new_map = generate_and_replace_map(events->maps);
+	if (!new_map)
+		return (0);
+	update_map_state(events, new_map);
 	return (1);
 }
