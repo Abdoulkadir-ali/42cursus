@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 16:10:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 16:36:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,12 @@ t_vec3					create_color_wrap(int r, int g, int b);
 t_vec3					interpolate_color(t_vec3 color1, t_vec3 color2,
 							double ratio);
 t_vec3					get_height_color(double z, int min_z, int max_z);
+
+void					init_no_maps(t_maps *m);
+void					allocate_maps(t_maps *m, size_t count);
+void					init_test_map(t_maps *m);
+void					load_maps_from_dir(t_maps *m, char *dir_path,
+							size_t count);
 
 void					init_map_list(t_maps *m, char *dir_path);
 size_t					count_fdf_files(DIR *dir);

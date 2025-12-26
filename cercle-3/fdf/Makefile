@@ -53,6 +53,7 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/geometry/map/build/minmax.c \
 		srcs/geometry/map/read/file.c \
 		srcs/geometry/map/read/helper.c \
+		srcs/geometry/map/read/init.c \
 		srcs/geometry/map/read/loader.c \
 		srcs/geometry/map/read/parser.c \
 		srcs/geometry/map/read/select.c \
