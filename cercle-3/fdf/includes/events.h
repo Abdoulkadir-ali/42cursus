@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:30:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 14:53:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,49 +37,6 @@
 #  define MOUSE_RIGHT 3
 #  define MOUSE_SCROLL_UP 4
 #  define MOUSE_SCROLL_DOWN 5
-
-#  define KEY_UP_ARROW XK_Up
-#  define KEY_DOWN_ARROW XK_Down
-#  define KEY_LEFT_ARROW XK_Left
-#  define KEY_RIGHT_ARROW XK_Right
-#  define KEY_CTRL_LEFT XK_Control_L
-#  define KEY_CTRL_RIGHT XK_Control_R
-#  define KEY_SHIFT_LEFT XK_Shift_L
-#  define KEY_SHIFT_RIGHT XK_Shift_R
-#  define KEY_L XK_l
-#  define KEY_Z XK_z
-#  define KEY_F XK_f
-#  define KEY_H XK_h
-#  define KEY_D XK_d
-#  define KEY_T XK_t
-#  define KEY_S XK_s
-#  define KEY_A XK_a
-#  define KEY_X XK_x
-#  define KEY_I XK_i
-#  define KEY_V XK_v
-#  define KEY_G XK_g
-#  define KEY_PLUS XK_plus
-#  define KEY_MINUS XK_minus
-#  define KEY_ZERO XK_0
-#  define KEY_C XK_c
-#  define KEY_ESC XK_Escape
-#  define KEY_R XK_r
-#  define KEY_P XK_p
-#  define KEY_N XK_n
-#  define KEY_BRACKET_LEFT XK_bracketleft
-#  define KEY_BRACKET_RIGHT XK_bracketright
-#  define KEY_B XK_b
-#  define KEY_Y XK_y
-#  define KEY_W XK_w
-#  define KEY_1 XK_1
-#  define KEY_2 XK_2
-#  define KEY_3 XK_3
-#  define KEY_7 XK_7
-#  define KEY_8 XK_8
-#  define KEY_9 XK_9
-#  define KEY_Q XK_q
-#  define KEY_E XK_e
-#  define KEY_U XK_u
 
 # endif
 

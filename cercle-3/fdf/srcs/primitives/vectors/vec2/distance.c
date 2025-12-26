@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:02 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:06:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "primitives.h"
-
-double	sqrt(double x);
 
 int	vec2_len(t_vec2 v)
 {

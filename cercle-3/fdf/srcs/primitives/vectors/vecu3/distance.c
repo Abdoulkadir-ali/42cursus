@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 13:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:54:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:06:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "primitives.h"
-
-double	sqrt(double x);
 
 unsigned int	vecu3_len(t_vecu3 v)
 {
