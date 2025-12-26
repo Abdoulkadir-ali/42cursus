@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 16:27:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 16:45:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_events		t_events;
 typedef enum e_render_mode
 {
 	RENDER_LINES,
+	RENDER_POINTS,
 	RENDER_MODE_COUNT
 }							t_render_mode;
 
