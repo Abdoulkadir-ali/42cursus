@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:02:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 16:26:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,5 @@ int	handle_s(int keycode, t_events *events)
 {
 	(void)keycode;
 	cycle_gui_style(&events->gui);
-	return (1);
-}
-
-int	handle_k(int keycode, t_events *events)
-{
-	(void)keycode;
-	events->render_mode = (events->render_mode + 1) % RENDER_MODE_COUNT;
-	if (events->graphics)
-		events->graphics->needs_refresh = 1;
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 17:36:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 17:51:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:28:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,7 @@ int	calculate_geometry_level(t_graphics *g)
 	int	level;
 	int	min_level_for_mode;
 
-	if (g->render_config.filled
-		|| g->render_config.render_mode == RENDER_TRIANGLES)
-		min_level_for_mode = 2;
-	else
-		min_level_for_mode = MIN_DETAIL_LEVEL;
+	min_level_for_mode = MIN_DETAIL_LEVEL;
 	if (g->render_config.use_adaptive_logic)
 	{
 		level = calculate_adaptive_level(g);

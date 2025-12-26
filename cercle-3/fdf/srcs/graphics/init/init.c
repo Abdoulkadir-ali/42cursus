@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:45 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:57:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:29:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	init_render_config(t_render_config *c)
 {
 	c->render_mode = RENDER_LINES;
 	c->use_depth_culling = 1;
-	c->filled = 0;
 	c->lod_value = DEFAULT_LOD_LEVEL;
 	c->use_tesselation = 1;
 	c->tesselation_level = 1;

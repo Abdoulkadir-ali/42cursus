@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:19:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 16:10:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <time.h>
-# include <xmmintrin.h>
 
 /* ========== IMPORTS ========== */
 # include "define.h"

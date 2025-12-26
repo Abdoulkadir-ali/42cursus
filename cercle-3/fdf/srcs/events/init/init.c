@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:53:06 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:04:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 16:23:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,12 @@ static void	init_events_graphics(t_events *e)
 		e->render_mode = e->graphics->render_config.render_mode;
 		e->lod_value = e->graphics->render_config.lod_value;
 		e->use_depth_culling = e->graphics->render_config.use_depth_culling;
-		e->filled = e->graphics->render_config.filled;
 	}
 	else
 	{
 		e->render_mode = 0;
 		e->lod_value = DEFAULT_LOD_LEVEL;
 		e->use_depth_culling = 1;
-		e->filled = 0;
 	}
 }
 

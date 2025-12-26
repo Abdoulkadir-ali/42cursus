@@ -1,7 +1,7 @@
 NAME = fdf
 
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -I. -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math -mavx -march=native
+CFLAGS = -Wall -Wextra -Werror -I. -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math
 LDFLAGS = -L./minilibx-linux -lmlx -L./libft -lft -lX11 -lXext -lm -lpthread
 
 LIBFT_DIR = ./libft
@@ -26,11 +26,9 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/events/keys/handlers/flags/modifiers.c \
 		srcs/events/keys/handlers/gui/leave.c \
 		srcs/events/keys/handlers/map/map.c \
-		srcs/events/keys/handlers/map/generate.c \
 		srcs/events/keys/handlers/map/color_mode.c \
 		srcs/events/keys/handlers/toggle/camera.c \
 		srcs/events/keys/handlers/toggle/optimizations.c \
-		srcs/events/keys/handlers/toggle/filled.c \
 		srcs/events/keys/handlers/toggle/tesselation/bracket.c \
 		srcs/events/keys/handlers/toggle/tesselation/level.c \
 		srcs/events/keys/handlers/toggle/tesselation/lod.c \
@@ -58,18 +56,8 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/geometry/map/read/loader.c \
 		srcs/geometry/map/read/parser.c \
 		srcs/geometry/map/read/select.c \
-		srcs/geometry/map/generate.c \
 		srcs/geometry/map/style/style.c \
 		srcs/geometry/map/style/themes.c \
-		srcs/geometry/map/generator/alloc.c \
-		srcs/geometry/map/generator/atof.c \
-		srcs/geometry/map/generator/builder.c \
-		srcs/geometry/map/generator/generator.c \
-		srcs/geometry/map/generator/init.c \
-		srcs/geometry/map/generator/interpolate.c \
-		srcs/geometry/map/generator/noise.c \
-		srcs/geometry/map/generator/octave.c \
-		srcs/geometry/map/generator/writer.c \
 		srcs/geometry/tesselation/compute.c \
 		srcs/geometry/tesselation/diagonal.c \
 		srcs/geometry/tesselation/direct.c \
@@ -89,7 +77,6 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/graphics/draw/grid/raycast/raycast.c \
 		srcs/graphics/draw/grid/raycast/threads.c \
 		srcs/graphics/draw/grid/raycast/utils.c \
-		srcs/graphics/draw/grid/raycast/visibility.c \
 		srcs/graphics/draw/grid/segment/segment.c \
 		srcs/graphics/draw/grid/segment/tessellation.c \
 		srcs/graphics/draw/grid/segment/utils.c \
@@ -102,19 +89,7 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/graphics/draw/lines/draw/line_setup.c \
 		srcs/graphics/draw/lines/helper.c \
 		srcs/graphics/draw/pixel/pixel.c \
-		srcs/graphics/draw/triangle/draw.c \
-		srcs/graphics/draw/triangle/helper.c \
-		srcs/graphics/draw/triangle/rasterizer/helper.c \
-		srcs/graphics/draw/triangle/rasterizer/rasterizer.c \
-		srcs/graphics/draw/triangle/scanlines/colors.c \
-		srcs/graphics/draw/triangle/scanlines/depth.c \
-		srcs/graphics/draw/triangle/scanlines/dispatch.c \
-		srcs/graphics/draw/triangle/scanlines/fast.c \
-		srcs/graphics/draw/triangle/scanlines/helper.c \
-		srcs/graphics/draw/triangle/scanlines/raster.c \
-		srcs/graphics/draw/triangle/scanlines/setup.c \
 		srcs/graphics/frames/clear.c \
-		srcs/graphics/frames/helper.c \
 		srcs/graphics/init/init.c \
 		srcs/gui/gui/init.c \
 		srcs/gui/gui/redraw.c \
@@ -179,7 +154,6 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/render/camera/init.c \
 		srcs/render/camera/map_init.c \
 		srcs/render/optimization/lines.c \
-		srcs/render/optimization/triangles.c \
 		srcs/render/stages/culling/bounds.c \
 		srcs/render/stages/culling/culling.c \
 		srcs/render/stages/culling/visibility.c \
@@ -190,14 +164,7 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/render/stages/pipeline/render.c \
 		srcs/render/stages/pipeline/tesselation.c \
 		srcs/render/stages/projections/matrix.c \
-		srcs/render/stages/projections/scanlines/remainder.c \
 		srcs/render/stages/projections/scanlines/scanline.c \
-		srcs/render/stages/projections/scanlines/setup.c \
-		srcs/render/stages/projections/scanlines/simd/batch.c \
-		srcs/render/stages/projections/scanlines/simd/load.c \
-		srcs/render/stages/projections/scanlines/simd/math.c \
-		srcs/render/stages/projections/scanlines/simd/store.c \
-		srcs/render/stages/projections/scanlines/simd/transform.c \
 		srcs/render/stages/projections/transform.c \
 		srcs/render/stages/projections/view.c  \
 		srcs/window/init.c
@@ -244,9 +211,4 @@ fclean: clean
 
 re: fclean all
 
-generate: $(LIBFT)
-	@echo "Building fdf_gen..."
-	@$(CC) $(CFLAGS) srcs/geometry/map/generator/main.c srcs/geometry/map/generator/noise.c srcs/geometry/map/generator/builder.c srcs/geometry/map/generator/writer.c $(LDFLAGS) -o fdf_gen
-	@echo "Generator created successfully!"
-
-.PHONY: all clean fclean re objs generate
+.PHONY: all clean fclean re objs

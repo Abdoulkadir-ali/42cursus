@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:52:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 16:01:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,18 @@ void	init_map_list(t_maps *m, char *dir_path)
 	}
 	count = count_fdf_files(dir);
 	closedir(dir);
+	ft_printf("Found %d maps in %s\n", count, dir_path);
 	if (count == 0)
 	{
 		init_test_map(m);
 		return ;
 	}
 	allocate_maps(m, count);
+	if (!m->maps || !m->map_files)
+	{
+		ft_printf("Allocation failed\n");
+		return ;
+	}
 	dir = opendir(dir_path);
 	load_map_files(m, dir, count, dir_path);
 	closedir(dir);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:11:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 03:19:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:20:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define RENDER_H
 
 /* ========== REQUIREMENTS ========== */
-# include <immintrin.h>
 # include <math.h>
 
 /* ========== MODULE IMPORTS ========== */
@@ -79,31 +78,6 @@ typedef struct s_rot_ctx
 	t_vec3d					sin;
 }							t_rot_ctx;
 
-typedef struct s_simd_ctx
-{
-	__m256d					rot[3];
-	__m256d					vdist;
-	__m256d					m[4][4];
-	__m256d					cx;
-	__m256d					cy;
-	__m256d					cz;
-	__m256d					z_scale;
-	__m256d					off_x;
-	__m256d					off_y;
-}							t_simd_ctx;
-
-typedef struct s_simd_vec3
-{
-	__m256d					x;
-	__m256d					y;
-	__m256d					z;
-}							t_simd_vec3;
-
-typedef struct s_simd_vec4
-{
-	__m256d					m[4];
-}							t_simd_vec4;
-
 typedef struct s_transform_ctx
 {
 	t_matrix4				rot;
@@ -126,56 +100,6 @@ typedef struct s_matrix_result
 	float					y;
 	float					w;
 }							t_matrix_result;
-
-typedef struct s_simd_batch_ctx
-{
-	size_t					idx;
-	double					*ptr;
-	__m256d					vx;
-	__m256d					vy;
-	__m256d					vz;
-	__m256d					dx;
-	__m256d					dy;
-	__m256d					dz;
-	__m256d					res_x;
-	__m256d					res_y;
-	__m256d					res_w;
-	__m256d					ones;
-	__m256d					inv_w;
-	__m256d					final_z;
-	double					buf_x[4];
-	double					buf_y[4];
-	double					buf_z[4];
-	int						k;
-}							t_simd_batch_ctx;
-
-typedef struct s_transform_batch_ctx
-{
-	t_graphics				*g;
-	t_point					*out;
-	size_t					row_idx;
-	size_t					i;
-	t_simd_ctx				*ctx;
-}							t_batch_ctx;
-
-typedef struct s_handle_remainder_ctx
-{
-	t_graphics				*g;
-	t_point					*out;
-	size_t					row_idx;
-	size_t					i;
-	size_t					width;
-}							t_handle_remainder_ctx;
-
-typedef struct s_transform_scanline_ctx
-{
-	size_t					i;
-	t_camera				*cam;
-	t_matrix4				*m;
-	t_simd_ctx				ctx;
-	t_batch_ctx				batch_ctx;
-	t_handle_remainder_ctx	rem_ctx;
-}							t_transform_scanline_ctx;
 
 typedef struct s_camera_manager
 {
@@ -226,27 +150,6 @@ void						calculate_transform_matrix(t_camera *cam);
 t_point						apply_transform(t_point p, t_camera *cam);
 void						transform_scanline(t_graphics *g, t_point *out,
 								size_t row_idx, size_t width);
-
-void						setup_simd_constants(t_camera *cam, t_matrix4 *m,
-								t_simd_ctx *ctx);
-void						transform_simd_batch(t_batch_ctx *batch_ctx);
-void						transform_simd_batch_store(t_simd_batch_ctx *bctx,
-								t_graphics *g, t_point *out);
-void						handle_remainder(t_handle_remainder_ctx *ctx);
-
-__m256d						matrix_row_mul(t_simd_vec3 vec, t_simd_vec4 mat);
-__m256d						vector_dot(t_simd_vec3 vec, t_simd_vec3 v);
-
-void						load_simd_vectors(t_simd_batch_ctx *bctx,
-								t_batch_ctx *batch_ctx);
-void						apply_scaling_centering(t_simd_batch_ctx *bctx,
-								t_simd_ctx *ctx);
-void						apply_simd_matrix_transform(t_simd_batch_ctx *bctx,
-								t_simd_ctx *ctx);
-void						apply_perspective_offsets(t_simd_batch_ctx *bctx,
-								t_simd_ctx *ctx);
-void						compute_final_z(t_simd_batch_ctx *bctx,
-								t_simd_ctx *ctx);
 
 /* Culling Stages */
 

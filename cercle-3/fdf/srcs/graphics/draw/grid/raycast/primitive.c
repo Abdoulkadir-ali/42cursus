@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 19:27:48 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:51:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:28:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,24 +50,14 @@ static void	draw_vertical_line(t_draw_surface_ctx *ctx)
 
 static void	draw_lines(t_draw_surface_ctx *ctx)
 {
-	if (ctx->g->render_config.render_mode == RENDER_LINES
-		&& !ctx->g->render_config.filled)
+	if (ctx->g->render_config.render_mode == RENDER_LINES)
 	{
 		draw_horizontal_line(ctx);
 		draw_vertical_line(ctx);
 	}
-}
-
-static void	draw_triangles(t_draw_surface_ctx *ctx)
-{
-	if (ctx->g->render_config.render_mode == RENDER_TRIANGLES
-		|| (ctx->g->render_config.render_mode == RENDER_LINES
-			&& ctx->g->render_config.filled))
+	else if (ctx->g->render_config.render_mode == RENDER_POINTS)
 	{
-		if (ctx->has_h && ctx->has_v)
-			draw_triangle(ctx->g, ctx->curr, ctx->h_next, ctx->v_next);
-		if (ctx->has_h && ctx->has_v && ctx->has_diag)
-			draw_triangle(ctx->g, ctx->h_next, ctx->diag, ctx->v_next);
+		img_pixel_put_with_z(ctx->g, ctx->curr);
 	}
 }
 
@@ -77,17 +67,10 @@ void	draw_surface_primitive(t_draw_surface_ctx *ctx)
 	ctx->has_curr = get_point(ctx->g, ctx->pos.x, ctx->pos.y, &ctx->curr);
 	if (!ctx->has_curr)
 		return ;
-	check_visibility(ctx);
 	ctx->has_h = get_point(ctx->g, ctx->pos.x + ctx->dir.x, ctx->pos.y,
 			&ctx->h_next);
 	ctx->has_v = get_point(ctx->g, ctx->pos.x, ctx->pos.y + ctx->dir.y,
 			&ctx->v_next);
 	ctx->has_diag = 0;
-	if ((ctx->g->render_config.render_mode == RENDER_TRIANGLES
-			|| (ctx->g->render_config.render_mode == RENDER_LINES
-				&& ctx->g->render_config.filled)))
-		ctx->has_diag = get_point(ctx->g, ctx->pos.x + ctx->dir.x, ctx->pos.y
-				+ ctx->dir.y, &ctx->diag);
 	draw_lines(ctx);
-	draw_triangles(ctx);
 }

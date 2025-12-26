@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:24:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 16:26:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,6 @@ void	set_key_actions_1(t_key_maps *key_maps)
 	key_maps->key_actions[XK_N] = handle_n;
 	key_maps->key_actions[XK_a] = handle_press_flag;
 	key_maps->key_actions[XK_A] = handle_press_flag;
-	key_maps->key_actions[XK_h] = handle_h;
-	key_maps->key_actions[XK_H] = handle_h;
-	key_maps->key_actions[XK_k] = handle_k;
-	key_maps->key_actions[XK_K] = handle_k;
 	key_maps->key_actions[XK_j] = handle_j;
 	key_maps->key_actions[XK_J] = handle_j;
 	key_maps->key_actions[XK_m] = handle_manual_mode;
@@ -47,8 +43,6 @@ void	set_key_actions_2(t_key_maps *key_maps)
 	key_maps->key_actions[XK_I] = handle_i;
 	key_maps->key_actions[XK_v] = handle_press_flag;
 	key_maps->key_actions[XK_V] = handle_press_flag;
-	key_maps->key_actions[XK_g] = handle_g;
-	key_maps->key_actions[XK_G] = handle_g;
 	key_maps->key_actions[XK_w] = handle_press_flag;
 	key_maps->key_actions[XK_W] = handle_press_flag;
 	key_maps->key_actions[XK_Control_L] = handle_press_flag;

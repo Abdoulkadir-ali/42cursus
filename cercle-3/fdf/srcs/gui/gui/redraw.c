@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:29:46 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:15:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:50:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	redraw(t_events *events)
 	g->render_config.render_mode = events->render_mode;
 	g->render_config.lod_value = events->lod_value;
 	g->render_config.use_depth_culling = events->use_depth_culling;
-	g->render_config.filled = events->filled;
 	render_scene(g);
 	mlx_put_image_to_window(g->window->mlx_ptr, g->window->ptr,
 		g->window->main_img.img, 0, 0);

@@ -6,28 +6,27 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:59:50 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:53:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:24:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
-void	img_pixel_put_with_z(t_graphics *g, t_point p)
+int	z_buffer_test(t_graphics *g, t_vec2 v, float z)
 {
-	char	*dst;
-	t_vec2	v;
+	int			index;
+	t_window	*w;
 
-	if (!g || !g->window)
-		return ;
-	if (!g->window->main_img.img_addr)
-		return ;
-	v = (t_vec2){round(p.pos.x), round(p.pos.y)};
-	if (v.x < 0 || v.y < 0 || v.x >= (int)g->window->width
-		|| v.y >= (int)g->window->height)
-		return ;
-	if (!z_buffer_test(g, v, (float)p.pos.z))
-		return ;
-	dst = g->window->main_img.img_addr + (v.y * g->window->main_img.img_line_len
-			+ v.x * (g->window->main_img.img_bpp / 8));
-	*(unsigned int *)dst = rgb_to_int(p.color);
+	w = g->window;
+	if (!g->render_config.use_depth_culling || !w->z_buffer)
+		return (1);
+	if (v.x < 0 || v.x >= (int)w->width || v.y < 0 || v.y >= (int)w->height)
+		return (0);
+	index = (size_t)v.y * w->width + (size_t)v.x;
+	if (z < w->z_buffer[index])
+	{
+		w->z_buffer[index] = z;
+		return (1);
+	}
+	return (0);
 }
