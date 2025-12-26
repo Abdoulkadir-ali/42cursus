@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 21:52:25 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 03:16:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 15:29:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	init_defaults(t_data *data)
 	data->graphics->render_config.render_mode = RENDER_LINES;
 	data->graphics->render_config.lod_value = DEFAULT_LOD_LEVEL;
 	data->graphics->render_config.use_depth_culling = 1;
-	data->graphics->render_config.filled = 0;
 }
 
 int	init_window_main_image(t_window *win, void *mlx)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:49:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 19:50:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include <X11/Xlib.h>
 # include <X11/keysym.h>
+# include <fcntl.h>
 # include <mlx.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
 
@@ -38,6 +38,12 @@ typedef struct s_data
 	t_camera_manager	*camera_manager;
 }						t_data;
 
+int						init_data_and_window(t_data *data, int argc,
+							char **argv);
+int						init_camera_and_graphics(t_data *data, int argc,
+							char **argv);
+int						init_defaults_and_render(t_data *data);
+int						init_events_and_hooks(t_data *data, t_events **events);
 void					init_defaults(t_data *data);
 int						init_window_main_image(t_window *window, void *mlx_ptr);
 t_window				*init_window(void *mlx_ptr);

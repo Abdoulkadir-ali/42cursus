@@ -1,7 +1,7 @@
 NAME = fdf
 
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -I. -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math -mavx -march=native
+CFLAGS = -Wall -Wextra -Werror -I. -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math
 LDFLAGS = -L./minilibx-linux -lmlx -L./libft -lft -lX11 -lXext -lm -lpthread
 
 LIBFT_DIR = ./libft
@@ -12,6 +12,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRCS =	srcs/core/cleanup.c \
 		srcs/core/init.c \
 		srcs/core/main.c \
+		srcs/core/helper.c \
 		srcs/events/gui/fps.c \
 		srcs/events/gui/resize.c \
 		srcs/events/init/hooks.c \
@@ -190,14 +191,7 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/render/stages/pipeline/render.c \
 		srcs/render/stages/pipeline/tesselation.c \
 		srcs/render/stages/projections/matrix.c \
-		srcs/render/stages/projections/scanlines/remainder.c \
 		srcs/render/stages/projections/scanlines/scanline.c \
-		srcs/render/stages/projections/scanlines/setup.c \
-		srcs/render/stages/projections/scanlines/simd/batch.c \
-		srcs/render/stages/projections/scanlines/simd/load.c \
-		srcs/render/stages/projections/scanlines/simd/math.c \
-		srcs/render/stages/projections/scanlines/simd/store.c \
-		srcs/render/stages/projections/scanlines/simd/transform.c \
 		srcs/render/stages/projections/transform.c \
 		srcs/render/stages/projections/view.c  \
 		srcs/window/init.c

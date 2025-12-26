@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:57:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 19:57:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 // SYSTEM REQUIREMENTS
 # include "libft.h"
-# include <immintrin.h>
 # include <stdlib.h>
 # include <math.h>
 # include <pthread.h>
