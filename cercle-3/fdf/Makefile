@@ -12,6 +12,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRCS =	srcs/core/cleanup.c \
 		srcs/core/init.c \
 		srcs/core/main.c \
+		srcs/core/helper.c \
 		srcs/events/gui/fps.c \
 		srcs/events/gui/resize.c \
 		srcs/events/init/hooks.c \
