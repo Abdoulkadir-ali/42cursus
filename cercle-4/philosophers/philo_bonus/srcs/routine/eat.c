@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:32:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 13:55:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ void	philo_eat(t_philo *p)
 	p->last_meal = now();
 	sem_post(&p->meal_lock);
 	p->meals_eaten++;
-	if (p->rules->nb_meals != (size_t)-1 && p->meals_eaten == p->rules->nb_meals)
+	if (p->rules->nb_meals != (size_t)-1
+		&& p->meals_eaten == p->rules->nb_meals)
 		sem_post(p->rules->meal_check);
 	precise_usleep(p->rules->time_to_eat);
 	drop_forks(p);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 09:25:44 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:42:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 13:43:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ void	terminate_simulation(t_rules *rules, t_philo *philos)
 	i = 0;
 	while (i < rules->nb_philo)
 		kill(philos[i++].pid, SIGKILL);
+	i = 0;
+	while (i < rules->nb_philo)
+		waitpid(philos[i++].pid, NULL, 0);
 	sem_close(rules->forks);
 	sem_close(rules->print);
 	sem_close(rules->waiter);
@@ -78,7 +81,7 @@ void	philo_routine(t_philo *p)
 	pthread_create(&monitor, NULL, death_monitor, p);
 	pthread_detach(monitor);
 	if (p->id % 2 == 0)
-		precise_usleep(10);
+		precise_usleep(p->rules->time_to_eat / 2);
 	while (1)
 	{
 		philo_eat(p);

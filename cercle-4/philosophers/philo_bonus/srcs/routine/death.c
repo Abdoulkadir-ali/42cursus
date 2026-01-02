@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:18:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 13:52:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	*death_monitor(void *arg)
 			sem_wait(p->rules->print);
 			printf("%lu %zu %s\n", now() - p->sim_start, p->id, "died");
 			sem_post(p->rules->stop);
-			return (NULL);
+			exit(1);
 		}
 		sem_post(&p->meal_lock);
 		usleep(50);
