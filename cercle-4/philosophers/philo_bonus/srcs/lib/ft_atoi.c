@@ -1,0 +1,43 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/16 20:05:05 by abdali            #+#    #+#             */
+/*   Updated: 2026/01/02 09:50:44 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philo_bonus.h"
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
+int	ft_atoi(const char *s)
+{
+	int	res;
+	int	sign;
+
+	res = 0;
+	sign = 1;
+	while (*s == ' ' || (*s >= 9 && *s <= 13))
+		s++;
+	if (*s == '-' || *s == '+')
+	{
+		if (*s == '-')
+			sign = -1;
+		s++;
+	}
+	while (*s >= '0' && *s <= '9')
+		res = res * 10 + (*s++ - '0');
+	return (res * sign);
+}
