@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sleep.c                                            :+:      :+:    :+:   */
+/*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:29:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 13:20:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
-void	philo_sleep(t_philo *philo)
+void	print_status(t_philo *p, char *msg)
 {
-	print_status(philo, "is sleeping");
-	precise_usleep(philo->rules->time_to_sleep);
-}
-
-void	philo_think(t_philo *philo)
-{
-	print_status(philo, "is thinking");
+	sem_wait(p->rules->print);
+	printf("%lu %zu %s\n", now() - p->sim_start, p->id, msg);
+	if (msg[0] != 'd')
+		sem_post(p->rules->print);
 }

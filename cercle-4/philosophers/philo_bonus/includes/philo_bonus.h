@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 09:53:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:08:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 11:29:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@
 
 typedef struct s_rules
 {
-	int		nb_philo;
+	size_t	nb_philo;
 	size_t	time_to_die;
 	size_t	time_to_eat;
 	size_t	time_to_sleep;
-	int		nb_meals;
+	size_t	nb_meals;
 	sem_t	*forks;
 	sem_t	*print;
 	sem_t	*stop;
@@ -42,10 +42,10 @@ typedef struct s_rules
 
 typedef struct s_philo
 {
-	int		id;
-	int		meals_eaten;
-	long	last_meal;
-	long	sim_start;
+	size_t	id;
+	size_t	meals_eaten;
+	size_t	last_meal;
+	size_t	sim_start;
 	pid_t	pid;
 	t_rules	*rules;
 	sem_t	meal_lock;
@@ -54,9 +54,9 @@ typedef struct s_philo
 /* --- Helper --- */
 long		now(void);
 void		precise_usleep(long ms);
-int			ft_atoi(const char *str);
+long long	ft_atoll(const char *str);
 size_t		ft_strlen(const char *s);
-void		parse_rules(t_rules *rules, char **av);
+int			parse_rules(t_rules *rules, char **av);
 void		init_semaphores(t_rules *r);
 void		philo(t_rules *rules);
 

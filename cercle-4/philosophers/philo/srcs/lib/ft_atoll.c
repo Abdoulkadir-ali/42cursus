@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_atoll.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:05:05 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/02 08:29:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 11:29:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_atoi(const char *s)
+long long	ft_atoll(const char *s)
 {
-	int	res;
-	int	sign;
+	long long	res;
+	int			sign;
 
 	res = 0;
 	sign = 1;

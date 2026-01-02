@@ -8,10 +8,11 @@ OBJS_DIR = objs
 
 SRCS = srcs/core/main.c \
        srcs/core/parse.c \
-	   srcs/lib/ft_atoi.c \
-	   srcs/core/ft_putnbr_base.c \
-       srcs/helper/print.c \
-       srcs/helper/time.c \
+	   srcs/lib/ft_atoll.c \
+	   srcs/lib/ft_putstr_fd.c \
+	   srcs/lib/ft_strlen.c \
+       srcs/lib/print.c \
+       srcs/lib/time.c \
        srcs/routine/death.c \
        srcs/routine/eat.c \
        srcs/routine/routine.c \

@@ -1,24 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sleep.c                                            :+:      :+:    :+:   */
+/*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:29:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 11:31:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_sleep(t_philo *philo)
+void	print_status(t_philo *philo, char *msg)
 {
-	print_status(philo, "is sleeping");
-	precise_usleep(philo->rules->time_to_sleep);
-}
+	long	time;
 
-void	philo_think(t_philo *philo)
-{
-	print_status(philo, "is thinking");
+	pthread_mutex_lock(&philo->rules->dead_lock);
+	if (!philo->rules->dead_flag)
+	{
+		time = now() - philo->sim_start;
+		printf("%ld %zu %s\n", time, philo->id, msg);
+	}
+	pthread_mutex_unlock(&philo->rules->dead_lock);
 }

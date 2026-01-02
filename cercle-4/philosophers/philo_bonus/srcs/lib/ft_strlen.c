@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print.c                                            :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:00:06 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:05:05 by abdali            #+#    #+#             */
+/*   Updated: 2026/01/02 11:15:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	print_status(t_philo *p, char *msg)
+size_t	ft_strlen(const char *s)
 {
-	sem_wait(p->rules->print);
-	printf("%lu %d %s\n", now() - p->sim_start, p->id, msg);
-	fflush(stdout);
-	if (msg[0] != 'd')
-		sem_post(p->rules->print);
-}
+	size_t i;
 
-void	ft_putstr_fd(char *s, int fd)
-{
-	if (!s)
-		return ;
-	write(fd, s, ft_strlen(s));
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }

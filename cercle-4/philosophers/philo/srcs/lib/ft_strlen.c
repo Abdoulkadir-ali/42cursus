@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sleep.c                                            :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:29:28 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:05:05 by abdali            #+#    #+#             */
+/*   Updated: 2026/01/02 11:18:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	philo_sleep(t_philo *philo)
+size_t	ft_strlen(const char *s)
 {
-	print_status(philo, "is sleeping");
-	precise_usleep(philo->rules->time_to_sleep);
-}
+	size_t i;
 
-void	philo_think(t_philo *philo)
-{
-	print_status(philo, "is thinking");
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }

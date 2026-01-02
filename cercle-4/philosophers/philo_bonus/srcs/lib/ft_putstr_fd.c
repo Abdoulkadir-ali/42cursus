@@ -1,43 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:05:05 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/02 09:50:44 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/02 11:14:52 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/02 11:23:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-size_t	ft_strlen(const char *s)
+void	ft_putstr_fd(char *s, int fd)
 {
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-int	ft_atoi(const char *s)
-{
-	int	res;
-	int	sign;
-
-	res = 0;
-	sign = 1;
-	while (*s == ' ' || (*s >= 9 && *s <= 13))
-		s++;
-	if (*s == '-' || *s == '+')
-	{
-		if (*s == '-')
-			sign = -1;
-		s++;
-	}
-	while (*s >= '0' && *s <= '9')
-		res = res * 10 + (*s++ - '0');
-	return (res * sign);
+	if (!s)
+		return ;
+	write(fd, s, ft_strlen(s));
 }

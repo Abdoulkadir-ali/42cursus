@@ -1,24 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sleep.c                                            :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:29:28 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:05:05 by abdali            #+#    #+#             */
+/*   Updated: 2026/01/02 11:21:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
-void	philo_sleep(t_philo *philo)
+long long	ft_atoll(const char *s)
 {
-	print_status(philo, "is sleeping");
-	precise_usleep(philo->rules->time_to_sleep);
-}
+	long long	res;
+	int			sign;
 
-void	philo_think(t_philo *philo)
-{
-	print_status(philo, "is thinking");
+	res = 0;
+	sign = 1;
+	while (*s == ' ' || (*s >= 9 && *s <= 13))
+		s++;
+	if (*s == '-' || *s == '+')
+	{
+		if (*s == '-')
+			sign = -1;
+		s++;
+	}
+	while (*s >= '0' && *s <= '9')
+		res = res * 10 + (*s++ - '0');
+	return (res * sign);
 }

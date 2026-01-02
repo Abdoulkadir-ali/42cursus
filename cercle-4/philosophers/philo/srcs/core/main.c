@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 02:46:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 11:14:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,12 @@ int	main(int ac, char **av)
 		ft_putstr_fd("Error: Wrong number of arguments\n", 1);
 		return (1);
 	}
-	parse_rules(&rules, av);
-	if (rules.nb_philo < 1 || rules.nb_philo > MAX_PHILOS)
+	if (parse_rules(&rules, av))
+	{
+		ft_putstr_fd("Error: Invalid arguments\n", 1);
+		return (1);
+	}
+	if (rules.nb_philo > MAX_PHILOS)
 		return (1);
 	philo(&rules);
 	return (0);

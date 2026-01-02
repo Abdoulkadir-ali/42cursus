@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/01 22:01:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:10:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 11:29:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <limits.h>
 # include <pthread.h>
 # include <stdlib.h>
+# include <stdio.h>
 # include <sys/time.h>
 # include <unistd.h>
 
@@ -23,10 +24,11 @@
 
 typedef struct s_rules
 {
-	int				nb_philo;
+	size_t			nb_philo;
 	size_t			time_to_die;
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
+	size_t			nb_meals;
 	int				dead_flag;
 	pthread_mutex_t	dead_lock;
 	pthread_mutex_t	meal_lock;
@@ -37,20 +39,22 @@ typedef struct s_philo
 	size_t			id;
 	size_t			sim_start;
 	size_t			last_meal;
+	size_t			meals_eaten;
 	pthread_mutex_t	*left_f;
 	pthread_mutex_t	*right_f;
 	t_rules			*rules;
 }					t_philo;
 
 /* --- Utilities --- */
-int					ft_putnbr_base(long long int n, const char *base);
-int					ft_atoi(const char *str);
+long long			ft_atoll(const char *str);
+size_t				ft_strlen(const char *s);
+void				ft_putstr_fd(char *s, int fd);
 long				now(void);
 void				precise_usleep(long ms);
 void				print_status(t_philo *philo, char *msg);
 
 /* --- Core --- */
-void				parse_rules(t_rules *rules, char **av);
+int					parse_rules(t_rules *rules, char **av);
 void				philo(t_rules *rules);
 
 /* --- Helper --- */

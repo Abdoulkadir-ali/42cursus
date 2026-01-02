@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 02:45:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 13:31:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,7 @@ int	check_dead_flag(t_philo *philo)
 static void	print_death(t_philo *philo)
 {
 	philo->rules->dead_flag = 1;
-	ft_putnbr_base(now() - philo->sim_start, "0123456789");
-	ft_putstr_fd(" ", 1);
-	ft_putnbr_base(philo->id, "0123456789");
-	ft_putstr_fd(" died\n", 1);
+	printf("%ld %zu died\n", now() - philo->sim_start, philo->id);
 }
 
 static int	died(t_philo *philo)
@@ -54,7 +51,7 @@ static int	died(t_philo *philo)
 
 static int	check_all_philos(t_philo *philos)
 {
-	int		i;
+	size_t	i;
 	t_rules	*r;
 
 	r = philos[0].rules;

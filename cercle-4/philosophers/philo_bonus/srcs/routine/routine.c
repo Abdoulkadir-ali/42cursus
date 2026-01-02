@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 09:25:44 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 11:05:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 13:42:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	init_semaphores(t_rules *r)
 
 void	start_simulation(t_rules *rules, t_philo *philos)
 {
-	int		i;
+	size_t	i;
 	long	start;
 
 	i = 0;
@@ -52,14 +52,11 @@ void	start_simulation(t_rules *rules, t_philo *philos)
 
 void	terminate_simulation(t_rules *rules, t_philo *philos)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (i < rules->nb_philo)
-	{
-		kill(philos[i].pid, SIGKILL);
-		i++;
-	}
+		kill(philos[i++].pid, SIGKILL);
 	sem_close(rules->forks);
 	sem_close(rules->print);
 	sem_close(rules->waiter);
@@ -97,7 +94,7 @@ void	philo(t_rules *rules)
 
 	init_semaphores(rules);
 	start_simulation(rules, philos);
-	if (rules->nb_meals != -1)
+	if (rules->nb_meals != (size_t)-1)
 	{
 		pthread_create(&meal_check_thread, NULL, meal_monitor, rules);
 		pthread_detach(meal_check_thread);
