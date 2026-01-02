@@ -6,14 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/01 22:01:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 08:28:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 11:10:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include "libft.h"
 # include <limits.h>
 # include <pthread.h>
 # include <stdlib.h>
