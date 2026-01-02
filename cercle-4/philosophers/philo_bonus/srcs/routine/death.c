@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:52:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 14:37:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ void	*death_monitor(void *arg)
 		sem_wait(&p->meal_lock);
 		if ((size_t)(now() - p->last_meal) >= p->rules->time_to_die)
 		{
-			sem_wait(p->rules->print);
-			printf("%lu %zu %s\n", now() - p->sim_start, p->id, "died");
+			print_status(p, "died");
 			sem_post(p->rules->stop);
 			exit(1);
 		}

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:31:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 14:41:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ int	check_dead_flag(t_philo *philo)
 	return (0);
 }
 
-static void	print_death(t_philo *philo)
-{
-	philo->rules->dead_flag = 1;
-	printf("%ld %zu died\n", now() - philo->sim_start, philo->id);
-}
-
 static int	died(t_philo *philo)
 {
 	t_rules	*r;
@@ -38,10 +32,7 @@ static int	died(t_philo *philo)
 	pthread_mutex_lock(&r->meal_lock);
 	if (now() - philo->last_meal >= r->time_to_die)
 	{
-		pthread_mutex_lock(&r->dead_lock);
-		if (!r->dead_flag)
-			print_death(philo);
-		pthread_mutex_unlock(&r->dead_lock);
+		print_status(philo, "died");
 		pthread_mutex_unlock(&r->meal_lock);
 		return (1);
 	}
