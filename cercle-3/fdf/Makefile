@@ -115,7 +115,6 @@ SRCS =	srcs/core/cleanup.c \
 		srcs/graphics/draw/triangle/scanlines/raster.c \
 		srcs/graphics/draw/triangle/scanlines/setup.c \
 		srcs/graphics/frames/clear.c \
-		srcs/graphics/frames/helper.c \
 		srcs/graphics/init/init.c \
 		srcs/gui/gui/init.c \
 		srcs/gui/gui/redraw.c \

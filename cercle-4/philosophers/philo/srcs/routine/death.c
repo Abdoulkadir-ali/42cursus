@@ -6,23 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 14:41:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/02 16:45:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	check_dead_flag(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->rules->dead_lock);
-	if (philo->rules->dead_flag)
-	{
-		pthread_mutex_unlock(&philo->rules->dead_lock);
-		return (1);
-	}
-	pthread_mutex_unlock(&philo->rules->dead_lock);
-	return (0);
-}
 
 static int	died(t_philo *philo)
 {
@@ -30,6 +18,11 @@ static int	died(t_philo *philo)
 
 	r = philo->rules;
 	pthread_mutex_lock(&r->meal_lock);
+	if (r->nb_meals != (size_t)-1 && philo->meals_eaten >= r->nb_meals)
+	{
+		pthread_mutex_unlock(&r->meal_lock);
+		return (0);
+	}
 	if (now() - philo->last_meal >= r->time_to_die)
 	{
 		print_status(philo, "died");
@@ -37,6 +30,35 @@ static int	died(t_philo *philo)
 		return (1);
 	}
 	pthread_mutex_unlock(&r->meal_lock);
+	return (0);
+}
+
+static int	check_meals(t_philo *philos)
+{
+	size_t	i;
+	size_t	finished;
+	t_rules	*r;
+
+	r = philos[0].rules;
+	if (r->nb_meals == (size_t)-1)
+		return (0);
+	i = 0;
+	finished = 0;
+	while (i < r->nb_philo)
+	{
+		pthread_mutex_lock(&r->meal_lock);
+		if (philos[i].meals_eaten >= r->nb_meals)
+			finished++;
+		pthread_mutex_unlock(&r->meal_lock);
+		i++;
+	}
+	if (finished == r->nb_philo)
+	{
+		pthread_mutex_lock(&r->dead_lock);
+		r->dead_flag = 1;
+		pthread_mutex_unlock(&r->dead_lock);
+		return (1);
+	}
 	return (0);
 }
 
@@ -53,6 +75,18 @@ static int	check_all_philos(t_philo *philos)
 			return (1);
 		i++;
 	}
+	return (check_meals(philos));
+}
+
+int	check_dead_flag(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->rules->dead_lock);
+	if (philo->rules->dead_flag)
+	{
+		pthread_mutex_unlock(&philo->rules->dead_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->rules->dead_lock);
 	return (0);
 }
 

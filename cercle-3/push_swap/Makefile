@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/12 00:00:00 by abdoali           #+#    #+#              #
-#    Updated: 2025/12/24 20:06:30 by abdoali          ###   ########.fr        #
+#    Updated: 2025/12/27 19:19:46 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME		= push_swap
 CHECKER		= checker
 
 CC		= gcc
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror -g
 INCLUDES	= -I includes -I srcs/libft/includes
 
 # Directories

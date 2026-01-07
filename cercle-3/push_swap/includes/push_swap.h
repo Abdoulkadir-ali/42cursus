@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 19:33:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/17 12:19:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/27 19:16:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # endif
 
 # ifndef ASCENDING
-#  define ASCENDING 1
+#  define ASCENDING 0
 # endif
 
 # ifndef MULTIPLE_SIGN_INVALID

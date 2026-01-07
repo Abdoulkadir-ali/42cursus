@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 19:57:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 21:52:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,21 +312,6 @@ typedef struct s_fill_cache_ctx
 	t_point					projected;
 }							t_fill_cache_ctx;
 
-typedef struct s_clear_z_ctx
-{
-	size_t					i;
-	size_t					total;
-	float					*z_buffer;
-	__m256					max_depth;
-}							t_clear_z_ctx;
-
-typedef struct s_clear_img_ctx
-{
-	size_t					i;
-	size_t					total_bytes;
-	char					*buffer;
-	__m256i					zeros;
-}							t_clear_img_ctx;
 
 typedef struct s_graphics
 {
@@ -568,10 +553,6 @@ void						join_threads(pthread_t *threads);
 void						*thread_draw_routine(void *data);
 void						clear_image(t_graphics *g);
 void						clear_z_buffer(t_graphics *g);
-void						clear_z_buffer_simd(t_clear_z_ctx *ctx);
-void						clear_z_buffer_remainder(t_clear_z_ctx *ctx);
-void						clear_image_simd(t_clear_img_ctx *ctx);
-void						clear_image_remainder(t_clear_img_ctx *ctx);
 void						clear_frame_buffers(t_graphics *g);
 void						cache_projections(t_graphics *g);
 t_point						get_cached_proj(t_graphics *g, int x, int y);

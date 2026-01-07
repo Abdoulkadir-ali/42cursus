@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 23:40:47 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 23:59:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/27 19:17:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ void	debug_stacks(t_stacks s)
 
 void	debug_line_stacks(t_stacks s, char *line, char *instruction)
 {
-	if (!DEBUG)
-		return ;
 	ft_putstr_fd(line, 2);
 	if (instruction)
 	{

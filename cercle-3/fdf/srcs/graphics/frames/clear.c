@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:26:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 19:19:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/12/26 21:50:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,32 @@
 
 void	clear_z_buffer(t_graphics *g)
 {
-	t_clear_z_ctx	ctx;
+	size_t	i;
+	size_t	total;
 
 	if (!g->window->z_buffer)
 		return ;
-	ctx.total = g->window->width * g->window->height;
-	ctx.z_buffer = g->window->z_buffer;
-	ctx.max_depth = _mm256_set1_ps(1.0e30f);
-	clear_z_buffer_simd(&ctx);
-	clear_z_buffer_remainder(&ctx);
+	total = g->window->width * g->window->height;
+	i = 0;
+	while (i < total)
+	{
+		g->window->z_buffer[i] = 1.0e30f;
+		i++;
+	}
 }
 
 void	clear_image(t_graphics *g)
 {
-	t_clear_img_ctx	ctx;
+	size_t	i;
+	size_t	total_bytes;
 
-	ctx.total_bytes = g->window->height * g->window->main_img.img_line_len;
-	ctx.buffer = g->window->main_img.img_addr;
-	ctx.zeros = _mm256_setzero_si256();
-	clear_image_simd(&ctx);
-	clear_image_remainder(&ctx);
+	total_bytes = g->window->height * g->window->main_img.img_line_len;
+	i = 0;
+	while (i < total_bytes)
+	{
+		g->window->main_img.img_addr[i] = 0;
+		i++;
+	}
 }
 
 void	clear_frame_buffers(t_graphics *g)

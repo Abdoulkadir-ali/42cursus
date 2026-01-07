@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/12 20:35:06 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/12 21:47:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/06 17:35:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void	print_result(t_stacks *stacks)
 int	main(int argc, char **argv)
 {
 	t_stacks	stacks;
-
+	
 	if (!init_checker(&stacks, argc, argv))
 		return (0);
 	process_instructions(&stacks);
