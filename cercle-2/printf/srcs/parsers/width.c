@@ -30,8 +30,14 @@ static void	parse_width_star(size_t *i, va_list args, t_flags *flags)
 static void	parse_width_digits(const char *str, size_t *i, t_flags *flags)
 {
 	int	wid;
+	int error;
 
-	wid = ft_atoi(str, i);
+	wid = ft_atoi(str, i, &error);
+	if (error)
+	{
+		flags->error = 1;
+		return;
+	}
 	if (wid < 0)
 		flags->width = 0;
 	else

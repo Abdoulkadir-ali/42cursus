@@ -2,23 +2,46 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/29 20:16:30 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/29 20:16:30 by abdoali          ###   ########.fr       */
+/*                                                    +:+ +:+
+	+:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+
+	+#+        */
+/*                                                +#+#+#+#+#+
+	+#+           */
+/*   Created: 2026/01/08 07:05:10 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/08 07:05:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_atoi(const char *str, size_t *i)
+
+static long long	parse_digits(const char *str, size_t *i, int *error, int sign)
 {
-	int	sign;
-	int	result;
+	long long	result;
+
+	result = 0;
+	while (ft_isdigit(str[*i]))
+	{
+		result = result * 10 + (str[*i] - '0');
+		(*i)++;
+		if ((sign == 1 && result > INT_MAX) || (sign == -1 &&
+				-result < INT_MIN))
+		{
+			*error = 1;
+			return (0);
+		}
+	}
+	return (result);
+}
+
+int	ft_atoi(const char *str, size_t *i, int *error)
+{
+	long long	result;
+	int			sign;
 
 	sign = 1;
-	result = 0;
+	*error = 0;
 	while (str[*i] == ' ' || (str[*i] >= 9 && str[*i] <= 13))
 		(*i)++;
 	if (str[*i] == '-')
@@ -28,7 +51,6 @@ int	ft_atoi(const char *str, size_t *i)
 	}
 	else if (str[*i] == '+')
 		(*i)++;
-	while (ft_isdigit(str[*i]))
-		result = result * 10 + (str[(*i)++] - '0');
-	return (result * sign);
+	result = parse_digits(str, i, error, sign);
+	return ((int)(result * sign));
 }

@@ -30,8 +30,14 @@ static void	parse_precision_star(size_t *i, va_list args, t_flags *flags)
 static void	parse_precision_digits(const char *str, size_t *i, t_flags *flags)
 {
 	int	prec;
+	int error;
 
-	prec = ft_atoi(str, i);
+	prec = ft_atoi(str, i, &error);
+	if (error)
+	{
+		flags->error = 1;
+		return;
+	}
 	if (prec < 0)
 		flags->precision = 0;
 	else

@@ -2,15 +2,19 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   ft_handlers.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
+/*                                                    +:+ +:+
+	+:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+
+	+#+        */
+/*                                                +#+#+#+#+#+
+	+#+           */
 /*   Created: 2025/11/28 15:35:33 by abdoali           #+#    #+#             */
 /*   Updated: 2025/11/28 15:35:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
 
 static size_t	dispatch_handler(char c, t_flags flags, va_list args)
 {
@@ -36,13 +40,17 @@ static size_t	dispatch_handler(char c, t_flags flags, va_list args)
 	return (0);
 }
 
-size_t	ft_handle_flags(const char *str, size_t *i, va_list args)
+size_t	ft_handle_flags(const char *str, size_t *i, va_list args, int *error)
 {
-	t_flags	flags;
-	char	c;
+	t_flags flags;
 
 	(*i)++;
-	flags = ft_build_flags(str, i, args);
-	c = str[(*i)++];
-	return (dispatch_handler(c, flags, args));
+	flags = (t_flags){0};
+	ft_build_flags(&flags, str, i, args);
+	if (flags.error)
+	{
+		*error = 1;
+		return (0);
+	}
+	return (dispatch_handler(str[(*i)++], flags, args));
 }

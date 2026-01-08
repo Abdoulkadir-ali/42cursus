@@ -38,14 +38,18 @@ void	ft_parse_flags(const char *str, size_t *i, t_flags *flags)
 		flags->space = 0;
 }
 
-t_flags	ft_build_flags(const char *str, size_t *i, va_list args)
+void	ft_build_flags(t_flags	*flags, const char *str, size_t *i, va_list args)
 {
-	t_flags	flags;
-
-	flags = (t_flags){0};
-	ft_parse_flags(str, i, &flags);
-	ft_parse_width(str, i, args, &flags);
-	ft_parse_precision(str, i, args, &flags);
-	ft_parse_length(str, i, &flags);
-	return (flags);
+	ft_parse_flags(str, i, flags);
+	if (flags->error)
+		return;
+	ft_parse_width(str, i, args, flags);
+	if (flags->error)
+		return ;
+	ft_parse_precision(str, i, args, flags);
+	if (flags->error)
+		return;
+	ft_parse_length(str, i, flags);
+	if (flags->error)
+		return;
 }
