@@ -18,9 +18,11 @@ SRCS        = srcs/exec/exec_tree.c \
 	srcs/parsing/env_expand.c \
 	srcs/parsing/ast_builder.c \
 	srcs/parsing/tokenizer.c \
-	srcs/reader/loop.c \
-	srcs/utils/error.c \
-	srcs/utils/memory.c \
+	srcs/core/reader.c \
+	srcs/exec/builtins.c \
+	srcs/exec/env_mgr.c \
+	srcs/exec/heredoc.c \
+	srcs/core/signals.c \
 	srcs/core/main.c
 # srcs/main.c # Uncomment when ready to use main.c instead of tokenizer.c's main
 

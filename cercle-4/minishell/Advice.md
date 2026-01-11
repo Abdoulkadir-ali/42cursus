@@ -4,67 +4,87 @@ minishell/
 │   ├── parser.h          # AST and Token structures
 │   └── executor.h        # Execution logic prototypes
 ├── src/
-│   ├── main.c            # The REPL loop (readline, add_history)
-│   ├── signals.c         # Signal handlers (Ctrl+C, Ctrl+Z)
+│   ├── core/
+│   │   ├── main.c        # The REPL loop (readline, add_history)
+│   │   └── signals.c     # Signal handlers (Ctrl+C, Ctrl+Z, Ctrl+\)
 │   ├── parsing/
-│   │   ├── tokenizer.c   # String to Tokens
-│   │   ├── env_expand.c  # $VAR expansion
-│   │   └── ast_builder.c # Tokens to AST
-|   ├── executor/
+│   │   ├── tokenizer.c   # String to Tokens (Lexer)
+│   │   ├── env_expand.c  # $VAR expansion & Quote removal
+│   │   └── ast_builder.c # Tokens to AST (Parser)
+│   ├── executor/
 │   │   ├── exec_tree.c   # AST traversal logic
 │   │   ├── path_finder.c # PATH searching (access, stat)
-│   │   └── pipe_utils.c  # dup2 and pipe logic
+│   │   ├── pipe.c        # Pipe logic (fork/dup2)
+│   │   ├── builtins.c    # Builtin command routing
+│   │   └── heredoc.c     # Heredoc handling (tmp file or pipe)
 │   └── utils/
 │       ├── memory.c      # Tree/Array freeing functions
 │       └── error.c       # Custom perror wrappers
-├── libft/                # Your custom library (if used)
-└── Makefile              # Rules to compile the project
+├── libft/                # Custom library
+└── Makefile              # Compilation rules
 
-1. The Data Flow (Pipeline)
+## 0. Subject Constraints & Requirements
+- **Global Variable**: Only ONE allowed. (Recommendation: `int g_signal;` to communicate signal reception to the main loop).
+- **Quotes**: Handle `'` (no interpretation) and `"` (interpret `$`). No unclosed quotes.
+- **Special Characters**: Do NOT interpret `\` or `;`.
+- **Redirections**: `<`, `>`, `<<` (heredoc), `>>`.
+    - **Heredoc**: Read until delimiter. Do NOT update history.
+- **Pipes**: `|` connects stdout to stdin.
+- **Environment**: Expand `$VAR` and `$?`.
+- **Signals**: `Ctrl-C` (new line), `Ctrl-D` (exit), `Ctrl-\` (no-op in interactive).
+    - *Note*: `readline` leaks are acceptable, but YOUR code must not leak.
 
+## 1. The Data Flow (Pipeline)
 A clean architecture follows this linear path. Each step "hands off" a specific data type to the next.
-A. Lexer (Scanner)
 
-    Input: char * (Raw string from readline).
+### A. Lexer (Scanner)
+- **Input**: `char *line` (Raw string from readline).
+- **Action**: Breaks string into a Linked List of Tokens.
+- **Logic**: Handles state (inside vs. outside quotes).
+    - `ls -l` -> `[TOKEN_WORD "ls"] -> [TOKEN_WORD "-l"]`
+    - `ls|grep` -> `[TOKEN_WORD "ls"] -> [TOKEN_PIPE "|"] -> [TOKEN_WORD "grep"]`
+- **Output**: `t_token *list`.
 
-    Action: Breaks string into a Linked List of Tokens.
+### B. Parser (AST Builder)
+- **Input**: `t_token *list`.
+- **Action**: Validates syntax (checks for double pipes `||`, open quotes) and builds the AST.
+- **Logic**: Identifies "highest priority" operators (Pipes) and makes them the root nodes.
+    - `ls | grep a` becomes:
+      ```
+          PIPE
+         /    \
+       ls    grep a
+      ```
+- **Output**: `t_ast *root`.
 
-    Logic: Handles state (inside vs. outside quotes).
+### C. Expansion (Pre-Execution)
+- **Action**: Before execution (or during parsing), replace strings.
+    1. **Environment Variables**: Replace `$USER` with value. Handle `$?` (exit status).
+    2. **Quote Removal**: Remove outer quotes. `'hello'` -> `hello`.
 
-    Output: t_token * list.
+### D. Executor
+- **Input**: `t_ast *node`, `char ***envp`.
+- **Action**: Recursive traversal.
+- **Logic**:
+    - **NODE_PIPE**:
+        1. `pipe(fd)`.
+        2. `fork()` Left Child -> `dup2(fd[1], STDOUT)`.
+        3. `fork()` Right Child -> `dup2(fd[0], STDIN)`.
+        4. Parent closes `fd[0]` and `fd[1]`, then `waitpid()` for both.
+    - **NODE_CMD**:
+        1. Check if Builtin -> Execute in parent (if no pipe) or child.
+        2. If not builtin -> `fork()`, Find PATH, `execve()`.
 
-B. Parser
+## 2. Key Data Structures (includes/parser.h)
 
-    Input: t_token * list.
-
-    Action: Validates syntax (e.g., checks for | |) and builds the AST.
-
-    Logic: Identifies "highest priority" operators (Pipes) and makes them the root nodes.
-
-    Output: t_ast *root.
-
-C. Expansion (Often inside Parser)
-
-    Action: Before sending to execution, replace $USER with environment values and remove the literal quotes ("ls" becomes ls).
-
-D. Executor
-
-    Input: t_ast *node.
-
-    Action: Recursive traversal.
-
-    Logic: If NODE_PIPE, call pipe(). If NODE_CMD, call fork() and execve().
-
-3. Key Data Structures (includes/parser.h)
-
-Defining your structures correctly is 50% of the work.
-C
-
+```c
 typedef enum e_token_type {
     TOKEN_WORD,    // ls, -l
     TOKEN_PIPE,    // |
     TOKEN_RED_IN,  // <
-    TOKEN_RED_OUT  // >
+    TOKEN_RED_OUT, // >
+    TOKEN_HEREDOC, // <<
+    TOKEN_APPEND   // >>
 } t_token_type;
 
 typedef struct s_token {
@@ -74,16 +94,40 @@ typedef struct s_token {
 } t_token;
 
 typedef struct s_ast {
-    t_token_type    type;      // PIPE or WORD
+    t_token_type    type;      // PIPE, WORD, REDIRECT
     char            **args;    // NULL unless type is WORD
-    struct s_ast    *left;     // Left side of pipe
-    struct s_ast    *right;    // Right side of pipe
+    struct s_ast    *left;     // Left side of pipe/redirect
+    struct s_ast    *right;    // Right side of pipe/command
 } t_ast;
+```
 
-4. Why this structure?
+## 3. Critical Systems
 
-    Debugging: If the command ls | grep fails, you can print the Token list to see if the Lexer is broken, or the AST to see if the Parser is broken.
+### Signal Handling
+- **Global Variable**: Use `extern int g_last_signal;` (or similar) to handle strict check instructions.
+- **Interactive Mode**:
+    - `SIGINT` (Ctrl+C): `write(1, "\n", 1); rl_on_new_line(); rl_replace_line("", 0); rl_redisplay();`
+    - `SIGQUIT` (Ctrl+\): `SIG_IGN` (Ignore).
+- **Blocking Mode (Child)**:
+    - `SIGINT`: Default (terminate).
+    - `SIGQUIT`: Default (core dump). Print `Quit (core dumped)\n` in parent if `WTERMSIG(status) == SIGQUIT`.
+- **Heredoc**: `SIGINT` interrupts input loop.
 
-    Memory Management: You can write a single function free_ast(t_ast *node) that recursively cleans up the entire command tree.
+### Builtins (Mandatory)
+These must behave exactly as requested:
+- `echo` (`-n` supported).
+- `cd` (relative/absolute path only).
+- `pwd` (no options).
+- `export` (no options).
+- `unset` (no options).
+- `env` (no options/arguments).
+- `exit` (no options - typically means don't handle flags, but argument usually allowed in bash).
 
-    Teamwork: One person can work on the lexer/ while another works on executor/ without touching the same files.
+### Heredocs (`<< DELIM`)
+- **Parsing**: Read from stdin until `DELIM` line seen.
+- **History**: Do **NOT** add heredoc lines to history.
+- **Expansion**: Expand vars unless `DELIM` is quoted.
+
+## 4. Bonus Part (Only if Mandatory Perfect)
+- `&&` and `||` with parenthesis priorities.
+- Wildcard `*` in current directory.

@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 05:27:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:11:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "exec.h"
 
 static void	child_left(t_ast *node, int *p_fd, char ***envp)
 {

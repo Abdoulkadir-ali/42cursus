@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 03:30:41 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 03:33:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:20:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	debug_printf(const char *format, ...)
 	va_list	args;
 
 	va_start(args, format);
-	vprintf(format, args);
+	ft_vprintf_fd(2, format, args);
 	va_end(args);
 #else
 	(void)format;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:56:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:16:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ static int	ft_handle_null_pointer(t_flags *flags)
 	total_len = 5;
 	count = 0;
 	if (!flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, 0, 0);
-	ft_putstr_fd("(nil)", 1);
+		count += ft_print_width(flags->width - total_len, 0, 0, flags->fd);
+	ft_putstr_fd("(nil)", flags->fd);
 	count += 5;
 	if (flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, 0, 0);
+		count += ft_print_width(flags->width - total_len, 0, 0, flags->fd);
 	return (count);
 }
 
@@ -42,10 +42,10 @@ int	ft_handle_pointer(va_list args, t_flags *flags)
 	num_len = ft_count_hex_digits(ptr);
 	total_len = num_len + 2;
 	if (!flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, 0, 0);
-	ft_putstr_fd("0x", 1);
-	count += 2 + ft_putunbr_base(ptr, "0123456789abcdef");
+		count += ft_print_width(flags->width - total_len, 0, 0, flags->fd);
+	ft_putstr_fd("0x", flags->fd);
+	count += 2 + ft_putunbr_base(ptr, "0123456789abcdef", flags->fd);
 	if (flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, 0, 0);
+		count += ft_print_width(flags->width - total_len, 0, 0, flags->fd);
 	return (count);
 }

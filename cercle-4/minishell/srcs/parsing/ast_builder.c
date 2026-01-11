@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "parsing.h"
 
 void	free_ast(t_nodes *ast_node)
 {
@@ -38,35 +38,77 @@ void	free_ast(t_nodes *ast_node)
 	free(ast_node);
 }
 
+static t_nodes	*create_node(t_token_type type, char **args, t_nodes *left, t_nodes *right)
+{
+	t_ast	*ast;
+
+	ast = ft_calloc(1, sizeof(t_ast));
+	if (!ast)
+		return (NULL);
+	ast->type = type;
+	ast->args = args;
+	ast->left = left;
+	ast->right = right;
+	return (ft_lstnew(ast));
+}
+
+static t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
+{
+	t_nodes	*curr;
+	t_token	*tok;
+	t_nodes	*redir_node;
+	char	**args;
+
+	curr = tokens;
+	while (curr)
+	{
+		tok = (t_token *)curr->content;
+		if (tok->type != TOKEN_WORD && tok->type != TOKEN_PIPE)
+		{
+			args = ft_calloc(2, sizeof(char *));
+			if (curr->next)
+				args[0] = ft_strdup(((t_token *)curr->next->content)->value);
+			redir_node = create_node(tok->type, args, cmd_node, NULL);
+			cmd_node = redir_node;
+			curr = curr->next;
+		}
+		if (curr)
+			curr = curr->next;
+	}
+	return (cmd_node);
+}
+
 static t_nodes	*create_cmd_node(t_nodes *tokens)
 {
-	t_ast	*ast_data;
+	t_nodes	*cmd_node;
+	char	**args;
+	t_nodes	*curr;
 	int		count;
 	int		i;
-	t_token	*tok;
 
-	debug_printf("AST: Creating CMD node\n");
-	ast_data = ft_calloc(1, sizeof(t_ast));
-	if (!ast_data)
-		return (NULL);
-	ast_data->type = TOKEN_WORD;
-	count = ft_lstsize(tokens);
-	ast_data->args = ft_calloc(count + 1, sizeof(char *));
-	if (!ast_data->args)
+	count = 0;
+	curr = tokens;
+	while (curr)
 	{
-		free(ast_data);
-		return (NULL);
+		if (((t_token *)curr->content)->type == TOKEN_WORD)
+			count++;
+		else if (((t_token *)curr->content)->type != TOKEN_PIPE)
+			if (curr->next) curr = curr->next; 
+		curr = curr->next;
 	}
+	args = ft_calloc(count + 1, sizeof(char *));
 	i = 0;
-	while (tokens)
+	curr = tokens;
+	while (curr)
 	{
-		tok = (t_token *)tokens->content;
-		if (tok->type == TOKEN_WORD || tok->type == TOKEN_RED_IN
-			|| tok->type == TOKEN_RED_OUT)
-			ast_data->args[i++] = ft_strdup(tok->value);
-		tokens = tokens->next;
+		if (((t_token *)curr->content)->type == TOKEN_WORD)
+			args[i++] = ft_strdup(((t_token *)curr->content)->value);
+		else if (((t_token *)curr->content)->type != TOKEN_PIPE)
+			if (curr->next) curr = curr->next;
+		curr = curr->next;
 	}
-	return (ft_lstnew(ast_data));
+	cmd_node = create_node(TOKEN_WORD, args, NULL, NULL);
+	return (process_redirections(cmd_node, tokens));
 }
 
 t_nodes	*ast_builder(t_nodes *tokens)
@@ -74,7 +116,7 @@ t_nodes	*ast_builder(t_nodes *tokens)
 	t_nodes	*cursor;
 	t_nodes	*prev;
 	t_token	*tok;
-	t_ast	*ast_data;
+	t_ast	*pipe_data;
 
 	if (!tokens)
 		return (NULL);
@@ -85,18 +127,16 @@ t_nodes	*ast_builder(t_nodes *tokens)
 		tok = (t_token *)cursor->content;
 		if (tok->type == TOKEN_PIPE)
 		{
-			debug_printf("AST: Found PIPE\n");
 			if (prev)
 				prev->next = NULL;
 			else
 				tokens = NULL;
-			ast_data = ft_calloc(1, sizeof(t_ast));
-			if (!ast_data)
-				return (NULL);
-			ast_data->type = TOKEN_PIPE;
-			ast_data->left = ast_builder(tokens);
-			ast_data->right = ast_builder(cursor->next);
-			return (ft_lstnew(ast_data));
+			pipe_data = ft_calloc(1, sizeof(t_ast));
+			if (!pipe_data) return (NULL); 
+			pipe_data->type = TOKEN_PIPE;
+			pipe_data->left = ast_builder(tokens);
+			pipe_data->right = ast_builder(cursor->next);
+			return (ft_lstnew(pipe_data));
 		}
 		prev = cursor;
 		cursor = cursor->next;

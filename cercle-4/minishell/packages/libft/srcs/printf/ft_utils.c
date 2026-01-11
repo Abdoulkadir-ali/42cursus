@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 18:32:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:14:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_print_width(int width, int zero, int left)
+int	ft_print_width(int width, int zero, int left, int fd)
 {
 	int		count;
 	char	c;
@@ -23,7 +23,7 @@ int	ft_print_width(int width, int zero, int left)
 		c = '0';
 	while (width > 0)
 	{
-		ft_putchar_fd(c, 1);
+		ft_putchar_fd(c, fd);
 		width--;
 		count++;
 	}

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:56:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:16:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ static int	ft_print_hex_prefix(t_flags *flags, unsigned long n)
 	{
 		if (flags->type == 'x')
 		{
-			ft_putstr_fd("0x", 1);
+			ft_putstr_fd("0x", flags->fd);
 			return (2);
 		}
 		else if (flags->type == 'X')
 		{
-			ft_putstr_fd("0X", 1);
+			ft_putstr_fd("0X", flags->fd);
 			return (2);
 		}
 	}
@@ -56,15 +56,15 @@ int	ft_print_hex_with_flags(unsigned long n, t_flags *flags)
 	ft_calc_hex_params(n, flags, &num_len, &total_len);
 	count = 0;
 	if (!flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, flags->zero, 0);
+		count += ft_print_width(flags->width - total_len, flags->zero, 0, flags->fd);
 	count += ft_print_hex_prefix(flags, n);
 	if (flags->has_precision)
 		count += ft_print_precision_zeros(ft_count_hex_digits(n),
-				flags->precision);
+				flags->precision, flags->fd);
 	if (!(flags->has_precision && flags->precision == 0 && n == 0))
-		count += ft_putunbr_base(n, base);
+		count += ft_putunbr_base(n, base, flags->fd);
 	if (flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, 0, 0);
+		count += ft_print_width(flags->width - total_len, 0, 0, flags->fd);
 	return (count);
 }
 

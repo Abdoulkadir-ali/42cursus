@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:55:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:20:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ static void	ft_init_flags(t_flags *flags)
 	flags->precision = 0;
 	flags->has_precision = 0;
 	flags->type = 0;
+	flags->fd = 1;
 }
 
 static int	ft_handle_percent(t_flags *flags)
 {
-	(void)flags;
-	ft_putchar_fd('%', 1);
+	ft_putchar_fd('%', flags->fd);
 	return (1);
 }
 
@@ -52,40 +52,63 @@ static int	ft_handle_format(va_list args, t_flags *flags)
 }
 
 static int	ft_process_format(const char *format, int *i, va_list args,
-		int *count)
+		int *count, int fd)
 {
 	t_flags	flags;
 
 	(*i)++;
 	ft_init_flags(&flags);
+	flags.fd = fd;
 	ft_parse_flags(format, i, &flags);
 	*count += ft_handle_format(args, &flags);
 	(*i)++;
 	return (0);
 }
 
-int	ft_printf(const char *format, ...)
+int	ft_vprintf_fd(int fd, const char *format, va_list args)
 {
-	va_list	args;
 	int		count;
 	int		i;
+	va_list	args_copy;
 
 	if (!format)
 		return (-1);
-	va_start(args, format);
+	va_copy(args_copy, args);
 	count = 0;
 	i = 0;
 	while (format[i])
 	{
 		if (format[i] == '%' && format[i + 1])
-			ft_process_format(format, &i, args, &count);
+			ft_process_format(format, &i, args_copy, &count, fd);
 		else
 		{
-			ft_putchar_fd(format[i], 1);
+			ft_putchar_fd(format[i], fd);
 			count++;
 			i++;
 		}
 	}
-	va_end(args);
+	va_end(args_copy);
 	return (count);
+}
+
+int	ft_printf_fd(int fd, const char *format, ...)
+{
+	va_list	args;
+	int		ret;
+
+	va_start(args, format);
+	ret = ft_vprintf_fd(fd, format, args);
+	va_end(args);
+	return (ret);
+}
+
+int	ft_printf(const char *format, ...)
+{
+	va_list	args;
+	int		ret;
+
+	va_start(args, format);
+	ret = ft_vprintf_fd(1, format, args);
+	va_end(args);
+	return (ret);
 }

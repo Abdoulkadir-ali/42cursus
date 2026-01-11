@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:56:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:20:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,33 +20,33 @@ int	ft_print_sign_and_prefix(long n, t_flags *flags, int *sign_printed)
 	*sign_printed = 0;
 	if (n < 0)
 	{
-		ft_putchar_fd('-', 1);
+		ft_putchar_fd('-', flags->fd);
 		count++;
 		*sign_printed = 1;
 	}
 	else if (flags->plus)
 	{
-		ft_putchar_fd('+', 1);
+		ft_putchar_fd('+', flags->fd);
 		count++;
 		*sign_printed = 1;
 	}
 	else if (flags->space)
 	{
-		ft_putchar_fd(' ', 1);
+		ft_putchar_fd(' ', flags->fd);
 		count++;
 		*sign_printed = 1;
 	}
 	return (count);
 }
 
-int	ft_print_precision_zeros(int num_len, int precision)
+int	ft_print_precision_zeros(int num_len, int precision, int fd)
 {
 	int	count;
 
 	count = 0;
 	while (num_len < precision)
 	{
-		ft_putchar_fd('0', 1);
+		ft_putchar_fd('0', fd);
 		count++;
 		num_len++;
 	}

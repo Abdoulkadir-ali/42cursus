@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/11 03:51:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:20:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_flags
 	int				precision;
 	int				has_precision;
 	char			type;
+	int				fd;
 }					t_flags;
 
 typedef struct s_list
@@ -104,8 +105,8 @@ char				*ft_substr(char const *s, unsigned int start,
 int					ft_check_base(const char *base);
 size_t				ft_nbrlen_base(long long int n, size_t base);
 size_t				ft_unbrlen_base(unsigned long long int n, size_t base);
-int					ft_putnbr_base(long long int n, const char *base);
-int					ft_putunbr_base(unsigned long long int n, const char *base);
+int					ft_putnbr_base(long long int n, const char *base, int fd);
+int					ft_putunbr_base(unsigned long long int n, const char *base, int fd);
 char				*ft_itoa_base(long long int n, const char *base);
 long long int		ft_atoi_base(const char *str, const char *base);
 
@@ -132,7 +133,7 @@ int					ft_handle_hex(va_list args, t_flags *flags);
 int					ft_handle_pointer(va_list args, t_flags *flags);
 
 int					ft_parse_flags(const char *format, int *i, t_flags *flags);
-int					ft_print_width(int width, int zero, int left);
+int					ft_print_width(int width, int zero, int left, int fd);
 int					ft_count_digits(long n);
 int					ft_count_hex_digits(unsigned long n);
 int					ft_print_number_with_flags(long n, t_flags *flags);
@@ -142,8 +143,11 @@ int					ft_print_hex_with_flags(unsigned long n, t_flags *flags);
 int					ft_print_string_with_flags(char *str, t_flags *flags);
 int					ft_print_sign_and_prefix(long n, t_flags *flags,
 						int *sign_printed);
-int					ft_print_precision_zeros(int num_len, int precision);
+int					ft_print_precision_zeros(int num_len, int precision,
+						int fd);
 
 int					ft_printf(const char *format, ...);
+int					ft_printf_fd(int fd, const char *format, ...);
+int					ft_vprintf_fd(int fd, const char *format, va_list args);
 
 #endif

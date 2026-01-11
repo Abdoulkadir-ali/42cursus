@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/12 17:56:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:20:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,16 @@ int	ft_print_number_with_flags(long n, t_flags *flags)
 	if (flags->zero && !flags->minus && flags->width > total_len)
 		count += ft_print_sign_and_prefix(n, flags, &sign_printed);
 	if (!flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, flags->zero, 0);
+		count += ft_print_width(flags->width - total_len, flags->zero, 0, flags->fd);
 	if (!flags->zero || flags->minus || flags->width <= total_len)
 		count += ft_print_sign_and_prefix(n, flags, &sign_printed);
 	if (flags->has_precision)
 		count += ft_print_precision_zeros(ft_count_digits(tmp),
-				flags->precision);
+				flags->precision, flags->fd);
 	if (!(flags->has_precision && flags->precision == 0 && n == 0))
-		count += ft_putunbr_base(tmp, "0123456789");
+		count += ft_putunbr_base(tmp, "0123456789", flags->fd);
 	if (flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, 0, 0);
+		count += ft_print_width(flags->width - total_len, 0, 0, flags->fd);
 	return (count);
 }
 
@@ -73,13 +73,13 @@ int	ft_print_unsigned_with_flags(unsigned int n, t_flags *flags)
 		total_len = flags->precision;
 	count = 0;
 	if (!flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, flags->zero, 0);
+		count += ft_print_width(flags->width - total_len, flags->zero, 0, flags->fd);
 	if (flags->has_precision)
-		count += ft_print_precision_zeros(ft_count_digits(n), flags->precision);
+		count += ft_print_precision_zeros(ft_count_digits(n), flags->precision, flags->fd);
 	if (!(flags->has_precision && flags->precision == 0 && n == 0))
-		count += ft_putunbr_base(n, "0123456789");
+		count += ft_putunbr_base(n, "0123456789", flags->fd);
 	if (flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, 0, 0);
+		count += ft_print_width(flags->width - total_len, 0, 0, flags->fd);
 	return (count);
 }
 
