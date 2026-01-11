@@ -83,7 +83,16 @@ static t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
 		tok = (t_token *)redir_token_node->content;
 		args = ft_calloc(2, sizeof(char *));
 		if (redir_token_node->next)
-			args[0] = ft_strdup(((t_token *)redir_token_node->next->content)->value);
+		{
+			if (tok->type == TOKEN_HEREDOC && ((t_token *)redir_token_node->next->content)->quoted)
+			{
+				char *tmp = ft_strjoin("'", ((t_token *)redir_token_node->next->content)->value);
+				args[0] = ft_strjoin(tmp, "'");
+				free(tmp);
+			}
+			else
+				args[0] = ft_strdup(((t_token *)redir_token_node->next->content)->value);
+		}
 		redir_node = create_node(tok->type, args, cmd_node, NULL);
 		cmd_node = redir_node;
 		s_curr = s_curr->next;

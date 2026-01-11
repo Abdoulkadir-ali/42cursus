@@ -12,6 +12,8 @@
 
 #include "exec.h"
 
+extern int g_exit_code;
+
 static int	is_cmd(char *arg, char *cmd)
 {
 	if (!arg || !cmd)
@@ -65,20 +67,60 @@ int	ft_pwd(void)
 	return (1);
 }
 
-int	ft_cd(char **args)
+static char *get_env_val_simple(char *key, char **envp)
 {
-	if (!args[1])
-		return (0);
+	int i = 0;
+	int len = ft_strlen(key);
+	while (envp && envp[i]) {
+		if (!ft_strncmp(envp[i], key, len) && envp[i][len] == '=')
+			return (envp[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
+
+int	ft_cd(char **args, char ***envp)
+{
+	char	cwd[1024];
+	char	oldcwd[1024];
+	char	*path;
+
+	if (!args[1] || (ft_strncmp(args[1], "--", 3) == 0))
+	{
+		path = get_env_val_simple("HOME", *envp);
+		if (!path)
+		{
+			ft_putendl_fd("minishell: cd: HOME not set", 2);
+			return (1);
+		}
+	}
+	else if (ft_strncmp(args[1], "-", 2) == 0)
+	{
+		path = get_env_val_simple("OLDPWD", *envp);
+		if (!path)
+		{
+			ft_putendl_fd("minishell: cd: OLDPWD not set", 2);
+			return (1);
+		}
+		ft_putendl_fd(path, 1);
+	}
+	else
+		path = args[1];
 	if (args[1] && args[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", 2);
 		return (1);
 	}
-	if (chdir(args[1]) == -1)
+	getcwd(oldcwd, sizeof(oldcwd));
+	if (chdir(path) == -1)
 	{
-		perror("minishell: cd");
+		ft_putstr_fd("minishell: cd: ", 2);
+		perror(path);
 		return (1);
 	}
+	getcwd(cwd, sizeof(cwd));
+	ft_set_env("OLDPWD", oldcwd, envp);
+	ft_set_env("PWD", cwd, envp);
 	return (0);
 }
 
@@ -96,49 +138,88 @@ int	ft_env(char **envp)
 	return (0);
 }
 
-static int	is_number(char *str)
+static int	check_long_overflow(const char *str)
 {
-	int	i;
+	unsigned long long	res;
+	int					sign;
+	int					i;
 
 	i = 0;
-	if (str[i] == '+' || str[i] == '-')
+	res = 0;
+	sign = 1;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
 		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
 	if (!str[i])
 		return (0);
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
 			return (0);
+		if (res > 922337203685477580ull || (res == 922337203685477580ull && (str[i] - '0') > (7 + (sign == -1))))
+			return (0);
+		res = res * 10 + (str[i] - '0');
 		i++;
 	}
 	return (1);
 }
 
+static long long	ft_atoll(const char *str)
+{
+	unsigned long long	res;
+	int					sign;
+	int					i;
+
+	i = 0;
+	res = 0;
+	sign = 1;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] && ft_isdigit(str[i]))
+	{
+		res = res * 10 + (str[i] - '0');
+		i++;
+	}
+	return (res * sign);
+}
+
 int	ft_exit(char **args)
 {
-	int	status;
+	long long	status;
 
-	ft_putendl_fd("exit", 1);
+	if (isatty(STDIN_FILENO))
+		ft_putendl_fd("exit", 2);
 	if (args[1])
 	{
-		if (!is_number(args[1]))
+		if (!check_long_overflow(args[1]))
 		{
 			ft_putstr_fd("minishell: exit: ", 2);
 			ft_putstr_fd(args[1], 2);
 			ft_putendl_fd(": numeric argument required", 2);
 			exit(2);
 		}
+		status = ft_atoll(args[1]);
 		if (args[2])
 		{
 			ft_putendl_fd("minishell: exit: too many arguments", 2);
 			return (1);
 		}
-		status = ft_atoi(args[1]);
 	}
 	else
-		status = 0;
-	exit(status);
-	return (status);
+		status = g_exit_code;
+	exit((unsigned char)status);
+	return ((unsigned char)status);
 }
 
 /* Dispatcher */
@@ -159,7 +240,7 @@ int	exec_builtin(char **args, char ***envp)
 	if (is_cmd(args[0], "echo"))
 		return (ft_echo(args));
 	if (is_cmd(args[0], "cd"))
-		return (ft_cd(args));
+		return (ft_cd(args, envp));
 	if (is_cmd(args[0], "pwd"))
 		return (ft_pwd());
 	if (is_cmd(args[0], "env"))

@@ -28,23 +28,41 @@ void	del_token(void *content)
 static char	*get_chunk(char **str, int *quoted)
 {
 	char	*chunk;
-	int		len;
+	int		i;
+	char	quote;
 
+	i = 0;
 	if (**str == '\'' || **str == '"')
 	{
+		quote = **str;
 		*quoted = 1;
-		len = ft_strchri(*str + 1, **str);
-		if (len == -1)
-			len = ft_strlen(*str) - 1;
-		chunk = ft_substr(*str, 0, len + 2);
-		*str += len + 2;
+		i++;
+		while ((*str)[i])
+		{
+			if ((*str)[i] == quote)
+			{
+				i++;
+				break ;
+			}
+			if (quote == '"' && (*str)[i] == '\\' && (*str)[i + 1])
+				i++;
+			i++;
+		}
 	}
 	else
 	{
-		len = ft_strmatch(*str, "'\" |<>", &str_any);
-		chunk = ft_strldup(*str, len);
-		*str += len;
+		while ((*str)[i])
+		{
+			if (ft_isspace((*str)[i]) || ft_strchr("|<>", (*str)[i])
+				|| (*str)[i] == '\'' || (*str)[i] == '"')
+				break ;
+			if ((*str)[i] == '\\' && (*str)[i + 1])
+				i++;
+			i++;
+		}
 	}
+	chunk = ft_substr(*str, 0, i);
+	*str += i;
 	return (chunk);
 }
 
@@ -109,6 +127,11 @@ static t_token	*handle_word(char **str)
 	{
 		if (ft_isspace(**str) || ft_strchr("|<>", **str))
 			break ;
+		if (**str == '$' && ((*str)[1] == '"' || (*str)[1] == '\''))
+		{
+			(*str)++;
+			continue ;
+		}
 		chunk = get_chunk(str, &quoted);
 		if (!chunk)
 			break ;

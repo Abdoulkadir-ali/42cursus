@@ -22,6 +22,7 @@ int		scan_heredocs(t_nodes *ast_node);
 int		ft_export(char **args, char ***envp);
 int		ft_unset(char **args, char ***envp);
 int		ft_env(char **envp);
+int		ft_set_env(char *key, char *value, char ***envp);
 
 char	*find_path(char *cmd, char **envp);
 

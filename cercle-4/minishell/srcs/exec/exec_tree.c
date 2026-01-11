@@ -13,6 +13,20 @@
 #include "exec.h"
 #include <sys/stat.h>
 
+int	path_is_set(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp && envp[i])
+	{
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	exec_simple_command(t_ast *node, char ***envp)
 {
 	char		*path;
@@ -29,7 +43,10 @@ int	exec_simple_command(t_ast *node, char ***envp)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(node->args[0], 2);
-		ft_putendl_fd(": command not found", 2);
+		if (path_is_set(*envp))
+			ft_putendl_fd(": command not found", 2);
+		else
+			ft_putendl_fd(": No such file or directory", 2);
 		return (127);
 	}
 	pid = fork();

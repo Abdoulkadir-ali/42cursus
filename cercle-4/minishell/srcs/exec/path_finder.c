@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "exec.h"
+#include <sys/stat.h>
 
 static void	free_paths(char **paths)
 {
@@ -46,11 +47,14 @@ static char	*check_path_access(char *cmd, char **paths)
 	int		i;
 	char	*tmp;
 	char	*path;
+	char	*first_non_exec;
+	struct stat	st;
 
 	i = 0;
+	first_non_exec = NULL;
 	while (paths[i])
 	{
-		if (paths[i][0] == '\0') // Skip empty paths (implicit current directory)
+		if (paths[i][0] == '\0')
 		{
 			i++;
 			continue;
@@ -58,12 +62,29 @@ static char	*check_path_access(char *cmd, char **paths)
 		tmp = ft_strjoin(paths[i], "/");
 		path = ft_strjoin(tmp, cmd);
 		free(tmp);
-		if (access(path, F_OK | X_OK) == 0)
-			return (path);
-		free(path);
+		if (access(path, F_OK) == 0)
+		{
+			if (stat(path, &st) == 0 && !S_ISDIR(st.st_mode))
+			{
+				if (access(path, X_OK) == 0)
+				{
+					if (first_non_exec)
+						free(first_non_exec);
+					return (path);
+				}
+				if (!first_non_exec)
+					first_non_exec = path;
+				else
+					free(path);
+			}
+			else
+				free(path);
+		}
+		else
+			free(path);
 		i++;
 	}
-	return (NULL);
+	return (first_non_exec);
 }
 
 char	*find_path(char *cmd, char **envp)
