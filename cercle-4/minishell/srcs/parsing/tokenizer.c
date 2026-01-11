@@ -178,6 +178,22 @@ static int	add_token_to_list(t_nodes **tokens, t_token *token)
 	return (1);
 }
 
+static int is_numeric_token(t_token *token)
+{
+	int i;
+
+	i = 0;
+	if (!token || !token->value || !token->value[0])
+		return (0);
+	while (token->value[i])
+	{
+		if (!ft_isdigit(token->value[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 t_nodes	*tokenizer(char *str)
 {
 	t_nodes	*tokens;
@@ -193,7 +209,22 @@ t_nodes	*tokenizer(char *str)
 		if (ft_strchr("|<>", *str))
 			token = handle_separator(&str);
 		else
+		{
 			token = handle_word(&str);
+			if (token && token->type == TOKEN_WORD && !token->quoted 
+				&& is_numeric_token(token) && *str && ft_strchr("<>", *str))
+			{
+				t_token *redir = handle_separator(&str);
+				if (redir)
+				{
+					char *tmp = ft_strjoin(token->value, redir->value);
+					free(token->value);
+					token->value = tmp;
+					token->type = redir->type;
+					del_token(redir);
+				}
+			}
+		}
 		if (!token)
 		{
 			ft_lstclear(&tokens, del_token);

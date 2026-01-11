@@ -101,6 +101,9 @@ static int	exec_redirection(t_ast *node, char ***envp)
 	if (node->type == TOKEN_RED_IN || node->type == TOKEN_HEREDOC)
 		target_fd = STDIN_FILENO;
 	
+	if (node->args[1] && ft_isdigit(node->args[1][0]))
+		target_fd = ft_atoi(node->args[1]);
+	
 	if (node->type == TOKEN_RED_IN)
 		fd = open(node->args[0], O_RDONLY);
 	else if (node->type == TOKEN_RED_OUT)

@@ -81,7 +81,7 @@ static t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
 	{
 		redir_token_node = (t_nodes *)s_curr->content;
 		tok = (t_token *)redir_token_node->content;
-		args = ft_calloc(2, sizeof(char *));
+		args = ft_calloc(3, sizeof(char *));
 		if (redir_token_node->next)
 		{
 			if (tok->type == TOKEN_HEREDOC && ((t_token *)redir_token_node->next->content)->quoted)
@@ -93,6 +93,16 @@ static t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
 			else
 				args[0] = ft_strdup(((t_token *)redir_token_node->next->content)->value);
 		}
+		else
+		{
+			// Safe fallback or error indication. 
+			// If we are here, syntax check passed but argument vanished (empty var).
+			// Bash treats `<< $EMPTY` as syntax error.
+			// We can mimic this by setting args[0] to empty string?
+			// Or leave it NULL? exec_redirection handles NULL?
+			args[0] = ft_strdup(""); 
+		}
+		args[1] = ft_strdup(tok->value);
 		redir_node = create_node(tok->type, args, cmd_node, NULL);
 		cmd_node = redir_node;
 		s_curr = s_curr->next;
