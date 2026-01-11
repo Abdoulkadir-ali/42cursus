@@ -174,41 +174,69 @@ int	ft_export(char **args, char ***envp)
 			ft_putendl_fd("export: usage: export [name[=value] ...] or export -p", 2);
 			return (2);
 		}
-		if (!is_valid_ident(args[arg_idx]))
-		{
-			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(args[arg_idx], 2);
-			ft_putendl_fd("': not a valid identifier", 2);
-			ret = 1;
-			arg_idx++;
-			continue ;
-		}
 		eq = ft_strchr(args[arg_idx], '=');
+		int append = 0;
 		if (eq)
 		{
-			key = ft_substr(args[arg_idx], 0, eq - args[arg_idx]);
+			if (eq > args[arg_idx] && *(eq - 1) == '+')
+			{
+				append = 1;
+				key = ft_substr(args[arg_idx], 0, eq - args[arg_idx] - 1);
+			}
+			else
+				key = ft_substr(args[arg_idx], 0, eq - args[arg_idx]);
 			new_entry = ft_strdup(args[arg_idx]);
 		}
 		else
 		{
 			key = ft_strdup(args[arg_idx]);
-			new_entry = ft_strdup(args[arg_idx]);
+			new_entry = NULL; 
+		}
+
+		if (!is_valid_ident(key))
+		{
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(args[arg_idx], 2);
+			ft_putendl_fd("': not a valid identifier", 2);
+			free(key);
+			if (new_entry) free(new_entry);
+			ret = 1;
+			arg_idx++;
+			continue ;
 		}
 
 		idx = get_env_index(key, *envp);
-		free(key);
 		if (idx != -1)
 		{
-			if (eq) // Update only if value is provided
+			if (eq) 
 			{
-				free((*envp)[idx]);
-				(*envp)[idx] = new_entry;
+				if (append)
+				{
+					char *joined = ft_strjoin((*envp)[idx], eq + 1);
+					free((*envp)[idx]);
+					(*envp)[idx] = joined;
+					free(new_entry);
+				}
+				else
+				{
+					free((*envp)[idx]);
+					(*envp)[idx] = new_entry;
+				}
 			}
 			else
-				free(new_entry);
+				if (new_entry) free(new_entry);
 		}
 		else
 		{
+			if (append && eq)
+			{
+				char *real_entry = ft_strjoin(key, "=");
+				char *tmp = real_entry;
+				real_entry = ft_strjoin(real_entry, eq + 1);
+				free(tmp);
+				free(new_entry);
+				new_entry = real_entry;
+			}
 			count = 0;
 			while ((*envp)[count]) count++;
 			new_env = ft_calloc(count + 2, sizeof(char *));
@@ -218,6 +246,7 @@ int	ft_export(char **args, char ***envp)
 			free(*envp);
 			*envp = new_env;
 		}
+		free(key);
 		arg_idx++;
 	}
 	return (ret);
@@ -239,6 +268,13 @@ int	ft_unset(char **args, char ***envp)
 	arg_idx = 1;
 	while (args[arg_idx])
 	{
+		if (args[arg_idx][0] == '-')
+		{
+			ft_putstr_fd("minishell: unset: ", 2);
+			write(2, args[arg_idx], 2);
+			ft_putendl_fd(": invalid option", 2);
+			return (2);
+		}
 		if (!is_valid_ident(args[arg_idx]) || ft_strchr(args[arg_idx], '='))
 		{
 			ft_putstr_fd("minishell: unset: `", 2);

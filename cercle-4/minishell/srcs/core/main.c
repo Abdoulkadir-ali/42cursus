@@ -134,9 +134,16 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	last_exit_code = 0;
-	setup_signals(SIGNAL_INTERACTIVE);
 	heap_env = duplicate_env(envp);
 	g_envp = heap_env;
+	if (ac >= 3 && !ft_strncmp(av[1], "-c", 3))
+	{
+		setup_signals(SIGNAL_HEREDOC); // Use non-interactive signals or heredoc signals which might be safer
+		process_input(av[2], &heap_env, &last_exit_code);
+		rl_clear_history();
+		return (last_exit_code);
+	}
+	setup_signals(SIGNAL_INTERACTIVE);
 	while (1)
 	{
 		line = get_command_line();

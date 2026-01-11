@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 16:08:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 23:26:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,12 @@ static t_token	*handle_separator(char **str)
 		if (*(*str + 1) == '>')
 		{
 			token->type = TOKEN_APPEND;
+			token->value = ft_strldup(*str, 2);
+			(*str) += 2;
+		}
+		else if (*(*str + 1) == '|')
+		{
+			token->type = TOKEN_RED_OUT;
 			token->value = ft_strldup(*str, 2);
 			(*str) += 2;
 		}
