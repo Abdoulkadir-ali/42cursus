@@ -1,13 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   ft_lstaddfront.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 19:53:36 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 03:58:59 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:05:34 by abdali            #+#    #+#             */
+/*   Updated: 2026/01/11 00:47:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
+
+void	ft_lstadd_front(t_nodes **lst, t_nodes *new)
+{
+	if (!lst || !new)
+		return ;
+	new->next = *lst;
+	*lst = new;
+}

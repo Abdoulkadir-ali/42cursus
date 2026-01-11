@@ -6,28 +6,21 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 20:07:19 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/09 20:07:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 03:54:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-typedef enum e_token_type {
-    TOKEN_WORD,    // ls, -l
-    TOKEN_PIPE,    // |
-    TOKEN_RED_IN,  // <
-    TOKEN_RED_OUT  // >
-} t_token_type;
+#include "parser.h"
+#include "executor.h"
 
-typedef struct s_token {
-    char            *value;
-    t_token_type     type;
-    struct s_token  *next;
-} t_token;
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <stdio.h>
 
-typedef struct s_ast {
-    t_token_type    type;      // PIPE or WORD
-    char            **args;    // NULL unless type is WORD
-    struct s_ast    *left;     // Left side of pipe
-    struct s_ast    *right;    // Right side of pipe
-} t_ast;
+#ifndef DEBUG
+# define DEBUG 0
+#endif
 
+void	debug_printf(const char *format, ...);
+char	*get_command_line(void);

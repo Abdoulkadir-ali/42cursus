@@ -1,13 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 19:53:36 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 03:58:59 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:06:12 by abdali            #+#    #+#             */
+/*   Updated: 2025/11/04 09:56:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <stdlib.h>
+
+void	ft_bzero(void *s, size_t n)
+{
+	unsigned char	*str;
+
+	str = (unsigned char *)s;
+	while (n)
+		str[n-- - 1] = 0;
+}

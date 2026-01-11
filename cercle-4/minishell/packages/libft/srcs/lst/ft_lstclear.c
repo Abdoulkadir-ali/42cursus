@@ -1,13 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 19:53:36 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 03:58:59 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:05:38 by abdali            #+#    #+#             */
+/*   Updated: 2026/01/11 00:47:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
+#include <stdlib.h>
+
+void	ft_lstclear(t_nodes **lst, void (*del)(void *))
+{
+	t_nodes	*current;
+	t_nodes	*next;
+	int		size;
+
+	if (!lst || !*lst)
+		return ;
+	current = *lst;
+	size = ft_lstsize(current);
+	while (size)
+	{
+		next = current->next;
+		if (del)
+			del(current->content);
+		free(current);
+		current = next;
+		size--;
+	}
+	*lst = NULL;
+}

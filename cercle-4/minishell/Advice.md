@@ -1,9 +1,3 @@
-To build a professional shell, you need to move away from a single .c file. A proper "Separation of Concerns" ensures that your Lexer doesn't know about fork(), and your Executor doesn't care about quotes.
-
-Here is a robust directory structure and an explanation of the pipeline flow.
-1. Recommended Directory Structure
-Plaintext
-
 minishell/
 ├── includes/
 │   ├── minishell.h       # Global defines, structures, and includes
@@ -12,13 +6,11 @@ minishell/
 ├── src/
 │   ├── main.c            # The REPL loop (readline, add_history)
 │   ├── signals.c         # Signal handlers (Ctrl+C, Ctrl+Z)
-│   ├── lexer/
+│   ├── parsing/
 │   │   ├── tokenizer.c   # String to Tokens
-│   │   └── token_utils.c # Helpers (is_operator, is_quote)
-│   ├── parser/
-│   │   ├── ast_builder.c # Tokens to AST
-│   │   └── env_expand.c  # $VAR expansion
-│   ├── executor/
+│   │   ├── env_expand.c  # $VAR expansion
+│   │   └── ast_builder.c # Tokens to AST
+|   ├── executor/
 │   │   ├── exec_tree.c   # AST traversal logic
 │   │   ├── path_finder.c # PATH searching (access, stat)
 │   │   └── pipe_utils.c  # dup2 and pipe logic
@@ -28,7 +20,7 @@ minishell/
 ├── libft/                # Your custom library (if used)
 └── Makefile              # Rules to compile the project
 
-2. The Data Flow (Pipeline)
+1. The Data Flow (Pipeline)
 
 A clean architecture follows this linear path. Each step "hands off" a specific data type to the next.
 A. Lexer (Scanner)

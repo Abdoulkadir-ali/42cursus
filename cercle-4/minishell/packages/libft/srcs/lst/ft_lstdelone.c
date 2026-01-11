@@ -1,13 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 19:53:36 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 03:58:59 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:05:42 by abdali            #+#    #+#             */
+/*   Updated: 2026/01/11 00:47:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
+#include <stdlib.h>
+
+void	ft_lstdelone(t_nodes *lst, void (*del)(void *))
+{
+	if (!lst)
+		return ;
+	if (del)
+		del(lst->content);
+	free(lst);
+}

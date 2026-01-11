@@ -1,13 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   ft_handle_char.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 19:53:36 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 03:58:59 by abdoali          ###   ########.fr       */
+/*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/12 17:56:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
+
+int	ft_handle_char(va_list args, t_flags *flags)
+{
+	char	c;
+	int		count;
+
+	c = (char)va_arg(args, int);
+	count = 0;
+	if (flags->minus)
+	{
+		ft_putchar_fd(c, 1);
+		count = 1 + ft_print_width(flags->width - 1, 0, 0);
+	}
+	else
+	{
+		count = ft_print_width(flags->width - 1, 0, 0);
+		ft_putchar_fd(c, 1);
+		count++;
+	}
+	return (count);
+}

@@ -1,13 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 19:53:36 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 03:58:59 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/16 20:06:30 by abdali            #+#    #+#             */
+/*   Updated: 2025/11/04 09:57:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <stdlib.h>
+
+void	*ft_memcpy(void *d, const void *s, size_t n)
+{
+	unsigned char	*dest;
+	unsigned char	*src;
+	size_t			i;
+
+	dest = (unsigned char *)d;
+	src = (unsigned char *)s;
+	i = 0;
+	while (i < n)
+		dest[i++] = *src++;
+	return ((void *)dest);
+}

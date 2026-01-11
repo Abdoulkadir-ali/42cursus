@@ -1,13 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory.c                                           :+:      :+:    :+:   */
+/*   ft_unbrlen_base.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 19:53:36 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 03:58:59 by abdoali          ###   ########.fr       */
+/*   Created: 2024/03/26 09:27:14 by abdali            #+#    #+#             */
+/*   Updated: 2025/10/24 11:19:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
+
+size_t	ft_unbrlen_base(unsigned long long int n, size_t base)
+{
+	size_t	i;
+
+	i = 1;
+	while (n >= (unsigned long long int)base)
+	{
+		n /= base;
+		i++;
+	}
+	return (i);
+}
