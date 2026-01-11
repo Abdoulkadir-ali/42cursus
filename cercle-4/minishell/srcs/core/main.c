@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 01:10:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/11 05:35:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 05:38:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
 #include "minishell.h"
 
 void	print_ast(t_nodes *ast_node, int depth)
