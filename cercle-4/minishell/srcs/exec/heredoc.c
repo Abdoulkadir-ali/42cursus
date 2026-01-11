@@ -30,21 +30,78 @@ static int is_quoted_delim(const char *delim)
 		return 0;
 	int i = 0;
 	while (delim[i]) {
-		if (delim[i] == '\'' || delim[i] == '"')
+		if (delim[i] == '\'' || delim[i] == '"' || delim[i] == '\\')
 			return 1;
 		i++;
 	}
 	return 0;
 }
 
+static char *remove_quotes_heredoc(char *str)
+{
+	char *res;
+	int i = 0, j = 0;
+	char quote = 0;
+	
+	if (!str) return NULL;
+	res = malloc(ft_strlen(str) + 1);
+	if (!res) return NULL;
+	
+	while (str[i])
+	{
+		if (quote)
+		{
+			if (str[i] == quote)
+			{
+				quote = 0;
+				i++;
+			}
+			else
+			{
+				res[j++] = str[i];
+				i++;
+			}
+		}
+		else
+		{
+			if (str[i] == '\\')
+			{
+				i++;
+				if (str[i])
+				{
+					res[j++] = str[i];
+					i++;
+				}
+			}
+			else if (str[i] == '\'' || str[i] == '"')
+			{
+				quote = str[i];
+				i++;
+			}
+			else
+			{
+				res[j++] = str[i];
+				i++;
+			}
+		}
+	}
+	res[j] = '\0';
+	return (res);
+}
+
 static void read_heredoc_loop(char *delim, int fd, char **envp, int exit_code)
 {
 	char	*line;
+	char	*stop_str;
+	int		quoted;
 
-	char *stop_str = expand_string(delim, envp, exit_code);
-	if (!stop_str) stop_str = ft_strdup(delim); // Fallback? Or empty?
-
-	int quoted = is_quoted_delim(delim);
+	quoted = is_quoted_delim(delim);
+	if (quoted)
+		stop_str = remove_quotes_heredoc(delim);
+	else
+		stop_str = expand_string(delim, envp, exit_code);
+	
+	if (!stop_str) stop_str = ft_strdup(delim);
 	setup_signals(SIGNAL_HEREDOC);
 	while (1)
 	{

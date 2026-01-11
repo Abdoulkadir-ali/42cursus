@@ -37,16 +37,25 @@ static char	*get_chunk(char **str, int *quoted)
 		quote = **str;
 		*quoted = 1;
 		i++;
+		int closed = 0;
 		while ((*str)[i])
 		{
 			if ((*str)[i] == quote)
 			{
+				closed = 1;
 				i++;
 				break ;
 			}
 			if (quote == '"' && (*str)[i] == '\\' && (*str)[i + 1])
 				i++;
 			i++;
+		}
+		if (!closed)
+		{
+			// chunk alloc happens below, but we can't easily free it if we haven't alloc'd it yet.
+			// Just return NULL. The caller relies on chunk being NULL.
+			ft_putendl_fd("minishell: syntax error: unclosed quote", 2);
+			return (NULL);
 		}
 	}
 	else
@@ -134,7 +143,7 @@ static t_token	*handle_word(char **str)
 		}
 		chunk = get_chunk(str, &quoted);
 		if (!chunk)
-			break ;
+			return (free(acc), NULL);
 		tmp = ft_strjoin(acc, chunk);
 		free(acc);
 		free(chunk);

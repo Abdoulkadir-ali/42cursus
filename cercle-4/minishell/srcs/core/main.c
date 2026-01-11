@@ -107,7 +107,10 @@ int is_whitespace_only(char *str)
 	add_history(line);
 	tokens = tokenizer(line);
 	if (!tokens)
+	{
+		*exit_code = 2;
 		return;
+	}
 	if (check_syntax(tokens))
 	{
 		*exit_code = 2;
