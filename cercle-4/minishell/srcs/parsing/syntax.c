@@ -39,6 +39,8 @@ int	check_syntax(t_nodes *tokens)
 	tok = (t_token *)curr->content;
 	if (tok->type == TOKEN_PIPE)
 		return (print_syntax_error("|"));
+	if (tok->type == TOKEN_SEMICOLON)
+		return (print_syntax_error(";"));
 	
 	while (curr)
 	{
@@ -53,6 +55,15 @@ int	check_syntax(t_nodes *tokens)
 			if (!next_tok) // Trailing Pipe
 				return (print_syntax_error("|")); // Or "newline" if implementing multi-line
 			if (next_tok->type == TOKEN_PIPE) // Double Pipe
+				return (print_syntax_error("|"));
+			if (next_tok->type == TOKEN_SEMICOLON)
+				return (print_syntax_error(";"));
+		}
+		else if (tok->type == TOKEN_SEMICOLON)
+		{
+			if (next_tok && next_tok->type == TOKEN_SEMICOLON)
+				return (print_syntax_error(";"));
+			if (next_tok && next_tok->type == TOKEN_PIPE)
 				return (print_syntax_error("|"));
 		}
 		else if (is_redirection(tok->type))

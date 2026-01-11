@@ -62,7 +62,7 @@ static char	*get_chunk(char **str, int *quoted)
 	{
 		while ((*str)[i])
 		{
-			if (ft_isspace((*str)[i]) || ft_strchr("|<>", (*str)[i])
+			if (ft_isspace((*str)[i]) || ft_strchr("|<>", (*str)[i]) || (*str)[i] == ';'
 				|| (*str)[i] == '\'' || (*str)[i] == '"')
 				break ;
 			if ((*str)[i] == '\\' && (*str)[i + 1])
@@ -125,6 +125,12 @@ static t_token	*handle_separator(char **str)
 			(*str)++;
 		}
 	}
+	else if (**str == ';')
+	{
+		token->type = TOKEN_SEMICOLON;
+		token->value = ft_strldup(*str, 1);
+		(*str)++;
+	}
 	return (token);
 }
 
@@ -140,7 +146,7 @@ static t_token	*handle_word(char **str)
 	quoted = 0;
 	while (**str)
 	{
-		if (ft_isspace(**str) || ft_strchr("|<>", **str))
+		if (ft_isspace(**str) || ft_strchr("|<>", **str) || **str == ';')
 			break ;
 		if (**str == '$' && ((*str)[1] == '"' || (*str)[1] == '\''))
 		{
@@ -206,7 +212,7 @@ t_nodes	*tokenizer(char *str)
 			str++;
 		if (!*str)
 			break ;
-		if (ft_strchr("|<>", *str))
+		if (ft_strchr("|<>", *str) || *str == ';')
 			token = handle_separator(&str);
 		else
 		{

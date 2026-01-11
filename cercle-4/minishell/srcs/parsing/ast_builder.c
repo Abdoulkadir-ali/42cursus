@@ -160,7 +160,7 @@ t_nodes	*ast_builder(t_nodes *tokens)
 	while (cursor)
 	{
 		tok = (t_token *)cursor->content;
-		if (tok->type == TOKEN_PIPE)
+		if (tok->type == TOKEN_PIPE || tok->type == TOKEN_SEMICOLON)
 		{
 			if (prev)
 				prev->next = NULL;
@@ -168,7 +168,7 @@ t_nodes	*ast_builder(t_nodes *tokens)
 				tokens = NULL;
 			pipe_data = ft_calloc(1, sizeof(t_ast));
 			if (!pipe_data) return (NULL); 
-			pipe_data->type = TOKEN_PIPE;
+			pipe_data->type = tok->type;
 			pipe_data->left = ast_builder(tokens);
 			pipe_data->right = ast_builder(cursor->next);
 			del_token(cursor->content);

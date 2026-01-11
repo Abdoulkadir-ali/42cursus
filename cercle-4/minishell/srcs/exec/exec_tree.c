@@ -139,6 +139,11 @@ int	exec_tree(t_nodes *ast_node, char ***envp)
 		return (exec_pipe(node, envp));
 	else if (node->type == TOKEN_WORD)
 		return (exec_simple_command(node, envp));
+	else if (node->type == TOKEN_SEMICOLON)
+	{
+		exec_tree(node->left, envp);
+		return (exec_tree(node->right, envp));
+	}
 	else if (node->type == TOKEN_RED_IN || node->type == TOKEN_RED_OUT
 			|| node->type == TOKEN_APPEND || node->type == TOKEN_HEREDOC)
 		return (exec_redirection(node, envp));

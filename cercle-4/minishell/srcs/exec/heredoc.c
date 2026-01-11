@@ -133,7 +133,11 @@ static void read_heredoc_loop(char *delim, int fd, char **envp, int exit_code)
 		if (!line)
 		{
 			if (g_last_signal != 130)
-				ft_putendl_fd("minishell: warning: here-document delimited by end-of-file", 2);
+			{
+				ft_putstr_fd("minishell: warning: here-document delimited by end-of-file (wanted `", 2);
+				ft_putstr_fd(stop_str, 2);
+				ft_putendl_fd("')", 2);
+			}
 			break ;
 		}
 		if (ft_strncmp(line, stop_str, ft_strlen(stop_str) + 1) == 0)

@@ -18,7 +18,8 @@ typedef enum e_token_type
 	TOKEN_RED_IN,
 	TOKEN_RED_OUT,
 	TOKEN_HEREDOC,
-	TOKEN_APPEND
+	TOKEN_APPEND,
+	TOKEN_SEMICOLON
 }	t_token_type;
 
 typedef struct s_token

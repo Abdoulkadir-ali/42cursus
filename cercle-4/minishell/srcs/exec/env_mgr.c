@@ -273,6 +273,7 @@ int	ft_unset(char **args, char ***envp)
 			ft_putstr_fd("minishell: unset: ", 2);
 			write(2, args[arg_idx], 2);
 			ft_putendl_fd(": invalid option", 2);
+			ft_putendl_fd("unset: usage: unset [-f] [-v] [-n] [name ...]", 2);
 			return (2);
 		}
 		if (!is_valid_ident(args[arg_idx]) || ft_strchr(args[arg_idx], '='))
