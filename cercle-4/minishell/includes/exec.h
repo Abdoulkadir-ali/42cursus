@@ -18,6 +18,7 @@ int		is_builtin(char *cmd, char **args);
 int		exec_builtin(char **args, char ***envp);
 
 int		scan_heredocs(t_nodes *ast_node);
+void	consume_heredocs(t_nodes *tokens);
 
 int		ft_export(char **args, char ***envp);
 int		ft_unset(char **args, char ***envp);

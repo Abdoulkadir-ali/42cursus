@@ -244,7 +244,7 @@ int	ft_unset(char **args, char ***envp)
 			ft_putstr_fd("minishell: unset: `", 2);
 			ft_putstr_fd(args[arg_idx], 2);
 			ft_putendl_fd("': not a valid identifier", 2);
-			ret = 1;
+			ret = 0; // Bash returns 0 for invalid identifiers in unset
 			arg_idx++;
 			continue ;
 		}

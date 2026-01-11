@@ -113,6 +113,7 @@ int is_whitespace_only(char *str)
 	}
 	if (check_syntax(tokens))
 	{
+		consume_heredocs(tokens);
 		*exit_code = 2;
 		ft_lstclear(&tokens, del_token);
 		return;

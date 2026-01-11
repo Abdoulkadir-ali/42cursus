@@ -204,3 +204,40 @@ int	scan_heredocs(t_nodes *ast_node)
 		return (1);
 	return (0);
 }
+
+void consume_heredocs(t_nodes *tokens)
+{
+	t_token	*tok;
+	t_token	*next_tok;
+	char 	*filename;
+	int		fd;
+	extern char **g_envp;
+	extern int g_exit_code;
+
+	while (tokens)
+	{
+		tok = (t_token *)tokens->content;
+		if (tok->type == TOKEN_HEREDOC)
+		{
+			if (tokens->next)
+			{
+				next_tok = (t_token *)tokens->next->content;
+				if (next_tok->type == TOKEN_WORD)
+				{
+					// Consume heredoc input
+					filename = generate_tmp_filename();
+					fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+					if (fd != -1)
+					{
+						read_heredoc_loop(next_tok->value, fd, g_envp, g_exit_code);
+						close(fd);
+						unlink(filename);
+					}
+					free(filename);
+				}
+			}
+		}
+		tokens = tokens->next;
+	}
+}
+
