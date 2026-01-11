@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 17:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 14:44:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,83 @@ static char	*generate_tmp_filename(void)
 	return (name);
 }
 
-static void	read_heredoc_loop(char *delim, int fd)
+static int is_quoted_delim(const char *delim)
+{
+	if (!delim)
+		return 0;
+	int i = 0;
+	while (delim[i]) {
+		if (delim[i] == '\'' || delim[i] == '"')
+			return 1;
+		i++;
+	}
+	return 0;
+}
+
+static void read_heredoc_loop(char *delim, int fd, char **envp, int exit_code)
 {
 	char	*line;
 
+	char *stop_str = expand_string(delim, envp, exit_code);
+	if (!stop_str) stop_str = ft_strdup(delim); // Fallback? Or empty?
+
+	int quoted = is_quoted_delim(delim);
 	setup_signals(SIGNAL_HEREDOC);
 	while (1)
 	{
-		line = readline("> ");
+		if (isatty(STDIN_FILENO))
+			line = readline("> ");
+		else
+		{
+			char *buf = ft_calloc(10000, 1);
+			int i = 0;
+			char c;
+			while (read(STDIN_FILENO, &c, 1) > 0)
+			{
+				buf[i++] = c;
+				if (c == '\n')
+					break;
+				if (i >= 9999) break;
+			}
+			if (i > 0)
+			{
+				if (buf[i - 1] == '\n') buf[i - 1] = '\0';
+				line = buf;
+			}
+			else
+			{
+				free(buf);
+				line = NULL;
+			}
+		}
 		if (!line)
 		{
 			if (g_last_signal != 130)
 				ft_putendl_fd("minishell: warning: here-document delimited by end-of-file", 2);
 			break ;
 		}
-		if (ft_strncmp(line, delim, ft_strlen(delim) + 1) == 0)
+		if (ft_strncmp(line, stop_str, ft_strlen(stop_str) + 1) == 0)
 		{
 			free(line);
 			break ;
 		}
-		ft_putendl_fd(line, fd);
+		if (!quoted)
+		{
+			char *expanded = expand_heredoc(line, envp, exit_code);
+			ft_putendl_fd(expanded, fd);
+			free(expanded);
+		}
+		else
+		{
+			ft_putendl_fd(line, fd);
+		}
 		free(line);
 	}
 	setup_signals(SIGNAL_INTERACTIVE);
+	free(stop_str);
 }
 
-static char	*handle_heredoc_input(char *delim)
+static char	*handle_heredoc_input(char *delim, char **envp, int exit_code)
 {
 	char	*filename;
 	int		fd;
@@ -62,7 +113,7 @@ static char	*handle_heredoc_input(char *delim)
 		free(filename);
 		return (NULL);
 	}
-	read_heredoc_loop(delim, fd);
+	read_heredoc_loop(delim, fd, envp, exit_code);
 	close(fd);
 	if (g_last_signal == 130)
 	{
@@ -83,7 +134,9 @@ int	scan_heredocs(t_nodes *ast_node)
 	node = (t_ast *)ast_node->content;
 	if (node->type == TOKEN_HEREDOC)
 	{
-		tmp_file = handle_heredoc_input(node->args[0]);
+		extern char **g_envp;
+		extern int g_exit_code;
+		tmp_file = handle_heredoc_input(node->args[0], g_envp, g_exit_code);
 		if (!tmp_file)
 			return (1);
 		free(node->args[0]);

@@ -6,27 +6,30 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 13:11:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+#include <sys/stat.h>
 
 int	exec_simple_command(t_ast *node, char ***envp)
 {
-	char	*path;
-	pid_t	pid;
-	int		status;
+	char		*path;
+	pid_t		pid;
+	int			status;
+	struct stat	st;
 
 	if (!node->args || !node->args[0])
 		return (0);
-	if (is_builtin(node->args[0]))
+	if (is_builtin(node->args[0], node->args))
 		return (exec_builtin(node->args, envp));
 	path = find_path(node->args[0], *envp);
 	if (!path)
 	{
-		ft_putstr_fd("minishell: command not found: ", 2);
-		ft_putendl_fd(node->args[0], 2);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(node->args[0], 2);
+		ft_putendl_fd(": command not found", 2);
 		return (127);
 	}
 	pid = fork();
@@ -34,8 +37,24 @@ int	exec_simple_command(t_ast *node, char ***envp)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		execve(path, node->args, *envp);
-		perror("minishell");
-		exit(126);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(node->args[0], 2);
+		if (errno == ENOENT)
+		{
+			ft_putendl_fd(": No such file or directory", 2);
+			exit(127);
+		}
+		if (errno == EACCES)
+		{
+			if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
+				ft_putendl_fd(": Is a directory", 2);
+			else
+				ft_putendl_fd(": Permission denied", 2);
+			exit(126);
+		}
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		exit(1);
 	}
 	setup_signals(SIGNAL_BLOCKING);
 	waitpid(pid, &status, 0);
@@ -71,12 +90,12 @@ static int	exec_redirection(t_ast *node, char ***envp)
 		fd = open(node->args[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (node->type == TOKEN_APPEND)
 		fd = open(node->args[0], O_WRONLY | O_CREAT | O_APPEND, 0644);
-	// Placeholder for HEREDOC - assuming filename passed in args[0] by parser/heredoc_handler
 	else 
 		fd = open(node->args[0], O_RDONLY);
 
 	if (fd == -1)
 	{
+		ft_putstr_fd("minishell: ", 2);
 		perror(node->args[0]);
 		return (1);
 	}

@@ -3,6 +3,9 @@
 
 # include "libft.h"
 # include "lib.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
 
 # define STATE_GENERAL 1
 # define STATE_DOUBLE_QUOTES 2
@@ -22,6 +25,7 @@ typedef struct s_token
 {
 	char			*value;
 	t_token_type	type;
+	int				quoted;
 }	t_token;
 
 typedef struct s_ast
@@ -34,7 +38,13 @@ typedef struct s_ast
 
 t_nodes	*tokenizer(char *str);
 t_nodes	*ast_builder(t_nodes *tokens);
-void	expand_tokens(t_nodes *tokens, char **envp);
+void	expand_tokens(t_nodes **tokens, char **envp, int last_exit_code);
+char	*expand_string(char *str, char **envp, int exit_code);
+char	*expand_heredoc(char *str, char **envp, int exit_code);
+int		check_syntax(t_nodes *tokens);
+t_nodes	*expand_wildcard(char *pattern);
+int		is_wildcard(const char *str);
+char	**expand_wildcards(char **args);
 void	free_ast(t_nodes *ast_node);
 void	del_token(void *content);
 

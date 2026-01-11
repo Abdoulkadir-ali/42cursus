@@ -47,22 +47,61 @@ static char	*append_line(char *line, char *new_line)
 	return (result);
 }
 
+char	*get_next_line(int fd); // Prototype in case not in libft.h
+
+static char	*read_input(char *prompt)
+{
+	char	*line;
+
+
+	if (isatty(STDIN_FILENO))
+		return (readline(prompt));
+	char *buf = ft_calloc(10000, 1);
+	int i = 0;
+	char c;
+	while (read(STDIN_FILENO, &c, 1) > 0)
+	{
+		buf[i++] = c;
+		if (c == '\n')
+			break;
+		if (i >= 9999) break;
+	}
+	if (i > 0)
+	{
+		if (buf[i - 1] == '\n') buf[i - 1] = '\0';
+		line = buf;
+	}
+	else
+	{
+		free(buf);
+		line = NULL;
+	}
+	return (line);
+}
+
 char	*get_command_line(void)
 {
 	char	*line;
 	char	*new_line;
 	char	*temp;
 	char	quote;
+	char	*prompt;
 
-	line = readline("minishell> ");
+	prompt = "minishell> ";
+	if (!isatty(STDIN_FILENO))
+		prompt = NULL;
+	line = read_input(prompt);
 	if (!line)
 		return (NULL);
 	while ((quote = check_unclosed_quote(line)) != 0)
 	{
-		new_line = readline("> ");
+		prompt = "> ";
+		if (!isatty(STDIN_FILENO))
+			prompt = NULL;
+		new_line = read_input(prompt);
 		if (!new_line)
 		{
-			ft_printf("minishell: unexpected EOF while looking for matching `%c'\n",
+			ft_printf_fd(2, "minishell: unexpected EOF while looking for matching `%c'\n",
 				quote);
 			free(line);
 			return (NULL);

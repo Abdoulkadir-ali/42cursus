@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 00:59:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 05:20:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 13:37:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,25 +56,39 @@ static t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
 {
 	t_nodes	*curr;
 	t_token	*tok;
-	t_nodes	*redir_node;
+	t_nodes	*stack;
+	t_nodes	*s_curr;
+	t_nodes	*redir_token_node;
 	char	**args;
+	t_nodes	*redir_node;
 
+	stack = NULL;
 	curr = tokens;
 	while (curr)
 	{
 		tok = (t_token *)curr->content;
 		if (tok->type != TOKEN_WORD && tok->type != TOKEN_PIPE)
 		{
-			args = ft_calloc(2, sizeof(char *));
+			ft_lstadd_front(&stack, ft_lstnew(curr));
 			if (curr->next)
-				args[0] = ft_strdup(((t_token *)curr->next->content)->value);
-			redir_node = create_node(tok->type, args, cmd_node, NULL);
-			cmd_node = redir_node;
-			curr = curr->next;
+				curr = curr->next;
 		}
 		if (curr)
 			curr = curr->next;
 	}
+	s_curr = stack;
+	while (s_curr)
+	{
+		redir_token_node = (t_nodes *)s_curr->content;
+		tok = (t_token *)redir_token_node->content;
+		args = ft_calloc(2, sizeof(char *));
+		if (redir_token_node->next)
+			args[0] = ft_strdup(((t_token *)redir_token_node->next->content)->value);
+		redir_node = create_node(tok->type, args, cmd_node, NULL);
+		cmd_node = redir_node;
+		s_curr = s_curr->next;
+	}
+	ft_lstclear(&stack, NULL);
 	return (cmd_node);
 }
 
@@ -108,7 +122,9 @@ static t_nodes	*create_cmd_node(t_nodes *tokens)
 		curr = curr->next;
 	}
 	cmd_node = create_node(TOKEN_WORD, args, NULL, NULL);
-	return (process_redirections(cmd_node, tokens));
+	cmd_node = process_redirections(cmd_node, tokens);
+	ft_lstclear(&tokens, del_token);
+	return (cmd_node);
 }
 
 t_nodes	*ast_builder(t_nodes *tokens)
@@ -136,6 +152,8 @@ t_nodes	*ast_builder(t_nodes *tokens)
 			pipe_data->type = TOKEN_PIPE;
 			pipe_data->left = ast_builder(tokens);
 			pipe_data->right = ast_builder(cursor->next);
+			del_token(cursor->content);
+			free(cursor);
 			return (ft_lstnew(pipe_data));
 		}
 		prev = cursor;

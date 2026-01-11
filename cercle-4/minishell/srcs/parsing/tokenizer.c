@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 13:21:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 16:08:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,34 +25,27 @@ void	del_token(void *content)
 	}
 }
 
-static t_token	*extract_token_value(char *str, int state)
+static char	*get_chunk(char **str, int *quoted)
 {
-	t_token	*token;
-	char	*new;
+	char	*chunk;
 	int		len;
 
-	token = malloc(sizeof(t_token));
-	if (!token)
-		return (NULL);
-	new = NULL;
-	if (state == STATE_GENERAL)
-		new = ft_strldup(str, ft_strmatch(str, "'\" |<>", &str_any));
-	else if (state == STATE_SINGLE_QUOTES || state == STATE_DOUBLE_QUOTES)
+	if (**str == '\'' || **str == '"')
 	{
-		len = ft_strchri(str + 1, *str);
-		if (len != -1)
-			new = ft_strldup(str, len + 2);
+		*quoted = 1;
+		len = ft_strchri(*str + 1, **str);
+		if (len == -1)
+			len = ft_strlen(*str) - 1;
+		chunk = ft_substr(*str, 0, len + 2);
+		*str += len + 2;
 	}
-	if (!new || !*new)
+	else
 	{
-		free(token);
-		if (new)
-			free(new);
-		return (NULL);
+		len = ft_strmatch(*str, "'\" |<>", &str_any);
+		chunk = ft_strldup(*str, len);
+		*str += len;
 	}
-	token->value = new;
-	token->type = state;
-	return (token);
+	return (chunk);
 }
 
 static t_token	*handle_separator(char **str)
@@ -62,6 +55,7 @@ static t_token	*handle_separator(char **str)
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
+	token->quoted = 0;
 	if (**str == '|')
 	{
 		token->type = TOKEN_PIPE;
@@ -103,19 +97,32 @@ static t_token	*handle_separator(char **str)
 
 static t_token	*handle_word(char **str)
 {
-	int		state;
 	t_token	*token;
+	char	*acc;
+	char	*chunk;
+	char	*tmp;
+	int		quoted;
 
-	state = STATE_GENERAL;
-	if (**str == '\'')
-		state = STATE_SINGLE_QUOTES;
-	else if (**str == '"')
-		state = STATE_DOUBLE_QUOTES;
-	token = extract_token_value(*str, state);
+	acc = ft_strdup("");
+	quoted = 0;
+	while (**str)
+	{
+		if (ft_isspace(**str) || ft_strchr("|<>", **str))
+			break ;
+		chunk = get_chunk(str, &quoted);
+		if (!chunk)
+			break ;
+		tmp = ft_strjoin(acc, chunk);
+		free(acc);
+		free(chunk);
+		acc = tmp;
+	}
+	token = malloc(sizeof(t_token));
 	if (!token)
-		return (NULL);
+		return (free(acc), NULL);
 	token->type = TOKEN_WORD;
-	*str += ft_strlen(token->value);
+	token->value = acc;
+	token->quoted = quoted;
 	return (token);
 }
 

@@ -8,4 +8,7 @@
 # include "exec.h"
 # include <stdio.h>
 
+extern char **g_envp;
+extern int g_exit_code;
+
 #endif

@@ -6,6 +6,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <errno.h>
 # include <sys/wait.h>
 # include <fcntl.h>
 
@@ -13,7 +14,7 @@ int		exec_tree(t_nodes *ast_node, char ***envp);
 int		exec_simple_command(t_ast *node, char ***envp);
 int		exec_pipe(t_ast *node, char ***envp);
 
-int		is_builtin(char *cmd);
+int		is_builtin(char *cmd, char **args);
 int		exec_builtin(char **args, char ***envp);
 
 int		scan_heredocs(t_nodes *ast_node);

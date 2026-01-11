@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 12:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 13:11:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/11 14:23:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ static char	*check_path_access(char *cmd, char **paths)
 	i = 0;
 	while (paths[i])
 	{
+		if (paths[i][0] == '\0') // Skip empty paths (implicit current directory)
+		{
+			i++;
+			continue;
+		}
 		tmp = ft_strjoin(paths[i], "/");
 		path = ft_strjoin(tmp, cmd);
 		free(tmp);
@@ -69,12 +74,10 @@ char	*find_path(char *cmd, char **envp)
 
 	if (!cmd || !*cmd)
 		return (NULL);
-	if (ft_strchr(cmd, '/') || !get_env_path(envp))
-	{
-		if (access(cmd, F_OK | X_OK) == 0)
-			return (ft_strdup(cmd));
+	if (ft_strchr(cmd, '/'))
+		return (ft_strdup(cmd));
+	if (!get_env_path(envp))
 		return (NULL);
-	}
 	env_path = get_env_path(envp);
 	paths = ft_split(env_path, ':');
 	if (!paths)

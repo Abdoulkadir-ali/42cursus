@@ -23,6 +23,8 @@ SRCS        = srcs/exec/exec_tree.c \
 	srcs/exec/env_mgr.c \
 	srcs/exec/heredoc.c \
 	srcs/core/signals.c \
+	srcs/parsing/syntax.c \
+	srcs/parsing/wildcard.c \
 	srcs/core/main.c
 # srcs/main.c # Uncomment when ready to use main.c instead of tokenizer.c's main
 
@@ -54,4 +56,9 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+test: all
+	@mkdir -p tests
+	@chmod +x tests/stress_test.sh
+	@bash tests/stress_test.sh
+
+.PHONY: all clean fclean re test
