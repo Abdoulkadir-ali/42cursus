@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 00:59:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 16:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 01:48:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ static void	add_token_node(t_nodes **head, t_nodes **tail, char *val, int quoted
 	tok->type = TOKEN_WORD;
 	tok->value = val;
 	tok->quoted = quoted;
+	tok->expanded = 1;
 	node = ft_lstnew(tok);
 	if (!*head)
 		*head = node;
@@ -319,16 +320,30 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 	t_nodes	*curr;
 	t_nodes	*next_node;
 	t_token	*tok;
+	t_nodes	*prev;
 
 	new_head = NULL;
 	new_tail = NULL;
 	curr = *tokens;
+	prev = NULL;
 	while (curr)
 	{
 		next_node = curr->next;
 		tok = (t_token *)curr->content;
 		if (tok->type == TOKEN_WORD)
 		{
+			// If this WORD is the argument of a heredoc redirection (previous token is TOKEN_HEREDOC),
+			// do not perform expansion/splitting here. Keep the original token (preserve quoting).
+			if (prev && ((t_token *)prev->content)->type == TOKEN_HEREDOC)
+			{
+				if (!new_head) new_head = curr;
+				else new_tail->next = curr;
+				new_tail = curr;
+				curr->next = NULL;
+				prev = new_tail;
+				curr = next_node;
+				continue;
+			}
 			// Tilde Expansion
 			if (!tok->quoted && tok->value[0] == '~' && (tok->value[1] == '\0' || tok->value[1] == '/'))
 			{
@@ -348,6 +363,10 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 			{
 				t_nodes *exp_next = exp_curr->next;
 				t_token *exp_tok = (t_token *)exp_curr->content;
+
+				/* Ensure expanded items remain words: do not reclassify expansions
+				   (e.g. an expansion that produces ">>" must stay a WORD). */
+				exp_tok->type = TOKEN_WORD;
 				
 				// Wildcard Check
 				if (!exp_tok->quoted && ft_strchr(exp_tok->value, '*'))
@@ -363,6 +382,7 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 							new_tok->type = TOKEN_WORD;
 							new_tok->value = ft_strdup((char *)m_curr->content);
 							new_tok->quoted = 0; // Expanded wildcards are unquoted words
+							new_tok->expanded = 1;
 							
 							t_nodes *mnode = ft_lstnew(new_tok);
 							if (!new_head) new_head = mnode;
@@ -416,8 +436,11 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 			else new_tail->next = curr;
 			new_tail = curr;
 			curr->next = NULL;
+			prev = new_tail;
 		}
 		curr = next_node;
+		if (prev == NULL && new_tail)
+			prev = new_tail;
 	}
 	*tokens = new_head;
 }

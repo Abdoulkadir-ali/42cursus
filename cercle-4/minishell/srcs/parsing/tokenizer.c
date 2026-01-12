@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 23:26:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 01:48:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ static t_token	*handle_separator(char **str)
 		token->value = ft_strldup(*str, 1);
 		(*str)++;
 	}
+	token->expanded = 0;
 	return (token);
 }
 
@@ -167,6 +168,7 @@ static t_token	*handle_word(char **str)
 	token->type = TOKEN_WORD;
 	token->value = acc;
 	token->quoted = quoted;
+	token->expanded = 0;
 	return (token);
 }
 

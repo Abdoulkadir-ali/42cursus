@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 00:59:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 13:37:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 01:48:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
 	while (curr)
 	{
 		tok = (t_token *)curr->content;
-		if (tok->type != TOKEN_WORD && tok->type != TOKEN_PIPE)
+			if (tok->expanded == 0 && tok->type != TOKEN_WORD && tok->type != TOKEN_PIPE)
 		{
 			ft_lstadd_front(&stack, ft_lstnew(curr));
 			if (curr->next)
@@ -84,14 +84,9 @@ static t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
 		args = ft_calloc(3, sizeof(char *));
 		if (redir_token_node->next)
 		{
-			if (tok->type == TOKEN_HEREDOC && ((t_token *)redir_token_node->next->content)->quoted)
-			{
-				char *tmp = ft_strjoin("'", ((t_token *)redir_token_node->next->content)->value);
-				args[0] = ft_strjoin(tmp, "'");
-				free(tmp);
-			}
-			else
-				args[0] = ft_strdup(((t_token *)redir_token_node->next->content)->value);
+			/* Preserve the exact token value (including original quote characters)
+			   The heredoc code will inspect/remove quotes and decide whether to expand. */
+			args[0] = ft_strdup(((t_token *)redir_token_node->next->content)->value);
 		}
 		else
 		{

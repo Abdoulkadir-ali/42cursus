@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 14:26:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 01:48:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	check_syntax(t_nodes *tokens)
 			if (next_tok && next_tok->type == TOKEN_PIPE)
 				return (print_syntax_error("|"));
 		}
-		else if (is_redirection(tok->type))
+		else if (is_redirection(tok->type) && (!tok->expanded))
 		{
 			if (!next_tok) // Trailing Redirection
 				return (print_syntax_error("newline"));

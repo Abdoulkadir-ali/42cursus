@@ -99,11 +99,12 @@ int is_whitespace_only(char *str)
 	return (1);
 }
 
-	void process_input(char *line, char ***envp, int *exit_code)
-	{
-		t_nodes *tokens;
-		if (!*line || is_whitespace_only(line))
-			return;
+void process_input(char *line, char ***envp, int *exit_code)
+{
+	t_nodes *tokens;
+
+	if (!*line || is_whitespace_only(line))
+		return;
 	add_history(line);
 	tokens = tokenizer(line);
 	if (!tokens)
@@ -118,10 +119,45 @@ int is_whitespace_only(char *str)
 		ft_lstclear(&tokens, del_token);
 		return;
 	}
-	expand_tokens(&tokens, *envp, *exit_code);
-	if (tokens)
+
+	/* Execute each top-level command segment separately so expansions occur
+	   with the environment state after previous commands (e.g. export). */
+	t_nodes *cursor = tokens;
+	while (cursor)
 	{
-		execute_command(tokens, envp, exit_code);
+		t_nodes *segment = NULL;
+		t_nodes *seg_tail = NULL;
+		t_nodes *it = cursor;
+
+		while (it && ((t_token *)it->content)->type != TOKEN_SEMICOLON)
+		{
+			t_nodes *next = it->next;
+			it->next = NULL;
+			if (!segment)
+				segment = it;
+			else
+				seg_tail->next = it;
+			seg_tail = it;
+			it = next;
+		}
+
+		t_nodes *next_cursor = NULL;
+		if (it && ((t_token *)it->content)->type == TOKEN_SEMICOLON)
+		{
+			next_cursor = it->next;
+			del_token(it->content);
+			free(it);
+		}
+		else
+			next_cursor = it;
+
+		if (segment)
+		{
+			expand_tokens(&segment, *envp, *exit_code);
+			execute_command(segment, envp, exit_code);
+		}
+
+		cursor = next_cursor;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 14:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 01:15:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,13 +105,53 @@ static int	exec_redirection(t_ast *node, char ***envp)
 		target_fd = ft_atoi(node->args[1]);
 	
 	if (node->type == TOKEN_RED_IN)
+	{
+		struct stat target_st;
+		if (node->args[0] && stat(node->args[0], &target_st) == 0 && S_ISDIR(target_st.st_mode))
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(node->args[0], 2);
+			ft_putendl_fd(": Is a directory", 2);
+			return (1);
+		}
 		fd = open(node->args[0], O_RDONLY);
+	}
 	else if (node->type == TOKEN_RED_OUT)
+	{
+		struct stat target_st;
+		if (node->args[0] && stat(node->args[0], &target_st) == 0 && S_ISDIR(target_st.st_mode))
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(node->args[0], 2);
+			ft_putendl_fd(": Is a directory", 2);
+			return (1);
+		}
 		fd = open(node->args[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	}
 	else if (node->type == TOKEN_APPEND)
+	{
+		struct stat target_st;
+		if (node->args[0] && stat(node->args[0], &target_st) == 0 && S_ISDIR(target_st.st_mode))
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(node->args[0], 2);
+			ft_putendl_fd(": Is a directory", 2);
+			return (1);
+		}
 		fd = open(node->args[0], O_WRONLY | O_CREAT | O_APPEND, 0644);
+	}
 	else 
+	{
+		struct stat target_st;
+		if (node->args[0] && stat(node->args[0], &target_st) == 0 && S_ISDIR(target_st.st_mode))
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(node->args[0], 2);
+			ft_putendl_fd(": Is a directory", 2);
+			return (1);
+		}
 		fd = open(node->args[0], O_RDONLY);
+	}
 
 	if (fd == -1)
 	{

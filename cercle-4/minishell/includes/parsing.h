@@ -27,6 +27,7 @@ typedef struct s_token
 	char			*value;
 	t_token_type	type;
 	int				quoted;
+	int			expanded; // 1 if this token was produced by expansion/splitting
 }	t_token;
 
 typedef struct s_ast
