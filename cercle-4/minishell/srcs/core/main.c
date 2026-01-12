@@ -153,6 +153,38 @@ void process_input(char *line, char ***envp, int *exit_code)
 
 		if (segment)
 		{
+			/* Detect and handle simple assignments like VAR=VALUE */
+			t_token *first_tok = (t_token *)segment->content;
+			if (first_tok && first_tok->type == TOKEN_WORD)
+			{
+				char *eq = ft_strchr(first_tok->value, '=');
+				if (eq && eq != first_tok->value)
+				{
+					/* validate identifier: start with alpha or '_' then alnum/_ until '=' */
+					int valid = 1;
+					char *k = first_tok->value;
+					if (!ft_isalpha((unsigned char)k[0]) && k[0] != '_')
+						valid = 0;
+					for (char *p = k; *p && *p != '=' && valid; p++)
+					{
+						if (!ft_isalnum((unsigned char)*p) && *p != '_')
+							valid = 0;
+					}
+					if (valid && !segment->next)
+					{
+						/* Split key/value and set in environment */
+						char *key = ft_substr(first_tok->value, 0, eq - first_tok->value);
+						char *val = ft_strdup(eq + 1);
+						ft_set_env(key, val, envp);
+						free(key);
+						free(val);
+						*exit_code = 0;
+						ft_lstclear(&segment, del_token);
+						cursor = next_cursor; /* continue outer loop properly */
+						continue;
+					}
+				}
+			}
 			expand_tokens(&segment, *envp, *exit_code);
 			execute_command(segment, envp, exit_code);
 		}

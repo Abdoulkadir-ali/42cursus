@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 14:44:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 01:58:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,19 +140,25 @@ static void read_heredoc_loop(char *delim, int fd, char **envp, int exit_code)
 			}
 			break ;
 		}
-		if (ft_strncmp(line, stop_str, ft_strlen(stop_str) + 1) == 0)
-		{
-			free(line);
-			break ;
-		}
 		if (!quoted)
 		{
-			char *expanded = expand_heredoc(line, envp, exit_code);
-			ft_putendl_fd(expanded, fd);
-			free(expanded);
+			char *expanded_candidate = expand_heredoc(line, envp, exit_code);
+			if (ft_strncmp(expanded_candidate, stop_str, ft_strlen(stop_str) + 1) == 0)
+			{
+				free(expanded_candidate);
+				free(line);
+				break ;
+			}
+			ft_putendl_fd(expanded_candidate, fd);
+			free(expanded_candidate);
 		}
 		else
 		{
+			if (ft_strncmp(line, stop_str, ft_strlen(stop_str) + 1) == 0)
+			{
+				free(line);
+				break ;
+			}
 			ft_putendl_fd(line, fd);
 		}
 		free(line);
