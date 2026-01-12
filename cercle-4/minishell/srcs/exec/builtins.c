@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 02:44:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 20:07:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,13 @@ int	ft_cd(char **args, char ***envp)
 	char	cwd[1024];
 	char	oldcwd[1024];
 	char	*path;
+
+	/* Too many arguments should be detected before handling special '-' behavior */
+	if (args[1] && args[2])
+	{
+		ft_putendl_fd("minishell: cd: too many arguments", 2);
+		return (1);
+	}
 
 	if (!args[1] || (ft_strncmp(args[1], "--", 3) == 0))
 	{

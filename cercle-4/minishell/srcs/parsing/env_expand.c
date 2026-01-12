@@ -6,12 +6,36 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 00:59:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 02:58:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 03:27:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+static void
+dump_tokens_list(t_nodes *head, const char *stage)
+{
+	FILE *f;
+	t_nodes *cur;
+	t_token *tok;
+
+	f = fopen("log/expand_debug.txt", "a");
+	if (!f)
+		return ;
+	fprintf(f, "-- expand stage: %s --\n", stage);
+	cur = head;
+	while (cur)
+	{
+		tok = (t_token *)cur->content;
+		if (tok && tok->value)
+			fprintf(f, "type=%d quoted=%d expanded=%d val='%s'\n", tok->type, tok->quoted, tok->expanded, tok->value);
+		else
+			fprintf(f, "<null token>\n");
+		cur = cur->next;
+	}
+	fprintf(f, "-- end stage: %s --\n\n", stage);
+	fclose(f);
+}
 static char	*get_env_value(char *var_name, char **envp)
 {
 	int		i;
@@ -331,6 +355,9 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 	new_tail = NULL;
 	curr = *tokens;
 	prev = NULL;
+
+	/* Dump incoming token list for debugging wildcard/expansion ordering */
+	dump_tokens_list(*tokens, "before_expand_tokens");
 	while (curr)
 	{
 		next_node = curr->next;
@@ -379,6 +406,7 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 					t_nodes *matches = expand_wildcard(exp_tok->value);
 					if (matches)
 					{
+						int ambiguous = 0;
 						/* If this wildcard is the target of a redirection and yields multiple matches,
 						   it's an ambiguous redirect. Report error and keep literal. */
 						int is_redir_target = 0;
@@ -399,7 +427,9 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 								ft_putstr_fd(exp_tok->value, 2);
 								ft_putendl_fd(": ambiguous redirect", 2);
 								extern int g_exit_code;
+								extern int g_expansion_error;
 								g_exit_code = 1;
+								g_expansion_error = 1;
 								/* cleanup matches and keep literal token instead */
 								while (matches)
 								{
@@ -408,40 +438,50 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 									free(matches);
 									matches = tmp_m;
 								}
-								/* keep literal: fall through to attach exp_curr below */
+								ambiguous = 1;
 							}
 						}
-						/* if not ambiguous, or after cleanup, proceed to insert matches */
-						// Insert matches
-						t_nodes *m_curr = matches;
-						while (m_curr)
+						if (!ambiguous)
 						{
-							t_token *new_tok = malloc(sizeof(t_token));
-							new_tok->type = TOKEN_WORD;
-							new_tok->value = ft_strdup((char *)m_curr->content);
-							new_tok->quoted = 0; // Expanded wildcards are unquoted words
-							new_tok->expanded = 1;
-							
-							t_nodes *mnode = ft_lstnew(new_tok);
-							if (!new_head) new_head = mnode;
-							else new_tail->next = mnode;
-							new_tail = mnode;
-							
-							m_curr = m_curr->next;
+							/* if not ambiguous, proceed to insert matches */
+							t_nodes *m_curr = matches;
+							while (m_curr)
+							{
+								t_token *new_tok = malloc(sizeof(t_token));
+								new_tok->type = TOKEN_WORD;
+								new_tok->value = ft_strdup((char *)m_curr->content);
+								new_tok->quoted = 0; // Expanded wildcards are unquoted words
+								new_tok->expanded = 1;
+
+								t_nodes *mnode = ft_lstnew(new_tok);
+								if (!new_head) new_head = mnode;
+								else new_tail->next = mnode;
+								new_tail = mnode;
+
+								m_curr = m_curr->next;
+							}
+							/* Cleanup matches list (char * content) */
+							t_nodes *tmp_m;
+							m_curr = matches;
+							while (m_curr)
+							{
+								tmp_m = m_curr->next;
+								free(m_curr->content);
+								free(m_curr);
+								m_curr = tmp_m;
+							}
+							/* Consume exp_curr (don't add to list) */
+							del_token(exp_curr->content);
+							free(exp_curr);
 						}
-						// Cleanup matches list (char * content)
-						t_nodes *tmp_m;
-						m_curr = matches;
-						while (m_curr)
+						else
 						{
-							tmp_m = m_curr->next;
-							free(m_curr->content);
-							free(m_curr);
-							m_curr = tmp_m;
+							/* Ambiguous redirect: keep the literal expansion token as-is */
+							if (!new_head) new_head = exp_curr;
+							else new_tail->next = exp_curr;
+							new_tail = exp_curr;
+							exp_curr->next = NULL;
 						}
-						// Consume exp_curr (don't add to list)
-						del_token(exp_curr->content);
-						free(exp_curr);
 					}
 					else
 					{

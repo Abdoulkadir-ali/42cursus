@@ -18,6 +18,7 @@
 char **g_envp = NULL;
 int g_exit_code = 0;
 int g_interactive_shell = 0;
+int g_expansion_error = 0;
 
 
 void print_ast(t_nodes *ast_node, int depth)
@@ -113,6 +114,30 @@ void process_input(char *line, char ***envp, int *exit_code)
 		*exit_code = 2;
 		return;
 	}
+	/* Debug: dump token list to log/expand_debug.txt when requested */
+	if (getenv("MINI_DEBUG_TOK"))
+	{
+		FILE *f = fopen("log/expand_debug.txt", "a");
+		t_nodes *cur = tokens;
+		t_token *tok;
+		if (f)
+		{
+			fprintf(f, "-- debug tokens --\n");
+			while (cur)
+			{
+				tok = (t_token *)cur->content;
+				if (tok && tok->value)
+					fprintf(f, "type=%d quoted=%d expanded=%d val='%s'\n", tok->type, tok->quoted, tok->expanded, tok->value);
+				else
+					fprintf(f, "<null token>\n");
+				cur = cur->next;
+			}
+			fprintf(f, "-- end debug --\n\n");
+			fclose(f);
+		}
+		ft_lstclear(&tokens, del_token);
+		return;
+	}
 	if (check_syntax(tokens))
 	{
 		consume_heredocs(tokens);
@@ -154,6 +179,29 @@ void process_input(char *line, char ***envp, int *exit_code)
 
 		if (segment)
 		{
+			/* Optional debug: log each segment's token stream when requested */
+			if (getenv("MINI_DEBUG_CMD"))
+			{
+				FILE *f = fopen("log/exec_debug.txt", "a");
+				t_nodes *dbg = segment;
+				t_token *dtok;
+				if (f)
+				{
+					fprintf(f, "-- segment tokens --\n");
+					while (dbg)
+					{
+						dtok = (t_token *)dbg->content;
+						if (dtok)
+							fprintf(f, "type=%d quoted=%d expanded=%d val='%s'\n", dtok->type, dtok->quoted, dtok->expanded, dtok->value ? dtok->value : "");
+						else
+							fprintf(f, "<null token>\n");
+						dbg = dbg->next;
+					}
+					fprintf(f, "-- end segment --\n\n");
+					fclose(f);
+				}
+			}
+
 			/* Detect and handle simple assignments like VAR=VALUE */
 			t_token *first_tok = (t_token *)segment->content;
 			if (first_tok && first_tok->type == TOKEN_WORD)
@@ -187,6 +235,16 @@ void process_input(char *line, char ***envp, int *exit_code)
 				}
 			}
 			expand_tokens(&segment, *envp, *exit_code);
+			/* If expansion produced a fatal expansion error (e.g. ambiguous redirect),
+			   skip executing this segment and propagate the exit code. */
+			if (g_expansion_error)
+			{
+				*exit_code = g_exit_code;
+				ft_lstclear(&segment, del_token);
+				g_expansion_error = 0;
+				cursor = next_cursor;
+				continue;
+			}
 			execute_command(segment, envp, exit_code);
 		}
 

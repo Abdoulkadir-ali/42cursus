@@ -1,0 +1,532 @@
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='cd'
+type=0 quoted=0 expanded=0 val='~'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"cd ~"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='""$?""'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='$?"42"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='''$?''"42"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''"$USER"''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"'$USER'"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='""'$USER'""'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''"'$USER'"''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"''$USER''"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"'"'$USER'"'"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''"'"$USER"'"''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"HOME"$USER'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"HOM"E$USER'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"exit_code ->$? user ->$USER home -> $HOME"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"HOME"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"42$"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='""""""""$USER""""""""'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"$ "'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='hi'
+type=8 quoted=0 expanded=0 val='>'
+type=0 quoted=0 expanded=0 val='./outfiles/outfile01'
+type=1 quoted=0 expanded=0 val='|'
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='bye'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=7 quoted=0 expanded=0 val='<'
+type=0 quoted=0 expanded=0 val='123'
+type=7 quoted=0 expanded=0 val='<'
+type=0 quoted=0 expanded=0 val='456'
+type=0 quoted=0 expanded=0 val='hi'
+type=1 quoted=0 expanded=0 val='|'
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='42'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''$=''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''$ ''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"$?"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''$?''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"'$?'"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='\$USER'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='\\$USER'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='\\\$USER'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='\\\\$USER'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='\\\\\$USER'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='\\\\\\\\\$USER'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\$USER'
+type=0 quoted=0 expanded=0 val='\$PATH'
+type=0 quoted=0 expanded=0 val='\\$PWD'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"cat lol.c | cat > lol.c"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"cat lol.c '|' cat > lol.c"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''$USER''
+type=0 quoted=1 expanded=0 val='"$USER"'
+type=0 quoted=1 expanded=0 val='"text  ' text"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='$USER'
+type=0 quoted=0 expanded=0 val='=intergalaktikus'
+type=0 quoted=0 expanded=0 val='miaf*szomez'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='-n"-n"'
+type=0 quoted=0 expanded=0 val='bonjour'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"'$USER'"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='" '$USER' "'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='text"$USER"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='text"'$USER'"'
+type=0 quoted=1 expanded=0 val='' $USER ''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"text"'
+type=0 quoted=1 expanded=0 val='"$USER"'
+type=0 quoted=1 expanded=0 val='"$USER"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''              $USER          ''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='''''''''''$USER'''''''''''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='""""""""$USER""""""""'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='$USER'$USER'text'
+type=0 quoted=0 expanded=0 val='oui'
+type=0 quoted=0 expanded=0 val='oui'
+type=0 quoted=0 expanded=0 val='oui'
+type=0 quoted=0 expanded=0 val='oui'
+type=0 quoted=0 expanded=0 val='$USER'
+type=0 quoted=0 expanded=0 val='oui'
+type=0 quoted=0 expanded=0 val='$USER'
+type=0 quoted=1 expanded=0 val=''''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"text"'
+type=0 quoted=1 expanded=0 val='"text$USER"'
+type=0 quoted=0 expanded=0 val='...'
+type=0 quoted=1 expanded=0 val='"$USER"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='""'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''''
+type=0 quoted=1 expanded=0 val='""'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='echo'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='test1'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''test1''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"echo hallo"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='echo"1"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"test1 test2"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"test1  test2"'
+type=0 quoted=0 expanded=0 val='test3'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='" test1 test2 "'
+type=0 quoted=1 expanded=0 val=''test3 ''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='test1'
+type=0 quoted=0 expanded=0 val='test2'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='$USER$TESTNOTFOUND$HOME$'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='$USER$TESTNOTFOUND$HOME$WTF$PWD'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='test1'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=1 expanded=0 val='"test1 test2"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=1 expanded=0 val='"test1 test2"'
+type=0 quoted=0 expanded=0 val='test3'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=1 expanded=0 val='" test1 test2 "'
+type=0 quoted=1 expanded=0 val=''test3 ''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='test1'
+type=0 quoted=0 expanded=0 val='test2'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='test1'
+type=0 quoted=0 expanded=0 val='-n'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"test1 -n"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='test1'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='test1'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='--'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"  -nn "'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"-n test1 -n test2"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"test1 -n test2"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='~42'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-nasd'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n-nnnnn'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-nnnnnnn'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-nnn'
+type=0 quoted=0 expanded=0 val='-nnnnn'
+type=0 quoted=0 expanded=0 val='-n-n'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-nnnnnnn'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-nnn'
+type=0 quoted=0 expanded=0 val='-nnnnn'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='feel'
+type=0 quoted=0 expanded=0 val='my'
+type=0 quoted=0 expanded=0 val='pain'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n'
+type=0 quoted=0 expanded=0 val='-n-n'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='"'totally logical'"'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val=''totally logical''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='''totally'
+type=0 quoted=1 expanded=0 val='logical'''
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='echo'
+type=0 quoted=1 expanded=0 val='""'totally logical'""'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='eCho'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='eChO'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='eCHO'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='ECHO'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='pwd'
+-- end segment --
+
+-- segment tokens --
+type=0 quoted=0 expanded=0 val='cd'
+-- end segment --
+

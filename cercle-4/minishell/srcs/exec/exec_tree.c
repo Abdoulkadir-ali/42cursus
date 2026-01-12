@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 02:44:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 20:47:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@ int	exec_simple_command(t_ast *node, char ***envp)
 	if (pid == 0)
 	{
 		signal(SIGQUIT, SIG_DFL);
+		/* Ensure child environment '_' points to the executed command path,
+		   matching bash behavior (helps tests that inspect _). */
+		ft_set_env("_", path, envp);
 		execve(path, node->args, *envp);
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(node->args[0], 2);

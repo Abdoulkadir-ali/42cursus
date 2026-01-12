@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 12:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 14:23:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 19:28:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,9 @@ char	*find_path(char *cmd, char **envp)
 		return (NULL);
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
-	if (!get_env_path(envp))
-		return (NULL);
 	env_path = get_env_path(envp);
+	if (!env_path)
+		env_path = "/usr/local/bin:/usr/bin:/bin";
 	paths = ft_split(env_path, ':');
 	if (!paths)
 		return (NULL);
