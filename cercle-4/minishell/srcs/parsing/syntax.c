@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 01:48:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 02:37:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,14 @@ int	check_syntax(t_nodes *tokens)
 	curr = tokens;
 	if (!curr)
 		return (0);
-	// Check first token: Cannot be PIPE
-	tok = (t_token *)curr->content;
-	if (tok->type == TOKEN_PIPE)
-		return (print_syntax_error("|"));
-	if (tok->type == TOKEN_SEMICOLON)
-		return (print_syntax_error(";"));
+	  // Check first token: Cannot be PIPE/SEMICOLON/AND/OR
+	  tok = (t_token *)curr->content;
+	  if (tok->type == TOKEN_PIPE)
+		  return (print_syntax_error("|"));
+	  if (tok->type == TOKEN_SEMICOLON)
+		  return (print_syntax_error(";"));
+	  if (tok->type == TOKEN_AND || tok->type == TOKEN_OR)
+		  return (print_syntax_error(tok->value));
 	
 	while (curr)
 	{
@@ -50,7 +52,7 @@ int	check_syntax(t_nodes *tokens)
 		else
 			next_tok = NULL;
 
-		if (tok->type == TOKEN_PIPE)
+		  if (tok->type == TOKEN_PIPE)
 		{
 			if (!next_tok) // Trailing Pipe
 				return (print_syntax_error("|")); // Or "newline" if implementing multi-line
@@ -59,6 +61,17 @@ int	check_syntax(t_nodes *tokens)
 			if (next_tok->type == TOKEN_SEMICOLON)
 				return (print_syntax_error(";"));
 		}
+		  else if (tok->type == TOKEN_AND || tok->type == TOKEN_OR)
+		  {
+			  if (!next_tok)
+				  return (print_syntax_error(tok->value));
+			  if (next_tok->type == TOKEN_SEMICOLON)
+				  return (print_syntax_error(";"));
+			  if (next_tok->type == TOKEN_PIPE)
+				  return (print_syntax_error("|"));
+			  if (next_tok->type == TOKEN_AND || next_tok->type == TOKEN_OR)
+				  return (print_syntax_error(tok->value));
+		  }
 		else if (tok->type == TOKEN_SEMICOLON)
 		{
 			if (next_tok && next_tok->type == TOKEN_SEMICOLON)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 02:18:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 02:36:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static char	*get_chunk(char **str, int *quoted)
 	{
 		while ((*str)[i])
 		{
-			if (ft_isspace((*str)[i]) || ft_strchr("|<>()", (*str)[i]) || (*str)[i] == ';'
+			  if (ft_isspace((*str)[i]) || ft_strchr("|<>()&", (*str)[i]) || (*str)[i] == ';'
 				|| (*str)[i] == '\'' || (*str)[i] == '"')
 				break ;
 			if ((*str)[i] == '\\' && (*str)[i + 1])
@@ -83,12 +83,49 @@ static t_token	*handle_separator(char **str)
 	if (!token)
 		return (NULL);
 	token->quoted = 0;
-	if (**str == '|')
+	  if (**str == '|')
+	  {
+		  if (*(*str + 1) == '|')
+		  {
+			  token->type = TOKEN_OR;
+			  token->value = ft_strldup(*str, 2);
+			  (*str) += 2;
+		  }
+		  else
+		  {
+			  token->type = TOKEN_PIPE;
+			  token->value = ft_strldup(*str, 1);
+			  (*str)++;
+		  }
+	  }
+	  else if (**str == '(')
 	{
-		token->type = TOKEN_PIPE;
+		token->type = TOKEN_LPAREN;
 		token->value = ft_strldup(*str, 1);
 		(*str)++;
 	}
+	  else if (**str == ')')
+	{
+		token->type = TOKEN_RPAREN;
+		token->value = ft_strldup(*str, 1);
+		(*str)++;
+	}
+	  else if (**str == '&')
+	  {
+		  if (*(*str + 1) == '&')
+		  {
+			  token->type = TOKEN_AND;
+			  token->value = ft_strldup(*str, 2);
+			  (*str) += 2;
+		  }
+		  else
+		  {
+			  // Single & not supported in this shell; treat as word fallback
+			  token->type = TOKEN_WORD;
+			  token->value = ft_strldup(*str, 1);
+			  (*str)++;
+		  }
+	  }
 	else if (**str == '<')
 	{
 		if (*(*str + 1) == '<')
@@ -214,12 +251,7 @@ t_nodes	*tokenizer(char *str)
 			str++;
 		if (!*str)
 			break ;
-		if (*str == '(' || *str == ')')
-		{
-			str++;
-			continue ;
-		}
-		if (ft_strchr("|<>()", *str) || *str == ';')
+		  if (ft_strchr("|<>()&", *str) || *str == ';')
 			token = handle_separator(&str);
 		else
 		{

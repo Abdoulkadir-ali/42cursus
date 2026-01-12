@@ -17,6 +17,7 @@
 
 char **g_envp = NULL;
 int g_exit_code = 0;
+int g_interactive_shell = 0;
 
 
 void print_ast(t_nodes *ast_node, int depth)
@@ -75,9 +76,9 @@ void execute_command(t_nodes *tokens, char ***envp, int *exit_code)
 {
 	t_nodes	*ast;
 
-	ast = ast_builder(tokens);
-	if (!scan_heredocs(ast))
-		*exit_code = exec_tree(ast, envp);
+		  ast = ast_builder(tokens);
+		  if (!scan_heredocs(ast))
+			  *exit_code = exec_tree(ast, envp);
 	else
 	{
 		if (g_last_signal == 130)
@@ -202,8 +203,9 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	last_exit_code = 0;
-	heap_env = duplicate_env(envp);
-	g_envp = heap_env;
+		  heap_env = duplicate_env(envp);
+		  g_envp = heap_env;
+		  g_interactive_shell = isatty(STDIN_FILENO);
 	if (ac >= 3 && !ft_strncmp(av[1], "-c", 3))
 	{
 		setup_signals(SIGNAL_HEREDOC); // Use non-interactive signals or heredoc signals which might be safer

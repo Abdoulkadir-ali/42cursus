@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 14:19:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 02:44:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
 extern int g_exit_code;
+extern int g_interactive_shell;
 
 static int	is_cmd(char *arg, char *cmd)
 {
@@ -198,8 +199,8 @@ int	ft_exit(char **args)
 {
 	long long	status;
 
-	if (isatty(STDIN_FILENO))
-		ft_putendl_fd("exit", 2);
+	 if (g_interactive_shell)
+		 ft_putendl_fd("exit", 2);
 	if (args[1])
 	{
 		if (!check_long_overflow(args[1]))

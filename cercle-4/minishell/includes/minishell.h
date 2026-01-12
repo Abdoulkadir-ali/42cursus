@@ -10,5 +10,6 @@
 
 extern char **g_envp;
 extern int g_exit_code;
+extern int g_interactive_shell;
 
 #endif

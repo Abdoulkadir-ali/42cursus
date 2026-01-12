@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 00:59:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 01:48:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 02:40:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ static t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
 	return (cmd_node);
 }
 
+static t_nodes *clone_tokens_range(t_nodes *start, t_nodes *end_exclusive);
+
 static t_nodes	*create_cmd_node(t_nodes *tokens)
 {
 	t_nodes	*cmd_node;
@@ -116,6 +118,45 @@ static t_nodes	*create_cmd_node(t_nodes *tokens)
 
 	count = 0;
 	curr = tokens;
+	/* If this simple command starts with a subshell/group (LPAREN),
+	   extract the inner tokens, build an inner AST and return a
+	   TOKEN_SUBSHELL node (with redirections applied afterwards). */
+	if (curr && ((t_token *)curr->content)->type == TOKEN_LPAREN)
+	{
+		t_nodes *scan = curr;
+		int depth = 0;
+		t_nodes *match = NULL;
+		while (scan)
+		{
+			t_token *tk = (t_token *)scan->content;
+			if (tk->type == TOKEN_LPAREN)
+				depth++;
+			else if (tk->type == TOKEN_RPAREN)
+			{
+				depth--;
+				if (depth == 0)
+				{
+					match = scan;
+					break;
+				}
+			}
+			scan = scan->next;
+		}
+		if (!match)
+		{
+			ft_lstclear(&tokens, del_token);
+			return (NULL);
+		}
+		t_nodes *inner_tokens = clone_tokens_range(curr->next, match);
+		t_nodes *inner_ast = ast_builder(inner_tokens);
+		t_nodes *subshell_node = create_node(TOKEN_SUBSHELL, NULL, inner_ast, NULL);
+		/* Remaining tokens after the closing parenthesis */
+		t_nodes *remaining = clone_tokens_range(match->next, NULL);
+		subshell_node = process_redirections(subshell_node, remaining);
+		ft_lstclear(&tokens, del_token);
+		ft_lstclear(&remaining, del_token);
+		return (subshell_node);
+	}
 	while (curr)
 	{
 		if (((t_token *)curr->content)->type == TOKEN_WORD)
@@ -141,6 +182,30 @@ static t_nodes	*create_cmd_node(t_nodes *tokens)
 	return (cmd_node);
 }
 
+static t_nodes *clone_tokens_range(t_nodes *start, t_nodes *end_exclusive)
+{
+	t_nodes *res = NULL;
+	t_nodes *it = start;
+	while (it && it != end_exclusive)
+	{
+		t_token *t = (t_token *)it->content;
+		t_token *copy = ft_calloc(1, sizeof(t_token));
+		if (!copy)
+		{
+			ft_lstclear(&res, del_token);
+			return (NULL);
+		}
+		copy->value = t->value ? ft_strdup(t->value) : NULL;
+		copy->type = t->type;
+		copy->quoted = t->quoted;
+		copy->expanded = t->expanded;
+		ft_lstadd_back(&res, ft_lstnew(copy));
+		it = it->next;
+	}
+	return (res);
+}
+
+
 t_nodes	*ast_builder(t_nodes *tokens)
 {
 	t_nodes	*cursor;
@@ -152,26 +217,93 @@ t_nodes	*ast_builder(t_nodes *tokens)
 		return (NULL);
 	cursor = tokens;
 	prev = NULL;
-	while (cursor)
-	{
-		tok = (t_token *)cursor->content;
-		if (tok->type == TOKEN_PIPE || tok->type == TOKEN_SEMICOLON)
-		{
-			if (prev)
-				prev->next = NULL;
-			else
-				tokens = NULL;
-			pipe_data = ft_calloc(1, sizeof(t_ast));
-			if (!pipe_data) return (NULL); 
-			pipe_data->type = tok->type;
-			pipe_data->left = ast_builder(tokens);
-			pipe_data->right = ast_builder(cursor->next);
-			del_token(cursor->content);
-			free(cursor);
-			return (ft_lstnew(pipe_data));
-		}
-		prev = cursor;
-		cursor = cursor->next;
-	}
+	  /* First, look for logical AND/OR which have lower precedence than pipes */
+	  /* Lowest precedence: AND, then OR (OR binds tighter than AND) */
+	  t_nodes *scan = tokens;
+	  t_nodes *prev_scan = NULL;
+	  int depth = 0;
+	  /* First search for top-level AND (lowest precedence) */
+	  while (scan)
+	  {
+		  t_token *t = (t_token *)scan->content;
+		  if (t->type == TOKEN_LPAREN)
+			  depth++;
+		  else if (t->type == TOKEN_RPAREN)
+			  depth--;
+		  if (depth == 0 && t->type == TOKEN_AND)
+		  {
+			  if (prev_scan)
+				  prev_scan->next = NULL;
+			  else
+				  tokens = NULL;
+			  pipe_data = ft_calloc(1, sizeof(t_ast));
+			  if (!pipe_data) return (NULL);
+			  pipe_data->type = t->type;
+			  pipe_data->left = ast_builder(tokens);
+			  pipe_data->right = ast_builder(scan->next);
+			  del_token(scan->content);
+			  free(scan);
+			  return (ft_lstnew(pipe_data));
+		  }
+		  prev_scan = scan;
+		  scan = scan->next;
+	  }
+	  /* Then search for top-level OR */
+	  scan = tokens;
+	  prev_scan = NULL;
+	  depth = 0;
+	  while (scan)
+	  {
+		  t_token *t = (t_token *)scan->content;
+		  if (t->type == TOKEN_LPAREN)
+			  depth++;
+		  else if (t->type == TOKEN_RPAREN)
+			  depth--;
+		  if (depth == 0 && t->type == TOKEN_OR)
+		  {
+			  if (prev_scan)
+				  prev_scan->next = NULL;
+			  else
+				  tokens = NULL;
+			  pipe_data = ft_calloc(1, sizeof(t_ast));
+			  if (!pipe_data) return (NULL);
+			  pipe_data->type = t->type;
+			  pipe_data->left = ast_builder(tokens);
+			  pipe_data->right = ast_builder(scan->next);
+			  del_token(scan->content);
+			  free(scan);
+			  return (ft_lstnew(pipe_data));
+		  }
+		  prev_scan = scan;
+		  scan = scan->next;
+	  }
+
+	  /* Then handle pipes and semicolons as before */
+	  depth = 0;
+	  while (cursor)
+	  {
+		  tok = (t_token *)cursor->content;
+		  if (tok->type == TOKEN_LPAREN)
+			  depth++;
+		  else if (tok->type == TOKEN_RPAREN)
+			  depth--;
+		  if (depth == 0 && (tok->type == TOKEN_PIPE || tok->type == TOKEN_SEMICOLON))
+		  {
+			  if (prev)
+				  prev->next = NULL;
+			  else
+				  tokens = NULL;
+			  pipe_data = ft_calloc(1, sizeof(t_ast));
+			  if (!pipe_data) return (NULL); 
+			  pipe_data->type = tok->type;
+			  pipe_data->left = ast_builder(tokens);
+			  pipe_data->right = ast_builder(cursor->next);
+			  del_token(cursor->content);
+			  free(cursor);
+			  return (ft_lstnew(pipe_data));
+		  }
+		  prev = cursor;
+		  cursor = cursor->next;
+	  }
 	return (create_cmd_node(tokens));
 }

@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 01:15:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 02:44:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include <sys/stat.h>
+extern int g_interactive_shell;
 
 int	path_is_set(char **envp)
 {
@@ -179,11 +180,51 @@ int	exec_tree(t_nodes *ast_node, char ***envp)
 		return (exec_pipe(node, envp));
 	else if (node->type == TOKEN_WORD)
 		return (exec_simple_command(node, envp));
+	else if (node->type == TOKEN_SUBSHELL)
+	{
+		pid_t pid;
+		int status;
+		pid = fork();
+		  if (pid == 0)
+		  {
+			  signal(SIGQUIT, SIG_DFL);
+			  g_interactive_shell = 0;
+			  exit(exec_tree(node->left, envp));
+		  }
+		setup_signals(SIGNAL_BLOCKING);
+		waitpid(pid, &status, 0);
+		setup_signals(SIGNAL_INTERACTIVE);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
+		if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+				write(1, "\n", 1);
+			else if (WTERMSIG(status) == SIGQUIT)
+				ft_putendl_fd("Quit (core dumped)", 2);
+			return (128 + WTERMSIG(status));
+		}
+		return (1);
+	}
 	else if (node->type == TOKEN_SEMICOLON)
 	{
 		exec_tree(node->left, envp);
 		return (exec_tree(node->right, envp));
 	}
+	  else if (node->type == TOKEN_OR)
+	  {
+		  int left_status = exec_tree(node->left, envp);
+		  if (left_status != 0)
+			  return (exec_tree(node->right, envp));
+		  return (left_status);
+	  }
+	  else if (node->type == TOKEN_AND)
+	  {
+		  int left_status = exec_tree(node->left, envp);
+		  if (left_status == 0)
+			  return (exec_tree(node->right, envp));
+		  return (left_status);
+	  }
 	else if (node->type == TOKEN_RED_IN || node->type == TOKEN_RED_OUT
 			|| node->type == TOKEN_APPEND || node->type == TOKEN_HEREDOC)
 		return (exec_redirection(node, envp));

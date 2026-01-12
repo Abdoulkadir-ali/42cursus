@@ -14,7 +14,9 @@
 typedef enum e_token_type
 {
 	TOKEN_WORD,
-	TOKEN_PIPE,
+	    TOKEN_PIPE,
+	    TOKEN_AND,
+	    TOKEN_OR,
 	TOKEN_LPAREN,
 	TOKEN_RPAREN,
 	TOKEN_SUBSHELL,
