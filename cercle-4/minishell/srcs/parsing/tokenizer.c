@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 02:36:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 02:57:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,14 @@ t_nodes	*tokenizer(char *str)
 			str++;
 		if (!*str)
 			break ;
+		/* Ignore comments starting with # (when not in quotes) */
+		if (*str == '#')
+		{
+			/* skip to end of line */
+			while (*str && *str != '\n')
+				str++;
+			continue ;
+		}
 		  if (ft_strchr("|<>()&", *str) || *str == ';')
 			token = handle_separator(&str);
 		else

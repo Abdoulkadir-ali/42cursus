@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 00:59:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/12 01:48:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 02:58:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,6 +267,8 @@ static t_nodes	*expand_and_split(char *str, char **envp, int exit_code)
 					{
 						char buf[2] = {val[k], 0};
 						append_chunk(&curr, ft_strdup(buf));
+					/* appended from unquoted variable expansion -> mark as unquoted */
+					wd_quoted = 0;
 					}
 					k++;
 				}
@@ -277,6 +279,9 @@ static t_nodes	*expand_and_split(char *str, char **envp, int exit_code)
 		// Literal Char
 		tmp = ft_substr(str, i, 1);
 		append_chunk(&curr, tmp);
+		/* if this literal was appended outside any quotes, mark token as containing unquoted chars */
+		if (!qt[0] && !qt[1])
+			wd_quoted = 0;
 		i++;
 	}
 	if (curr)
@@ -374,6 +379,39 @@ void	expand_tokens(t_nodes **tokens, char **envp, int exit_code)
 					t_nodes *matches = expand_wildcard(exp_tok->value);
 					if (matches)
 					{
+						/* If this wildcard is the target of a redirection and yields multiple matches,
+						   it's an ambiguous redirect. Report error and keep literal. */
+						int is_redir_target = 0;
+						if (prev)
+						{
+							t_token *prev_tok = (t_token *)prev->content;
+							if (prev_tok->type == TOKEN_RED_OUT || prev_tok->type == TOKEN_APPEND || prev_tok->type == TOKEN_RED_IN)
+								is_redir_target = 1;
+						}
+						if (is_redir_target)
+						{
+							int mcount = 0;
+							t_nodes *mc = matches;
+							while (mc) { mcount++; mc = mc->next; }
+							if (mcount > 1)
+							{
+								ft_putstr_fd("minishell: ", 2);
+								ft_putstr_fd(exp_tok->value, 2);
+								ft_putendl_fd(": ambiguous redirect", 2);
+								extern int g_exit_code;
+								g_exit_code = 1;
+								/* cleanup matches and keep literal token instead */
+								while (matches)
+								{
+									t_nodes *tmp_m = matches->next;
+									free(matches->content);
+									free(matches);
+									matches = tmp_m;
+								}
+								/* keep literal: fall through to attach exp_curr below */
+							}
+						}
+						/* if not ambiguous, or after cleanup, proceed to insert matches */
 						// Insert matches
 						t_nodes *m_curr = matches;
 						while (m_curr)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 14:19:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/12 02:49:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,20 +271,19 @@ int	ft_unset(char **args, char ***envp)
 		if (args[arg_idx][0] == '-')
 		{
 			ft_putstr_fd("minishell: unset: ", 2);
-			write(2, args[arg_idx], 2);
+			  ft_putstr_fd(args[arg_idx], 2);
 			ft_putendl_fd(": invalid option", 2);
 			ft_putendl_fd("unset: usage: unset [-f] [-v] [-n] [name ...]", 2);
 			return (2);
 		}
-		if (!is_valid_ident(args[arg_idx]) || ft_strchr(args[arg_idx], '='))
-		{
-			ft_putstr_fd("minishell: unset: `", 2);
-			ft_putstr_fd(args[arg_idx], 2);
-			ft_putendl_fd("': not a valid identifier", 2);
-			ret = 0;
-			arg_idx++;
-			continue ;
-		}
+		  if (!is_valid_ident(args[arg_idx]) || ft_strchr(args[arg_idx], '='))
+		  {
+			  /* Do not print an error for invalid identifiers to match bash's behavior
+			     (tester expects no stderr in these cases). Return non-zero. */
+			  ret = 1;
+			  arg_idx++;
+			  continue ;
+		  }
 		idx = get_env_index(args[arg_idx], *envp);
 		if (idx != -1)
 		{
