@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/13 03:25:07 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #ifndef PARSING_H
 # define PARSING_H
 
@@ -106,20 +119,10 @@ int					ft_set_env(char *key, char *value, char ***envp);
 char				**expand_wildcards(char **args);
 void				free_ast(t_nodes *ast_node);
 void				del_token(void *content);
-
-/* helpers used by expansion implementation */
 void				append_node(t_nodes **head, t_nodes **tail, t_nodes *node);
-
-/* internal helpers for expand_tokens (implemented static in tokens.c) */
-
 int					is_prev_heredoc(t_nodes *prev);
 void				apply_tilde_expansion(t_token *tok, char **envp);
 t_nodes				*create_token_node_from_match(char *match);
-/* match helpers moved into tokens.c as static helpers */
-
-/* Lower-level redirection helper (used across ast modules) */
-
-/* AST helpers */
 t_nodes				*create_cmd_node(t_nodes *tokens);
 
 #endif

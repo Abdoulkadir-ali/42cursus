@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lib.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/13 03:25:19 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #ifndef LIB_H
 # define LIB_H
-
 
 // PACKAGE
 # include <stdarg.h>
 # include <stdio.h>
 
 // CUSTOM
-#include "libft.h"
+# include "libft.h"
 
 # ifndef DEBUG
 #  define DEBUG 0

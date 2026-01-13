@@ -1,19 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   core.h                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/13 03:25:30 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CORE_H
 # define CORE_H
 
-
 // PACKAGE
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <signal.h>
-# include <readline/readline.h>
-# include <readline/history.h>
 
 // CUSTOM
+# include "exec.h"
 # include "libft.h"
 # include "parsing.h"
-# include "exec.h"
 
 # define SIGNAL_INTERACTIVE 1
 # define SIGNAL_BLOCKING 2
@@ -21,30 +32,31 @@
 
 typedef struct s_global_state
 {
-	char **envp;
-	int exit_code;
-	int interactive_shell;
-	int expansion_error;
-	int last_signal;
-}   t_global_state;
+	char				**envp;
+	int					exit_code;
+	int					interactive_shell;
+	int					expansion_error;
+	int					last_signal;
+}						t_global_state;
 
-extern t_global_state g_state;
+extern t_global_state	g_state;
 
 /* backward-compatible alias for existing code */
-#define g_last_signal (g_state.last_signal)
+# define g_last_signal (g_state.last_signal)
 /* legacy global aliases -> map to fields in g_state */
-#define g_envp (g_state.envp)
-#define g_exit_code (g_state.exit_code)
-#define g_interactive_shell (g_state.interactive_shell)
-#define g_expansion_error (g_state.expansion_error)
+# define g_envp (g_state.envp)
+# define g_exit_code (g_state.exit_code)
+# define g_interactive_shell (g_state.interactive_shell)
+# define g_expansion_error (g_state.expansion_error)
 
 // Function prototypes
-void print_ast(t_nodes *ast_node, int depth);
-char **duplicate_env(char **envp);
-void execute_command(t_nodes *tokens, char ***envp, int *exit_code);
-int is_whitespace_only(char *str);
-void process_input(char *line, char ***envp, int *exit_code);
-char	*get_command_line(void);
-void	setup_signals(int mode);
+void					print_ast(t_nodes *ast_node, int depth);
+char					**duplicate_env(char **envp);
+void					execute_command(t_nodes *tokens, char ***envp,
+							int *exit_code);
+int						is_whitespace_only(char *str);
+void					process_input(char *line, char ***envp, int *exit_code);
+char					*get_command_line(void);
+void					setup_signals(int mode);
 
 #endif
