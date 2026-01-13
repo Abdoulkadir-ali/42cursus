@@ -10,8 +10,15 @@ OBJS_DIR    = objs
 # List all source files. 
 # main.c is currently empty, and tokenizer.c has a main function for testing.
 # Only one main function should exist in the final build.
+
+
 SRCS        = srcs/core/main.c \
-	srcs/core/reader.c \
+	srcs/core/input/input_exec.c \
+	srcs/core/input/input_flow.c \
+	srcs/core/input/process.c \
+	srcs/core/input/segment.c \
+	srcs/core/input/env.c \
+	srcs/core/input/reader.c \
 	srcs/core/signals.c \
 	srcs/core/global.c \
 	srcs/exec/builtins/builtins.c \

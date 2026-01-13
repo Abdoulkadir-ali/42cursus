@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 03:25:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 04:04:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,17 @@ extern t_global_state	g_state;
 # define g_expansion_error (g_state.expansion_error)
 
 // Function prototypes
-void					print_ast(t_nodes *ast_node, int depth);
-char					**duplicate_env(char **envp);
-void					execute_command(t_nodes *tokens, char ***envp,
-							int *exit_code);
-int						is_whitespace_only(char *str);
-void					process_input(char *line, char ***envp, int *exit_code);
+void				print_ast(t_nodes *ast_node, int depth);
+char				**duplicate_env(char **envp);
+int					is_whitespace_only(char *str);
+void				process_input(char *line, char ***envp, int *exit_code);
+int				debug_dump_tokens_and_consume(t_nodes **ptokens);
+int				check_syntax_and_consume(t_nodes *tokens, int *exit_code);
+t_nodes			*extract_segment(t_nodes *cursor, t_nodes **pnext);
+void				debug_dump_segment(t_nodes *segment);
+int				try_handle_assignment_local(t_nodes *segment, char ***envp, int *exit_code);
+int				try_handle_assignment_public(t_nodes *segment, char ***envp, int *exit_code);
+int				process_segment_public(t_nodes *segment, char ***envp, int *exit_code);
 char					*get_command_line(void);
 void					setup_signals(int mode);
 
