@@ -16,16 +16,14 @@ static void	print_env_entry(char *entry)
 {
 	char	*eq;
 
-	if (!entry)
-		return ;
-	if (ft_strncmp(entry, "_=", 2) == 0)
+	if (!entry || ft_strncmp(entry, "_=", 2) == 0)
 		return ;
 	ft_putstr_fd("declare -x ", 1);
 	eq = ft_strchr(entry, '=');
 	if (eq)
 	{
 		write(1, entry, eq - entry);
-		write(1, "=\"", 3);
+		write(1, "=\"", 2);
 		ft_putstr_fd(eq + 1, 1);
 		write(1, "\"\n", 2);
 	}
