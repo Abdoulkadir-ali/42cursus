@@ -102,7 +102,7 @@ void				append_chunk(char **res, char *chunk);
 t_nodes				*expand_and_split(char *str, char **envp, int exit_code);
 int					check_syntax(t_nodes *tokens);
 t_nodes				*expand_wildcard(char *pattern);
-
+int					ft_set_env(char *key, char *value, char ***envp);
 char				**expand_wildcards(char **args);
 void				free_ast(t_nodes *ast_node);
 void				del_token(void *content);

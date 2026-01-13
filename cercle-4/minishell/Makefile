@@ -14,20 +14,24 @@ SRCS        = srcs/core/main.c \
 	srcs/core/reader.c \
 	srcs/core/signals.c \
 	srcs/core/global.c \
-	srcs/exec/env/env_utils.c \
-	srcs/exec/heredoc/gen.c \
-	srcs/exec/heredoc/read.c \
-	srcs/exec/heredoc/heredoc.c \
+	srcs/exec/builtins/builtins.c \
+	srcs/exec/builtins/cd.c \
+	srcs/exec/builtins/echo.c \
+	srcs/exec/builtins/env.c \
+	srcs/exec/builtins/exit.c \
+	srcs/exec/builtins/export.c \
+	srcs/exec/builtins/pwd.c \
+	srcs/exec/builtins/unset.c \
+	srcs/exec/env/print.c \
+	srcs/exec/env/process.c \
+	srcs/exec/env/set.c \
+	srcs/exec/env/utils.c \
 	srcs/exec/exec/path_finder.c \
 	srcs/exec/exec/pipe.c \
 	srcs/exec/exec/tree.c \
-	srcs/exec/builtins/builtins.c \
-	srcs/exec/builtins/echo.c \
-	srcs/exec/builtins/pwd.c \
-	srcs/exec/builtins/cd.c \
-	srcs/exec/builtins/env.c \
-	srcs/exec/builtins/exit.c \
-	srcs/exec/builtins/unset.c \
+	srcs/exec/heredoc/gen.c \
+	srcs/exec/heredoc/heredoc.c \
+	srcs/exec/heredoc/read.c \
 	srcs/lib/debug.c \
 	srcs/lib/str.c \
 	srcs/parsing/ast/builder.c \
@@ -42,9 +46,6 @@ SRCS        = srcs/core/main.c \
 	srcs/parsing/env/expand/vars.c \
 	srcs/parsing/env/wildcard/matcher.c \
 	srcs/parsing/env/wildcard/array.c \
-	srcs/exec/env/export/export_print.c \
-	srcs/exec/env/export/export_process.c \
-	srcs/exec/env/export/export.c \
 	srcs/parsing/tokenizer/tokenizer.c \
 	srcs/parsing/tokenizer/syntax.c
 # srcs/main.c # Uncomment when ready to use main.c instead of tokenizer.c's main
