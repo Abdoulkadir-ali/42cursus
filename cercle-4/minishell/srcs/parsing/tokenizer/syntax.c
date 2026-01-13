@@ -57,16 +57,22 @@ int	check_syntax(t_nodes *tokens)
 		{
 			if (--d < 0)
 				return (print_syntax_error(")"));
-			if (nxt && nxt->type == TOKEN_WORD)
+			if (nxt && (nxt->type == TOKEN_WORD || nxt->type == TOKEN_LPAREN))
 				return (print_syntax_error(nxt->value));
 		}
 		else if (tok->type == TOKEN_PIPE || tok->type == TOKEN_AND
-			|| tok->type == TOKEN_OR || tok->type == TOKEN_SEMICOLON)
+			|| tok->type == TOKEN_OR)
 		{
 			if (!nxt || nxt->type == TOKEN_PIPE || nxt->type == TOKEN_AND
 				|| nxt->type == TOKEN_OR || nxt->type == TOKEN_SEMICOLON
 				|| nxt->type == TOKEN_RPAREN)
 				return (print_syntax_error(tok->value));
+		}
+		else if (tok->type == TOKEN_SEMICOLON)
+		{
+			if (nxt && (nxt->type == TOKEN_PIPE || nxt->type == TOKEN_AND
+				|| nxt->type == TOKEN_OR || nxt->type == TOKEN_SEMICOLON))
+				return (print_syntax_error(nxt->value));
 		}
 		else if (is_redirection(tok->type) && !tok->expanded)
 		{

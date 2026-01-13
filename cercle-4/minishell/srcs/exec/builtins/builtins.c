@@ -25,12 +25,13 @@ int	is_builtin(char *cmd, char **args, int is_quoted)
 {
 	if (!cmd)
 		return (0);
-	if (is_quoted && is_cmd(cmd, "."))
-		return (0);
+	if (is_cmd(cmd, "."))
+		return (!is_quoted);
+	if (is_cmd(cmd, ":"))
+		return (1);
 	if (is_cmd(cmd, "echo") || is_cmd(cmd, "cd") || is_cmd(cmd, "pwd")
 		|| is_cmd(cmd, "export") || is_cmd(cmd, "unset") || (is_cmd(cmd, "env")
-			&& (!args || !args[1])) || is_cmd(cmd, "exit") || is_cmd(cmd, ":")
-		|| is_cmd(cmd, "."))
+			&& (!args || !args[1])) || is_cmd(cmd, "exit"))
 		return (1);
 	return (0);
 }

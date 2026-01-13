@@ -53,7 +53,7 @@ void	parse_export_arg(char *arg, t_export_ctx *ctx)
 	else
 	{
 		ctx->key = ft_strdup(arg);
-		ctx->new_entry = NULL;
+		ctx->new_entry = ft_strdup(arg);
 	}
 }
 
