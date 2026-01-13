@@ -21,94 +21,81 @@
 - **Robust Tokenizer**: Handles complex command structures.
 - **Quote Handling**: Supports single (`'`) and double (`"`) quotes.
   - Double quotes expand variables (`$USER`).
-  - Single quotes preserve literal values.
-- **Environment Variables**: Expands `$VAR` and `$?` (exit status).
+# minishell
 
-### ⚙️ **Execution**
-- **Pipelines**: Connects commands via pipes (`|`).
-- **Redirections**:
-  - Input (`<`)
-  - Output (`>`)
-  - Append (`>>`)
-  - Heredoc (`<<`) *(In Progress)*
-- **Path Resolution**: Finds executables using the `PATH` environment variable.
+A compact POSIX-like shell implemented for the 42 cursus. This repository contains
+the tokenizer, parser, expansion/wildcard logic, heredoc handling, and the
+execution layer including builtins.
 
-### 🛠 **Built-in Commands**
-- `echo` (with `-n` option)
-- `cd` (with relative or absolute paths)
-- `pwd`
-- `export`
-- `unset`
-- `env`
-- `exit`
+## Highlights
 
-### 🚦 **Signals**
-- `Ctrl-C`: Interrupts current process, displays new prompt.
-- `Ctrl-D`: Exits the shell (EOF).
-- `Ctrl-\`: Quits execution (does nothing in prompt).
+- Tokenizer & AST-based execution
+- Quote handling and environment variable expansion
+- Builtins: `echo`, `cd`, `pwd`, `env`, `export`, `unset`, `exit`
+- Heredoc support with safe temporary-file creation
+- Ongoing refactors to reduce exported symbols and improve modularity
 
----
+## Layout (important folders)
 
-## 🚀 **Getting Started**
+- `srcs/core` — main, signal handling, input loop
+- `srcs/parsing` — tokenizer, expansion, wildcard matching, AST builder
+- `srcs/exec` — execution layer, builtins, heredoc, env management
+   - `srcs/exec/builtins` — builtin wrappers
+   - `srcs/exec/env` — env helpers and builtin implementations
+   - `srcs/exec/heredoc` — heredoc generator/reader
+- `includes` — project headers
+- `packages/libft` — bundled libft static library
 
-### **Prerequisites**
-- **GCC** compiler
-- **Make**
-- **Readline** library
+## Build
 
-### **Installation**
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/minishell.git
-   cd minishell
-   ```
-
-2. **Compile the project:**
-   ```bash
-   make
-   ```
-
-3. **Run the shell:**
-   ```bash
-   ./minishell
-   ```
-
----
-
-## 🎮 **Usage Examples**
+Requirements: a POSIX toolchain (`cc`), `make`, and `readline`.
 
 ```bash
-# Simple commands
-minishell> ls -la
-minishell> pwd
-
-# Pipes
-minishell> ls | grep "Make" | wc -l
-
-# Redirections
-minishell> echo "Hello World" > out.txt
-minishell> cat < out.txt
-
-# Environment Variables
-minishell> echo $USER
-minishell> export FOO=bar
-minishell> echo $FOO
+make
 ```
 
+Targets: `make`, `make clean`, `make fclean`, `make re`.
+
+## Run
+
+Interactive:
+
+```bash
+./minishell
+```
+
+Non-interactive (single command):
+
+```bash
+./minishell -c "echo hello"
+```
+
+## Testing
+
+There is a `42_minishell_tester/` directory with the external tester used during
+development. You can run its scripts or your own tests.
+
+Example:
+
+```bash
+bash 42_minishell_tester/tester.sh a
+```
+
+## Recent refactors / notes
+
+- `export` logic and helpers were reorganized under `srcs/exec/env`.
+- Introduced a single `t_global_state g_state` and compatibility macros in
+   `includes/core.h` (e.g. `g_envp`, `g_exit_code`, `g_last_signal`).
+- Many helper functions were made `static` to reduce the public symbol surface.
+
+If you move files, update `Makefile`'s `SRCS` list.
+
+## Contributing
+
+Open small, focused PRs. Run `make` and the tester locally before submitting.
+Prefer `static` helpers when functions are only used in a single file.
+
 ---
 
-## 🏗 **Architecture**
-
-1. **Lexer/Tokenizer**: Breaks input string into tokens (Words, Pipes, Redirections).
-2. **Parser/AST Builder**: Constructs an Abstract Syntax Tree (AST) from tokens.
-3. **Expander**: Processes quotes and environment variables.
-4. **Executor**: Traverses the AST to execute commands, managing forks and pipes.
-
----
-
-## 👥 **Authors**
-
-- **Abdoali** - [Profile](https://github.com/)
-
----
+If you'd like, I can add a short development guide (valgrind usage, test
+matrix, recommended coding style). Tell me what to include next.
