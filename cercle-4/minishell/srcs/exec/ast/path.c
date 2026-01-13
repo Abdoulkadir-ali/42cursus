@@ -12,41 +12,73 @@
 
 #include "exec.h"
 
-static char	*get_path_env(void)
+static char	*validate_and_return(char *path)
 {
-	return (getenv("PATH"));
+	struct stat	st;
+
+	if (path && stat(path, &st) == 0 && S_ISDIR(st.st_mode))
+	{
+		free(path);
+		return (NULL);
+	}
+	return (path);
 }
 
-static char	**split_path(char *path)
+static char	*try_path(char *dir, char *cmd)
 {
-	return (ft_split(path, ':'));
-}
-
-static void	free_paths(char **paths)
-{
-	int	j;
-
-	j = 0;
-	while (paths[j])
-		free(paths[j++]);
-	free(paths);
-}
-
-static char	*find_executable_in_paths(char *cmd, char **paths)
-{
-	char	*full_path;
 	char	*temp;
-	int		i;
+	char	*full_path;
+
+	if (!dir || !*dir)
+		dir = ".";
+	temp = ft_strjoin(dir, "/");
+	if (!temp)
+		return (NULL);
+	full_path = ft_strjoin(temp, cmd);
+	free(temp);
+	if (!full_path)
+		return (NULL);
+	if (access(full_path, X_OK) == 0)
+		return (full_path);
+	free(full_path);
+	return (NULL);
+}
+
+static char	*find_executable_in_paths(char *cmd, char *path_env)
+{
+	char	*start;
+	char	*end;
+	char	*dir;
+	char	*res;
+
+	start = path_env;
+	while (start)
+	{
+		end = ft_strchr(start, ':');
+		if (end)
+			dir = ft_substr(start, 0, end - start);
+		else
+			dir = ft_strdup(start);
+		res = try_path(dir, cmd);
+		free(dir);
+		if (res)
+			return (res);
+		if (!end)
+			break ;
+		start = end + 1;
+	}
+	return (NULL);
+}
+
+static char	*get_path_from_env(char **envp)
+{
+	int	i;
 
 	i = 0;
-	while (paths[i])
+	while (envp && envp[i])
 	{
-		temp = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(temp, cmd);
-		free(temp);
-		if (access(full_path, X_OK) == 0)
-			return (full_path);
-		free(full_path);
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+			return (envp[i] + 5);
 		i++;
 	}
 	return (NULL);
@@ -54,20 +86,20 @@ static char	*find_executable_in_paths(char *cmd, char **paths)
 
 char	*find_path(char *cmd, char **envp)
 {
-	char	*path;
-	char	**paths;
+	char	*path_env;
 	char	*result;
 
-	(void)envp;
+	if (!cmd || !*cmd)
+		return (NULL);
 	if (ft_strchr(cmd, '/'))
-		return (ft_strdup(cmd));
-	path = get_path_env();
-	if (!path)
+	{
+		if (access(cmd, F_OK) == 0)
+			return (ft_strdup(cmd));
 		return (NULL);
-	paths = split_path(path);
-	if (!paths)
-		return (NULL);
-	result = find_executable_in_paths(cmd, paths);
-	free_paths(paths);
-	return (result);
+	}
+	path_env = get_path_from_env(envp);
+	if (!path_env)
+		path_env = "/usr/local/bin:/usr/bin:/bin";
+	result = find_executable_in_paths(cmd, path_env);
+	return (validate_and_return(result));
 }

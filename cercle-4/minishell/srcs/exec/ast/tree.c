@@ -32,5 +32,10 @@ int	exec_tree(t_nodes *ast_node, char ***envp)
 		return (exec_logical_or(node, envp));
 	else if (node->type == TOKEN_SUBSHELL)
 		return (exec_subshell(node, envp));
+	else if (node->type == TOKEN_SEMICOLON)
+	{
+		exec_tree(node->left, envp);
+		return (exec_tree(node->right, envp));
+	}
 	return (0);
 }

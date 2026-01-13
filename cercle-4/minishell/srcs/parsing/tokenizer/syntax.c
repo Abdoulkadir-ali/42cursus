@@ -30,60 +30,43 @@ int	check_syntax(t_nodes *tokens)
 {
 	t_nodes	*curr;
 	t_token	*tok;
-	t_token	*next_tok;
+	t_token	*nxt;
+	int		d;
 
 	curr = tokens;
+	d = 0;
 	if (!curr)
 		return (0);
 	tok = (t_token *)curr->content;
-	if (tok->type == TOKEN_PIPE)
-		return (print_syntax_error("|"));
-	if (tok->type == TOKEN_SEMICOLON)
-		return (print_syntax_error(";"));
-	if (tok->type == TOKEN_AND || tok->type == TOKEN_OR)
+	if (tok->type == TOKEN_PIPE || tok->type == TOKEN_SEMICOLON
+		|| tok->type == TOKEN_AND || tok->type == TOKEN_OR)
 		return (print_syntax_error(tok->value));
 	while (curr)
 	{
 		tok = (t_token *)curr->content;
 		if (curr->next)
-			next_tok = (t_token *)curr->next->content;
+			nxt = (t_token *)curr->next->content;
 		else
-			next_tok = NULL;
-		if (tok->type == TOKEN_PIPE)
+			nxt = NULL;
+		if (tok->type == TOKEN_LPAREN)
+			d++;
+		else if (tok->type == TOKEN_RPAREN && --d < 0)
+			return (print_syntax_error(")"));
+		else if (tok->type == TOKEN_PIPE || tok->type == TOKEN_AND
+			|| tok->type == TOKEN_OR || tok->type == TOKEN_SEMICOLON)
 		{
-			if (!next_tok)
-				return (print_syntax_error("|"));
-			if (next_tok->type == TOKEN_PIPE)
-				return (print_syntax_error("|"));
-			if (next_tok->type == TOKEN_SEMICOLON)
-				return (print_syntax_error(";"));
-		}
-		else if (tok->type == TOKEN_AND || tok->type == TOKEN_OR)
-		{
-			if (!next_tok)
-				return (print_syntax_error(tok->value));
-			if (next_tok->type == TOKEN_SEMICOLON)
-				return (print_syntax_error(";"));
-			if (next_tok->type == TOKEN_PIPE)
-				return (print_syntax_error("|"));
-			if (next_tok->type == TOKEN_AND || next_tok->type == TOKEN_OR)
+			if (!nxt || nxt->type == TOKEN_PIPE || nxt->type == TOKEN_AND
+				|| nxt->type == TOKEN_OR || nxt->type == TOKEN_SEMICOLON)
 				return (print_syntax_error(tok->value));
 		}
-		else if (tok->type == TOKEN_SEMICOLON)
+		else if (is_redirection(tok->type) && !tok->expanded)
 		{
-			if (next_tok && next_tok->type == TOKEN_SEMICOLON)
-				return (print_syntax_error(";"));
-			if (next_tok && next_tok->type == TOKEN_PIPE)
-				return (print_syntax_error("|"));
-		}
-		else if (is_redirection(tok->type) && (!tok->expanded))
-		{
-			if (!next_tok)
-				return (print_syntax_error("newline"));
-			if (next_tok->type != TOKEN_WORD)
-				return (print_syntax_error(next_tok->value));
+			if (!nxt || nxt->type != TOKEN_WORD)
+				return (print_syntax_error(nxt ? nxt->value : "newline"));
 		}
 		curr = curr->next;
 	}
+	if (d != 0)
+		return (print_syntax_error("newline"));
 	return (0);
 }

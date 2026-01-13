@@ -27,9 +27,17 @@ int	is_builtin(char *cmd, char **args)
 		return (0);
 	if (is_cmd(cmd, "echo") || is_cmd(cmd, "cd") || is_cmd(cmd, "pwd")
 		|| is_cmd(cmd, "export") || is_cmd(cmd, "unset") || (is_cmd(cmd, "env")
-			&& (!args || !args[1])) || is_cmd(cmd, "exit"))
+			&& (!args || !args[1])) || is_cmd(cmd, "exit") || is_cmd(cmd, ":")
+		|| is_cmd(cmd, "."))
 		return (1);
 	return (0);
+}
+
+static int	ft_dot(void)
+{
+	ft_putendl_fd("minishell: .: filename argument required", 2);
+	ft_putendl_fd(".: usage: . filename [arguments]", 2);
+	return (2);
 }
 
 int	exec_builtin(char **args, char ***envp)
@@ -48,5 +56,9 @@ int	exec_builtin(char **args, char ***envp)
 		return (ft_export(args, envp));
 	if (is_cmd(args[0], "unset"))
 		return (ft_unset(args, envp));
+	if (is_cmd(args[0], ":"))
+		return (0);
+	if (is_cmd(args[0], "."))
+		return (ft_dot());
 	return (0);
 }

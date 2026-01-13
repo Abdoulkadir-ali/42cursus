@@ -14,10 +14,13 @@
 
 int	check_syntax_and_consume(t_nodes *tokens, int *exit_code)
 {
-	if (!check_syntax(tokens))
+	int	status;
+
+	status = check_syntax(tokens);
+	if (status == 0)
 		return (0);
+	*exit_code = status;
 	consume_heredocs(tokens);
-	*exit_code = 2;
 	ft_lstclear(&tokens, del_token);
 	return (1);
 }
