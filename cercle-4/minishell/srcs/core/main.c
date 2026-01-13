@@ -12,14 +12,6 @@
 /* ************************************************************************** */
 
 #include "core.h"
-#include <dirent.h>
-#include "minishell.h"
-
-char **g_envp = NULL;
-int g_exit_code = 0;
-int g_interactive_shell = 0;
-int g_expansion_error = 0;
-
 
 void print_ast(t_nodes *ast_node, int depth)
 {

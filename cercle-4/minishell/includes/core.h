@@ -1,9 +1,8 @@
 #ifndef CORE_H
 # define CORE_H
 
-# include "libft.h"
-# include "parsing.h"
-# include "exec.h"
+
+// PACKAGE
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -11,11 +10,33 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+// CUSTOM
+# include "libft.h"
+# include "parsing.h"
+# include "exec.h"
+
 # define SIGNAL_INTERACTIVE 1
 # define SIGNAL_BLOCKING 2
 # define SIGNAL_HEREDOC 3
 
-extern int	g_last_signal;
+typedef struct s_global_state
+{
+	char **envp;
+	int exit_code;
+	int interactive_shell;
+	int expansion_error;
+	int last_signal;
+}   t_global_state;
+
+extern t_global_state g_state;
+
+/* backward-compatible alias for existing code */
+#define g_last_signal (g_state.last_signal)
+/* legacy global aliases -> map to fields in g_state */
+#define g_envp (g_state.envp)
+#define g_exit_code (g_state.exit_code)
+#define g_interactive_shell (g_state.interactive_shell)
+#define g_expansion_error (g_state.expansion_error)
 
 // Function prototypes
 void print_ast(t_nodes *ast_node, int depth);

@@ -10,22 +10,43 @@ OBJS_DIR    = objs
 # List all source files. 
 # main.c is currently empty, and tokenizer.c has a main function for testing.
 # Only one main function should exist in the final build.
-SRCS        = srcs/exec/exec_tree.c \
-	srcs/exec/path_finder.c \
-	srcs/exec/pipe.c \
-	srcs/lib/str.c \
-	srcs/lib/debug.c \
-	srcs/parsing/env_expand.c \
-	srcs/parsing/ast_builder.c \
-	srcs/parsing/tokenizer.c \
+SRCS        = srcs/core/main.c \
 	srcs/core/reader.c \
-	srcs/exec/builtins.c \
-	srcs/exec/env_mgr.c \
-	srcs/exec/heredoc.c \
 	srcs/core/signals.c \
-	srcs/parsing/syntax.c \
-	srcs/parsing/wildcard.c \
-	srcs/core/main.c
+	srcs/core/global.c \
+	srcs/exec/env/env_utils.c \
+	srcs/exec/heredoc/gen.c \
+	srcs/exec/heredoc/read.c \
+	srcs/exec/heredoc/heredoc.c \
+	srcs/exec/exec/path_finder.c \
+	srcs/exec/exec/pipe.c \
+	srcs/exec/exec/tree.c \
+	srcs/exec/builtins/builtins.c \
+	srcs/exec/builtins/echo.c \
+	srcs/exec/builtins/pwd.c \
+	srcs/exec/builtins/cd.c \
+	srcs/exec/builtins/env.c \
+	srcs/exec/builtins/exit.c \
+	srcs/exec/builtins/unset.c \
+	srcs/lib/debug.c \
+	srcs/lib/str.c \
+	srcs/parsing/ast/builder.c \
+	srcs/parsing/ast/cmd.c \
+	srcs/parsing/ast/redirections.c \
+	srcs/parsing/ast/utils.c \
+	srcs/parsing/env/expand/expand.c \
+	srcs/parsing/env/expand/split.c \
+	srcs/parsing/env/expand/tokens.c \
+	srcs/parsing/env/expand/match.c \
+	srcs/parsing/env/expand/utils.c \
+	srcs/parsing/env/expand/vars.c \
+	srcs/parsing/env/wildcard/matcher.c \
+	srcs/parsing/env/wildcard/array.c \
+	srcs/exec/env/export/export_print.c \
+	srcs/exec/env/export/export_process.c \
+	srcs/exec/env/export/export.c \
+	srcs/parsing/tokenizer/tokenizer.c \
+	srcs/parsing/tokenizer/syntax.c
 # srcs/main.c # Uncomment when ready to use main.c instead of tokenizer.c's main
 
 OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))

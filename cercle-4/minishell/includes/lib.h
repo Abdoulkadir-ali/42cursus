@@ -1,9 +1,13 @@
 #ifndef LIB_H
 # define LIB_H
 
-#include "libft.h"
+
+// PACKAGE
 # include <stdarg.h>
 # include <stdio.h>
+
+// CUSTOM
+#include "libft.h"
 
 # ifndef DEBUG
 #  define DEBUG 0

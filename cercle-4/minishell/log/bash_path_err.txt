@@ -1,0 +1,11 @@
+42_minishell_tester/cmds/mand/2_path_check.sh: line 32: cd: /home/abdali/Desktop/: No such file or directory
+42_minishell_tester/cmds/mand/2_path_check.sh: line 43: env: command not found
+42_minishell_tester/cmds/mand/2_path_check.sh: line 45: ls: command not found
+42_minishell_tester/cmds/mand/2_path_check.sh: line 47: touch: command not found
+42_minishell_tester/cmds/mand/2_path_check.sh: line 48: tmp_x_file1: command not found
+42_minishell_tester/cmds/mand/2_path_check.sh: line 50: ./tmp_x_file1: No such file or directory
+42_minishell_tester/cmds/mand/2_path_check.sh: line 54: tmp_x_file1: command not found
+42_minishell_tester/cmds/mand/2_path_check.sh: line 56: ./tmp_x_file1: No such file or directory
+42_minishell_tester/cmds/mand/2_path_check.sh: line 59: tmp_x_file1: No such file or directory
+42_minishell_tester/cmds/mand/2_path_check.sh: line 61: ./tmp_x_file1: No such file or directory
+42_minishell_tester/cmds/mand/2_path_check.sh: line 66: cd: doesntexist: No such file or directory
