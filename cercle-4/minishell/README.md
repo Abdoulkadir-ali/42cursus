@@ -50,30 +50,147 @@ execution layer including builtins.
 
 Requirements: a POSIX toolchain (`cc`), `make`, and `readline`.
 
+# Minishell — a small, thoughtful shell implementation
+
+This project is an educational, focused implementation of a POSIX-like
+command-line shell written in C. Building a shell is an excellent way to gain
+hands-on experience with processes, file descriptors, inter-process
+communication, parsing, and Unix signals — all while producing a useful and
+tangible program.
+
+The codebase is intentionally compact and readable so you can explore and
+modify the key subsystems without getting lost in unrelated complexity.
+
+Why this project is valuable:
+
+- It demonstrates real-world systems programming patterns: fork/exec,
+   redirection, and safe resource cleanup.
+- It provides a practical exercise in tokenizer/parser design and
+   transformation (expansion and AST-based execution).
+- It is a teachable codebase: helper functions are kept small, and many
+   utilities are file-local (`static`) to make reasoning about the API surface
+   easier.
+
+## What this shell supports
+
+- Command execution and pipelines (`|`)
+- Simple redirections: input `<`, output `>`, append `>>`
+- Heredoc (`<<`) with secure temporary-file handling
+- Variable expansion and quote handling
+- Common builtins: `echo`, `cd`, `pwd`, `env`, `export`, `unset`, `exit`
+
+## Project layout (quick guide)
+
+Top-level folders you will interact with:
+
+- `includes/` — project headers and public APIs.
+- `srcs/core/` — program entry (`main.c`), signal setup and the interactive
+   loop.
+- `srcs/parsing/` — tokenizer, expansion, wildcard matching and AST builder.
+- `srcs/exec/` — execution layer and builtins. Subfolders:
+   - `builtins/` — builtin command drivers and glue to exec layer.
+   - `env/` — environment helpers and `export`/`unset` implementations.
+   - `heredoc/` — heredoc handling and temporary-file creation.
+   - `exec/` — process launching, pipe setup and redirection handling.
+- `packages/libft/` — bundled `libft` static library used at link time.
+
+File and design conventions:
+
+- Keep helper functions `static` if they are only used in a single file.
+- Prefer explicit ownership of heap memory: document whether a caller must
+   free returned strings.
+- Group related local variables into small context structures where it
+   simplifies function signatures.
+
+## Build instructions
+
+Prerequisites: a C toolchain (`cc`), `make`, and the `readline` development
+headers.
+
+Build from the repository root:
+
 ```bash
 make
 ```
 
-Targets: `make`, `make clean`, `make fclean`, `make re`.
+Common targets:
 
-## Run
+- `make` — build the binary `minishell`.
+- `make clean` — remove object files.
+- `make fclean` — remove object files and the executable.
+- `make re` — full rebuild.
 
-Interactive:
+## Running the shell
+
+Start an interactive shell:
 
 ```bash
 ./minishell
 ```
 
-Non-interactive (single command):
+Run a single command and exit:
 
 ```bash
 ./minishell -c "echo hello"
 ```
 
-## Testing
+## Examples and behaviors
 
-There is a `42_minishell_tester/` directory with the external tester used during
-development. You can run its scripts or your own tests.
+- Variable expansion respects quoting: `$VAR` inside double quotes expands,
+   single quotes are literal.
+- `export` and `unset` affect the runtime environment used by subsequent
+   commands in the same session.
+- Heredoc input is written to a secure temporary file which is then used as
+   stdin for the command; this avoids races and permissions issues.
+
+## Testing and debugging
+
+- There is a `42_minishell_tester/` directory with community test scripts.
+   You can adapt or use its scripts to validate behavior.
+- To check memory safety, run the shell under Valgrind while exercising
+   builtins and pipelines:
+
+```bash
+valgrind --leak-check=full --show-leak-kinds=all ./minishell
+```
+
+- Use the environment-driven debug hooks in the code (`MINI_DEBUG_*`) to
+   enable verbose token or execution logging when needed.
+
+## Developing and contributing
+
+Contributions are welcome. Suggested workflow:
+
+1. Create a feature branch for each logical change (e.g. `feature/wildcard`).
+2. Keep commits small and focused; include a test case when behavior changes.
+3. Run `make` and the test scripts locally before opening a PR.
+
+Coding preferences in this repo:
+
+- Small, well-named functions (a function-per-concept helps readability).
+- Limit the number of non-static symbols exported by a file — helpers should
+   be `static` when possible.
+- Check return values and propagate errors; avoid silent failures.
+
+## Further improvements you might try
+
+- Add job control (`fg`, `bg`) and signal-aware terminal control.
+- Improve the parser to support more shell grammar constructs.
+- Add a test harness that runs a matrix of shell commands and validates
+   outputs and exit codes.
+
+## License and attribution
+
+This repository includes a bundled test harness (`42_minishell_tester`) which
+may have its own license; check `42_minishell_tester/LICENSE`. Use this code
+for learning and experimentation — adapt licenses as appropriate for your
+use.
+
+---
+
+If you want, I can add a `CONTRIBUTING.md` with a checklist and a short run
+book for developers (valgrind, test commands, CI hints). Tell me and I will
+add it.
 
 Example:
 
