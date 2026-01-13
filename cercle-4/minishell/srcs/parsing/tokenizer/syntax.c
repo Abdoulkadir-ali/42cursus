@@ -44,19 +44,28 @@ int	check_syntax(t_nodes *tokens)
 	while (curr)
 	{
 		tok = (t_token *)curr->content;
-		if (curr->next)
-			nxt = (t_token *)curr->next->content;
-		else
-			nxt = NULL;
+		nxt = (curr->next) ? (t_token *)curr->next->content : NULL;
 		if (tok->type == TOKEN_LPAREN)
+		{
 			d++;
-		else if (tok->type == TOKEN_RPAREN && --d < 0)
-			return (print_syntax_error(")"));
+			if (nxt && (nxt->type == TOKEN_RPAREN || nxt->type == TOKEN_PIPE
+					|| nxt->type == TOKEN_AND || nxt->type == TOKEN_OR
+					|| nxt->type == TOKEN_SEMICOLON))
+				return (print_syntax_error(nxt->value));
+		}
+		else if (tok->type == TOKEN_RPAREN)
+		{
+			if (--d < 0)
+				return (print_syntax_error(")"));
+			if (nxt && nxt->type == TOKEN_WORD)
+				return (print_syntax_error(nxt->value));
+		}
 		else if (tok->type == TOKEN_PIPE || tok->type == TOKEN_AND
 			|| tok->type == TOKEN_OR || tok->type == TOKEN_SEMICOLON)
 		{
 			if (!nxt || nxt->type == TOKEN_PIPE || nxt->type == TOKEN_AND
-				|| nxt->type == TOKEN_OR || nxt->type == TOKEN_SEMICOLON)
+				|| nxt->type == TOKEN_OR || nxt->type == TOKEN_SEMICOLON
+				|| nxt->type == TOKEN_RPAREN)
 				return (print_syntax_error(tok->value));
 		}
 		else if (is_redirection(tok->type) && !tok->expanded)

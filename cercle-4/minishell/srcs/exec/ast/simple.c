@@ -84,7 +84,7 @@ int	exec_simple_command(t_ast *node, char ***envp)
 
 	if (!node->args || !node->args[0])
 		return (0);
-	if (is_builtin(node->args[0], node->args))
+	if (is_builtin(node->args[0], node->args, node->is_quoted))
 		return (exec_builtin(node->args, envp));
 	path = find_path(node->args[0], *envp);
 	if (!path)

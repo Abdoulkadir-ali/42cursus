@@ -57,6 +57,7 @@ typedef struct s_ast
 	char			**args;
 	t_nodes			*left;
 	t_nodes			*right;
+	int				is_quoted;
 }					t_ast;
 
 typedef struct s_expand_tokens_args

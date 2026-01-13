@@ -24,6 +24,7 @@ t_nodes	*create_node(t_token_type type, char **args, t_nodes *left,
 	ast->args = args;
 	ast->left = left;
 	ast->right = right;
+	ast->is_quoted = 0;
 	return (ft_lstnew(ast));
 }
 

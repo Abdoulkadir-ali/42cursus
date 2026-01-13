@@ -21,9 +21,11 @@ static int	is_cmd(char *arg, char *cmd)
 	return (0);
 }
 
-int	is_builtin(char *cmd, char **args)
+int	is_builtin(char *cmd, char **args, int is_quoted)
 {
 	if (!cmd)
+		return (0);
+	if (is_quoted && is_cmd(cmd, "."))
 		return (0);
 	if (is_cmd(cmd, "echo") || is_cmd(cmd, "cd") || is_cmd(cmd, "pwd")
 		|| is_cmd(cmd, "export") || is_cmd(cmd, "unset") || (is_cmd(cmd, "env")

@@ -114,7 +114,18 @@ static t_nodes	*handle_simple_cmd(t_nodes *tokens)
 			curr = curr->next;
 		curr = curr->next;
 	}
-	node = process_redirections(create_node(TOKEN_WORD, args, NULL, NULL), tokens);
+	node = create_node(TOKEN_WORD, args, NULL, NULL);
+	curr = tokens;
+	while (curr)
+	{
+		if (((t_token *)curr->content)->type == TOKEN_WORD)
+		{
+			((t_ast *)node->content)->is_quoted = ((t_token *)curr->content)->quoted;
+			break ;
+		}
+		curr = curr->next;
+	}
+	node = process_redirections(node, tokens);
 	ft_lstclear(&tokens, del_token);
 	return (node);
 }

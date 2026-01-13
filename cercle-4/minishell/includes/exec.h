@@ -55,7 +55,7 @@ int			exec_logical_or(t_ast *node, char ***envp);
 int			exec_logical_and(t_ast *node, char ***envp);
 int			exec_redirection(t_ast *node, char ***envp);
 int			exec_pipe(t_ast *node, char ***envp);
-int			is_builtin(char *cmd, char **args);
+int			is_builtin(char *cmd, char **args, int is_quoted);
 int			exec_builtin(char **args, char ***envp);
 int			scan_heredocs(t_nodes *ast_node);
 void		consume_heredocs(t_nodes *tokens);
