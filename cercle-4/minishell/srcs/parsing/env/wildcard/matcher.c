@@ -6,13 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 02:32:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:30:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-/* match_pattern: greedy '*' matcher used only in this translation unit */
 static int	match_pattern(char *pattern, char *str)
 {
     char	*star;
@@ -50,7 +49,6 @@ static int	match_pattern(char *pattern, char *str)
     return (*pattern == '\0');
 }
 
-/* linked-list sort used only here */
 static void	sort_list(t_nodes **list)
 {
     t_nodes	*i;
@@ -78,7 +76,6 @@ static void	sort_list(t_nodes **list)
     }
 }
 
-/* public: expand a single wildcard pattern into a t_nodes list (or NULL) */
 t_nodes	*expand_wildcard(char *pattern)
 {
     DIR		*dir;

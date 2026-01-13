@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 01:14:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:13:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 int	ft_pwd(void)
 {
-    char	cwd[1024];
+	char	cwd[1024];
 
-    if (getcwd(cwd, sizeof(cwd)))
-    {
-        ft_putendl_fd(cwd, 1);
-        return (0);
-    }
-    perror("pwd");
-    return (1);
+	if (getcwd(cwd, sizeof(cwd)))
+	{
+		ft_putendl_fd(cwd, 1);
+		return (0);
+	}
+	perror("pwd");
+	return (1);
 }

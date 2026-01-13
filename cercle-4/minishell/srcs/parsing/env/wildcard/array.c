@@ -12,134 +12,143 @@
 
 #include "parsing.h"
 
-/* detect whether a string contains an unescaped '*' */
 static int	is_wildcard(const char *str)
 {
-    int	i;
+	int	i;
 
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] == '*' && str[i] != '\\')
-            return (1);
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (str[i])
+	{
+	    if (str[i] == '*' && str[i] != '\\')
+	        return (1);
+	    i++;
+	}
+	return (0);
 }
 
-/* local copy of match_pattern used to test entries against a pattern */
 static int	match_pattern(char *pattern, char *str)
 {
-    char	*star;
-    char	*str_start;
-    int	attempts;
+	char	*star;
+	char	*str_start;
+	int	attempts;
 
-    star = NULL;
-    str_start = (char *)str;
-    attempts = 0;
-    while (*str)
-    {
-        if (attempts++ > 100000)
-            return (0);
-        if (*pattern == '*')
-        {
-            star = (char *)pattern;
-            pattern++;
-            str_start = (char *)str;
-        }
-        else if (*pattern == *str)
-        {
-            pattern++;
-            str++;
-        }
-        else if (star)
-        {
-            pattern = star + 1;
-            str = ++str_start;
-        }
-        else
-            return (0);
-    }
-    while (*pattern == '*')
-        pattern++;
-    return (*pattern == '\0');
+	star = NULL;
+	str_start = (char *)str;
+	attempts = 0;
+	while (*str)
+	{
+	    if (attempts++ > 100000)
+	        return (0);
+	    if (*pattern == '*')
+	    {
+	        star = (char *)pattern;
+	        pattern++;
+	        str_start = (char *)str;
+	    }
+	    else if (*pattern == *str)
+	    {
+	        pattern++;
+	        str++;
+	    }
+	    else if (star)
+	    {
+	        pattern = star + 1;
+	        str = ++str_start;
+	    }
+	    else
+	        return (0);
+	}
+	while (*pattern == '*')
+	    pattern++;
+	return (*pattern == '\0');
 }
 
-/* simple alphabetical sort for a null-terminated array of strings */
-static void	sort_list_char(char **list)
+static void	sort_list(t_nodes **list)
 {
-    int	 i;
-    int	 j;
-    char *tmp;
+	t_nodes	*i;
+	t_nodes	*j;
+	char	*tmp;
+	int		sort_attempts;
 
-    i = 0;
-    while (list[i])
-    {
-        j = i + 1;
-        while (list[j])
-        {
-            if (ft_strcmp(list[i], list[j]) > 0)
-            {
-                tmp = list[i];
-                list[i] = list[j];
-                list[j] = tmp;
-            }
-            j++;
-        }
-        i++;
-    }
+	sort_attempts = 0;
+	i = *list;
+	while (i && sort_attempts++ < 10000)
+	{
+		j = i->next;
+		while (j)
+		{
+			if (ft_strncmp((char *)i->content, (char *)j->content,
+					ft_strlen((char *)i->content) + 1) > 0)
+			{
+				tmp = i->content;
+				i->content = j->content;
+				j->content = tmp;
+			}
+			j = j->next;
+		}
+		i = i->next;
+	}
 }
 
-/* public: expand a NULL-terminated argv-style array by wildcards */
+static void	append_to_list(t_nodes **list, char *str)
+{
+	ft_lstadd_back(list, ft_lstnew(ft_strdup(str)));
+}
+
+static void	process_wildcard(char *arg, t_nodes **list)
+{
+	DIR				*dir;
+	struct dirent	*entry;
+	int				match;
+
+	match = 0;
+	dir = opendir(".");
+	if (dir)
+	{
+		while ((entry = readdir(dir)))
+		{
+			if (entry->d_name[0] == '.' && arg[0] != '.')
+				continue ;
+			if (ft_strcmp(entry->d_name, arg) == 0)
+				continue ;
+			if (match_pattern(arg, entry->d_name))
+			{
+				append_to_list(list, entry->d_name);
+				match = 1;
+			}
+		}
+		closedir(dir);
+	}
+	if (!match)
+		append_to_list(list, arg);
+}
+
 char	**expand_wildcards(char **args)
 {
-    DIR		*dir;
-    struct dirent	*entry;
-    char	**result;
-    int	count;
-    int	i;
-    int	match;
-    int	max_args;
+	t_nodes	*list;
+	int		len;
+	char	**result;
+	t_nodes	*tmp;
+	int		i;
 
-    result = NULL;
-    count = 0;
-    i = 0;
-    match = 0;
-    max_args = 0;
-    while (args && args[max_args])
-        max_args++;
-    result = malloc(sizeof(char *) * (max_args + 256));
-    for (i = 0; args && args[i]; i++)
-    {
-        match = 0;
-        if (is_wildcard(args[i]))
-        {
-            dir = opendir(".");
-            if (dir)
-            {
-                while ((entry = readdir(dir)))
-                {
-                    if (entry->d_name[0] == '.' && args[i][0] != '.')
-                        continue ;
-                    if (ft_strcmp(entry->d_name, args[i]) == 0)
-                        continue ;
-                    if (match_pattern((char *)args[i], entry->d_name))
-                    {
-                        result[count++] = ft_strdup(entry->d_name);
-                        match = 1;
-                    }
-                }
-                closedir(dir);
-            }
-            if (!match)
-                result[count++] = ft_strdup(args[i]);
-        }
-        else
-        {
-            result[count++] = ft_strdup(args[i]);
-        }
-    }
-    sort_list_char(result);
-    result[count] = NULL;
-    return (result);
+	list = NULL;
+	for (i = 0; args && args[i]; i++)
+	{
+		if (is_wildcard(args[i]))
+			process_wildcard(args[i], &list);
+		else
+			append_to_list(&list, args[i]);
+	}
+	sort_list(&list);
+	len = ft_lstsize(list);
+	result = malloc(sizeof(char *) * (len + 1));
+	tmp = list;
+	for (i = 0; i < len; i++)
+	{
+		result[i] = tmp->content;
+		tmp = tmp->next;
+	}
+	result[len] = NULL;
+	ft_lstclear(&list, NULL);
+	return (result);
 }

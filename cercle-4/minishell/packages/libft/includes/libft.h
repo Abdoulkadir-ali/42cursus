@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/13 01:35:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:35:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ void				ft_lstclear(t_nodes **lst, void (*del)(void *));
 void				ft_lstiter(t_nodes *lst, void (*f)(void *));
 t_nodes				*ft_lstmap(t_nodes *lst, void *(*f)(void *),
 						void (*del)(void *));
+void				ft_lstsort(t_nodes **lst, int (*cmp)(void *, void *));
 
 char				*get_next_line(int fd);
 int					gnl_strchr_idx(char *str, char c);

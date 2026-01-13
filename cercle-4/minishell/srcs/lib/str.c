@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 23:31:10 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 13:24:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:42:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	str_any(char *s1, char *s2)
 
 int	ft_strmatch(char *s1, char *s2, int (*match)(char *, char *))
 {
-	int	i;
+	int		i;
 
 	i = 0;
 	while (s1[i])

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 03:06:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:22:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,36 +34,70 @@ int	scan_heredocs(t_nodes *ast_node)
 	return (0);
 }
 
-void consume_heredocs(t_nodes *tokens)
+static void	handle_heredoc_word(char *value)
+{
+	char	*filename;
+	int		fd;
+
+	filename = generate_tmp_filename();
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd != -1)
+	{
+		read_heredoc_loop(value, fd, g_envp, g_exit_code);
+		close(fd);
+		unlink(filename);
+	}
+	free(filename);
+}
+
+static void	process_heredoc(t_nodes *tokens)
 {
 	t_token	*tok;
 	t_token	*next_tok;
-	char 	*filename;
-	int		fd;
 
-	while (tokens)
+	tok = (t_token *)tokens->content;
+	if (tok->type == TOKEN_HEREDOC)
 	{
-		tok = (t_token *)tokens->content;
-		if (tok->type == TOKEN_HEREDOC)
+		if (tokens->next)
 		{
-			if (tokens->next)
+			next_tok = (t_token *)tokens->next->content;
+			if (next_tok->type == TOKEN_WORD)
 			{
-				next_tok = (t_token *)tokens->next->content;
-				if (next_tok->type == TOKEN_WORD)
-				{
-					filename = generate_tmp_filename();
-					fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-					if (fd != -1)
-					{
-						read_heredoc_loop(next_tok->value, fd, g_envp, g_exit_code);
-						close(fd);
-						unlink(filename);
-					}
-					free(filename);
-				}
+				handle_heredoc_word(next_tok->value);
 			}
 		}
+	}
+}
+
+void	consume_heredocs(t_nodes *tokens)
+{
+	while (tokens)
+	{
+		process_heredoc(tokens);
 		tokens = tokens->next;
 	}
 }
 
+char	*handle_heredoc_input(char *delim, char **envp, int exit_code)
+{
+	char	*filename;
+	int		fd;
+
+	filename = generate_tmp_filename();
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+	{
+		perror("heredoc tmp");
+		free(filename);
+		return (NULL);
+	}
+	read_heredoc_loop(delim, fd, envp, exit_code);
+	close(fd);
+	if (g_last_signal == 130)
+	{
+		unlink(filename);
+		free(filename);
+		return (NULL);
+	}
+	return (filename);
+}

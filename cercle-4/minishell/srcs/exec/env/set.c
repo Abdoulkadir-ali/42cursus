@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 03:18:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:47:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ int	get_env_index(char *key, char **envp)
 
 int	ft_set_env(char *key, char *value, char ***envp)
 {
-	char *new_entry;
-	int idx;
+	char	*new_entry;
+	int		idx;
 
 	if (!key || !envp || !*envp)
 		return (1);

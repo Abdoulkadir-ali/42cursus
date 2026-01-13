@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 04:05:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:18:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,43 +28,49 @@ static char	*get_env_val_simple(char *key, char **envp)
 	return (NULL);
 }
 
-int	ft_cd(char **args, char ***envp)
+static int	validate_cd_args(char **args)
 {
-	char cwd[1024];
-	char oldcwd[1024];
-	char *path;
-
 	if (args[1] && args[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", 2);
 		return (1);
 	}
+	return (0);
+}
+
+static char	*get_cd_path(char **args, char **envp)
+{
+	char	*path;
+
 	if (!args[1] || (ft_strncmp(args[1], "--", 3) == 0))
 	{
-		path = get_env_val_simple("HOME", *envp);
+		path = get_env_val_simple("HOME", envp);
 		if (!path)
 		{
 			ft_putendl_fd("minishell: cd: HOME not set", 2);
-			return (1);
+			return (NULL);
 		}
 	}
 	else if (ft_strncmp(args[1], "-", 2) == 0)
 	{
-		path = get_env_val_simple("OLDPWD", *envp);
+		path = get_env_val_simple("OLDPWD", envp);
 		if (!path)
 		{
 			ft_putendl_fd("minishell: cd: OLDPWD not set", 2);
-			return (1);
+			return (NULL);
 		}
 		ft_putendl_fd(path, 1);
 	}
 	else
 		path = args[1];
-	if (args[1] && args[2])
-	{
-		ft_putendl_fd("minishell: cd: too many arguments", 2);
-		return (1);
-	}
+	return (path);
+}
+
+static int	perform_cd(char *path, char ***envp)
+{
+	char	cwd[1024];
+	char	oldcwd[1024];
+
 	getcwd(oldcwd, sizeof(oldcwd));
 	if (chdir(path) == -1)
 	{
@@ -76,4 +82,16 @@ int	ft_cd(char **args, char ***envp)
 	ft_set_env("OLDPWD", oldcwd, envp);
 	ft_set_env("PWD", cwd, envp);
 	return (0);
+}
+
+int	ft_cd(char **args, char ***envp)
+{
+	char	*path;
+
+	if (validate_cd_args(args))
+		return (1);
+	path = get_cd_path(args, *envp);
+	if (!path)
+		return (1);
+	return (perform_cd(path, envp));
 }

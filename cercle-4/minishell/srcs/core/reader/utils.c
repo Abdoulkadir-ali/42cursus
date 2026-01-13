@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   reader.c                                           :+:      :+:    :+:   */
+/*   reader_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/11 03:30:41 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 01:25:57 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/13 22:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/13 22:54:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
-static char	check_unclosed_quote(char *str)
+char	check_unclosed_quote(char *str)
 {
 	char	quote;
 
@@ -34,7 +34,7 @@ static char	check_unclosed_quote(char *str)
 	return (quote);
 }
 
-static char	*append_line(char *line, char *new_line)
+char	*append_line(char *line, char *new_line)
 {
 	char	*temp;
 	char	*result;
@@ -47,9 +47,8 @@ static char	*append_line(char *line, char *new_line)
 	return (result);
 }
 
-static char	*read_input(char *prompt)
+char	*read_input(char *prompt)
 {
-	char	*line;
 	char	*buf;
 	int		i;
 	char	c;
@@ -70,50 +69,17 @@ static char	*read_input(char *prompt)
 	{
 		if (buf[i - 1] == '\n')
 			buf[i - 1] = '\0';
-		line = buf;
+		return (buf);
 	}
-	else
-	{
-		free(buf);
-		line = NULL;
-	}
-	return (line);
+	free(buf);
+	return (NULL);
 }
 
-char	*get_command_line(void)
+char	*get_prompt(int is_initial)
 {
-	char	*line;
-	char	*new_line;
-	char	*temp;
-	char	quote;
-	char	*prompt;
-
-	prompt = "minishell> ";
 	if (!isatty(STDIN_FILENO))
-		prompt = NULL;
-	line = read_input(prompt);
-	if (!line)
 		return (NULL);
-	while ((quote = check_unclosed_quote(line)) != 0)
-	{
-		prompt = "> ";
-		if (!isatty(STDIN_FILENO))
-			prompt = NULL;
-		new_line = read_input(prompt);
-		if (!new_line)
-		{
-			ft_printf_fd(2,
-				"minishell: unexpected EOF while looking for matching `%c'\n",
-				quote);
-			free(line);
-			return (NULL);
-		}
-		temp = append_line(line, new_line);
-		free(line);
-		free(new_line);
-		if (!temp)
-			return (NULL);
-		line = temp;
-	}
-	return (line);
+	if (is_initial)
+		return ("minishell> ");
+	return ("> ");
 }

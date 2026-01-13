@@ -6,7 +6,7 @@
 #    By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/16 00:00:00 by abdali            #+#    #+#              #
-#    Updated: 2026/01/13 01:35:36 by abdoali          ###   ########.fr        #
+#    Updated: 2026/01/13 23:35:01 by abdoali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,8 @@ INT_SRCS	= ft_atoi.c ft_swap.c ft_strchri.c ft_strrchri.c ft_atoll.c
 BASE_SRCS	= ft_atoi_base.c ft_check_base.c ft_itoa_base.c ft_nbrlen_base.c \
 			  ft_putnbr_base.c ft_putunbr_base.c ft_unbrlen_base.c
 LST_SRCS	= ft_lstaddback.c ft_lstaddfront.c ft_lstclear.c ft_lstdelone.c \
-			  ft_lstiter.c ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_lstsize.c
+			  ft_lstiter.c ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_lstsize.c \
+			  ft_lstsort.c
 MEM_SRCS	= ft_bzero.c ft_calloc.c ft_memchr.c ft_memcmp.c ft_memcpy.c \
 			  ft_memmove.c ft_memrchr.c ft_memrcpy.c ft_memset.c
 STR_SRCS	= ft_itoa.c ft_split.c ft_strchr.c ft_strcmp.c ft_strcpy.c ft_strdup.c ft_striteri.c \

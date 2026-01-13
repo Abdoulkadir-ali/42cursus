@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 04:04:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:47:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,41 @@ extern t_global_state	g_state;
 # define g_expansion_error (g_state.expansion_error)
 
 // Function prototypes
-void				print_ast(t_nodes *ast_node, int depth);
-char				**duplicate_env(char **envp);
-int					is_whitespace_only(char *str);
-void				process_input(char *line, char ***envp, int *exit_code);
-int				debug_dump_tokens_and_consume(t_nodes **ptokens);
-int				check_syntax_and_consume(t_nodes *tokens, int *exit_code);
-t_nodes			*extract_segment(t_nodes *cursor, t_nodes **pnext);
-void				debug_dump_segment(t_nodes *segment);
-int				try_handle_assignment_local(t_nodes *segment, char ***envp, int *exit_code);
-int				try_handle_assignment_public(t_nodes *segment, char ***envp, int *exit_code);
-int				process_segment_public(t_nodes *segment, char ***envp, int *exit_code);
+void					print_ast(t_nodes *ast_node, int depth);
+char					**duplicate_env(char **envp);
+int						is_whitespace_only(char *str);
+void					process_input(char *line, char ***envp, int *exit_code);
+int						debug_dump_tokens_and_consume(t_nodes **ptokens);
+int						check_syntax_and_consume(t_nodes *tokens,
+							int *exit_code);
+t_nodes					*extract_segment(t_nodes *cursor, t_nodes **pnext);
+void					debug_dump_segment(t_nodes *segment);
+int						try_handle_assignment_local(t_nodes *segment,
+							char ***envp, int *exit_code);
+int						try_handle_assignment_public(t_nodes *segment,
+							char ***envp, int *exit_code);
 char					*get_command_line(void);
 void					setup_signals(int mode);
+int						debug_dump_tokens_and_consume(t_nodes **ptokens);
+void					debug_dump_segment(t_nodes *segment);
+void					initialize_segment_builder(t_nodes **segment,
+							t_nodes **seg_tail, t_nodes **it, t_nodes *cursor);
+void					build_segment_until_semicolon(t_nodes **segment,
+							t_nodes **seg_tail, t_nodes **it);
+void					consume_semicolon_if_present(t_nodes *it,
+							t_nodes **pneset_assignmentt);
+int						check_if_assignment_candidate(t_nodes *segment,
+							t_token **first_tok, char **eq);
+int						validate_identifier(char *k);
+void					perform_assignment(t_token *first_tok, char *eq,
+							char ***envp, int *exit_code);
+int						expand_and_check_error(t_nodes **segment, char **envp,
+							int exit_code, int *new_exit_code);
+void					execute_ast(t_nodes *segment, char ***envp,
+							int *exit_code);
+char					check_unclosed_quote(char *str);
+char					*append_line(char *line, char *new_line);
+char					*read_input(char *prompt);
+char					*get_prompt(int is_initial);
 
 #endif

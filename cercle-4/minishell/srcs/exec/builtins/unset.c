@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 02:46:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:17:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ static void	ft_unset_remove_at(char ***envp, int idx)
 
 int	ft_unset(char **args, char ***envp)
 {
-	int idx;
-	int arg_idx;
-	int ret;
+	int	idx;
+	int	arg_idx;
+	int	ret;
 
 	if (!args[1])
 		return (0);

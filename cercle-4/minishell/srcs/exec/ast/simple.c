@@ -1,27 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   simple.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:13:43 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
+/*   Updated: 2026/01/13 23:45:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-int	ft_env(char **envp)
+int	exec_simple_command(t_ast *node, char ***envp)
 {
-	int	i;
+	pid_t	pid;
+	char	*path;
 
-	i = 0;
-	while (envp && envp[i])
+	if (is_builtin(node->args[0], node->args))
+		return (exec_builtin(node->args, envp));
+	else
 	{
-		if (ft_strchr(envp[i], '='))
-			ft_putendl_fd(envp[i], 1);
-		i++;
+		path = find_path(node->args[0], (char **) *envp);
+		if (!path)
+			return (127);
+		pid = fork();
+		if (pid == 0)
+		{
+			execve(path, node->args, *envp);
+			exit(1);
+		}
+		waitpid(pid, NULL, 0);
+		free(path);
+		return (0);
 	}
-	return (0);
 }

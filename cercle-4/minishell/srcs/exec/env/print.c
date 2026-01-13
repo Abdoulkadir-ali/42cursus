@@ -6,51 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:35:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/13 03:18:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/13 23:35:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "export.h"
-
-static char	**make_sorted_copy(char **envp, int count)
-{
-	char	**sorted;
-	int		i;
-
-	sorted = malloc(sizeof(char *) * (count + 1));
-	if (!sorted)
-		return (NULL);
-	i = -1;
-	while (++i < count)
-		sorted[i] = envp[i];
-	sorted[count] = NULL;
-	return (sorted);
-}
-
-static void	sort_string_array(char **arr, int count)
-{
-	int		i;
-	int		j;
-	char	*tmp;
-
-	i = 0;
-	while (i < count - 1)
-	{
-		j = 0;
-		while (j < count - i - 1)
-		{
-			if (ft_strncmp(arr[j], arr[j + 1], ft_strlen(arr[j])
-					+ ft_strlen(arr[j + 1])) > 0)
-			{
-				tmp = arr[j];
-				arr[j] = arr[j + 1];
-				arr[j + 1] = tmp;
-			}
-			j++;
-		}
-		i++;
-	}
-}
+#include "exec.h"
 
 static void	print_env_entry(char *entry)
 {
@@ -75,22 +35,23 @@ static void	print_env_entry(char *entry)
 
 void	print_sorted_env(char **envp)
 {
-	int		count;
-	char	**sorted;
+	t_nodes	*list;
 	int		i;
+	t_nodes	*tmp;
 
-	count = 0;
-	while (envp[count])
-		count++;
-	sorted = make_sorted_copy(envp, count);
-	if (!sorted)
-		return ;
-	sort_string_array(sorted, count);
+	list = NULL;
 	i = 0;
-	while (i < count)
+	while (envp[i])
 	{
-		print_env_entry(sorted[i]);
+		ft_lstadd_back(&list, ft_lstnew(ft_strdup(envp[i])));
 		i++;
 	}
-	free(sorted);
+	ft_lstsort(&list, (int (*)(void *, void *))ft_strcmp);
+	tmp = list;
+	while (tmp)
+	{
+		print_env_entry(tmp->content);
+		tmp = tmp->next;
+	}
+	ft_lstclear(&list, free);
 }
