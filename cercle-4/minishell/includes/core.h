@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:27:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:54:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,12 @@ typedef struct s_global_state
 	int					last_signal;
 }						t_global_state;
 
+// The global variable poses a risk of racing condtion, however we're NOT allowed to use semaphores in the project, so we can't protect.
 extern t_global_state	g_state;
 
-/* backward-compatible alias for existing code */
-# define g_last_signal (g_state.last_signal)
-/* legacy global aliases -> map to fields in g_state */
-# define g_envp (g_state.envp)
-# define g_exit_code (g_state.exit_code)
-# define g_interactive_shell (g_state.interactive_shell)
-# define g_expansion_error (g_state.expansion_error)
+
+
+
 
 // Function prototypes
 void					print_ast(t_nodes *ast_node, int depth);

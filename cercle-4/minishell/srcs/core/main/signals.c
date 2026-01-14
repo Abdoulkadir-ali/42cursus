@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 22:19:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:53:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	handle_interactive(int sig)
 {
 	if (sig == SIGINT)
 	{
-		g_last_signal = 130;
+		g_state.last_signal = 130;
 		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -28,7 +28,7 @@ static void	handle_heredoc(int sig)
 {
 	if (sig == SIGINT)
 	{
-		g_last_signal = 130;
+		g_state.last_signal = 130;
 		write(1, "\n", 1);
 	}
 }

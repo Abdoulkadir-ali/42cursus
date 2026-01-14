@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:22:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:52:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	scan_heredocs(t_nodes *ast_node)
 	node = (t_ast *)ast_node->content;
 	if (node->type == TOKEN_HEREDOC)
 	{
-		tmp_file = handle_heredoc_input(node->args[0], g_envp, g_exit_code);
+		tmp_file = handle_heredoc_input(node->args[0], g_state.envp, g_state.exit_code);
 		if (!tmp_file)
 			return (1);
 		free(node->args[0]);
@@ -43,7 +43,7 @@ static void	handle_heredoc_word(char *value)
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd != -1)
 	{
-		read_heredoc_loop(value, fd, g_envp, g_exit_code);
+		read_heredoc_loop(value, fd, g_state.envp, g_state.exit_code);
 		close(fd);
 		unlink(filename);
 	}
@@ -93,7 +93,7 @@ char	*handle_heredoc_input(char *delim, char **envp, int exit_code)
 	}
 	read_heredoc_loop(delim, fd, envp, exit_code);
 	close(fd);
-	if (g_last_signal == 130)
+	if (g_state.last_signal == 130)
 	{
 		unlink(filename);
 		free(filename);

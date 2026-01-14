@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:50:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	handle_invalid_option(char *arg)
 	}
 	else
 		ft_puterror("export: %s: invalid option\n", arg);
-	ft_putendl_fd("export: usage: export [name[=value] ...] or export -p", 2);
+	ft_puterror("export: usage: export [name[=value] ...] or export -p\n");
 	return (2);
 }
 

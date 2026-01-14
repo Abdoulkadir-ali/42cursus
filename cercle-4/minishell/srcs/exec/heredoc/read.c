@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:52:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	read_heredoc_loop(char *delim, int fd, char **envp, int exit_code)
 
 void	handle_heredoc_eof(char *stop_str)
 {
-	if (g_last_signal != 130)
+	if (g_state.last_signal != 130)
 	{
 		ft_puterror("warning: here-document delimited by end-of-file (wanted `%s')\n",
 			stop_str);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 01:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:25:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:52:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ static char	**duplicate_env(char **envp)
 static void	initialize_environment(char ***heap_env, char **envp)
 {
 	*heap_env = duplicate_env(envp);
-	g_envp = *heap_env;
-	g_interactive_shell = isatty(STDIN_FILENO);
+	g_state.envp = *heap_env;
+	g_state.interactive_shell = isatty(STDIN_FILENO);
 }
 
 static int	handle_command_line_mode(int ac, char **av, char ***heap_env,
@@ -69,7 +69,7 @@ static int	run_interactive_mode(char ***heap_env, int *last_exit_code)
 			break ;
 		}
 		process_input(line, heap_env, last_exit_code);
-		g_exit_code = *last_exit_code;
+        g_state.exit_code = *last_exit_code;
 		free(line);
 	}
 	rl_clear_history();

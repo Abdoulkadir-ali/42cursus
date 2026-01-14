@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:48:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:52:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct s_token
 	char			*value;
 	t_token_type	type;
 	int				quoted;
-	int expanded; // 1 if this token was produced by expansion/splitting
+	int				expanded;
 }					t_token;
 
 typedef struct s_ast
@@ -89,24 +89,19 @@ typedef struct s_exp_ctx
 	char			**res;
 }					t_exp_ctx;
 
-/* Prototypes for internal helpers */
 t_nodes				*process_redirections(t_nodes *cmd_node, t_nodes *tokens);
 int					process_matches_or_literal(t_expand_tokens_args *ctx);
-/* Shared helpers implemented in parsing submodules */
 t_nodes				*create_node(t_token_type type, char **args, t_nodes *left,
 						t_nodes *right);
 void				dump_tokens_list(t_nodes *head, const char *stage);
 void				add_token_node(t_nodes **head, t_nodes **tail, char *val,
 						int quoted);
-
-/* Core parsing API */
 t_nodes				*tokenizer(char *str);
 t_nodes				*ast_builder(t_nodes *tokens);
 void				expand_tokens(t_nodes **tokens, char **envp,
 						int last_exit_code);
 char				*expand_string(char *str, char **envp, int exit_code);
 char				*expand_heredoc(char *str, char **envp, int exit_code);
-/* env expansion helpers (split across files) */
 char				*get_env_value(char *var_name, char **envp);
 int					is_var_char(char c);
 char				*handle_dollar(char *str, int *i, char **envp,

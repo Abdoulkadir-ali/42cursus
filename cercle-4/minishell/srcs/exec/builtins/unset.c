@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:50:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static int	ft_unset_handle_option(char *opt)
 {
 	ft_puterror("unset: %s: invalid option\n", opt);
-	ft_putendl_fd("unset: usage: unset [-f] [-v] [-n] [name ...]", 2);
+	ft_puterror("unset: usage: unset [-f] [-v] [-n] [name ...]\n");
 	return (2);
 }
 

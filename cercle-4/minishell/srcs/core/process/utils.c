@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 22:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:05:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:52:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ int	expand_and_check_error(t_nodes **segment, char **envp, int exit_code,
 		int *new_exit_code)
 {
 	expand_tokens(segment, envp, exit_code);
-	if (g_expansion_error)
+	if (g_state.expansion_error)
 	{
-		*new_exit_code = g_exit_code;
+		*new_exit_code = g_state.exit_code;
 		ft_lstclear(segment, del_token);
-		g_expansion_error = 0;
+		g_state.expansion_error = 0;
 		return (1);
 	}
 	return (0);
@@ -47,7 +47,7 @@ void	execute_ast(t_nodes *segment, char ***envp, int *exit_code)
 		*exit_code = exec_tree(ast, envp);
 	else
 	{
-		if (g_last_signal == 130)
+		if (g_state.last_signal == 130)
 			*exit_code = 130;
 		else
 			*exit_code = 1;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:52:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	check_long_overflow(const char *str)
 
 static void	print_exit_message(void)
 {
-	if (g_interactive_shell)
+	if (g_state.interactive_shell)
 		ft_putendl_fd("exit", 2);
 }
 
@@ -54,7 +54,7 @@ static int	get_exit_status(char **args, long long *status)
 {
 	if (!args[1])
 	{
-		*status = g_exit_code;
+		*status = g_state.exit_code;
 		return (0);
 	}
 	if (!check_long_overflow(args[1]))
