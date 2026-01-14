@@ -6,11 +6,33 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 01:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 22:35:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:25:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
+
+static char	**duplicate_env(char **envp)
+{
+	int		env_count;
+	char	**heap_env;
+	int		i;
+
+	env_count = 0;
+	while (envp[env_count])
+		env_count++;
+	heap_env = malloc(sizeof(char *) * (env_count + 1));
+	if (!heap_env)
+		return (NULL);
+	i = 0;
+	while (i < env_count)
+	{
+		heap_env[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	heap_env[i] = NULL;
+	return (heap_env);
+}
 
 static void	initialize_environment(char ***heap_env, char **envp)
 {
@@ -20,7 +42,7 @@ static void	initialize_environment(char ***heap_env, char **envp)
 }
 
 static int	handle_command_line_mode(int ac, char **av, char ***heap_env,
-				int *last_exit_code)
+		int *last_exit_code)
 {
 	if (ac >= 3 && !ft_strncmp(av[1], "-c", 3))
 	{

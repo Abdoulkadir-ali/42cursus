@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:13:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,17 @@ static int	handle_export_no_args(char ***envp)
 
 static int	handle_invalid_option(char *arg)
 {
-	ft_putstr_fd("minishell: export: ", 2);
+	char opt[3];
+
 	if (arg[1] && arg[1] != '-')
 	{
-		write(2, "-", 1);
-		write(2, &arg[1], 1);
+		opt[0] = '-';
+		opt[1] = arg[1];
+		opt[2] = '\0';
+		ft_puterror("export: %s: invalid option\n", opt);
 	}
 	else
-		ft_putstr_fd(arg, 2);
-	ft_putendl_fd(": invalid option", 2);
+		ft_puterror("export: %s: invalid option\n", arg);
 	ft_putendl_fd("export: usage: export [name[=value] ...] or export -p", 2);
 	return (2);
 }

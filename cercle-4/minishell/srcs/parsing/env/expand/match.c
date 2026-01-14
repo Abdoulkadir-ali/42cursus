@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:01:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 02:27:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ static int	count_match_nodes(t_nodes *matches)
 static void	report_ambiguous_redirect(t_token *exp_tok, t_nodes *matches,
 		int *g_exit_code, int *g_expansion_error)
 {
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(exp_tok->value, 2);
-	ft_putendl_fd(": ambiguous redirect", 2);
+	ft_puterror("%s: ambiguous redirect\n", exp_tok->value);
 	*g_exit_code = 1;
 	*g_expansion_error = 1;
 	ft_lstclear(&matches, free);

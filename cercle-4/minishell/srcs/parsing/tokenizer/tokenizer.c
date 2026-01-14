@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 01:28:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static char	*get_chunk(char **str, int *quoted)
 		}
 		if (!closed)
 		{
-			ft_putendl_fd("minishell: syntax error: unclosed quote", 2);
+			ft_puterror("syntax error: unclosed quote\n");
 			return (NULL);
 		}
 	}

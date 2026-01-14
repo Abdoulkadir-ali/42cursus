@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/13 23:45:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,23 +33,21 @@ static void	child_execution(char *path, t_ast *node, char ***envp)
 	signal(SIGQUIT, SIG_DFL);
 	ft_set_env("_", path, envp);
 	execve(path, node->args, *envp);
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(node->args[0], 2);
 	if (errno == ENOENT)
 	{
-		ft_putendl_fd(": No such file or directory", 2);
+		ft_puterror("%s: No such file or directory\n", node->args[0]);
 		exit(127);
 	}
 	if (errno == EACCES)
 	{
 		if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
-			ft_putendl_fd(": Is a directory", 2);
+			ft_puterror("%s: Is a directory\n", node->args[0]);
 		else
-			ft_putendl_fd(": Permission denied", 2);
+			ft_puterror("%s: Permission denied\n", node->args[0]);
 		exit(126);
 	}
-	ft_putstr_fd(": ", 2);
-	ft_putendl_fd(strerror(errno), 2);
+	ft_puterror("%s: ", node->args[0]);
+	perror(NULL);
 	exit(1);
 }
 
@@ -89,12 +87,10 @@ int	exec_simple_command(t_ast *node, char ***envp)
 	path = find_path(node->args[0], *envp);
 	if (!path)
 	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(node->args[0], 2);
 		if (path_is_set(*envp))
-			ft_putendl_fd(": command not found", 2);
+			ft_puterror("%s: command not found\n", node->args[0]);
 		else
-			ft_putendl_fd(": No such file or directory", 2);
+			ft_puterror("%s: No such file or directory\n", node->args[0]);
 		return (127);
 	}
 	return (run_external_command(path, node, envp));

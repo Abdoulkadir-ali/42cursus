@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 23:46:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:46:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,7 @@ void	parse_export_arg(char *arg, t_export_ctx *ctx)
 
 int	report_invalid_identifier(char *arg, t_export_ctx *ctx)
 {
-	ft_putstr_fd("minishell: export: `", 2);
-	ft_putstr_fd(arg, 2);
-	ft_putendl_fd("': not a valid identifier", 2);
+	ft_puterror("export: `%s': not a valid identifier\n", arg);
 	free(ctx->key);
 	if (ctx->new_entry)
 		free(ctx->new_entry);

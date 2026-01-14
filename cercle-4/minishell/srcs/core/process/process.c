@@ -6,24 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 22:55:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:28:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
-static int	process_segment_public(t_nodes *segment, char ***envp,
-		int *exit_code)
-{
-	if (expand_and_check_error(&segment, *envp, *exit_code, exit_code))
-		return (1);
-	execute_ast(segment, envp, exit_code);
-	return (0);
-}
-
 static t_nodes	*tokenize_and_check(char *line, int *exit_code)
 {
 	t_nodes	*tokens;
+	int		status;
 
 	tokens = tokenizer(line);
 	if (!tokens)
@@ -31,11 +23,39 @@ static t_nodes	*tokenize_and_check(char *line, int *exit_code)
 		*exit_code = 2;
 		return (NULL);
 	}
-	if (debug_dump_tokens_and_consume(&tokens))
+
+	status = check_syntax(tokens);
+	if (status != 0)
+	{
+		*exit_code = status;
+		consume_heredocs(tokens);
+		ft_lstclear(&tokens, del_token);
 		return (NULL);
-	if (check_syntax_and_consume(tokens, exit_code))
-		return (NULL);
+	}
 	return (tokens);
+}
+
+static t_nodes	*extract_segment(t_nodes *cursor, t_nodes **pnext)
+{
+	t_nodes	*segment;
+	t_nodes	*seg_tail;
+	t_nodes	*it;
+
+	segment = NULL;
+	seg_tail = NULL;
+	it = cursor;
+	build_segment_until_semicolon(&segment, &seg_tail, &it);
+	consume_semicolon_if_present(it, pnext);
+	return (segment);
+}
+
+static int	process_segment_internal(t_nodes *segment, char ***envp,
+		int *exit_code)
+{
+	if (expand_and_check_error(&segment, *envp, *exit_code, exit_code))
+		return (1);
+	execute_ast(segment, envp, exit_code);
+	return (0);
 }
 
 static void	process_segments(t_nodes *tokens, char ***envp, int *exit_code)
@@ -51,9 +71,8 @@ static void	process_segments(t_nodes *tokens, char ***envp, int *exit_code)
 		segment = extract_segment(cursor, &next_cursor);
 		if (segment)
 		{
-			debug_dump_segment(segment);
 			if (try_handle_assignment_public(segment, envp, exit_code)
-				|| process_segment_public(segment, envp, exit_code))
+				|| process_segment_internal(segment, envp, exit_code))
 			{
 				cursor = next_cursor;
 				continue ;

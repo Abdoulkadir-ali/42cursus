@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:45:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,8 @@ void	handle_heredoc_eof(char *stop_str)
 {
 	if (g_last_signal != 130)
 	{
-		ft_putstr_fd("minishell: warning: here-document delimited by end-of-file ",
-			2);
-		ft_putstr_fd("(wanted `", 2);
-		ft_putstr_fd(stop_str, 2);
-		ft_putendl_fd("')", 2);
+		ft_puterror("warning: here-document delimited by end-of-file (wanted `%s')\n",
+			stop_str);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:45:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,13 @@ static int	get_exit_status(char **args, long long *status)
 	}
 	if (!check_long_overflow(args[1]))
 	{
-		ft_putstr_fd("minishell: exit: ", 2);
-		ft_putstr_fd(args[1], 2);
-		ft_putendl_fd(": numeric argument required", 2);
+		ft_puterror("exit: %s: numeric argument required\n", args[1]);
 		exit(2);
 	}
 	*status = ft_atoll(args[1]);
 	if (args[2])
 	{
-		ft_putendl_fd("minishell: exit: too many arguments", 2);
+		ft_puterror("exit: too many arguments\n");
 		return (1);
 	}
 	return (0);

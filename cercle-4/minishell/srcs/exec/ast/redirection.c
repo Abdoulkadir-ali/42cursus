@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/13 23:42:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@ static int	open_redirection_file(t_ast *node, int *fd)
 	if (node->args[0] && stat(node->args[0], &target_st) == 0
 		&& S_ISDIR(target_st.st_mode))
 	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(node->args[0], 2);
-		ft_putendl_fd(": Is a directory", 2);
+		ft_puterror("%s: Is a directory\n", node->args[0]);
 		return (1);
 	}
 	if (node->type == TOKEN_RED_IN)
@@ -34,8 +32,8 @@ static int	open_redirection_file(t_ast *node, int *fd)
 		*fd = open(node->args[0], O_RDONLY);
 	if (*fd == -1)
 	{
-		ft_putstr_fd("minishell: ", 2);
-		perror(node->args[0]);
+		ft_puterror("%s: ", node->args[0]);
+		perror(NULL);
 		return (1);
 	}
 	return (0);

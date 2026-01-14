@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug.c                                            :+:      :+:    :+:   */
+/*   ft_puterror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/11 03:30:41 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:41:58 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/14 17:32:20 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/14 17:44:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lib.h"
 
-void	debug_printf(const char *format, ...)
+#include "minishell.h"
+
+void	ft_puterror(const char *fmt, ...)
 {
-	va_list	args;
+    va_list args;
 
-	if (!DEBUG)
-		return ;
-	va_start(args, format);
-	ft_vprintf_fd(2, format, args);
-	va_end(args);
-	(void)format;
+    fprintf(stderr, "minishell: ");
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
 }

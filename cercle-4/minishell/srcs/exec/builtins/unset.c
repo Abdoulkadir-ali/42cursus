@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:17:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 
 static int	ft_unset_handle_option(char *opt)
 {
-	ft_putstr_fd("minishell: unset: ", 2);
-	ft_putstr_fd(opt, 2);
-	ft_putendl_fd(": invalid option", 2);
+	ft_puterror("unset: %s: invalid option\n", opt);
 	ft_putendl_fd("unset: usage: unset [-f] [-v] [-n] [name ...]", 2);
 	return (2);
 }

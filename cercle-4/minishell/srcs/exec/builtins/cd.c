@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:18:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	validate_cd_args(char **args)
 {
 	if (args[1] && args[2])
 	{
-		ft_putendl_fd("minishell: cd: too many arguments", 2);
+		ft_puterror("cd: too many arguments\n");
 		return (1);
 	}
 	return (0);
@@ -47,7 +47,7 @@ static char	*get_cd_path(char **args, char **envp)
 		path = get_env_val_simple("HOME", envp);
 		if (!path)
 		{
-			ft_putendl_fd("minishell: cd: HOME not set", 2);
+			ft_puterror("cd: HOME not set\n");
 			return (NULL);
 		}
 	}
@@ -56,7 +56,7 @@ static char	*get_cd_path(char **args, char **envp)
 		path = get_env_val_simple("OLDPWD", envp);
 		if (!path)
 		{
-			ft_putendl_fd("minishell: cd: OLDPWD not set", 2);
+			ft_puterror("cd: OLDPWD not set\n");
 			return (NULL);
 		}
 		ft_putendl_fd(path, 1);
@@ -74,8 +74,8 @@ static int	perform_cd(char *path, char ***envp)
 	getcwd(oldcwd, sizeof(oldcwd));
 	if (chdir(path) == -1)
 	{
-		ft_putstr_fd("minishell: cd: ", 2);
-		perror(path);
+		ft_puterror("cd: %s: ", path);
+		perror(NULL);
 		return (1);
 	}
 	getcwd(cwd, sizeof(cwd));

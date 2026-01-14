@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 01:28:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 17:47:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ static int	is_redirection(t_token_type type)
 
 static int	print_syntax_error(char *token)
 {
-	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-	ft_putstr_fd(token, 2);
-	ft_putendl_fd("'", 2);
+	ft_puterror("syntax error near unexpected token `%s'\n", token);
 	return (2);
 }
 
