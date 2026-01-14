@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:51:19 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:45:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 03:07:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
-
-void	execute_command(t_nodes *tokens, char ***envp, int *exit_code);
 
 int	check_if_assignment_candidate(t_nodes *segment, t_token **first_tok,
 		char **eq)
