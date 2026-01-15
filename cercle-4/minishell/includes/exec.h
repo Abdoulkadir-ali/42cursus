@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:49:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 13:54:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,19 @@ typedef struct s_export_ctx
 	int		idx;
 }			t_export_ctx;
 
-struct		s_heredoc_ctx
+typedef struct s_quotes_state
+{
+	int		i;
+	int		j;
+	char	quote;
+}			t_quotes_state;
+
+typedef struct s_heredoc
 {
 	char	**envp;
 	int		exit_code;
-};
+	int		fd;
+}			t_heredoc;
 
 /* Public API used by other translation units */
 void		print_sorted_env(char **envp);
@@ -75,14 +83,11 @@ char		*remove_quotes_heredoc(char *str);
 char		*generate_tmp_filename(void);
 char		*handle_heredoc_input(char *delim, char **envp, int exit_code);
 void		read_heredoc_loop(char *delim, int fd, char **envp, int exit_code);
-char		*prepare_stop_str(char *delim, struct s_heredoc_ctx *ctx);
+char		*prepare_stop_str(char *delim, t_heredoc *ctx);
 char		*read_line(void);
 int			process_line_quoted(char *line, char *stop_str, int fd);
 int			process_line_unquoted(char *line, char *stop_str, int fd,
-				struct s_heredoc_ctx *ctx);
-void		read_heredoc_lines(char *stop_str, int quoted, int fd,
-				struct s_heredoc_ctx *ctx);
-
-/* legacy globals removed; use g_state aliases in core.h */
-
+				t_heredoc *ctx);
+void		read_heredoc_lines(char *stop_str, int quoted,
+				t_heredoc *ctx);
 #endif

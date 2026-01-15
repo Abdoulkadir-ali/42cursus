@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:45:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 13:51:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,57 +42,55 @@ int	is_quoted_delim(const char *delim)
 	return (0);
 }
 
-static void	handle_inside_quote(const char *str, int *i, char *res, int *j,
-		char *quote)
+static void	handle_inside_quote(const char *str, char *res,
+		t_quotes_state *state)
 {
-	if (str[*i] == *quote)
+	if (str[state->i] == state->quote)
 	{
-		*quote = 0;
-		(*i)++;
+		state->quote = 0;
+		state->i++;
 	}
 	else
 	{
-		res[(*j)++] = str[(*i)++];
+		res[state->j++] = str[state->i++];
 	}
 }
 
-static void	handle_outside_quote(const char *str, int *i, char *res, int *j,
-		char *quote)
+static void	handle_outside_quote(const char *str, char *res,
+		t_quotes_state *state)
 {
-	if (str[*i] == '\\')
+	if (str[state->i] == '\\')
 	{
-		(*i)++;
-		if (str[*i])
-			res[(*j)++] = str[(*i)++];
+		state->i++;
+		if (str[state->i])
+			res[state->j++] = str[state->i++];
 	}
-	else if (str[*i] == '\'' || str[*i] == '"')
-		*quote = str[(*i)++];
+	else if (str[state->i] == '\'' || str[state->i] == '"')
+		state->quote = str[state->i++];
 	else
-		res[(*j)++] = str[(*i)++];
+		res[state->j++] = str[state->i++];
 }
 
 char	*remove_quotes_heredoc(char *str)
 {
-	char	*res;
-	int		i;
-	int		j;
-	char	quote;
+	char			*res;
+	t_quotes_state	state;
 
 	if (!str)
 		return (NULL);
-	i = 0;
-	j = 0;
-	quote = 0;
+	state.i = 0;
+	state.j = 0;
+	state.quote = 0;
 	res = malloc(ft_strlen(str) + 1);
 	if (!res)
 		return (NULL);
-	while (str[i])
+	while (str[state.i])
 	{
-		if (quote)
-			handle_inside_quote(str, &i, res, &j, &quote);
+		if (state.quote)
+			handle_inside_quote(str, res, &state);
 		else
-			handle_outside_quote(str, &i, res, &j, &quote);
+			handle_outside_quote(str, res, &state);
 	}
-	res[j] = '\0';
+	res[state.j] = '\0';
 	return (res);
 }

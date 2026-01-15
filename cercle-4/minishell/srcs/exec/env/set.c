@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:48:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 13:51:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	get_env_index(char *key, char **envp)
 	while (envp && envp[i])
 	{
 		if (ft_strncmp(envp[i], key, len) == 0 && (envp[i][len] == '='
-				|| envp[i][len] == '\0'))
+			|| envp[i][len] == '\0'))
 			return (i);
 		i++;
 	}
