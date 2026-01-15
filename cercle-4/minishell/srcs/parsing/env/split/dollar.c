@@ -12,38 +12,8 @@
 
 #include "parsing.h"
 
-static int	is_exp_target(char c)
-{
-	return (ft_isalnum(c) || c == '_' || c == '?');
-}
-
-static void	perform_expansion(t_exp_input *in, t_exp_state *st, t_exp_output *out)
-{
-	char	*val;
-
-	val = handle_dollar((char *)in->str, &in->pos, in->env, in->status);
-	if (out->str)
-		exp_push_str(out, val);
-	else if (st->in_d_quote)
-	{
-		exp_push_str(out, val);
-		st->has_quotes = 1;
-	}
-	else
-	{
-		process_val_split(val, out);
-		free(val);
-	}
-}
-
-static void	push_literal_dollar(t_exp_input *in, t_exp_output *out, int idx)
-{
-	exp_push_char(out, in->str[idx]);
-	in->pos++;
-}
-
-static int	expand_to_string(t_exp_input *in, t_exp_state *st, t_exp_output *out,
-		t_dollar_peek *peek)
+static int	expand_to_string(t_exp_input *in, t_exp_state *st,
+		t_exp_output *out, t_dollar_peek *peek)
 {
 	int	should_expand;
 
@@ -57,8 +27,8 @@ static int	expand_to_string(t_exp_input *in, t_exp_state *st, t_exp_output *out,
 	return (1);
 }
 
-static int	expand_to_tokens(t_exp_input *in, t_exp_state *st, t_exp_output *out,
-		t_dollar_peek *peek)
+static int	expand_to_tokens(t_exp_input *in, t_exp_state *st,
+		t_exp_output *out, t_dollar_peek *peek)
 {
 	int	is_unquoted_quote;
 	int	is_bad_target;

@@ -12,7 +12,7 @@
 
 #include "parsing.h"
 
-t_nodes	*finalize_expansion(t_exp_output *out, t_exp_state *st)
+static t_nodes	*finalize_expansion(t_exp_output *out, t_exp_state *st)
 {
 	if (out->word)
 		add_token_node(&out->head, &out->tail, out->word,

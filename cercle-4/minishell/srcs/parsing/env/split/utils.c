@@ -62,24 +62,20 @@ t_nodes	*create_token_node_from_match(char *match)
 	new_tok->expanded = 1;
 	return (ft_lstnew(new_tok));
 }
-void	exp_push_char(t_exp_output *out, char c)
-{
-	char	tmp[2];
 
-	tmp[0] = c;
-	tmp[1] = '\0';
-	if (out->str)
-		append_chunk(&out->str, ft_strdup(tmp));
-	else
-		append_chunk(&out->word, ft_strdup(tmp));
-}
-
-void	exp_push_str(t_exp_output *out, char *s)
+void	append_chunk(char **res, char *chunk)
 {
-	if (!s)
+	char	*tmp;
+
+	if (!chunk)
 		return ;
-	if (out->str)
-		append_chunk(&out->str, s);
+	if (!*res)
+		*res = chunk;
 	else
-		append_chunk(&out->word, s);
+	{
+		tmp = ft_strjoin(*res, chunk);
+		free(*res);
+		free(chunk);
+		*res = tmp;
+	}
 }

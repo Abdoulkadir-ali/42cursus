@@ -42,9 +42,13 @@ static void	apply_redir(t_nodes **cmd_node, t_nodes *redir_token_node)
 	tok = (t_token *)redir_token_node->content;
 	args = ft_calloc(3, sizeof(char *));
 	if (redir_token_node->next)
-		args[0] = ft_strdup(((t_token *)redir_token_node->next->content)->value);
+	{
+		tok = (t_token *)redir_token_node->next->content;
+		args[0] = ft_strdup(tok->value);
+	}
 	else
 		args[0] = ft_strdup("");
+	tok = (t_token *)redir_token_node->content;
 	args[1] = ft_strdup(tok->value);
 	redir_node = create_node(tok->type, args, *cmd_node, NULL);
 	*cmd_node = redir_node;

@@ -26,7 +26,8 @@ static int	handle_dq_backslash(t_exp_input *in, t_exp_output *out)
 	return (0);
 }
 
-static int	consume_backslash(t_exp_input *in, t_exp_state *st, t_exp_output *out)
+static int	consume_backslash(t_exp_input *in, t_exp_state *st,
+		t_exp_output *out)
 {
 	in->pos++;
 	if (!in->str[in->pos])

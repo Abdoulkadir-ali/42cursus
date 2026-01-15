@@ -6,11 +6,39 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:15:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 14:57:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
+
+static int	is_var_char(char c)
+{
+	return (ft_isalnum(c) || c == '_');
+}
+
+char	*handle_dollar(char *str, int *i, char **envp, int exit_code)
+{
+	int		start;
+	char	*var_name;
+	char	*value;
+
+	(*i)++;
+	if (str[*i] == '?')
+	{
+		(*i)++;
+		return (ft_itoa(exit_code));
+	}
+	if (!is_var_char(str[*i]))
+		return (ft_strdup("$"));
+	start = *i;
+	while (str[*i] && is_var_char(str[*i]))
+		(*i)++;
+	var_name = ft_substr(str, start, *i - start);
+	value = get_env_value(var_name, envp);
+	free(var_name);
+	return (value);
+}
 
 static int	process_expand_char(t_expansion *exp)
 {

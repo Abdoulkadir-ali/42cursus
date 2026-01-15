@@ -12,7 +12,8 @@
 
 #include "parsing.h"
 
-static void	process_expanded_list(t_token_expansion *exp, t_nodes *expanded_list)
+static void	process_expanded_list(t_token_expansion *exp,
+		t_nodes *expanded_list)
 {
 	t_nodes	*exp_curr;
 	t_nodes	*exp_next;

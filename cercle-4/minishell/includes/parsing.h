@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:49:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 14:57:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,8 @@ typedef struct s_token_expansion
 }					t_token_expansion;
 
 t_nodes				*process_redirections(t_nodes *cmd_node, t_nodes *tokens);
-int					process_matches_or_literal(t_token_expansion *ctx, t_nodes *matches,
-						t_token *exp_tok, t_nodes *exp_curr);
+int					process_matches_or_literal(t_token_expansion *ctx,
+						t_nodes *matches, t_token *exp_tok, t_nodes *exp_curr);
 t_nodes				*create_node(t_token_type type, char **args, t_nodes *left,
 						t_nodes *right);
 void				dump_tokens_list(t_nodes *head, const char *stage);
@@ -113,12 +113,10 @@ void				add_token_node(t_nodes **head, t_nodes **tail, char *val,
 						int quoted);
 t_nodes				*tokenizer(char *str);
 t_nodes				*ast_builder(t_nodes *tokens);
-void				expand_tokens(t_nodes **tokens, char **env,
-						int status);
+void				expand_tokens(t_nodes **tokens, char **env, int status);
 char				*expand_string(char *str, char **env, int status);
 char				*expand_heredoc(char *str, char **env, int status);
 char				*get_env_value(char *var_name, char **envp);
-int					is_var_char(char c);
 char				*handle_dollar(char *str, int *i, char **envp,
 						int exit_code);
 void				append_chunk(char **res, char *chunk);
@@ -135,6 +133,7 @@ int					is_prev_heredoc(t_nodes *prev);
 void				apply_tilde_expansion(t_token *tok, char **envp);
 t_nodes				*create_token_node_from_match(char *match);
 t_nodes				*create_cmd_node(t_nodes *tokens);
+t_nodes				*handle_subshell(t_nodes *tokens);
 int					scan_unquoted(const char *s);
 int					scan_quoted(const char *s, char quote);
 int					is_wildcard(const char *str);
@@ -147,10 +146,18 @@ int					syntax_handle_rparen(t_token *tok, t_token *nxt,
 int					syntax_handle_pipe_and_logic(t_token *tok, t_token *nxt);
 int					syntax_handle_semicolon(t_token *tok, t_token *nxt);
 int					syntax_handle_redirection(t_token *tok, t_token *nxt);
+int					is_exp_target(char c);
+void				perform_expansion(t_exp_input *in, t_exp_state *st,
+						t_exp_output *out);
+void				push_literal_dollar(t_exp_input *in, t_exp_output *out,
+						int idx);
 void				process_val_split(char *val, t_exp_output *out);
-int					handle_quote_split(t_exp_input *in, t_exp_state *st, t_exp_output *out);
-int					handle_backslash_split(t_exp_input *in, t_exp_state *st, t_exp_output *out);
-int					handle_dollar_split(t_exp_input *in, t_exp_state *st, t_exp_output *out);
+int					handle_quote_split(t_exp_input *in, t_exp_state *st,
+						t_exp_output *out);
+int					handle_backslash_split(t_exp_input *in, t_exp_state *st,
+						t_exp_output *out);
+int					handle_dollar_split(t_exp_input *in, t_exp_state *st,
+						t_exp_output *out);
 void				exp_push_char(t_exp_output *out, char c);
 void				exp_push_str(t_exp_output *out, char *s);
 int					handle_pipe(char **str, t_token *token);

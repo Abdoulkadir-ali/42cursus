@@ -19,7 +19,8 @@ static void	mark_as_quoted(t_exp_state *st, t_exp_output *out)
 		out->word = ft_strdup("");
 }
 
-static int	toggle_single_quote(t_exp_input *in, t_exp_state *st, t_exp_output *out)
+static int	toggle_single_quote(t_exp_input *in, t_exp_state *st,
+		t_exp_output *out)
 {
 	if (st->in_d_quote)
 		return (0);
@@ -29,7 +30,8 @@ static int	toggle_single_quote(t_exp_input *in, t_exp_state *st, t_exp_output *o
 	return (1);
 }
 
-static int	toggle_double_quote(t_exp_input *in, t_exp_state *st, t_exp_output *out)
+static int	toggle_double_quote(t_exp_input *in, t_exp_state *st,
+		t_exp_output *out)
 {
 	if (st->in_s_quote)
 		return (0);
