@@ -3,40 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: copilot <copilot@local>                     +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/14 20:00:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/14 20:00:00 by copilot          ###   ########.fr       */
+/*   Created: 2026/01/15 03:04:43 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/15 03:13:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-
-int	is_redirection(t_token_type type)
-{
-    return (type == TOKEN_RED_IN || type == TOKEN_RED_OUT
-        || type == TOKEN_APPEND || type == TOKEN_HEREDOC);
-}
+#include "parsing.h"
 
 int	print_syntax_error(char *token)
 {
-    ft_puterror("syntax error near unexpected token `%s'\n", token);
-    return (2);
+	ft_puterror("syntax error near unexpected token `%s'\n", token);
+	return (2);
 }
-
-int	check_initial_token(t_nodes *tokens)
-{
-    t_token	*tok;
-
-    if (!tokens)
-        return (0);
-    tok = (t_token *)tokens->content;
-    if (tok->type == TOKEN_PIPE || tok->type == TOKEN_SEMICOLON
-        || tok->type == TOKEN_AND || tok->type == TOKEN_OR)
-        return (print_syntax_error(tok->value));
-    return (0);
-}
-
 
 void	del_token(void *content)
 {
@@ -51,4 +31,8 @@ void	del_token(void *content)
 	}
 }
 
-
+int	is_redirection(t_token_type type)
+{
+	return (type == TOKEN_RED_IN || type == TOKEN_RED_OUT
+		|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
+}
