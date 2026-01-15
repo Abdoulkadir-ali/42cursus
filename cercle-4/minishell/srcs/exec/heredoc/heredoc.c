@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:52:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:48:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ int	scan_heredocs(t_nodes *ast_node)
 	node = (t_ast *)ast_node->content;
 	if (node->type == TOKEN_HEREDOC)
 	{
-		tmp_file = handle_heredoc_input(node->args[0], g_state.envp, g_state.exit_code);
+		tmp_file = handle_heredoc_input(node->args[0], g_state.envp,
+				g_state.exit_code);
 		if (!tmp_file)
 			return (1);
 		free(node->args[0]);

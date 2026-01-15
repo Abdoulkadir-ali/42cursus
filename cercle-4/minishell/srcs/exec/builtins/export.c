@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:50:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:48:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	handle_export_no_args(char ***envp)
 
 static int	handle_invalid_option(char *arg)
 {
-	char opt[3];
+	char	opt[3];
 
 	if (arg[1] && arg[1] != '-')
 	{

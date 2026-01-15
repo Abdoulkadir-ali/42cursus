@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:46:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:47:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ static char	*substr_one_at(const char *s, int idx)
 static int	dollar_handle_res_case(t_exp_ctx *ctx, int idx, char next)
 {
 	char	*val;
+	int		is_name_char;
 
+	is_name_char = ft_isalnum((unsigned char)next) || next == '_'
+		|| next == '?';
 	if (next == '\'' || next == '$' || (!is_var_char(next) && next != '"'
 		&& next != '?'))
 	{
@@ -28,8 +31,7 @@ static int	dollar_handle_res_case(t_exp_ctx *ctx, int idx, char next)
 		(*ctx->state.i)++;
 		return (1);
 	}
-	if (!ctx->state.qt[0] && (ft_isalnum((unsigned char)next) || next == '_'
-			|| next == '?'))
+	if (!ctx->state.qt[0] && is_name_char)
 	{
 		val = handle_dollar((char *)ctx->input.str, ctx->state.i,
 				ctx->input.envp, ctx->input.exit_code);
@@ -42,14 +44,16 @@ static int	dollar_handle_res_case(t_exp_ctx *ctx, int idx, char next)
 static int	dollar_handle_no_res_case(t_exp_ctx *ctx, int idx, char next)
 {
 	char	*val;
+	int		is_bad;
 
 	if ((next == '\'' || next == '"') && !ctx->state.qt[0] && !ctx->state.qt[1])
 	{
 		(*ctx->state.i)++;
 		return (1);
 	}
-	if ((!is_var_char(next) && next != '?') || ctx->state.qt[0] || (next == '"'
-			&& ctx->state.qt[1]))
+	is_bad = (!is_var_char(next) && next != '?') || ctx->state.qt[0]
+		|| (next == '"' && ctx->state.qt[1]);
+	if (is_bad)
 	{
 		append_chunk(ctx->state.curr, substr_one_at(ctx->input.str, idx));
 		(*ctx->state.i)++;
