@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:54:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:24:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,45 @@ typedef struct s_ast
 	int				is_quoted;
 }					t_ast;
 
+typedef struct s_exp_input
+{
+	const char		*str;
+	char			**envp;
+	int				exit_code;
+}					t_exp_input;
+
+typedef struct s_exp_state
+{
+	int				*i;
+	int				*qt;
+	int				*wd_quoted;
+	char			**curr;
+	char			**res;
+}					t_exp_state;
+
+typedef struct s_exp_lists
+{
+	t_nodes			**head;
+	t_nodes			**tail;
+}					t_exp_lists;
+
+typedef struct s_exp_ctx
+{
+	t_exp_input		input;
+	t_exp_state		state;
+	t_exp_lists		lists;
+}					t_exp_ctx;
+
+typedef struct s_locals
+{
+	t_nodes			*head;
+	t_nodes			*tail;
+	char			*curr;
+	int				i;
+	int				qt[2];
+	int				wd_quoted;
+}					t_locals;
+
 typedef struct s_expand_tokens_args
 {
 	t_nodes			*new_head;
@@ -74,20 +113,6 @@ typedef struct s_expand_tokens_args
 	t_token			*exp_tok;
 	t_nodes			*matches;
 }					t_expand_tokens_args;
-
-typedef struct s_exp_ctx
-{
-	const char		*str;
-	int				*i;
-	int				*qt;
-	int				*wd_quoted;
-	char			**curr;
-	t_nodes			**head;
-	t_nodes			**tail;
-	char			**envp;
-	int				exit_code;
-	char			**res;
-}					t_exp_ctx;
 
 t_nodes				*process_redirections(t_nodes *cmd_node, t_nodes *tokens);
 int					process_matches_or_literal(t_expand_tokens_args *ctx);
@@ -132,6 +157,10 @@ int					syntax_handle_rparen(t_token *tok, t_token *nxt,
 int					syntax_handle_pipe_and_logic(t_token *tok, t_token *nxt);
 int					syntax_handle_semicolon(t_token *tok, t_token *nxt);
 int					syntax_handle_redirection(t_token *tok, t_token *nxt);
+void				process_val_split(char *val, t_exp_ctx *ctx);
+int					handle_quote_split(t_exp_ctx *ctx);
+int					handle_backslash_split(t_exp_ctx *ctx);
+int					handle_dollar_split(t_exp_ctx *ctx);
 int					handle_pipe(char **str, t_token *token);
 int					handle_paren(char **str, t_token *token, int left);
 int					handle_ampersand(char **str, t_token *token);
@@ -142,5 +171,9 @@ t_token				*handle_separator(char **str);
 int					match_loop(char **pattern, char **str, char **star,
 						char **str_start);
 t_token				*handle_word(char **str);
+t_nodes				*finalize_expansion(t_exp_ctx *ctx);
+void				init_exp_ctx(t_exp_ctx *ctx, char *str, char **envp,
+						int exit_code);
+void				run_expansion_loop(t_exp_ctx *ctx);
 
 #endif
