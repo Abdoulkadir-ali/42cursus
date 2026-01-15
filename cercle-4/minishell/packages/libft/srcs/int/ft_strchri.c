@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 23:44:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/10 23:44:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 19:49:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_strchri(char *str, char c)
 {
-	int i;
+	int	i;
 
 	if (!str)
 		return (-1);

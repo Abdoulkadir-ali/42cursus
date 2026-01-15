@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 13:16:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 19:50:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ int	ft_print_string_with_flags(char *str, t_flags *flags)
 	{
 		if (str)
 			write(flags->fd, str, print_len);
-		count = print_len + ft_print_width(flags->width - print_len, 0, 0, flags->fd);
+		count = print_len + ft_print_width(flags->width - print_len, 0, 0,
+				flags->fd);
 	}
 	else
 	{

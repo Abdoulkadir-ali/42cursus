@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 23:51:21 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/10 23:53:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 19:51:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 char	*ft_strldup(char *str, size_t l)
 {
-	char *r;
-	size_t i;
+	char	*r;
+	size_t	i;
 
 	if (!str)
 		return (NULL);

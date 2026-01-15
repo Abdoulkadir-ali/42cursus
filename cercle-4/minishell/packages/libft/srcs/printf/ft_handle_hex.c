@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/11 13:16:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 19:51:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ int	ft_print_hex_with_flags(unsigned long n, t_flags *flags)
 	ft_calc_hex_params(n, flags, &num_len, &total_len);
 	count = 0;
 	if (!flags->minus && flags->width > total_len)
-		count += ft_print_width(flags->width - total_len, flags->zero, 0, flags->fd);
+		count += ft_print_width(flags->width - total_len, flags->zero, 0,
+				flags->fd);
 	count += ft_print_hex_prefix(flags, n);
 	if (flags->has_precision)
 		count += ft_print_precision_zeros(ft_count_hex_digits(n),

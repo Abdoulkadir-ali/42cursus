@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/13 23:35:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 19:57:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,13 @@ typedef struct s_flags
 	int				fd;
 }					t_flags;
 
+typedef struct s_printf_ctx
+{
+	int				i;
+	int				count;
+	int				fd;
+}					t_printf_ctx;
+
 typedef struct s_list
 {
 	void			*content;
@@ -76,7 +83,7 @@ int					ft_strncmp(const char *s1, const char *s2, size_t n);
 int					ft_atoi(const char *s);
 void				ft_swap(int *a, int *b);
 
-long long		ft_atoll(const char *str);
+long long			ft_atoll(const char *str);
 
 void				ft_bzero(void *s, size_t n);
 void				*ft_calloc(size_t nmemb, size_t size);
@@ -108,7 +115,8 @@ int					ft_check_base(const char *base);
 size_t				ft_nbrlen_base(long long int n, size_t base);
 size_t				ft_unbrlen_base(unsigned long long int n, size_t base);
 int					ft_putnbr_base(long long int n, const char *base, int fd);
-int					ft_putunbr_base(unsigned long long int n, const char *base, int fd);
+int					ft_putunbr_base(unsigned long long int n, const char *base,
+						int fd);
 char				*ft_itoa_base(long long int n, const char *base);
 long long int		ft_atoi_base(const char *str, const char *base);
 
