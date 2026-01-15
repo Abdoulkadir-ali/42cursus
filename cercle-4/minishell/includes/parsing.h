@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:40:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 03:54:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ void				append_chunk(char **res, char *chunk);
 t_nodes				*expand_and_split(char *str, char **envp, int exit_code);
 int					check_syntax(t_nodes *tokens);
 t_nodes				*expand_wildcard(char *pattern);
+t_nodes				*collect_matches(DIR *dir, char *pattern);
 int					ft_set_env(char *key, char *value, char ***envp);
 char				**expand_wildcards(char **args);
 void				free_ast(t_nodes *ast_node);
@@ -121,6 +122,7 @@ t_nodes				*create_token_node_from_match(char *match);
 t_nodes				*create_cmd_node(t_nodes *tokens);
 int					scan_unquoted(const char *s);
 int					scan_quoted(const char *s, char quote);
+int					is_wildcard(const char *str);
 int					is_redirection(t_token_type type);
 int					print_syntax_error(char *token);
 int					syntax_handle_lparen(t_token *tok, t_token *nxt,
@@ -137,6 +139,8 @@ int					handle_red_in(char **str, t_token *token);
 int					handle_red_out(char **str, t_token *token);
 int					handle_semicolon(char **str, t_token *token);
 t_token				*handle_separator(char **str);
+int					match_loop(char **pattern, char **str, char **star,
+						char **str_start);
 t_token				*handle_word(char **str);
 
 #endif

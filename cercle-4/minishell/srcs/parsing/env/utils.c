@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:02:01 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 02:26:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 03:57:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,3 @@ t_nodes	*create_token_node_from_match(char *match)
 	new_tok->expanded = 1;
 	return (ft_lstnew(new_tok));
 }
-
