@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:24:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:42:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,9 +171,5 @@ t_token				*handle_separator(char **str);
 int					match_loop(char **pattern, char **str, char **star,
 						char **str_start);
 t_token				*handle_word(char **str);
-t_nodes				*finalize_expansion(t_exp_ctx *ctx);
-void				init_exp_ctx(t_exp_ctx *ctx, char *str, char **envp,
-						int exit_code);
-void				run_expansion_loop(t_exp_ctx *ctx);
 
 #endif
