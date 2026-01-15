@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:52:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 01:54:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static int	check_long_overflow(const char *str)
 {
-	unsigned long long	res;
-	int					sign;
-	int					i;
+	size_t	res;
+	int		sign;
+	int		i;
 
 	i = 0;
 	res = 0;
@@ -33,21 +33,12 @@ static int	check_long_overflow(const char *str)
 		return (0);
 	while (str[i])
 	{
-		if (!ft_isdigit(str[i]))
-			return (0);
-		if (res > LLONG_MAX)
-			return (0);
-		if (res == LLONG_MAX && (str[i] - '0') > (7 + (sign == -1)))
+		if (!ft_isdigit(str[i]) || (res > LLONG_MAX) || (res == LLONG_MAX
+				&& (str[i] - '0') > (7 + (sign == -1))))
 			return (0);
 		res = res * 10 + (str[i++] - '0');
 	}
 	return (1);
-}
-
-static void	print_exit_message(void)
-{
-	if (g_state.interactive_shell)
-		ft_putendl_fd("exit", 2);
 }
 
 static int	get_exit_status(char **args, long long *status)
@@ -75,7 +66,8 @@ int	ft_exit(char **args)
 {
 	long long	status;
 
-	print_exit_message();
+	if (g_state.interactive_shell)
+		ft_putendl_fd("exit", 2);
 	if (get_exit_status(args, &status))
 		return (1);
 	exit((unsigned char)status);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 03:30:41 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 01:51:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ static char	*read_next_line_and_append(char *line, char quote)
 	new_line = read_input(prompt);
 	if (!new_line)
 	{
-		ft_puterror("unexpected EOF while looking for matching `%c'\n",
-			quote);
+		ft_puterror("unexpected EOF while looking for matching `%c'\n", quote);
 		free(line);
 		return (NULL);
 	}
@@ -60,6 +59,7 @@ static char	*read_next_line_and_append(char *line, char quote)
 	free(new_line);
 	return (temp);
 }
+
 static char	check_unclosed_quote(char *str)
 {
 	char	quote;
@@ -81,6 +81,7 @@ static char	check_unclosed_quote(char *str)
 	}
 	return (quote);
 }
+
 static char	*handle_multiline_input(char *line)
 {
 	char	quote;

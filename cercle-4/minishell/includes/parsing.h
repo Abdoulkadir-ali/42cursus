@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:52:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 22:18:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,5 +119,14 @@ int					is_prev_heredoc(t_nodes *prev);
 void				apply_tilde_expansion(t_token *tok, char **envp);
 t_nodes				*create_token_node_from_match(char *match);
 t_nodes				*create_cmd_node(t_nodes *tokens);
+
+int					is_redirection(t_token_type type);
+int					print_syntax_error(char *token);
+int					check_initial_token(t_nodes *tokens);
+int					handle_lparen(t_token *tok, t_token *nxt, int *depth);
+int					handle_rparen(t_token *tok, t_token *nxt, int *depth);
+int					handle_pipe_and_logic(t_token *tok, t_token *nxt);
+int					handle_semicolon(t_token *tok, t_token *nxt);
+int					handle_redirection(t_token *tok, t_token *nxt);
 
 #endif

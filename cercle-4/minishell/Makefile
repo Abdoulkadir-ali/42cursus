@@ -7,12 +7,7 @@ RM          = rm -f
 SRCS_DIR    = srcs
 OBJS_DIR    = objs
 
-# List all source files. 
-# main.c is currently empty, and tokenizer.c has a main function for testing.
-# Only one main function should exist in the final build.
-
 SRCS        = $(shell find $(SRCS_DIR) -name "*.c")
-# srcs/main.c # Uncomment when ready to use main.c instead of tokenizer.c's main
 
 OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 

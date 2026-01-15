@@ -6,23 +6,48 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 22:22:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-void	del_token(void *content)
+
+static t_token	*handle_word(char **str)
 {
 	t_token	*token;
+	char	*acc;
+	char	*chunk;
+	char	*tmp;
+	int		quoted;
 
-	token = (t_token *)content;
-	if (token)
+	acc = ft_strdup("");
+	quoted = 0;
+	while (**str)
 	{
-		if (token->value)
-			free(token->value);
-		free(token);
+		if (ft_isspace(**str) || ft_strchr("|<>()", **str) || **str == ';')
+			break ;
+		if (**str == '$' && ((*str)[1] == '"' || (*str)[1] == '\''))
+		{
+			(*str)++;
+			continue ;
+		}
+		chunk = get_chunk(str, &quoted);
+		if (!chunk)
+			return (free(acc), NULL);
+		tmp = ft_strjoin(acc, chunk);
+		free(acc);
+		free(chunk);
+		acc = tmp;
 	}
+	token = malloc(sizeof(t_token));
+	if (!token)
+		return (free(acc), NULL);
+	token->type = TOKEN_WORD;
+	token->value = acc;
+	token->quoted = quoted;
+	token->expanded = 0;
+	return (token);
 }
 
 static char	*get_chunk(char **str, int *quoted)
@@ -72,139 +97,6 @@ static char	*get_chunk(char **str, int *quoted)
 	chunk = ft_substr(*str, 0, i);
 	*str += i;
 	return (chunk);
-}
-
-static t_token	*handle_separator(char **str)
-{
-	t_token	*token;
-
-	token = malloc(sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->quoted = 0;
-	if (**str == '|')
-	{
-		if (*(*str + 1) == '|')
-		{
-			token->type = TOKEN_OR;
-			token->value = ft_strldup(*str, 2);
-			(*str) += 2;
-		}
-		else
-		{
-			token->type = TOKEN_PIPE;
-			token->value = ft_strldup(*str, 1);
-			(*str)++;
-		}
-	}
-	else if (**str == '(')
-	{
-		token->type = TOKEN_LPAREN;
-		token->value = ft_strldup(*str, 1);
-		(*str)++;
-	}
-	else if (**str == ')')
-	{
-		token->type = TOKEN_RPAREN;
-		token->value = ft_strldup(*str, 1);
-		(*str)++;
-	}
-	else if (**str == '&')
-	{
-		if (*(*str + 1) == '&')
-		{
-			token->type = TOKEN_AND;
-			token->value = ft_strldup(*str, 2);
-			(*str) += 2;
-		}
-		else
-		{
-			token->type = TOKEN_WORD;
-			token->value = ft_strldup(*str, 1);
-			(*str)++;
-		}
-	}
-	else if (**str == '<')
-	{
-		if (*(*str + 1) == '<')
-		{
-			token->type = TOKEN_HEREDOC;
-			token->value = ft_strldup(*str, 2);
-			(*str) += 2;
-		}
-		else
-		{
-			token->type = TOKEN_RED_IN;
-			token->value = ft_strldup(*str, 1);
-			(*str)++;
-		}
-	}
-	else if (**str == '>')
-	{
-		if (*(*str + 1) == '>')
-		{
-			token->type = TOKEN_APPEND;
-			token->value = ft_strldup(*str, 2);
-			(*str) += 2;
-		}
-		else if (*(*str + 1) == '|')
-		{
-			token->type = TOKEN_RED_OUT;
-			token->value = ft_strldup(*str, 2);
-			(*str) += 2;
-		}
-		else
-		{
-			token->type = TOKEN_RED_OUT;
-			token->value = ft_strldup(*str, 1);
-			(*str)++;
-		}
-	}
-	else if (**str == ';')
-	{
-		token->type = TOKEN_SEMICOLON;
-		token->value = ft_strldup(*str, 1);
-		(*str)++;
-	}
-	token->expanded = 0;
-	return (token);
-}
-
-static t_token	*handle_word(char **str)
-{
-	t_token	*token;
-	char	*acc;
-	char	*chunk;
-	char	*tmp;
-	int		quoted;
-
-	acc = ft_strdup("");
-	quoted = 0;
-	while (**str)
-	{
-		if (ft_isspace(**str) || ft_strchr("|<>()", **str) || **str == ';')
-			break ;
-		if (**str == '$' && ((*str)[1] == '"' || (*str)[1] == '\''))
-		{
-			(*str)++;
-			continue ;
-		}
-		chunk = get_chunk(str, &quoted);
-		if (!chunk)
-			return (free(acc), NULL);
-		tmp = ft_strjoin(acc, chunk);
-		free(acc);
-		free(chunk);
-		acc = tmp;
-	}
-	token = malloc(sizeof(t_token));
-	if (!token)
-		return (free(acc), NULL);
-	token->type = TOKEN_WORD;
-	token->value = acc;
-	token->quoted = quoted;
-	token->expanded = 0;
-	return (token);
 }
 
 static int	add_token_to_list(t_nodes **tokens, t_token *token)

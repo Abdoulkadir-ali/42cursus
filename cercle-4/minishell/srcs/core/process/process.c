@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:28:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 19:25:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ static t_nodes	*tokenize_and_check(char *line, int *exit_code)
 		*exit_code = 2;
 		return (NULL);
 	}
-
 	status = check_syntax(tokens);
 	if (status != 0)
 	{

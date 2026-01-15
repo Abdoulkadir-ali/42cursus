@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 22:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:52:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/14 19:25:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	is_whitespace_only(char *str)
 	}
 	return (1);
 }
-
 
 int	expand_and_check_error(t_nodes **segment, char **envp, int exit_code,
 		int *new_exit_code)
@@ -54,7 +53,6 @@ void	execute_ast(t_nodes *segment, char ***envp, int *exit_code)
 	}
 	free_ast(ast);
 }
-
 
 void	build_segment_until_semicolon(t_nodes **segment, t_nodes **seg_tail,
 		t_nodes **it)
