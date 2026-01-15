@@ -12,58 +12,40 @@
 
 #include "parsing.h"
 
-static char	**get_append_target(t_exp_buffers *b)
-{
-	if (b->expanded)
-		return (&b->expanded);
-	return (&b->word);
-}
-
-static int	handle_dq_backslash(t_exp_params *p, t_exp_buffers *b)
+static int	handle_dq_backslash(t_exp_input *in, t_exp_output *out)
 {
 	char	next;
-	char	*tmp;
 
-	next = p->str[p->pos + 1];
+	next = in->str[in->pos + 1];
 	if (next != '$' && next != '"' && next != '\\' && next != '\n')
 	{
-		tmp = ft_substr(p->str, p->pos, 1);
-		append_chunk(get_append_target(b), tmp);
-		p->pos++;
+		exp_push_char(out, in->str[in->pos]);
+		in->pos++;
 		return (1);
 	}
 	return (0);
 }
 
-static int	consume_backslash(t_exp_params *p, t_exp_quotes *q,
-		t_exp_buffers *b)
+static int	consume_backslash(t_exp_input *in, t_exp_state *st, t_exp_output *out)
 {
-	char	*tmp;
-
-	p->pos++;
-	if (!p->str[p->pos])
+	in->pos++;
+	if (!in->str[in->pos])
 		return (1);
-	tmp = ft_substr(p->str, p->pos, 1);
-	if (b->expanded)
-		append_chunk(&b->expanded, tmp);
-	else
-	{
-		append_chunk(&b->word, tmp);
-		if (!q->d_quote)
-			q->was_quoted = 1;
-	}
-	p->pos++;
+	exp_push_char(out, in->str[in->pos]);
+	if (!st->in_d_quote)
+		st->has_quotes = 1;
+	in->pos++;
 	return (1);
 }
 
-int	handle_backslash_split(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b)
+int	handle_backslash_split(t_exp_input *in, t_exp_state *st, t_exp_output *out)
 {
-	if (p->str[p->pos] != '\\' || q->s_quote)
+	if (in->str[in->pos] != '\\' || st->in_s_quote)
 		return (0);
-	if (q->d_quote)
+	if (st->in_d_quote)
 	{
-		if (handle_dq_backslash(p, b))
+		if (handle_dq_backslash(in, out))
 			return (1);
 	}
-	return (consume_backslash(p, q, b));
+	return (consume_backslash(in, st, out));
 }

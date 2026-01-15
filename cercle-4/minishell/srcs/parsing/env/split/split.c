@@ -12,31 +12,30 @@
 
 #include "parsing.h"
 
-t_nodes	*finalize_expansion(t_exp_buffers *buf, t_exp_quotes *quotes)
+t_nodes	*finalize_expansion(t_exp_output *out, t_exp_state *st)
 {
-	if (buf->word)
-		add_token_node(&buf->head, &buf->tail, buf->word,
-			quotes->was_quoted);
-	else if (quotes->was_quoted)
-		add_token_node(&buf->head, &buf->tail, ft_strdup(""), 1);
-	return (buf->head);
+	if (out->word)
+		add_token_node(&out->head, &out->tail, out->word,
+			st->has_quotes);
+	else if (st->has_quotes)
+		add_token_node(&out->head, &out->tail, ft_strdup(""), 1);
+	return (out->head);
 }
 
 static void	run_expansion_loop(t_expansion *exp)
 {
-	while (exp->params.str[exp->params.pos])
+	while (exp->input.str[exp->input.pos])
 	{
-		if (handle_quote_split(&exp->params, &exp->quotes, &exp->buffers))
+		if (handle_quote_split(&exp->input, &exp->state, &exp->output))
 			continue ;
-		if (handle_backslash_split(&exp->params, &exp->quotes, &exp->buffers))
+		if (handle_backslash_split(&exp->input, &exp->state, &exp->output))
 			continue ;
-		if (handle_dollar_split(&exp->params, &exp->quotes, &exp->buffers))
+		if (handle_dollar_split(&exp->input, &exp->state, &exp->output))
 			continue ;
-		append_chunk(&exp->buffers.word, ft_substr(exp->params.str,
-				exp->params.pos, 1));
-		if (!exp->quotes.s_quote && !exp->quotes.d_quote)
-			exp->quotes.was_quoted = 0;
-		exp->params.pos++;
+		exp_push_char(&exp->output, exp->input.str[exp->input.pos]);
+		if (!exp->state.in_s_quote && !exp->state.in_d_quote)
+			exp->state.has_quotes = 0;
+		exp->input.pos++;
 	}
 }
 
@@ -47,9 +46,9 @@ t_nodes	*expand_and_split(char *str, char **env, int status)
 	if (!str)
 		return (NULL);
 	ft_bzero(&exp, sizeof(t_expansion));
-	exp.params.str = str;
-	exp.params.env = env;
-	exp.params.status = status;
+	exp.input.str = str;
+	exp.input.env = env;
+	exp.input.status = status;
 	run_expansion_loop(&exp);
-	return (finalize_expansion(&exp.buffers, &exp.quotes));
+	return (finalize_expansion(&exp.output, &exp.state));
 }

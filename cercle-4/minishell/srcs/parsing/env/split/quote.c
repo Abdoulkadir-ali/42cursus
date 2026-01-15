@@ -12,40 +12,40 @@
 
 #include "parsing.h"
 
-static void	mark_as_quoted(t_exp_quotes *q, t_exp_buffers *b)
+static void	mark_as_quoted(t_exp_state *st, t_exp_output *out)
 {
-	q->was_quoted = 1;
-	if (b->expanded == NULL && b->word == NULL)
-		b->word = ft_strdup("");
+	st->has_quotes = 1;
+	if (out->str == NULL && out->word == NULL)
+		out->word = ft_strdup("");
 }
 
-static int	toggle_single_quote(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b)
+static int	toggle_single_quote(t_exp_input *in, t_exp_state *st, t_exp_output *out)
 {
-	if (q->d_quote)
+	if (st->in_d_quote)
 		return (0);
-	q->s_quote = !q->s_quote;
-	mark_as_quoted(q, b);
-	p->pos++;
+	st->in_s_quote = !st->in_s_quote;
+	mark_as_quoted(st, out);
+	in->pos++;
 	return (1);
 }
 
-static int	toggle_double_quote(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b)
+static int	toggle_double_quote(t_exp_input *in, t_exp_state *st, t_exp_output *out)
 {
-	if (q->s_quote)
+	if (st->in_s_quote)
 		return (0);
-	q->d_quote = !q->d_quote;
-	mark_as_quoted(q, b);
-	p->pos++;
+	st->in_d_quote = !st->in_d_quote;
+	mark_as_quoted(st, out);
+	in->pos++;
 	return (1);
 }
 
-int	handle_quote_split(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b)
+int	handle_quote_split(t_exp_input *in, t_exp_state *st, t_exp_output *out)
 {
-	const char	c = p->str[p->pos];
+	const char	c = in->str[in->pos];
 
 	if (c == '\'')
-		return (toggle_single_quote(p, q, b));
+		return (toggle_single_quote(in, st, out));
 	if (c == '\"')
-		return (toggle_double_quote(p, q, b));
+		return (toggle_double_quote(in, st, out));
 	return (0);
 }

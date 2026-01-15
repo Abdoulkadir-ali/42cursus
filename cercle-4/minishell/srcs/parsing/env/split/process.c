@@ -12,28 +12,16 @@
 
 #include "parsing.h"
 
-static void	flush_token(t_exp_buffers *buf)
+static void	flush_token(t_exp_output *out)
 {
-	if (buf->word && *buf->word)
+	if (out->word && *out->word)
 	{
-		add_token_node(&buf->head, &buf->tail, buf->word, 0);
-		buf->word = NULL;
+		add_token_node(&out->head, &out->tail, out->word, 0);
+		out->word = NULL;
 	}
 }
 
-static void	append_char_to_target(t_exp_buffers *buf, char c)
-{
-	char	tmp[2];
-
-	tmp[0] = c;
-	tmp[1] = '\0';
-	if (buf->expanded)
-		append_chunk(&buf->expanded, ft_strdup(tmp));
-	else
-		append_chunk(&buf->word, ft_strdup(tmp));
-}
-
-void	process_val_split(char *val, t_exp_buffers *buf)
+void	process_val_split(char *val, t_exp_output *out)
 {
 	int	k;
 
@@ -43,9 +31,9 @@ void	process_val_split(char *val, t_exp_buffers *buf)
 	while (val[k])
 	{
 		if (ft_isspace((unsigned char)val[k]))
-			flush_token(buf);
+			flush_token(out);
 		else
-			append_char_to_target(buf, val[k]);
+			exp_push_char(out, val[k]);
 		k++;
 	}
 }

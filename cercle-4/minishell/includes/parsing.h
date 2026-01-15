@@ -60,35 +60,41 @@ typedef struct s_ast
 	int				is_quoted;
 }					t_ast;
 
-typedef struct s_exp_params
+typedef struct s_exp_input
 {
 	const char		*str;
 	int				pos;
 	char			**env;
 	int				status;
-}					t_exp_params;
+}					t_exp_input;
 
-typedef struct s_exp_quotes
+typedef struct s_exp_state
 {
-	int				s_quote;
-	int				d_quote;
-	int				was_quoted;
-}					t_exp_quotes;
+	int				in_s_quote;
+	int				in_d_quote;
+	int				has_quotes;
+}					t_exp_state;
 
-typedef struct s_exp_buffers
+typedef struct s_exp_output
 {
-	char			*expanded;
+	char			*str;
 	char			*word;
 	t_nodes			*head;
 	t_nodes			*tail;
-}					t_exp_buffers;
+}					t_exp_output;
 
 typedef struct s_expansion
 {
-	t_exp_params	params;
-	t_exp_quotes	quotes;
-	t_exp_buffers	buffers;
+	t_exp_input		input;
+	t_exp_state		state;
+	t_exp_output	output;
 }					t_expansion;
+
+typedef struct s_dollar_peek
+{
+	int				idx;
+	char			next;
+}					t_dollar_peek;
 
 typedef struct s_token_expansion
 {
@@ -141,10 +147,12 @@ int					syntax_handle_rparen(t_token *tok, t_token *nxt,
 int					syntax_handle_pipe_and_logic(t_token *tok, t_token *nxt);
 int					syntax_handle_semicolon(t_token *tok, t_token *nxt);
 int					syntax_handle_redirection(t_token *tok, t_token *nxt);
-void				process_val_split(char *val, t_exp_buffers *buf);
-int					handle_quote_split(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b);
-int					handle_backslash_split(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b);
-int					handle_dollar_split(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b);
+void				process_val_split(char *val, t_exp_output *out);
+int					handle_quote_split(t_exp_input *in, t_exp_state *st, t_exp_output *out);
+int					handle_backslash_split(t_exp_input *in, t_exp_state *st, t_exp_output *out);
+int					handle_dollar_split(t_exp_input *in, t_exp_state *st, t_exp_output *out);
+void				exp_push_char(t_exp_output *out, char c);
+void				exp_push_str(t_exp_output *out, char *s);
 int					handle_pipe(char **str, t_token *token);
 int					handle_paren(char **str, t_token *token, int left);
 int					handle_ampersand(char **str, t_token *token);

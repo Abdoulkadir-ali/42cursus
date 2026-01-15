@@ -14,11 +14,11 @@
 
 static int	process_expand_char(t_expansion *exp)
 {
-	if (handle_backslash_split(&exp->params, &exp->quotes, &exp->buffers))
+	if (handle_backslash_split(&exp->input, &exp->state, &exp->output))
 		return (1);
-	if (handle_quote_split(&exp->params, &exp->quotes, &exp->buffers))
+	if (handle_quote_split(&exp->input, &exp->state, &exp->output))
 		return (1);
-	if (handle_dollar_split(&exp->params, &exp->quotes, &exp->buffers))
+	if (handle_dollar_split(&exp->input, &exp->state, &exp->output))
 		return (1);
 	return (0);
 }
@@ -30,21 +30,20 @@ char	*expand_string(char *str, char **env, int status)
 	if (!str)
 		return (NULL);
 	ft_bzero(&exp, sizeof(t_expansion));
-	exp.params.str = str;
-	exp.params.env = env;
-	exp.params.status = status;
-	exp.buffers.expanded = ft_strdup("");
-	if (!exp.buffers.expanded)
+	exp.input.str = str;
+	exp.input.env = env;
+	exp.input.status = status;
+	exp.output.str = ft_strdup("");
+	if (!exp.output.str)
 		return (NULL);
-	while (exp.params.str[exp.params.pos])
+	while (exp.input.str[exp.input.pos])
 	{
 		if (process_expand_char(&exp))
 			continue ;
-		append_chunk(&exp.buffers.expanded,
-			ft_substr(exp.params.str, exp.params.pos, 1));
-		exp.params.pos++;
+		exp_push_char(&exp.output, exp.input.str[exp.input.pos]);
+		exp.input.pos++;
 	}
-	return (exp.buffers.expanded);
+	return (exp.output.str);
 }
 
 char	*expand_heredoc(char *str, char **env, int status)

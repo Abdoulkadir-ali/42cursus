@@ -44,7 +44,8 @@ static void	consume_matches_to_list(t_nodes *matches, t_nodes **new_head,
 	while (m_curr)
 	{
 		mnode = create_token_node_from_match((char *)m_curr->content);
-		append_node(new_head, new_tail, mnode);
+		ft_lstadd_back(new_head, mnode);
+		*new_tail = mnode;
 		m_curr = m_curr->next;
 	}
 	ft_lstclear(&matches, free);
@@ -72,8 +73,9 @@ int	process_matches_or_literal(t_token_expansion *exp, t_nodes *matches,
 	{
 		report_ambiguous_redirect(exp_tok, matches, &g_exit_code,
 			&g_expansion_error);
-		append_node(&exp->head, &exp->tail, exp_curr);
 		exp_curr->next = NULL;
+		ft_lstadd_back(&exp->head, exp_curr);
+		exp->tail = exp_curr;
 		return (0);
 	}
 	consume_matches_to_list(matches, &exp->head, &exp->tail,
