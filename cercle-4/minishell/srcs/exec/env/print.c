@@ -16,7 +16,7 @@ static void	print_env_entry(char *entry)
 {
 	char	*eq;
 
-	if (!entry || ft_strncmp(entry, "_=", 2) == 0)
+	if (!entry)
 		return ;
 	ft_putstr_fd("declare -x ", 1);
 	eq = ft_strchr(entry, '=');

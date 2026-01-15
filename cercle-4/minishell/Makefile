@@ -37,9 +37,7 @@ fclean: clean
 
 re: fclean all
 
-test: all
-	@mkdir -p tests
-	@chmod +x tests/stress_test.sh
-	@bash tests/stress_test.sh
+test: re
+	bash ~/tools/
 
 .PHONY: all clean fclean re test

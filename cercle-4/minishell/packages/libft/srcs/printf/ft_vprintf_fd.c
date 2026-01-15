@@ -67,7 +67,6 @@ static int	ft_process_format(const char *format, va_list args,
 
 int	ft_vprintf_fd(int fd, const char *format, va_list args)
 {
-	int				count;
 	t_printf_ctx	ctx;
 	va_list			args_copy;
 
