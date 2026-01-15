@@ -12,36 +12,28 @@
 
 #include "parsing.h"
 
-static char	**active_res_ptr(t_exp_ctx *ctx)
+static void	flush_token(t_exp_buffers *buf)
 {
-	if (ctx->state.res)
-		return (ctx->state.res);
-	return (ctx->state.curr);
-}
-
-static void	pvs_flush_curr_if_space(t_exp_ctx *ctx)
-{
-	if (ctx->state.curr && *ctx->state.curr)
+	if (buf->word && *buf->word)
 	{
-		add_token_node(ctx->lists.head, ctx->lists.tail,
-			*ctx->state.curr, *ctx->state.wd_quoted);
-		*ctx->state.curr = NULL;
-		*ctx->state.wd_quoted = 0;
+		add_token_node(&buf->head, &buf->tail, buf->word, 0);
+		buf->word = NULL;
 	}
 }
 
-static void	pvs_append_char(t_exp_ctx *ctx, char c)
+static void	append_char_to_target(t_exp_buffers *buf, char c)
 {
-	char	buf[2];
+	char	tmp[2];
 
-	buf[0] = c;
-	buf[1] = '\0';
-	append_chunk(active_res_ptr(ctx), ft_strdup(buf));
-	if (ctx->state.wd_quoted)
-		*ctx->state.wd_quoted = 0;
+	tmp[0] = c;
+	tmp[1] = '\0';
+	if (buf->expanded)
+		append_chunk(&buf->expanded, ft_strdup(tmp));
+	else
+		append_chunk(&buf->word, ft_strdup(tmp));
 }
 
-void	process_val_split(char *val, t_exp_ctx *ctx)
+void	process_val_split(char *val, t_exp_buffers *buf)
 {
 	int	k;
 
@@ -51,9 +43,9 @@ void	process_val_split(char *val, t_exp_ctx *ctx)
 	while (val[k])
 	{
 		if (ft_isspace((unsigned char)val[k]))
-			pvs_flush_curr_if_space(ctx);
+			flush_token(buf);
 		else
-			pvs_append_char(ctx, val[k]);
+			append_char_to_target(buf, val[k]);
 		k++;
 	}
 }

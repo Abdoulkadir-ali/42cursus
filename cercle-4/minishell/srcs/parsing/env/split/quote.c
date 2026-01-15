@@ -12,46 +12,40 @@
 
 #include "parsing.h"
 
-static void	ensure_curr_and_mark_quoted(t_exp_ctx *ctx)
+static void	mark_as_quoted(t_exp_quotes *q, t_exp_buffers *b)
 {
-	*ctx->state.wd_quoted = 1;
-	if (!*ctx->state.curr)
-		*ctx->state.curr = ft_strdup("");
+	q->was_quoted = 1;
+	if (b->expanded == NULL && b->word == NULL)
+		b->word = ft_strdup("");
 }
 
-static int	process_single_quote(t_exp_ctx *ctx, const char c)
+static int	toggle_single_quote(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b)
 {
-	if (c != '\'')
+	if (q->d_quote)
 		return (0);
-	if (ctx->state.qt[1])
-		return (0);
-	ctx->state.qt[0] = !ctx->state.qt[0];
-	if (ctx->state.res == NULL)
-		ensure_curr_and_mark_quoted(ctx);
-	(*ctx->state.i)++;
+	q->s_quote = !q->s_quote;
+	mark_as_quoted(q, b);
+	p->pos++;
 	return (1);
 }
 
-static int	process_double_quote(t_exp_ctx *ctx, const char c)
+static int	toggle_double_quote(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b)
 {
-	if (c != '"')
+	if (q->s_quote)
 		return (0);
-	if (ctx->state.qt[0])
-		return (0);
-	ctx->state.qt[1] = !ctx->state.qt[1];
-	if (ctx->state.res == NULL)
-		ensure_curr_and_mark_quoted(ctx);
-	(*ctx->state.i)++;
+	q->d_quote = !q->d_quote;
+	mark_as_quoted(q, b);
+	p->pos++;
 	return (1);
 }
 
-int	handle_quote_split(t_exp_ctx *ctx)
+int	handle_quote_split(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b)
 {
-	const char	c = ctx->input.str[*ctx->state.i];
+	const char	c = p->str[p->pos];
 
-	if (process_single_quote(ctx, c))
-		return (1);
-	if (process_double_quote(ctx, c))
-		return (1);
+	if (c == '\'')
+		return (toggle_single_quote(p, q, b));
+	if (c == '\"')
+		return (toggle_double_quote(p, q, b));
 	return (0);
 }

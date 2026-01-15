@@ -35,11 +35,6 @@ static int	should_skip_entry(struct dirent *entry, char *pattern)
 	return (0);
 }
 
-static int	is_match_name(char *pattern, struct dirent *entry)
-{
-	return (match_pattern(pattern, entry->d_name));
-}
-
 static void	try_add_match(t_nodes **files, struct dirent *entry,
 		int *match_count)
 {
@@ -70,7 +65,7 @@ t_nodes	*collect_matches(DIR *dir, char *pattern)
 			entry = readdir(dir);
 			continue ;
 		}
-		if (is_match_name(pattern, entry))
+		if (match_pattern(pattern, entry->d_name))
 			try_add_match(&files, entry, &match_count);
 		entry = readdir(dir);
 	}

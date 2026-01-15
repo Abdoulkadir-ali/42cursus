@@ -12,63 +12,44 @@
 
 #include "parsing.h"
 
-static void	init_exp_ctx(t_exp_ctx *ctx, char *str, char **envp, int exit_code)
+t_nodes	*finalize_expansion(t_exp_buffers *buf, t_exp_quotes *quotes)
 {
-	ft_bzero(ctx, sizeof(t_exp_ctx));
-	ctx->input.str = str;
-	ctx->input.envp = envp;
-	ctx->input.exit_code = exit_code;
+	if (buf->word)
+		add_token_node(&buf->head, &buf->tail, buf->word,
+			quotes->was_quoted);
+	else if (quotes->was_quoted)
+		add_token_node(&buf->head, &buf->tail, ft_strdup(""), 1);
+	return (buf->head);
 }
 
-t_nodes	*finalize_expansion(t_exp_ctx *ctx)
+static void	run_expansion_loop(t_expansion *exp)
 {
-	if (*ctx->state.curr)
-		add_token_node(ctx->lists.head, ctx->lists.tail, *ctx->state.curr,
-			*ctx->state.wd_quoted);
-	else if (*ctx->state.wd_quoted)
-		add_token_node(ctx->lists.head, ctx->lists.tail, ft_strdup(""), 1);
-	return (*ctx->lists.head);
-}
-
-static void	run_expansion_loop(t_exp_ctx *ctx)
-{
-	while (ctx->input.str[*ctx->state.i])
+	while (exp->params.str[exp->params.pos])
 	{
-		if (handle_quote_split(ctx))
+		if (handle_quote_split(&exp->params, &exp->quotes, &exp->buffers))
 			continue ;
-		if (handle_backslash_split(ctx))
+		if (handle_backslash_split(&exp->params, &exp->quotes, &exp->buffers))
 			continue ;
-		if (handle_dollar_split(ctx))
+		if (handle_dollar_split(&exp->params, &exp->quotes, &exp->buffers))
 			continue ;
-		append_chunk(ctx->state.curr, ft_substr(ctx->input.str, *ctx->state.i,
-				1));
-		if (!ctx->state.qt[0] && !ctx->state.qt[1])
-			*ctx->state.wd_quoted = 0;
-		(*ctx->state.i)++;
+		append_chunk(&exp->buffers.word, ft_substr(exp->params.str,
+				exp->params.pos, 1));
+		if (!exp->quotes.s_quote && !exp->quotes.d_quote)
+			exp->quotes.was_quoted = 0;
+		exp->params.pos++;
 	}
 }
 
-t_nodes	*expand_and_split(char *str, char **envp, int exit_code)
+t_nodes	*expand_and_split(char *str, char **env, int status)
 {
-	t_exp_ctx	ctx;
-	t_locals	locals;
+	t_expansion	exp;
 
 	if (!str)
 		return (NULL);
-	locals.head = NULL;
-	locals.tail = NULL;
-	locals.curr = NULL;
-	locals.i = 0;
-	locals.qt[0] = 0;
-	locals.qt[1] = 0;
-	locals.wd_quoted = 0;
-	init_exp_ctx(&ctx, str, envp, exit_code);
-	ctx.state.i = &locals.i;
-	ctx.state.qt = locals.qt;
-	ctx.state.wd_quoted = &locals.wd_quoted;
-	ctx.state.curr = &locals.curr;
-	ctx.lists.head = &locals.head;
-	ctx.lists.tail = &locals.tail;
-	run_expansion_loop(&ctx);
-	return (finalize_expansion(&ctx));
+	ft_bzero(&exp, sizeof(t_expansion));
+	exp.params.str = str;
+	exp.params.env = env;
+	exp.params.status = status;
+	run_expansion_loop(&exp);
+	return (finalize_expansion(&exp.buffers, &exp.quotes));
 }

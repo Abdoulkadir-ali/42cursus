@@ -6,68 +6,64 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:47:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 14:20:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-static char	**active_res_ptr(t_exp_ctx *ctx)
+static char	**get_append_target(t_exp_buffers *b)
 {
-	if (ctx->state.res)
-		return (ctx->state.res);
-	return (ctx->state.curr);
+	if (b->expanded)
+		return (&b->expanded);
+	return (&b->word);
 }
 
-static int	bs_try_double_quote_case(t_exp_ctx *ctx, int idx)
+static int	handle_dq_backslash(t_exp_params *p, t_exp_buffers *b)
 {
 	char	next;
 	char	*tmp;
 
-	next = ctx->input.str[idx + 1];
+	next = p->str[p->pos + 1];
 	if (next != '$' && next != '"' && next != '\\' && next != '\n')
 	{
-		tmp = ft_substr(ctx->input.str, idx, 1);
-		append_chunk(active_res_ptr(ctx), tmp);
-		(*ctx->state.i)++;
+		tmp = ft_substr(p->str, p->pos, 1);
+		append_chunk(get_append_target(b), tmp);
+		p->pos++;
 		return (1);
 	}
 	return (0);
 }
 
-static int	bs_consume_escaped_char(t_exp_ctx *ctx)
+static int	consume_backslash(t_exp_params *p, t_exp_quotes *q,
+		t_exp_buffers *b)
 {
 	char	*tmp;
 
-	(*ctx->state.i)++;
-	if (!ctx->input.str[*ctx->state.i])
+	p->pos++;
+	if (!p->str[p->pos])
 		return (1);
-	tmp = ft_substr(ctx->input.str, *ctx->state.i, 1);
-	if (ctx->state.res)
-		append_chunk(ctx->state.res, tmp);
+	tmp = ft_substr(p->str, p->pos, 1);
+	if (b->expanded)
+		append_chunk(&b->expanded, tmp);
 	else
 	{
-		append_chunk(ctx->state.curr, tmp);
-		if (ctx->state.wd_quoted)
-			*ctx->state.wd_quoted = 1;
+		append_chunk(&b->word, tmp);
+		if (!q->d_quote)
+			q->was_quoted = 1;
 	}
-	(*ctx->state.i)++;
+	p->pos++;
 	return (1);
 }
 
-int	handle_backslash_split(t_exp_ctx *ctx)
+int	handle_backslash_split(t_exp_params *p, t_exp_quotes *q, t_exp_buffers *b)
 {
-	int	idx;
-
-	idx = *ctx->state.i;
-	if (ctx->input.str[idx] != '\\')
+	if (p->str[p->pos] != '\\' || q->s_quote)
 		return (0);
-	if (ctx->state.qt[0])
-		return (0);
-	if (ctx->state.qt[1])
+	if (q->d_quote)
 	{
-		if (bs_try_double_quote_case(ctx, idx))
+		if (handle_dq_backslash(p, b))
 			return (1);
 	}
-	return (bs_consume_escaped_char(ctx));
+	return (consume_backslash(p, q, b));
 }
