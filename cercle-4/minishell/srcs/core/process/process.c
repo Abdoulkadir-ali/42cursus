@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 19:25:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 15:05:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,10 @@ void	process_input(char *line, char ***envp, int *exit_code)
 	add_history(line);
 	tokens = tokenize_and_check(line, exit_code);
 	if (!tokens)
+	{
+		if (!g_state.interactive_shell)
+			exit(*exit_code);
 		return ;
+	}
 	process_segments(tokens, envp, exit_code);
 }
