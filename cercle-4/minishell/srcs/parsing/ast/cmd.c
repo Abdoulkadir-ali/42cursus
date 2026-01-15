@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast_cmd.c                                          :+:      :+:    :+:   */
+/*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@student.42.fr>    +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:05:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/01/13 00:05:00 by antigravity      ###   ########.fr       */
+/*   Updated: 2026/01/15 04:43:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ static t_nodes	*handle_subshell(t_nodes *tokens)
 		return (NULL);
 	}
 	inner_tokens = clone_tokens_range(tokens->next, match);
-	subshell_node = create_node(TOKEN_SUBSHELL, NULL,
-			ast_builder(inner_tokens), NULL);
+	subshell_node = create_node(TOKEN_SUBSHELL, NULL, ast_builder(inner_tokens),
+			NULL);
 	remaining = clone_tokens_range(match->next, NULL);
 	subshell_node = process_redirections(subshell_node, remaining);
 	ft_lstclear(&tokens, del_token);

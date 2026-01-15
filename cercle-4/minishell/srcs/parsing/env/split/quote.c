@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:42:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:45:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,3 @@ int	handle_quote_split(t_exp_ctx *ctx)
 		return (1);
 	return (0);
 }
-

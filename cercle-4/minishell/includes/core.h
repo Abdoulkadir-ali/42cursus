@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:54:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:44:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,11 @@ typedef struct s_global_state
 	int					last_signal;
 }						t_global_state;
 
-// The global variable poses a risk of racing condtion, however we're NOT allowed to use semaphores in the project, so we can't protect.
+// The global variable poses a risk of racing condtion
 extern t_global_state	g_state;
-
-
-
-
+// However we're NOT allowed to use semaphores in the project.
 
 // Function prototypes
-void					print_ast(t_nodes *ast_node, int depth);
 int						is_whitespace_only(char *str);
 void					process_input(char *line, char ***envp, int *exit_code);
 

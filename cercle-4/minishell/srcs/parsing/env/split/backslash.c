@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:40:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:46:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static int	bs_consume_escaped_char(t_exp_ctx *ctx)
 	return (1);
 }
 
-int		handle_backslash_split(t_exp_ctx *ctx)
+int	handle_backslash_split(t_exp_ctx *ctx)
 {
 	int	idx;
 
@@ -71,4 +71,3 @@ int		handle_backslash_split(t_exp_ctx *ctx)
 	}
 	return (bs_consume_escaped_char(ctx));
 }
-

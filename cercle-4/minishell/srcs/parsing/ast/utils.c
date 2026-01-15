@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:59:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:16:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/15 04:45:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,37 +114,4 @@ void	add_token_node(t_nodes **head, t_nodes **tail, char *val, int quoted)
 	else
 		(*tail)->next = node;
 	*tail = node;
-}
-
-void	print_ast(t_nodes *ast_node, int depth)
-{
-	int		i;
-	t_ast	*node;
-
-	if (!ast_node)
-		return ;
-	node = (t_ast *)ast_node->content;
-	i = 0;
-	while (i < depth)
-	{
-		ft_printf("  ");
-		i++;
-	}
-	if (node->type == TOKEN_PIPE)
-	{
-		ft_printf("PIPE\n");
-		print_ast(node->left, depth + 1);
-		print_ast(node->right, depth + 1);
-	}
-	else if (node->type == TOKEN_WORD)
-	{
-		ft_printf("CMD: ");
-		i = 0;
-		while (node->args && node->args[i])
-		{
-			ft_printf("[%s] ", node->args[i]);
-			i++;
-		}
-		ft_printf("\n");
-	}
 }
