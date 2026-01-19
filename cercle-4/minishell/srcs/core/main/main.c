@@ -17,11 +17,15 @@ static char	**duplicate_env(char **envp)
 	int		env_count;
 	char	**heap_env;
 	int		i;
+	char	uid_str[20];
+	char	shlvl_str[20];
+	int		shlvl;
+	char	*existing_shlvl;
 
 	env_count = 0;
 	while (envp[env_count])
 		env_count++;
-	heap_env = malloc(sizeof(char *) * (env_count + 1));
+	heap_env = malloc(sizeof(char *) * (env_count + 3));
 	if (!heap_env)
 		return (NULL);
 	i = 0;
@@ -30,6 +34,14 @@ static char	**duplicate_env(char **envp)
 		heap_env[i] = ft_strdup(envp[i]);
 		i++;
 	}
+	sprintf(uid_str, "UID=%d", getuid());
+	heap_env[i++] = ft_strdup(uid_str);
+	shlvl = 1;
+	existing_shlvl = getenv("SHLVL");
+	if (existing_shlvl)
+		shlvl = atoi(existing_shlvl) + 1;
+	sprintf(shlvl_str, "SHLVL=%d", shlvl);
+	heap_env[i++] = ft_strdup(shlvl_str);
 	heap_env[i] = NULL;
 	return (heap_env);
 }
