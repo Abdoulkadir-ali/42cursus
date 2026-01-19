@@ -6,26 +6,22 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 01:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 01:51:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/19 21:05:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
-static char	**duplicate_env(char **envp)
+static char	**duplicate_env_base(char **envp)
 {
 	int		env_count;
 	char	**heap_env;
 	int		i;
-	char	uid_str[20];
-	char	shlvl_str[20];
-	int		shlvl;
-	char	*existing_shlvl;
 
 	env_count = 0;
 	while (envp[env_count])
 		env_count++;
-	heap_env = malloc(sizeof(char *) * (env_count + 3));
+	heap_env = malloc(sizeof(char *) * (env_count + 2));
 	if (!heap_env)
 		return (NULL);
 	i = 0;
@@ -34,23 +30,27 @@ static char	**duplicate_env(char **envp)
 		heap_env[i] = ft_strdup(envp[i]);
 		i++;
 	}
-	sprintf(uid_str, "UID=%d", getuid());
-	heap_env[i++] = ft_strdup(uid_str);
+	heap_env[i] = NULL;
+	return (heap_env);
+}
+
+static void	add_shlvl_to_env(char **heap_env)
+{
+	int		i;
+	char	shlvl_str[20];
+	int		shlvl;
+	char	*existing_shlvl;
+
+	i = 0;
+	while (heap_env[i])
+		i++;
 	shlvl = 1;
 	existing_shlvl = getenv("SHLVL");
 	if (existing_shlvl)
 		shlvl = atoi(existing_shlvl) + 1;
 	sprintf(shlvl_str, "SHLVL=%d", shlvl);
-	heap_env[i++] = ft_strdup(shlvl_str);
-	heap_env[i] = NULL;
-	return (heap_env);
-}
-
-static void	initialize_environment(char ***heap_env, char **envp)
-{
-	*heap_env = duplicate_env(envp);
-	g_state.envp = *heap_env;
-	g_state.interactive_shell = isatty(STDIN_FILENO);
+	heap_env[i] = ft_strdup(shlvl_str);
+	heap_env[i + 1] = NULL;
 }
 
 static int	handle_command_line_mode(int ac, char **av, char ***heap_env,
@@ -97,7 +97,12 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	last_exit_code = 0;
-	initialize_environment(&heap_env, envp);
+	heap_env = duplicate_env_base(envp);
+	if (!heap_env)
+		return (1);
+	add_shlvl_to_env(heap_env);
+	g_state.envp = heap_env;
+	g_state.interactive_shell = isatty(STDIN_FILENO);
 	cmd_exit = handle_command_line_mode(ac, av, &heap_env, &last_exit_code);
 	if (cmd_exit != -1)
 		return (cmd_exit);
