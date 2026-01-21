@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 15:05:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 06:18:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
+#include "input.h"
 
 static t_nodes	*tokenize_and_check(char *line, int *exit_code)
 {

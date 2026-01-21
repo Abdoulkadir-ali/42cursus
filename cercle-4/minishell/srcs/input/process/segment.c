@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:55:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 22:55:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 06:18:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
+#include "input.h"
 
 static int	is_assignment_segment(t_nodes *segment)
 {

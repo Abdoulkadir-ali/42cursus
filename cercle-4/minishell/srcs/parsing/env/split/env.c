@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:02:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 05:01:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 06:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ char	*get_env_value(char *var_name, char **envp)
 			return (ft_strdup(envp[i] + len + 1));
 		i++;
 	}
-	/* Special-case shell-provided variables when not present in envp */
 	if (ft_strlen(var_name) == 3 && ft_strncmp(var_name, "UID", 4) == 0)
 		return (ft_itoa(getuid()));
 	val = ft_calloc(1, 1);

@@ -5,23 +5,33 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 22:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 06:02:02 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/21 06:15:13 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/21 07:06:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
+#include "input.h"
 
 char	*append_line(char *line, char *new_line)
 {
 	char	*temp;
 	char	*result;
+	int		len;
 
-	temp = ft_strjoin(line, "\n");
-	if (!temp)
-		return (NULL);
-	result = ft_strjoin(temp, new_line);
-	free(temp);
+	len = ft_strlen(line);
+	if (len > 0 && line[len - 1] == '\\')
+	{
+		line[len - 1] = '\0';
+		result = ft_strjoin(line, new_line);
+	}
+	else
+	{
+		temp = ft_strjoin(line, "\n");
+		if (!temp)
+			return (NULL);
+		result = ft_strjoin(temp, new_line);
+		free(temp);
+	}
 	return (result);
 }
 
@@ -60,40 +70,4 @@ char	*read_input(char *prompt)
 	}
 	free(buf);
 	return (NULL);
-}
-
-char	*last_non_space(char *s)
-{
-	char	*p;
-
-	if (!s || !*s)
-		return (NULL);
-	p = s + ft_strlen(s) - 1;
-	while (p >= s && ft_isspace(*p))
-		p--;
-	if (p < s)
-		return (NULL);
-	return (p);
-}
-
-char	check_unclosed_quote(char *str)
-{
-	char	quote;
-
-	quote = 0;
-	while (*str)
-	{
-		if (quote == 0)
-		{
-			if (*str == '\'' || *str == '"')
-				quote = *str;
-		}
-		else
-		{
-			if (*str == quote)
-				quote = 0;
-		}
-		str++;
-	}
-	return (quote);
 }

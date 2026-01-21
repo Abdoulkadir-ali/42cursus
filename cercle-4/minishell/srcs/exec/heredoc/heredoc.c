@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 03:23:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 06:46:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	scan_heredocs(t_nodes *ast_node)
 {
 	t_ast	*node;
 	char	*tmp_file;
+	int		fd;
 
 	if (!ast_node)
 		return (0);
@@ -32,12 +33,9 @@ int	scan_heredocs(t_nodes *ast_node)
 	}
 	else if (node->type == TOKEN_HERESTR)
 	{
-		/* For here-strings (<<<), write the single word to a temp file
-		 * and use it as stdin (similar to heredoc but with provided string).
-		 */
 		tmp_file = generate_tmp_filename();
 		{
-			int fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (fd == -1)
 			{
 				free(tmp_file);

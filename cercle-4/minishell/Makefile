@@ -1,5 +1,4 @@
 NAME        = minishell
-MAKEFLAGS   += -j4
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -Ipackages/libft/includes
 RM          = rm -f

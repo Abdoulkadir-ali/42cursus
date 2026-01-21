@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 05:55:26 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/21 06:22:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 # define CORE_H
 
 // PACKAGE
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -23,6 +21,7 @@
 
 // CUSTOM
 # include "exec.h"
+# include "input.h"
 # include "libft.h"
 # include "parsing.h"
 
@@ -39,36 +38,9 @@ typedef struct s_global_state
 	int					last_signal;
 }						t_global_state;
 
-// The global variable poses a risk of racing condtion
 extern t_global_state	g_state;
-// However we're NOT allowed to use semaphores in the project.
 
-// Function prototypes
-int						is_whitespace_only(char *str);
-void					process_input(char *line, char ***envp, int *exit_code);
-
-int						try_handle_assignment_public(t_nodes *segment,
-							char ***envp, int *exit_code);
-char					*get_command_line(void);
 void					setup_signals(int mode);
-void					initialize_segment_builder(t_nodes **segment,
-							t_nodes **seg_tail, t_nodes **it, t_nodes *cursor);
-void					build_segment_until_semicolon(t_nodes **segment,
-							t_nodes **seg_tail, t_nodes **it);
-void					consume_semicolon_if_present(t_nodes *it,
-							t_nodes **pneset_assignmentt);
-int						check_if_assignment_candidate(t_nodes *segment,
-							t_token **first_tok, char **eq);
-int						expand_and_check_error(t_nodes **segment, char **envp,
-							int exit_code, int *new_exit_code);
-void					execute_ast(t_nodes *segment, char ***envp,
-							int *exit_code);
-char					*append_line(char *line, char *new_line);
-char					*get_prompt(int is_initial);
-
-/* Extender helpers (defined in srcs/core/reader/extender.c) */
-const char		*ext_continuation_label(char kind);
-char			ext_detect_trailing_op(char *line);
-int				ext_check_paren_depth(char *s);
+int						main(int ac, char **av, char **envp);
 
 #endif
