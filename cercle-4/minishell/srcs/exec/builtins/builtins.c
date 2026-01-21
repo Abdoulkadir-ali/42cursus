@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/13 23:13:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 05:02:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	is_builtin(char *cmd, char **args, int is_quoted)
 		return (0);
 	if (is_cmd(cmd, "echo") || is_cmd(cmd, "cd") || is_cmd(cmd, "pwd")
 		|| is_cmd(cmd, "export") || is_cmd(cmd, "unset") || (is_cmd(cmd, "env")
-			&& (!args || !args[1])) || is_cmd(cmd, "exit") || is_cmd(cmd, ":"))
+			&& (!args || !args[1])) || is_cmd(cmd, "exit") || is_cmd(cmd, ":")
+		|| is_cmd(cmd, "."))
 		return (1);
 	return (0);
 }
@@ -51,5 +52,16 @@ int	exec_builtin(char **args, char ***envp)
 		return (ft_unset(args, envp));
 	if (is_cmd(args[0], ":"))
 		return (0);
+	if (is_cmd(args[0], "."))
+	{
+		if (!args[1])
+		{
+			ft_puterror(".: filename argument required\n");
+			ft_puterror(".: usage: . filename [arguments]\n");
+			return (2);
+		}
+		/* Sourcing a file is not implemented; return 0 for now */
+		return (0);
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 01:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/19 21:05:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 04:47:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,32 @@ static char	**duplicate_env_base(char **envp)
 static void	add_shlvl_to_env(char **heap_env)
 {
 	int		i;
+	int		existing_idx;
 	char	shlvl_str[20];
 	int		shlvl;
-	char	*existing_shlvl;
 
 	i = 0;
+	existing_idx = -1;
 	while (heap_env[i])
+	{
+		if (ft_strncmp(heap_env[i], "SHLVL=", 6) == 0)
+			existing_idx = i;
 		i++;
+	}
 	shlvl = 1;
-	existing_shlvl = getenv("SHLVL");
-	if (existing_shlvl)
-		shlvl = atoi(existing_shlvl) + 1;
-	sprintf(shlvl_str, "SHLVL=%d", shlvl);
-	heap_env[i] = ft_strdup(shlvl_str);
-	heap_env[i + 1] = NULL;
+	if (existing_idx != -1)
+	{
+		shlvl = atoi(heap_env[existing_idx] + 6) + 1;
+		sprintf(shlvl_str, "SHLVL=%d", shlvl);
+		free(heap_env[existing_idx]);
+		heap_env[existing_idx] = ft_strdup(shlvl_str);
+	}
+	else
+	{
+		sprintf(shlvl_str, "SHLVL=%d", shlvl);
+		heap_env[i] = ft_strdup(shlvl_str);
+		heap_env[i + 1] = NULL;
+	}
 }
 
 static int	handle_command_line_mode(int ac, char **av, char ***heap_env,

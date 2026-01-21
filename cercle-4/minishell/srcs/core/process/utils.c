@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 22:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:27:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 05:26:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
+#include <fcntl.h>
 
 int	is_whitespace_only(char *str)
 {
@@ -39,19 +40,49 @@ int	expand_and_check_error(t_nodes **segment, char **envp, int exit_code,
 
 void	execute_ast(t_nodes *segment, char ***envp, int *exit_code)
 {
-	t_nodes	*ast;
+    t_nodes	*ast;
+    int     dbg_fd;
 
-	ast = ast_builder(segment);
-	if (!scan_heredocs(ast))
-		*exit_code = exec_tree(ast, envp);
-	else
-	{
-		if (g_state.last_signal == 130)
-			*exit_code = 130;
-		else
-			*exit_code = 1;
-	}
-	free_ast(ast);
+    dbg_fd = open("/tmp/minishell_dbg.log", O_WRONLY | O_CREAT | O_APPEND, 0600);
+    if (dbg_fd != -1)
+    {
+        dprintf(dbg_fd, "[execute_ast] start segment=%p pid=%d\n", (void *)segment, getpid());
+        close(dbg_fd);
+    }
+
+    ast = ast_builder(segment);
+
+    dbg_fd = open("/tmp/minishell_dbg.log", O_WRONLY | O_CREAT | O_APPEND, 0600);
+    if (dbg_fd != -1)
+    {
+        dprintf(dbg_fd, "[execute_ast] ast=%p pid=%d\n", (void *)ast, getpid());
+        close(dbg_fd);
+    }
+
+    if (!scan_heredocs(ast))
+    {
+        dbg_fd = open("/tmp/minishell_dbg.log", O_WRONLY | O_CREAT | O_APPEND, 0600);
+        if (dbg_fd != -1)
+        {
+            dprintf(dbg_fd, "[execute_ast] calling exec_tree pid=%d\n", getpid());
+            close(dbg_fd);
+        }
+        *exit_code = exec_tree(ast, envp);
+        dbg_fd = open("/tmp/minishell_dbg.log", O_WRONLY | O_CREAT | O_APPEND, 0600);
+        if (dbg_fd != -1)
+        {
+            dprintf(dbg_fd, "[execute_ast] exec_tree returned %d pid=%d\n", *exit_code, getpid());
+            close(dbg_fd);
+        }
+    }
+    else
+    {
+        if (g_state.last_signal == 130)
+            *exit_code = 130;
+        else
+            *exit_code = 1;
+    }
+    free_ast(ast);
 }
 
 void	build_segment_until_semicolon(t_nodes **segment, t_nodes **seg_tail,

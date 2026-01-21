@@ -1,39 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   sort.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 03:04:43 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 03:23:17 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/13 02:30:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/21 05:01:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-int	print_syntax_error(char *token)
+static void	swap_contents(t_nodes *a, t_nodes *b)
 {
-	ft_puterror("syntax error near unexpected token `%s'\n", token);
-	return (2);
+	char	*tmp;
+
+	tmp = a->content;
+	a->content = b->content;
+	b->content = tmp;
 }
 
-void	del_token(void *content)
+void	sort_list(t_nodes **list)
 {
-	t_token	*token;
+	t_nodes	*i;
+	t_nodes	*j;
+	int		attempts;
 
-	token = (t_token *)content;
-	if (token)
+	attempts = 0;
+	i = *list;
+	while (i && attempts++ < 10000)
 	{
-		if (token->value)
-			free(token->value);
-		free(token);
+		j = i->next;
+		while (j)
+		{
+			if (strcoll((char *)i->content, (char *)j->content) > 0)
+				swap_contents(i, j);
+			j = j->next;
+		}
+		i = i->next;
 	}
-}
-
-int	is_redirection(t_token_type type)
-{
-	return (type == TOKEN_RED_IN || type == TOKEN_RED_OUT
-		|| type == TOKEN_APPEND || type == TOKEN_HEREDOC
-		|| type == TOKEN_HERESTR);
 }

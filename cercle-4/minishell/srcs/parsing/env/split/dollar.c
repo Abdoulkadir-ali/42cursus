@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 14:20:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 04:41:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	expand_to_tokens(t_exp_input *in, t_exp_state *st,
 	int	is_bad_target;
 
 	is_unquoted_quote = (peek->next == '\'' || peek->next == '"')
-		&& !st->in_s_quote && !st->in_d_quote;
+			&& !st->in_s_quote && !st->in_d_quote;
 	if (is_unquoted_quote)
 	{
 		in->pos++;

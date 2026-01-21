@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:25:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 04:41:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,18 @@ int	handle_red_in(char **str, t_token *token)
 {
 	if (*(*str + 1) == '<')
 	{
-		token->type = TOKEN_HEREDOC;
-		token->value = ft_strldup(*str, 2);
-		(*str) += 2;
+		if (*(*str + 2) == '<')
+		{
+			token->type = TOKEN_HERESTR;
+			token->value = ft_strldup(*str, 3);
+			(*str) += 3;
+		}
+		else
+		{
+			token->type = TOKEN_HEREDOC;
+			token->value = ft_strldup(*str, 2);
+			(*str) += 2;
+		}
 	}
 	else
 	{

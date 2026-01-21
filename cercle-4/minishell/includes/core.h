@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:49:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 05:55:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,10 @@ void					execute_ast(t_nodes *segment, char ***envp,
 							int *exit_code);
 char					*append_line(char *line, char *new_line);
 char					*get_prompt(int is_initial);
+
+/* Extender helpers (defined in srcs/core/reader/extender.c) */
+const char		*ext_continuation_label(char kind);
+char			ext_detect_trailing_op(char *line);
+int				ext_check_paren_depth(char *s);
 
 #endif

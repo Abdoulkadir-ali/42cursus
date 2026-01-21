@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 23:46:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 04:27:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	parse_export_arg(char *arg, t_export_ctx *ctx)
 	else
 	{
 		ctx->key = ft_strdup(arg);
-		ctx->new_entry = ft_strdup(arg);
+		ctx->new_entry = ft_strjoin(ctx->key, "=");
 	}
 }
 

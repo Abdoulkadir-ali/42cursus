@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 14:57:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 05:03:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <dirent.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <unistd.h>
 
 // CUSTOM
@@ -39,6 +40,7 @@ typedef enum e_token_type
 	TOKEN_RED_IN,
 	TOKEN_RED_OUT,
 	TOKEN_HEREDOC,
+	TOKEN_HERESTR,
 	TOKEN_APPEND,
 	TOKEN_SEMICOLON
 }					t_token_type;
@@ -170,5 +172,6 @@ t_token				*handle_separator(char **str);
 int					match_loop(char **pattern, char **str, char **star,
 						char **str_start);
 t_token				*handle_word(char **str);
+void				sort_list(t_nodes **list);
 
 #endif

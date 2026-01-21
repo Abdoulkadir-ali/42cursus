@@ -6,11 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 04:49:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+#include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 static char	*get_env_val_simple(char *key, char **envp)
 {
@@ -47,6 +50,11 @@ static char	*get_cd_path(char **args, char **envp)
 		path = get_env_val_simple("HOME", envp);
 		if (!path)
 		{
+			/* Fallback to the password database when HOME isn't present
+			   in the environment (e.g., when running under `env -i`). */
+			struct passwd *pw = getpwuid(getuid());
+			if (pw && pw->pw_dir)
+				return (pw->pw_dir);
 			ft_puterror("cd: HOME not set\n");
 			return (NULL);
 		}

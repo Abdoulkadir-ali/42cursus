@@ -6,38 +6,35 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 01:54:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 04:47:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+#include <errno.h>
+#include <stdlib.h>
 
 static int	check_long_overflow(const char *str)
 {
-	size_t	res;
-	int		sign;
-	int		i;
+	char *endptr;
+	long long val;
 
-	i = 0;
-	res = 0;
-	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	sign = 1;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	if (!str[i])
+	errno = 0;
+	val = strtoll(str, &endptr, 10);
+	if (errno == ERANGE)
 		return (0);
-	while (str[i])
+	/* skip leading whitespace - strtoll does this, but ensure we consumed
+	   at least one digit or sign and that there are no trailing garbage
+	   characters (only spaces allowed). */
+	if (endptr == str)
+		return (0);
+	while (*endptr)
 	{
-		if (!ft_isdigit(str[i]) || (res > LLONG_MAX) || (res == LLONG_MAX
-				&& (str[i] - '0') > (7 + (sign == -1))))
+		if (!(*endptr == ' ' || (*endptr >= 9 && *endptr <= 13)))
 			return (0);
-		res = res * 10 + (str[i++] - '0');
+		endptr++;
 	}
+	(void)val;
 	return (1);
 }
 

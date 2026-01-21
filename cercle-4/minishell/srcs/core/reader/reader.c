@@ -6,47 +6,30 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 03:30:41 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 01:51:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/21 05:59:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
-static char	*read_input(char *prompt)
-{
-	char	*buf;
-	int		i;
-	char	c;
-
-	if (isatty(STDIN_FILENO))
-		return (readline(prompt));
-	buf = ft_calloc(10000, 1);
-	i = 0;
-	while (read(STDIN_FILENO, &c, 1) > 0)
-	{
-		buf[i++] = c;
-		if (c == '\n')
-			break ;
-		if (i >= 9999)
-			break ;
-	}
-	if (i > 0)
-	{
-		if (buf[i - 1] == '\n')
-			buf[i - 1] = '\0';
-		return (buf);
-	}
-	free(buf);
-	return (NULL);
-}
-
 static char	*read_next_line_and_append(char *line, char quote)
 {
-	char	*prompt;
-	char	*new_line;
-	char	*temp;
+	char		*prompt;
+	char		*new_line;
+	char		*temp;
+	const char	*label;
+	char		prompt_buf[16];
 
-	prompt = get_prompt(0);
+	label = ext_continuation_label(quote);
+	if (label)
+	{
+		ft_bzero(prompt_buf, sizeof(prompt_buf));
+		ft_strlcpy(prompt_buf, label, sizeof(prompt_buf));
+		ft_strlcat(prompt_buf, "> ", sizeof(prompt_buf));
+		prompt = prompt_buf;
+	}
+	else
+		prompt = get_prompt(0);
 	new_line = read_input(prompt);
 	if (!new_line)
 	{
@@ -85,6 +68,7 @@ static char	check_unclosed_quote(char *str)
 static char	*handle_multiline_input(char *line)
 {
 	char	quote;
+	char	code;
 
 	quote = check_unclosed_quote(line);
 	while (quote)
@@ -93,6 +77,23 @@ static char	*handle_multiline_input(char *line)
 		if (!line)
 			return (NULL);
 		quote = check_unclosed_quote(line);
+	}
+	/* Continue reading if line ends with a known continuation operator. */
+	while (1)
+	{
+		if (ext_check_paren_depth(line) > 0)
+		{
+			line = read_next_line_and_append(line, 'p');
+			if (!line)
+				return (NULL);
+			continue ;
+		}
+		code = ext_detect_trailing_op(line);
+		if (code == 0)
+			break ;
+		line = read_next_line_and_append(line, code);
+		if (!line)
+			return (NULL);
 	}
 	return (line);
 }
