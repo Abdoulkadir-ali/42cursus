@@ -45,30 +45,30 @@ static int	exec_dot_builtin(char **args)
 	return (0);
 }
 
-static int	exec_main_builtins(char **args, char ***envp)
+static int	exec_main_builtins(char **args, t_shell_state *state)
 {
 	if (is_cmd(args[0], "echo"))
 		return (ft_echo(args));
 	if (is_cmd(args[0], "cd"))
-		return (ft_cd(args, envp));
+		return (ft_cd(args, state));
 	if (is_cmd(args[0], "pwd"))
-		return (ft_pwd(*envp));
+		return (ft_pwd(state));
 	if (is_cmd(args[0], "env"))
-		return (ft_env(*envp));
+		return (ft_env(state));
 	if (is_cmd(args[0], "exit"))
-		return (ft_exit(args));
+		return (ft_exit(args, state));
 	if (is_cmd(args[0], "export"))
-		return (ft_export(args, envp));
+		return (ft_export(args, state));
 	if (is_cmd(args[0], "unset"))
-		return (ft_unset(args, envp));
+		return (ft_unset(args, state));
 	if (is_cmd(args[0], ":"))
 		return (0);
 	return (0);
 }
 
-int	exec_builtin(char **args, char ***envp)
+int	exec_builtin(char **args, t_shell_state *state)
 {
 	if (is_cmd(args[0], "."))
 		return (exec_dot_builtin(args));
-	return (exec_main_builtins(args, envp));
+	return (exec_main_builtins(args, state));
 }

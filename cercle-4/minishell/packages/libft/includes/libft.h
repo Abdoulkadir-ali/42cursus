@@ -84,6 +84,8 @@ int					ft_atoi(const char *s);
 void				ft_swap(int *a, int *b);
 
 long long			ft_atoll(const char *str);
+long long			ft_safe_atoll(const char *str, long long MAX, int *error,
+						char **endptr);
 
 void				ft_bzero(void *s, size_t n);
 void				*ft_calloc(size_t nmemb, size_t size);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 02:42:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:10:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:45:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static char	*norm_components(char **stack, int count, int leading_slashes)
 	return (res);
 }
 
-char	*normalize_logical(const char *path, char **envp)
+char	*normalize_logical(const char *path, t_shell_state *state)
 {
 	char	**stack;
 	int		count;
@@ -42,7 +42,7 @@ char	*normalize_logical(const char *path, char **envp)
 
 	if (!path)
 		return (NULL);
-	base = build_base_path(path, envp, &leading_slashes);
+	base = build_base_path(path, state, &leading_slashes);
 	if (!base)
 		return (ft_strdup(path));
 	stack = collect_components(base, &count);

@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:20:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
-char	*read_function_body(char *line, size_t n);
+char	*read_function_body(char *line, size_t n, t_shell_state *state);
 
 static size_t	count_paren_pairs(const char *s)
 {
@@ -41,7 +41,7 @@ static size_t	count_paren_pairs(const char *s)
 	return (n);
 }
 
-char	*handle_parenthesis(char *line, char *trimmed)
+char	*handle_parenthesis(char *line, char *trimmed, t_shell_state *state)
 {
 	size_t	pairs;
 
@@ -51,13 +51,13 @@ char	*handle_parenthesis(char *line, char *trimmed)
 	if (pairs > 0)
 	{
 		free(trimmed);
-		line = read_function_body(line, pairs);
+		line = read_function_body(line, pairs, state);
 		return (line);
 	}
 	if (ft_strcmp(trimmed, "()") == 0)
 	{
 		free(trimmed);
-		line = read_function_body(line, 1);
+		line = read_function_body(line, 1, state);
 		return (line);
 	}
 	free(trimmed);

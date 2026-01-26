@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:22:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:50:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,6 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <pwd.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
 
@@ -46,47 +43,46 @@ typedef struct s_quotes_state
 
 typedef struct s_heredoc
 {
-	char	**envp;
-	int		exit_code;
-	int		fd;
+	t_shell_state	*state;
+	int				fd;
 }			t_heredoc;
 
 /* Public API used by other translation units */
 void		print_sorted_env(char **envp);
-int			process_export_arg(char *arg, char ***envp);
+int			process_export_arg(char *arg, t_shell_state *state);
 int			process_existing_export(t_export_ctx *ctx, char ***envp);
 int			process_new_export(t_export_ctx *ctx, char ***envp);
 void		update_existing_env(char **envp, t_export_ctx *ctx);
 void		parse_export_arg(char *arg, t_export_ctx *ctx);
 int			report_invalid_identifier(char *arg, t_export_ctx *ctx);
 
-int			exec_tree(t_nodes *ast_node, char ***envp);
-int			exec_simple_command(t_ast *node, char ***envp);
-int			exec_subshell(t_ast *node, char ***envp);
-int			exec_logical_or(t_ast *node, char ***envp);
-int			exec_logical_and(t_ast *node, char ***envp);
-int			exec_redirection(t_ast *node, char ***envp);
-int			exec_pipe(t_ast *node, char ***envp);
+int			exec_tree(t_nodes *ast_node, t_shell_state *state);
+int			exec_simple_command(t_ast *node, t_shell_state *state);
+int			exec_subshell(t_ast *node, t_shell_state *state);
+int			exec_logical_or(t_ast *node, t_shell_state *state);
+int			exec_logical_and(t_ast *node, t_shell_state *state);
+int			exec_redirection(t_ast *node, t_shell_state *state);
+int			exec_pipe(t_ast *node, t_shell_state *state);
 int			is_builtin(char *cmd, char **args, int is_quoted);
-int			exec_builtin(char **args, char ***envp);
-int			scan_heredocs(t_nodes *ast_node);
-void		consume_heredocs(t_nodes *tokens);
-int			ft_export(char **args, char ***envp);
-int			ft_unset(char **args, char ***envp);
-int			ft_env(char **envp);
+int			exec_builtin(char **args, t_shell_state *state);
+int			scan_heredocs(t_nodes *ast_node, t_shell_state *state);
+void		consume_heredocs(t_nodes *tokens, t_shell_state *state);
+int			ft_export(char **args, t_shell_state *state);
+int			ft_unset(char **args, t_shell_state *state);
+int			ft_env(t_shell_state *state);
 int			ft_echo(char **args);
 
-int			ft_pwd(char **envp);
-int			ft_exit(char **args);
-int			ft_set_env(char *key, char *value, char ***envp);
-char		*find_path(char *cmd, char **envp);
-int			get_env_index(char *key, char **envp);
+int			ft_pwd(t_shell_state *state);
+int			ft_exit(char **args, t_shell_state *state);
+int			ft_set_env(char *key, char *value, t_shell_state *state);
+char		*find_path(char *cmd, t_shell_state *state);
+int			get_env_index(char *key, t_shell_state *state);
 int			is_valid_ident(char *str);
 int			is_quoted_delim(const char *delim);
 char		*remove_quotes_heredoc(char *str);
 char		*generate_tmp_filename(void);
-char		*handle_heredoc_input(char *delim, char **envp, int exit_code);
-void		read_heredoc_loop(char *delim, int fd, char **envp, int exit_code);
+char		*handle_heredoc_input(char *delim, t_shell_state *state);
+void		read_heredoc_loop(char *delim, int fd, t_shell_state *state);
 char		*prepare_stop_str(char *delim, t_heredoc *ctx);
 char		*read_line(void);
 int			process_line_quoted(char *line, char *stop_str, int fd);
@@ -94,19 +90,19 @@ int			process_line_unquoted(char *line, char *stop_str, int fd,
 				t_heredoc *ctx);
 void		read_heredoc_lines(char *stop_str, int quoted, t_heredoc *ctx);
 
-int			ft_cd(char **args, char ***envp);
-char		*get_cd_path(char **args, char **envp);
-char		*get_env_val_simple(char *key, char **envp);
+int			ft_cd(char **args, t_shell_state *state);
+char		*get_cd_path(char **args, t_shell_state *state);
+char		*get_env_val_simple(char *key, t_shell_state *state);
 char		*get_cwd_dup(void);
-char		*resolve_home(char **envp);
+char		*resolve_home(void);
 char		*cdpath_find(const char *name, char *cdpath);
 char		*join_paths(const char *a, const char *b);
-int			perform_cd(char *path, char ***envp);
+int			perform_cd(char *path, t_shell_state *state);
 
-char		*build_base_path(const char *path, char **envp,
+char		*build_base_path(const char *path, t_shell_state *state,
 				int *leading_slashes);
 char		**collect_components(const char *base, int *count);
 char		*build_path_from_stack(char **stack, int count,
 				int leading_slashes);
-char		*normalize_logical(const char *path, char **envp);
+char		*normalize_logical(const char *path, t_shell_state *state);
 #endif

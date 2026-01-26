@@ -6,48 +6,44 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:33:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:34:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
-#include <errno.h>
-#include <stdlib.h>
 
-static int	check_long_overflow(const char *str)
+static long long	parse_exit_argument(const char *arg)
 {
+	int			error;
 	char		*endptr;
 	long long	val;
 
-	errno = 0;
-	val = strtoll(str, &endptr, 10);
-	if (errno == ERANGE)
-		return (0);
-	if (endptr == str)
-		return (0);
+	val = ft_safe_atoll(arg, LLONG_MAX, &error, &endptr);
+	if (error)
+	{
+		ft_puterror("exit: %s: numeric argument required\n", arg);
+		exit(2);
+	}
 	while (*endptr)
 	{
 		if (!(*endptr == ' ' || (*endptr >= 9 && *endptr <= 13)))
-			return (0);
+		{
+			ft_puterror("exit: %s: numeric argument required\n", arg);
+			exit(2);
+		}
 		endptr++;
 	}
-	(void)val;
-	return (1);
+	return (val);
 }
 
-static int	get_exit_status(char **args, long long *status)
+static int	get_exit_status(char **args, long long *status, t_shell_state *state)
 {
 	if (!args[1])
 	{
-		*status = g_state.exit_code;
+		*status = state->exit_code;
 		return (0);
 	}
-	if (!check_long_overflow(args[1]))
-	{
-		ft_puterror("exit: %s: numeric argument required\n", args[1]);
-		exit(2);
-	}
-	*status = ft_atoll(args[1]);
+	*status = parse_exit_argument(args[1]);
 	if (args[2])
 	{
 		ft_puterror("exit: too many arguments\n");
@@ -57,13 +53,13 @@ static int	get_exit_status(char **args, long long *status)
 	return (0);
 }
 
-int	ft_exit(char **args)
+int	ft_exit(char **args, t_shell_state *state)
 {
 	long long	status;
 
-	if (g_state.interactive_shell)
+	if (state->interactive_shell)
 		ft_putendl_fd("exit", 2);
-	get_exit_status(args, &status);
+	get_exit_status(args, &status, state);
 	exit((unsigned char)status);
 	return ((unsigned char)status);
 }

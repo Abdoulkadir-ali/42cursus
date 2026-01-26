@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:08:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:45:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ static char	*handle_absolute_path(const char *path, int *leading_slashes)
 	return (base);
 }
 
-static char	*handle_relative_with_pwd(const char *path, char **envp,
+static char	*handle_relative_with_pwd(const char *path, t_shell_state *state,
 		int *leading_slashes)
 {
 	char	*base;
 	char	*pwd;
 
-	pwd = get_env_val_simple("PWD", envp);
+	pwd = get_env_val_simple("PWD", state);
 	if (!pwd || pwd[0] == '\0')
 		return (NULL);
 	base = join_paths(pwd, path);
@@ -71,14 +71,14 @@ static char	*handle_relative_with_cwd(const char *path, int *leading_slashes)
 	return (base);
 }
 
-char	*build_base_path(const char *path, char **envp, int *leading_slashes)
+char	*build_base_path(const char *path, t_shell_state *state, int *leading_slashes)
 {
 	char	*base;
 
 	*leading_slashes = 0;
 	if (path[0] == '/')
 		return (handle_absolute_path(path, leading_slashes));
-	base = handle_relative_with_pwd(path, envp, leading_slashes);
+	base = handle_relative_with_pwd(path, state, leading_slashes);
 	if (base)
 		return (base);
 	base = handle_relative_with_cwd(path, leading_slashes);

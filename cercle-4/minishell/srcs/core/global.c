@@ -12,11 +12,4 @@
 
 #include "core.h"
 
-t_global_state	g_state = {
-	.envp = NULL,
-	.exit_code = 0,
-	.interactive_shell = 0,
-	.expansion_error = 0,
-	.last_signal = 0,
-	.syntax_error = 0
-};
+int	g_last_signal = 0;

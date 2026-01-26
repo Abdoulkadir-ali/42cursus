@@ -60,30 +60,40 @@ char	*get_prompt(int is_initial)
 	return ("> ");
 }
 
-char	*read_input(char *prompt)
+char	*read_input(char *prompt, t_shell_state *state)
 {
-	char	*buf;
-	int		i;
-	char	c;
+	char	*line;
 
 	if (isatty(STDIN_FILENO))
-		return (readline(prompt));
-	buf = ft_calloc(10000, 1);
-	i = 0;
-	while (read(STDIN_FILENO, &c, 1) > 0)
+		line = readline(prompt);
+	else
 	{
-		buf[i++] = c;
-		if (c == '\n')
-			break ;
-		if (i >= 9999)
-			break ;
+		char	*buf;
+		int		i;
+		char	c;
+
+		buf = ft_calloc(10000, 1);
+		i = 0;
+		while (read(STDIN_FILENO, &c, 1) > 0)
+		{
+			buf[i++] = c;
+			if (c == '\n')
+				break ;
+			if (i >= 9999)
+				break ;
+		}
+		if (i > 0)
+		{
+			if (buf[i - 1] == '\n')
+				buf[i - 1] = '\0';
+			line = buf;
+		}
+		else
+		{
+			free(buf);
+			return (NULL);
+		}
 	}
-	if (i > 0)
-	{
-		if (buf[i - 1] == '\n')
-			buf[i - 1] = '\0';
-		return (buf);
-	}
-	free(buf);
-	return (NULL);
+	line = handle_multiline_input(line, state);
+	return (line);
 }

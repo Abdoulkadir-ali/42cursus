@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:48:38 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 13:53:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*prepare_stop_str(char *delim, t_heredoc *ctx)
 	if (quoted)
 		stop_str = remove_quotes_heredoc(delim);
 	else
-		stop_str = expand_string(delim, ctx->envp, ctx->exit_code);
+		stop_str = expand_string(delim, ctx->state->envp, ctx->state->exit_code);
 	if (!stop_str)
 		stop_str = ft_strdup(delim);
 	return (stop_str);
@@ -81,7 +81,7 @@ int	process_line_unquoted(char *line, char *stop_str, int fd,
 	char	*expanded_candidate;
 	size_t	len;
 
-	expanded_candidate = expand_heredoc(line, ctx->envp, ctx->exit_code);
+	expanded_candidate = expand_heredoc(line, ctx->state->envp, ctx->state->exit_code);
 	len = ft_strlen(stop_str) + 1;
 	if (ft_strncmp(expanded_candidate, stop_str, len) == 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 02:37:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:37:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,15 @@ static char	*make_new_entry(char *key, char *value)
 	return (entry);
 }
 
-static void	replace_env_at(char ***envp, int idx, char *new_entry)
+static void	replace_env_at(char ***envp, int idx, char *new_entry, t_shell_state *state)
 {
 	free((*envp)[idx]);
 	(*envp)[idx] = new_entry;
-	if (g_state.envp != *envp)
-		g_state.envp = *envp;
+	if (state->envp != *envp)
+		state->envp = *envp;
 }
 
-static int	append_env_entry(char ***envp, char *new_entry)
+static int	append_env_entry(char ***envp, char *new_entry, t_shell_state *state)
 {
 	int		count;
 	char	**new_env;
@@ -55,42 +55,42 @@ static int	append_env_entry(char ***envp, char *new_entry)
 	new_env[count] = new_entry;
 	free(*envp);
 	*envp = new_env;
-	if (g_state.envp != *envp)
-		g_state.envp = *envp;
+	if (state->envp != *envp)
+		state->envp = *envp;
 	return (0);
 }
 
-int	get_env_index(char *key, char **envp)
+int	get_env_index(char *key, t_shell_state *state)
 {
 	int	i;
 	int	len;
 
 	len = ft_strlen(key);
 	i = 0;
-	while (envp && envp[i])
+	while (state->envp && state->envp[i])
 	{
-		if (ft_strncmp(envp[i], key, len) == 0 && (envp[i][len] == '='
-			|| envp[i][len] == '\0'))
+		if (ft_strncmp(state->envp[i], key, len) == 0 && (state->envp[i][len] == '='
+			|| state->envp[i][len] == '\0'))
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-int	ft_set_env(char *key, char *value, char ***envp)
+int	ft_set_env(char *key, char *value, t_shell_state *state)
 {
 	char	*new_entry;
 	int		idx;
 
-	if (!key || !envp || !*envp)
+	if (!key || !state->envp)
 		return (1);
 	new_entry = make_new_entry(key, value);
 	if (!new_entry)
 		return (1);
-	idx = get_env_index(key, *envp);
+	idx = get_env_index(key, state);
 	if (idx != -1)
-		replace_env_at(envp, idx, new_entry);
+		replace_env_at(&state->envp, idx, new_entry, state);
 	else
-		append_env_entry(envp, new_entry);
+		append_env_entry(&state->envp, new_entry, state);
 	return (0);
 }

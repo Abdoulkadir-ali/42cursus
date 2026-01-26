@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:31:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ t_nodes				*expand_and_split(char *str, char **envp, int exit_code);
 int					check_syntax(t_nodes *tokens);
 t_nodes				*expand_wildcard(char *pattern);
 t_nodes				*collect_matches(DIR *dir, char *pattern);
-int					ft_set_env(char *key, char *value, char ***envp);
+int					ft_set_env(char *key, char *value, t_shell_state *state);
 char				**expand_wildcards(char **args);
 void				free_ast(t_nodes *ast_node);
 void				del_token(void *content);

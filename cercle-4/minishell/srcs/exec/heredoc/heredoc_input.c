@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:32:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-static void	handle_heredoc_word(char *value)
+static void	handle_heredoc_word(char *value, t_shell_state *state)
 {
 	char	*filename;
 	int		fd;
@@ -21,14 +21,14 @@ static void	handle_heredoc_word(char *value)
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd != -1)
 	{
-		read_heredoc_loop(value, fd, g_state.envp, g_state.exit_code);
+		read_heredoc_loop(value, fd, state);
 		close(fd);
 		unlink(filename);
 	}
 	free(filename);
 }
 
-static void	process_heredoc(t_nodes *tokens)
+static void	process_heredoc(t_nodes *tokens, t_shell_state *state)
 {
 	t_token	*tok;
 	t_token	*next_tok;
@@ -41,22 +41,22 @@ static void	process_heredoc(t_nodes *tokens)
 			next_tok = (t_token *)tokens->next->content;
 			if (next_tok->type == TOKEN_WORD)
 			{
-				handle_heredoc_word(next_tok->value);
+				handle_heredoc_word(next_tok->value, state);
 			}
 		}
 	}
 }
 
-void	consume_heredocs(t_nodes *tokens)
+void	consume_heredocs(t_nodes *tokens, t_shell_state *state)
 {
 	while (tokens)
 	{
-		process_heredoc(tokens);
+		process_heredoc(tokens, state);
 		tokens = tokens->next;
 	}
 }
 
-char	*handle_heredoc_input(char *delim, char **envp, int exit_code)
+char	*handle_heredoc_input(char *delim, t_shell_state *state)
 {
 	char	*filename;
 	int		fd;
@@ -69,9 +69,9 @@ char	*handle_heredoc_input(char *delim, char **envp, int exit_code)
 		free(filename);
 		return (NULL);
 	}
-	read_heredoc_loop(delim, fd, envp, exit_code);
+	read_heredoc_loop(delim, fd, state);
 	close(fd);
-	if (g_state.last_signal == 130)
+	if (g_last_signal == 130)
 	{
 		unlink(filename);
 		free(filename);

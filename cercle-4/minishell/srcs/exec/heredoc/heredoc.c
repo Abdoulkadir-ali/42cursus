@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:26:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	handle_herestr(t_ast *node)
 	return (0);
 }
 
-int	scan_heredocs(t_nodes *ast_node)
+int	scan_heredocs(t_nodes *ast_node, t_shell_state *state)
 {
 	t_ast	*node;
 	char	*tmp_file;
@@ -46,8 +46,7 @@ int	scan_heredocs(t_nodes *ast_node)
 	node = (t_ast *)ast_node->content;
 	if (node->type == TOKEN_HEREDOC)
 	{
-		tmp_file = handle_heredoc_input(node->args[0], g_state.envp,
-				g_state.exit_code);
+		tmp_file = handle_heredoc_input(node->args[0], state);
 		if (!tmp_file)
 			return (1);
 		free(node->args[0]);
@@ -56,7 +55,7 @@ int	scan_heredocs(t_nodes *ast_node)
 	}
 	else if (node->type == TOKEN_HERESTR)
 		return (handle_herestr(node));
-	if (scan_heredocs(node->left) || scan_heredocs(node->right))
+	if (scan_heredocs(node->left, state) || scan_heredocs(node->right, state))
 		return (1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:42:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:37:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	ft_unset_handle_option(char *opt)
 	return (2);
 }
 
-static void	ft_unset_remove_at(char ***envp, int idx)
+static void	ft_unset_remove_at(char ***envp, int idx, t_shell_state *state)
 {
 	int		count;
 	char	**new_env;
@@ -42,11 +42,11 @@ static void	ft_unset_remove_at(char ***envp, int idx)
 	}
 	free(*envp);
 	*envp = new_env;
-	if (g_state.envp != *envp)
-		g_state.envp = *envp;
+	if (state->envp != *envp)
+		state->envp = *envp;
 }
 
-int	ft_unset(char **args, char ***envp)
+int	ft_unset(char **args, t_shell_state *state)
 {
 	int	idx;
 	int	arg_idx;
@@ -63,9 +63,9 @@ int	ft_unset(char **args, char ***envp)
 			arg_idx++;
 			continue ;
 		}
-		idx = get_env_index(args[arg_idx], *envp);
+		idx = get_env_index(args[arg_idx], state);
 		if (idx != -1)
-			ft_unset_remove_at(envp, idx);
+			ft_unset_remove_at(&state->envp, idx, state);
 		arg_idx++;
 	}
 	return (ret);

@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 00:06:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:37:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
-static t_nodes	*tokenize_and_check(char *line, int *exit_code)
+static t_nodes	*tokenize_and_check(char *line, t_shell_state *state)
 {
 	t_nodes	*tokens;
 	int		status;
@@ -20,14 +20,14 @@ static t_nodes	*tokenize_and_check(char *line, int *exit_code)
 	tokens = tokenizer(line);
 	if (!tokens)
 	{
-		*exit_code = 2;
+		state->exit_code = 2;
 		return (NULL);
 	}
 	status = check_syntax(tokens);
 	if (status != 0)
 	{
-		*exit_code = status;
-		consume_heredocs(tokens);
+		state->exit_code = status;
+		consume_heredocs(tokens, state);
 		ft_lstclear(&tokens, del_token);
 		return (NULL);
 	}
@@ -48,16 +48,15 @@ static t_nodes	*extract_segment(t_nodes *cursor, t_nodes **pnext)
 	return (segment);
 }
 
-static int	process_segment_internal(t_nodes *segment, char ***envp,
-		int *exit_code)
+static int	process_segment_internal(t_nodes *segment, t_shell_state *state)
 {
-	if (expand_and_check_error(&segment, *envp, *exit_code, exit_code))
+	if (expand_and_check_error(&segment, state, &state->exit_code))
 		return (1);
-	execute_ast(segment, envp, exit_code);
+	execute_ast(segment, state);
 	return (0);
 }
 
-static void	process_segments(t_nodes *tokens, char ***envp, int *exit_code)
+static void	process_segments(t_nodes *tokens, t_shell_state *state)
 {
 	t_nodes	*cursor;
 	t_nodes	*next_cursor;
@@ -70,8 +69,8 @@ static void	process_segments(t_nodes *tokens, char ***envp, int *exit_code)
 		segment = extract_segment(cursor, &next_cursor);
 		if (segment)
 		{
-			if (try_handle_assignment_public(segment, envp, exit_code)
-				|| process_segment_internal(segment, envp, exit_code))
+			if (try_handle_assignment_public(segment, state)
+				|| process_segment_internal(segment, state))
 			{
 				cursor = next_cursor;
 				continue ;
@@ -81,20 +80,21 @@ static void	process_segments(t_nodes *tokens, char ***envp, int *exit_code)
 	}
 }
 
-void	process_input(char *line, char ***envp, int *exit_code)
+void	process_input(char *line, t_shell_state *state)
 {
 	t_nodes	*tokens;
 
 	if (!*line || is_whitespace_only(line))
 		return ;
-	add_history(line);
-	tokens = tokenize_and_check(line, exit_code);
+	if (state->interactive_shell)
+		add_history(line);
+	tokens = tokenize_and_check(line, state);
 	if (!tokens)
 	{
-		if (!g_state.interactive_shell)
-			exit(*exit_code);
+		if (!state->interactive_shell)
+			exit(state->exit_code);
 		return ;
 	}
 	dump_tokens_list(tokens, "after_tokenizer");
-	process_segments(tokens, envp, exit_code);
+	process_segments(tokens, state);
 }

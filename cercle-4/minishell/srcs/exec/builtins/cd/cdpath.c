@@ -6,29 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 02:42:03 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:13:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:50:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-static char	*handle_home(char **envp)
+static char	*handle_home(t_shell_state *state)
 {
-	char	*path;
-
-	path = resolve_home(envp);
-	if (!path)
-		return (NULL);
-	if (path != get_env_val_simple("HOME", envp))
-		return (ft_strdup(path));
-	return (path);
+	(void)state;
+	return (resolve_home());
 }
 
-static char	*handle_oldpwd(char **envp)
+static char	*handle_oldpwd(t_shell_state *state)
 {
 	char	*path;
 
-	path = get_env_val_simple("OLDPWD", envp);
+	path = get_env_val_simple("OLDPWD", state);
 	if (!path)
 	{
 		ft_puterror("cd: OLDPWD not set\n");
@@ -38,24 +32,24 @@ static char	*handle_oldpwd(char **envp)
 	return (path);
 }
 
-static char	*get_path_from_args(char **args, char **envp)
+static char	*get_path_from_args(char **args, t_shell_state *state)
 {
 	if (!args[1] || ft_strncmp(args[1], "--", 3) == 0)
-		return (handle_home(envp));
+		return (handle_home(state));
 	else if (ft_strncmp(args[1], "-", 2) == 0)
-		return (handle_oldpwd(envp));
+		return (handle_oldpwd(state));
 	else
 		return (args[1]);
 }
 
-static char	*check_cdpath(char *path, char **envp)
+static char	*check_cdpath(char *path, t_shell_state *state)
 {
 	char	*cdpath;
 	char	*candidate;
 
 	if (path && path[0] != '/' && !ft_strchr(path, '/'))
 	{
-		cdpath = get_env_val_simple("CDPATH", envp);
+		cdpath = get_env_val_simple("CDPATH", state);
 		candidate = cdpath_find(path, cdpath);
 		if (candidate)
 		{
@@ -67,10 +61,10 @@ static char	*check_cdpath(char *path, char **envp)
 	return (path);
 }
 
-char	*get_cd_path(char **args, char **envp)
+char	*get_cd_path(char **args, t_shell_state *state)
 {
 	char	*path;
 
-	path = get_path_from_args(args, envp);
-	return (check_cdpath(path, envp));
+	path = get_path_from_args(args, state);
+	return (check_cdpath(path, state));
 }

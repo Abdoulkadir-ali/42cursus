@@ -12,7 +12,7 @@
 
 #include "core.h"
 
-char	*get_command_line(void)
+char	*get_command_line(t_shell_state *state)
 {
 	char	*line;
 	char	*prompt;
@@ -20,14 +20,14 @@ char	*get_command_line(void)
 	char	*handled;
 
 	prompt = get_prompt(1);
-	line = read_input(prompt);
+	line = read_input(prompt, state);
 	if (!line)
 		return (NULL);
 	trimmed = ft_strtrim(line, " \t");
 	{
-		handled = handle_parenthesis(line, trimmed);
+		handled = handle_parenthesis(line, trimmed, state);
 		if (handled)
 			return (handled);
 	}
-	return (handle_multiline_input(line));
+	return (handle_multiline_input(line, state));
 }

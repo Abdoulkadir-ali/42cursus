@@ -6,20 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 14:00:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-void	read_heredoc_loop(char *delim, int fd, char **envp, int exit_code)
+void	read_heredoc_loop(char *delim, int fd, t_shell_state *state)
 {
 	char		*stop_str;
 	int			quoted;
 	t_heredoc	ctx;
 
-	ctx.envp = envp;
-	ctx.exit_code = exit_code;
+	ctx.state = state;
 	ctx.fd = fd;
 	stop_str = prepare_stop_str(delim, &ctx);
 	quoted = is_quoted_delim(delim);
@@ -34,7 +33,7 @@ void	handle_heredoc_eof(char *stop_str)
 	const char	*error;
 
 	error = "warning: here-document delimited by end-of-file";
-	if (stop_str && g_state.last_signal != 130)
+	if (stop_str && g_last_signal != 130)
 		ft_puterror("%s (wanted `%s')\n", error, stop_str);
 }
 

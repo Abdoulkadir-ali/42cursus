@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 22:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/22 21:19:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:37:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,33 +23,33 @@ int	is_whitespace_only(char *str)
 	return (1);
 }
 
-int	expand_and_check_error(t_nodes **segment, char **envp, int exit_code,
+int	expand_and_check_error(t_nodes **segment, t_shell_state *state,
 		int *new_exit_code)
 {
-	expand_tokens(segment, envp, exit_code);
-	if (g_state.expansion_error)
+	expand_tokens(segment, state->envp, state->exit_code);
+	if (state->expansion_error)
 	{
-		*new_exit_code = g_state.exit_code;
+		*new_exit_code = state->exit_code;
 		ft_lstclear(segment, del_token);
-		g_state.expansion_error = 0;
+		state->expansion_error = 0;
 		return (1);
 	}
 	return (0);
 }
 
-void	execute_ast(t_nodes *segment, char ***envp, int *exit_code)
+void	execute_ast(t_nodes *segment, t_shell_state *state)
 {
 	t_nodes	*ast;
 
 	ast = ast_builder(segment);
-	if (!scan_heredocs(ast))
-		*exit_code = exec_tree(ast, envp);
+	if (!scan_heredocs(ast, state))
+		state->exit_code = exec_tree(ast, state);
 	else
 	{
-		if (g_state.last_signal == 130)
-			*exit_code = 130;
+		if (g_last_signal == 130)
+			state->exit_code = 130;
 		else
-			*exit_code = 1;
+			state->exit_code = 1;
 	}
 	free_ast(ast);
 }

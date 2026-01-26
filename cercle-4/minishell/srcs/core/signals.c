@@ -16,7 +16,7 @@ static void	handle_interactive(int sig)
 {
 	if (sig == SIGINT)
 	{
-		g_state.last_signal = 130;
+		g_last_signal = 130;
 		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -28,7 +28,7 @@ static void	handle_heredoc(int sig)
 {
 	if (sig == SIGINT)
 	{
-		g_state.last_signal = 130;
+		g_last_signal = 130;
 		write(1, "\n", 1);
 	}
 }

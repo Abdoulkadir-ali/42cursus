@@ -33,11 +33,11 @@ static char	*build_function_prompt(size_t n)
 	return (prompt);
 }
 
-static char	*read_function_input(char *prompt)
+static char	*read_function_input(char *prompt, t_shell_state *state)
 {
 	char	*new_line;
 
-	new_line = read_input(prompt);
+	new_line = read_input(prompt, state);
 	free(prompt);
 	if (!new_line)
 	{
@@ -64,7 +64,7 @@ static char	*format_function_body(char *new_line)
 	return (res);
 }
 
-char	*read_function_body(char *line, size_t n)
+char	*read_function_body(char *line, size_t n, t_shell_state *state)
 {
 	char	*prompt;
 	char	*new_line;
@@ -74,7 +74,7 @@ char	*read_function_body(char *line, size_t n)
 	if (!prompt)
 		return (free(line), NULL);
 	free(line);
-	new_line = read_function_input(prompt);
+	new_line = read_function_input(prompt, state);
 	if (!new_line)
 		return (NULL);
 	res = format_function_body(new_line);

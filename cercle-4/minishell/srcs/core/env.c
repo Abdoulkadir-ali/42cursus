@@ -34,13 +34,16 @@ static char	**duplicate_env_base(char **envp)
 	return (heap_env);
 }
 
-int	init_shell(char **envp, char ***heap_env)
+int	init_shell(char **envp, char ***heap_env, t_shell_state *state)
 {
 	*heap_env = duplicate_env_base(envp);
 	if (!*heap_env)
 		return (1);
 	add_shlvl_to_env(*heap_env);
-	g_state.envp = *heap_env;
-	g_state.interactive_shell = isatty(STDIN_FILENO);
+	state->envp = *heap_env;
+	state->interactive_shell = isatty(STDIN_FILENO);
+	state->exit_code = 0;
+	state->syntax_error = 0;
+	state->expansion_error = 0;
 	return (0);
 }

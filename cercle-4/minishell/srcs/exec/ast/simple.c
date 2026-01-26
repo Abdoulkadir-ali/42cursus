@@ -12,27 +12,27 @@
 
 #include "exec.h"
 
-static int	path_is_set(char **envp)
+static int	path_is_set(t_shell_state *state)
 {
 	int	i;
 
 	i = 0;
-	while (envp && envp[i])
+	while (state->envp && state->envp[i])
 	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+		if (ft_strncmp(state->envp[i], "PATH=", 5) == 0)
 			return (1);
 		i++;
 	}
 	return (0);
 }
 
-static void	child_execution(char *path, t_ast *node, char ***envp)
+static void	child_execution(char *path, t_ast *node, t_shell_state *state)
 {
 	struct stat	st;
 
 	signal(SIGQUIT, SIG_DFL);
-	ft_set_env("_", path, envp);
-	execve(path, node->args, *envp);
+	ft_set_env("_", path, state);
+	execve(path, node->args, state->envp);
 	if (errno == ENOENT)
 	{
 		ft_puterror("%s: No such file or directory\n", node->args[0]);
@@ -51,14 +51,14 @@ static void	child_execution(char *path, t_ast *node, char ***envp)
 	exit(1);
 }
 
-static int	run_external_command(char *path, t_ast *node, char ***envp)
+static int	run_external_command(char *path, t_ast *node, t_shell_state *state)
 {
 	pid_t	pid;
 	int		status;
 
 	pid = fork();
 	if (pid == 0)
-		child_execution(path, node, envp);
+		child_execution(path, node, state);
 	setup_signals(SIGNAL_BLOCKING);
 	waitpid(pid, &status, 0);
 	setup_signals(SIGNAL_INTERACTIVE);
@@ -76,22 +76,22 @@ static int	run_external_command(char *path, t_ast *node, char ***envp)
 	return (1);
 }
 
-int	exec_simple_command(t_ast *node, char ***envp)
+int	exec_simple_command(t_ast *node, t_shell_state *state)
 {
 	char		*path;
 
 	if (!node->args || !node->args[0])
 		return (0);
 	if (is_builtin(node->args[0], node->args, node->is_quoted))
-		return (exec_builtin(node->args, envp));
-	path = find_path(node->args[0], *envp);
+		return (exec_builtin(node->args, state));
+	path = find_path(node->args[0], state);
 	if (!path)
 	{
-		if (path_is_set(*envp))
+		if (path_is_set(state))
 			ft_puterror("%s: command not found\n", node->args[0]);
 		else
 			ft_puterror("%s: No such file or directory\n", node->args[0]);
 		return (127);
 	}
-	return (run_external_command(path, node, envp));
+	return (run_external_command(path, node, state));
 }

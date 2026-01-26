@@ -12,7 +12,7 @@
 
 #include "exec.h"
 
-int	exec_tree(t_nodes *ast_node, char ***envp)
+int	exec_tree(t_nodes *ast_node, t_shell_state *state)
 {
 	t_ast	*node;
 
@@ -20,22 +20,22 @@ int	exec_tree(t_nodes *ast_node, char ***envp)
 		return (0);
 	node = (t_ast *)ast_node->content;
 	if (node->type == TOKEN_WORD)
-		return (exec_simple_command(node, envp));
+		return (exec_simple_command(node, state));
 	else if (node->type == TOKEN_PIPE)
-		return (exec_pipe(node, envp));
+		return (exec_pipe(node, state));
 	else if (node->type == TOKEN_RED_IN || node->type == TOKEN_RED_OUT
 		|| node->type == TOKEN_APPEND || node->type == TOKEN_HEREDOC)
-		return (exec_redirection(node, envp));
+		return (exec_redirection(node, state));
 	else if (node->type == TOKEN_AND)
-		return (exec_logical_and(node, envp));
+		return (exec_logical_and(node, state));
 	else if (node->type == TOKEN_OR)
-		return (exec_logical_or(node, envp));
+		return (exec_logical_or(node, state));
 	else if (node->type == TOKEN_SUBSHELL)
-		return (exec_subshell(node, envp));
+		return (exec_subshell(node, state));
 	else if (node->type == TOKEN_SEMICOLON)
 	{
-		exec_tree(node->left, envp);
-		return (exec_tree(node->right, envp));
+		exec_tree(node->left, state);
+		return (exec_tree(node->right, state));
 	}
 	return (0);
 }

@@ -30,13 +30,13 @@ static char	*get_multiline_prompt(char code, t_op_def *ops)
 }
 
 static char	*read_and_append_line(char *line, char *prompt, char code,
-		t_op_def *ops)
+		t_op_def *ops, t_shell_state *state)
 {
 	char		*new_line;
 	char		*temp;
 	t_op_def	*def;
 
-	new_line = read_input(prompt);
+	new_line = read_input(prompt, state);
 	if (!new_line)
 	{
 		def = ext_get_op_def(ops, code);
@@ -45,7 +45,7 @@ static char	*read_and_append_line(char *line, char *prompt, char code,
 				def->counterpart);
 		else
 			ft_puterror("syntax error: unexpected end of file\n");
-		g_state.syntax_error = 1;
+		state->syntax_error = 1;
 		free(line);
 		return (NULL);
 	}
@@ -55,18 +55,18 @@ static char	*read_and_append_line(char *line, char *prompt, char code,
 	return (temp);
 }
 
-static char	*read_next_line_and_append(char *line, char code, t_op_def *ops)
+static char	*read_next_line_and_append(char *line, char code, t_op_def *ops, t_shell_state *state)
 {
 	char	*prompt;
 	char	*result;
 
 	prompt = get_multiline_prompt(code, ops);
-	result = read_and_append_line(line, prompt, code, ops);
+	result = read_and_append_line(line, prompt, code, ops, state);
 	free(prompt);
 	return (result);
 }
 
-char	*handle_multiline_input(char *line)
+char	*handle_multiline_input(char *line, t_shell_state *state)
 {
 	char		code;
 	t_op_def	*ops;
@@ -77,7 +77,7 @@ char	*handle_multiline_input(char *line)
 		code = ext_analyze_input(line);
 		if (code == 0)
 			break ;
-		line = read_next_line_and_append(line, code, ops);
+		line = read_next_line_and_append(line, code, ops, state);
 		if (!line)
 			return (NULL);
 	}

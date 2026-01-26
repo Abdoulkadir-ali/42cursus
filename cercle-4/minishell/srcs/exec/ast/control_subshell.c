@@ -6,19 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:18:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:34:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-static void	exec_subshell_child(t_ast *node, char ***envp)
+static void	exec_subshell_child(t_ast *node, t_shell_state *state)
 {
 	int		status;
 	int		dbg_fd;
 
 	signal(SIGQUIT, SIG_DFL);
-	g_state.interactive_shell = 0;
+	state->interactive_shell = 0;
 	dbg_fd = open("/tmp/minishell_dbg.log", O_WRONLY | O_CREAT | O_APPEND,
 			0600);
 	if (dbg_fd != -1)
@@ -26,7 +26,7 @@ static void	exec_subshell_child(t_ast *node, char ***envp)
 		dprintf(dbg_fd, "[exec_subshell child start] pid=%d\n", getpid());
 		close(dbg_fd);
 	}
-	status = exec_tree(node->left, envp);
+	status = exec_tree(node->left, state);
 	dbg_fd = open("/tmp/minishell_dbg.log", O_WRONLY | O_CREAT | O_APPEND,
 			0600);
 	if (dbg_fd != -1)
@@ -73,13 +73,13 @@ static int	exec_subshell_parent(pid_t pid)
 	return (handle_subshell_status(status));
 }
 
-int	exec_subshell(t_ast *node, char ***envp)
+int	exec_subshell(t_ast *node, t_shell_state *state)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == 0)
-		exec_subshell_child(node, envp);
+		exec_subshell_child(node, state);
 	else
 		return (exec_subshell_parent(pid));
 	return (0);

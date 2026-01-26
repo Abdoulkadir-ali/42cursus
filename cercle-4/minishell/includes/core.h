@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:28:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,32 +19,31 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+# define SIGNAL_INTERACTIVE 1
+# define SIGNAL_BLOCKING 2
+# define SIGNAL_HEREDOC 3
+
+typedef struct s_shell_state
+{
+	int					exit_code;
+	int					interactive_shell;
+	int					syntax_error;
+	int					expansion_error;
+	char				**envp;
+}						t_shell_state;
+
+extern int				g_last_signal;
+
 // CUSTOM
 # include "exec.h"
 # include "input.h"
 # include "libft.h"
 # include "parsing.h"
 
-# define SIGNAL_INTERACTIVE 1
-# define SIGNAL_BLOCKING 2
-# define SIGNAL_HEREDOC 3
-
-typedef struct s_global_state
-{
-	char				**envp;
-	int					exit_code;
-	int					interactive_shell;
-	int					expansion_error;
-	int					last_signal;
-	int					syntax_error;
-}						t_global_state;
-
-extern t_global_state	g_state;
-
 void					setup_signals(int mode);
 int						set_error(int code, const char *msg);
 int						main(int ac, char **av, char **envp);
-int						init_shell(char **envp, char ***heap_env);
+int						init_shell(char **envp, char ***heap_env, t_shell_state *state);
 void					add_shlvl_to_env(char **envp);
 
 #endif
