@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:54:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/22 21:19:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,21 +57,13 @@ int	match_loop(char **pattern, char **str, char **star,
 		if (dattempts++ > 100000)
 			return (0);
 		if (**pattern == '*')
-		{
 			set_star(pattern, str, star, str_start);
-			continue ;
-		}
-		if (**pattern == **str)
-		{
+		else if (**pattern == **str)
 			advance_both(pattern, str);
-			continue ;
-		}
-		if (*star)
-		{
+		else if (*star)
 			backtrack_to_star(pattern, str, star, str_start);
-			continue ;
-		}
-		return (0);
+		else
+			return (0);
 	}
 	return (1);
 }

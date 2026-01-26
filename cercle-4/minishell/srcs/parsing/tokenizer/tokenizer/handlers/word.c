@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:40:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/25 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static char	*collect_word(char **str, int *quoted)
 	*quoted = 0;
 	while (**str)
 	{
-		if (ft_isspace(**str) || ft_strchr("|<>()", **str) || **str == ';')
+		if (ft_isspace(**str) || ft_strchr("|<>()&", **str) || **str == ';')
 			break ;
 		if (skip_dollar_quote(str))
 			continue ;

@@ -1,47 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   join.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 03:39:33 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/26 02:42:41 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/26 03:15:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-int	ft_pwd(char **envp)
+char	*join_paths(const char *a, const char *b)
 {
-	char	cwd[1024];
-	char	*pwd_env;
-	int		i;
+	char	*tmp;
+	char	*res;
 
-	pwd_env = NULL;
-	if (envp)
-	{
-		i = 0;
-		while (envp[i])
-		{
-			if (ft_strncmp(envp[i], "PWD=", 4) == 0)
-			{
-				pwd_env = envp[i] + 4;
-				break ;
-			}
-			i++;
-		}
-	}
-	if (pwd_env && pwd_env[0] != '\0')
-	{
-		ft_putendl_fd(pwd_env, 1);
-		return (0);
-	}
-	if (getcwd(cwd, sizeof(cwd)))
-	{
-		ft_putendl_fd(cwd, 1);
-		return (0);
-	}
-	perror("pwd");
-	return (1);
+	if (!a || a[0] == '\0')
+		return (ft_strdup(b));
+	if (a[0] == '/' && a[1] == '\0')
+		return (ft_strjoin("/", b));
+	if (a[ft_strlen(a) - 1] == '/')
+		return (ft_strjoin(a, b));
+	tmp = ft_strjoin(a, "/");
+	res = ft_strjoin(tmp, b);
+	free(tmp);
+	return (res);
 }

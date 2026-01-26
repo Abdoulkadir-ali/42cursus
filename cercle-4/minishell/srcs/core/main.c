@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 01:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 06:21:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 03:40:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,15 @@ static void	add_shlvl_to_env(char **heap_env)
 	if (existing_idx != -1)
 	{
 		shlvl = atoi(heap_env[existing_idx] + 6) + 1;
+		if (shlvl > 1000)
+			shlvl = 1;
 		sprintf(shlvl_str, "SHLVL=%d", shlvl);
 		free(heap_env[existing_idx]);
 		heap_env[existing_idx] = ft_strdup(shlvl_str);
 	}
 	else
 	{
+		shlvl = 1;
 		sprintf(shlvl_str, "SHLVL=%d", shlvl);
 		heap_env[i] = ft_strdup(shlvl_str);
 		heap_env[i + 1] = NULL;

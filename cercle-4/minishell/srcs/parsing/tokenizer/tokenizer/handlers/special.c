@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:31:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 02:07:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,15 @@ int	handle_red_out(char **str, t_token *token)
 int	handle_semicolon(char **str, t_token *token)
 {
 	token->type = TOKEN_SEMICOLON;
-	token->value = ft_strldup(*str, 1);
-	(*str)++;
+	if (*(*str + 1) == ';')
+	{
+		token->value = ft_strldup(*str, 2);
+		(*str) += 2;
+	}
+	else
+	{
+		token->value = ft_strldup(*str, 1);
+		(*str)++;
+	}
 	return (token->value == NULL);
 }

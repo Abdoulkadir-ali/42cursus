@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:15:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 07:06:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/22 21:19:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,19 @@ char	*append_line(char *line, char *new_line)
 	char	*temp;
 	char	*result;
 	int		len;
+	int		i;
 
+	if (!line || !new_line)
+		return (NULL);
 	len = ft_strlen(line);
-	if (len > 0 && line[len - 1] == '\\')
+	i = len - 1;
+	while (i >= 0 && ft_isspace(line[i]))
+		i--;
+	if (i >= 0 && line[i] == '\\')
 	{
-		line[len - 1] = '\0';
+		line[i] = '\0';
 		result = ft_strjoin(line, new_line);
+		return (result);
 	}
 	else
 	{

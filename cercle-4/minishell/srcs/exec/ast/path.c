@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/21 04:31:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 03:30:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ char	*find_path(char *cmd, char **envp)
 		return (NULL);
 	}
 	path_env = get_path_from_env(envp);
-	if (!path_env)
+	if (!path_env || !*path_env)
 		return (NULL);
 	result = find_executable_in_paths(cmd, path_env);
 	return (validate_and_return(result));

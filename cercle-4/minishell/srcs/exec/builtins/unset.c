@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 17:50:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:11:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,6 @@ static int	ft_unset_handle_option(char *opt)
 	ft_puterror("unset: %s: invalid option\n", opt);
 	ft_puterror("unset: usage: unset [-f] [-v] [-n] [name ...]\n");
 	return (2);
-}
-
-static int	ft_unset_should_skip(char *arg)
-{
-	if (!is_valid_ident(arg) || ft_strchr(arg, '='))
-		return (1);
-	return (0);
 }
 
 static void	ft_unset_remove_at(char ***envp, int idx)
@@ -49,6 +42,8 @@ static void	ft_unset_remove_at(char ***envp, int idx)
 	}
 	free(*envp);
 	*envp = new_env;
+	if (g_state.envp != *envp)
+		g_state.envp = *envp;
 }
 
 int	ft_unset(char **args, char ***envp)
@@ -58,15 +53,20 @@ int	ft_unset(char **args, char ***envp)
 	int	ret;
 
 	if (!args[1])
-		return (0);
+	{
+		ft_puterror("unset: not enough arguments\n");
+		return (1);
+	}
 	ret = 0;
 	arg_idx = 1;
 	while (args[arg_idx])
 	{
 		if (args[arg_idx][0] == '-')
 			return (ft_unset_handle_option(args[arg_idx]));
-		if (ft_unset_should_skip(args[arg_idx]))
+		if (!is_valid_ident(args[arg_idx]) || ft_strchr(args[arg_idx], '='))
 		{
+			ft_puterror("unset: `%s': not a valid identifier\n", args[arg_idx]);
+			ret = 1;
 			arg_idx++;
 			continue ;
 		}

@@ -6,11 +6,24 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/14 17:47:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 03:48:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+static int	is_valid_fd(const char *str)
+{
+	char	*endptr;
+	long	val;
+
+	if (!str || !*str)
+		return (0);
+	val = strtol(str, &endptr, 10);
+	if (*endptr || val < 0 || val > INT_MAX)
+		return (0);
+	return (1);
+}
 
 static int	open_redirection_file(t_ast *node, int *fd)
 {
@@ -50,11 +63,26 @@ int	exec_redirection(t_ast *node, char ***envp)
 	if (node->type == TOKEN_RED_IN || node->type == TOKEN_HEREDOC)
 		target_fd = STDIN_FILENO;
 	if (node->args[1] && ft_isdigit(node->args[1][0]))
+	{
+		if (!is_valid_fd(node->args[1]))
+			return (1);
 		target_fd = ft_atoi(node->args[1]);
+	}
 	if (open_redirection_file(node, &fd))
 		return (1);
 	save_fd = dup(target_fd);
-	dup2(fd, target_fd);
+	if (save_fd == -1)
+	{
+		close(fd);
+		return (1);
+	}
+	if (dup2(fd, target_fd) == -1)
+	{
+		close(fd);
+		close(save_fd);
+		ft_puterror("minishell: %d: Bad file descriptor\n", target_fd);
+		return (1);
+	}
 	close(fd);
 	status = exec_tree(node->left, envp);
 	dup2(save_fd, target_fd);

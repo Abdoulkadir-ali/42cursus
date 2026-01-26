@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 13:51:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 02:37:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ static void	replace_env_at(char ***envp, int idx, char *new_entry)
 {
 	free((*envp)[idx]);
 	(*envp)[idx] = new_entry;
+	if (g_state.envp != *envp)
+		g_state.envp = *envp;
 }
 
 static int	append_env_entry(char ***envp, char *new_entry)
@@ -53,6 +55,8 @@ static int	append_env_entry(char ***envp, char *new_entry)
 	new_env[count] = new_entry;
 	free(*envp);
 	*envp = new_env;
+	if (g_state.envp != *envp)
+		g_state.envp = *envp;
 	return (0);
 }
 

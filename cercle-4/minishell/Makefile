@@ -1,6 +1,7 @@
 NAME        = minishell
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -Ipackages/libft/includes
+MAKEFLAGS	+= -j4
+CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -Ipackages/libft/includes -DDEBUG_EXTENDER
 RM          = rm -f
 
 SRCS_DIR    = srcs

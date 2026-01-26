@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:10:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/01/13 01:01:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 01:08:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	free_ast(t_nodes *ast_node)
 	free(ast_node);
 }
 
-static t_nodes	*find_split(t_nodes *tokens, t_token_type t1,
-	t_token_type t2, t_nodes **prev_out)
+static t_nodes	*find_split(t_nodes *tokens, t_token_type t1, t_token_type t2,
+		t_nodes **prev_out)
 {
 	t_nodes	*curr;
 	t_nodes	*prev;
@@ -87,7 +87,9 @@ t_nodes	*ast_builder(t_nodes *tokens)
 
 	if (!tokens)
 		return (NULL);
-	split = find_split(tokens, TOKEN_AND, 0, &prev);
+	split = find_split(tokens, TOKEN_RPAREN, TOKEN_LPAREN, &prev);
+	if (!split)
+		split = find_split(tokens, TOKEN_AND, 0, &prev);
 	if (!split)
 		split = find_split(tokens, TOKEN_OR, 0, &prev);
 	if (!split)

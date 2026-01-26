@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 05:02:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 03:39:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	exec_builtin(char **args, char ***envp)
 	if (is_cmd(args[0], "cd"))
 		return (ft_cd(args, envp));
 	if (is_cmd(args[0], "pwd"))
-		return (ft_pwd());
+		return (ft_pwd(*envp));
 	if (is_cmd(args[0], "env"))
 		return (ft_env(*envp));
 	if (is_cmd(args[0], "exit"))
@@ -60,7 +60,6 @@ int	exec_builtin(char **args, char ***envp)
 			ft_puterror(".: usage: . filename [arguments]\n");
 			return (2);
 		}
-		/* Sourcing a file is not implemented; return 0 for now */
 		return (0);
 	}
 	return (0);

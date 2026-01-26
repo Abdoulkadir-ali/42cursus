@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:33:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 02:07:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,15 @@ int	syntax_handle_semicolon(t_token *tok, t_token *nxt)
 		return (0);
 	if (nxt && (nxt->type == TOKEN_PIPE || nxt->type == TOKEN_AND
 			|| nxt->type == TOKEN_OR || nxt->type == TOKEN_SEMICOLON))
+	{
+		if (nxt->type == TOKEN_SEMICOLON)
+		{
+			if (nxt->value && ft_strlen(nxt->value) > 1)
+				return (print_syntax_error(nxt->value));
+			return (print_syntax_error(";"));
+		}
 		return (print_syntax_error(nxt->value));
+	}
 	return (0);
 }
 

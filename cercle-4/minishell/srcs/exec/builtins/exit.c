@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 04:47:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 03:47:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,13 @@
 
 static int	check_long_overflow(const char *str)
 {
-	char *endptr;
-	long long val;
+	char		*endptr;
+	long long	val;
 
 	errno = 0;
 	val = strtoll(str, &endptr, 10);
 	if (errno == ERANGE)
 		return (0);
-	/* skip leading whitespace - strtoll does this, but ensure we consumed
-	   at least one digit or sign and that there are no trailing garbage
-	   characters (only spaces allowed). */
 	if (endptr == str)
 		return (0);
 	while (*endptr)
@@ -65,8 +62,7 @@ int	ft_exit(char **args)
 
 	if (g_state.interactive_shell)
 		ft_putendl_fd("exit", 2);
-	if (get_exit_status(args, &status))
-		return (1);
+	get_exit_status(args, &status);
 	exit((unsigned char)status);
 	return ((unsigned char)status);
 }

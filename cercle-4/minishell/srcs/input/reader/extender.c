@@ -6,40 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 07:09:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 07:23:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/25 21:56:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
-
-const t_op_def	*get_ops(void)
-{
-	static const t_op_def	ops[] = {
-	{'\'', "'", "quote", '\''},
-	{'"', "\"", "dquote", '"'},
-	{'p', "(", "paren", ')'},
-	{'|', "|", "pipe", 0},
-	{'o', "||", "or", 0},
-	{'a', "&&", "and", 0},
-	{'\\', "\\", "", 0},
-	{0, NULL, NULL, 0}};
-
-	return (ops);
-}
-
-const t_op_def	*ext_get_op_def(t_op_def *ops, char code)
-{
-	int				i;
-
-	i = 0;
-	while (ops[i].code)
-	{
-		if (ops[i].code == code)
-			return (&ops[i]);
-		i++;
-	}
-	return (NULL);
-}
 
 static char	check_pairs_state(char *s)
 {
@@ -86,9 +57,9 @@ static int	handle_escape(char *line, char *p)
 
 static char	check_trailing_op(char *line, t_op_def *ops)
 {
-	char			*p;
-	int				i;
-	size_t			len;
+	char	*p;
+	int		i;
+	size_t	len;
 
 	p = line + ft_strlen(line) - 1;
 	while (p >= line && ft_isspace(*p))
@@ -101,9 +72,9 @@ static char	check_trailing_op(char *line, t_op_def *ops)
 	while (ops[i].code)
 	{
 		len = ft_strlen(ops[i].symbol);
-		if (ops[i].counterpart == 0 && ops[i].code != '\\'
-			&& p - (len - 1) >= line && ft_strncmp(p - (len - 1),
-				ops[i].symbol, len) == 0)
+		if (ops[i].counterpart == 0 && ops[i].code != '\\' && p - (len
+				- 1) >= line && ft_strncmp(p - (len - 1), ops[i].symbol,
+				len) == 0)
 			return (ops[i].code);
 		i++;
 	}
@@ -112,11 +83,11 @@ static char	check_trailing_op(char *line, t_op_def *ops)
 
 char	ext_analyze_input(char *line)
 {
-	char	state_code;
-	t_op_def *ops;
+	char		state_code;
+	t_op_def	*ops;
 
 	ops = get_ops();
-	state_code = check_pairs_state(line, ops);
+	state_code = check_pairs_state(line);
 	if (state_code != 0)
 		return (state_code);
 	return (check_trailing_op(line, ops));

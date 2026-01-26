@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 06:18:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 00:06:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,6 @@ void	process_input(char *line, char ***envp, int *exit_code)
 			exit(*exit_code);
 		return ;
 	}
+	dump_tokens_list(tokens, "after_tokenizer");
 	process_segments(tokens, envp, exit_code);
 }
