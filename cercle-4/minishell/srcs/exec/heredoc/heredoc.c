@@ -6,17 +6,40 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 06:46:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:26:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+static int	handle_herestr(t_ast *node)
+{
+	char	*tmp_file;
+	int		fd;
+
+	tmp_file = generate_tmp_filename();
+	fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
+	{
+		free(tmp_file);
+		return (1);
+	}
+	if (node->args && node->args[0])
+	{
+		write(fd, node->args[0], ft_strlen(node->args[0]));
+		write(fd, "\n", 1);
+	}
+	close(fd);
+	free(node->args[0]);
+	node->args[0] = tmp_file;
+	node->type = TOKEN_RED_IN;
+	return (0);
+}
+
 int	scan_heredocs(t_nodes *ast_node)
 {
 	t_ast	*node;
 	char	*tmp_file;
-	int		fd;
 
 	if (!ast_node)
 		return (0);
@@ -32,95 +55,8 @@ int	scan_heredocs(t_nodes *ast_node)
 		node->type = TOKEN_RED_IN;
 	}
 	else if (node->type == TOKEN_HERESTR)
-	{
-		tmp_file = generate_tmp_filename();
-		{
-			fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (fd == -1)
-			{
-				free(tmp_file);
-				return (1);
-			}
-			if (node->args && node->args[0])
-			{
-				write(fd, node->args[0], ft_strlen(node->args[0]));
-				write(fd, "\n", 1);
-			}
-			close(fd);
-		}
-		free(node->args[0]);
-		node->args[0] = tmp_file;
-		node->type = TOKEN_RED_IN;
-	}
+		return (handle_herestr(node));
 	if (scan_heredocs(node->left) || scan_heredocs(node->right))
 		return (1);
 	return (0);
-}
-
-static void	handle_heredoc_word(char *value)
-{
-	char	*filename;
-	int		fd;
-
-	filename = generate_tmp_filename();
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd != -1)
-	{
-		read_heredoc_loop(value, fd, g_state.envp, g_state.exit_code);
-		close(fd);
-		unlink(filename);
-	}
-	free(filename);
-}
-
-static void	process_heredoc(t_nodes *tokens)
-{
-	t_token	*tok;
-	t_token	*next_tok;
-
-	tok = (t_token *)tokens->content;
-	if (tok->type == TOKEN_HEREDOC)
-	{
-		if (tokens->next)
-		{
-			next_tok = (t_token *)tokens->next->content;
-			if (next_tok->type == TOKEN_WORD)
-			{
-				handle_heredoc_word(next_tok->value);
-			}
-		}
-	}
-}
-
-void	consume_heredocs(t_nodes *tokens)
-{
-	while (tokens)
-	{
-		process_heredoc(tokens);
-		tokens = tokens->next;
-	}
-}
-
-char	*handle_heredoc_input(char *delim, char **envp, int exit_code)
-{
-	char	*filename;
-	int		fd;
-
-	filename = generate_tmp_filename();
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd == -1)
-	{
-		perror("heredoc tmp");
-		free(filename);
-		return (NULL);
-	}
-	read_heredoc_loop(delim, fd, envp, exit_code);
-	close(fd);
-	if (g_state.last_signal == 130)
-	{
-		unlink(filename);
-		free(filename);
-		return (NULL);
-	}
-	return (filename);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 05:03:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <sys/stat.h>
 # include <unistd.h>
 
 // CUSTOM
@@ -172,6 +173,15 @@ t_token				*handle_separator(char **str);
 int					match_loop(char **pattern, char **str, char **star,
 						char **str_start);
 t_token				*handle_word(char **str);
+int					match_pattern(char *pattern, char *str);
+int					should_skip_entry(struct dirent *entry, char *pattern);
+void				try_add_match(t_nodes **files, struct dirent *entry,
+						int *match_count);
+char				*prepare_pattern(char *pattern, int *require_dir);
+int					check_entry(struct dirent *entry, char *pat_copy,
+						int require_dir);
+t_nodes				*process_directory(DIR *dir, char *pat_copy,
+						int require_dir);
 void				sort_list(t_nodes **list);
 
 #endif

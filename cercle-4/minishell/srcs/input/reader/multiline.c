@@ -6,17 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:22:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:20:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
-static char	*read_next_line_and_append(char *line, char code, t_op_def *ops)
+static char	*get_multiline_prompt(char code, t_op_def *ops)
 {
-	char		*prompt;
-	char		*new_line;
-	char		*temp;
 	t_op_def	*def;
 	char		prompt_buf[32];
 
@@ -26,13 +23,23 @@ static char	*read_next_line_and_append(char *line, char code, t_op_def *ops)
 	{
 		ft_strlcpy(prompt_buf, def->label, sizeof(prompt_buf));
 		ft_strlcat(prompt_buf, "> ", sizeof(prompt_buf));
-		prompt = prompt_buf;
+		return (ft_strdup(prompt_buf));
 	}
 	else
-		prompt = get_prompt(0);
+		return (get_prompt(0));
+}
+
+static char	*read_and_append_line(char *line, char *prompt, char code,
+		t_op_def *ops)
+{
+	char		*new_line;
+	char		*temp;
+	t_op_def	*def;
+
 	new_line = read_input(prompt);
 	if (!new_line)
 	{
+		def = ext_get_op_def(ops, code);
 		if (def && def->counterpart)
 			ft_puterror("unexpected EOF while looking for matching `%c'\n",
 				def->counterpart);
@@ -46,6 +53,17 @@ static char	*read_next_line_and_append(char *line, char code, t_op_def *ops)
 	free(line);
 	free(new_line);
 	return (temp);
+}
+
+static char	*read_next_line_and_append(char *line, char code, t_op_def *ops)
+{
+	char	*prompt;
+	char	*result;
+
+	prompt = get_multiline_prompt(code, ops);
+	result = read_and_append_line(line, prompt, code, ops);
+	free(prompt);
+	return (result);
 }
 
 char	*handle_multiline_input(char *line)

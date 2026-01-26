@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:13:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:22:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@ typedef struct s_heredoc
 /* Public API used by other translation units */
 void		print_sorted_env(char **envp);
 int			process_export_arg(char *arg, char ***envp);
+int			process_existing_export(t_export_ctx *ctx, char ***envp);
+int			process_new_export(t_export_ctx *ctx, char ***envp);
+void		update_existing_env(char **envp, t_export_ctx *ctx);
 void		parse_export_arg(char *arg, t_export_ctx *ctx);
 int			report_invalid_identifier(char *arg, t_export_ctx *ctx);
 
@@ -98,6 +101,7 @@ char		*get_cwd_dup(void);
 char		*resolve_home(char **envp);
 char		*cdpath_find(const char *name, char *cdpath);
 char		*join_paths(const char *a, const char *b);
+int			perform_cd(char *path, char ***envp);
 
 char		*build_base_path(const char *path, char **envp,
 				int *leading_slashes);

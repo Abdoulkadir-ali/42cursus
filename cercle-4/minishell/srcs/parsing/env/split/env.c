@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:02:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 06:09:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:20:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,8 @@ char	*get_env_value(char *var_name, char **envp)
 	return (val);
 }
 
-char	*handle_dollar(char *str, int *i, char **envp, int status)
+static char	*handle_special_dollar(char *str, int *i, int status)
 {
-	char	var_name[256];
-	int		j;
-	char	*val;
-
 	(*i)++;
 	if (!str[*i])
 		return (ft_strdup("$"));
@@ -51,6 +47,14 @@ char	*handle_dollar(char *str, int *i, char **envp, int status)
 		(*i)++;
 		return (ft_itoa(getpid()));
 	}
+	return (NULL);
+}
+
+static char	*handle_var_name(char *str, int *i, char **envp)
+{
+	char	var_name[256];
+	int		j;
+
 	j = 0;
 	if (ft_isdigit((unsigned char)str[*i]) && str[*i])
 		var_name[j++] = str[(*i)++];
@@ -59,6 +63,15 @@ char	*handle_dollar(char *str, int *i, char **envp, int status)
 			&& j < 255)
 			var_name[j++] = str[(*i)++];
 	var_name[j] = '\0';
-	val = get_env_value(var_name, envp);
-	return (val);
+	return (get_env_value(var_name, envp));
+}
+
+char	*handle_dollar(char *str, int *i, char **envp, int status)
+{
+	char	*val;
+
+	val = handle_special_dollar(str, i, status);
+	if (val)
+		return (val);
+	return (handle_var_name(str, i, envp));
 }

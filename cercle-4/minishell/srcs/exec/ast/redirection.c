@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/26 03:48:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:19:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,9 @@ static int	open_redirection_file(t_ast *node, int *fd)
 	return (0);
 }
 
-int	exec_redirection(t_ast *node, char ***envp)
+static int	get_target_fd(t_ast *node)
 {
-	int	fd;
-	int	save_fd;
 	int	target_fd;
-	int	status;
 
 	target_fd = STDOUT_FILENO;
 	if (node->type == TOKEN_RED_IN || node->type == TOKEN_HEREDOC)
@@ -65,13 +62,16 @@ int	exec_redirection(t_ast *node, char ***envp)
 	if (node->args[1] && ft_isdigit(node->args[1][0]))
 	{
 		if (!is_valid_fd(node->args[1]))
-			return (1);
+			return (-1);
 		target_fd = ft_atoi(node->args[1]);
 	}
-	if (open_redirection_file(node, &fd))
-		return (1);
-	save_fd = dup(target_fd);
-	if (save_fd == -1)
+	return (target_fd);
+}
+
+static int	setup_redirection(int target_fd, int fd, int *save_fd)
+{
+	*save_fd = dup(target_fd);
+	if (*save_fd == -1)
 	{
 		close(fd);
 		return (1);
@@ -79,11 +79,28 @@ int	exec_redirection(t_ast *node, char ***envp)
 	if (dup2(fd, target_fd) == -1)
 	{
 		close(fd);
-		close(save_fd);
+		close(*save_fd);
 		ft_puterror("minishell: %d: Bad file descriptor\n", target_fd);
 		return (1);
 	}
 	close(fd);
+	return (0);
+}
+
+int	exec_redirection(t_ast *node, char ***envp)
+{
+	int	fd;
+	int	save_fd;
+	int	target_fd;
+	int	status;
+
+	target_fd = get_target_fd(node);
+	if (target_fd == -1)
+		return (1);
+	if (open_redirection_file(node, &fd))
+		return (1);
+	if (setup_redirection(target_fd, fd, &save_fd))
+		return (1);
 	status = exec_tree(node->left, envp);
 	dup2(save_fd, target_fd);
 	close(save_fd);

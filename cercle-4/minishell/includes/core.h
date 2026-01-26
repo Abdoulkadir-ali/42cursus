@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:33:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:28:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,7 @@ extern t_global_state	g_state;
 void					setup_signals(int mode);
 int						set_error(int code, const char *msg);
 int						main(int ac, char **av, char **envp);
+int						init_shell(char **envp, char ***heap_env);
+void					add_shlvl_to_env(char **envp);
 
 #endif

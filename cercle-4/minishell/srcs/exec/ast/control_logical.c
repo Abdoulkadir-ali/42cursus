@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process.c                                          :+:      :+:    :+:   */
+/*   control_logical.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 03:37:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/26 05:21:36 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/26 05:25:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/26 05:17:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-int	process_export_arg(char *arg, char ***envp)
+int	exec_logical_or(t_ast *node, char ***envp)
 {
-	t_export_ctx	ctx;
+	int	left_status;
 
-	ft_bzero(&ctx, sizeof(ctx));
-	parse_export_arg(arg, &ctx);
-	if (!is_valid_ident(ctx.key))
-		return (report_invalid_identifier(arg, &ctx));
-	ctx.idx = get_env_index(ctx.key, *envp);
-	if (ctx.idx != -1)
-		return (process_existing_export(&ctx, envp));
-	else
-		return (process_new_export(&ctx, envp));
+	left_status = exec_tree(node->left, envp);
+	if (left_status != 0)
+		return (exec_tree(node->right, envp));
+	return (left_status);
+}
+
+int	exec_logical_and(t_ast *node, char ***envp)
+{
+	int	left_status;
+
+	left_status = exec_tree(node->left, envp);
+	if (left_status == 0)
+		return (exec_tree(node->right, envp));
+	return (left_status);
 }

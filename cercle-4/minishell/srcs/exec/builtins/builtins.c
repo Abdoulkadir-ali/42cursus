@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 03:39:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:10:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,18 @@ int	is_builtin(char *cmd, char **args, int is_quoted)
 	return (0);
 }
 
-int	exec_builtin(char **args, char ***envp)
+static int	exec_dot_builtin(char **args)
+{
+	if (!args[1])
+	{
+		ft_puterror(".: filename argument required\n");
+		ft_puterror(".: usage: . filename [arguments]\n");
+		return (2);
+	}
+	return (0);
+}
+
+static int	exec_main_builtins(char **args, char ***envp)
 {
 	if (is_cmd(args[0], "echo"))
 		return (ft_echo(args));
@@ -52,15 +63,12 @@ int	exec_builtin(char **args, char ***envp)
 		return (ft_unset(args, envp));
 	if (is_cmd(args[0], ":"))
 		return (0);
-	if (is_cmd(args[0], "."))
-	{
-		if (!args[1])
-		{
-			ft_puterror(".: filename argument required\n");
-			ft_puterror(".: usage: . filename [arguments]\n");
-			return (2);
-		}
-		return (0);
-	}
 	return (0);
+}
+
+int	exec_builtin(char **args, char ***envp)
+{
+	if (is_cmd(args[0], "."))
+		return (exec_dot_builtin(args));
+	return (exec_main_builtins(args, envp));
 }

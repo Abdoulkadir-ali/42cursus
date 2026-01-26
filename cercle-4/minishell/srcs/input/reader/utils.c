@@ -6,16 +6,36 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:15:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/22 21:19:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 05:09:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
-char	*append_line(char *line, char *new_line)
+static char	*append_with_backslash(char *line, char *new_line, int i)
+{
+	char	*result;
+
+	line[i] = '\0';
+	result = ft_strjoin(line, new_line);
+	return (result);
+}
+
+static char	*append_with_newline(char *line, char *new_line)
 {
 	char	*temp;
 	char	*result;
+
+	temp = ft_strjoin(line, "\n");
+	if (!temp)
+		return (NULL);
+	result = ft_strjoin(temp, new_line);
+	free(temp);
+	return (result);
+}
+
+char	*append_line(char *line, char *new_line)
+{
 	int		len;
 	int		i;
 
@@ -26,20 +46,9 @@ char	*append_line(char *line, char *new_line)
 	while (i >= 0 && ft_isspace(line[i]))
 		i--;
 	if (i >= 0 && line[i] == '\\')
-	{
-		line[i] = '\0';
-		result = ft_strjoin(line, new_line);
-		return (result);
-	}
+		return (append_with_backslash(line, new_line, i));
 	else
-	{
-		temp = ft_strjoin(line, "\n");
-		if (!temp)
-			return (NULL);
-		result = ft_strjoin(temp, new_line);
-		free(temp);
-	}
-	return (result);
+		return (append_with_newline(line, new_line));
 }
 
 char	*get_prompt(int is_initial)
