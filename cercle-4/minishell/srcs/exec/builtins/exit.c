@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 03:47:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:33:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ static int	get_exit_status(char **args, long long *status)
 	if (args[2])
 	{
 		ft_puterror("exit: too many arguments\n");
-		return (1);
+		*status = 1;
+		return (0);
 	}
 	return (0);
 }

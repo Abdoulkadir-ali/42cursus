@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:09:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:47:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ int	check_syntax(t_nodes *tokens)
 {
 	t_nodes	*curr;
 	int		d;
+	t_nodes	*last;
+	t_token	*tok;
 
 	curr = tokens;
 	d = 0;
@@ -69,6 +71,19 @@ int	check_syntax(t_nodes *tokens)
 		if (process_node(curr, &d))
 			return (2);
 		curr = curr->next;
+	}
+	if (tokens)
+	{
+		last = tokens;
+		while (last->next)
+			last = last->next;
+		tok = (t_token *)last->content;
+		if (tok->type == TOKEN_AND || tok->type == TOKEN_OR
+			|| tok->type == TOKEN_PIPE)
+		{
+			print_syntax_error("newline");
+			return (2);
+		}
 	}
 	return (check_remaining_depth(d));
 }

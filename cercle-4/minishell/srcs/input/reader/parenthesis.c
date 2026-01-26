@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:11:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:24:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ char	*handle_parenthesis(char *line, char *trimmed)
 {
 	size_t	pairs;
 
-	if (!trimmed)
+	if (!trimmed || ft_strchr(line, '\n') == NULL)
 		return (NULL);
 	pairs = count_paren_pairs(trimmed);
 	if (pairs > 0)

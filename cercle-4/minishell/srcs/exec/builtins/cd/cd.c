@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:09:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:46:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,24 @@ static int	perform_cd(char *path, char ***envp)
 	char	cwd[1024];
 	int		rc;
 	char	*newpwd;
+	char	*norm_path;
 
 	oldpwd = get_env_val_simple("PWD", *envp);
 	if (!oldpwd || oldpwd[0] == '\0')
 		oldpwd = get_cwd_dup();
 	else
 		oldpwd = ft_strdup(oldpwd);
-	rc = chdir(path);
+	norm_path = normalize_logical(path, *envp);
+	if (norm_path)
+		rc = chdir(norm_path);
+	else
+		rc = chdir(path);
 	if (rc == -1)
 	{
 		ft_puterror("cd: %s: ", path);
 		perror(NULL);
 		free(oldpwd);
+		free(norm_path);
 		return (1);
 	}
 	newpwd = normalize_logical(path, *envp);
@@ -54,6 +60,7 @@ static int	perform_cd(char *path, char ***envp)
 	ft_set_env("PWD", newpwd, envp);
 	free(oldpwd);
 	free(newpwd);
+	free(norm_path);
 	return (0);
 }
 

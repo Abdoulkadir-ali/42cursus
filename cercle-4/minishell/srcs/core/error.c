@@ -1,22 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   global.c                                           :+:      :+:    :+:   */
+/*   error.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 02:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:22:01 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/26 05:30:00 by abdoali           #+#    #+#             */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
-t_global_state	g_state = {
-	.envp = NULL,
-	.exit_code = 0,
-	.interactive_shell = 0,
-	.expansion_error = 0,
-	.last_signal = 0,
-	.syntax_error = 0
-};
+int	set_error(int code, const char *msg)
+{
+	if (msg)
+		ft_puterror("%s", msg);
+	return (code);
+}

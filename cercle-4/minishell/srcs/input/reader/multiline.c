@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/25 23:47:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:22:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ static char	*read_next_line_and_append(char *line, char code, t_op_def *ops)
 				def->counterpart);
 		else
 			ft_puterror("syntax error: unexpected end of file\n");
+		g_state.syntax_error = 1;
 		free(line);
 		return (NULL);
 	}

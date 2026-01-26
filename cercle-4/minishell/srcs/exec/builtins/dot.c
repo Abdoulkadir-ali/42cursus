@@ -1,22 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   global.c                                           :+:      :+:    :+:   */
+/*   dot.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 02:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:22:01 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/26 05:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/26 04:30:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
+#include "exec.h"
 
-t_global_state	g_state = {
-	.envp = NULL,
-	.exit_code = 0,
-	.interactive_shell = 0,
-	.expansion_error = 0,
-	.last_signal = 0,
-	.syntax_error = 0
-};
+int	ft_dot(char **args, char ***envp)
+{
+	(void)envp;
+	if (!args[1])
+	{
+		ft_puterror(".: filename argument required\n");
+		ft_puterror(".: usage: . filename [arguments]\n");
+		return (2);
+	}
+	return (0);
+}

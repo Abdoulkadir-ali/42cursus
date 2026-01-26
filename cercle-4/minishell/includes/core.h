@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 06:22:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:33:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@ typedef struct s_global_state
 	int					interactive_shell;
 	int					expansion_error;
 	int					last_signal;
+	int					syntax_error;
 }						t_global_state;
 
 extern t_global_state	g_state;
 
 void					setup_signals(int mode);
+int						set_error(int code, const char *msg);
 int						main(int ac, char **av, char **envp);
 
 #endif

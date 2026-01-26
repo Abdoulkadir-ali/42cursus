@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 01:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 03:40:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:37:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ static int	run_interactive_mode(char ***heap_env, int *last_exit_code)
 	setup_signals(SIGNAL_INTERACTIVE);
 	while (1)
 	{
+		g_state.syntax_error = 0;
 		line = get_command_line();
 		if (!line)
 		{
@@ -100,6 +101,8 @@ static int	run_interactive_mode(char ***heap_env, int *last_exit_code)
 		free(line);
 	}
 	rl_clear_history();
+	if (g_state.syntax_error)
+		return (2);
 	return (*last_exit_code);
 }
 

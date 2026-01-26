@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:16:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:42:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,6 @@ int	ft_unset(char **args, char ***envp)
 	int	arg_idx;
 	int	ret;
 
-	if (!args[1])
-	{
-		ft_puterror("unset: not enough arguments\n");
-		return (1);
-	}
 	ret = 0;
 	arg_idx = 1;
 	while (args[arg_idx])
