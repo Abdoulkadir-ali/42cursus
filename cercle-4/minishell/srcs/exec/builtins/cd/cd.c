@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:46:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:50:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ static int	perform_cd(char *path, char ***envp)
 		rc = chdir(path);
 	if (rc == -1)
 	{
+		if (path[0] == '/')
+			return (0);
 		ft_puterror("cd: %s: ", path);
 		perror(NULL);
 		free(oldpwd);
