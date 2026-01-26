@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 03:39:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:19:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,8 @@
 int	ft_pwd(char **envp)
 {
 	char	cwd[1024];
-	char	*pwd_env;
-	int		i;
 
-	pwd_env = NULL;
-	if (envp)
-	{
-		i = 0;
-		while (envp[i])
-		{
-			if (ft_strncmp(envp[i], "PWD=", 4) == 0)
-			{
-				pwd_env = envp[i] + 4;
-				break ;
-			}
-			i++;
-		}
-	}
-	if (pwd_env && pwd_env[0] != '\0')
-	{
-		ft_putendl_fd(pwd_env, 1);
-		return (0);
-	}
+	(void)envp;
 	if (getcwd(cwd, sizeof(cwd)))
 	{
 		ft_putendl_fd(cwd, 1);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:11:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 04:16:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ int	ft_unset(char **args, char ***envp)
 			return (ft_unset_handle_option(args[arg_idx]));
 		if (!is_valid_ident(args[arg_idx]) || ft_strchr(args[arg_idx], '='))
 		{
-			ft_puterror("unset: `%s': not a valid identifier\n", args[arg_idx]);
-			ret = 1;
 			arg_idx++;
 			continue ;
 		}
