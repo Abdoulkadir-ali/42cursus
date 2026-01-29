@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   destroy.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:37:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 22:59:55 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/28 03:58:35 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/28 04:17:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "maths.h"
 
-void	ft_putendl_fd(char *s, int fd)
+void	matrix_destroy(t_matrix *m)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	if (!m)
+		return ;
+	if (m->v)
+		free(m->v);
+	if (m->dim)
+		free(m->dim);
+	free(m);
 }

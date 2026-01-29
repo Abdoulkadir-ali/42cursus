@@ -1,19 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:37:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 22:59:55 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/28 22:40:36 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/28 22:41:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "maths.h"
 
-void	ft_putendl_fd(char *s, int fd)
+void	free_matrix(t_matrix *m)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	if (!m)
+		return ;
+	if (m->dim)
+	{
+		free(m->dim);
+		m->dim = NULL;
+	}
+	if (m->v)
+	{
+		free(m->v);
+		m->v = NULL;
+	}
+	free(m);
 }

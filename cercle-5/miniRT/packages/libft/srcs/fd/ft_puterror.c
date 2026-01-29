@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   ft_puterror.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:37:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 22:59:55 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/28 22:49:16 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/28 23:00:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putendl_fd(char *s, int fd)
+bool	ft_puterror(char *msg)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	if (msg)
+	{
+		ft_putstr_fd("Error: ", 2);
+		ft_putendl_fd(msg, 2);
+	}
+	else
+		ft_putendl_fd("Error", 2);
+	return (1);
 }

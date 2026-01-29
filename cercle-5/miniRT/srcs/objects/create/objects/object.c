@@ -1,19 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   object.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:37:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 22:59:55 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/29 05:32:33 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/29 06:20:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "objects.h"
 
-void	ft_putendl_fd(char *s, int fd)
+t_object	*create_object(void)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	t_object	*obj;
+
+	obj = malloc(sizeof(*obj));
+	if (!obj)
+	{
+		free_matrix(m);
+		return (NULL);
+	}
+	obj->type = AMBIENT;
+	obj->t = init_transform();
+	obj->rgb = init_rgb();
+	return (obj);
 }

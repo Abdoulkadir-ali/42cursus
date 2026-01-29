@@ -1,19 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   int.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:37:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 22:59:55 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/28 23:03:34 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/29 04:39:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "objects.h"
 
-void	ft_putendl_fd(char *s, int fd)
+bool	is_valid_int(char *s)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	int	i;
+
+	i = 0;
+	if (s[i] == '-' || s[i] == '+')
+		i++;
+	if (!s[i])
+		return (false);
+	while (s[i])
+	{
+		if (!ft_isdigit(s[i]))
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+int	*parse_int(char *s)
+{
+	int	*res;
+
+	if (!s || !is_valid_int(s))
+		return (NULL);
+	res = malloc(sizeof(*res));
+	if (!res)
+		return (NULL);
+	*res = ft_atoi(s);
+	return (res);
 }

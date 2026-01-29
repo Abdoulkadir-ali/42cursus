@@ -5,36 +5,42 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/27 18:21:38 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 03:25:31 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/29 06:51:48 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/29 07:10:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "maths.h"
 
-size_t	flatten_index(t_index *dim, t_index *i)
+double	*to_double(const char *s)
 {
-	return (i->y * dim->x + i->x);
+	double	*v;
+
+	v = malloc(sizeof(double));
+	if (!v)
+		return (NULL);
+	*v = ft_strtod(s);
+	return (v);
 }
 
-t_index	*flat_to_index(t_index *dim, size_t flat_index)
+float	*to_float(const char *s)
 {
-	return (create_index(flat_index % dim->x, flat_index / dim->x));
+	float	*v;
+
+	v = malloc(sizeof(float));
+	if (!v)
+		return (NULL);
+	*v = ft_strtof(s);
+	return (v);
 }
 
-// int	main(void)
-// {
-// 	t_index	dim;
-// 	size_t	j;
-// 	t_index	i;
+int	*to_int(const char *s)
+{
+	int	*v;
 
-// 	dim->x = 1920;
-// 	dim->y = 1080;
-// 	j = 15;
-// 	print_index(index_to_flat(dim, j));
-// 	printf("\nis flat index of : %zu\n");
-// 	i->x = 1;
-// 	i->y = 0;
-// 	print_index(i);
-// 	printf("\nis in flat index : %zu\n", flat_to_index(dim, i));
-// }
+	v = malloc(sizeof(int));
+	if (!v)
+		return (NULL);
+	*v = ft_atoi(s);
+	return (v);
+}

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 18:29:01 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/27 20:06:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 07:09:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	create_event(t_iterate_events *events, void (*on_new_row)(void),
 	events->on_new_line = on_new_line;
 }
 
-void	iterate_matrix(t_matrix *m, void (*f)(void *), t_iterate_events *events)
+void	matrix_iterate(t_matrix *m, void (*f)(void *), t_iterate_events *events)
 {
 	size_t	i;
 	size_t	total;
@@ -37,11 +37,38 @@ void	iterate_matrix(t_matrix *m, void (*f)(void *), t_iterate_events *events)
 	i = 0;
 	while (i < total)
 	{
-		if (i && i % m->dim->y == 0)
+		if (events && i && i % m->dim->x == 0)
 			events->on_new_line();
 		f((void *)ptr);
 		ptr += m->elem_size;
-		events->on_new_row();
+		if (events)
+			events->on_new_row();
 		i++;
 	}
+}
+
+bool	matrix_for_each(t_matrix *m, bool (*f)(void *))
+{
+	size_t i;
+	size_t total;
+	char *ptr;
+
+	if (!m || !m->v)
+		return (false);
+	if (!check_dimensions(m->dim))
+	{
+		printf("Couldn't iterate, invalid dimensions");
+		return (false);
+	}
+	total = m->dim->x * m->dim->y;
+	ptr = (char *)m->v;
+	i = 0;
+	while (i < total)
+	{
+		if (!f((void *)ptr))
+			return (false);
+		ptr += m->elem_size;
+		i++;
+	}
+	return (true);
 }

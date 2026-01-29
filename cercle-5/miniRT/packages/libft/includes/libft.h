@@ -6,14 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/15 19:57:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 06:48:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
+# include <ctype.h>
+# include <math.h>
 # include <stdarg.h>
+# include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>
 # include <stdlib.h>
@@ -73,6 +76,7 @@ void				ft_putchar_fd(char c, int fd);
 void				ft_putendl_fd(char *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
 void				ft_putstr_fd(char *s, int fd);
+bool				ft_puterror(char *msg);
 
 size_t				ft_strlen(const char *s);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
@@ -97,6 +101,7 @@ void				*ft_memset(void *s, int c, size_t n);
 
 char				*ft_itoa(int n);
 char				**ft_split(char const *s, char c);
+void				*free_split(char **strs);
 char				*ft_strchr(const char *s, int c);
 char				*ft_strrchr(const char *s, int c);
 char				*ft_strdup(const char *src);
@@ -160,5 +165,10 @@ int					ft_print_precision_zeros(int num_len, int precision,
 int					ft_printf(const char *format, ...);
 int					ft_printf_fd(int fd, const char *format, ...);
 int					ft_vprintf_fd(int fd, const char *format, va_list args);
+int					ft_print_error(char *format, ...);
+
+/* Extended numeric conversions */
+double				ft_strtod(const char *s);
+float				ft_strtof(const char *s);
 
 #endif

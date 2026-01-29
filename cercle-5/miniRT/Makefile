@@ -1,4 +1,4 @@
-NAME        = fdf
+NAME        = miniRT
 
 MINILIBX_DIR = packages/minilibx-linux
 MINILIBX    = $(MINILIBX_DIR)/libmlx.a
@@ -9,7 +9,7 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -g
+CFLAGS      = -Wall -Wextra -g3 -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -g
 RM          = rm -f
 SRCS_DIR    = srcs
 OBJS_DIR    = objs

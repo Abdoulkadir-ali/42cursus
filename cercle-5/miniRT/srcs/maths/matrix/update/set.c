@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   set.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:37:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 22:59:55 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/28 03:01:50 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/28 03:49:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "maths.h"
 
-void	ft_putendl_fd(char *s, int fd)
+bool	matrix_set(t_matrix *m, t_index *i, void *new)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	void	*target;
+
+	target = matrix_get(m, i);
+	if (!target || !new)
+		return (0);
+	ft_memcpy(target, new, m->elem_size);
+	return (1);
 }

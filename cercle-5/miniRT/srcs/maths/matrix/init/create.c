@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:54:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/27 20:45:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 06:08:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ bool	check_dimensions(t_index *dim)
 	return (1);
 }
 
-/* We assume the dimensions are valid from this
-point on to facilitate the free*/
 t_matrix	*create_matrix(t_index *dim, size_t elem_size)
 {
 	t_matrix	*m;
@@ -35,6 +33,7 @@ t_matrix	*create_matrix(t_index *dim, size_t elem_size)
 	if (!m)
 		return (NULL);
 	m->dim = dim;
+	m->elem_size = elem_size;
 	m->v = ft_calloc(dim->x * dim->y, elem_size);
 	if (!m->v)
 	{

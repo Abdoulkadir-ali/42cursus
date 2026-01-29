@@ -1,19 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   ft_strtof.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:37:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 22:59:55 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/29 04:40:34 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/29 06:48:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 
-void	ft_putendl_fd(char *s, int fd)
+#include "libft.h"
+#include <ctype.h>
+#include <math.h>
+
+float	ft_strtof(const char *s)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	double d = ft_strtod(s);
+	return ((float)d);
 }
+

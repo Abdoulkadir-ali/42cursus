@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   ft_print_error.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:37:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 22:59:55 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/28 22:50:03 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/28 23:00:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putendl_fd(char *s, int fd)
+int	ft_print_error(char *format, ...)
 {
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	va_list args;
+
+	if (!format)
+		return (-1);
+	va_start(args, format);
+	ft_vprintf_fd(2, format, args);
+	va_end(args);
+	return (1);
 }
