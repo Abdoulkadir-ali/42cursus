@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 05:23:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:24:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 07:32:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct s_object
 	t_matrix		*t;
 	t_matrix		*t_inv;
 	t_matrix		*rgb;
+	float			alpha;
 	float			alpha;
 }					t_object;
 
@@ -55,8 +56,8 @@ bool				is_triple(char *s, bool (*f)(char *));
 char				*get_format_by_type(int type);
 
 /* Parsers that return allocated values (caller must free) */
-double				*parse_float(char *s);
-int					*parse_int(char *s);
+double				parse_float(char *s);
+int					parse_int(char *s);
 double				*parse_rgb(char *s);
 double				*parse_vector(char *s);
 

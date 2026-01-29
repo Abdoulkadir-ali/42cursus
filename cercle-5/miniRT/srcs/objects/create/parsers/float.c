@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 23:05:28 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:14:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 07:31:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,12 @@ bool	is_valid_float(char *s)
 	return (true);
 }
 
-double	*parse_float(char *s)
+double	parse_float(char *s)
 {
-	double	*res;
+	double	res;
 
 	if (!s || !is_valid_float(s))
-		return (NULL);
-	res = malloc(sizeof(*res));
-	if (!res)
-		return (NULL);
-	*res = ft_strtod(s);
+		return (0.0);
+	res = ft_strtod(s);
 	return (res);
 }

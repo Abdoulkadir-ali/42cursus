@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 05:32:33 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 06:20:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 07:29:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_object	*create_object(void)
 		free_matrix(m);
 		return (NULL);
 	}
-	obj->type = AMBIENT;
+	obj->type = NULL;
 	obj->t = init_transform();
 	obj->rgb = init_rgb();
 	return (obj);
