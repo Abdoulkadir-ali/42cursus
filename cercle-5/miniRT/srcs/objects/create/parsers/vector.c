@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 23:08:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:13:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 14:04:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,26 @@ static bool	check_parameters(t_matrix *m, char *s)
 	return (true);
 }
 
-bool	parse_vector_to_matrix(t_matrix *m, char *s, void *(*f)(char *))
+static t_matrix	*init_vector(void)
 {
-	t_index	idx;
-	char	**parts;
-	size_t	i;
-	void	*v;
+	t_matrix	*m;
+	t_index		idx;
 
+	idx.x = 3;
+	idx.y = 1;
+	m = create_matrix(&idx);
+	return (m);
+}
+
+bool	parse_vector(char *s, void *(*f)(char *))
+{
+	t_matrix	*m;
+	t_index		idx;
+	char		**parts;
+	size_t		i;
+	void		*v;
+
+	m = init_vector();
 	if (!check_parameters(m, s))
 		return (false);
 	parts = ft_split(s, ',');

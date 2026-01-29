@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 04:26:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:23:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 14:04:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ t_object	*parse_ambient(char *line)
 	obj = create_object();
 	obj->type = AMBIENT;
 	obj->alpha = parse_float(split[1]);
-	parse_rgb_to_matrix(rgb, split[2], &to_double);
-	obj->rgb = rgb;
+	obj->rgb = parse_rgb(split[2], &to_double);
 	return (obj);
 }

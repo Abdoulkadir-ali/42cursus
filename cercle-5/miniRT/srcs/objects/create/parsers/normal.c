@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 19:14:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:09:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 14:04:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool	parse_normal_to_matrix(t_matrix *m, char *s,
 {
 	if (!check_parameters(m, s))
 		return (false);
-	if (!parse_vector_to_matrix(m, s, conv))
+	if (!parse_vector(m, s, conv))
 		return (false);
 	if (!matrix_for_each(m, &clamp_component))
 		return (false);

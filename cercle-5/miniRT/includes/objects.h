@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 05:23:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:32:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/29 14:23:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,19 @@
 # include "maths.h"
 # include <fcntl.h>
 
-typedef struct s_object
+typedef struct s_properties
+{
+	char			*id;
+	void			*v;
+}					t_properties;
+
+typedef struct t_object
 {
 	int				type;
 	t_matrix		*t;
 	t_matrix		*t_inv;
 	t_matrix		*rgb;
-	float			alpha;
-	float			alpha;
+	t_nodes			*attrs;
 }					t_object;
 
 typedef enum e_object_type
@@ -69,8 +74,7 @@ t_object			*parse_sphere(char *line);
 t_object			*parse_plane(char *line);
 t_object			*parse_cylinder(char *line);
 t_object			*parse_square(char *line);
-bool				parse_vector_to_matrix(t_matrix *m, char *s,
-						void *(*f)(char *));
-bool				parse_rgb_to_matrix(t_matrix *m, char *s,
+t_matrix *parse_vector(char *s, void *(*f)(char *));
+bool				parse_rgb(t_matrix *m, char *s,
 						void *(*conv)(const char *));
 #endif
