@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 20:58:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 05:17:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 15:56:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ bool	matrix_op(t_matrix *m1, const t_matrix *m2,
 
 	if (!check(m1, m2) || !f)
 		return (0);
-	total_size = m1->dim->x * m1->dim->y;
+	total_size = m1->dim.x * m1->dim.y;
 	i = 0;
 	while (i < total_size)
 	{
-		current_row = i / m1->dim->x;
+		current_row = i / m1->dim.x;
 		if (is_same_index_to_val(m2->dim, 1))
 		{
 			if (!f(get_offset(m1, i), get_offset(m2, 0)))

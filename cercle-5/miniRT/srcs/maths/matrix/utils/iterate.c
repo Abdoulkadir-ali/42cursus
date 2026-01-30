@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 18:29:01 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:09:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 15:57:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ void	matrix_iterate(t_matrix *m, void (*f)(void *), t_iterate_events *events)
 		printf("Couldn't iterate, invalid dimensions");
 		return ;
 	}
-	total = m->dim->x * m->dim->y;
+	total = m->dim.x * m->dim.y;
 	ptr = (char *)m->v;
 	i = 0;
 	while (i < total)
 	{
-		if (events && i && i % m->dim->x == 0)
+		if (events && i && i % m->dim.x == 0)
 			events->on_new_line();
 		f((void *)ptr);
 		ptr += m->elem_size;
@@ -60,7 +60,7 @@ bool	matrix_for_each(t_matrix *m, bool (*f)(void *))
 		printf("Couldn't iterate, invalid dimensions");
 		return (false);
 	}
-	total = m->dim->x * m->dim->y;
+	total = m->dim.x * m->dim.y;
 	ptr = (char *)m->v;
 	i = 0;
 	while (i < total)

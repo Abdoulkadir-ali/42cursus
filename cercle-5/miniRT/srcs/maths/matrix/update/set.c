@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 03:01:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 03:49:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 15:55:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "maths.h"
 
-bool	matrix_set(t_matrix *m, t_index *i, void *new)
+bool	matrix_set(t_matrix *m, t_index i, void *new)
 {
 	void	*target;
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 02:46:38 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 05:55:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 18:09:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,32 +43,32 @@ bool	matrix_add_scalar(t_matrix *m, void *v, bool (*f)(void *, const void *))
 		return (false);
 	idx.x = 0;
 	idx.y = 0;
-	matrix_set(scalar, &idx, v);
+	matrix_set(scalar, idx, v);
 	res = matrix_add(m, scalar, f);
-	free_matrix(scalar);
+	free_matrix(scalar, NULL);
 	return (res);
 }
 
-int	main(void)
-{
-	t_matrix	*m1;
-	t_matrix	*m2;
-	float		v;
-	size_t		i;
+// int	main(void)
+// {
+// 	t_matrix	*m1;
+// 	t_matrix	*m2;
+// 	float		v;
+// 	size_t		i;
 
-	i = 0;
-	v = 55;
-	m1 = create_matrix(create_index(10, 20), sizeof(float));
-	m2 = create_matrix(create_index(1, 20), sizeof(float));
-	while (i < 20)
-	{
-		matrix_set(m2, create_index(0, i++), (void *)&v);
-		v++;
-	}
-	print_matrix(m1, &print_float);
-	print_matrix(m2, &print_float);
-	matrix_add(m1, m2, &add_float);
-	print_matrix(m1, &print_float);
-	matrix_transpose(&m1);
-	print_matrix(m1, &print_float);
-}
+// 	i = 0;
+// 	v = 55;
+// 	m1 = create_matrix(create_index(10, 20), sizeof(float));
+// 	m2 = create_matrix(create_index(1, 20), sizeof(float));
+// 	while (i < 20)
+// 	{
+// 		matrix_set(m2, create_index(0, i++), (void *)&v);
+// 		v++;
+// 	}
+// 	print_matrix(m1, &print_float);
+// 	print_matrix(m2, &print_float);
+// 	matrix_add(m1, m2, &add_float);
+// 	print_matrix(m1, &print_float);
+// 	matrix_transpose(&m1);
+// 	print_matrix(m1, &print_float);
+// }

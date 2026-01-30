@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/29 06:48:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 17:39:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct s_list
 {
 	void			*content;
 	struct s_list	*next;
+	size_t			size;
 }					t_nodes;
 
 int					ft_isalpha(int c);
@@ -101,6 +102,11 @@ void				*ft_memset(void *s, int c, size_t n);
 
 char				*ft_itoa(int n);
 char				**ft_split(char const *s, char c);
+t_nodes				*ft_split_nodes(char const *str, char *sep,
+						size_t (*match)(const void *, const void *));
+size_t				full_match(const void *sv, const void *sepv);
+size_t				any_match(const void *sv, const void *sepv);
+char				*ft_nodes_get(t_nodes *list, size_t n);
 void				*free_split(char **strs);
 char				*ft_strchr(const char *s, int c);
 char				*ft_strrchr(const char *s, int c);

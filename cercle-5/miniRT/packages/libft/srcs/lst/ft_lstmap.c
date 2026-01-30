@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:05:59 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/11 00:47:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 17:37:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdlib.h>
 
 t_nodes	*ft_lstmap(t_nodes *lst, void *(*f)(void *), void (*del)(void *))
 {

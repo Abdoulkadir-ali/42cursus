@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:06:03 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/11 00:47:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 17:21:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,6 @@ t_nodes	*ft_lstnew(void *content)
 		return (NULL);
 	new->content = content;
 	new->next = NULL;
+	new->size = 1;
 	return (new);
 }

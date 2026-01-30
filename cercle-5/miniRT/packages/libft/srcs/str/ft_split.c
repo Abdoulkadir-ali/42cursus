@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:06:56 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/28 22:58:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 16:52:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdlib.h>
 
 static unsigned int	ft_count_words(const char *str, char c)
 {

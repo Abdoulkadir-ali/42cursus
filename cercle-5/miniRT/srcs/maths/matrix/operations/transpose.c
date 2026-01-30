@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 03:58:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 05:17:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 15:59:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,19 @@ void	matrix_transpose(t_matrix **m)
 	if (!m || !*m || !(*m)->v)
 		return ;
 	old = *m;
-	res = create_matrix(create_index(old->dim->y, old->dim->x), old->elem_size);
+	res = create_matrix(create_index(old->dim.y, old->dim.x), old->elem_size);
 	if (!res)
 		return ;
 	idx.y = 0;
-	while (idx.y < old->dim->y)
+	while (idx.y < old->dim.y)
 	{
 		idx.x = 0;
-		while (idx.x < old->dim->x)
+		while (idx.x < old->dim.x)
 		{
 			new_idx.x = idx.y;
 			new_idx.y = idx.x;
-			src = matrix_get(old, &idx);
-			matrix_set(res, &new_idx, src);
+			src = matrix_get(old, idx);
+			matrix_set(res, new_idx, src);
 			idx.x++;
 		}
 		idx.y++;

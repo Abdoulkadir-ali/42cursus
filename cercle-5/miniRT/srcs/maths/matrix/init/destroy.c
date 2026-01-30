@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 03:58:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/28 04:17:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 16:12:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,5 @@ void	matrix_destroy(t_matrix *m)
 		return ;
 	if (m->v)
 		free(m->v);
-	if (m->dim)
-		free(m->dim);
 	free(m);
 }

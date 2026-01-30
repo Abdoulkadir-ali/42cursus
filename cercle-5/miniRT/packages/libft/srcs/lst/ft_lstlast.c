@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:05:52 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/11 00:47:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 17:21:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,9 @@
 
 t_nodes	*ft_lstlast(t_nodes *lst)
 {
-	int	size;
-
 	if (!lst)
 		return (NULL);
-	size = ft_lstsize(lst);
-	while (size > 1)
-	{
+	while (lst->next)
 		lst = lst->next;
-		size--;
-	}
 	return (lst);
 }

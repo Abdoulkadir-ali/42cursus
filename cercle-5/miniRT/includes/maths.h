@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:24:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 19:49:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,18 @@ typedef struct s_iterate_events
 
 typedef struct s_matrix
 {
-	t_index	*dim;
+	t_index	dim;
 	void	*v;
 	size_t	elem_size;
 }			t_matrix;
 
-t_index		*create_index(size_t x, size_t y);
-size_t		flatten_index(t_index *dim, t_index *i);
-t_index		*flat_to_index(t_index *dim, size_t flat_index);
-void		print_index(t_index *i);
-
-bool		check_dimensions(t_index *dim);
-
-t_matrix	*create_matrix(t_index *dim, size_t elem_size);
+/* index helpers */
+t_index		create_index(size_t x, size_t y);
+size_t		flatten_index(t_index dim, t_index i);
+t_index		flat_to_index(t_index dim, size_t flat_index);
+void		print_index(t_index i);
+bool		check_dimensions(t_index dim);
+t_matrix	*create_matrix(t_index dim, size_t elem_size);
 void		create_event(t_iterate_events *events, void (*on_new_row)(void),
 				void (*on_new_line)(void));
 void		matrix_iterate(t_matrix *m, void (*f)(void *),
@@ -67,17 +66,17 @@ bool		matrix_divide(t_matrix *m1, const t_matrix *m2, bool (*f)(void *,
 					const void *));
 bool		matrix_multiply(t_matrix *m1, const t_matrix *m2, bool (*f)(void *,
 					const void *));
-bool		cmp_indexes(t_index *i1, t_index *i2);
-bool		is_same_x(t_index *i1, t_index *i2);
-bool		is_same_y(t_index *i1, t_index *i2);
-bool		is_same_indexes(t_index *i1, t_index *i2);
-bool		is_same_index_to_val(t_index *i1, size_t v);
-void		*matrix_get(const t_matrix *m, t_index *i);
-bool		matrix_set(t_matrix *m, t_index *i, void *new);
+bool		cmp_indexes(t_index i1, t_index i2);
+bool		is_same_x(t_index i1, t_index i2);
+bool		is_same_y(t_index i1, t_index i2);
+bool		is_same_indexes(t_index i1, t_index i2);
+bool		is_same_index_to_val(t_index i1, size_t v);
+void		*matrix_get(const t_matrix *m, t_index i);
+bool		matrix_set(t_matrix *m, t_index i, void *new);
 void		matrix_transpose(t_matrix **m);
 void		matrix_destroy(t_matrix *m);
 bool		matrix_for_each(t_matrix *m, bool (*f)(void *));
-void		free_matrix(t_matrix *m);
+bool		free_matrix(t_matrix *m, void (*del)(void *));
 bool		matrix_add_scalar(t_matrix *m, void *v, bool (*f)(void *,
 					const void *));
 /* view / camera transforms */

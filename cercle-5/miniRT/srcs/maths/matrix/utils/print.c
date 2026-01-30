@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 18:12:09 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 06:59:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 15:59:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ void	print_matrix(t_matrix *m, void (*f)(void *))
 {
 	t_iterate_events	events;
 
-	if (!m || !m->dim)
+	if (!m)
 		return ;
-	printf("Matrix of dimensions : x : %zu\t y : %zu\n", m->dim->x, m->dim->y);
+	printf("Matrix of dimensions : x : %zu\t y : %zu\n", m->dim.x, m->dim.y);
 	create_event(&events, &print_sep, &print_nl);
 	matrix_iterate(m, f, &events);
 	printf("\n");

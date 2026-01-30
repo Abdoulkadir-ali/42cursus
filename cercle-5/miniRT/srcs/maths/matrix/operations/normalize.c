@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/28 19:14:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/29 07:08:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/30 16:01:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ static bool	normalize_vector(t_matrix *m)
 		return (false);
 	idx.y = 0;
 	idx.x = 0;
-	vx = (double *)matrix_get(m, &idx);
+	vx = (double *)matrix_get(m, idx);
 	idx.x = 1;
-	vy = (double *)matrix_get(m, &idx);
+	vy = (double *)matrix_get(m, idx);
 	idx.x = 2;
-	vz = (double *)matrix_get(m, &idx);
+	vz = (double *)matrix_get(m, idx);
 	if (!vx || !vy || !vz)
 		return (false);
 	norm = sqrt((*vx) * (*vx) + (*vy) * (*vy) + (*vz) * (*vz));
