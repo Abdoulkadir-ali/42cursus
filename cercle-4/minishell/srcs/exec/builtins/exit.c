@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:34:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:58:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ static long long	parse_exit_argument(const char *arg)
 	return (val);
 }
 
-static int	get_exit_status(char **args, long long *status, t_shell_state *state)
+static int	get_exit_status(char **args, long long *status,
+		t_shell_state *state)
 {
 	if (!args[1])
 	{

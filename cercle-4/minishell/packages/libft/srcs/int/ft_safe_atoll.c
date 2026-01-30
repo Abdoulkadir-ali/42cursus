@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_safe_atoll.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:05:05 by abdali            #+#    #+#             */
-/*   Updated: 2025/10/16 20:38:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:07:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	get_sign_and_skip_spaces(const char **str_ptr)
 }
 
 static int	parse_number(const char **str_ptr, unsigned long long *res,
-				unsigned long long max_val, int *error)
+		unsigned long long max_val, int *error)
 {
 	int	count;
 
@@ -50,7 +50,8 @@ static int	parse_number(const char **str_ptr, unsigned long long *res,
 	return (count);
 }
 
-long long	ft_safe_atoll(const char *str, long long MAX, int *error, char **endptr)
+long long	ft_safe_atoll(const char *str, long long MAX, int *error,
+		char **endptr)
 {
 	int					sign;
 	unsigned long long	res;

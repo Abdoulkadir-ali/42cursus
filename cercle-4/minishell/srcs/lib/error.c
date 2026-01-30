@@ -1,15 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   global.c                                           :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 02:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:22:01 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/26 05:22:33 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/26 14:06:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
+#include "lib.h"
 
-int	g_last_signal = 0;
+int	set_error(int code, const char *msg)
+{
+	if (msg)
+		ft_puterror("%s", msg);
+	return (code);
+}

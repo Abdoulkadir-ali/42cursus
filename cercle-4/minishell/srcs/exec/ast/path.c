@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/26 13:43:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:26:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ static char	*validate_and_return(char *path)
 
 static char	*try_path(char *dir, char *cmd)
 {
-	char	*temp;
-	char	*full_path;
+	char		*temp;
+	char		*full_path;
+	struct stat	st;
 
 	if (!dir || !*dir)
 		dir = ".";
@@ -39,7 +40,10 @@ static char	*try_path(char *dir, char *cmd)
 	if (!full_path)
 		return (NULL);
 	if (access(full_path, X_OK) == 0)
-		return (full_path);
+	{
+		if (stat(full_path, &st) == 0 && !S_ISDIR(st.st_mode))
+			return (full_path);
+	}
 	free(full_path);
 	return (NULL);
 }
@@ -98,8 +102,10 @@ char	*find_path(char *cmd, t_shell_state *state)
 		return (NULL);
 	}
 	path_env = get_path_from_env(state->envp);
-	if (!path_env || !*path_env)
-		path_env = ".";
+	if (!path_env)
+		path_env = "/bin:/usr/bin:/usr/local/bin";
+	if (!*path_env)
+		return (NULL);
 	result = find_executable_in_paths(cmd, path_env);
 	return (validate_and_return(result));
 }

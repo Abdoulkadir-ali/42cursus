@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:21:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	read_heredoc_lines(char *stop_str, int quoted, t_heredoc *ctx)
 
 	while (1)
 	{
-		line = read_line();
+		line = heredoc_read_line();
 		if (!line)
 		{
 			handle_heredoc_eof(stop_str);

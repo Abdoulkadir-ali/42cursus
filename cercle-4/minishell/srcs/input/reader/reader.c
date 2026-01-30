@@ -6,11 +6,25 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:09:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:19:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
+#include "input.h"
+
+char	*read_input(char *prompt, t_shell_state *state)
+{
+	char	*line;
+
+	if (isatty(STDIN_FILENO))
+		line = readline(prompt);
+	else
+		line = get_next_line(STDIN_FILENO);
+	if (!line)
+		return (NULL);
+	line = handle_multiline_input(line, state);
+	return (line);
+}
 
 char	*get_command_line(t_shell_state *state)
 {

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:45:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:58:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ static char	*handle_relative_with_cwd(const char *path, int *leading_slashes)
 	return (base);
 }
 
-char	*build_base_path(const char *path, t_shell_state *state, int *leading_slashes)
+char	*build_base_path(const char *path, t_shell_state *state,
+		int *leading_slashes)
 {
 	char	*base;
 

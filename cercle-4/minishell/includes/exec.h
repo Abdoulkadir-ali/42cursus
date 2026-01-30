@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:50:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:32:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <pwd.h>
+# include <readline/readline.h>
 # include <sys/wait.h>
 # include <unistd.h>
 
 // CUSTOM
-# include "core.h"
+# include "state.h"
 # include "parsing.h"
 
 typedef struct s_export_ctx
@@ -81,10 +82,11 @@ int			is_valid_ident(char *str);
 int			is_quoted_delim(const char *delim);
 char		*remove_quotes_heredoc(char *str);
 char		*generate_tmp_filename(void);
-char		*handle_heredoc_input(char *delim, t_shell_state *state);
+char		*handle_heredoc_input(char **args, t_shell_state *state);
 void		read_heredoc_loop(char *delim, int fd, t_shell_state *state);
 char		*prepare_stop_str(char *delim, t_heredoc *ctx);
-char		*read_line(void);
+char		*heredoc_read_line(void);
+char		*heredoc_read_line_non_tty(void);
 int			process_line_quoted(char *line, char *stop_str, int fd);
 int			process_line_unquoted(char *line, char *stop_str, int fd,
 				t_heredoc *ctx);

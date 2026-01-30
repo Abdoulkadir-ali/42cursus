@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:20:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:01:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
+#include "input.h"
 
 static char	*get_multiline_prompt(char code, t_op_def *ops)
 {
@@ -29,47 +29,48 @@ static char	*get_multiline_prompt(char code, t_op_def *ops)
 		return (get_prompt(0));
 }
 
-static char	*read_and_append_line(char *line, char *prompt, char code,
-		t_op_def *ops, t_shell_state *state)
+static char	*read_and_append_line(t_line_struct *ls, t_op_def *ops,
+		t_shell_state *state)
 {
 	char		*new_line;
 	char		*temp;
 	t_op_def	*def;
 
-	new_line = read_input(prompt, state);
+	new_line = read_input(ls->prompt, state);
 	if (!new_line)
 	{
-		def = ext_get_op_def(ops, code);
+		def = ext_get_op_def(ops, ls->code);
 		if (def && def->counterpart)
 			ft_puterror("unexpected EOF while looking for matching `%c'\n",
 				def->counterpart);
 		else
 			ft_puterror("syntax error: unexpected end of file\n");
 		state->syntax_error = 1;
-		free(line);
+		free(ls->line);
 		return (NULL);
 	}
-	temp = append_line(line, new_line);
-	free(line);
+	temp = append_line(ls->line, new_line);
+	free(ls->line);
 	free(new_line);
 	return (temp);
 }
 
-static char	*read_next_line_and_append(char *line, char code, t_op_def *ops, t_shell_state *state)
+static char	*read_next_line_and_append(t_line_struct *ls, t_op_def *ops,
+		t_shell_state *state)
 {
-	char	*prompt;
 	char	*result;
 
-	prompt = get_multiline_prompt(code, ops);
-	result = read_and_append_line(line, prompt, code, ops, state);
-	free(prompt);
+	ls->prompt = get_multiline_prompt(ls->code, ops);
+	result = read_and_append_line(ls, ops, state);
+	free(ls->prompt);
 	return (result);
 }
 
 char	*handle_multiline_input(char *line, t_shell_state *state)
 {
-	char		code;
-	t_op_def	*ops;
+	char			code;
+	t_op_def		*ops;
+	t_line_struct	ls;
 
 	ops = get_ops();
 	while (1)
@@ -77,7 +78,9 @@ char	*handle_multiline_input(char *line, t_shell_state *state)
 		code = ext_analyze_input(line);
 		if (code == 0)
 			break ;
-		line = read_next_line_and_append(line, code, ops, state);
+		ls.line = line;
+		ls.code = code;
+		line = read_next_line_and_append(&ls, ops, state);
 		if (!line)
 			return (NULL);
 	}

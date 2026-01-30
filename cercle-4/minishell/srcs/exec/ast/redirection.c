@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/26 05:19:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:06:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static int	setup_redirection(int target_fd, int fd, int *save_fd)
 	return (0);
 }
 
-int	exec_redirection(t_ast *node, char ***envp)
+int	exec_redirection(t_ast *node, t_shell_state *state)
 {
 	int	fd;
 	int	save_fd;
@@ -101,7 +101,7 @@ int	exec_redirection(t_ast *node, char ***envp)
 		return (1);
 	if (setup_redirection(target_fd, fd, &save_fd))
 		return (1);
-	status = exec_tree(node->left, envp);
+	status = exec_tree(node->left, state);
 	dup2(save_fd, target_fd);
 	close(save_fd);
 	return (status);

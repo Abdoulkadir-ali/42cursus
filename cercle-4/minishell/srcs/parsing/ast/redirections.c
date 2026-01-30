@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/01/26 00:41:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:30:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ static void	apply_redir(t_nodes **cmd_node, t_nodes *redir_token_node)
 	args = ft_calloc(3, sizeof(char *));
 	if (redir_token_node->next)
 	{
-		tok = (t_token *)redir_token_node->next->content;
-		args[0] = ft_strdup(tok->value);
+		t_token *delim_tok = (t_token *)redir_token_node->next->content;
+		args[0] = ft_strdup(delim_tok->value);
+		if (tok->type == TOKEN_HEREDOC || tok->type == TOKEN_HERESTR)
+			args[1] = ft_itoa(delim_tok->quoted);
 	}
 	else
 		args[0] = ft_strdup("");
-	tok = (t_token *)redir_token_node->content;
-	args[1] = ft_strdup(tok->value);
 	redir_node = create_node(tok->type, args, *cmd_node, NULL);
 	*cmd_node = redir_node;
 }

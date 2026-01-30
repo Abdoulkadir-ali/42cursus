@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 13:33:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:33:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:12:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ static int	run_interactive_mode(t_shell_state *state)
 
 int	main(int ac, char **av, char **envp)
 {
-	char		**heap_env;
-	int			cmd_exit;
+	char			**heap_env;
+	int				cmd_exit;
 	t_shell_state	state;
 
 	if (init_shell(envp, &heap_env, &state))

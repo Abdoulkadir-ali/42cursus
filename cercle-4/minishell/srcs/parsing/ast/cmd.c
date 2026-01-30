@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:05:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/01/26 00:41:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:41:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,16 @@ static t_nodes	*handle_simple_cmd(t_nodes *tokens)
 {
 	char	**args;
 	int		count;
-	t_nodes	*node;
+	t_nodes	*node = NULL;
 
 	count = count_cmd_args(tokens);
+	if (count == 0)
+	{
+		// Only process redirections/heredocs for side effects (e.g., heredoc temp files)
+		process_redirections(NULL, tokens);
+		ft_lstclear(&tokens, del_token);
+		return NULL;
+	}
 	args = ft_calloc(count + 1, sizeof(char *));
 	fill_cmd_args(tokens, args);
 	node = create_node(TOKEN_WORD, args, NULL, NULL);

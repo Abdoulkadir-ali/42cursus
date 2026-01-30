@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:00:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
-
-char	*read_function_body(char *line, size_t n, t_shell_state *state);
+#include "input.h"
 
 static size_t	count_paren_pairs(const char *s)
 {

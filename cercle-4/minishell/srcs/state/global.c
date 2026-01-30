@@ -1,30 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   global.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:04:11 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/13 02:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/26 14:05:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "state.h"
 
-// PACKAGE
-# include <stdio.h>
-
-// CUSTOM
-# include "core.h"
-# include "exec.h"
-# include "lib.h"
-# include "libft.h"
-# include "parsing.h"
-
-# ifndef DEBUG
-#  define DEBUG 0
-# endif
-
-#endif
+int	g_last_signal = 0;

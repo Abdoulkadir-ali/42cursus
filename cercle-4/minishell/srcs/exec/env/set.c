@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:37:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 13:58:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static char	*make_new_entry(char *key, char *value)
 	return (entry);
 }
 
-static void	replace_env_at(char ***envp, int idx, char *new_entry, t_shell_state *state)
+static void	replace_env_at(char ***envp, int idx, char *new_entry,
+		t_shell_state *state)
 {
 	free((*envp)[idx]);
 	(*envp)[idx] = new_entry;
@@ -37,7 +38,8 @@ static void	replace_env_at(char ***envp, int idx, char *new_entry, t_shell_state
 		state->envp = *envp;
 }
 
-static int	append_env_entry(char ***envp, char *new_entry, t_shell_state *state)
+static int	append_env_entry(char ***envp, char *new_entry,
+		t_shell_state *state)
 {
 	int		count;
 	char	**new_env;
@@ -69,8 +71,8 @@ int	get_env_index(char *key, t_shell_state *state)
 	i = 0;
 	while (state->envp && state->envp[i])
 	{
-		if (ft_strncmp(state->envp[i], key, len) == 0 && (state->envp[i][len] == '='
-			|| state->envp[i][len] == '\0'))
+		if (ft_strncmp(state->envp[i], key, len) == 0
+			&& (state->envp[i][len] == '=' || state->envp[i][len] == '\0'))
 			return (i);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:15:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:09:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:13:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ static char	*append_with_newline(char *line, char *new_line)
 
 char	*append_line(char *line, char *new_line)
 {
-	int		len;
-	int		i;
+	int	len;
+	int	i;
 
 	if (!line || !new_line)
 		return (NULL);
@@ -58,42 +58,4 @@ char	*get_prompt(int is_initial)
 	if (is_initial)
 		return ("minishell> ");
 	return ("> ");
-}
-
-char	*read_input(char *prompt, t_shell_state *state)
-{
-	char	*line;
-
-	if (isatty(STDIN_FILENO))
-		line = readline(prompt);
-	else
-	{
-		char	*buf;
-		int		i;
-		char	c;
-
-		buf = ft_calloc(10000, 1);
-		i = 0;
-		while (read(STDIN_FILENO, &c, 1) > 0)
-		{
-			buf[i++] = c;
-			if (c == '\n')
-				break ;
-			if (i >= 9999)
-				break ;
-		}
-		if (i > 0)
-		{
-			if (buf[i - 1] == '\n')
-				buf[i - 1] = '\0';
-			line = buf;
-		}
-		else
-		{
-			free(buf);
-			return (NULL);
-		}
-	}
-	line = handle_multiline_input(line, state);
-	return (line);
 }

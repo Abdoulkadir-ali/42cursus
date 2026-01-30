@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/26 05:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:22:21 by abdoali          ###   ########.fr       */
+/*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
+/*   Updated: 2026/01/26 14:01:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
+#include "input.h"
 
 static char	*build_function_prompt(size_t n)
 {

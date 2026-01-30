@@ -6,16 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/01/26 14:30:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-static int	handle_herestr(t_ast *node)
+static int	handle_herestr(t_ast *node, t_shell_state *state)
 {
 	char	*tmp_file;
 	int		fd;
+	char	*word;
+	int		quoted;
+	char	*use_word;
 
 	tmp_file = generate_tmp_filename();
 	fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -26,8 +29,19 @@ static int	handle_herestr(t_ast *node)
 	}
 	if (node->args && node->args[0])
 	{
-		write(fd, node->args[0], ft_strlen(node->args[0]));
+		word = node->args[0];
+		quoted = node->args[1] ? ft_atoi(node->args[1]) : 0;
+		use_word = word;
+		if (!quoted)
+		{
+			use_word = expand_heredoc(word, state->envp, state->exit_code);
+			if (!use_word)
+				use_word = word;
+		}
+		write(fd, use_word, ft_strlen(use_word));
 		write(fd, "\n", 1);
+		if (!quoted && use_word != word)
+			free(use_word);
 	}
 	close(fd);
 	free(node->args[0]);
@@ -46,7 +60,7 @@ int	scan_heredocs(t_nodes *ast_node, t_shell_state *state)
 	node = (t_ast *)ast_node->content;
 	if (node->type == TOKEN_HEREDOC)
 	{
-		tmp_file = handle_heredoc_input(node->args[0], state);
+		tmp_file = handle_heredoc_input(node->args, state);
 		if (!tmp_file)
 			return (1);
 		free(node->args[0]);
@@ -54,7 +68,7 @@ int	scan_heredocs(t_nodes *ast_node, t_shell_state *state)
 		node->type = TOKEN_RED_IN;
 	}
 	else if (node->type == TOKEN_HERESTR)
-		return (handle_herestr(node));
+		return (handle_herestr(node, state));
 	if (scan_heredocs(node->left, state) || scan_heredocs(node->right, state))
 		return (1);
 	return (0);
