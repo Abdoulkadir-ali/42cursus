@@ -72,6 +72,14 @@ typedef struct s_gui
 	int			last_mouse_x;
 	int			last_mouse_y;
 
+	// Timing & FPS
+	double		fps;
+	long long	last_time;
+	
+	// Hovering
+	int			mouse_x;
+	int			mouse_y;
+
 	void		*widgets;
 }				t_gui;
 

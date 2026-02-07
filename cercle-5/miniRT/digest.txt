@@ -1,6 +1,7 @@
 Directory structure:
 └── miniRT/
     ├── Makefile
+    ├── miniRT
     ├── includes/
     │   ├── bvh.h
     │   ├── gui.h
@@ -151,14 +152,18 @@ Directory structure:
         │           │   └── light.c
         │           └── polygons/
         │               ├── camera.c
+        │               ├── cone.c
         │               ├── cylinder.c
         │               ├── plane.c
         │               └── sphere.c
         ├── raytracing/
         │   ├── shading.c
+        │   ├── texture.c
         │   ├── bvh/
         │   │   ├── bound.c
         │   │   └── tree.c
+        │   ├── intersection/
+        │   │   └── cone.c
         │   └── trace/
         │       └── trace.c
         └── scene/
@@ -182,7 +187,7 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -g3 -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -g
+CFLAGS      = -Wall -Wextra -O3 -ffast-math -g3 -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER
 RM          = rm -f
 SRCS_DIR    = srcs
 OBJS_DIR    = objs
@@ -220,6 +225,12 @@ test: re
 
 .PHONY: all clean fclean re test
 
+
+
+================================================
+FILE: miniRT
+================================================
+[Binary file]
 
 
 ================================================
@@ -335,6 +346,7 @@ typedef struct s_gui
 	double		target_fov;
 	double		move_speed;
 	double		lerp_factor;
+	bool		dirty; // Frame needs update
 
 	// Input State
 	int			move_forward_count;
@@ -356,8 +368,17 @@ typedef struct s_gui
 	bool		zooming_out;
 
 	bool		mouse_left_pressed;
+	bool		mouse_middle_pressed;
 	int			last_mouse_x;
 	int			last_mouse_y;
+
+	// Timing & FPS
+	double		fps;
+	long long	last_time;
+	
+	// Hovering
+	int			mouse_x;
+	int			mouse_y;
 
 	void		*widgets;
 }				t_gui;
@@ -403,9 +424,34 @@ FILE: includes/material.h
 
 # include "maths.h"
 
+typedef enum e_tex_type
+{
+	TEX_SOLID,
+	TEX_CHECKER,
+	TEX_BITMAP,
+	TEX_BUMP
+}				t_tex_type;
+
+typedef struct s_texture
+{
+	t_tex_type	type;
+	t_vec3		color_a;
+	t_vec3		color_b;
+	double		scale;
+	void		*img;
+	char		*addr;
+	int			width;
+	int			height;
+	int			bpp;
+	int			len;
+	int			endian;
+}				t_texture;
+
 typedef struct s_material
 {
-	t_vec3		albedo;
+	t_texture	albedo_map; // Replaces t_vec3 albedo
+	t_texture	bump_map;   // Optional bump texture
+	
 	double		specular;
 	double		shininess;
 	double		metallic;
@@ -419,6 +465,9 @@ typedef struct s_material
 t_material	*create_material(t_vec3 albedo, double metallic, double roughness,
 				t_vec3 emission, double refract_index, double transparency,
 				double reflectivity);
+
+// Texture functions
+t_vec3		sample_texture(t_texture *tex, double u, double v);
 
 #endif
 
@@ -471,31 +520,46 @@ typedef struct s_aabb
 	t_vec3	max;
 }			t_aabb;
 
-/* vec2 operations */
-t_vec2		vec2(double x, double y);
-t_vec2		vec2_pt(double x, double y);
-t_vec2		vec2_add(t_vec2 a, t_vec2 b);
-t_vec2		vec2_sub(t_vec2 a, t_vec2 b);
-t_vec2		vec2_mul(t_vec2 a, t_vec2 b);
-t_vec2		vec2_scale(t_vec2 a, double s);
-double		vec2_dot(t_vec2 a, t_vec2 b);
-double		vec2_mag_sq(t_vec2 a);
-double		vec2_mag(t_vec2 a);
-t_vec2		vec2_norm(t_vec2 a);
+/* vec2 (Inline) */
+static inline t_vec2 vec2(double x, double y) { return ((t_vec2){x, y}); }
+static inline t_vec2 vec2_pt(double x, double y) { return ((t_vec2){x, y}); }
+static inline t_vec2 vec2_add(t_vec2 a, t_vec2 b) { return ((t_vec2){a.x + b.x, a.y + b.y}); }
+static inline t_vec2 vec2_sub(t_vec2 a, t_vec2 b) { return ((t_vec2){a.x - b.x, a.y - b.y}); }
+static inline t_vec2 vec2_mul(t_vec2 a, t_vec2 b) { return ((t_vec2){a.x * b.x, a.y * b.y}); }
+static inline t_vec2 vec2_scale(t_vec2 a, double s) { return ((t_vec2){a.x * s, a.y * s}); }
+static inline double vec2_dot(t_vec2 a, t_vec2 b) { return (a.x * b.x + a.y * b.y); }
+static inline double vec2_mag_sq(t_vec2 a) { return (vec2_dot(a, a)); }
+static inline double vec2_mag(t_vec2 a) { return (sqrt(vec2_mag_sq(a))); }
+static inline t_vec2 vec2_norm(t_vec2 a) {
+	double mag = vec2_mag(a);
+	return (mag == 0 ? (t_vec2){0, 0} : vec2_scale(a, 1.0 / mag));
+}
 
-/* vec3 operations */
-t_vec3		vec3(double x, double y, double z);
-t_vec3		vec3_pt(double x, double y, double z);
-t_vec3		vec3_add(t_vec3 a, t_vec3 b);
-t_vec3		vec3_sub(t_vec3 a, t_vec3 b);
-t_vec3		vec3_mul(t_vec3 a, t_vec3 b);
-t_vec3		vec3_scale(t_vec3 a, double s);
-double		vec3_dot(t_vec3 a, t_vec3 b);
-t_vec3		vec3_cross(t_vec3 a, t_vec3 b);
-double		vec3_mag_sq(t_vec3 a);
-double		vec3_mag(t_vec3 a);
-t_vec3		vec3_norm(t_vec3 a);
-t_vec3		vec3_lerp(t_vec3 a, t_vec3 b, double t);
+/* vec3 (Inline) */
+static inline t_vec3 vec3(double x, double y, double z) { return ((t_vec3){x, y, z, 0.0}); }
+static inline t_vec3 vec3_pt(double x, double y, double z) { return ((t_vec3){x, y, z, 1.0}); }
+static inline t_vec3 vec3_add(t_vec3 a, t_vec3 b) { return ((t_vec3){a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w}); }
+static inline t_vec3 vec3_sub(t_vec3 a, t_vec3 b) { return ((t_vec3){a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w}); }
+static inline t_vec3 vec3_mul(t_vec3 a, t_vec3 b) { return ((t_vec3){a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w}); }
+static inline t_vec3 vec3_scale(t_vec3 a, double s) { return ((t_vec3){a.x * s, a.y * s, a.z * s, a.w * s}); }
+static inline double vec3_dot(t_vec3 a, t_vec3 b) { return (a.x * b.x + a.y * b.y + a.z * b.z); }
+static inline t_vec3 vec3_cross(t_vec3 a, t_vec3 b) {
+	return ((t_vec3){
+		a.y * b.z - a.z * b.y,
+		a.z * b.x - a.x * b.z,
+		a.x * b.y - a.y * b.x,
+		0.0
+	});
+}
+static inline double vec3_mag_sq(t_vec3 a) { return (vec3_dot(a, a)); }
+static inline double vec3_mag(t_vec3 a) { return (sqrt(vec3_mag_sq(a))); }
+static inline t_vec3 vec3_norm(t_vec3 a) {
+	double mag = vec3_mag(a);
+	return (mag == 0 ? (t_vec3){0, 0, 0, 0} : vec3_scale(a, 1.0 / mag));
+}
+static inline t_vec3 vec3_lerp(t_vec3 a, t_vec3 b, double t) {
+	return vec3_add(a, vec3_scale(vec3_sub(b, a), t));
+}
 
 #endif
 
@@ -541,6 +605,8 @@ typedef struct s_hit
 	t_bvh_ref	ref; // Replaces t_object *obj
 	t_vec3		point;
 	t_vec3		normal;
+	t_vec3		tangent;
+	t_vec3		bitangent;
 	double		u;
 	double		v;
 }				t_hit;
@@ -614,6 +680,10 @@ typedef struct s_scene
 	int				cylinder_count;
 	int				cylinder_cap;
 
+	t_cone			*cones;
+	int				cone_count;
+	int				cone_cap;
+
 	t_mesh			*meshes;       // Stores both OBJ and FDF results
 	int				mesh_count;
 	int				mesh_cap;
@@ -646,6 +716,7 @@ int				scene_add_material(t_scene *scene, t_vec3 color);
 bool			scene_add_sphere(t_scene *scene, t_sphere sphere);
 bool			scene_add_plane(t_scene *scene, t_plane plane);
 bool			scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
+bool			scene_add_cone(t_scene *scene, t_cone cone);
 bool			scene_add_mesh(t_scene *scene, t_mesh mesh);
 bool			scene_add_animated(t_scene *scene, t_skinned_mesh animated);
 bool			scene_add_light(t_scene *scene, t_light light);
@@ -862,7 +933,8 @@ typedef enum e_type
 	TYPE_PLANE,
 	TYPE_MESH,
 	TYPE_ANIM,
-	TYPE_CYLINDER
+	TYPE_CYLINDER,
+	TYPE_CONE
 }			t_type;
 
 
@@ -902,11 +974,30 @@ typedef struct s_cylinder
 	t_vec3	temp_color;
 }				t_cylinder;
 
+typedef struct s_cone
+{
+	t_vec3	pos;
+	t_vec3	axis;
+	float	radius;
+	float	height;
+	int		mat_id;
+	t_vec3	temp_color;
+}				t_cone;
+
+typedef enum e_light_type
+{
+	LIGHT_POINT,
+	LIGHT_SPOT
+}				t_light_type;
+
 typedef struct s_light
 {
-	t_vec3		pos;
-	double		brightness;
-	t_vec3		rgb;
+	t_light_type	type;
+	t_vec3			pos;
+	t_vec3			dir; 
+	double			cutoff; // cos(angle)
+	double			brightness;
+	t_vec3			rgb;
 }				t_light;
 
 typedef struct s_camera
@@ -934,6 +1025,7 @@ typedef struct s_parse_obj
 		t_sphere	sphere;
 		t_plane		plane;
 		t_cylinder	cylinder;
+		t_cone		cone;
 		t_mesh		mesh;
 		t_light		light;
 		t_camera	camera;
@@ -952,9 +1044,12 @@ t_parse_obj		parse_line(char *line);
 t_parse_obj		parse_ambient(char **tokens);
 t_parse_obj		parse_camera(char **tokens);
 t_parse_obj		parse_light(char **tokens);
+t_parse_obj		parse_spot_light(char **tokens);
 t_parse_obj		parse_sphere(char **tokens);
 t_parse_obj		parse_plane(char **tokens);
 t_parse_obj		parse_cylinder(char **tokens);
+t_parse_obj		parse_cone(char **tokens);
+
 
 
 void			update_object_material(void *obj_data, t_type type);
@@ -1009,7 +1104,7 @@ cy -15,0,0 0,1,0 10.0 20.0 255,255,0
 FILE: maps/test2.rt
 ================================================
 A 0.2 255,255,255
-C 0,0,20 0,0,1 70
+C 0,0,20 0,0,-1 70
 L 10,10,10 0.5 255,255,255
 sp 0,0,0 20.0 255,0,0
 pl 0,1,0 0,1,0 128,128,128
@@ -5008,6 +5103,7 @@ t_gui	*gui_init(t_scene *scene, t_bvh *bvh)
 	
 	gui->move_speed = 0.5;
 	gui->lerp_factor = 0.1;
+	gui->dirty = true;
 	gui->widgets = NULL;
 
 	return (gui);
@@ -5050,11 +5146,109 @@ FILE: srcs/gui/loop.c
 /* ************************************************************************** */
 
 #include "gui.h"
+#include <sys/time.h>
+
+static long long get_time_ms(void)
+{
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000LL + tv.tv_usec / 1000);
+}
+
+static void update_input(t_gui *gui)
+{
+	if (!gui->camera) return;
+
+	double yaw = gui->yaw;
+	t_vec3 flat_fwd = vec3_norm(vec3(sin(yaw), 0, cos(yaw)));
+	t_vec3 flat_right = vec3_norm(vec3(cos(yaw), 0, -sin(yaw)));
+	t_vec3 world_up = vec3(0, 1, 0);
+	double speed = gui->move_speed;
+
+	// 1. Update Target Position based on input
+	if (gui->moving_forward)
+		gui->target_position = vec3_add(gui->target_position, vec3_scale(flat_fwd, -speed));
+	if (gui->moving_backward)
+		gui->target_position = vec3_add(gui->target_position, vec3_scale(flat_fwd, speed));
+	if (gui->moving_left)
+		gui->target_position = vec3_add(gui->target_position, vec3_scale(flat_right, -speed));
+	if (gui->moving_right)
+		gui->target_position = vec3_add(gui->target_position, vec3_scale(flat_right, speed));
+	if (gui->moving_up)
+		gui->target_position = vec3_add(gui->target_position, vec3_scale(world_up, speed));
+	if (gui->moving_down)
+		gui->target_position = vec3_add(gui->target_position, vec3_scale(world_up, -speed));
+
+	// 2. Smooth Orientation (Lerp)
+	if (fabs(gui->target_yaw - gui->yaw) > 1e-4 || fabs(gui->target_pitch - gui->pitch) > 1e-4)
+	{
+		gui->yaw += (gui->target_yaw - gui->yaw) * 0.2;
+		gui->pitch += (gui->target_pitch - gui->pitch) * 0.2;
+		gui->dirty = true;
+	}
+
+	// 3. Smooth Position (Lerp)
+	t_vec3 pos_diff = vec3_sub(gui->target_position, gui->camera->pos);
+	if (vec3_mag_sq(pos_diff) > 1e-6)
+	{
+		gui->camera->pos = vec3_add(gui->camera->pos, vec3_scale(pos_diff, 0.2));
+		gui->dirty = true;
+	}
+
+	// 4. Smooth FOV (Lerp)
+	if (fabs(gui->target_fov - gui->camera->fov) > 1e-2)
+	{
+		gui->camera->fov += (gui->target_fov - gui->camera->fov) * 0.2;
+		gui->dirty = true;
+	}
+	
+	// Handle discrete input that sets dirty
+	if (gui->zooming_in) { gui->target_fov -= 1.0; if (gui->target_fov < 10) gui->target_fov = 10; }
+	if (gui->zooming_out) { gui->target_fov += 1.0; if (gui->target_fov > 170) gui->target_fov = 170; }
+}
 
 static int render_loop(void *param)
 {
-    gui_render((t_gui *)param);
-    return 0;
+	t_gui *gui = (t_gui *)param;
+	long long current_time = get_time_ms();
+	
+	if (gui->last_time > 0)
+	{
+		double delta = (current_time - gui->last_time) / 1000.0;
+		if (delta > 0)
+			gui->fps = 0.9 * gui->fps + 0.1 * (1.0 / delta); // Smooth FPS
+	}
+	gui->last_time = current_time;
+	
+	update_input(gui);
+	
+	// Raycast for hover info every frame (or only when mouse moved)
+	// For responsiveness, let's just do it in update_input or here
+	
+	if (gui->dirty)
+	{
+		gui_render(gui);
+		gui->dirty = false;
+	}
+	else
+	{
+		// Even if not "dirty" (scene change), we might want to update the overlay (FPS, Mouse info)
+		// Option 1: Always redraw overlay at end of loop.
+		// Option 2: Always render if overlay needs update.
+		// Let's just draw the imagery to window again with new strings
+		// But mlx_string_put doesn't redraw the background image.
+		// To show real-time FPS, we need to redraw.
+		// However, raytracing is slow. 
+		// For now, let's only update when dirty.
+		// Wait, if I want to show object hover info, I need to redraw.
+		// Let's add a "force_overlay" concept or just use mlx_string_put on every loop.
+		
+		// If it's NOT dirty, we can't easily clear previous strings without redrawing image.
+		// So let's just force a render if we want real-time overlay.
+		// In a Raytracer, this is too expensive. 
+		// I will only update the overlay info in gui_render.
+	}
+	return (0);
 }
 
 void gui_loop(t_gui *gui)
@@ -5098,6 +5292,36 @@ static void	put_pixel(t_gui *gui, int x, int y, t_vec3 color)
 	*(unsigned int *)dst = (r << 16) | (g << 8) | b;
 }
 
+static void	draw_panel(t_gui *gui, int x, int y, int w, int h, int bg_color, int border_color)
+{
+	int i, j;
+	float alpha = 0.65;
+	
+	for (j = y; j < y + h; j++)
+	{
+		for (i = x; i < x + w; i++)
+		{
+			if (i < 0 || i >= gui->width || j < 0 || j >= gui->height)
+				continue;
+			
+			// Border Check
+			bool is_border = (i == x || i == x + w - 1 || j == y || j == y + h - 1);
+			
+			char *dst = gui->addr + (j * gui->line_length + i * (gui->bits_per_pixel / 8));
+			unsigned int bg = *(unsigned int *)dst;
+			
+			int current_color = is_border ? border_color : bg_color;
+			float current_alpha = is_border ? 0.9 : alpha;
+
+			int r = ((current_color >> 16) & 0xFF) * current_alpha + ((bg >> 16) & 0xFF) * (1.0 - current_alpha);
+			int g = ((current_color >> 8) & 0xFF) * current_alpha + ((bg >> 8) & 0xFF) * (1.0 - current_alpha);
+			int b = (current_color & 0xFF) * current_alpha + (bg & 0xFF) * (1.0 - current_alpha);
+			
+			*(unsigned int *)dst = (r << 16) | (g << 8) | b;
+		}
+	}
+}
+
 // Simple rotation helper (Rotates v by pitch (X) then yaw (Y))
 // Assumes camera looks down -Z by default in canonical space
 static t_vec3	rotate_vector(t_vec3 v, double pitch, double yaw)
@@ -5127,6 +5351,13 @@ void	gui_render(t_gui *gui)
     
     t_vec3 cam_pos = (gui->camera) ? gui->camera->pos : vec3(0, 0, 0);
 
+	// printf("Render Start\n");
+
+	// Pre-calculate Camera Basis Vectors to avoid 3.6 million sin/cos calls per frame
+	t_vec3 forward = rotate_vector(vec3(0, 0, -1), gui->pitch, gui->yaw);
+	t_vec3 right   = rotate_vector(vec3(1, 0, 0),  gui->pitch, gui->yaw);
+	t_vec3 up      = rotate_vector(vec3(0, 1, 0),  gui->pitch, gui->yaw);
+
 	y = 0;
 	while (y < gui->height)
 	{
@@ -5136,11 +5367,9 @@ void	gui_render(t_gui *gui)
 			double px = (2.0 * (x + 0.5) / gui->width - 1.0) * half_width * aspect_ratio;
 			double py = (1.0 - 2.0 * (y + 0.5) / gui->height) * half_height * aspect_ratio; // Inverted Y screen space
 			
-			// Canonical direction
-			t_vec3 dir = vec3_norm(vec3(px, py, -1.0));
-			
-			// Apply rotation
-			dir = rotate_vector(dir, gui->pitch, gui->yaw);
+			// Linear combination of basis vectors (removing sin/cos from loop)
+			// dir = forward * 1.0 + right * px + up * py
+			t_vec3 dir = vec3_add(forward, vec3_add(vec3_scale(right, px), vec3_scale(up, py)));
 			dir = vec3_norm(dir);
 
 			ray_init(&ray, cam_pos, dir);
@@ -5150,7 +5379,67 @@ void	gui_render(t_gui *gui)
 		}
 		y++;
 	}
+
+	// 2. Object Hovering Logic (Raycast through mouse)
+	t_hit h = {0};
+	bool hovering = false;
+	double hx = (2.0 * (gui->mouse_x + 0.5) / gui->width - 1.0) * half_width * aspect_ratio;
+	double hy = (1.0 - 2.0 * (gui->mouse_y + 0.5) / gui->height) * half_height * aspect_ratio;
+	t_vec3 hdir = vec3_norm(vec3_add(forward, vec3_add(vec3_scale(right, hx), vec3_scale(up, hy))));
+	t_ray hray;
+	ray_init(&hray, cam_pos, hdir);
+	
+	int box_x = gui->mouse_x + 15;
+	int box_y = gui->mouse_y + 15;
+	int box_w = 220;
+	int box_h = 75;
+
+	if (bvh_intersect(gui->bvh, &hray, &h))
+	{
+		hovering = true;
+		if (box_x + box_w > gui->width) box_x -= (box_w + 30);
+		if (box_y + box_h > gui->height) box_y -= (box_h + 30);
+		draw_rect_alpha(gui, box_x, box_y, box_w, box_h, 0x222222, 0.7);
+	}
+
 	mlx_put_image_to_window(gui->mlx, gui->win, gui->img, 0, 0);
+	
+	// 3. UI Overlay strings
+	int y_offset = 20;
+	int txt_color = 0xFFFFFF;
+	
+	char fps_buf[32];
+	sprintf(fps_buf, "FPS: %.1f", gui->fps);
+	mlx_string_put(gui->mlx, gui->win, gui->width - 100, 20, 0x00FF00, fps_buf);
+
+	mlx_string_put(gui->mlx, gui->win, 20, y_offset, txt_color, "miniRT Controls:"); y_offset += 20;
+	mlx_string_put(gui->mlx, gui->win, 20, y_offset, txt_color, "Move: W A S D | Look: LMB+Drag"); y_offset += 20;
+	mlx_string_put(gui->mlx, gui->win, 20, y_offset, txt_color, "Speed: Up/Down | FOV: MMB+Drag"); y_offset += 20;
+	
+	char stats[128];
+	sprintf(stats, "FOV: %.1f | Speed: %.2f | Pos: %.1f %.1f %.1f", 
+		gui->camera->fov, gui->move_speed, gui->camera->pos.x, gui->camera->pos.y, gui->camera->pos.z);
+	mlx_string_put(gui->mlx, gui->win, 20, y_offset, txt_color, stats);
+
+	// 4. Hover Strings
+	if (hovering)
+	{
+		char *type = "Unknown";
+		t_vec3 pos = vec3(0,0,0);
+		if (h.ref.type == TYPE_SPHERE) { type = "Sphere"; pos = gui->scene->spheres[h.ref.index].pos; }
+		else if (h.ref.type == TYPE_PLANE) { type = "Plane"; pos = gui->scene->planes[h.ref.index].pos; }
+		else if (h.ref.type == TYPE_CYLINDER) { type = "Cylinder"; pos = gui->scene->cylinders[h.ref.index].pos; }
+		else if (h.ref.type == TYPE_CONE) { type = "Cone"; pos = gui->scene->cones[h.ref.index].pos; }
+		
+		char h1[64], h2[64], h3[64];
+		sprintf(h1, "Type: %s", type);
+		sprintf(h2, "ID  : %d", h.ref.index);
+		sprintf(h3, "Pos : %.1f, %.1f, %.1f", pos.x, pos.y, pos.z);
+		
+		mlx_string_put(gui->mlx, gui->win, box_x + 10, box_y + 20, 0x00FFFF, h1);
+		mlx_string_put(gui->mlx, gui->win, box_x + 10, box_y + 40, 0xFFFFFF, h2);
+		mlx_string_put(gui->mlx, gui->win, box_x + 10, box_y + 60, 0xFFFFFF, h3);
+	}
 }
 
 
@@ -5474,17 +5763,26 @@ int	mouse_click(int button, int x, int y, t_gui *gui)
 		gui->last_mouse_x = x;
 		gui->last_mouse_y = y;
 	}
+	else if (button == 2)
+	{ // Middle button (MMB) pressed - resets or prepares for FOV? 
+	  // User said MMB to modify FOV, let's allow dragging or just use button
+		gui->mouse_middle_pressed = true;
+		gui->last_mouse_x = x;
+		gui->last_mouse_y = y;
+	}
 	else if (button == 4)
 	{ // Scroll up
-		gui->target_fov -= ZOOM_SPEED;
-		if (gui->target_fov < 10)
-			gui->target_fov = 10;
+		gui->camera->fov -= ZOOM_SPEED;
+		if (gui->camera->fov < 10)
+			gui->camera->fov = 10;
+		gui->dirty = true;
 	}
 	else if (button == 5)
 	{ // Scroll down
-		gui->target_fov += ZOOM_SPEED;
-		if (gui->target_fov > 170)
-			gui->target_fov = 170;
+		gui->camera->fov += ZOOM_SPEED;
+		if (gui->camera->fov > 170)
+			gui->camera->fov = 170;
+		gui->dirty = true;
 	}
 	return (0);
 }
@@ -5494,27 +5792,39 @@ int	mouse_release(int button, int x, int y, t_gui *gui)
 	(void)x;
 	(void)y;
 	if (button == 1)
-	{ // Left button
 		gui->mouse_left_pressed = false;
-	}
+	else if (button == 2)
+		gui->mouse_middle_pressed = false;
 	return (0);
 }
 
 int	mouse_motion(int x, int y, t_gui *gui)
 {
+	int dx = x - gui->last_mouse_x;
+	int dy = y - gui->last_mouse_y;
+	
+	gui->mouse_x = x;
+	gui->mouse_y = y;
+	
 	if (gui->mouse_left_pressed)
 	{
-		int dx = x - gui->last_mouse_x;
-		int dy = y - gui->last_mouse_y;
 		gui->target_yaw += -dx * MOUSE_SENSITIVITY;
 		gui->target_pitch += -dy * MOUSE_SENSITIVITY;
-		if (gui->target_pitch > M_PI / 2)
-			gui->target_pitch = M_PI / 2;
-		if (gui->target_pitch < -M_PI / 2)
-			gui->target_pitch = -M_PI / 2;
-		gui->last_mouse_x = x;
-		gui->last_mouse_y = y;
+		if (gui->target_pitch > M_PI / 2 - 0.05)
+			gui->target_pitch = M_PI / 2 - 0.05;
+		if (gui->target_pitch < -M_PI / 2 + 0.05)
+			gui->target_pitch = -M_PI / 2 + 0.05;
+		gui->dirty = true;
 	}
+	else if (gui->mouse_middle_pressed)
+	{
+		gui->camera->fov += dy * 0.1;
+		if (gui->camera->fov < 10) gui->camera->fov = 10;
+		if (gui->camera->fov > 170) gui->camera->fov = 170;
+		gui->dirty = true;
+	}
+	gui->last_mouse_x = x;
+	gui->last_mouse_y = y;
 	return (0);
 }
 
@@ -5522,219 +5832,14 @@ int	mouse_motion(int x, int y, t_gui *gui)
 ================================================
 FILE: srcs/maths/vec2.c
 ================================================
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   vec2.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/07 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 02:40:00 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "maths.h"
-
-t_vec2	vec2(double x, double y)
-{
-	t_vec2	v;
-
-	v.x = x;
-	v.y = y;
-	return (v);
-}
-
-t_vec2	vec2_pt(double x, double y)
-{
-	t_vec2	v;
-
-	v.x = x;
-	v.y = y;
-	return (v);
-}
-
-t_vec2	vec2_add(t_vec2 a, t_vec2 b)
-{
-	t_vec2	v;
-
-	v.x = a.x + b.x;
-	v.y = a.y + b.y;
-	return (v);
-}
-
-t_vec2	vec2_sub(t_vec2 a, t_vec2 b)
-{
-	t_vec2	v;
-
-	v.x = a.x - b.x;
-	v.y = a.y - b.y;
-	return (v);
-}
-
-t_vec2	vec2_mul(t_vec2 a, t_vec2 b)
-{
-	t_vec2	v;
-
-	v.x = a.x * b.x;
-	v.y = a.y * b.y;
-	return (v);
-}
-
-t_vec2	vec2_scale(t_vec2 a, double s)
-{
-	t_vec2	v;
-
-	v.x = a.x * s;
-	v.y = a.y * s;
-	return (v);
-}
-
-double	vec2_dot(t_vec2 a, t_vec2 b)
-{
-	return (a.x * b.x + a.y * b.y);
-}
-
-double	vec2_mag_sq(t_vec2 a)
-{
-	return (vec2_dot(a, a));
-}
-
-double	vec2_mag(t_vec2 a)
-{
-	return (sqrt(vec2_mag_sq(a)));
-}
-
-t_vec2	vec2_norm(t_vec2 a)
-{
-	double	mag;
-
-	mag = vec2_mag(a);
-	if (mag == 0)
-		return (vec2(0, 0));
-	return (vec2_scale(a, 1.0 / mag));
-}
+/* File content removed to support inlining in maths.h */
 
 
 
 ================================================
 FILE: srcs/maths/vec3.c
 ================================================
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   vec3.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/07 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/07 17:00:00 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "maths.h"
-
-t_vec3	vec3(double x, double y, double z)
-{
-	t_vec3	v;
-
-	v.x = x;
-	v.y = y;
-	v.z = z;
-	v.w = 0.0;
-	return (v);
-}
-
-t_vec3	vec3_pt(double x, double y, double z)
-{
-	t_vec3	v;
-
-	v.x = x;
-	v.y = y;
-	v.z = z;
-	v.w = 1.0;
-	return (v);
-}
-
-t_vec3	vec3_add(t_vec3 a, t_vec3 b)
-{
-	t_vec3	v;
-
-	v.x = a.x + b.x;
-	v.y = a.y + b.y;
-	v.z = a.z + b.z;
-	v.w = a.w + b.w;
-	return (v);
-}
-
-t_vec3	vec3_sub(t_vec3 a, t_vec3 b)
-{
-	t_vec3	v;
-
-	v.x = a.x - b.x;
-	v.y = a.y - b.y;
-	v.z = a.z - b.z;
-	v.w = a.w - b.w;
-	return (v);
-}
-
-t_vec3	vec3_mul(t_vec3 a, t_vec3 b)
-{
-	t_vec3	v;
-
-	v.x = a.x * b.x;
-	v.y = a.y * b.y;
-	v.z = a.z * b.z;
-	v.w = a.w * b.w;
-	return (v);
-}
-
-t_vec3	vec3_scale(t_vec3 a, double s)
-{
-	t_vec3	v;
-
-	v.x = a.x * s;
-	v.y = a.y * s;
-	v.z = a.z * s;
-	v.w = a.w * s;
-	return (v);
-}
-
-double	vec3_dot(t_vec3 a, t_vec3 b)
-{
-	return (a.x * b.x + a.y * b.y + a.z * b.z);
-}
-
-t_vec3	vec3_cross(t_vec3 a, t_vec3 b)
-{
-	t_vec3	v;
-
-	v.x = a.y * b.z - a.z * b.y;
-	v.y = a.z * b.x - a.x * b.z;
-	v.z = a.x * b.y - a.y * b.x;
-	v.w = 0.0;
-	return (v);
-}
-
-double	vec3_mag_sq(t_vec3 a)
-{
-	return (vec3_dot(a, a));
-}
-
-double	vec3_mag(t_vec3 a)
-{
-	return (sqrt(vec3_mag_sq(a)));
-}
-
-t_vec3	vec3_norm(t_vec3 a)
-{
-	double	mag;
-
-	mag = vec3_mag(a);
-	if (mag == 0)
-		return (vec3(0, 0, 0));
-	return (vec3_scale(a, 1.0 / mag));
-}
+/* File content removed to support inlining in maths.h */
 
 
 
@@ -5886,6 +5991,10 @@ t_parse_obj	parse_line(char *line)
 		obj = parse_plane(tokens);
 	else if (ft_strcmp(tokens[0], "cy") == 0)
 		obj = parse_cylinder(tokens);
+	else if (ft_strcmp(tokens[0], "cn") == 0)
+		obj = parse_cone(tokens);
+	else if (ft_strcmp(tokens[0], "sl") == 0)
+		obj = parse_spot_light(tokens);
 
 	
 	free_split(tokens);
@@ -5915,6 +6024,8 @@ static bool	process_line(t_scene *scene, char *line)
 		ret = scene_add_plane(scene, obj.data.plane);
 	else if (obj.type == TYPE_CYLINDER)
 		ret = scene_add_cylinder(scene, obj.data.cylinder);
+	else if (obj.type == TYPE_CONE)
+		ret = scene_add_cone(scene, obj.data.cone);
 	else if (obj.type == TYPE_LIGHT)
 		ret = scene_add_light(scene, obj.data.light);
 	else if (obj.type == TYPE_CAMERA)
@@ -6156,9 +6267,43 @@ t_parse_obj	parse_light(char **tokens)
 		|| !parse_float_checked(tokens[2], &res.data.light.brightness))
 		return (res);
 	
+	res.data.light.type = LIGHT_POINT;
+	
 	if (tokens[3])
 	{
 		if (!parse_color_checked(tokens[3], &res.data.light.rgb))
+			return (res);
+	}
+	else
+		res.data.light.rgb = vec3(255, 255, 255);
+	
+	res.type = TYPE_LIGHT;
+	return (res);
+}
+
+t_parse_obj	parse_spot_light(char **tokens)
+{
+	t_parse_obj	res;
+	t_vec3		dir;
+	double		fov;
+
+	res.type = TYPE_NONE;
+	if (!tokens[1] || !tokens[2] || !tokens[3] || !tokens[4])
+		return (res);
+	
+	res.data.light.type = LIGHT_SPOT;
+	if (!parse_vec3_checked(tokens[1], &res.data.light.pos)
+		|| !parse_vec3_checked(tokens[2], &dir)
+		|| !parse_float_checked(tokens[3], &res.data.light.brightness)
+		|| !parse_float_checked(tokens[4], &fov))
+		return (res);
+	
+	res.data.light.dir = vec3_norm(dir);
+	res.data.light.cutoff = cos((fov * M_PI / 180.0) / 2.0); // Half angle cosine
+
+	if (tokens[5])
+	{
+		if (!parse_color_checked(tokens[5], &res.data.light.rgb))
 			return (res);
 	}
 	else
@@ -6207,6 +6352,56 @@ t_parse_obj	parse_camera(char **tokens)
 	
 	res.data.camera.forward = res.data.camera.rotation;
 	res.type = TYPE_CAMERA;
+	return (res);
+}
+
+
+
+================================================
+FILE: srcs/objects/rt/parsing/polygons/cone.c
+================================================
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cone.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/08 04:00:00 by abdoali           #+#    #+#             */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "objects/rt.h"
+
+t_parse_obj	parse_cone(char **tokens)
+{
+	t_parse_obj	res;
+	double		diameter;
+	double		height;
+	t_vec3		rgb;
+
+	res.type = TYPE_NONE;
+	if (!tokens[1] || !tokens[2] || !tokens[3] || !tokens[4] || !tokens[5])
+		return (res);
+	
+	if (!parse_vec3_checked(tokens[1], &res.data.cone.pos)
+		|| !parse_vec3_checked(tokens[2], &res.data.cone.axis)
+		|| !parse_float_checked(tokens[3], &diameter)
+		|| !parse_float_checked(tokens[4], &height)
+		|| !parse_color_checked(tokens[5], &rgb))
+		return (res);
+	
+	if (vec3_mag_sq(res.data.cone.axis) == 0.0)
+		res.data.cone.axis = vec3(0, 1, 0);
+	else
+		res.data.cone.axis = vec3_norm(res.data.cone.axis);
+	
+	res.data.cone.radius = (float)(diameter / 2.0);
+	res.data.cone.height = (float)height;
+	res.data.cone.mat_id = 0;
+	res.data.cone.temp_color = rgb;
+	res.type = TYPE_CONE;
+
 	return (res);
 }
 
@@ -6423,10 +6618,38 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh, const t_ray *
 	if (hit->ref.type == TYPE_SPHERE) mat = scene->materials[scene->spheres[hit->ref.index].mat_id];
 	else if (hit->ref.type == TYPE_PLANE) mat = scene->materials[scene->planes[hit->ref.index].mat_id];
 	else if (hit->ref.type == TYPE_CYLINDER) mat = scene->materials[scene->cylinders[hit->ref.index].mat_id];
+	else if (hit->ref.type == TYPE_CONE) mat = scene->materials[scene->cones[hit->ref.index].mat_id];
 	else return (vec3(255, 0, 255)); // Error pink
 
+	// Albedo (Texture/Color/Checker)
+	mat.albedo_map.type = (mat.albedo_map.type == 0) ? TEX_SOLID : mat.albedo_map.type; // Safety default
+	t_vec3 albedo_color = sample_texture(&mat.albedo_map, hit->u, hit->v);
+
+	// Bump Map (Normal Mapping)
+	if (mat.bump_map.type != TEX_SOLID && mat.bump_map.img)
+	{
+		t_vec3 bump_sample = sample_texture(&mat.bump_map, hit->u, hit->v);
+		
+		// Map [0, 255] to [-1, 1]
+		t_vec3 map_n;
+		map_n.x = (bump_sample.x / 255.0) * 2.0 - 1.0;
+		map_n.y = (bump_sample.y / 255.0) * 2.0 - 1.0;
+		map_n.z = (bump_sample.z / 255.0) * 2.0 - 1.0; // Usually Z is up in normal maps [0,1] mapped to [0,1]? 
+		// Actually standard OpenGL normal maps: Z ranges [0.5, 1.0] -> [0, 1]. 
+		// If map_n.z is 128 (0.5), it means 0? No, flat normal is (0.5, 0.5, 1.0) RGB -> (0, 0, 1) Vector.
+		// So formula is correct: (val / 255) * 2 - 1.
+		
+		// TBN Transform: WorldN = T * map.x + B * map.y + N * map.z
+		t_vec3 new_normal;
+		new_normal.x = hit->tangent.x * map_n.x + hit->bitangent.x * map_n.y + hit->normal.x * map_n.z;
+		new_normal.y = hit->tangent.y * map_n.x + hit->bitangent.y * map_n.y + hit->normal.y * map_n.z;
+		new_normal.z = hit->tangent.z * map_n.x + hit->bitangent.z * map_n.y + hit->normal.z * map_n.z;
+		
+		hit->normal = vec3_norm(new_normal);
+	}
+
 	// Ambient
-	ambient = pixel_color(mat.albedo, scene->ambient.rgb, scene->ambient.brightness);
+	ambient = pixel_color(albedo_color, scene->ambient.rgb, scene->ambient.brightness);
 	total_color = ambient;
 
 	// Loop Lights
@@ -6442,6 +6665,21 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh, const t_ray *
 		if (ndotl <= 0.0)
 			continue ;
 
+		// Spot Light Check
+		if (light.type == LIGHT_SPOT)
+		{
+			// light.dir is direction OF the light
+			// Vector from light to point is -light_dir (calculated above as light_dir = Norm(L - P)) 
+			// Wait, light_dir = vec3_norm(vec3_sub(light.pos, hit->point)); -> Point TO Light
+			// So vector from Light TO Point is -light_dir.
+			
+			t_vec3 l_to_p = vec3_scale(light_dir, -1.0);
+			double angle = vec3_dot(l_to_p, light.dir); // light.dir should be normalized
+			
+			if (angle < light.cutoff) // cos(angle) < cos(cutoff) -> angle > cutoff (if both positive)
+				continue ;
+		}
+
 		// Shadow Check
 		// Epsilon offset along normal to avoid self-acne
 		t_vec3 shadow_origin = vec3_add(hit->point, vec3_scale(hit->normal, 1e-4));
@@ -6449,7 +6687,7 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh, const t_ray *
 			continue ;
 
 		// Diffuse (Lambert)
-		t_vec3 diffuse = pixel_color(mat.albedo, light.rgb, light.brightness * ndotl);
+		t_vec3 diffuse = pixel_color(albedo_color, light.rgb, light.brightness * ndotl);
 		total_color = vec3_add(total_color, diffuse);
 
 		// Specular (Blinn-Phong)
@@ -6471,6 +6709,61 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh, const t_ray *
 	if (total_color.z > 255) total_color.z = 255;
 	
 	return (total_color);
+}
+
+
+
+================================================
+FILE: srcs/raytracing/texture.c
+================================================
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   texture.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/08 06:00:00 by abdoali           #+#    #+#             */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "material.h"
+#include <math.h>
+
+t_vec3	sample_texture(t_texture *tex, double u, double v)
+{
+	if (tex->type == TEX_SOLID)
+		return (tex->color_a);
+	
+	if (tex->type == TEX_CHECKER)
+	{
+		// Scalable checker logic using UVs
+		int check = (int)(floor(u * tex->scale) + floor(v * tex->scale)) % 2;
+		// Handle negative UVs correctly
+		if ((u * tex->scale) < 0) check++;
+		if ((v * tex->scale) < 0) check++;
+		check = check % 2;
+		
+		return (check ? tex->color_a : tex->color_b);
+	}
+	
+	if (tex->type == TEX_BITMAP && tex->img)
+	{
+		int x = (int)(u * tex->width) % tex->width;
+		int y = (int)(v * tex->height) % tex->height;
+		
+		if (x < 0) x += tex->width;
+		if (y < 0) y += tex->height;
+		
+		char *pixel = tex->addr + (y * tex->len + x * (tex->bpp / 8));
+		unsigned int color = *(unsigned int *)pixel;
+		int r = (color >> 16) & 0xFF;
+		int g = (color >> 8) & 0xFF;
+		int b = color & 0xFF;
+		return (vec3(r, g, b));
+	}
+
+	return (vec3(255, 0, 255)); // Error pink
 }
 
 
@@ -6774,6 +7067,141 @@ void	bvh_destroy(t_bvh *bvh)
 
 
 ================================================
+FILE: srcs/raytracing/intersection/cone.c
+================================================
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cone.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/08 05:00:00 by abdoali           #+#    #+#             */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "raytracing.h"
+
+static bool	solve_quadratic(float a, float b, float c, float *t0, float *t1)
+{
+	float	disc;
+	float	q;
+
+	disc = b * b - 4 * a * c;
+	if (disc < 0)
+		return (false);
+	if (b < 0)
+		q = -0.5 * (b - sqrt(disc));
+	else
+		q = -0.5 * (b + sqrt(disc));
+	*t0 = q / a;
+	*t1 = c / q;
+	if (*t0 > *t1)
+	{
+		float temp = *t0;
+		*t0 = *t1;
+		*t1 = temp;
+	}
+	return (true);
+}
+
+// Intersect strict cone (without base cap yet)
+// Equation: (P - C) . A = |P - C| * cos(theta)
+// Infinite Cone: (D.A)^2 - cos^2(theta) = 0 logic...
+// Let's use standard algebraic cone intersection
+// x^2 + z^2 = y^2 * (r/h)^2
+bool	intersect_cone(t_ray *ray, t_cone *cone, t_hit *hit)
+{
+	t_vec3	oc = vec3_sub(ray->origin, cone->pos);
+	float	m = (cone->radius * cone->radius) / (cone->height * cone->height);
+	
+	// A = D.x^2 + D.z^2 - m * D.y^2
+	// But arbitrarily oriented... 
+	// Let's project ray to local space or use vector math
+	
+	float	dd = vec3_dot(ray->direction, cone->axis);
+	float	od = vec3_dot(oc, cone->axis);
+	
+	float	a = vec3_dot(ray->direction, ray->direction) - (1 + m) * dd * dd;
+	float	b = 2 * (vec3_dot(ray->direction, oc) - (1 + m) * dd * od);
+	float	c = vec3_dot(oc, oc) - (1 + m) * od * od;
+	
+	float t0, t1;
+	if (!solve_quadratic(a, b, c, &t0, &t1))
+		return (false);
+
+	// Check bounds (0 <= y <= height)
+	// y = (P - C) . A
+	float t = t0;
+	float y = od + t * dd;
+	bool found = false;
+
+	if (t > 0.001 && y >= 0 && y <= cone->height)
+		found = true;
+	else
+	{
+		t = t1;
+		y = od + t * dd;
+		if (t > 0.001 && y >= 0 && y <= cone->height)
+			found = true;
+		else
+			return (false); // Simplistic, missing cap for now
+	}
+
+	if (found && t < hit->t)
+	{
+		hit->t = t;
+		hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
+		
+		float k = cone->radius / cone->height;
+		// The generic normal for point P on cone surface:
+		// N = P - C - (1 + k^2) * ((P-C).A) * A
+		
+		t_vec3 temp = vec3_sub(hit->point, cone->pos);
+		float scale = (1 + k*k) * vec3_dot(temp, cone->axis);
+		hit->normal = vec3_norm(vec3_sub(temp, vec3_scale(cone->axis, scale)));
+		
+		// Cone UV
+		// Use same logic as cylinder for theta, but v uses height
+		t_vec3	u_ax, v_ax;
+		if (fabs(cone->axis.y) > 0.9) u_ax = vec3(1, 0, 0);
+		else u_ax = vec3(0, 1, 0);
+		v_ax = vec3_norm(vec3_cross(cone->axis, u_ax));
+		u_ax = vec3_norm(vec3_cross(v_ax, cone->axis));
+		
+		// Project P-C onto cross section
+		// h = (P-C).A
+		// C_center = C + h*A
+		// Radial = P - C_center
+		// u is angle of Radial
+		
+		float h = vec3_dot(temp, cone->axis);
+		t_vec3 center_h = vec3_add(cone->pos, vec3_scale(cone->axis, h));
+		t_vec3 radial = vec3_sub(hit->point, center_h);
+		
+		double u_val = vec3_dot(radial, u_ax);
+		double v_val = vec3_dot(radial, v_ax);
+		hit->u = (atan2(v_val, u_val) + M_PI) / (2 * M_PI);
+		hit->v = h / cone->height;
+
+		// Tangents
+		// Similar to cylinder, tangent is across flow
+		hit->tangent = vec3_norm(vec3_cross(hit->normal, cone->axis));
+		hit->bitangent = vec3_norm(vec3_cross(hit->normal, hit->tangent));
+		
+		// Base cap intersection check would go here later
+		
+		if (vec3_dot(hit->normal, ray->direction) > 0)
+			hit->normal = vec3_scale(hit->normal, -1);
+		return (true);
+	}
+	return (false);
+}
+
+
+
+
+================================================
 FILE: srcs/raytracing/trace/trace.c
 ================================================
 /* ************************************************************************** */
@@ -6834,7 +7262,46 @@ bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit)
 	hit->t = t;
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
 	hit->normal = vec3_scale(vec3_sub(hit->point, center), 1.0 / sqrt(sp->radius_sq));
+	
+	// Sphere UV & Tangents
+	double theta = acos(-hit->normal.y);
+	double phi = atan2(-hit->normal.z, hit->normal.x) + M_PI;
+	hit->u = phi / (2 * M_PI);
+	hit->v = theta / M_PI;
+
+	// Tangents
+	t_vec3 up = vec3(0, 1, 0);
+	if (fabs(vec3_dot(hit->normal, up)) > 0.99)
+		up = vec3(0, 0, 1);
+	hit->tangent = vec3_norm(vec3_cross(up, hit->normal));
+	hit->bitangent = vec3_norm(vec3_cross(hit->normal, hit->tangent));
+	
 	return (true);
+}
+
+// Helper for Plane UV
+static void	get_plane_uv(t_vec3 p, t_vec3 n, double *u, double *v, t_vec3 *tangent, t_vec3 *bitangent)
+{
+	t_vec3	u_axis, v_axis;
+	
+	// Pick an arbitrary axis to cross with normal
+	if (fabs(n.y) > 0.9)
+		u_axis = vec3(1, 0, 0); // If normal is Y, use X
+	else
+		u_axis = vec3(0, 1, 0); // Else use Y
+	
+	v_axis = vec3_norm(vec3_cross(n, u_axis));
+	u_axis = vec3_norm(vec3_cross(v_axis, n));
+	
+	*u = vec3_dot(p, u_axis);
+	*v = vec3_dot(p, v_axis);
+	
+	// Scale slightly to make texture repeat visible
+	*u *= 0.1;
+	*v *= 0.1;
+
+	*tangent = u_axis;
+	*bitangent = v_axis;
 }
 
 bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
@@ -6855,8 +7322,14 @@ bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
 	hit->normal = normal;
 	if (vec3_dot(ray->direction, normal) > 0)
 		hit->normal = vec3_scale(normal, -1.0);
+	
+	// Plane UV
+	get_plane_uv(hit->point, pl->normal, &hit->u, &hit->v, &hit->tangent, &hit->bitangent);
+
 	return (true);
 }
+
+bool	intersect_cone(const t_ray *ray, t_cone *co, t_hit *hit);
 
 bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit)
 {
@@ -6874,6 +7347,9 @@ bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit)
 	double	t_min = DBL_MAX;
 	t_vec3	n = vec3(0,0,0);
 	bool	hit_found = false;
+	
+	// Store tangent basis for later
+	t_vec3	final_u_ax, final_v_ax;
 
 	// Body intersection
 	double	t1, t2;
@@ -6888,9 +7364,28 @@ bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit)
 				t_min = t1;
 				n = vec3_norm(vec3_sub(vec3_sub(pt, center), vec3_scale(axis, h)));
 				hit_found = true;
+				
+				// Cylindrical UV
+				t_vec3	u_ax, v_ax;
+				if (fabs(axis.y) > 0.9) u_ax = vec3(1, 0, 0);
+				else u_ax = vec3(0, 1, 0);
+				v_ax = vec3_norm(vec3_cross(axis, u_ax));
+				u_ax = vec3_norm(vec3_cross(v_ax, axis));
+				
+				double u_val = vec3_dot(vec3_sub(pt, center), u_ax);
+				double v_val = vec3_dot(vec3_sub(pt, center), v_ax);
+				hit->u = (atan2(v_val, u_val) + M_PI) / (2 * M_PI);
+				hit->v = h / height;
+				
+				// Tangents
+				// V is along axis (ish)
+				// U is around axis
+				// U direction is tangent to circle -> Cross(N, Axis)
+				final_u_ax = vec3_norm(vec3_cross(n, axis)); 
+				final_v_ax = vec3_norm(vec3_cross(n, final_u_ax)); // Vertical-ish
 			}
 		}
-		if (t2 > 0 && t2 < t_min)
+		if (!hit_found && t2 > 0 && t2 < t_min)
 		{
 			t_vec3 pt = vec3_add(ray->origin, vec3_scale(ray->direction, t2));
 			double h = vec3_dot(vec3_sub(pt, center), axis);
@@ -6899,6 +7394,21 @@ bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit)
 				t_min = t2;
 				n = vec3_norm(vec3_sub(vec3_sub(pt, center), vec3_scale(axis, h)));
 				hit_found = true;
+				
+				// Cylindrical UV (Repeat)
+				t_vec3	u_ax, v_ax;
+				if (fabs(axis.y) > 0.9) u_ax = vec3(1, 0, 0);
+				else u_ax = vec3(0, 1, 0);
+				v_ax = vec3_norm(vec3_cross(axis, u_ax));
+				u_ax = vec3_norm(vec3_cross(v_ax, axis));
+				
+				double u_val = vec3_dot(vec3_sub(pt, center), u_ax);
+				double v_val = vec3_dot(vec3_sub(pt, center), v_ax);
+				hit->u = (atan2(v_val, u_val) + M_PI) / (2 * M_PI);
+				hit->v = h / height;
+				
+				final_u_ax = vec3_norm(vec3_cross(n, axis));
+				final_v_ax = vec3_norm(vec3_cross(n, final_u_ax));
 			}
 		}
 	}
@@ -6921,6 +7431,18 @@ bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit)
 				t_min = t_cap;
 				n = vec3_scale(axis, -1.0); // Pointing down/out from bottom
 				hit_found = true;
+				
+				// Cap UV (Planar mapping on cap)
+				t_vec3	u_ax, v_ax;
+				if (fabs(axis.y) > 0.9) u_ax = vec3(1, 0, 0);
+				else u_ax = vec3(0, 1, 0);
+				v_ax = vec3_norm(vec3_cross(axis, u_ax));
+				u_ax = vec3_norm(vec3_cross(v_ax, axis));
+				hit->u = (vec3_dot(v, u_ax) / radius + 1) * 0.5;
+				hit->v = (vec3_dot(v, v_ax) / radius + 1) * 0.5;
+				
+				final_u_ax = u_ax;
+				final_v_ax = v_ax;
 			}
 		}
 		
@@ -6936,6 +7458,18 @@ bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit)
 				t_min = t_cap;
 				n = axis; // Pointing up/out from top
 				hit_found = true;
+
+				// Cap UV
+				t_vec3	u_ax, v_ax;
+				if (fabs(axis.y) > 0.9) u_ax = vec3(1, 0, 0);
+				else u_ax = vec3(0, 1, 0);
+				v_ax = vec3_norm(vec3_cross(axis, u_ax));
+				u_ax = vec3_norm(vec3_cross(v_ax, axis));
+				hit->u = (vec3_dot(v, u_ax) / radius + 1) * 0.5;
+				hit->v = (vec3_dot(v, v_ax) / radius + 1) * 0.5;
+				
+				final_u_ax = u_ax;
+				final_v_ax = v_ax;
 			}
 		}
 	}
@@ -6948,6 +7482,10 @@ bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit)
 	hit->normal = n;
 	if (vec3_dot(ray->direction, hit->normal) > 0)
 		hit->normal = vec3_scale(hit->normal, -1.0);
+	
+	hit->tangent = final_u_ax;
+	hit->bitangent = final_v_ax;
+
 	return (true);
 
 }
@@ -6966,6 +7504,8 @@ bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref, t_hit *hi
 		res = intersect_mesh(ray, &scene->animated[ref.index].base, hit);
 	else if (ref.type == TYPE_CYLINDER)
 		res = intersect_cylinder(ray, &scene->cylinders[ref.index], hit);
+	else if (ref.type == TYPE_CONE)
+		res = intersect_cone(ray, &scene->cones[ref.index], hit);
 	
 	if (res)
 		hit->ref = ref;
@@ -7115,9 +7655,11 @@ static bool	init_arrays(t_scene *s)
 	s->materials = ft_calloc(s->mat_cap, sizeof(t_material));
 	s->light_cap = g_lgt_init;
 	s->lights = ft_calloc(s->light_cap, sizeof(t_light));
+	s->cone_cap = g_cyl_init;
+	s->cones = ft_calloc(s->cone_cap, sizeof(t_cone));
 
 	if (!s->spheres || !s->planes || !s->cylinders || !s->meshes 
-		|| !s->animated || !s->materials || !s->lights)
+		|| !s->animated || !s->materials || !s->lights || !s->cones)
 		return (false);
 	return (true);
 }
@@ -7163,6 +7705,7 @@ void	destroy_scene(t_scene *scene)
 	free(scene->spheres);
 	free(scene->planes);
 	free(scene->cylinders);
+	free(scene->cones);
 	for (i = 0; i < scene->mesh_count; i++)
 		destroy_mesh(&scene->meshes[i]);
 	free(scene->meshes);
@@ -7242,7 +7785,7 @@ int	main(int ac, char **av)
 		return (1);
 	}
 
-	gui_render(gui);
+	// gui_render(gui); // Removed to allow loop to handle it (Non-blocking)
 	gui_loop(gui);
 
 	gui_destroy(gui);
@@ -7283,7 +7826,18 @@ FILE: srcs/scene/scene_add.c
 int	scene_add_material(t_scene *scene, t_vec3 color)
 {
 	t_material	*tmp;
-	t_material	mat;
+	int			i;
+
+	// Deduplication: Check if material already exists (Assume solid for now)
+	for (i = 0; i < scene->mat_count; i++)
+	{
+		if (scene->materials[i].albedo_map.type == TEX_SOLID)
+		{
+			t_vec3 c = scene->materials[i].albedo_map.color_a;
+			if (c.x == color.x && c.y == color.y && c.z == color.z)
+				return (i);
+		}
+	}
 
 	if (scene->mat_count >= scene->mat_cap)
 	{
@@ -7294,19 +7848,20 @@ int	scene_add_material(t_scene *scene, t_vec3 color)
 		scene->materials = tmp;
 	}
 	
-	mat.albedo = color;
-	mat.specular = 0.3; // Default
-	mat.shininess = 32.0; 
-	mat.roughness = 0.5; // Default
-	mat.metallic = 0.0;
-	mat.emission = vec3(0,0,0);
-	mat.refract_index = 1.0;
-	mat.transparency = 0.0;
-	mat.reflectivity = 0.0;
+	// Add logic to check for duplicates?
+	// For now simple append
 	
-	scene->materials[scene->mat_count] = mat;
+	scene->materials[scene->mat_count].albedo_map.type = TEX_SOLID;
+	scene->materials[scene->mat_count].albedo_map.color_a = color;
+	scene->materials[scene->mat_count].albedo_map.scale = 1.0;
+	
+	// Default material props
+	scene->materials[scene->mat_count].specular = 0.5;
+	scene->materials[scene->mat_count].shininess = 32.0;
+
 	return (scene->mat_count++);
 }
+
 
 bool	scene_add_sphere(t_scene *scene, t_sphere sphere)
 {
@@ -7366,6 +7921,26 @@ bool	scene_add_cylinder(t_scene *scene, t_cylinder cylinder)
 		scene->cylinders = tmp;
 	}
 	scene->cylinders[scene->cylinder_count++] = cylinder;
+	return (true);
+}
+
+bool	scene_add_cone(t_scene *scene, t_cone cone)
+{
+	t_cone	*tmp;
+
+	int mat_id = scene_add_material(scene, cone.temp_color);
+	if (mat_id < 0) return (false);
+	cone.mat_id = mat_id;
+
+	if (scene->cone_count >= scene->cone_cap)
+	{
+		scene->cone_cap *= 2;
+		tmp = realloc(scene->cones, scene->cone_cap * sizeof(t_cone));
+		if (!tmp)
+			return (false);
+		scene->cones = tmp;
+	}
+	scene->cones[scene->cone_count++] = cone;
 	return (true);
 }
 

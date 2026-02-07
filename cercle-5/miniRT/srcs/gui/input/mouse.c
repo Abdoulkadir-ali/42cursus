@@ -59,7 +59,10 @@ int	mouse_motion(int x, int y, t_gui *gui)
 {
 	int dx = x - gui->last_mouse_x;
 	int dy = y - gui->last_mouse_y;
-
+	
+	gui->mouse_x = x;
+	gui->mouse_y = y;
+	
 	if (gui->mouse_left_pressed)
 	{
 		gui->target_yaw += -dx * MOUSE_SENSITIVITY;
