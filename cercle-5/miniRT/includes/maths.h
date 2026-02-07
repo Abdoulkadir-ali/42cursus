@@ -6,86 +6,81 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/30 19:49:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/07 17:09:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MATHS_H
 # define MATHS_H
 
-# include "libft.h"
-# include <limits.h>
 # include <math.h>
 # include <stdbool.h>
 # include <stddef.h>
-# include <stdio.h>
-# include <stdlib.h>
 
-/*We use 1D -> 2D  table representation*/
-
-typedef struct s_index
+typedef struct s_vec2
 {
-	size_t	x;
-	size_t	y;
-}			t_index;
+	double	x;
+	double	y;
+}			t_vec2;
 
-typedef struct s_iterate_events
+typedef struct s_vec3
 {
-	void	(*on_new_row)(void);
-	void	(*on_new_line)(void);
-}			t_iterate_events;
+	double	x;
+	double	y;
+	double	z;
+	double	w;
+}			t_vec3;
 
-typedef struct s_matrix
+typedef struct s_mat4
 {
-	t_index	dim;
-	void	*v;
-	size_t	elem_size;
-}			t_matrix;
+	double	m[4][4];
+}			t_mat4;
 
-/* index helpers */
-t_index		create_index(size_t x, size_t y);
-size_t		flatten_index(t_index dim, t_index i);
-t_index		flat_to_index(t_index dim, size_t flat_index);
-void		print_index(t_index i);
-bool		check_dimensions(t_index dim);
-t_matrix	*create_matrix(t_index dim, size_t elem_size);
-void		create_event(t_iterate_events *events, void (*on_new_row)(void),
-				void (*on_new_line)(void));
-void		matrix_iterate(t_matrix *m, void (*f)(void *),
-				t_iterate_events *events);
-void		print_matrix(t_matrix *m, void (*f)(void *));
-void		print_double(void *v);
-void		print_float(void *v);
-void		*get_offset(const t_matrix *m, size_t i);
-bool		check_multiply(const t_matrix *m1, const t_matrix *m2);
-bool		check_add(const t_matrix *m1, const t_matrix *m2);
-bool		matrix_op(t_matrix *m1, const t_matrix *m2,
-				bool (*check)(const t_matrix *, const t_matrix *),
-				bool (*f)(void *, const void *));
-bool		matrix_divide(t_matrix *m1, const t_matrix *m2, bool (*f)(void *,
-					const void *));
-bool		matrix_multiply(t_matrix *m1, const t_matrix *m2, bool (*f)(void *,
-					const void *));
-bool		cmp_indexes(t_index i1, t_index i2);
-bool		is_same_x(t_index i1, t_index i2);
-bool		is_same_y(t_index i1, t_index i2);
-bool		is_same_indexes(t_index i1, t_index i2);
-bool		is_same_index_to_val(t_index i1, size_t v);
-void		*matrix_get(const t_matrix *m, t_index i);
-bool		matrix_set(t_matrix *m, t_index i, void *new);
-void		matrix_transpose(t_matrix **m);
-void		matrix_destroy(t_matrix *m);
-bool		matrix_for_each(t_matrix *m, bool (*f)(void *));
-bool		free_matrix(t_matrix *m, void (*del)(void *));
-bool		matrix_add_scalar(t_matrix *m, void *v, bool (*f)(void *,
-					const void *));
-/* view / camera transforms */
-t_matrix	*make_view_matrix(double pos[3], double orient[3], double up[3]);
-t_matrix	*make_view_matrix_inverse(double pos[3], double orient[3],
-				double up[3]);
+typedef struct s_aabb
+{
+	t_vec3	min;
+	t_vec3	max;
+}			t_aabb;
 
-int			*to_int(const char *s);
-double		*to_double(const char *s);
-float		*to_float(const char *s);
+/* vec2 (Inline) */
+static inline t_vec2 vec2(double x, double y) { return ((t_vec2){x, y}); }
+static inline t_vec2 vec2_pt(double x, double y) { return ((t_vec2){x, y}); }
+static inline t_vec2 vec2_add(t_vec2 a, t_vec2 b) { return ((t_vec2){a.x + b.x, a.y + b.y}); }
+static inline t_vec2 vec2_sub(t_vec2 a, t_vec2 b) { return ((t_vec2){a.x - b.x, a.y - b.y}); }
+static inline t_vec2 vec2_mul(t_vec2 a, t_vec2 b) { return ((t_vec2){a.x * b.x, a.y * b.y}); }
+static inline t_vec2 vec2_scale(t_vec2 a, double s) { return ((t_vec2){a.x * s, a.y * s}); }
+static inline double vec2_dot(t_vec2 a, t_vec2 b) { return (a.x * b.x + a.y * b.y); }
+static inline double vec2_mag_sq(t_vec2 a) { return (vec2_dot(a, a)); }
+static inline double vec2_mag(t_vec2 a) { return (sqrt(vec2_mag_sq(a))); }
+static inline t_vec2 vec2_norm(t_vec2 a) {
+	double mag = vec2_mag(a);
+	return (mag == 0 ? (t_vec2){0, 0} : vec2_scale(a, 1.0 / mag));
+}
+
+/* vec3 (Inline) */
+static inline t_vec3 vec3(double x, double y, double z) { return ((t_vec3){x, y, z, 0.0}); }
+static inline t_vec3 vec3_pt(double x, double y, double z) { return ((t_vec3){x, y, z, 1.0}); }
+static inline t_vec3 vec3_add(t_vec3 a, t_vec3 b) { return ((t_vec3){a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w}); }
+static inline t_vec3 vec3_sub(t_vec3 a, t_vec3 b) { return ((t_vec3){a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w}); }
+static inline t_vec3 vec3_mul(t_vec3 a, t_vec3 b) { return ((t_vec3){a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w}); }
+static inline t_vec3 vec3_scale(t_vec3 a, double s) { return ((t_vec3){a.x * s, a.y * s, a.z * s, a.w * s}); }
+static inline double vec3_dot(t_vec3 a, t_vec3 b) { return (a.x * b.x + a.y * b.y + a.z * b.z); }
+static inline t_vec3 vec3_cross(t_vec3 a, t_vec3 b) {
+	return ((t_vec3){
+		a.y * b.z - a.z * b.y,
+		a.z * b.x - a.x * b.z,
+		a.x * b.y - a.y * b.x,
+		0.0
+	});
+}
+static inline double vec3_mag_sq(t_vec3 a) { return (vec3_dot(a, a)); }
+static inline double vec3_mag(t_vec3 a) { return (sqrt(vec3_mag_sq(a))); }
+static inline t_vec3 vec3_norm(t_vec3 a) {
+	double mag = vec3_mag(a);
+	return (mag == 0 ? (t_vec3){0, 0, 0, 0} : vec3_scale(a, 1.0 / mag));
+}
+static inline t_vec3 vec3_lerp(t_vec3 a, t_vec3 b, double t) {
+	return vec3_add(a, vec3_scale(vec3_sub(b, a), t));
+}
 
 #endif
