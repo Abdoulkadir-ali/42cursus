@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/04 17:46:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/07 21:38:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	main(int ac, char **av)
 	if (ac > 1)
 		path = av[1];
 	else
-		path = "maps/test2.rt";
+		path = "maps/rt/test2.rt";
 	scene = parse_file(path);
 	if (!scene)
 	{

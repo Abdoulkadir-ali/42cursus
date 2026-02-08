@@ -10,28 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "objects/fbx.h"
 #include "scene.h"
-#include "libft.h"
-#include <stdlib.h>
+#include <stdio.h>
 
 bool	parse_fbx(const char *path, t_scene *scene)
 {
-	t_skinned_mesh  mesh;
+	int		fd;
+	char	header[30];
+	ssize_t	ret;
 
-	// 1. Initialize empty
-	ft_memset(&mesh, 0, sizeof(t_skinned_mesh));
-	
-	// 2. Parse the file stub
-	mesh.base.name = ft_strdup(path);
-	// ... FBX parsing logic would go here ...
-	
-	// 3. Inject directly into scene
-	if (!scene_add_animated(scene, mesh))
-	{
-		free(mesh.base.name);
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
 		return (false);
+	ret = read(fd, header, 23);
+	close(fd);
+	if (ret >= 18 && ft_strncmp(header, "Kaydara FBX Binary", 18) == 0)
+	{
+		printf("FBX: Detected Binary Format for %s\n", path);
+		return (parse_fbx_binary(path, scene));
 	}
-	
-	return (true);
+	else
+	{
+		printf("FBX: Detected ASCII Format for %s\n", path);
+		return (parse_fbx_ascii(path, scene));
+	}
 }

@@ -13,19 +13,17 @@
 #ifndef FDF_H
 # define FDF_H
 
+# include "libft.h"
 # include "objects/objects.h"
 
 typedef struct s_heightmap
 {
-	double		**map;
-	int			width;
-	int			height;
-	t_vec3		rgb;
-}				t_heightmap;
+	double	**map;
+	int		width;
+	int		height;
+	t_vec3	rgb;
+}			t_heightmap;
 
-# include "libft.h"
-
-/* .fdf specific parsing prototypes */
-bool	parse_fdf(const char *path, t_scene *scene);
+bool		parse_fdf(const char *path, t_scene *scene);
 
 #endif

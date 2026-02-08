@@ -20,15 +20,15 @@ struct s_bvh;
 
 typedef struct s_vertex
 {
-	t_vec3	pos;
-	t_vec3	normal;
-	t_vec2	uv;
-}				t_vertex;
+	t_vec3			pos;
+	t_vec3			normal;
+	t_vec2			uv;
+}					t_vertex;
 
 typedef struct s_triangle
 {
-	int		indices[3];
-}				t_triangle;
+	int				indices[3];
+}					t_triangle;
 
 typedef struct s_mesh
 {
@@ -39,8 +39,9 @@ typedef struct s_mesh
 	int				*indices;
 	int				tri_count;
 	t_aabb			bbox;
+	t_transform		transform;
 	struct s_bvh	*internal_bvh;
 	int				mat_id;
-}				t_mesh;
+}					t_mesh;
 
 #endif

@@ -40,30 +40,28 @@ t_gui	*gui_init(t_scene *scene, t_bvh *bvh)
 	gui->camera = &scene->camera;
 	
 	// Set initial view parameters based on camera
-	// Assuming camera direction is normalized
-	t_vec3 f = gui->camera->forward;
-	gui->pitch = asin(f.y);
-	// atan2(y, x) -> standard map. For forward vector:
-	// If forward is (0,0,-1) (looking -Z), yaw ??
-	// We'll trust previous logic: atan2(-f.x, -f.z)
-	gui->yaw = atan2(-f.x, -f.z);
-	gui->pitch = asin(f.y);
+	t_vec3 f = gui->camera->transform.forward;
+	gui->rotation.yaw = atan2(f.x, f.z);
+	gui->rotation.pitch = asin(f.y);
 	
-	gui->target_yaw = gui->yaw;
-	gui->target_pitch = gui->pitch;
-	gui->target_position = gui->camera->pos;
+	gui->target_rotation = gui->rotation;
+	gui->target_position = gui->camera->transform.pos;
 	gui->target_fov = gui->camera->fov;
 	
 	gui->move_speed = 0.5;
 	gui->lerp_factor = 0.1;
+	gui->render_scale = 1;
 	gui->dirty = true;
 	gui->widgets = NULL;
 
+	gui_map_switcher_init(gui);
 	return (gui);
 }
 
 void	gui_destroy(t_gui *gui)
 {
+	int	i;
+
 	if (!gui)
 		return ;
 	if (gui->img)
@@ -76,6 +74,12 @@ void	gui_destroy(t_gui *gui)
 		// Standard minilibx-linux doesn't have a destroy_display usually,
 		// but let's stick to basics.
 		free(gui->mlx);
+	}
+	if (gui->maps)
+	{
+		for (i = 0; i < gui->map_count; i++)
+			free(gui->maps[i]);
+		free(gui->maps);
 	}
 	free(gui);
 }

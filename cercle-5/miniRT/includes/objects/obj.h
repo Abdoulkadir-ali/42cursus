@@ -19,7 +19,12 @@
 typedef struct s_ray	t_ray;
 typedef struct s_hit	t_hit;
 
-# include "libft.h"
+typedef struct s_mesh_build_item
+{
+	int index; // Triangle index
+	t_aabb			bbox;
+	t_vec3			centroid;
+}					t_mesh_build_item;
 
 /* Prototypes */
 bool	parse_obj(const char *path, t_scene *scene);

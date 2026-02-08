@@ -22,7 +22,7 @@ t_parse_obj	parse_sphere(char **tokens)
 	if (!tokens[1] || !tokens[2] || !tokens[3])
 		return (res);
 	
-	if (!parse_vec3_checked(tokens[1], &res.data.sphere.pos)
+	if (!parse_vec3_checked(tokens[1], &res.data.sphere.transform.pos)
 		|| !parse_float_checked(tokens[2], &diameter)
 		|| !parse_color_checked(tokens[3], &rgb))
 		return (res);

@@ -20,7 +20,7 @@ t_parse_obj	parse_light(char **tokens)
 	if (!tokens[1] || !tokens[2])
 		return (res);
 	
-	if (!parse_vec3_checked(tokens[1], &res.data.light.pos)
+	if (!parse_vec3_checked(tokens[1], &res.data.light.transform.pos)
 		|| !parse_float_checked(tokens[2], &res.data.light.brightness))
 		return (res);
 	
@@ -41,7 +41,6 @@ t_parse_obj	parse_light(char **tokens)
 t_parse_obj	parse_spot_light(char **tokens)
 {
 	t_parse_obj	res;
-	t_vec3		dir;
 	double		fov;
 
 	res.type = TYPE_NONE;
@@ -49,13 +48,13 @@ t_parse_obj	parse_spot_light(char **tokens)
 		return (res);
 	
 	res.data.light.type = LIGHT_SPOT;
-	if (!parse_vec3_checked(tokens[1], &res.data.light.pos)
-		|| !parse_vec3_checked(tokens[2], &dir)
+	if (!parse_vec3_checked(tokens[1], &res.data.light.transform.pos)
+		|| !parse_vec3_checked(tokens[2], &res.data.light.transform.forward)
 		|| !parse_float_checked(tokens[3], &res.data.light.brightness)
 		|| !parse_float_checked(tokens[4], &fov))
 		return (res);
 	
-	res.data.light.dir = vec3_norm(dir);
+	res.data.light.transform.forward = vec3_norm(res.data.light.transform.forward);
 	res.data.light.cutoff = cos((fov * M_PI / 180.0) / 2.0); // Half angle cosine
 
 	if (tokens[5])

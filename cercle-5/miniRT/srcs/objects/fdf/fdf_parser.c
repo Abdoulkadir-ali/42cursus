@@ -20,12 +20,11 @@ bool	parse_fdf(const char *path, t_scene *scene)
 {
 	t_mesh  mesh;
 
-	(void)path;
-	printf("Stub: parse_fdf called for %s\n", path);
+	printf("FDF Parser: Attempting to load heightmap from %s\n", path);
 	
 	// 1. Initialize empty
 	ft_memset(&mesh, 0, sizeof(t_mesh));
-	mesh.name = ft_strdup("fdf_mesh_placeholder");
+	mesh.name = ft_strdup(path);
 	
 	// 2. Inject directly into scene
 	if (!scene_add_mesh(scene, mesh))
@@ -33,6 +32,6 @@ bool	parse_fdf(const char *path, t_scene *scene)
 		free(mesh.name);
 		return (false);
 	}
-	
+	printf("FDF Parser: Successfully injected placeholder mesh for %s\n", path);
 	return (true);
 }

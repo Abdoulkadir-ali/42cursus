@@ -4,12 +4,12 @@ MINILIBX_DIR = packages/minilibx-linux
 MINILIBX    = $(MINILIBX_DIR)/libmlx.a
 LIBFT_DIR   = packages/libft
 LIBFT       = $(LIBFT_DIR)/libft.a
-LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lXext -lX11
+LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lXext -lX11 -lpthread
 
 
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -O3 -ffast-math -g3 -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER
+CFLAGS      = -Wall -Wextra -O3 -ffast-math -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER
 RM          = rm -f
 SRCS_DIR    = srcs
 OBJS_DIR    = objs

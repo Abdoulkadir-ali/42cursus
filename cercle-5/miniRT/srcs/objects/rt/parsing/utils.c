@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "objects/objects.h"
-#include "libft.h"
-#include <stdlib.h>
-#include <math.h>
 
 bool	parse_float_checked(const char *str, double *out)
 {
@@ -45,13 +42,38 @@ bool	parse_vec3_checked(char *str, t_vec3 *out)
 		free_split(tokens);
 		return (false);
 	}
-	res = parse_float_checked(tokens[0], &x)
-		&& parse_float_checked(tokens[1], &y)
-		&& parse_float_checked(tokens[2], &z);
+	res = parse_float_checked(tokens[0], &x) && parse_float_checked(tokens[1],
+			&y) && parse_float_checked(tokens[2], &z);
 	if (res)
 		*out = vec3(x, y, z);
 	free_split(tokens);
 	return (res);
+}
+
+t_parse_obj	parse_mesh_entry(char **tokens, t_type type)
+{
+	t_parse_obj	obj;
+
+	t_vec3 pos, scale, rot_vec;
+	obj.type = TYPE_NONE;
+	if (!tokens[1] || !tokens[2] || !tokens[3] || !tokens[4])
+		return (obj);
+	obj.type = type;
+	obj.data.mesh_info.path = ft_strdup(tokens[1]);
+	if (!parse_vec3_checked(tokens[2], &pos) || !parse_vec3_checked(tokens[3],
+			&scale) || !parse_vec3_checked(tokens[4], &rot_vec))
+	{
+		free(obj.data.mesh_info.path);
+		obj.type = TYPE_NONE;
+	}
+	else
+	{
+		obj.data.mesh_info.transform.pos = pos;
+		obj.data.mesh_info.transform.scale = scale;
+		obj.data.mesh_info.transform.rotation = (t_rotator){rot_vec.x,
+			rot_vec.y, rot_vec.z};
+	}
+	return (obj);
 }
 
 bool	parse_color_checked(char *str, t_vec3 *out)

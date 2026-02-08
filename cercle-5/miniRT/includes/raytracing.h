@@ -57,6 +57,7 @@ bool			intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref, t_hit *
 
 // BVH traversal
 bool			bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
+bool			bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t);
 
 // Ray tracing
 

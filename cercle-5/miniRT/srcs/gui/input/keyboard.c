@@ -12,13 +12,6 @@
 
 #include "gui.h"
 
-typedef struct s_key_action
-{
-	int				key;
-	void			(*press_action)(t_gui *gui);
-	void			(*release_action)(t_gui *gui);
-}					t_key_action;
-
 // Action functions
 static void	move_forward_press(t_gui *gui)
 {
@@ -118,16 +111,21 @@ static void	zoom_out_release(t_gui *gui)
 
 static void	speed_up_press(t_gui *gui)
 {
-	gui->move_speed += 0.01;
-	if (gui->move_speed > 2.0)
-		gui->move_speed = 2.0;
+	gui->move_speed += 0.1;
+	if (gui->move_speed > 10.0)
+		gui->move_speed = 10.0;
 }
 
 static void	speed_down_press(t_gui *gui)
 {
-	gui->move_speed -= 0.01;
-	if (gui->move_speed < 0.001)
-		gui->move_speed = 0.001;
+	gui->move_speed -= 0.1;
+	if (gui->move_speed < 0.1)
+		gui->move_speed = 0.1;
+}
+
+static void	map_next_press(t_gui *gui)
+{
+	gui_next_map(gui);
 }
 
 static void	exit_press(t_gui *gui)
@@ -138,9 +136,12 @@ static void	exit_press(t_gui *gui)
 // Keymap
 static t_key_action	keymap[] = {
 	{XK_w, move_forward_press, move_forward_release},
+	{XK_z, move_forward_press, move_forward_release}, // AZERTY Forward
 	{XK_s, move_backward_press, move_backward_release},
 	{XK_a, move_left_press, move_left_release},
+	{XK_q, move_left_press, move_left_release},       // AZERTY Left
 	{XK_d, move_right_press, move_right_release},
+	{XK_n, map_next_press, NULL},                     // Next Map
 	{XK_Up, speed_up_press, NULL},
 	{XK_Down, speed_down_press, NULL},
 	{XK_Left, move_left_press, move_left_release},

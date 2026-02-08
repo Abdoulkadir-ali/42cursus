@@ -20,8 +20,8 @@ static t_aabb	sphere_aabb(t_sphere *sp)
 	double	r;
 
 	r = sqrt(sp->radius_sq);
-	bbox.min = vec3_sub(sp->pos, vec3(r, r, r));
-	bbox.max = vec3_add(sp->pos, vec3(r, r, r));
+	bbox.min = vec3_sub(sp->transform.pos, vec3(r, r, r));
+	bbox.max = vec3_add(sp->transform.pos, vec3(r, r, r));
 	return (bbox);
 }
 
@@ -42,14 +42,26 @@ static t_aabb	plane_aabb(t_plane *pl)
 static t_aabb	cylinder_aabb(t_cylinder *cy)
 {
 	t_aabb	bbox;
-	double	r = cy->radius;
-	double	h = cy->height;
+	double	r = cy->transform.scale.x;
+	double	h = cy->transform.scale.y;
 
 	// Simplistic axis-aligned bounding box for cylinder (assumes axis aligned for now, 
 	// or just a conservative box)
 	// Real bounding box would involve the axis rotation.
-	bbox.min = vec3_sub(cy->pos, vec3(r, h, r));
-	bbox.max = vec3_add(cy->pos, vec3(r, h, r));
+	bbox.min = vec3_sub(cy->transform.pos, vec3(r, h, r));
+	bbox.max = vec3_add(cy->transform.pos, vec3(r, h, r));
+	return (bbox);
+}
+
+static t_aabb	cone_aabb(t_cone *co)
+{
+	t_aabb	bbox;
+	double	r = co->transform.scale.x;
+	double	h = co->transform.scale.y;
+
+	// Conservatively same as cylinder for now
+	bbox.min = vec3_sub(co->transform.pos, vec3(r, h, r));
+	bbox.max = vec3_add(co->transform.pos, vec3(r, h, r));
 	return (bbox);
 }
 
@@ -61,6 +73,8 @@ t_aabb	aabb_from_ref(t_scene *scene, t_bvh_ref ref)
 		return (plane_aabb(&scene->planes[ref.index]));
 	if (ref.type == TYPE_CYLINDER)
 		return (cylinder_aabb(&scene->cylinders[ref.index]));
+	if (ref.type == TYPE_CONE)
+		return (cone_aabb(&scene->cones[ref.index]));
 	if (ref.type == TYPE_MESH)
 		return (scene->meshes[ref.index].bbox);
 	if (ref.type == TYPE_ANIM)

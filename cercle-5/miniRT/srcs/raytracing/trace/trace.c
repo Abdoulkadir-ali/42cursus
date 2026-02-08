@@ -43,7 +43,7 @@ bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit)
 	t_vec3	center;
 	double	a, b, c, t, t1, t2;
 
-	center = sp->pos;
+	center = sp->transform.pos;
 	t_vec3 oc = vec3_sub(ray->origin, center);
 	a = vec3_dot(ray->direction, ray->direction);
 	b = 2.0 * vec3_dot(oc, ray->direction);
@@ -103,8 +103,8 @@ bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
 	t_vec3	point, normal;
 	double	denom, t;
 
-	normal = pl->normal;
-	point = pl->pos;
+	normal = pl->transform.forward;
+	point = pl->transform.pos;
 	denom = vec3_dot(normal, ray->direction);
 	if (fabs(denom) < 1e-6)
 		return (false);
@@ -118,7 +118,7 @@ bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
 		hit->normal = vec3_scale(normal, -1.0);
 	
 	// Plane UV
-	get_plane_uv(hit->point, pl->normal, &hit->u, &hit->v, &hit->tangent, &hit->bitangent);
+	get_plane_uv(hit->point, pl->transform.forward, &hit->u, &hit->v, &hit->tangent, &hit->bitangent);
 
 	return (true);
 }
@@ -128,10 +128,10 @@ bool	intersect_cone(const t_ray *ray, t_cone *co, t_hit *hit);
 bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit)
 {
 	// Keep cylinder logic for now, but ensure it's consistent
-	t_vec3	center = cy->pos;
-	t_vec3	axis = cy->axis;
-	double	radius = cy->radius;
-	double	height = cy->height;
+	t_vec3	center = cy->transform.pos;
+	t_vec3	axis = cy->transform.forward;
+	double	radius = cy->transform.scale.x;
+	double	height = cy->transform.scale.y;
 	t_vec3	oc = vec3_sub(ray->origin, center);
 	
 	double	a = vec3_dot(ray->direction, ray->direction) - pow(vec3_dot(ray->direction, axis), 2);
@@ -361,6 +361,44 @@ static void	bvh_traverse(const t_bvh *bvh, const t_bvh_node *node, const t_ray *
 			}
 		}
 	}
+}
+
+static bool	traverse_occluded(const t_bvh *bvh, const t_bvh_node *node, const t_ray *ray, double max_t)
+{
+	double	tmin, tmax;
+	t_hit	temp = {0};
+
+	if (!node)
+		return (false);
+	if (!aabb_ray_intersect(&node->bbox, ray, &tmin, &tmax) || tmax < 0 || tmin > max_t)
+		return (false);
+	
+	if (node->left || node->right)
+	{
+		if (traverse_occluded(bvh, node->left, ray, max_t))
+			return (true);
+		if (traverse_occluded(bvh, node->right, ray, max_t))
+			return (true);
+	}
+	else
+	{
+		for (size_t i = 0; i < node->num_refs; ++i)
+		{
+			if (intersect_object(ray, bvh->scene, node->refs[i], &temp))
+			{
+				if (temp.t > 1e-4 && temp.t < max_t)
+					return (true);
+			}
+		}
+	}
+	return (false);
+}
+
+bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
+{
+	if (!bvh || !bvh->root)
+		return (false);
+	return (traverse_occluded(bvh, bvh->root, ray, max_t));
 }
 
 bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
