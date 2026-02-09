@@ -12,129 +12,157 @@
 #ifndef GUI_H
 # define GUI_H
 
+/* 1. EXTERNAL DEPENDENCIES */
 # include "libft.h"
 # include "maths.h"
 # include "mlx.h"
-# include "raytracing.h"
+# include "types.h"
 # include <X11/X.h>
 # include <X11/keysym.h>
 # include <dirent.h>
 # include <pthread.h>
+# include <stdbool.h>
 # include <stdio.h>
-#include <sys/time.h>
+# include <sys/time.h>
 
+/* 2. CONSTANTS */
 # define THREAD_COUNT 12
 # define TILE_SIZE 16
-
 # define ZOOM_SPEED 2.0
 # define MOUSE_SENSITIVITY 0.005
 
-typedef struct s_gui t_gui;
-
-typedef struct s_render_ctx
+/* 3. MODULE TYPES */
+struct					s_camera_controller
 {
-	t_gui			*gui;
-	// Synchronization
-	pthread_mutex_t	mutex;
-	int				next_tile_id;
-	int				total_tiles;
-	int				tiles_x;
+	t_camera			*camera;
+	t_transform			transform;
+	t_vec3				target_pos;
+	t_rotator			target_rot;
+	double				target_fov;
+	double				move_speed;
+	double				lerp_factor;
+	bool				moving_forward;
+	bool				moving_backward;
+	bool				moving_left;
+	bool				moving_right;
+	bool				moving_up;
+	bool				moving_down;
+	bool				zooming_in;
+	bool				zooming_out;
+	bool				mouse_left_pressed;
+	bool				mouse_middle_pressed;
+	int					last_mouse_x;
+	int					last_mouse_y;
+};
 
-	// Pre-calculated camera data (read-only for threads)
-	t_vec3			cam_pos;
-	t_vec3 forward, right, up;
-	double half_width, half_height, aspect_ratio;
-	int				step;
-}					t_render_ctx;
-
-typedef struct s_gui
+struct					s_render_ctx
 {
-	void			*mlx;
-	void			*win;
-	void			*img;
-	char			*addr;
-	int				bits_per_pixel;
-	int				line_length;
-	int				endian;
-	int				width;
-	int				height;
-	t_scene			*scene;
-	t_bvh			*bvh;
-	t_camera *camera; // Updated from t_object *
+	t_gui				*gui;
+	pthread_mutex_t		mutex;
+	int					next_tile_id;
+	int					total_tiles;
+	int					tiles_x;
+	t_transform			transform;
+	double				half_width;
+	double				half_height;
+	double				aspect_ratio;
+	int					step;
+};
 
-	// Camera Control State
-	t_rotator		rotation;
-	t_rotator		target_rotation;
-	t_vec3			target_position;
-	double			target_fov;
-	double			move_speed;
-	double			lerp_factor;
-	int render_scale; // 1 for full, 2/4 for low res
-	bool dirty;       // Frame needs update
+/* Sub-structs for t_gui */
+typedef struct s_window
+{
+	void				*mlx;
+	void				*win;
+	void				*img;
+	char				*addr;
+	int					bpp;
+	int					line_len;
+	int					endian;
+	int					width;
+	int					height;
+}						t_window;
 
-	// Input State
-	int				move_forward_count;
-	bool			moving_forward;
-	int				move_backward_count;
-	bool			moving_backward;
-	int				move_left_count;
-	bool			moving_left;
-	int				move_right_count;
-	bool			moving_right;
-	int				move_up_count;
-	bool			moving_up;
-	int				move_down_count;
-	bool			moving_down;
+typedef struct s_render_state
+{
+	int					scale;
+	bool				dirty;
+	double				fps;
+	long long			last_time;
+}						t_render_state;
 
-	int				zoom_in_count;
-	bool			zooming_in;
-	int				zoom_out_count;
-	bool			zooming_out;
+typedef struct s_input_ctxs
+{
+	int					mouse_x;
+	int					mouse_y;
+}						t_input_ctx;
 
-	bool			mouse_left_pressed;
-	bool			mouse_middle_pressed;
-	int				last_mouse_x;
-	int				last_mouse_y;
+struct					s_map
+{
+	char				**files;
+	int					count;
+	int					current_idx;
+};
 
-	// Timing & FPS
-	double			fps;
-	long long		last_time;
-
-	// Hovering
-	int				mouse_x;
-	int				mouse_y;
-
-	// Map Switcher
-	char			**maps;
-	int				map_count;
-	int				current_map_idx;
-
-	void			*widgets;
-}					t_gui;
+struct					s_gui
+{
+	t_window			win;
+	t_scene				*scene;
+	t_bvh				*bvh;
+	t_camera_controller	cam_ctrl;
+	t_render_state		render;
+	t_input_ctx			input;
+	t_map				map_info;
+	void				*widgets;
+};
 
 typedef struct s_key_action
 {
-	int				key;
-	void			(*press_action)(t_gui *gui);
-	void			(*release_action)(t_gui *gui);
-}					t_key_action;
+	int					key;
+	void				(*press_action)(t_gui *gui);
+	void				(*release_action)(t_gui *gui);
+}						t_key_action;
 
+/* 4. FUNCTION PROTOTYPES */
 
-t_gui				*gui_init(t_scene *scene, t_bvh *bvh);
-void				gui_loop(t_gui *gui);
-void				gui_render(t_gui *gui);
-void				gui_destroy(t_gui *gui);
-void				widget_list_draw(void *widgets, t_gui *gui);
+/* srcs/gui/init.c */
+t_gui					*gui_init(t_scene *scene, t_bvh *bvh);
+void					gui_destroy(t_gui *gui);
 
-// Map Switcher
-void				gui_map_switcher_init(t_gui *gui);
-void				gui_next_map(t_gui *gui);
+/* srcs/gui/loop.c */
+void					gui_loop(t_gui *gui);
 
-// Input Callbacks
-int					key_press(int keycode, t_gui *gui);
-int					key_release(int keycode, t_gui *gui);
-int					mouse_click(int button, int x, int y, t_gui *gui);
-int					mouse_release(int button, int x, int y, t_gui *gui);
-int					mouse_motion(int x, int y, t_gui *gui);
+/* srcs/gui/render.c */
+void					gui_render(t_gui *gui);
+
+/* srcs/gui/map_switcher.c */
+void					gui_map_switcher_init(t_gui *gui);
+void					gui_next_map(t_gui *gui);
+
+/* srcs/gui/input/ */
+int						key_press(int keycode, t_gui *gui);
+int						key_release(int keycode, t_gui *gui);
+int						mouse_click(int button, int x, int y, t_gui *gui);
+int						mouse_release(int button, int x, int y, t_gui *gui);
+int						mouse_motion(int x, int y, t_gui *gui);
+
+/* srcs/gui/camera/ */
+void					camera_move_forward(t_camera *camera, double speed);
+void					camera_move_backward(t_camera *camera, double speed);
+void					camera_move_left(t_camera *camera, double speed);
+void					camera_move_right(t_camera *camera, double speed);
+void					camera_move_up(t_camera *camera, double speed);
+void					camera_move_down(t_camera *camera, double speed);
+void					camera_rotate_yaw(t_gui *gui, double delta_yaw);
+void					camera_rotate_pitch(t_gui *gui, double delta_pitch);
+
+/* 5. IMPLEMENTATION IMPORTS */
+# include "bvh.h"
+# include "raytracing.h"
+# include "scene.h"
+
+/* Window Management */
+int						gui_window_resize(int width, int height, t_gui *gui);
+int						gui_window_close(t_gui *gui);
 
 #endif

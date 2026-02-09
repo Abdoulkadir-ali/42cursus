@@ -6,16 +6,50 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/07 21:38:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 13:55:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
-#include "bvh.h"
-#include "gui.h"
-#include <stdio.h>
 
+/*
+** Cleans up all resources.
+*/
+static void	cleanup(t_scene *scene, t_bvh *bvh, t_gui *gui)
+{
+	if (gui)
+		gui_destroy(gui);
+	if (bvh)
+		bvh_destroy(bvh);
+	if (scene)
+		destroy_scene(scene);
+}
 
+/*
+** Initializes the application components.
+** Loads the scene, builds the BVH, and initializes the GUI.
+*/
+static t_gui	*init_app(const char *path, t_scene **scene, t_bvh **bvh)
+{
+	*scene = parse_file(path);
+	if (!*scene)
+	{
+		fprintf(stderr, "Failed to load scene: %s\n", path);
+		return (NULL);
+	}
+	*bvh = bvh_create(*scene);
+	if (!*bvh)
+	{
+		fprintf(stderr, "Failed to create BVH\n");
+		return (NULL);
+	}
+	return (gui_init(*scene, *bvh));
+}
+
+/*
+** Main entry point.
+** Parses arguments, initializes the application, and runs the GUI loop.
+*/
 int	main(int ac, char **av)
 {
 	const char	*path;
@@ -23,38 +57,19 @@ int	main(int ac, char **av)
 	t_bvh		*bvh;
 	t_gui		*gui;
 
+	path = "maps/rt/test2.rt";
 	if (ac > 1)
 		path = av[1];
-	else
-		path = "maps/rt/test2.rt";
-	scene = parse_file(path);
-	if (!scene)
-	{
-		fprintf(stderr, "Failed to load scene: %s\n", path);
-		return (1);
-	}
-	bvh = bvh_create(scene);
-	if (!bvh)
-	{
-		fprintf(stderr, "Failed to create BVH\n");
-		destroy_scene(scene);
-		return (1);
-	}
-
-	gui = gui_init(scene, bvh);
+	scene = NULL;
+	bvh = NULL;
+	gui = init_app(path, &scene, &bvh);
 	if (!gui)
 	{
 		fprintf(stderr, "Failed to initialize GUI\n");
-		bvh_destroy(bvh);
-		destroy_scene(scene);
+		cleanup(scene, bvh, NULL);
 		return (1);
 	}
-
-	// gui_render(gui); // Removed to allow loop to handle it (Non-blocking)
 	gui_loop(gui);
-
-	gui_destroy(gui);
-	bvh_destroy(bvh);
-	destroy_scene(scene);
+	cleanup(scene, bvh, gui);
 	return (0);
 }

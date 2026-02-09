@@ -6,124 +6,110 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 05:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 15:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-static bool	solve_quadratic(float a, float b, float c, float *t0, float *t1)
+/*
+** Calculates UV coordinates and tangent space for a cone.
+*/
+static void	get_cone_uv(t_hit *hit, t_cone *cone, t_vec3 radial, double h)
 {
-	float	disc;
-	float	q;
+	t_vec3	u_ax;
+	t_vec3	v_ax;
+	double	u_v[2];
 
-	disc = b * b - 4 * a * c;
-	if (disc < 0)
-		return (false);
-	if (b < 0)
-		q = -0.5 * (b - sqrt(disc));
+	if (fabs(cone->transform.forward.y) > 0.9)
+		u_ax = vec3(1, 0, 0);
 	else
-		q = -0.5 * (b + sqrt(disc));
-	*t0 = q / a;
-	*t1 = c / q;
-	if (*t0 > *t1)
+		u_ax = vec3(0, 1, 0);
+	v_ax = vec3_norm(vec3_cross(cone->transform.forward, u_ax));
+	u_ax = vec3_norm(vec3_cross(v_ax, cone->transform.forward));
+	u_v[0] = vec3_dot(radial, u_ax);
+	u_v[1] = vec3_dot(radial, v_ax);
+	hit->u = (atan2(u_v[1], u_v[0]) + M_PI) / (2 * M_PI);
+	hit->v = h / cone->transform.scale.y;
+	hit->tangent = vec3_norm(vec3_cross(hit->normal, cone->transform.forward));
+	hit->bitangent = vec3_norm(vec3_cross(hit->normal, hit->tangent));
+}
+
+/*
+** Fills the hit record with point, normal, and UV data for a cone intersection.
+*/
+static void	fill_hit_record(t_hit *hit, const t_ray *ray, t_cone *cone,
+		double t)
+{
+	t_vec3	temp;
+	double	scale;
+	double	k;
+	double	h;
+	t_vec3	center_h;
+
+	hit->t = t;
+	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
+	k = cone->transform.scale.x / cone->transform.scale.y;
+	temp = vec3_sub(hit->point, cone->transform.pos);
+	scale = (1 + k * k) * vec3_dot(temp, cone->transform.forward);
+	hit->normal = vec3_norm(vec3_sub(temp,
+				vec3_scale(cone->transform.forward, scale)));
+	h = vec3_dot(temp, cone->transform.forward);
+	center_h = vec3_add(cone->transform.pos,
+			vec3_scale(cone->transform.forward, h));
+	get_cone_uv(hit, cone, vec3_sub(hit->point, center_h), h);
+	if (vec3_dot(hit->normal, ray->direction) > 0)
+		hit->normal = vec3_scale(hit->normal, -1);
+}
+
+/*
+** Solves the quadratic equation for ray-cone intersection.
+*/
+static bool	check_cone_body(const t_ray *ray, t_cone *cone,
+		double *t, double y_cutoff)
+{
+	t_vec3	oc;
+	double	m;
+	double	cf[3];
+	double	rt[2];
+	double	v[2];
+
+	oc = vec3_sub(ray->origin, cone->transform.pos);
+	m = pow(cone->transform.scale.x / cone->transform.scale.y, 2);
+	v[0] = vec3_dot(ray->direction, cone->transform.forward);
+	v[1] = vec3_dot(oc, cone->transform.forward);
+	cf[0] = vec3_dot(ray->direction, ray->direction) - (1 + m)
+		* v[0] * v[0];
+	cf[1] = 2 * (vec3_dot(ray->direction, oc) - (1 + m) * v[0] * v[1]);
+	cf[2] = vec3_dot(oc, oc) - (1 + m) * v[1] * v[1];
+	if (!solve_quadratic(cf[0], cf[1], cf[2], &rt[0], &rt[1]))
+		return (false);
+	*t = rt[0];
+	if (!(*t > EPSILON && (v[1] + *t * v[0]) >= 0
+			&& (v[1] + *t * v[0]) <= y_cutoff))
 	{
-		float temp = *t0;
-		*t0 = *t1;
-		*t1 = temp;
+		*t = rt[1];
+		if (!(*t > EPSILON && (v[1] + *t * v[0]) >= 0
+				&& (v[1] + *t * v[0]) <= y_cutoff))
+			return (false);
 	}
 	return (true);
 }
 
-// Intersect strict cone (without base cap yet)
-// Equation: (P - C) . A = |P - C| * cos(theta)
-// Infinite Cone: (D.A)^2 - cos^2(theta) = 0 logic...
-// Let's use standard algebraic cone intersection
-// x^2 + z^2 = y^2 * (r/h)^2
+/*
+** Main entry point for ray-cone intersection.
+*/
 bool	intersect_cone(const t_ray *ray, t_cone *cone, t_hit *hit)
 {
-	t_vec3	oc = vec3_sub(ray->origin, cone->transform.pos);
-	float	m = (cone->transform.scale.x * cone->transform.scale.x) / (cone->transform.scale.y * cone->transform.scale.y);
-	
-	// A = D.x^2 + D.z^2 - m * D.y^2
-	// But arbitrarily oriented... 
-	// Let's project ray to local space or use vector math
-	
-	float	dd = vec3_dot(ray->direction, cone->transform.forward);
-	float	od = vec3_dot(oc, cone->transform.forward);
-	
-	float	a = vec3_dot(ray->direction, ray->direction) - (1 + m) * dd * dd;
-	float	b = 2 * (vec3_dot(ray->direction, oc) - (1 + m) * dd * od);
-	float	c = vec3_dot(oc, oc) - (1 + m) * od * od;
-	
-	float t0, t1;
-	if (!solve_quadratic(a, b, c, &t0, &t1))
-		return (false);
+	double	t;
 
-	// Check bounds (0 <= y <= height)
-	// y = (P - C) . A
-	float t = t0;
-	float y = od + t * dd;
-	bool found = false;
-
-	if (t > 0.001 && y >= 0 && y <= cone->transform.scale.y)
-		found = true;
-	else
+	if (check_cone_body(ray, cone, &t, cone->transform.scale.y))
 	{
-		t = t1;
-		y = od + t * dd;
-		if (t > 0.001 && y >= 0 && y <= cone->transform.scale.y)
-			found = true;
-		else
-			return (false); // Simplistic, missing cap for now
-	}
-
-	if (found && t < hit->t)
-	{
-		hit->t = t;
-		hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
-		
-		float k = cone->transform.scale.x / cone->transform.scale.y;
-		// The generic normal for point P on cone surface:
-		// N = P - C - (1 + k^2) * ((P-C).A) * A
-		
-		t_vec3 temp = vec3_sub(hit->point, cone->transform.pos);
-		float scale = (1 + k*k) * vec3_dot(temp, cone->transform.forward);
-		hit->normal = vec3_norm(vec3_sub(temp, vec3_scale(cone->transform.forward, scale)));
-		
-		// Cone UV
-		// Use same logic as cylinder for theta, but v uses height
-		t_vec3	u_ax, v_ax;
-		if (fabs(cone->transform.forward.y) > 0.9) u_ax = vec3(1, 0, 0);
-		else u_ax = vec3(0, 1, 0);
-		v_ax = vec3_norm(vec3_cross(cone->transform.forward, u_ax));
-		u_ax = vec3_norm(vec3_cross(v_ax, cone->transform.forward));
-		
-		// Project P-C onto cross section
-		// h = (P-C).A
-		// C_center = C + h*A
-		// Radial = P - C_center
-		// u is angle of Radial
-		
-		float h = vec3_dot(temp, cone->transform.forward);
-		t_vec3 center_h = vec3_add(cone->transform.pos, vec3_scale(cone->transform.forward, h));
-		t_vec3 radial = vec3_sub(hit->point, center_h);
-		
-		double u_val = vec3_dot(radial, u_ax);
-		double v_val = vec3_dot(radial, v_ax);
-		hit->u = (atan2(v_val, u_val) + M_PI) / (2 * M_PI);
-		hit->v = h / cone->transform.scale.y;
-
-		// Tangents
-		// Similar to cylinder, tangent is across flow
-		hit->tangent = vec3_norm(vec3_cross(hit->normal, cone->transform.forward));
-		hit->bitangent = vec3_norm(vec3_cross(hit->normal, hit->tangent));
-		
-		// Base cap intersection check would go here later
-		
-		if (vec3_dot(hit->normal, ray->direction) > 0)
-			hit->normal = vec3_scale(hit->normal, -1);
-		return (true);
+		if (t < hit->t)
+		{
+			fill_hit_record(hit, ray, cone, t);
+			return (true);
+		}
 	}
 	return (false);
 }
-

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 13:16:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 14:10:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,5 +258,9 @@ static inline t_mat4	mat4_add(t_mat4 a, t_mat4 b)
 			res.m[i][j] = a.m[i][j] + b.m[i][j];
 	return (res);
 }
+
+/* Roots */
+bool					solve_quadratic(double a, double b, double c,
+							double *t1, double *t2);
 
 #endif

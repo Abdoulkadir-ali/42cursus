@@ -6,25 +6,37 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/07 21:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 14:19:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCENE_H
 # define SCENE_H
 
-# include "objects/objects.h"
-# include "objects/mesh.h"
-# include "objects/fbx.h"
+/* 1. EXTERNAL DEPENDENCIES */
+# include "libft.h"
+# include "maths.h"
+# include "objects.h"
+# include "types.h"
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
 
-// Forward declaration of BVH
-struct s_bvh_node;
+# define INIT_SPHERE_CAP 16
+# define INIT_PLANE_CAP 16
+# define INIT_MESH_CAP 8
+# define INIT_ANIM_CAP 4
+# define INIT_MAT_CAP 32
+# define INIT_LIGHT_CAP 8
+# define INIT_CYL_CAP 16
 
-typedef struct s_scene
+/* 2. MODULE TYPES */
+
+struct				s_scene
 {
 	char			*name;
-	
-	// 1. Memory Pools (Contiguous Data - Hybrid Data-Oriented)
+
+	/* Memory Pools */
 	t_sphere		*spheres;
 	int				sphere_count;
 	int				sphere_cap;
@@ -41,11 +53,11 @@ typedef struct s_scene
 	int				cone_count;
 	int				cone_cap;
 
-	t_mesh			*meshes;       // Stores both OBJ and FDF results
+	t_mesh			*meshes;
 	int				mesh_count;
 	int				mesh_cap;
 
-	t_skinned_mesh	*animated;     // Stores FBX/GLB
+	t_skinned_mesh	*animated;
 	int				anim_count;
 	int				anim_cap;
 
@@ -53,33 +65,38 @@ typedef struct s_scene
 	int				mat_count;
 	int				mat_cap;
 
-	// 2. Global Resources
+	/* Global Resources */
 	t_ambient		ambient;
 	t_camera		camera;
 	t_light			*lights;
 	int				light_count;
 	int				light_cap;
 
+	/* The Accelerator */
+	t_bvh_node		*top_level_bvh;
+};
 
-	// 3. The Accelerator (The Map)
-	struct s_bvh_node	*top_level_bvh;
-}				t_scene;
+/* 3. FUNCTION PROTOTYPES */
 
-t_scene			*create_scene(const char *name);
-void			destroy_scene(t_scene *scene);
+/* srcs/scene/ */
+t_scene				*create_scene(const char *name);
+void				destroy_scene(t_scene *scene);
 
-/* Specialized Scene Adders (Direct Injection) */
-int				scene_add_material(t_scene *scene, t_vec3 color);
-bool			scene_add_sphere(t_scene *scene, t_sphere sphere);
-bool			scene_add_plane(t_scene *scene, t_plane plane);
-bool			scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
-bool			scene_add_cone(t_scene *scene, t_cone cone);
-bool			scene_add_mesh(t_scene *scene, t_mesh mesh);
-bool			scene_add_animated(t_scene *scene, t_skinned_mesh animated);
-bool			scene_add_light(t_scene *scene, t_light light);
+/* srcs/scene/add.c (Specialized Adders) */
+int					scene_add_material(t_scene *scene, t_vec3 color);
+bool				scene_add_sphere(t_scene *scene, t_sphere sphere);
+bool				scene_add_plane(t_scene *scene, t_plane plane);
+bool				scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
+bool				scene_add_cone(t_scene *scene, t_cone cone);
+bool				scene_add_mesh(t_scene *scene, t_mesh mesh);
+bool				scene_add_animated(t_scene *scene, t_skinned_mesh animated);
+bool				scene_add_light(t_scene *scene, t_light light);
 
-/* Global Parser Selector */
-t_scene			*parse_file(const char *path);
+/* srcs/objects/rt/parsing/ (Global Selector) */
+t_scene				*parse_file(const char *path);
+
+/* 4. IMPLEMENTATION IMPORTS */
+# include "bvh.h"
+# include "gui.h"
 
 #endif
-

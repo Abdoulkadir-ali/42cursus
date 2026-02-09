@@ -12,8 +12,13 @@
 #ifndef MATERIAL_H
 # define MATERIAL_H
 
+/* 1. EXTERNAL DEPENDENCIES */
 # include "maths.h"
 
+/* 2. FORWARD DECLARATIONS & TYPES */
+# include "types.h"
+
+/* 3. MODULE TYPES */
 typedef enum e_tex_type
 {
 	TEX_SOLID,
@@ -39,9 +44,9 @@ typedef struct s_texture
 
 typedef struct s_material
 {
-	t_texture	albedo_map; // Replaces t_vec3 albedo
-	t_texture	bump_map;   // Optional bump texture
-	
+	t_texture albedo_map; // Replaces t_vec3 albedo
+	t_texture bump_map;   // Optional bump texture
+
 	double		specular;
 	double		shininess;
 	double		metallic;
@@ -52,11 +57,12 @@ typedef struct s_material
 	double		reflectivity;
 }				t_material;
 
-t_material	*create_material(t_vec3 albedo, double metallic, double roughness,
-				t_vec3 emission, double refract_index, double transparency,
-				double reflectivity);
+/* 4. FUNCTION PROTOTYPES */
+t_material		*create_material(t_vec3 albedo, double metallic,
+					double roughness, t_vec3 emission, double refract_index,
+					double transparency, double reflectivity);
 
 // Texture functions
-t_vec3		sample_texture(t_texture *tex, double u, double v);
+t_vec3			sample_texture(t_texture *tex, double u, double v);
 
 #endif
