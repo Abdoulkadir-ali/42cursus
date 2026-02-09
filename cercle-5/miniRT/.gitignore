@@ -1,5 +1,36 @@
+#Packages
 packages/minilibx-linux
 maps/
 objs/
 digest.txt
 *.txt
+
+# Compilation
+objs/
+*.o
+*.d
+
+# Binaries
+minishell
+a.out
+
+# Libraries
+*.a
+packages/libft/libft.a
+
+# Editor directories
+.vscode/
+.idea/
+.settings/
+*.swp
+*~
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Misc
+digest.txt
+subjects/
+*.log
+valgrind-out.txt

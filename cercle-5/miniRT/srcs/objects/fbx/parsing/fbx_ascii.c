@@ -57,11 +57,6 @@ static t_vec3	*parse_vec3(int fd, int *count)
 		return (NULL);
 	while ((line = get_next_line(fd)))
 	{
-		if (ft_strchr(line, '}'))
-		{
-			free(line);
-			break ;
-		}
 		p = line;
 		while (*p)
 		{
@@ -86,6 +81,13 @@ static t_vec3	*parse_vec3(int fd, int *count)
 			p = fbx_next(p);
 			arr[i].z = strtod(p, &p);
 			i++;
+			if (*p)
+				p++;
+		}
+		if (ft_strchr(line, '}'))
+		{
+			free(line);
+			break ;
 		}
 		free(line);
 	}
@@ -109,11 +111,6 @@ static t_vec2	*parse_vec2(int fd, int *count)
 		return (NULL);
 	while ((line = get_next_line(fd)))
 	{
-		if (ft_strchr(line, '}'))
-		{
-			free(line);
-			break ;
-		}
 		p = line;
 		while (*p)
 		{
@@ -136,6 +133,13 @@ static t_vec2	*parse_vec2(int fd, int *count)
 			p = fbx_next(p);
 			arr[i].y = strtod(p, &p);
 			i++;
+			if (*p)
+				p++;
+		}
+		if (ft_strchr(line, '}'))
+		{
+			free(line);
+			break ;
 		}
 		free(line);
 	}
@@ -159,11 +163,6 @@ static int	*parse_indices(int fd, int *count)
 		return (NULL);
 	while ((line = get_next_line(fd)))
 	{
-		if (ft_strchr(line, '}'))
-		{
-			free(line);
-			break ;
-		}
 		p = line;
 		while (*p)
 		{
@@ -187,6 +186,13 @@ static int	*parse_indices(int fd, int *count)
 				p++;
 			while (ft_isdigit(*p))
 				p++;
+			if (*p)
+				p++;
+		}
+		if (ft_strchr(line, '}'))
+		{
+			free(line);
+			break ;
 		}
 		free(line);
 	}
@@ -194,7 +200,8 @@ static int	*parse_indices(int fd, int *count)
 	return (arr);
 }
 
-static void	build_flat(t_mesh *m, int *raw, int raw_c, t_vec3 *n, t_vec2 *u)
+static void	build_flat(t_mesh *m, int *raw, int raw_c, \
+	t_vec3 *n, int nc, t_vec2 *u, int uc)
 {
 	t_vec2	*nu;
 	t_vec3	*nv;
@@ -209,6 +216,8 @@ static void	build_flat(t_mesh *m, int *raw, int raw_c, t_vec3 *n, t_vec2 *u)
 	int		*ni;
 	int		v[64];
 	int		tc;
+	int		use_v_n;
+	int		use_v_u;
 
 	ps = 0;
 	vp = 0;
@@ -237,6 +246,8 @@ static void	build_flat(t_mesh *m, int *raw, int raw_c, t_vec3 *n, t_vec2 *u)
 	ni = malloc(sizeof(int) * tc * 3);
 	if (!nv || !ni || (n && !nn) || (u && !nu))
 		return ;
+	use_v_n = (n && nc > 0 && nc < tc * 3);
+	use_v_u = (u && uc > 0 && uc < tc * 3);
 	ps = 0;
 	while (ps < raw_c)
 	{
@@ -254,23 +265,23 @@ static void	build_flat(t_mesh *m, int *raw, int raw_c, t_vec3 *n, t_vec2 *u)
 		{
 			nv[vp] = m->vertices[v[0]];
 			if (nn)
-				nn[vp] = n[si + 0];
+				nn[vp] = use_v_n ? n[v[0] % nc] : n[(si + 0) % nc];
 			if (nu)
-				nu[vp] = u[si + 0];
+				nu[vp] = use_v_u ? u[v[0] % uc] : u[(si + 0) % uc];
 			ni[vp] = vp;
 			vp++;
 			nv[vp] = m->vertices[v[i]];
 			if (nn)
-				nn[vp] = n[si + i];
+				nn[vp] = use_v_n ? n[v[i] % nc] : n[(si + i) % nc];
 			if (nu)
-				nu[vp] = u[si + i];
+				nu[vp] = use_v_u ? u[v[i] % uc] : u[(si + i) % uc];
 			ni[vp] = vp;
 			vp++;
 			nv[vp] = m->vertices[v[i + 1]];
 			if (nn)
-				nn[vp] = n[si + i + 1];
+				nn[vp] = use_v_n ? n[v[i + 1] % nc] : n[(si + i + 1) % nc];
 			if (nu)
-				nu[vp] = u[si + i + 1];
+				nu[vp] = use_v_u ? u[v[i + 1] % uc] : u[(si + i + 1) % uc];
 			ni[vp] = vp;
 			vp++;
 		}
@@ -326,7 +337,7 @@ bool	parse_fbx_ascii(const char *path, t_scene *scene)
 	close(fd);
 	if (!m.base.vertices || !ri)
 		return (false);
-	build_flat(&m.base, ri, rc, rn, ru);
+	build_flat(&m.base, ri, rc, rn, nc, ru, uc);
 	if (rn)
 		free(rn);
 	if (ru)
