@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/01/26 14:07:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:07:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,18 @@ int	exec_pipe(t_ast *node, t_shell_state *state)
 		return (1);
 	pid1 = fork_left_command(pipefd, node, state);
 	if (pid1 == -1)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
 		return (1);
+	}
 	pid2 = fork_right_command(pipefd, node, state);
 	if (pid2 == -1)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
 		return (1);
+	}
 	close(pipefd[0]);
 	close(pipefd[1]);
 	return (wait_for_children(pid1, pid2));

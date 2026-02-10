@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:01:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 03:52:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*get_multiline_prompt(char code, t_op_def *ops)
 		return (ft_strdup(prompt_buf));
 	}
 	else
-		return (get_prompt(0));
+		return (ft_strdup(get_prompt(0)));
 }
 
 static char	*read_and_append_line(t_line_struct *ls, t_op_def *ops,
@@ -36,7 +36,7 @@ static char	*read_and_append_line(t_line_struct *ls, t_op_def *ops,
 	char		*temp;
 	t_op_def	*def;
 
-	new_line = read_input(ls->prompt, state);
+	new_line = read_raw_input(ls->prompt, state);
 	if (!new_line)
 	{
 		def = ext_get_op_def(ops, ls->code);
@@ -49,7 +49,7 @@ static char	*read_and_append_line(t_line_struct *ls, t_op_def *ops,
 		free(ls->line);
 		return (NULL);
 	}
-	temp = append_line(ls->line, new_line);
+	temp = append_line(ls->line, new_line, ls->code);
 	free(ls->line);
 	free(new_line);
 	return (temp);

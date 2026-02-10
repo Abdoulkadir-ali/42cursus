@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:48:38 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:26:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:27:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,31 +30,16 @@ char	*prepare_stop_str(char *delim, t_heredoc *ctx)
 
 char	*heredoc_read_line_non_tty(void)
 {
-	char	*buf;
-	int		i;
-	char	c;
+	char	*line;
+	size_t	len;
 
-	buf = ft_calloc(10000, 1);
-	i = 0;
-	while (read(STDIN_FILENO, &c, 1) > 0)
-	{
-		buf[i++] = c;
-		if (c == '\n')
-			break ;
-		if (i >= 9999)
-			break ;
-	}
-	if (i > 0)
-	{
-		if (buf[i - 1] == '\n')
-			buf[i - 1] = '\0';
-		return (buf);
-	}
-	else
-	{
-		free(buf);
+	line = get_next_line(STDIN_FILENO);
+	if (!line)
 		return (NULL);
-	}
+	len = ft_strlen(line);
+	if (len > 0 && line[len - 1] == '\n')
+		line[len - 1] = '\0';
+	return (line);
 }
 
 char	*heredoc_read_line(void)

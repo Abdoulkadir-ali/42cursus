@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:00:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 03:52:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,11 @@ char	*handle_parenthesis(char *line, char *trimmed, t_shell_state *state)
 	size_t	pairs;
 
 	if (!trimmed || ft_strchr(line, '\n') == NULL)
+	{
+		if (trimmed)
+			free(trimmed);
 		return (NULL);
+	}
 	pairs = count_paren_pairs(trimmed);
 	if (pairs > 0)
 	{

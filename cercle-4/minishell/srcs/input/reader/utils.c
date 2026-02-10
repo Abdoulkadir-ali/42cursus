@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:15:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:13:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 03:47:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static char	*append_with_newline(char *line, char *new_line)
 	return (result);
 }
 
-char	*append_line(char *line, char *new_line)
+char	*append_line(char *line, char *new_line, char code)
 {
 	int	len;
 	int	i;
@@ -45,7 +45,7 @@ char	*append_line(char *line, char *new_line)
 	i = len - 1;
 	while (i >= 0 && ft_isspace(line[i]))
 		i--;
-	if (i >= 0 && line[i] == '\\')
+	if (code == '\\' && i >= 0 && line[i] == '\\')
 		return (append_with_backslash(line, new_line, i));
 	else
 		return (append_with_newline(line, new_line));

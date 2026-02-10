@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/22 21:19:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 23:42:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,8 @@ static void	backtrack_to_star(char **pattern, char **str, char **star,
 int	match_loop(char **pattern, char **str, char **star,
 		char **str_start)
 {
-	int	dattempts;
-
-	dattempts = 0;
 	while (**str)
 	{
-		if (dattempts++ > 100000)
-			return (0);
 		if (**pattern == '*')
 			set_star(pattern, str, star, str_start);
 		else if (**pattern == **str)

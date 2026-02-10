@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:13:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 23:27:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ static void	process_components(const char *base, char **stack, int *count)
 	comp = extract_next_component(base, &pos);
 	while (comp)
 	{
-		if (!add_component(stack, count, comp))
-			free(comp);
+		add_component(stack, count, comp);
+		free(comp);
 		comp = extract_next_component(base, &pos);
 	}
 }
@@ -84,5 +84,6 @@ char	**collect_components(const char *base, int *count)
 	}
 	*count = 0;
 	process_components(base, stack, count);
+	stack[*count] = NULL;
 	return (stack);
 }

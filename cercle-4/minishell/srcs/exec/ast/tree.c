@@ -6,19 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 23:42:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 05:19:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:12:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-int	exec_tree(t_nodes *ast_node, t_shell_state *state)
+int	exec_tree(t_ast *ast_node, t_shell_state *state)
 {
 	t_ast	*node;
 
 	if (!ast_node)
 		return (0);
-	node = (t_ast *)ast_node->content;
+	node = ast_node;
 	if (node->type == TOKEN_WORD)
 		return (exec_simple_command(node, state));
 	else if (node->type == TOKEN_PIPE)

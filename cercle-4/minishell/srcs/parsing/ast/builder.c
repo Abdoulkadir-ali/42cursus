@@ -6,32 +6,29 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:10:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/01/26 01:08:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:12:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-void	free_ast(t_nodes *ast_node)
+void	free_ast(t_ast *ast_node)
 {
-	t_ast	*ast;
-	int		i;
+	int	i;
 
 	if (!ast_node)
 		return ;
-	ast = (t_ast *)ast_node->content;
-	if (ast->left)
-		free_ast(ast->left);
-	if (ast->right)
-		free_ast(ast->right);
-	if (ast->args)
+	if (ast_node->left)
+		free_ast(ast_node->left);
+	if (ast_node->right)
+		free_ast(ast_node->right);
+	if (ast_node->args)
 	{
 		i = 0;
-		while (ast->args[i])
-			free(ast->args[i++]);
-		free(ast->args);
+		while (ast_node->args[i])
+			free(ast_node->args[i++]);
+		free(ast_node->args);
 	}
-	free(ast);
 	free(ast_node);
 }
 
@@ -65,7 +62,7 @@ static t_nodes	*find_split(t_nodes *tokens, t_token_type t1, t_token_type t2,
 	return (NULL);
 }
 
-static t_nodes	*build_op(t_nodes *left_toks, t_nodes *split)
+static t_ast	*build_op(t_nodes *left_toks, t_nodes *split)
 {
 	t_ast	*node;
 
@@ -77,10 +74,10 @@ static t_nodes	*build_op(t_nodes *left_toks, t_nodes *split)
 	node->right = ast_builder(split->next);
 	del_token(split->content);
 	free(split);
-	return (ft_lstnew(node));
+	return (node);
 }
 
-t_nodes	*ast_builder(t_nodes *tokens)
+t_ast	*ast_builder(t_nodes *tokens)
 {
 	t_nodes	*split;
 	t_nodes	*prev;

@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:59:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 00:41:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:14:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-t_nodes	*create_node(t_token_type type, char **args, t_nodes *left,
-		t_nodes *right)
+t_ast	*create_node(t_token_type type, char **args, t_ast *left,
+		t_ast *right)
 {
 	t_ast	*ast;
 
@@ -25,7 +25,7 @@ t_nodes	*create_node(t_token_type type, char **args, t_nodes *left,
 	ast->left = left;
 	ast->right = right;
 	ast->is_quoted = 0;
-	return (ft_lstnew(ast));
+	return (ast);
 }
 
 void	dump_tokens_list(t_nodes *head, const char *stage)
@@ -51,32 +51,6 @@ void	dump_tokens_list(t_nodes *head, const char *stage)
 	}
 	fprintf(f, "-- end %s --\n\n", stage);
 	fclose(f);
-}
-
-void	free_ast_node(t_nodes *ast_node)
-{
-	t_ast	*ast;
-	int		i;
-
-	if (!ast_node)
-		return ;
-	ast = (t_ast *)ast_node->content;
-	if (ast->left)
-		free_ast_node(ast->left);
-	if (ast->right)
-		free_ast_node(ast->right);
-	if (ast->args)
-	{
-		i = 0;
-		while (ast->args[i])
-		{
-			free(ast->args[i]);
-			i++;
-		}
-		free(ast->args);
-	}
-	free(ast);
-	free(ast_node);
 }
 
 void	append_chunk_safe(char **res, char *chunk)

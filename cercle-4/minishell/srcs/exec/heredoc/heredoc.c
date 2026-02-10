@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:30:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:12:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,8 @@ static int	handle_herestr(t_ast *node, t_shell_state *state)
 	int		quoted;
 	char	*use_word;
 
-	tmp_file = generate_tmp_filename();
-	fd = open(tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd == -1)
+	tmp_file = generate_tmp_filename(&fd);
+	if (fd == -1 || !tmp_file)
 	{
 		free(tmp_file);
 		return (1);
@@ -30,7 +29,9 @@ static int	handle_herestr(t_ast *node, t_shell_state *state)
 	if (node->args && node->args[0])
 	{
 		word = node->args[0];
-		quoted = node->args[1] ? ft_atoi(node->args[1]) : 0;
+		quoted = 0;
+		if (node->args[1])
+			quoted = ft_atoi(node->args[1]);
 		use_word = word;
 		if (!quoted)
 		{
@@ -50,14 +51,14 @@ static int	handle_herestr(t_ast *node, t_shell_state *state)
 	return (0);
 }
 
-int	scan_heredocs(t_nodes *ast_node, t_shell_state *state)
+int	scan_heredocs(t_ast *ast_node, t_shell_state *state)
 {
 	t_ast	*node;
 	char	*tmp_file;
 
 	if (!ast_node)
 		return (0);
-	node = (t_ast *)ast_node->content;
+	node = ast_node;
 	if (node->type == TOKEN_HEREDOC)
 	{
 		tmp_file = handle_heredoc_input(node->args, state);

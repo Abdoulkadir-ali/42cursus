@@ -6,20 +6,25 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 23:46:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+char	*read_raw_input(char *prompt, t_shell_state *state)
+{
+	(void)state;
+	if (isatty(STDIN_FILENO))
+		return (readline(prompt));
+	return (get_next_line(STDIN_FILENO));
+}
+
 char	*read_input(char *prompt, t_shell_state *state)
 {
 	char	*line;
 
-	if (isatty(STDIN_FILENO))
-		line = readline(prompt);
-	else
-		line = get_next_line(STDIN_FILENO);
+	line = read_raw_input(prompt, state);
 	if (!line)
 		return (NULL);
 	line = handle_multiline_input(line, state);

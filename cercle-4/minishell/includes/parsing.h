@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:05:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:11:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@
 # include <unistd.h>
 
 // CUSTOM
-# include "state.h"
 # include "lib.h"
 # include "libft.h"
+# include "state.h"
 
 # define STATE_GENERAL 1
 # define STATE_DOUBLE_QUOTES 2
@@ -59,8 +59,8 @@ typedef struct s_ast
 {
 	t_token_type	type;
 	char			**args;
-	t_nodes			*left;
-	t_nodes			*right;
+	struct s_ast	*left;
+	struct s_ast	*right;
 	int				is_quoted;
 }					t_ast;
 
@@ -107,16 +107,16 @@ typedef struct s_token_expansion
 	t_nodes			*prev;
 }					t_token_expansion;
 
-t_nodes				*process_redirections(t_nodes *cmd_node, t_nodes *tokens);
+t_ast				*process_redirections(t_ast *cmd_node, t_nodes *tokens);
 int					process_matches_or_literal(t_token_expansion *ctx,
 						t_nodes *matches, t_token *exp_tok, t_nodes *exp_curr);
-t_nodes				*create_node(t_token_type type, char **args, t_nodes *left,
-						t_nodes *right);
+t_ast				*create_node(t_token_type type, char **args, t_ast *left,
+						t_ast *right);
 void				dump_tokens_list(t_nodes *head, const char *stage);
 void				add_token_node(t_nodes **head, t_nodes **tail, char *val,
 						int quoted);
 t_nodes				*tokenizer(char *str);
-t_nodes				*ast_builder(t_nodes *tokens);
+t_ast				*ast_builder(t_nodes *tokens);
 void				expand_tokens(t_nodes **tokens, char **env, int status);
 char				*expand_string(char *str, char **env, int status);
 char				*expand_heredoc(char *str, char **env, int status);
@@ -130,14 +130,14 @@ t_nodes				*expand_wildcard(char *pattern);
 t_nodes				*collect_matches(DIR *dir, char *pattern);
 int					ft_set_env(char *key, char *value, t_shell_state *state);
 char				**expand_wildcards(char **args);
-void				free_ast(t_nodes *ast_node);
+void				free_ast(t_ast *ast_node);
 void				del_token(void *content);
 void				append_node(t_nodes **head, t_nodes **tail, t_nodes *node);
 int					is_prev_heredoc(t_nodes *prev);
 void				apply_tilde_expansion(t_token *tok, char **envp);
 t_nodes				*create_token_node_from_match(char *match);
-t_nodes				*create_cmd_node(t_nodes *tokens);
-t_nodes				*handle_subshell(t_nodes *tokens);
+t_ast				*create_cmd_node(t_nodes *tokens);
+t_ast				*handle_subshell(t_nodes *tokens);
 int					scan_unquoted(const char *s);
 int					scan_quoted(const char *s, char quote);
 int					is_wildcard(const char *str);
@@ -164,6 +164,10 @@ int					handle_dollar_split(t_exp_input *in, t_exp_state *st,
 						t_exp_output *out);
 void				exp_push_char(t_exp_output *out, char c);
 void				exp_push_str(t_exp_output *out, char *s);
+int					expand_to_string(t_exp_input *in, t_exp_state *st,
+						t_exp_output *out, t_dollar_peek *peek);
+int					expand_to_tokens(t_exp_input *in, t_exp_state *st,
+						t_exp_output *out, t_dollar_peek *peek);
 int					handle_pipe(char **str, t_token *token);
 int					handle_paren(char **str, t_token *token, int left);
 int					handle_ampersand(char **str, t_token *token);

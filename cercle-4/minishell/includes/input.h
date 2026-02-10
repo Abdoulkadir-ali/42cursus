@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:05:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 03:46:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,10 @@ int			expand_and_check_error(t_nodes **segment, t_shell_state *state,
 void		execute_ast(t_nodes *segment, t_shell_state *state);
 
 /* Utils */
-char		*append_line(char *line, char *new_line);
+char		*append_line(char *line, char *new_line, char code);
 char		*get_prompt(int is_initial);
 char		*read_input(char *prompt, t_shell_state *state);
+char		*read_raw_input(char *prompt, t_shell_state *state);
 char		*handle_parenthesis(char *line, char *trimmed,
 				t_shell_state *state);
 char		*handle_multiline_input(char *line, t_shell_state *state);

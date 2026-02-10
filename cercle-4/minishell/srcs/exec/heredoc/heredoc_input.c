@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:31:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 23:42:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
 		if (!delim)
 			delim = value;
 	}
-	filename = generate_tmp_filename();
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	filename = generate_tmp_filename(&fd);
 	if (fd != -1)
 	{
 		read_heredoc_loop(delim, fd, state);
@@ -77,7 +76,9 @@ char	*handle_heredoc_input(char **args, t_shell_state *state)
 	char	*use_delim;
 
 	delim = args[0];
-	quoted = args[1] ? ft_atoi(args[1]) : 0;
+	quoted = 0;
+	if (args[1])
+		quoted = ft_atoi(args[1]);
 	use_delim = delim;
 	if (!quoted)
 	{
@@ -85,8 +86,7 @@ char	*handle_heredoc_input(char **args, t_shell_state *state)
 		if (!use_delim)
 			use_delim = delim;
 	}
-	filename = generate_tmp_filename();
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	filename = generate_tmp_filename(&fd);
 	if (fd == -1)
 	{
 		perror("heredoc tmp");

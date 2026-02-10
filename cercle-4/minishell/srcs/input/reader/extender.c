@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 07:09:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/25 21:56:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 23:55:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,13 @@ static char	check_pairs_state(char *s)
 		return (0);
 	while (*s)
 	{
+		if (quote != '\'' && *s == '\\')
+		{
+			s++;
+			if (*s)
+				s++;
+			continue ;
+		}
 		if (quote == 0 && (*s == '\'' || *s == '"'))
 			quote = *s;
 		else if (quote == 0 && *s == '(')

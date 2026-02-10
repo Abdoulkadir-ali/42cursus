@@ -6,23 +6,21 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 13:51:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 23:40:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-char	*generate_tmp_filename(void)
+char	*generate_tmp_filename(int *fd_out)
 {
 	char	tmpl[32];
-	int		fd;
 
 	ft_strcpy(tmpl, "/tmp/.minishell_heredoc_XXXXXX");
-	fd = mkstemp(tmpl);
-	if (fd == -1)
+	*fd_out = mkstemp(tmpl);
+	if (*fd_out == -1)
 		return (NULL);
-	fchmod(fd, 0644);
-	close(fd);
+	fchmod(*fd_out, 0644);
 	return (ft_strdup(tmpl));
 }
 

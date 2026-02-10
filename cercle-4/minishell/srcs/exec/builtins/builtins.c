@@ -6,11 +6,54 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:10:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:08:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+static int	wrap_echo(char **args, t_shell_state *state)
+{
+	(void)state;
+	return (ft_echo(args));
+}
+
+static int	wrap_pwd(char **args, t_shell_state *state)
+{
+	(void)args;
+	return (ft_pwd(state));
+}
+
+static int	wrap_env(char **args, t_shell_state *state)
+{
+	(void)args;
+	return (ft_env(state));
+}
+
+static int	wrap_colon(char **args, t_shell_state *state)
+{
+	(void)args;
+	(void)state;
+	return (0);
+}
+
+typedef struct s_builtin_def
+{
+	const char	*name;
+	int			(*func)(char **, t_shell_state *);
+}			t_builtin_def;
+
+static const t_builtin_def	g_builtins[] = {
+{"echo", wrap_echo},
+{"cd", ft_cd},
+{"pwd", wrap_pwd},
+{"export", ft_export},
+{"unset", ft_unset},
+{"env", wrap_env},
+{"exit", ft_exit},
+{":", wrap_colon},
+{NULL, NULL}
+};
 
 static int	is_cmd(char *arg, char *cmd)
 {
@@ -23,14 +66,22 @@ static int	is_cmd(char *arg, char *cmd)
 
 int	is_builtin(char *cmd, char **args, int is_quoted)
 {
+	int	i;
+
 	(void)is_quoted;
 	if (!cmd)
 		return (0);
-	if (is_cmd(cmd, "echo") || is_cmd(cmd, "cd") || is_cmd(cmd, "pwd")
-		|| is_cmd(cmd, "export") || is_cmd(cmd, "unset") || (is_cmd(cmd, "env")
-			&& (!args || !args[1])) || is_cmd(cmd, "exit") || is_cmd(cmd, ":")
-		|| is_cmd(cmd, "."))
+	if (is_cmd(cmd, "."))
 		return (1);
+	if (is_cmd(cmd, "env") && args && args[1])
+		return (0);
+	i = 0;
+	while (g_builtins[i].name)
+	{
+		if (is_cmd(cmd, (char *)g_builtins[i].name))
+			return (1);
+		i++;
+	}
 	return (0);
 }
 
@@ -45,30 +96,18 @@ static int	exec_dot_builtin(char **args)
 	return (0);
 }
 
-static int	exec_main_builtins(char **args, t_shell_state *state)
-{
-	if (is_cmd(args[0], "echo"))
-		return (ft_echo(args));
-	if (is_cmd(args[0], "cd"))
-		return (ft_cd(args, state));
-	if (is_cmd(args[0], "pwd"))
-		return (ft_pwd(state));
-	if (is_cmd(args[0], "env"))
-		return (ft_env(state));
-	if (is_cmd(args[0], "exit"))
-		return (ft_exit(args, state));
-	if (is_cmd(args[0], "export"))
-		return (ft_export(args, state));
-	if (is_cmd(args[0], "unset"))
-		return (ft_unset(args, state));
-	if (is_cmd(args[0], ":"))
-		return (0);
-	return (0);
-}
-
 int	exec_builtin(char **args, t_shell_state *state)
 {
+	int	i;
+
 	if (is_cmd(args[0], "."))
 		return (exec_dot_builtin(args));
-	return (exec_main_builtins(args, state));
+	i = 0;
+	while (g_builtins[i].name)
+	{
+		if (is_cmd(args[0], (char *)g_builtins[i].name))
+			return (g_builtins[i].func(args, state));
+		i++;
+	}
+	return (0);
 }

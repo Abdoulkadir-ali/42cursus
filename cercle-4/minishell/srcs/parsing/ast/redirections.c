@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/01/26 14:30:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:12:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ static void	push_to_stack(t_nodes **stack, t_nodes *tokens)
 	}
 }
 
-static void	apply_redir(t_nodes **cmd_node, t_nodes *redir_token_node)
+static void	apply_redir(t_ast **cmd_node, t_nodes *redir_token_node)
 {
 	t_token	*tok;
 	char	**args;
-	t_nodes	*redir_node;
+	t_ast	*redir_node;
 
 	tok = (t_token *)redir_token_node->content;
 	args = ft_calloc(3, sizeof(char *));
@@ -54,7 +54,7 @@ static void	apply_redir(t_nodes **cmd_node, t_nodes *redir_token_node)
 	*cmd_node = redir_node;
 }
 
-t_nodes	*process_redirections(t_nodes *cmd_node, t_nodes *tokens)
+t_ast	*process_redirections(t_ast *cmd_node, t_nodes *tokens)
 {
 	t_nodes	*stack;
 	t_nodes	*s_curr;

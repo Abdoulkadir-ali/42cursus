@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 22:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:37:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:12:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	expand_and_check_error(t_nodes **segment, t_shell_state *state,
 
 void	execute_ast(t_nodes *segment, t_shell_state *state)
 {
-	t_nodes	*ast;
+	t_ast	*ast;
 
 	ast = ast_builder(segment);
 	if (!scan_heredocs(ast, state))

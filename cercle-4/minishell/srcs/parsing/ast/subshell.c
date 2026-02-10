@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 14:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 00:38:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 04:12:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ static t_nodes	*find_match(t_nodes *start)
 	return (NULL);
 }
 
-t_nodes	*handle_subshell(t_nodes *tokens)
+t_ast	*handle_subshell(t_nodes *tokens)
 {
 	t_nodes	*match;
 	t_nodes	*inner_tokens;
-	t_nodes	*subshell_node;
+	t_ast	*subshell_node;
 	t_nodes	*remaining;
 
 	match = find_match(tokens);
