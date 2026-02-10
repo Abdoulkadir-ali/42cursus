@@ -34,7 +34,7 @@ static ssize_t	safe_read(int fd, void *buf, size_t count)
 static void	*read_fbx_array(int fd, uint32_t *count, size_t elem_sz)
 {
 	uint32_t	arr_len, encoding, comp_len;
-	void		*uncomp_data, *final_data;
+	void		*uncomp_data = NULL, *final_data = NULL;
 	uLongf		uncomp_len;
 	char		type;
 	size_t      actual_sz;
@@ -67,18 +67,6 @@ static void	*read_fbx_array(int fd, uint32_t *count, size_t elem_sz)
 		free(comp_data);
 	}
 	
-	printf("DEBUG: FBX Array type='%c' alen=%u enc=%u sz=%zu\n", type, arr_len, encoding, actual_sz);
-	if (arr_len >= 3)
-	{
-		if (actual_sz == 8)
-			printf("       [0..2]: %f, %f, %f\n", ((double*)uncomp_data)[0], ((double*)uncomp_data)[1], ((double*)uncomp_data)[2]);
-		else if (actual_sz == 4 && type == 'f')
-			printf("       [0..2]: %f, %f, %f\n", ((float*)uncomp_data)[0], ((float*)uncomp_data)[1], ((float*)uncomp_data)[2]);
-		else if (actual_sz == 4)
-			printf("       [0..2]: %d, %d, %d\n", ((int*)uncomp_data)[0], ((int*)uncomp_data)[1], ((int*)uncomp_data)[2]);
-	}
-
-	printf("       read_fbx_array returning ptr %p\n", (actual_sz == elem_sz) ? uncomp_data : final_data); fflush(stdout);
 	if (actual_sz == elem_sz) {
 		*count = arr_len;
 		return (uncomp_data);
@@ -163,59 +151,62 @@ static void	read_node_header(int fd, t_fbx_bin_node *node, bool is_64bit)
 		return ;
 	}
 	ft_memset(node->name, 0, sizeof(node->name));
-	if (node->name_len > 0 && node->name_len < sizeof(node->name))
-		safe_read(fd, node->name, node->name_len);
-	printf("   DEBUG: Node name='%s' end=%lu nprops=%lu\n", node->name, (unsigned long)node->end_offset, (unsigned long)node->num_properties); fflush(stdout);
+	if (node->name_len > 0)
+	{
+		size_t to_read = (node->name_len < sizeof(node->name) - 1) ? node->name_len : sizeof(node->name) - 1;
+		safe_read(fd, node->name, to_read);
+		if (node->name_len > to_read) lseek(fd, node->name_len - to_read, SEEK_CUR);
+	}
 }
 
-static void	parse_nodes(int fd, uint64_t end_offset, bool is_64, t_fbx_data *d)
+static void	parse_nodes(int fd, uint64_t end_offset, bool is_64, t_fbx_data *d, int depth)
 {
-	t_fbx_bin_node	*n;
+	t_fbx_bin_node	n;
 
-	n = malloc(sizeof(t_fbx_bin_node));
-	if (!n) return ;
+	if (depth > 20) return ;
 	while ((uint64_t)lseek(fd, 0, SEEK_CUR) < end_offset)
 	{
-		read_node_header(fd, n, is_64);
-		if (n->end_offset == 0)
+		read_node_header(fd, &n, is_64);
+		if (n.end_offset == 0)
 			break ;
-		if (ft_strcmp(n->name, "Vertices") == 0)
+		if (ft_strcmp(n.name, "Vertices") == 0 && !d->v)
 		{
-			if (!d->v)
-				d->v = read_fbx_array(fd, &d->vc, 8);
-			else
-				skip_properties(fd, n->num_properties);
+			printf("   Depth %d: Reading Vertices...\n", depth); fflush(stdout);
+			d->v = read_fbx_array(fd, &d->vc, 8);
+			if (d->v) { printf("   Depth %d: Got Vertices: %u floats\n", depth, d->vc); fflush(stdout); d->vc /= 3; }
 		}
-		else if (ft_strcmp(n->name, "PolygonVertexIndex") == 0 && d->v)
+		else if (ft_strcmp(n.name, "PolygonVertexIndex") == 0 && !d->ri)
 		{
-			if (!d->ri)
-				d->ri = (int*)read_fbx_array(fd, &d->rc, 4);
-			else
-				skip_properties(fd, n->num_properties);
+			printf("   Depth %d: Reading Indices...\n", depth); fflush(stdout);
+			d->ri = (int*)read_fbx_array(fd, &d->rc, 4);
+			if (d->ri) { printf("   Depth %d: Got Indices: %u\n", depth, d->rc); fflush(stdout); }
 		}
-		else if (ft_strcmp(n->name, "Normals") == 0 && d->v && !d->vn)
+		else if (ft_strcmp(n.name, "Normals") == 0 && !d->vn)
 		{
+			printf("   Depth %d: Reading Normals...\n", depth); fflush(stdout);
 			d->vn = read_fbx_array(fd, &d->nc, 8);
+			if (d->vn) { printf("   Depth %d: Got Normals: %u floats\n", depth, d->nc); fflush(stdout); d->nc /= 3; }
 		}
-		else if (ft_strcmp(n->name, "UV") == 0 && d->v && !d->vu)
+		else if (ft_strcmp(n.name, "UV") == 0 && !d->vu)
 		{
+			printf("   Depth %d: Reading UVs...\n", depth); fflush(stdout);
 			d->vu = read_fbx_array(fd, &d->uc, 8);
+			if (d->vu) { printf("   Depth %d: Got UVs: %u floats\n", depth, d->uc); fflush(stdout); d->uc /= 2; }
 		}
 		else
 		{
-			skip_properties(fd, n->num_properties);
-			if ((uint64_t)lseek(fd, 0, SEEK_CUR) < n->end_offset)
-				parse_nodes(fd, n->end_offset, is_64, d);
+			skip_properties(fd, n.num_properties);
+			if ((uint64_t)lseek(fd, 0, SEEK_CUR) < n.end_offset)
+				parse_nodes(fd, n.end_offset, is_64, d, depth + 1);
 		}
-		lseek(fd, (off_t)n->end_offset, SEEK_SET);
+		if (lseek(fd, (off_t)n.end_offset, SEEK_SET) == (off_t)-1) break ;
 	}
-	free(n);
 }
 
 bool	parse_fbx_binary(const char *path, t_scene *scene)
 {
 	int				fd;
-	char			header[23];
+	char			header[64];
 	uint32_t		version;
 	t_skinned_mesh	mesh;
 	t_fbx_data		d;
@@ -233,11 +224,12 @@ bool	parse_fbx_binary(const char *path, t_scene *scene)
 	ft_memset(&d, 0, sizeof(t_fbx_data));
 	mesh.base.name = ft_strdup(path);
 	printf("DEBUG: starting parse_nodes recursion\n"); fflush(stdout);
-	parse_nodes(fd, (uint64_t)-1, version >= 7500, &d);
+	parse_nodes(fd, (uint64_t)-1, version >= 7500, &d, 0);
 	close(fd);
-	printf("DEBUG: parse_nodes recursion finished\n"); fflush(stdout);
+	printf("DEBUG: parse_nodes finished. counts: vc=%u nc=%u\n", d.vc, d.nc); fflush(stdout);
 	if (!d.v || !d.ri)
 	{
+		printf("DEBUG ERR: FBX missing critical data\n"); fflush(stdout);
 		free(mesh.base.name);
 		free(d.v); free(d.ri); free(d.vn); free(d.vu);
 		return (false);
@@ -250,7 +242,9 @@ bool	parse_fbx_binary(const char *path, t_scene *scene)
 		return (false);
 	}
 	mesh.base.vertices = d.v;
-	fbx_build_flat(&mesh.base, d.ri, d.rc, d.vn, d.nc, d.vu, d.uc, d.vc);
+	printf("DEBUG: calling fbx_build_flat\n"); fflush(stdout);
+	fbx_build_flat(&mesh.base, d.ri, (int)d.rc, d.vn, (int)d.nc, d.vu, (int)d.uc, (int)d.vc);
+	printf("DEBUG: fbx_build_flat finished\n"); fflush(stdout);
 	if (d.vn) free(d.vn);
 	if (d.vu) free(d.vu);
 	free(d.ri);
@@ -260,8 +254,6 @@ bool	parse_fbx_binary(const char *path, t_scene *scene)
 		free(mesh.base.vertices);
 		return (false);
 	}
-	mesh.vertex_count = mesh.base.tri_count * 3;
-	mesh.base.vertex_count = mesh.base.tri_count * 3;
 	mesh_build_bvh(&mesh.base);
 	printf("FBX Binary Loaded: %s (%d tris)\n", path, mesh.base.tri_count);
 	return (scene_add_animated(scene, mesh));

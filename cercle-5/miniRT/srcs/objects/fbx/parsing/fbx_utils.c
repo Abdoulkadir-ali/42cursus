@@ -38,15 +38,21 @@ void	fbx_build_flat(t_mesh *m, int *raw, int raw_c, \
 	}
 	m->tri_count = tc;
 	if (tc <= 0) return ;
-	nv = malloc(sizeof(t_vec3) * tc * 3);
-	nn = n ? malloc(sizeof(t_vec3) * tc * 3) : NULL;
-	nu = u ? malloc(sizeof(t_vec2) * tc * 3) : NULL;
-	ni = malloc(sizeof(int) * tc * 3);
+	nv = ft_calloc(tc * 3, sizeof(t_vec3));
+	nn = n ? ft_calloc(tc * 3, sizeof(t_vec3)) : NULL;
+	nu = u ? ft_calloc(tc * 3, sizeof(t_vec2)) : NULL;
+	ni = ft_calloc(tc * 3, sizeof(int));
 	if (!nv || !ni || (n && !nn) || (u && !nu))
+	{
+		if (nv) free(nv); if (ni) free(ni); if (nn) free(nn); if (nu) free(nu);
 		return ;
+	}
 	v = malloc(sizeof(int) * raw_c);
 	if (!v)
-		return (free(nv), free(ni), free(nn), free(nu), (void)0);
+	{
+		if (nv) free(nv); if (ni) free(ni); if (nn) free(nn); if (nu) free(nu);
+		return ;
+	}
 	use_v_n = (n && nc > 0 && nc < tc * 3);
 	use_v_u = (u && uc > 0 && uc < tc * 3);
 	ps = 0; vp = 0; vg = 0;
@@ -87,4 +93,7 @@ void	fbx_build_flat(t_mesh *m, int *raw, int raw_c, \
 	m->normals = nn;
 	m->uvs = nu;
 	m->indices = ni;
+	printf("DEBUG: fbx_build_flat final count: %d vertices (%d tris)\n", vp, vp / 3);
+	m->vertex_count = vp;
+	m->tri_count = vp / 3;
 }

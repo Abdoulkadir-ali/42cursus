@@ -168,7 +168,7 @@ typedef struct s_fbx_bin_node
 	uint64_t	num_properties;
 	uint64_t	property_list_len;
 	uint8_t		name_len;
-	char		name[256];
+	char		name[1024];
 }				t_fbx_bin_node;
 
 struct					s_skinned_mesh
