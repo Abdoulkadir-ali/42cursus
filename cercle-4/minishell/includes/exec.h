@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:32:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/10 22:44:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void		update_existing_env(char **envp, t_export_ctx *ctx);
 void		parse_export_arg(char *arg, t_export_ctx *ctx);
 int			report_invalid_identifier(char *arg, t_export_ctx *ctx);
 
-int			exec_tree(t_nodes *ast_node, t_shell_state *state);
+int			exec_tree(t_ast *ast_node, t_shell_state *state);
 int			exec_simple_command(t_ast *node, t_shell_state *state);
 int			exec_subshell(t_ast *node, t_shell_state *state);
 int			exec_logical_or(t_ast *node, t_shell_state *state);
@@ -66,7 +66,7 @@ int			exec_redirection(t_ast *node, t_shell_state *state);
 int			exec_pipe(t_ast *node, t_shell_state *state);
 int			is_builtin(char *cmd, char **args, int is_quoted);
 int			exec_builtin(char **args, t_shell_state *state);
-int			scan_heredocs(t_nodes *ast_node, t_shell_state *state);
+int			scan_heredocs(t_ast *ast_node, t_shell_state *state);
 void		consume_heredocs(t_nodes *tokens, t_shell_state *state);
 int			ft_export(char **args, t_shell_state *state);
 int			ft_unset(char **args, t_shell_state *state);
@@ -81,7 +81,7 @@ int			get_env_index(char *key, t_shell_state *state);
 int			is_valid_ident(char *str);
 int			is_quoted_delim(const char *delim);
 char		*remove_quotes_heredoc(char *str);
-char		*generate_tmp_filename(void);
+char		*generate_tmp_filename(int *fd_out);
 char		*handle_heredoc_input(char **args, t_shell_state *state);
 void		read_heredoc_loop(char *delim, int fd, t_shell_state *state);
 char		*prepare_stop_str(char *delim, t_heredoc *ctx);
@@ -96,7 +96,7 @@ int			ft_cd(char **args, t_shell_state *state);
 char		*get_cd_path(char **args, t_shell_state *state);
 char		*get_env_val_simple(char *key, t_shell_state *state);
 char		*get_cwd_dup(void);
-char		*resolve_home(void);
+char		*resolve_home(t_shell_state *state);
 char		*cdpath_find(const char *name, char *cdpath);
 char		*join_paths(const char *a, const char *b);
 int			perform_cd(char *path, t_shell_state *state);

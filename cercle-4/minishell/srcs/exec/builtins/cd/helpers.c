@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 02:44:37 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:50:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/10 22:44:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,7 @@
 
 char	*get_env_val_simple(char *key, t_shell_state *state)
 {
-	int	i;
-	int	len;
-
-	i = 0;
-	len = ft_strlen(key);
-	while (state->envp && state->envp[i])
-	{
-		if (!ft_strncmp(state->envp[i], key, len) && state->envp[i][len] == '=')
-			return (state->envp[i] + len + 1);
-		i++;
-	}
-	return (NULL);
+	return (ft_get_env(key, state->envp));
 }
 
 char	*get_cwd_dup(void)
@@ -37,12 +26,12 @@ char	*get_cwd_dup(void)
 	return (ft_strdup(""));
 }
 
-char	*resolve_home(void)
+char	*resolve_home(t_shell_state *state)
 {
 	char			*path;
 	struct passwd	*pw;
 
-	path = getenv("HOME");
+	path = ft_get_env("HOME", state->envp);
 	if (path)
 	{
 		if (path[0] == '\0')

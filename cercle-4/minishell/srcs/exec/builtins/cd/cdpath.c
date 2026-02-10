@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 02:42:03 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:50:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/10 22:44:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 static char	*handle_home(t_shell_state *state)
 {
-	(void)state;
-	return (resolve_home());
+	return (resolve_home(state));
 }
 
 static char	*handle_oldpwd(t_shell_state *state)
@@ -29,7 +28,7 @@ static char	*handle_oldpwd(t_shell_state *state)
 		return (NULL);
 	}
 	ft_putendl_fd(path, 1);
-	return (path);
+	return (ft_strdup(path));
 }
 
 static char	*get_path_from_args(char **args, t_shell_state *state)
@@ -39,7 +38,7 @@ static char	*get_path_from_args(char **args, t_shell_state *state)
 	else if (ft_strncmp(args[1], "-", 2) == 0)
 		return (handle_oldpwd(state));
 	else
-		return (args[1]);
+		return (ft_strdup(args[1]));
 }
 
 static char	*check_cdpath(char *path, t_shell_state *state)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 14:12:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:12:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/10 22:44:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,6 @@ extern int	g_last_signal;
 void		setup_signals(int mode);
 int			init_shell(char **envp, char ***heap_env, t_shell_state *state);
 void		add_shlvl_to_env(char **envp);
+char		*ft_get_env(const char *key, char **envp);
 
 #endif
