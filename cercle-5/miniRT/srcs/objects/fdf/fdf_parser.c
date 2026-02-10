@@ -16,24 +16,24 @@
  */
 static int	count_columns(char *line)
 {
-	char	**tokens;
 	int		count;
+	char	*p;
 
 	if (!line)
 		return (0);
-	tokens = ft_split(line, ' ');
-	if (!tokens)
-		return (0);
 	count = 0;
-	while (tokens[count])
+	p = line;
+	while (*p)
 	{
-		if (ft_isdigit(tokens[count][0]) || tokens[count][0] == '-' \
-			|| tokens[count][0] == '+')
-			count++;
-		else
+		while (*p && ft_isspace(*p))
+			p++;
+		if (!*p)
 			break ;
+		if (ft_isdigit(*p) || *p == '-' || *p == '+')
+			count++;
+		while (*p && !ft_isspace(*p))
+			p++;
 	}
-	free_split(tokens);
 	return (count);
 }
 

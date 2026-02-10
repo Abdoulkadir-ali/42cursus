@@ -13,12 +13,20 @@
 #include "gui.h"
 
 /*
+** Generic camera movement function.
+*/
+void	camera_move(t_camera *camera, t_vec3 direction, double speed)
+{
+	camera->transform.pos = vec3_add(camera->transform.pos,
+			vec3_scale(direction, speed));
+}
+
+/*
 ** Moves camera forward along its look vector.
 */
 void	camera_move_forward(t_camera *camera, double speed)
 {
-	camera->transform.pos = vec3_add(camera->transform.pos,
-			vec3_scale(camera->transform.forward, speed));
+	camera_move(camera, camera->transform.forward, speed);
 }
 
 /*
@@ -26,8 +34,7 @@ void	camera_move_forward(t_camera *camera, double speed)
 */
 void	camera_move_backward(t_camera *camera, double speed)
 {
-	camera->transform.pos = vec3_sub(camera->transform.pos,
-			vec3_scale(camera->transform.forward, speed));
+	camera_move(camera, camera->transform.forward, -speed);
 }
 
 /*
@@ -35,8 +42,7 @@ void	camera_move_backward(t_camera *camera, double speed)
 */
 void	camera_move_left(t_camera *camera, double speed)
 {
-	camera->transform.pos = vec3_sub(camera->transform.pos,
-			vec3_scale(camera->transform.right, speed));
+	camera_move(camera, camera->transform.right, -speed);
 }
 
 /*
@@ -44,8 +50,7 @@ void	camera_move_left(t_camera *camera, double speed)
 */
 void	camera_move_right(t_camera *camera, double speed)
 {
-	camera->transform.pos = vec3_add(camera->transform.pos,
-			vec3_scale(camera->transform.right, speed));
+	camera_move(camera, camera->transform.right, speed);
 }
 
 /*
@@ -53,11 +58,7 @@ void	camera_move_right(t_camera *camera, double speed)
 */
 void	camera_move_up(t_camera *camera, double speed)
 {
-	t_vec3	world_up;
-
-	world_up = vec3(0, 1, 0);
-	camera->transform.pos = vec3_add(camera->transform.pos, vec3_scale(world_up,
-				speed));
+	camera_move(camera, vec3(0, 1, 0), speed);
 }
 
 /*
@@ -65,9 +66,5 @@ void	camera_move_up(t_camera *camera, double speed)
 */
 void	camera_move_down(t_camera *camera, double speed)
 {
-	t_vec3	world_up;
-
-	world_up = vec3(0, 1, 0);
-	camera->transform.pos = vec3_sub(camera->transform.pos, vec3_scale(world_up,
-				speed));
+	camera_move(camera, vec3(0, 1, 0), -speed);
 }

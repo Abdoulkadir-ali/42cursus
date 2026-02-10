@@ -10,63 +10,118 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "parser.h"
 
-/**
- * Dispatches the parsing of a line to the appropriate object parser.
- * 
- * @param tokens The tokens from the split line.
- * @return The parsed object data.
- */
-static t_parse_obj	dispatch_parser(char **tokens)
+// Helper to read a token (identifier or path) from parser into a buffer
+static bool	parse_token(t_parser *p, char *buf, size_t max_len)
 {
-	t_parse_obj	obj;
+	size_t	i;
+	char	c;
 
-	obj.type = TYPE_NONE;
-	if (ft_strcmp(tokens[0], "A") == 0)
-		obj = parse_ambient(tokens);
-	else if (ft_strcmp(tokens[0], "C") == 0)
-		obj = parse_camera(tokens);
-	else if (ft_strcmp(tokens[0], "L") == 0)
-		obj = parse_light(tokens);
-	else if (ft_strcmp(tokens[0], "sp") == 0)
-		obj = parse_sphere(tokens);
-	else if (ft_strcmp(tokens[0], "pl") == 0)
-		obj = parse_plane(tokens);
-	else if (ft_strcmp(tokens[0], "cy") == 0)
-		obj = parse_cylinder(tokens);
-	else if (ft_strcmp(tokens[0], "cn") == 0)
-		obj = parse_cone(tokens);
-	else if (ft_strcmp(tokens[0], "sl") == 0)
-		obj = parse_spot_light(tokens);
-	else if (ft_strcmp(tokens[0], "fbx") == 0)
-		obj = parse_mesh_entry(tokens, TYPE_ANIM);
-	else if (ft_strcmp(tokens[0], "obj") == 0 || ft_strcmp(tokens[0], "fdf") == 0 \
-		|| ft_strcmp(tokens[0], "glb") == 0)
-		obj = parse_mesh_entry(tokens, TYPE_MESH);
-	return (obj);
+	parser_skip_whitespace(p);
+	i = 0;
+	c = parser_peek(p);
+	if (!c)
+		return (false);
+	while (c && !ft_isspace(c) && i < max_len - 1)
+	{
+		buf[i++] = c;
+		parser_advance(p);
+		c = parser_peek(p);
+	}
+	buf[i] = '\0';
+	return (i > 0);
 }
 
 /**
- * Splits a line and dispatches it to the parser.
- * 
- * @param line The string to parse.
- * @return The parsed object data.
+ * Parses a mesh entry from the buffered parser.
+ * Order: Path, Position, Rotation, Scale, [Color]
  */
-t_parse_obj	parse_line(char *line)
+t_parse_obj	parse_mesh_entry(t_parser *p, t_type type)
 {
-	char		**tokens;
 	t_parse_obj	obj;
+	t_vec3		rot;
+	double		s;
+	char		path[1024];
 
 	obj.type = TYPE_NONE;
-	tokens = ft_split(line, ' ');
-	if (!tokens || !tokens[0])
+	printf("DEBUG: Starting parse_mesh_entry\n");
+	fflush(stdout);
+	if (!parse_token(p, path, 1024))
 	{
-		free_split(tokens);
+		printf("DEBUG ERR: Failed to parse mesh path\n");
+		fflush(stdout);
 		return (obj);
 	}
-	obj = dispatch_parser(tokens);
-	free_split(tokens);
+	printf("DEBUG: Mesh path parsed: %s\n", path);
+	fflush(stdout);
+	obj.type = type;
+	obj.data.mesh_info.path = ft_strdup(path);
+	obj.data.mesh_info.color = vec3(255, 255, 255);
+	
+	/* 1. Position */
+	if (!parse_vec3(p, &obj.data.mesh_info.transform.pos)) {
+		printf("DEBUG ERR: Failed to parse mesh position\n");
+		return (free(obj.data.mesh_info.path), (obj.type = TYPE_NONE), obj);
+	}
+	
+	/* 2. Rotation */
+	if (!parse_vec3(p, &rot)) {
+		printf("DEBUG ERR: Failed to parse mesh rotation\n");
+		return (free(obj.data.mesh_info.path), (obj.type = TYPE_NONE), obj);
+	}
+	obj.data.mesh_info.transform.rotation = (t_rotator){rot.x, rot.y, rot.z};
+
+	/* 3. Scale (can be uniform double or vec3) */
+	parser_skip_whitespace(p);
+	char c = parser_peek(p);
+	if ((c >= '0' && c <= '9') || c == '-' || c == '.')
+	{
+		if (parse_vec3(p, &obj.data.mesh_info.transform.scale))
+			;
+		else
+		{
+			s = parse_double(p);
+			obj.data.mesh_info.transform.scale = vec3(s, s, s);
+		}
+	}
+	else
+		obj.data.mesh_info.transform.scale = vec3(1, 1, 1);
+
+	/* 4. Optional Color */
+	parser_skip_whitespace(p);
+	if (parser_peek(p) && parser_peek(p) != '\n')
+		parse_vec3(p, &obj.data.mesh_info.color);
 	return (obj);
+}
+
+static t_parse_obj dispatch_scan(t_parser *p, char *id)
+{
+    t_parse_obj obj;
+
+    obj.type = TYPE_NONE;
+	if (ft_strcmp(id, "A") == 0)
+		obj = parse_ambient(p);
+	else if (ft_strcmp(id, "C") == 0)
+		obj = parse_camera(p);
+	else if (ft_strcmp(id, "L") == 0)
+		obj = parse_light(p);
+	else if (ft_strcmp(id, "sp") == 0)
+		obj = parse_sphere(p);
+	else if (ft_strcmp(id, "pl") == 0)
+		obj = parse_plane(p);
+	else if (ft_strcmp(id, "cy") == 0)
+		obj = parse_cylinder(p);
+	else if (ft_strcmp(id, "cn") == 0)
+		obj = parse_cone(p);
+	else if (ft_strcmp(id, "sl") == 0)
+		obj = parse_spot_light(p);
+	else if (ft_strcmp(id, "fbx") == 0)
+		obj = parse_mesh_entry(p, TYPE_ANIM);
+	else if (ft_strcmp(id, "obj") == 0 || ft_strcmp(id, "fdf") == 0 \
+		|| ft_strcmp(id, "glb") == 0 || ft_strcmp(id, "m") == 0)
+		obj = parse_mesh_entry(p, TYPE_MESH);
+    return (obj);
 }
 
 /**
@@ -78,58 +133,71 @@ static bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, \
 	bool			ret;
 	t_skinned_mesh	*anim;
 	t_mesh			*mesh;
+	int				mat_id;
 
 	ret = false;
+	printf("DEBUG: handle_mesh_injection for %s with ext %s\n", obj->data.mesh_info.path, ext ? ext : "NULL");
+	fflush(stdout);
+	printf("DEBUG: calling validate_file for %s\n", obj->data.mesh_info.path);
+	fflush(stdout);
+	if (!validate_file(obj->data.mesh_info.path))
+	{
+		printf("DEBUG ERR: File not found or invalid: %s\n", obj->data.mesh_info.path);
+		return (false);
+	}
+	printf("DEBUG: validate_file passed, checking extension: %s\n", ext ? ext : "NONE");
+	fflush(stdout);
 	if (ext && ft_strcmp(ext, ".fbx") == 0)
+	{
+		printf("DEBUG: calling parse_fbx\n"); fflush(stdout);
 		ret = parse_fbx(obj->data.mesh_info.path, scene);
+		printf("DEBUG: parse_fbx returned %d\n", ret); fflush(stdout);
+	}
 	else if (ext && ft_strcmp(ext, ".obj") == 0)
 		ret = parse_obj(obj->data.mesh_info.path, scene);
 	else if (ext && ft_strcmp(ext, ".fdf") == 0)
 		ret = parse_fdf(obj->data.mesh_info.path, scene);
 	else if (ext && ft_strcmp(ext, ".glb") == 0)
 		ret = parse_glb(obj->data.mesh_info.path, scene);
-	if (ret && obj->type == TYPE_ANIM && scene->anim_count > 0)
+	
+	if (!ret)
+	{
+		printf("DEBUG ERR: Failed to parse specific format for %s\n", obj->data.mesh_info.path);
+		return (false);
+	}
+	mat_id = scene_add_material(scene, obj->data.mesh_info.color);
+	if (obj->type == TYPE_ANIM && scene->anim_count > 0)
 	{
 		anim = &scene->animated[scene->anim_count - 1];
 		anim->base.transform = obj->data.mesh_info.transform;
-		printf("Loaded Animated %s at (%.1f, %.1f, %.1f)\n", \
-			obj->data.mesh_info.path, anim->base.transform.pos.x, \
-			anim->base.transform.pos.y, anim->base.transform.pos.z);
+		mesh_apply_transform(&anim->base, anim->base.transform);
+		/* Only override material if it's solid or not set */
+		if (anim->base.mat_id <= 0 || scene->materials[anim->base.mat_id].albedo_map.type == TEX_SOLID)
+			anim->base.mat_id = mat_id;
 	}
-	else if (ret && obj->type == TYPE_MESH && scene->mesh_count > 0)
+	else if (obj->type == TYPE_MESH && scene->mesh_count > 0)
 	{
 		mesh = &scene->meshes[scene->mesh_count - 1];
 		mesh->transform = obj->data.mesh_info.transform;
-		printf("Loaded Mesh %s at (%.1f, %.1f, %.1f)\n", \
-			obj->data.mesh_info.path, mesh->transform.pos.x, \
-			mesh->transform.pos.y, mesh->transform.pos.z);
+		mesh_apply_transform(mesh, mesh->transform);
+		/* Only override material if it's not already set by the mesh parser (e.g. MTL) */
+		printf("DEBUG: Mesh mat_id before override: %d (type %d)\n", mesh->mat_id, scene->materials[mesh->mat_id].albedo_map.type);
+		if (scene->materials[mesh->mat_id].albedo_map.type != TEX_BITMAP)
+		{
+			mesh->mat_id = mat_id;
+			printf("DEBUG: Mesh mat_id overridden to %d\n", mat_id);
+		}
+		else
+			printf("DEBUG: Mesh mat_id KEPT as %d (is BITMAP)\n", mesh->mat_id);
 	}
-	return (ret);
+	return (true);
 }
 
-/**
- * Processes a single line from the scene file.
- * 
- * @param scene The scene to update.
- * @param line The line string.
- * @return True if successful, false otherwise.
- */
-static bool	process_line(t_scene *scene, char *line)
+static bool process_object(t_scene *scene, t_parse_obj obj)
 {
-	t_parse_obj		obj;
-	size_t			len;
-	const char		*ext;
-	bool			ret;
+    bool ret = true;
+    const char *ext;
 
-	if (!line || *line == '\0' || *line == '#')
-		return (true);
-	len = ft_strlen(line);
-	if (len > 0 && line[len - 1] == '\n')
-		line[len - 1] = '\0';
-	obj = parse_line(line);
-	if (obj.type == TYPE_NONE)
-		return (true);
-	ret = true;
 	if (obj.type == TYPE_SPHERE)
 		ret = scene_add_sphere(scene, obj.data.sphere);
 	else if (obj.type == TYPE_PLANE)
@@ -150,39 +218,68 @@ static bool	process_line(t_scene *scene, char *line)
 		ret = handle_mesh_injection(&obj, ext, scene);
 		free(obj.data.mesh_info.path);
 	}
-	return (ret);
+    return (ret);
 }
 
 /**
- * Main entrance for parsing .rt files.
- * 
- * @param path Path to the .rt file.
- * @param scene The scene to fill.
- * @return True if successful, false otherwise.
+ * Main entrance for parsing .rt files using buffered parser.
  */
 bool	parse_rt(const char *path, t_scene *scene)
 {
-	int		fd;
-	char	*line;
-	bool	status;
+	t_parser    *p;
+    int         fd;
+    char        id[16];
+    t_parse_obj obj;
+    bool        status;
 
+	printf("DEBUG: parse_rt size of t_parse_obj: %zu, size of t_parser: %zu\n", sizeof(t_parse_obj), sizeof(t_parser)); fflush(stdout);
 	status = true;
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 	{
-		perror("open");
+		printf("Error: Could not open .rt file %s\n", path);
 		return (false);
 	}
-	line = get_next_line(fd);
-	while (line)
-	{
-		if (!process_line(scene, line))
+	printf("DEBUG: parse_rt opening %s\n", path);
+	fflush(stdout);
+	p = malloc(sizeof(t_parser));
+	if (!p) { close(fd); return (false); }
+    parser_init(p, fd);
+    
+    while (true)
+    {
+        parser_skip_whitespace(p);
+        if (p->eof && p->cursor >= p->bytes_read)
+            break;
+        if (parser_peek(p) == '#') // Skip comments
+        {
+            while (parser_peek(p) && parser_peek(p) != '\n')
+                parser_advance(p);
+            continue;
+        }
+        if (!parse_token(p, id, 16))
+            break;
+		printf("DEBUG: dispatch_scan for ID: %s\n", id);
+		fflush(stdout);
+        obj = dispatch_scan(p, id);
+        if (obj.type != TYPE_NONE)
+        {
+            if (!process_object(scene, obj))
+			{
+                printf("Error: Failed to process object '%s' in %s\n", id, path);
+				status = false;
+			}
+        }
+        else
+        {
+            printf("Warning: Unknown or invalid object type '%s' in %s\n", id, path);
+            // Unknown identifier or error: skip line to prevent infinite loop
+            while (parser_peek(p) && parser_peek(p) != '\n')
+                parser_advance(p);
 			status = false;
-		free(line);
-		if (!status)
-			break ;
-		line = get_next_line(fd);
-	}
+        }
+    }
+	free(p);
 	close(fd);
 	return (status);
 }

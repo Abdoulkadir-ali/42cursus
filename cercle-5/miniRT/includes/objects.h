@@ -18,6 +18,7 @@
 # include "material.h"
 # include "maths.h"
 # include "types.h"
+# include "parser.h"
 # include <fcntl.h>
 # include <math.h>
 # include <stdbool.h>
@@ -30,6 +31,7 @@
 #define GLB_MAGIC 0x46546C67
 #define CHUNK_JSON 0x4E4F534A
 #define CHUNK_BIN 0x004E4942
+#define BVH_BINS 16
 
 /* ------------------------------------------------------------------------- */
 /*                             LEAF STRUCTURES                               */
@@ -105,12 +107,15 @@ struct					s_mesh
 	t_vec3				*normals;
 	t_vec2				*uvs;
 	int					*indices;
+	int					vertex_count;
 	int					tri_count;
 	t_aabb				bbox;
 	t_transform			transform;
 	t_bvh				*internal_bvh;
 	int					mat_id;
 };
+
+void					mesh_apply_transform(t_mesh *mesh, t_transform transform);
 
 struct					s_bone_weight
 {
@@ -163,7 +168,7 @@ typedef struct s_fbx_bin_node
 	uint64_t	num_properties;
 	uint64_t	property_list_len;
 	uint8_t		name_len;
-	char		name[255];
+	char		name[256];
 }				t_fbx_bin_node;
 
 struct					s_skinned_mesh
@@ -185,6 +190,7 @@ struct					s_mesh_info
 {
 	char				*path;
 	t_transform			transform;
+	t_vec3				color;
 };
 
 struct					s_heightmap
@@ -240,6 +246,7 @@ typedef struct s_obj_ctx
 	size_t		out_v_cap;
 	size_t		out_i_count;
 	size_t		out_i_cap;
+	int			current_mat_id; /* Added for MTL support */
 
 	t_aabb		bbox;
 }				t_obj_ctx;
@@ -258,36 +265,44 @@ typedef struct s_extract_ctx
 /* 3. FUNCTION PROTOTYPES */
 
 /* Parsing Helpers (srcs/objects/rt/parsing/utils.c) */
-bool					parse_float_checked(const char *str, double *out);
-bool					parse_vec3_checked(char *str, t_vec3 *out);
-bool					parse_color_checked(char *str, t_vec3 *out);
+void					skip_whitespace(char **line);
+bool					parse_float_fast(char **line, double *out);
+bool					parse_vec3_fast(char **line, t_vec3 *out);
+bool					parse_color_fast(char **line, t_vec3 *out);
+char					*get_next_token(char **line);
+bool					validate_file(const char *path);
 
 /* .rt Parser (srcs/objects/rt/parsing/) */
-t_parse_obj				parse_line(char *line);
-t_parse_obj				parse_ambient(char **tokens);
-t_parse_obj				parse_camera(char **tokens);
-t_parse_obj				parse_light(char **tokens);
-t_parse_obj				parse_spot_light(char **tokens);
-t_parse_obj				parse_sphere(char **tokens);
-t_parse_obj				parse_plane(char **tokens);
-t_parse_obj				parse_cylinder(char **tokens);
-t_parse_obj				parse_cone(char **tokens);
-t_parse_obj				parse_mesh_entry(char **tokens, t_type type);
+t_parse_obj				parse_ambient(t_parser *p);
+t_parse_obj				parse_camera(t_parser *p);
+t_parse_obj				parse_light(t_parser *p);
+t_parse_obj				parse_spot_light(t_parser *p);
+t_parse_obj				parse_sphere(t_parser *p);
+t_parse_obj				parse_plane(t_parser *p);
+t_parse_obj				parse_cylinder(t_parser *p);
+t_parse_obj				parse_cone(t_parser *p);
+t_parse_obj				parse_mesh_entry(t_parser *p, t_type type);
+
 
 void					update_object_material(void *obj_data, t_type type);
 
 /* File Specific Parsers */
 bool					parse_rt(const char *path, t_scene *scene);
 bool					parse_obj(const char *path, t_scene *scene);
+bool					parse_mtl(t_scene *scene, const char *path);
 bool					parse_fdf(const char *path, t_scene *scene);
 bool					parse_fbx(const char *path, t_scene *scene);
 bool					parse_glb(const char *path, t_scene *scene);
 bool					parse_fbx_ascii(const char *path, t_scene *scene);
 bool					parse_fbx_binary(const char *path, t_scene *scene);
+void					fbx_build_flat(t_mesh *m, int *raw, int raw_c, \
+							t_vec3 *n, int nc, t_vec2 *u, int uc, int vc);
 
 /* Build logic */
 void					mesh_build_bvh(t_mesh *mesh);
 bool					intersect_triangle(const t_ray *ray, t_vec3 v[3], double *t, t_vec2 *uv);
+bool					intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit);
+bool					mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist);
 
 /* 4. IMPLEMENTATION IMPORTS */
 # include "bvh.h"

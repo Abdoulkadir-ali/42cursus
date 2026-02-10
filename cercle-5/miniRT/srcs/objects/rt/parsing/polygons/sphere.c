@@ -12,23 +12,19 @@
 #include "objects.h"
 
 /**
- * Parses a sphere entry from tokens.
- * 
- * @param tokens The array of strings.
- * @return The parsed object data.
+ * Parses a sphere entry from the buffered parser.
  */
-t_parse_obj	parse_sphere(char **tokens)
+t_parse_obj	parse_sphere(t_parser *p)
 {
 	t_parse_obj	res;
 	double		diameter;
 	t_vec3		rgb;
 
 	res.type = TYPE_NONE;
-	if (!tokens[1] || !tokens[2] || !tokens[3])
+	if (!parse_vec3(p, &res.data.sphere.transform.pos))
 		return (res);
-	if (!parse_vec3_checked(tokens[1], &res.data.sphere.transform.pos) \
-		|| !parse_float_checked(tokens[2], &diameter) \
-		|| !parse_color_checked(tokens[3], &rgb))
+	diameter = parse_double(p); 
+	if (!parse_vec3(p, &rgb))
 		return (res);
 	res.data.sphere.radius_sq = (float)((diameter / 2.0) * (diameter / 2.0));
 	res.data.sphere.mat_id = 0;

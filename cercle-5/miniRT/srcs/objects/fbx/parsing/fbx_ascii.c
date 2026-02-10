@@ -10,28 +10,26 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+#include <sys/stat.h>
 
-static char	*find_node(int fd, const char *name)
+static char	*resolve_fbx_path(const char *fbx_path, const char *tex_filename)
 {
-	char	*line;
-	long	pos;
+	char	*dir;
+	char	*last_slash;
+	char	*full_path;
 
-	pos = 0;
-	while ((line = get_next_line(fd)))
-	{
-		pos += ft_strlen(line);
-		if (ft_strnstr(line, name, ft_strlen(line)))
-			return (line);
-		free(line);
-		if (pos > 1000000000)
-			break ;
-	}
-	return (NULL);
+	last_slash = ft_strrchr(fbx_path, '/');
+	if (!last_slash)
+		return (ft_strdup(tex_filename));
+	dir = ft_substr(fbx_path, 0, last_slash - fbx_path + 1);
+	full_path = ft_strjoin(dir, tex_filename);
+	free(dir);
+	return (full_path);
 }
 
 static char	*fbx_next(char *p)
 {
-	while (*p && !ft_isdigit(*p) && *p != '-' && *p != '.')
+	while (*p && !ft_isdigit(*p) && *p != '-' && *p != '.' && *p != '}')
 	{
 		if (*p == 'a' && *(p + 1) == ':')
 			p += 2;
@@ -41,310 +39,238 @@ static char	*fbx_next(char *p)
 	return (p);
 }
 
-static t_vec3	*parse_vec3(int fd, int *count)
+static char	*find_node(char *p, char *end, const char *name)
+{
+	size_t	name_len;
+
+	if (!p || !name)
+		return (NULL);
+	name_len = ft_strlen(name);
+	while (p + name_len <= end)
+	{
+		if (ft_memcmp(p, (void *)name, name_len) == 0)
+			return (p + name_len);
+		p++;
+	}
+	return (NULL);
+}
+
+static int	parse_texture(char *p, char *end, t_scene *scene, const char *fbx_path)
+{
+	char	*fn_start;
+	char	*fn_end;
+	char	*filename;
+	char	*full_path;
+	int		mat_id;
+
+	if (!(p = find_node(p, end, "Texture:")) || !(p = find_node(p, end, "FileName:")))
+		return (-1);
+	while (p < end && *p && *p != '"') p++;
+	if (p >= end || *p != '"') return (-1);
+	p++;
+	fn_start = p;
+	while (p < end && *p && *p != '"') p++;
+	if (p >= end || *p != '"') return (-1);
+	fn_end = p;
+	
+	filename = ft_substr(fn_start, 0, fn_end - fn_start);
+	full_path = resolve_fbx_path(fbx_path, filename);
+	free(filename);
+	
+	mat_id = scene_add_named_material(scene, "FBX_Mat");
+	if (load_texture_xpm(scene, &scene->materials[mat_id].albedo_map, full_path))
+		printf("FBX Texture Loaded: %s\n", full_path);
+	free(full_path);
+	return (mat_id);
+}
+
+static void	*parse_array(char **p, int *count, size_t sz, void (*f)(char **, void *))
 {
 	int		cap;
 	int		i;
-	t_vec3	*arr;
+	void	*arr;
 	void	*tmp;
-	char	*line;
-	char	*p;
 
 	cap = 10000;
 	i = 0;
-	arr = malloc(sizeof(t_vec3) * cap);
+	arr = malloc(sz * cap);
 	if (!arr)
 		return (NULL);
-	while ((line = get_next_line(fd)))
+	while (**p && **p != '}')
 	{
-		p = line;
-		while (*p)
-		{
-			p = fbx_next(p);
-			if (!*p)
-				break ;
-			if (i >= cap)
-			{
-				cap *= 2;
-				tmp = realloc(arr, sizeof(t_vec3) * cap);
-				if (!tmp)
-				{
-					free(arr);
-					free(line);
-					return (NULL);
-				}
-				arr = tmp;
-			}
-			arr[i].x = strtod(p, &p);
-			p = fbx_next(p);
-			arr[i].y = strtod(p, &p);
-			p = fbx_next(p);
-			arr[i].z = strtod(p, &p);
-			i++;
-			if (*p)
-				p++;
-		}
-		if (ft_strchr(line, '}'))
-		{
-			free(line);
+		*p = fbx_next(*p);
+		if (!**p || **p == '}')
 			break ;
+		if (i >= cap)
+		{
+			cap *= 2;
+			tmp = realloc(arr, sz * cap);
+			if (!tmp)
+				return (free(arr), NULL);
+			arr = tmp;
 		}
-		free(line);
+		f(p, (char *)arr + (i * sz));
+		i++;
 	}
 	*count = i;
 	return (arr);
 }
 
-static t_vec2	*parse_vec2(int fd, int *count)
+static void	f_vec3(char **p, void *dst)
 {
-	int		cap;
-	int		i;
-	t_vec2	*arr;
-	void	*tmp;
-	char	*line;
-	char	*p;
+	t_vec3	*v;
 
-	cap = 10000;
-	i = 0;
-	arr = malloc(sizeof(t_vec2) * cap);
-	if (!arr)
-		return (NULL);
-	while ((line = get_next_line(fd)))
-	{
-		p = line;
-		while (*p)
-		{
-			p = fbx_next(p);
-			if (!*p)
-				break ;
-			if (i >= cap)
-			{
-				cap *= 2;
-				tmp = realloc(arr, sizeof(t_vec2) * cap);
-				if (!tmp)
-				{
-					free(arr);
-					free(line);
-					return (NULL);
-				}
-				arr = tmp;
-			}
-			arr[i].x = strtod(p, &p);
-			p = fbx_next(p);
-			arr[i].y = strtod(p, &p);
-			i++;
-			if (*p)
-				p++;
-		}
-		if (ft_strchr(line, '}'))
-		{
-			free(line);
-			break ;
-		}
-		free(line);
-	}
-	*count = i;
-	return (arr);
+	v = (t_vec3 *)dst;
+	v->x = strtod(*p, p);
+	*p = fbx_next(*p);
+	v->y = strtod(*p, p);
+	*p = fbx_next(*p);
+	v->z = strtod(*p, p);
+	if (**p == ',') (*p)++;
 }
 
-static int	*parse_indices(int fd, int *count)
+static void	f_vec2(char **p, void *dst)
 {
-	int		cap;
-	int		i;
-	int		*arr;
-	void	*tmp;
-	char	*line;
-	char	*p;
+	t_vec2	*v;
 
-	cap = 10000;
-	i = 0;
-	arr = malloc(sizeof(int) * cap);
-	if (!arr)
-		return (NULL);
-	while ((line = get_next_line(fd)))
-	{
-		p = line;
-		while (*p)
-		{
-			p = fbx_next(p);
-			if (!*p)
-				break ;
-			if (i >= cap)
-			{
-				cap *= 2;
-				tmp = realloc(arr, sizeof(int) * cap);
-				if (!tmp)
-				{
-					free(arr);
-					free(line);
-					return (NULL);
-				}
-				arr = tmp;
-			}
-			arr[i++] = ft_atoi(p);
-			if (*p == '-')
-				p++;
-			while (ft_isdigit(*p))
-				p++;
-			if (*p)
-				p++;
-		}
-		if (ft_strchr(line, '}'))
-		{
-			free(line);
-			break ;
-		}
-		free(line);
-	}
-	*count = i;
-	return (arr);
+	v = (t_vec2 *)dst;
+	v->x = strtod(*p, p);
+	*p = fbx_next(*p);
+	v->y = strtod(*p, p);
+	if (**p == ',') (*p)++;
 }
 
-static void	build_flat(t_mesh *m, int *raw, int raw_c, \
-	t_vec3 *n, int nc, t_vec2 *u, int uc)
+static void	f_int(char **p, void *dst)
 {
-	t_vec2	*nu;
-	t_vec3	*nv;
-	t_vec3	*nn;
-	int		si;
-	int		idx;
-	int		vn;
-	int		i;
-	int		ps;
-	int		vp;
-	int		vg;
-	int		*ni;
-	int		v[64];
-	int		tc;
-	int		use_v_n;
-	int		use_v_u;
+	*(int *)dst = ft_atoi(*p);
+	if (**p == '-')
+		(*p)++;
+	while (ft_isdigit(**p))
+		(*p)++;
+	if (**p == ',') (*p)++;
+}
 
-	ps = 0;
-	vp = 0;
-	vg = 0;
-	idx = 0;
-	vn = 0;
-	i = 0;
-	tc = 0;
-	while (ps < raw_c)
+static char	*read_file_content(const char *path, size_t *out_size)
+{
+	int			fd;
+	struct stat	st;
+	char		*buf;
+	ssize_t		ret;
+	size_t		total_read;
+
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
+		return (NULL);
+	if (fstat(fd, &st) < 0 || st.st_size == 0)
 	{
-		vn = 0;
-		while (ps < raw_c)
-		{
-			idx = raw[ps++];
-			vn++;
-			if (idx < 0)
-				break ;
-		}
-		if (vn >= 3)
-			tc += (vn - 2);
+		close(fd);
+		return (NULL);
 	}
-	m->tri_count = tc;
-	nv = malloc(sizeof(t_vec3) * tc * 3);
-	nn = n ? malloc(sizeof(t_vec3) * tc * 3) : NULL;
-	nu = u ? malloc(sizeof(t_vec2) * tc * 3) : NULL;
-	ni = malloc(sizeof(int) * tc * 3);
-	if (!nv || !ni || (n && !nn) || (u && !nu))
-		return ;
-	use_v_n = (n && nc > 0 && nc < tc * 3);
-	use_v_u = (u && uc > 0 && uc < tc * 3);
-	ps = 0;
-	while (ps < raw_c)
+	buf = malloc(st.st_size + 1);
+	if (!buf)
 	{
-		vn = 0;
-		si = vg;
-		while (ps < raw_c)
-		{
-			idx = raw[ps++];
-			v[vn++] = (idx < 0) ? (idx ^ -1) : idx;
-			vg++;
-			if (idx < 0 || vn >= 64)
-				break ;
-		}
-		for (i = 1; i < vn - 1; i++)
-		{
-			nv[vp] = m->vertices[v[0]];
-			if (nn)
-				nn[vp] = use_v_n ? n[v[0] % nc] : n[(si + 0) % nc];
-			if (nu)
-				nu[vp] = use_v_u ? u[v[0] % uc] : u[(si + 0) % uc];
-			ni[vp] = vp;
-			vp++;
-			nv[vp] = m->vertices[v[i]];
-			if (nn)
-				nn[vp] = use_v_n ? n[v[i] % nc] : n[(si + i) % nc];
-			if (nu)
-				nu[vp] = use_v_u ? u[v[i] % uc] : u[(si + i) % uc];
-			ni[vp] = vp;
-			vp++;
-			nv[vp] = m->vertices[v[i + 1]];
-			if (nn)
-				nn[vp] = use_v_n ? n[v[i + 1] % nc] : n[(si + i + 1) % nc];
-			if (nu)
-				nu[vp] = use_v_u ? u[v[i + 1] % uc] : u[(si + i + 1) % uc];
-			ni[vp] = vp;
-			vp++;
-		}
+		close(fd);
+		return (NULL);
 	}
-	free(m->vertices);
-	m->vertices = nv;
-	m->normals = nn;
-	m->uvs = nu;
-	m->indices = ni;
+	total_read = 0;
+	while (total_read < (size_t)st.st_size)
+	{
+		ret = read(fd, buf + total_read, st.st_size - total_read);
+		if (ret <= 0)
+			break ;
+		total_read += ret;
+	}
+	buf[total_read] = '\0';
+	close(fd);
+	*out_size = total_read;
+	return (buf);
+}
+
+static char	*advance_to_data(char *p, char *end)
+{
+	size_t rem = end - p;
+	if (rem > 500) rem = 500;
+	
+	char *data_start = ft_strnstr(p, "a:", rem);
+	if (data_start)
+		return (data_start + 2);
+	return (p);
 }
 
 bool	parse_fbx_ascii(const char *path, t_scene *scene)
 {
-	char			*l;
 	t_skinned_mesh	m;
 	t_vec3			*rn;
 	t_vec2			*ru;
-	int				fd;
 	int				*ri;
-	int				rc;
-	int				vc;
-	int				nc;
-	int				uc;
+	char			*buf;
+	char			*p;
+	char			*end;
+	char			*temp;
+	size_t			buf_size;
+	int				rc, vc, nc, uc;
+	int				mat_id;
 
-	rn = NULL;
-	ru = NULL;
-	rc = 0;
-	vc = 0;
-	nc = 0;
-	uc = 0;
-	if ((fd = open(path, O_RDONLY)) < 0)
+	rc = vc = nc = uc = 0;
+	buf = read_file_content(path, &buf_size);
+	if (!buf)
 		return (false);
+	p = buf;
+	end = buf + buf_size;
 	ft_memset(&m, 0, sizeof(t_skinned_mesh));
 	m.base.name = ft_strdup(path);
-	if (!(l = find_node(fd, "Vertices:")))
-		return (close(fd), false);
-	free(l);
-	m.base.vertices = parse_vec3(fd, &vc);
-	if (!(l = find_node(fd, "PolygonVertexIndex:")))
-		return (close(fd), false);
-	free(l);
-	ri = parse_indices(fd, &rc);
-	if ((l = find_node(fd, "Normals:")))
+	
+	if (!(p = find_node(p, end, "Vertices:")))
 	{
-		free(l);
-		rn = parse_vec3(fd, &nc);
-	}
-	if ((l = find_node(fd, "UV:")))
-	{
-		free(l);
-		ru = parse_vec2(fd, &uc);
-	}
-	close(fd);
-	if (!m.base.vertices || !ri)
+		free(buf);
 		return (false);
-	build_flat(&m.base, ri, rc, rn, nc, ru, uc);
-	if (rn)
-		free(rn);
-	if (ru)
-		free(ru);
+	}
+	p = advance_to_data(p, end);
+	m.base.vertices = parse_array(&p, &vc, sizeof(t_vec3), f_vec3);
+	
+	if (!(p = find_node(p, end, "PolygonVertexIndex:")))
+	{
+		if (m.base.vertices) free(m.base.vertices);
+		free(buf);
+		return (false);
+	}
+	p = advance_to_data(p, end);
+	ri = parse_array(&p, &rc, sizeof(int), f_int);
+
+	rn = NULL;
+	if ((temp = find_node(p, end, "Normals:"))) 
+	{
+		temp = advance_to_data(temp, end);
+		rn = parse_array(&temp, &nc, sizeof(t_vec3), f_vec3);
+	}
+
+	ru = NULL;
+	if ((temp = find_node(p, end, "UV:")))
+	{
+		temp = advance_to_data(temp, end);
+		ru = parse_array(&temp, &uc, sizeof(t_vec2), f_vec2);
+	}
+	
+	if (!m.base.vertices || !ri)
+	{
+		if (m.base.vertices) free(m.base.vertices);
+		if (ri) free(ri);
+		if (rn) free(rn);
+		if (ru) free(ru);
+		free(buf);
+		return (false);
+	}
+	fbx_build_flat(&m.base, ri, rc, rn, nc, ru, uc, vc);
+	if (rn) free(rn);
+	if (ru) free(ru);
 	free(ri);
 	m.vertex_count = m.base.tri_count * 3;
+	m.base.vertex_count = m.base.tri_count * 3;
 	mesh_build_bvh(&m.base);
-	printf("FBX ASCII Loaded: %s (%d tris)\n", path, m.base.tri_count);
+	mat_id = parse_texture(p, end, scene, path);
+	if (mat_id >= 0)
+		m.base.mat_id = mat_id;
+	
+	free(buf);
 	return (scene_add_animated(scene, m));
 }

@@ -1,0 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/09 18:30:00 by abdoali           #+#    #+#             */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef PARSER_H
+# define PARSER_H
+
+# include <fcntl.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdbool.h>
+# include <math.h>
+#include "maths.h"
+
+# define PARSER_BUF_SIZE 65536
+
+typedef struct s_parser
+{
+	int		fd;
+	char	buffer[PARSER_BUF_SIZE + 1];
+	size_t	cursor;
+	size_t	bytes_read;
+	bool	eof;
+}	t_parser;
+
+/* Core functions */
+void	parser_init(t_parser *p, int fd);
+char	parser_peek(t_parser *p);
+void	parser_advance(t_parser *p);
+void	parser_skip_whitespace(t_parser *p);
+bool	parser_match(t_parser *p, char expected);
+bool	parser_get_line(t_parser *p, char *buf, size_t max_len);
+
+/* Extractors */
+int		parse_int(t_parser *p);
+double	parse_double(t_parser *p);
+bool	parse_vec3(t_parser *p, t_vec3 *out);
+
+#endif

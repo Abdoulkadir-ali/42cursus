@@ -21,11 +21,16 @@
 */
 static bool	init_window(t_gui *gui)
 {
-	gui->win.mlx = mlx_init();
+	/* gui->win.mlx is already set */
 	if (!gui->win.mlx)
 		return (false);
 	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.width,
 			gui->win.height, "miniRT");
+	if (!gui->win.win)
+	{
+		free(gui->win.mlx);
+		return (false);
+	}
 	gui->win.img = mlx_new_image(gui->win.mlx, gui->win.width, gui->win.height);
 	gui->win.addr = mlx_get_data_addr(gui->win.img, &gui->win.bpp,
 			&gui->win.line_len, &gui->win.endian);
@@ -57,7 +62,7 @@ static void	init_camera(t_gui *gui)
 ** Main initialization function for the GUI subsystem.
 ** Allocates memory and initializes MLX, window, camera, and map switcher.
 */
-t_gui	*gui_init(t_scene *scene, t_bvh *bvh)
+t_gui	*gui_init(t_scene *scene, t_bvh *bvh, void *mlx)
 {
 	t_gui	*gui;
 
@@ -69,6 +74,7 @@ t_gui	*gui_init(t_scene *scene, t_bvh *bvh)
 	gui->bvh = bvh;
 	gui->win.width = 1280;
 	gui->win.height = 720;
+	gui->win.mlx = mlx;
 	if (!init_window(gui))
 	{
 		free(gui);

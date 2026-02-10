@@ -17,17 +17,20 @@
  * @param tokens The array of strings.
  * @return The parsed object data.
  */
-t_parse_obj	parse_plane(char **tokens)
+/**
+ * Parses a plane entry from the buffered parser.
+ */
+t_parse_obj	parse_plane(t_parser *p)
 {
 	t_parse_obj	res;
 	t_vec3		rgb;
 
 	res.type = TYPE_NONE;
-	if (!tokens[1] || !tokens[2] || !tokens[3])
+	if (!parse_vec3(p, &res.data.plane.transform.pos))
 		return (res);
-	if (!parse_vec3_checked(tokens[1], &res.data.plane.transform.pos) \
-		|| !parse_vec3_checked(tokens[2], &res.data.plane.transform.forward) \
-		|| !parse_color_checked(tokens[3], &rgb))
+	if (!parse_vec3(p, &res.data.plane.transform.forward))
+		return (res);
+	if (!parse_vec3(p, &rgb))
 		return (res);
 	if (vec3_mag_sq(res.data.plane.transform.forward) == 0.0)
 		res.data.plane.transform.forward = vec3(0, 1, 0);

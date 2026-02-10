@@ -56,8 +56,7 @@ static void	fill_map_list(t_gui *gui)
 {
 	DIR				*dir;
 	struct dirent	*entry;
-
-	dir = opendir("maps");
+	dir = opendir("maps/rt");
 	if (!dir)
 		return ;
 	gui->map_info.count = 0;
@@ -66,10 +65,13 @@ static void	fill_map_list(t_gui *gui)
 	{
 		if (entry->d_type == DT_REG && is_rt_file(entry->d_name))
 		{
-			gui->map_info.files[gui->map_info.count]
-				= ft_strjoin("maps/", entry->d_name);
-			if (gui->map_info.files[gui->map_info.count])
-				gui->map_info.count++;
+            if (gui->map_info.count < 1024) // Sanity check if we can't easily pass cap
+            {
+			    gui->map_info.files[gui->map_info.count]
+				    = ft_strjoin("maps/rt/", entry->d_name);
+			    if (gui->map_info.files[gui->map_info.count])
+				    gui->map_info.count++;
+            }
 		}
 		entry = readdir(dir);
 	}
@@ -143,7 +145,7 @@ static bool	load_scene_and_bvh(t_gui *gui, const char *path)
 	t_bvh	*new_b;
 
 	printf("Switching to map: %s\n", path);
-	new_s = parse_file(path);
+	new_s = parse_file(path, gui->win.mlx);
 	if (!new_s)
 	{
 		printf("Error: Failed to load map %s\n", path);

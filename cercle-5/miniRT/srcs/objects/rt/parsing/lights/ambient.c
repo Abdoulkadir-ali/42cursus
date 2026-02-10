@@ -17,15 +17,16 @@
  * @param tokens The array of strings.
  * @return The parsed object data.
  */
-t_parse_obj	parse_ambient(char **tokens)
+/**
+ * Parses the ambient light entry from the buffered parser.
+ */
+t_parse_obj	parse_ambient(t_parser *p)
 {
 	t_parse_obj	res;
 
 	res.type = TYPE_NONE;
-	if (!tokens[1] || !tokens[2])
-		return (res);
-	if (!parse_float_checked(tokens[1], &res.data.ambient.brightness) \
-		|| !parse_color_checked(tokens[2], &res.data.ambient.rgb))
+	res.data.ambient.brightness = parse_double(p);
+	if (!parse_vec3(p, &res.data.ambient.rgb))
 		return (res);
 	res.type = TYPE_AMBIENT;
 	return (res);

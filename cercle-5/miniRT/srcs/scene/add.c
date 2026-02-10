@@ -29,7 +29,10 @@ static bool	ensure_capacity(void **array, int *count, int *cap, size_t elem_size
 		new_cap = *cap * 2;
 	tmp = realloc(*array, new_cap * elem_size);
 	if (!tmp)
+	{
+		printf("Error: Memory allocation failed while resizing scene array\n");
 		return (false);
+	}
 	*array = tmp;
 	*cap = new_cap;
 	return (true);
@@ -39,30 +42,19 @@ static bool	ensure_capacity(void **array, int *count, int *cap, size_t elem_size
 ** Adds a material to the scene.
 ** reused existing identical materials to save memory.
 */
-int	scene_add_material(t_scene *scene, t_vec3 color)
-{
-	int			i;
-	t_material	*m;
 
-	i = 0;
-	while (i < scene->mat_count)
-	{
-		m = &scene->materials[i];
-		if (m->albedo_map.type == TEX_SOLID
-			&& vec3_compare(m->albedo_map.color_a, color))
-			return (i);
-		i++;
-	}
-	if (!ensure_capacity((void **)&scene->materials, &scene->mat_count,
-			&scene->mat_cap, sizeof(t_material)))
-		return (-1);
-	scene->materials[scene->mat_count].albedo_map.type = TEX_SOLID;
-	scene->materials[scene->mat_count].albedo_map.color_a = color;
-	scene->materials[scene->mat_count].albedo_map.scale = 1.0;
-	scene->materials[scene->mat_count].specular = 0.5;
-	scene->materials[scene->mat_count].shininess = 32.0;
-	return (scene->mat_count++);
-}
+
+/*
+** Finds a material by name.
+** Returns -1 if not found.
+*/
+
+
+/*
+** Creates a UE-style default checkerboard material (dark/light gray).
+** Returns the material index, or -1 on failure.
+*/
+
 
 /*
 ** Adds a sphere to the scene.

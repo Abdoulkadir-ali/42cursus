@@ -18,6 +18,10 @@ void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction)
 {
 	ray->origin = origin;
 	ray->direction = direction;
+	ray->inv_dir = vec3(1.0 / direction.x, 1.0 / direction.y, 1.0 / direction.z);
+	ray->sign[0] = (ray->inv_dir.x < 0);
+	ray->sign[1] = (ray->inv_dir.y < 0);
+	ray->sign[2] = (ray->inv_dir.z < 0);
 }
 
 /*
@@ -26,6 +30,10 @@ void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction)
 void	ray_normalize_direction(t_ray *ray)
 {
 	ray->direction = vec3_norm(ray->direction);
+	ray->inv_dir = vec3(1.0 / ray->direction.x, 1.0 / ray->direction.y, 1.0 / ray->direction.z);
+	ray->sign[0] = (ray->inv_dir.x < 0);
+	ray->sign[1] = (ray->inv_dir.y < 0);
+	ray->sign[2] = (ray->inv_dir.z < 0);
 }
 
 /*

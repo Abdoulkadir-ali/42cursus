@@ -44,6 +44,7 @@ typedef struct s_texture
 
 typedef struct s_material
 {
+	char		*name; /* Added for MTL parsing */
 	t_texture albedo_map; // Replaces t_vec3 albedo
 	t_texture bump_map;   // Optional bump texture
 

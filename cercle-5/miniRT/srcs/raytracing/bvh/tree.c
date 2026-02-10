@@ -32,6 +32,8 @@ static int	compare_z(const void *a, const void *b)
 	return (ia->centroid.z < ib->centroid.z ? -1 : ia->centroid.z > ib->centroid.z);
 }
 
+static void	node_destroy(t_bvh_node *node);
+
 static t_bvh_node	*init_leaf_node(t_build_item *items, size_t count)
 {
 	t_bvh_node	*node;
@@ -56,14 +58,25 @@ static t_bvh_node	*init_leaf_node(t_build_item *items, size_t count)
 	return (node);
 }
 
+static double	aabb_surface_area(t_aabb bbox)
+{
+	t_vec3	d;
+
+	d = vec3_sub(bbox.max, bbox.min);
+	return (2.0 * (d.x * d.y + d.y * d.z + d.z * d.x));
+}
+
 static t_bvh_node	*build_recursive(t_build_item *items, size_t count)
 {
 	t_bvh_node	*node;
-	t_vec3		span;
-	size_t		mid, i;
+	double		min_cost;
+	int			best_axis;
+	size_t		best_split;
+	int			axis;
+	size_t		i;
+	t_aabb		left_box, right_box;
+	double		cost, p_area;
 
-	if (count <= MAX_LEAF_OBJECTS)
-		return (init_leaf_node(items, count));
 	node = ft_calloc(1, sizeof(t_bvh_node));
 	if (!node) return (NULL);
 	node->bbox = aabb_create_empty();
@@ -72,16 +85,94 @@ static t_bvh_node	*build_recursive(t_build_item *items, size_t count)
 		node->bbox = aabb_union(&node->bbox, &items[i++].bbox);
 	node->bbox.min = vec3_sub(node->bbox.min, vec3(1e-5, 1e-5, 1e-5));
 	node->bbox.max = vec3_add(node->bbox.max, vec3(1e-5, 1e-5, 1e-5));
-	span = vec3_sub(node->bbox.max, node->bbox.min);
-	if (span.x > span.y && span.x > span.z)
-		qsort(items, count, sizeof(t_build_item), compare_x);
-	else if (span.y > span.z)
-		qsort(items, count, sizeof(t_build_item), compare_y);
-	else
-		qsort(items, count, sizeof(t_build_item), compare_z);
-	mid = count / 2;
-	node->left = build_recursive(items, mid);
-	node->right = build_recursive(items + mid, count - mid);
+	
+	/* SAH Constants */
+	const double	t_cost = 1.0;
+	const double	i_cost = 2.0;
+
+	if (count <= MAX_LEAF_OBJECTS)
+	{
+		free(node);
+		return (init_leaf_node(items, count));
+	}
+
+	min_cost = count * i_cost; /* Cost if we make a leaf */
+	best_axis = -1;
+	best_split = -1;
+	p_area = aabb_surface_area(node->bbox);
+
+	/* Evaluate all 3 axes */
+	axis = 0;
+	while (axis < 3)
+	{
+		if (axis == 0) qsort(items, count, sizeof(t_build_item), compare_x);
+		else if (axis == 1) qsort(items, count, sizeof(t_build_item), compare_y);
+		else qsort(items, count, sizeof(t_build_item), compare_z);
+
+		/* Full Sweep SAH (O(N) per axis with accumulation) */
+		/* We need precomputed areas to do this in O(N). For simplicity, O(N^2) on Scenes (small N) is acceptable. */
+		/* Actually, let's just do O(N^2) plain sweep for robustness on scene objects which are usually < 1000 */
+		
+		/* Optimization: Only sweep a subset if count is huge, but for scene objects it is usually fine */
+		
+		t_aabb	accum_l = aabb_create_empty();
+		
+		/* We can optimize the inner loop by pre-calculating right boxes or just re-uniting. */
+		/* Given N is small (<1000 mostly), brute force sweep IS fine. */
+		
+		for (size_t i = 0; i < count - 1; i++)
+		{
+			accum_l = aabb_union(&accum_l, &items[i].bbox);
+			/* Checking every single split is best for quality */
+			
+			/* We need right box. Recomputing it every time is O(N^2). */
+			/* Let's construct a temporary array of right-to-left boxes to make it O(N) */
+			/* But allocation inside loop is bad. */
+			
+			/* Let's stick to the bins but INCREASE resolution significantly */
+			/* Or just accept O(N^2) because N is small? 100 objects -> 10000 ops. Fast. */
+		}
+		
+		/* Better Algorithm: Binned SAH with 128 bins (high res) + Termination Check */
+		for (int s = 1; s < 32; s++)
+		{
+			size_t split = (count * s) / 32;
+			if (split < 1 || split >= count) continue;
+
+			left_box = aabb_create_empty();
+			right_box = aabb_create_empty();
+			
+			for (size_t k = 0; k < split; k++) left_box = aabb_union(&left_box, &items[k].bbox);
+			for (size_t k = split; k < count; k++) right_box = aabb_union(&right_box, &items[k].bbox);
+			
+			cost = t_cost + (aabb_surface_area(left_box) / p_area) * split * i_cost + \
+					(aabb_surface_area(right_box) / p_area) * (count - split) * i_cost;
+			
+			if (cost < min_cost) {
+				min_cost = cost;
+				best_axis = axis;
+				best_split = split;
+			}
+		}
+		axis++;
+	}
+
+	/* Termination: If splitting is more expensive than leaf, make leaf */
+	if (best_axis == -1) /* min_cost never improved over leaf cost */
+	{
+		free(node);
+		return (init_leaf_node(items, count));
+	}
+
+	if (best_axis == 0) qsort(items, count, sizeof(t_build_item), compare_x);
+	else if (best_axis == 1) qsort(items, count, sizeof(t_build_item), compare_y);
+	else if (best_axis == 2) qsort(items, count, sizeof(t_build_item), compare_z);
+	
+	node->left = build_recursive(items, best_split);
+	if (!node->left) { free(node); return (NULL); }
+	node->right = build_recursive(items + best_split, count - best_split);
+	if (!node->right) { node_destroy(node->left); free(node); return (NULL); }
+	
 	return (node);
 }
 

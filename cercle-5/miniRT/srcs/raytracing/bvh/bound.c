@@ -33,8 +33,8 @@ static t_aabb	plane_aabb(t_plane *pl)
 	t_aabb	bbox;
 
 	(void)pl;
-	bbox.min = vec3(-DBL_MAX, -DBL_MAX, -DBL_MAX);
-	bbox.max = vec3(DBL_MAX, DBL_MAX, DBL_MAX);
+	bbox.min = vec3(-MAX_VALUE, -MAX_VALUE, -MAX_VALUE);
+	bbox.max = vec3(MAX_VALUE, MAX_VALUE, MAX_VALUE);
 	return (bbox);
 }
 
@@ -72,41 +72,36 @@ static t_aabb	cone_aabb(t_cone *co)
 
 /**
  * Transforms a local AABB into world space by applying the object's transform.
- * For now, only handles translation and uniform scale.
+ * Handles translation, rotation, and scaling.
  */
-static t_aabb	transform_aabb(t_aabb local, t_transform t)
+t_aabb	aabb_transform(t_aabb local, t_transform t)
 {
 	t_aabb	w;
 	t_vec3	c[8];
+	t_mat4	m;
 	int		i;
 
-	c[0] = vec3_add(vec3_mul(vec3(local.min.x, local.min.y, local.min.z), \
-		t.scale), t.pos);
-	c[1] = vec3_add(vec3_mul(vec3(local.max.x, local.min.y, local.min.z), \
-		t.scale), t.pos);
-	c[2] = vec3_add(vec3_mul(vec3(local.min.x, local.max.y, local.min.z), \
-		t.scale), t.pos);
-	c[3] = vec3_add(vec3_mul(vec3(local.max.x, local.max.y, local.min.z), \
-		t.scale), t.pos);
-	c[4] = vec3_add(vec3_mul(vec3(local.min.x, local.min.y, local.max.z), \
-		t.scale), t.pos);
-	c[5] = vec3_add(vec3_mul(vec3(local.max.x, local.min.y, local.max.z), \
-		t.scale), t.pos);
-	c[6] = vec3_add(vec3_mul(vec3(local.min.x, local.max.y, local.max.z), \
-		t.scale), t.pos);
-	c[7] = vec3_add(vec3_mul(vec3(local.max.x, local.max.y, local.max.z), \
-		t.scale), t.pos);
-	w.min = vec3(1e30, 1e30, 1e30);
-	w.max = vec3(-1e30, -1e30, -1e30);
+	m = mat4_transform(t);
+	c[0] = local.min;
+	c[1] = vec3(local.min.x, local.min.y, local.max.z);
+	c[2] = vec3(local.min.x, local.max.y, local.min.z);
+	c[3] = vec3(local.min.x, local.max.y, local.max.z);
+	c[4] = vec3(local.max.x, local.min.y, local.min.z);
+	c[5] = vec3(local.max.x, local.min.y, local.max.z);
+	c[6] = vec3(local.max.x, local.max.y, local.min.z);
+	c[7] = local.max;
+	w.min = vec3(MAX_VALUE, MAX_VALUE, MAX_VALUE);
+	w.max = vec3(-MAX_VALUE, -MAX_VALUE, -MAX_VALUE);
 	i = -1;
 	while (++i < 8)
 	{
-		w.min.x = fmin(w.min.x, c[i].x);
-		w.min.y = fmin(w.min.y, c[i].y);
-		w.min.z = fmin(w.min.z, c[i].z);
-		w.max.x = fmax(w.max.x, c[i].x);
-		w.max.y = fmax(w.max.y, c[i].y);
-		w.max.z = fmax(w.max.z, c[i].z);
+		t_vec3 v = mat4_mul_pos(m, c[i]);
+		w.min.x = fmin(w.min.x, v.x);
+		w.min.y = fmin(w.min.y, v.y);
+		w.min.z = fmin(w.min.z, v.z);
+		w.max.x = fmax(w.max.x, v.x);
+		w.max.y = fmax(w.max.y, v.y);
+		w.max.z = fmax(w.max.z, v.z);
 	}
 	return (w);
 }
@@ -125,12 +120,12 @@ t_aabb	aabb_from_ref(t_scene *scene, t_bvh_ref ref)
 	if (ref.type == TYPE_CONE)
 		return (cone_aabb(&scene->cones[ref.index]));
 	if (ref.type == TYPE_MESH)
-		return (transform_aabb(scene->meshes[ref.index].bbox, \
+		return (aabb_transform(scene->meshes[ref.index].bbox, \
 			scene->meshes[ref.index].transform));
 	if (ref.type == TYPE_ANIM)
-		return (transform_aabb(scene->animated[ref.index].base.bbox, \
+		return (aabb_transform(scene->animated[ref.index].base.bbox, \
 			scene->animated[ref.index].base.transform));
-	return ((t_aabb){vec3(0, 0, 0), vec3(0, 0, 0)});
+	return (aabb_create_empty());
 }
 
 /**
@@ -140,8 +135,8 @@ t_aabb	aabb_create_empty(void)
 {
 	t_aabb	bbox;
 
-	bbox.min = vec3(DBL_MAX, DBL_MAX, DBL_MAX);
-	bbox.max = vec3(-DBL_MAX, -DBL_MAX, -DBL_MAX);
+	bbox.min = vec3(MAX_VALUE, MAX_VALUE, MAX_VALUE);
+	bbox.max = vec3(-MAX_VALUE, -MAX_VALUE, -MAX_VALUE);
 	return (bbox);
 }
 

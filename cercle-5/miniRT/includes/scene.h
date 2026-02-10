@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:19:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/09 16:56:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 struct				s_scene
 {
 	char			*name;
+	void			*mlx; /* Added for texture loading */
 
 	/* Memory Pools */
 	t_sphere		*spheres;
@@ -84,6 +85,15 @@ void				destroy_scene(t_scene *scene);
 
 /* srcs/scene/add.c (Specialized Adders) */
 int					scene_add_material(t_scene *scene, t_vec3 color);
+int					scene_add_checker_material(t_scene *scene, t_vec3 a,
+					t_vec3 b, double scale);
+int					scene_find_material(t_scene *scene, const char *name);
+int					scene_add_named_material(t_scene *scene, const char *name);
+
+/* srcs/scene/texture_load.c */
+bool				load_texture_xpm(t_scene *scene, t_texture *tex,
+					const char *path);
+
 bool				scene_add_sphere(t_scene *scene, t_sphere sphere);
 bool				scene_add_plane(t_scene *scene, t_plane plane);
 bool				scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
@@ -93,10 +103,9 @@ bool				scene_add_animated(t_scene *scene, t_skinned_mesh animated);
 bool				scene_add_light(t_scene *scene, t_light light);
 
 /* srcs/objects/rt/parsing/ (Global Selector) */
-t_scene				*parse_file(const char *path);
+t_scene				*parse_file(const char *path, void *mlx);
 
 /* 4. IMPLEMENTATION IMPORTS */
 # include "bvh.h"
-# include "gui.h"
 
 #endif

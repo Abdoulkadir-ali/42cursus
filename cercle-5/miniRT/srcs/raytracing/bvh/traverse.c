@@ -38,119 +38,185 @@ static bool	intersect_object(const t_ray *ray, t_scene *scene,
 }
 
 /*
-** Computes intersection between a ray and an Axis-Aligned Bounding Box.
+** Optimized AABB intersection using precomputed inverse ray direction.
 */
-static bool	aabb_ray_intersect(const t_aabb *aabb, const t_ray *ray,
+static inline bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray,
 		double *tmin, double *tmax)
 {
-	double	t[2];
-	double	tm[2];
+	double	t0;
+	double	t1;
+	double	min;
+	double	max;
 
-	tm[0] = -1e30;
-	tm[1] = 1e30;
-	/* X */
-	t[0] = (aabb->min.x - ray->origin.x) / ray->direction.x;
-	t[1] = (aabb->max.x - ray->origin.x) / ray->direction.x;
-	tm[0] = fmax(tm[0], fmin(t[0], t[1]));
-	tm[1] = fmin(tm[1], fmax(t[0], t[1]));
-	/* Y */
-	t[0] = (aabb->min.y - ray->origin.y) / ray->direction.y;
-	t[1] = (aabb->max.y - ray->origin.y) / ray->direction.y;
-	tm[0] = fmax(tm[0], fmin(t[0], t[1]));
-	tm[1] = fmin(tm[1], fmax(t[0], t[1]));
-	/* Z */
-	t[0] = (aabb->min.z - ray->origin.z) / ray->direction.z;
-	t[1] = (aabb->max.z - ray->origin.z) / ray->direction.z;
-	tm[0] = fmax(tm[0], fmin(t[0], t[1]));
-	tm[1] = fmin(tm[1], fmax(t[0], t[1]));
-	*tmin = tm[0];
-	*tmax = tm[1];
-	return (tm[1] >= tm[0] && tm[1] > EPSILON);
-}
-
-/*
-** Checks intersections within a leaf node of the BVH.
-*/
-static void	traverse_leaf(const t_bvh *bvh, const t_bvh_node *node,
-		const t_ray *ray, t_hit *hit)
-{
-	t_hit	temp_hit;
-	size_t	i;
-
-	i = 0;
-	while (i < node->num_refs)
+	/* X Axis */
+	t0 = (aabb->min.x - ray->origin.x) * ray->inv_dir.x;
+	t1 = (aabb->max.x - ray->origin.x) * ray->inv_dir.x;
+	if (ray->sign[0])
 	{
-		if (intersect_object(ray, bvh->scene, node->refs[i], &temp_hit)
-			&& temp_hit.t < hit->t)
-			*hit = temp_hit;
-		i++;
+		double tmp = t0; t0 = t1; t1 = tmp;
 	}
-}
+	min = t0;
+	max = t1;
+	if (min > max) return (false);
 
-/*
-** Recursive traversal function for BVH intersection.
-*/
-static void	bvh_traverse(const t_bvh *bvh, const t_bvh_node *node,
-		const t_ray *ray, t_hit *hit)
-{
-	double	t[2];
-
-	if (!node)
-		return ;
-	if (!aabb_ray_intersect(&node->bbox, ray, &t[0], &t[1])
-		|| t[1] < 0 || t[0] > hit->t)
-		return ;
-	if (node->left || node->right)
+	/* Y Axis */
+	t0 = (aabb->min.y - ray->origin.y) * ray->inv_dir.y;
+	t1 = (aabb->max.y - ray->origin.y) * ray->inv_dir.y;
+	if (ray->sign[1])
 	{
-		bvh_traverse(bvh, node->left, ray, hit);
-		bvh_traverse(bvh, node->right, ray, hit);
+		double tmp = t0; t0 = t1; t1 = tmp;
 	}
-	else
-		traverse_leaf(bvh, node, ray, hit);
+	min = fmax(min, t0);
+	max = fmin(max, t1);
+	if (min > max) return (false);
+
+	/* Z Axis */
+	t0 = (aabb->min.z - ray->origin.z) * ray->inv_dir.z;
+	t1 = (aabb->max.z - ray->origin.z) * ray->inv_dir.z;
+	if (ray->sign[2])
+	{
+		double tmp = t0; t0 = t1; t1 = tmp;
+	}
+	min = fmax(min, t0);
+	max = fmin(max, t1);
+	
+	if (max < 0 || min > max)
+		return (false);
+	
+	*tmin = min;
+	*tmax = max;
+	return (true);
 }
 
 /*
-** Main entry point for BVH-ray intersection test.
+** Iterative traversal for finding the closest intersection.
+** Sorts children to visit closer nodes first (Early Z-Culling).
 */
 bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 {
+	t_bvh_node	*stack[128];
+	int			ptr;
+	t_bvh_node	*node;
+	double		t_min;
+	double		t_max;
+	double		t_l;
+	double		t_r;
+	double		tm_l;
+	double		tm_r;
+	bool		h_l;
+	bool		h_r;
+	size_t		i;
+	t_hit		temp_hit;
+
 	if (!bvh || !bvh->root)
 		return (false);
-	hit->t = 1e30;
+	hit->t = MAX_VALUE;
 	hit->ref.type = TYPE_NONE;
-	bvh_traverse(bvh, bvh->root, ray, hit);
+	ptr = 0;
+	stack[ptr++] = bvh->root;
+	while (ptr > 0)
+	{
+		node = stack[--ptr];
+		if (!aabb_intersect_fast(&node->bbox, ray, &t_min, &t_max)
+			|| t_min > hit->t)
+			continue ;
+		if (node->left || node->right)
+		{
+			h_l = node->left && aabb_intersect_fast(&node->left->bbox, ray, &t_l, &tm_l);
+			h_r = node->right && aabb_intersect_fast(&node->right->bbox, ray, &t_r, &tm_r);
+			
+			if (h_l && h_r)
+			{
+				if (ptr >= 126) continue; /* Stack safety */
+				if (t_l > t_r) 
+				{
+					stack[ptr++] = node->left;
+					stack[ptr++] = node->right;
+				}
+				else
+				{
+					stack[ptr++] = node->right;
+					stack[ptr++] = node->left;
+				}
+			}
+			else if (h_l)
+			{
+				if (ptr >= 127) continue;
+				stack[ptr++] = node->left;
+			}
+			else if (h_r)
+			{
+				if (ptr >= 127) continue;
+				stack[ptr++] = node->right;
+			}
+		}
+		else
+		{
+			//printf("DEBUG: BVH Leaf VISIT: refs=%zu\n", node->num_refs);
+			i = 0;
+			while (i < node->num_refs)
+			{
+				if (intersect_object(ray, bvh->scene, node->refs[i], &temp_hit)
+					&& temp_hit.t < hit->t)
+					*hit = temp_hit;
+				i++;
+			}
+		}
+	}
+	//if (hit->ref.type != TYPE_NONE) printf("DEBUG: BVH HIT: t=%f, type=%d\n", hit->t, hit->ref.type);
 	return (hit->ref.type != TYPE_NONE);
 }
 
 /*
-** Checks if a ray is occluded between origin and max_t (shadow test).
+** Iterative traversal for shadow rays (any hit).
 */
 bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 {
-	double		t[2];
-	t_hit		temp;
-	size_t		i;
+	t_bvh_node	*stack[128];
+	int			ptr;
 	t_bvh_node	*node;
+	double		t_min;
+	double		t_max;
+	size_t		i;
+	t_hit		temp;
 
-	node = bvh->root;
-	if (!bvh || !node)
+	if (!bvh || !bvh->root)
 		return (false);
-	if (!aabb_ray_intersect(&node->bbox, ray, &t[0], &t[1])
-		|| t[1] < 0 || t[0] > max_t)
-		return (false);
-	if (node->left || node->right)
+	ptr = 0;
+	stack[ptr++] = bvh->root;
+	while (ptr > 0)
 	{
-		if (bvh_occluded(&(t_bvh){bvh->scene, node->left}, ray, max_t))
-			return (true);
-		return (bvh_occluded(&(t_bvh){bvh->scene, node->right}, ray, max_t));
-	}
-	i = 0;
-	while (i < node->num_refs)
-	{
-		if (intersect_object(ray, bvh->scene, node->refs[i], &temp)
-			&& temp.t > EPSILON && temp.t < max_t)
-			return (true);
-		i++;
+		node = stack[--ptr];
+		if (!aabb_intersect_fast(&node->bbox, ray, &t_min, &t_max)
+			|| t_min > max_t)
+			continue ;
+		if (node->left || node->right)
+		{
+			if (ptr >= 126) continue; /* Stack safety */
+			if (node->right) stack[ptr++] = node->right;
+			if (node->left) stack[ptr++] = node->left;
+		}
+		else
+		{
+			i = 0;
+			while (i < node->num_refs)
+			{
+				if (node->refs[i].type == TYPE_MESH)
+				{
+					if (mesh_occluded(ray, &bvh->scene->meshes[node->refs[i].index], max_t))
+						return (true);
+				}
+				else if (node->refs[i].type == TYPE_ANIM)
+				{
+					if (mesh_occluded(ray, &bvh->scene->animated[node->refs[i].index].base, max_t))
+						return (true);
+				}
+				else if (intersect_object(ray, bvh->scene, node->refs[i], &temp)
+					&& temp.t > EPSILON && temp.t < max_t)
+					return (true);
+				i++;
+			}
+		}
 	}
 	return (false);
 }

@@ -1,0 +1,104 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_values.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/09 18:30:00 by abdoali           #+#    #+#             */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "parser.h"
+#include "objects.h"
+
+int	parse_int(t_parser *p)
+{
+	long	result;
+	int		sign;
+	char	c;
+
+	result = 0;
+	sign = 1;
+	parser_skip_whitespace(p);
+	c = parser_peek(p);
+	if (c == '-' || c == '+')
+	{
+		if (c == '-')
+			sign = -1;
+		parser_advance(p);
+	}
+	c = parser_peek(p);
+	while (c >= '0' && c <= '9')
+	{
+		result = result * 10 + (c - '0');
+		parser_advance(p);
+		c = parser_peek(p);
+	}
+	return ((int)(result * sign));
+}
+
+double	parse_double(t_parser *p)
+{
+	double	result;
+	double	fraction;
+	double	divisor;
+	int		sign;
+	char	c;
+
+	result = 0.0;
+	sign = 1;
+	parser_skip_whitespace(p);
+	c = parser_peek(p);
+	if (c == '-' || c == '+')
+	{
+		if (c == '-')
+			sign = -1;
+		parser_advance(p);
+	}
+	c = parser_peek(p);
+	while (c >= '0' && c <= '9')
+	{
+		result = result * 10.0 + (c - '0');
+		parser_advance(p);
+		c = parser_peek(p);
+	}
+	c = parser_peek(p);
+	if (c == '.')
+	{
+		parser_advance(p);
+		divisor = 10.0;
+		c = parser_peek(p);
+		while (c >= '0' && c <= '9')
+		{
+			fraction = (c - '0');
+			result += fraction / divisor;
+			divisor *= 10.0;
+			parser_advance(p);
+			c = parser_peek(p);
+		}
+	}
+	return (result * sign);
+}
+
+bool	parse_vec3(t_parser *p, t_vec3 *out)
+{
+	t_vec3	v;
+
+	ft_memset(&v, 0, sizeof(t_vec3));
+	v.x = parse_double(p);
+	parser_skip_whitespace(p);
+	if (parser_peek(p) == ',')
+		parser_advance(p);
+	else
+		return (false);
+	v.y = parse_double(p);
+	parser_skip_whitespace(p);
+	if (parser_peek(p) == ',')
+		parser_advance(p);
+	else
+		return (false);
+	v.z = parse_double(p);
+	*out = v;
+	return (true);
+}

@@ -9,15 +9,17 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -O3 -ffast-math -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER
+CFLAGS      = -Wall -Wextra -O3 -ffast-math -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -MMD -MP
 RM          = rm -f
 SRCS_DIR    = srcs
 OBJS_DIR    = objs
 SRCS        = $(shell find $(SRCS_DIR) -name "*.c")
 OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
-
+DEPS        = $(OBJS:.o=.d)
 
 all: $(NAME)
+
+-include $(DEPS)
 
 $(NAME): $(LIBFT) $(MINILIBX) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)

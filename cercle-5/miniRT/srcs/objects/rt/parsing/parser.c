@@ -33,16 +33,25 @@ static const char	*get_extension(const char *path)
  * @param path The file path.
  * @return The allocated and parsed scene, or NULL on failure.
  */
-t_scene	*parse_file(const char *path)
+t_scene	*parse_file(const char *path, void *mlx)
 {
 	t_scene		*scene;
 	const char	*ext;
 	bool		success;
 
+	ext = get_extension(path);
+	if (!validate_file(path))
+	{
+		printf("Error: File not found or invalid: %s\n", path);
+		return (NULL);
+	}
 	scene = create_scene(path);
 	if (!scene)
+	{
+		printf("Error: Failed to create scene object for %s\n", path);
 		return (NULL);
-	ext = get_extension(path);
+	}
+	scene->mlx = mlx;
 	success = false;
 	if (ft_strcmp(ext, "rt") == 0)
 		success = parse_rt(path, scene);
@@ -54,8 +63,11 @@ t_scene	*parse_file(const char *path)
 		success = parse_fdf(path, scene);
 	else if (ft_strcmp(ext, "glb") == 0)
 		success = parse_glb(path, scene);
+	else
+		printf("Error: Unsupported file extension: .%s\n", ext);
 	if (!success)
 	{
+		printf("Error: Failed to parse %s\n", path);
 		destroy_scene(scene);
 		return (NULL);
 	}

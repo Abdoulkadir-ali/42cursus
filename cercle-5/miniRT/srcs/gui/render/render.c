@@ -60,18 +60,12 @@ static void	draw_panel(t_gui *gui, int x, int y, int w, int h, int bg, int brd)
 	}
 }
 
-static inline void	put_pixel_unsafe(t_gui *gui, int x, int y, int color_int)
-{
-	char	*dst;
 
-	dst = gui->win.addr + (y * gui->win.line_len + x * (gui->win.bpp / 8));
-	*(unsigned int *)dst = color_int;
-}
 
 /*
 ** Processes a single pixel (or block of pixels) by tracing a ray.
 */
-static void	process_pixel(t_render_ctx *ctx, int x, int y)
+static void	process_pixel(t_render_ctx *ctx, int x, int y, char *pixel_addr)
 {
 	t_ray	ray;
 	t_vec3	color;
@@ -81,6 +75,7 @@ static void	process_pixel(t_render_ctx *ctx, int x, int y)
 	t_vec3	dir;
 	int		dx;
 	int		dy;
+	char	*dst;
 
 	px = (2.0 * (x + 0.5) / ctx->gui->win.width - 1.0) * ctx->half_width
 		* ctx->aspect_ratio;
@@ -98,17 +93,18 @@ static void	process_pixel(t_render_ctx *ctx, int x, int y)
 		dy = 0;
 		while (dy < ctx->step && (y + dy) < ctx->gui->win.height)
 		{
+			dst = pixel_addr + (dy * ctx->gui->win.line_len);
 			dx = 0;
 			while (dx < ctx->step && (x + dx) < ctx->gui->win.width)
 			{
-				put_pixel_unsafe(ctx->gui, x + dx, y + dy, c_int);
+				*(unsigned int *)(dst + (dx * 4)) = c_int;
 				dx++;
 			}
 			dy++;
 		}
 	}
 	else
-		put_pixel_unsafe(ctx->gui, x, y, c_int);
+		*(unsigned int *)pixel_addr = c_int;
 }
 
 /*
@@ -122,6 +118,10 @@ static void	*render_tile_worker(void *arg)
 	int				ty;
 	int				y;
 	int				x;
+	char			*row_ptr;
+	char			*pixel_ptr;
+	int				bpp_step;
+	int				row_step;
 
 	ctx = (t_render_ctx *)arg;
 	while (1)
@@ -137,15 +137,21 @@ static void	*render_tile_worker(void *arg)
 		tx = (id % ctx->tiles_x) * TILE_SIZE;
 		ty = (id / ctx->tiles_x) * TILE_SIZE;
 		y = ty;
+		row_ptr = ctx->gui->win.addr + (y * ctx->gui->win.line_len) + (tx * (ctx->gui->win.bpp / 8));
+		bpp_step = (ctx->gui->win.bpp / 8) * ctx->step;
+		row_step = ctx->gui->win.line_len * ctx->step;
 		while (y < ty + TILE_SIZE && y < ctx->gui->win.height)
 		{
 			x = tx;
+			pixel_ptr = row_ptr;
 			while (x < tx + TILE_SIZE && x < ctx->gui->win.width)
 			{
-				process_pixel(ctx, x, y);
+				process_pixel(ctx, x, y, pixel_ptr);
 				x += ctx->step;
+				pixel_ptr += bpp_step;
 			}
 			y += ctx->step;
+			row_ptr += row_step;
 		}
 	}
 	return (NULL);

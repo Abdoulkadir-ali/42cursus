@@ -84,6 +84,8 @@ typedef struct s_triangle			t_triangle;
 typedef struct s_heightmap			t_heightmap;
 typedef struct s_mesh_build_item	t_mesh_build_item;
 
+typedef struct s_parser				t_parser;
+typedef struct s_obj_ctx			t_obj_ctx;
 typedef struct s_parse_obj			t_parse_obj;
 
 #endif

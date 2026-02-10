@@ -22,10 +22,9 @@ static bool	is_in_shadow(t_scene *scene, const t_bvh *bvh, t_vec3 p, t_vec3 ldir
 	int		i;
 	double	dist;
 
-	shadow_ray.origin = p;
-	shadow_ray.direction = ldir;
 	dist = vec3_mag(ldir);
-	shadow_ray.direction = vec3_norm(ldir);
+	ray_init(&shadow_ray, p, vec3_norm(ldir));
+	// ray_init handles inv_dir and sign now
 	if (bvh_occluded(bvh, &shadow_ray, dist))
 		return (true);
 	i = 0;
@@ -83,12 +82,20 @@ static void	get_material(t_shading_ctx *ctx)
 		ctx->mat = ctx->scene->materials[ctx->scene->animated[h->ref.index].base.mat_id];
 	else
 		ctx->mat = (t_material){0};
-/*
 	if (h->ref.type == TYPE_MESH || h->ref.type == TYPE_ANIM)
-		printf("Hit Mesh/Anim %d, Mat ID: %d, Color: %.1f %.1f %.1f\n", 
-			h->ref.index, ctx->mat.mat_id, ctx->mat.albedo_map.color_a.x, 
-			ctx->mat.albedo_map.color_a.y, ctx->mat.albedo_map.color_a.z);
-*/
+	{
+		static int dbg_cnt = 0;
+		if (dbg_cnt++ < 5)
+			printf("DEBUG SHADE: type=%d idx=%d mat_id=%d tex_type=%d "
+				"colorA=(%.0f,%.0f,%.0f) normal=(%.2f,%.2f,%.2f)\n",
+				h->ref.type, h->ref.index,
+				ctx->scene->meshes[h->ref.index].mat_id,
+				ctx->mat.albedo_map.type,
+				ctx->mat.albedo_map.color_a.x,
+				ctx->mat.albedo_map.color_a.y,
+				ctx->mat.albedo_map.color_a.z,
+				h->normal.x, h->normal.y, h->normal.z);
+	}
 }
 
 /*

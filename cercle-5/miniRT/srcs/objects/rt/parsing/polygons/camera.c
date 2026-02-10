@@ -17,18 +17,20 @@
  * @param tokens The array of strings.
  * @return The parsed object data.
  */
-t_parse_obj	parse_camera(char **tokens)
+/**
+ * Parses a camera entry from the buffered parser.
+ */
+t_parse_obj	parse_camera(t_parser *p)
 {
 	t_parse_obj	res;
 	t_vec3		rot_v;
 
 	res.type = TYPE_NONE;
-	if (!tokens[1] || !tokens[2] || !tokens[3])
+	if (!parse_vec3(p, &res.data.camera.transform.pos))
 		return (res);
-	if (!parse_vec3_checked(tokens[1], &res.data.camera.transform.pos) \
-		|| !parse_vec3_checked(tokens[2], &rot_v) \
-		|| !parse_float_checked(tokens[3], &res.data.camera.fov))
+	if (!parse_vec3(p, &rot_v))
 		return (res);
+	res.data.camera.fov = parse_double(p);
 	if (vec3_mag_sq(rot_v) == 0.0)
 		rot_v = vec3(0, 0, -1);
 	else

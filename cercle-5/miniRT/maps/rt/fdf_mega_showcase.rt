@@ -1,0 +1,7 @@
+A 0.3 255,255,255
+C 0,100,250 0,-0.4,-1 70
+L 100,200,100 0.8 255,255,255
+pl 0,0,0 0,1,0 120,120,120
+
+# Showcase of generated FDF car models
+fdf maps/fdf/test_maps/42.fdf 60,0,0 1,1,1 0,0,0

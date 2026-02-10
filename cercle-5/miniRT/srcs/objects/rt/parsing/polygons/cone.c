@@ -17,7 +17,10 @@
  * @param tokens The array of strings.
  * @return The parsed object data.
  */
-t_parse_obj	parse_cone(char **tokens)
+/**
+ * Parses a cone entry from the buffered parser.
+ */
+t_parse_obj	parse_cone(t_parser *p)
 {
 	t_parse_obj	res;
 	double		diameter;
@@ -25,13 +28,13 @@ t_parse_obj	parse_cone(char **tokens)
 	t_vec3		rgb;
 
 	res.type = TYPE_NONE;
-	if (!tokens[1] || !tokens[2] || !tokens[3] || !tokens[4] || !tokens[5])
+	if (!parse_vec3(p, &res.data.cone.transform.pos))
 		return (res);
-	if (!parse_vec3_checked(tokens[1], &res.data.cone.transform.pos) \
-		|| !parse_vec3_checked(tokens[2], &res.data.cone.transform.forward) \
-		|| !parse_float_checked(tokens[3], &diameter) \
-		|| !parse_float_checked(tokens[4], &height) \
-		|| !parse_color_checked(tokens[5], &rgb))
+	if (!parse_vec3(p, &res.data.cone.transform.forward))
+		return (res);
+	diameter = parse_double(p);
+	height = parse_double(p);
+	if (!parse_vec3(p, &rgb))
 		return (res);
 	if (vec3_mag_sq(res.data.cone.transform.forward) == 0.0)
 		res.data.cone.transform.forward = vec3(0, 1, 0);

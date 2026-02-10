@@ -27,7 +27,7 @@
 
 /* 2. CONSTANTS */
 # define THREAD_COUNT 12
-# define TILE_SIZE 16
+# define TILE_SIZE 32
 # define ZOOM_SPEED 2.0
 # define MOUSE_SENSITIVITY 0.005
 
@@ -126,7 +126,7 @@ typedef struct s_key_action
 /* 4. FUNCTION PROTOTYPES */
 
 /* srcs/gui/init.c */
-t_gui					*gui_init(t_scene *scene, t_bvh *bvh);
+t_gui					*gui_init(t_scene *scene, t_bvh *bvh, void *mlx);
 void					gui_destroy(t_gui *gui);
 
 /* srcs/gui/loop.c */

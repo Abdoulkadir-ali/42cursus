@@ -34,6 +34,8 @@ struct		s_ray
 {
 	t_vec3	origin;
 	t_vec3	direction;
+	t_vec3	inv_dir;
+	int		sign[3];
 };
 
 struct		s_hit
@@ -84,6 +86,10 @@ bool		intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit);
 /* srcs/raytracing/bvh/ */
 bool		bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
 bool		bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t);
+t_aabb		aabb_from_ref(t_scene *scene, t_bvh_ref ref);
+t_aabb		aabb_transform(t_aabb local, t_transform t);
+t_aabb		aabb_create_empty(void);
+t_aabb		aabb_union(const t_aabb *a, const t_aabb *b);
 
 /* 4. IMPLEMENTATION IMPORTS */
 # include "scene.h"
