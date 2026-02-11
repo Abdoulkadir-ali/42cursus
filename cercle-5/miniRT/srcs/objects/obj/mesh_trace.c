@@ -1,11 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh_trace.c                                       :+:      :+:    :+:   */
+/*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 05:08:00 by abdoali           #+#    #+#             */
+/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +102,7 @@ bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit)
 			/* Front-to-back: Visit node closer to ray origin first */
 			int near = node_idx + 1;
 			int far = node->left_or_first;
-			if (ray->inv_dir.m[node->axis] < 0) { near = node->left_or_first; far = node_idx + 1; }
+			if (ray->sign[node->axis]) { near = node->left_or_first; far = node_idx + 1; }
 			
 			node_idx = near;
 			stack[top++] = far;
@@ -143,7 +144,7 @@ bool	mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist)
 		{
 			int near = node_idx + 1;
 			int far = node->left_or_first;
-			if (ray->inv_dir.m[node->axis] < 0) { near = node->left_or_first; far = node_idx + 1; }
+			if (ray->sign[node->axis]) { near = node->left_or_first; far = node_idx + 1; }
 			
 			node_idx = near;
 			stack[top++] = far;

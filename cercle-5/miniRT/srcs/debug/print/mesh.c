@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "debug.h"
+#include "maths.h"
+#include "objects.h"
 
 void	debug_print_mesh_hit(const t_ray *ray, int tri_idx, double t)
 {

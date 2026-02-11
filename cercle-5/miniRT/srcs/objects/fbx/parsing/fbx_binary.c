@@ -1,30 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fbx_binary.c                                       :+:      :+:    :+:   */
+/*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 04:20:00 by abdoali           #+#    #+#             */
+/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include <fcntl.h>
-#include <zlib.h>
-#include <float.h>
-
-typedef struct s_fbx_data
-{
-	t_vec3		*v;
-	uint32_t	vc;
-	int			*ri;
-	uint32_t	rc;
-	t_vec3		*vn;
-	uint32_t	nc;
-	t_vec2		*vu;
-	uint32_t	uc;
-}	t_fbx_data;
 
 static ssize_t	safe_read(int fd, void *buf, size_t count)
 {

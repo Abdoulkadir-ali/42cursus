@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   material.h                                         :+:      :+:    :+:   */
+/*   surface.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -9,16 +9,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MATERIAL_H
-# define MATERIAL_H
+#ifndef SURFACE_H
+# define SURFACE_H
 
 /* 1. EXTERNAL DEPENDENCIES */
+# include "core.h"
+# include "debug.h"
 # include "maths.h"
 
-/* 2. FORWARD DECLARATIONS & TYPES */
-# include "types.h"
-
-/* 3. MODULE TYPES */
+/* 2. MODULE TYPES */
 typedef enum e_tex_type
 {
 	TEX_SOLID,
@@ -47,7 +46,6 @@ typedef struct s_material
 	char		*name; /* Added for MTL parsing */
 	t_texture albedo_map; // Replaces t_vec3 albedo
 	t_texture bump_map;   // Optional bump texture
-
 	double		specular;
 	double		shininess;
 	double		metallic;
@@ -58,12 +56,19 @@ typedef struct s_material
 	double		reflectivity;
 }				t_material;
 
-/* 4. FUNCTION PROTOTYPES */
+/* 3. FUNCTION PROTOTYPES */
 t_material		*create_material(t_vec3 albedo, double metallic,
 					double roughness, t_vec3 emission, double refract_index,
 					double transparency, double reflectivity);
 
-// Texture functions
-t_vec3			sample_texture(t_texture *tex, double u, double v);
+int					scene_add_material(t_scene *scene, t_vec3 color);
+int					scene_find_material(t_scene *scene, const char *name);
+int					scene_add_named_material(t_scene *scene, const char *name);
+int					scene_add_checker_material(t_scene *scene, t_vec3 color_a,
+					t_vec3 color_b, double scale);
+
+
+bool	load_texture_xpm(t_scene *scene, t_texture *tex, const char *path);
+t_vec3	sample_texture(t_texture *tex, double u, double v);
 
 #endif

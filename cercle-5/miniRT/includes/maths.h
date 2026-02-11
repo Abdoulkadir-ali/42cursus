@@ -13,30 +13,27 @@
 #ifndef MATHS_H
 # define MATHS_H
 
-# include <math.h>
-# include <stdbool.h>
-# include <stddef.h>
+# include "core.h"
+# include "debug.h"
 
-#define MAX_VALUE 1e30
-
-typedef struct s_vec2
+struct s_vec2
 {
 	double				x;
 	double				y;
-}						t_vec2;
+};
 
-typedef struct s_vec3
+struct s_vec3
 {
 	double				x;
 	double				y;
 	double				z;
 	double				w;
-}						t_vec3;
+};
 
-typedef struct s_mat4
+struct s_mat4
 {
 	double				m[4][4];
-}						t_mat4;
+};
 
 struct		s_ray
 {
@@ -46,20 +43,20 @@ struct		s_ray
 	int		sign[3];
 };
 
-typedef struct s_aabb
+struct s_aabb
 {
 	t_vec3				min;
 	t_vec3				max;
-}						t_aabb;
+};
 
-typedef struct s_rotator
+struct s_rotator
 {
 	double				pitch;
 	double				yaw;
 	double				roll;
-}						t_rotator;
+};
 
-typedef struct s_transform
+struct s_transform
 {
 	t_vec3				pos;
 	t_rotator			rotation;
@@ -67,7 +64,9 @@ typedef struct s_transform
 	t_vec3				forward;
 	t_vec3				right;
 	t_vec3				up;
-}						t_transform;
+};
+
+
 
 /* vec2 (Inline) */
 static inline t_vec2	vec2(double x, double y)
@@ -167,6 +166,18 @@ static inline t_vec3	vec3_norm(t_vec3 a)
 static inline t_vec3	vec3_lerp(t_vec3 a, t_vec3 b, double t)
 {
 	return (vec3_add(a, vec3_scale(vec3_sub(b, a), t)));
+}
+
+static inline t_vec3	vec3_min(t_vec3 a, t_vec3 b)
+{
+	return ((t_vec3){fmin(a.x, b.x), fmin(a.y, b.y), fmin(a.z, b.z),
+		fmin(a.w, b.w)});
+}
+
+static inline t_vec3	vec3_max(t_vec3 a, t_vec3 b)
+{
+	return ((t_vec3){fmax(a.x, b.x), fmax(a.y, b.y), fmax(a.z, b.z),
+		fmax(a.w, b.w)});
 }
 
 static inline bool	vec3_compare(t_vec3 a, t_vec3 b)

@@ -13,39 +13,43 @@
 #ifndef DEBUG_H
 # define DEBUG_H
 
-# include "types.h"
-# include "objects.h"
-# include "gui.h"
-# include "scene.h"
-# include <stdio.h>
+# include "core.h"
+
+/* Debug print: only active when compiled with -DDEBUG */
+# ifdef DEBUG
+#  define ft_print_debug(...) (printf(__VA_ARGS__), fflush(stdout))
+# else
+#  define ft_print_debug(...) ((void)0)
+# endif
+
 
 /* Maths */
-void	print_vec2(t_vec2 v);
-void	print_vec3(t_vec3 v);
-void	print_mat4(t_mat4 m);
-void	print_transform(t_transform t);
-void	print_aabb(t_aabb b);
+void	print_vec2(t_vec2 *v);
+void	print_vec3(t_vec3 *v);
+void	print_mat4(t_mat4 *m);
+void	print_transform(t_transform *t);
+void	print_aabb(t_aabb *b);
 
 /* Objects */
-void	print_sphere(t_sphere s);
-void	print_plane(t_plane p);
-void	print_cylinder(t_cylinder c);
-void	print_cone(t_cone c);
-void	print_light(t_light l);
-void	print_camera(t_camera c);
-void	print_ambient(t_ambient a);
-void	print_material(t_material m);
-void	print_mesh(t_mesh m);
-void	print_obj_ctx(t_obj_ctx c);
+void	print_sphere(t_sphere *s);
+void	print_plane(t_plane *p);
+void	print_cylinder(t_cylinder *c);
+void	print_cone(t_cone *c);
+void	print_light(t_light *l);
+void	print_camera(t_camera *c);
+void	print_ambient(t_ambient *a);
+void	print_material(t_material *m);
+void	print_mesh(t_mesh *m);
+void	print_obj_ctx(t_obj_ctx *c);
 
 /* System */
-void	print_scene(t_scene s);
-void	print_ray(t_ray r);
-void	print_hit(t_hit h);
-void	print_parser(t_parser p);
+void	print_scene(t_scene *s);
+void	print_ray(t_ray *r);
+void	print_hit(t_hit *h);
+void	print_parser(t_parser *p);
 void	print_gui(t_gui *g);
 void	print_bvh_node(t_bvh_node *n, int depth);
-void	print_bvh(t_bvh b);
+void	print_bvh(t_bvh *b);
 
 /* Mesh Specific Debug */
 void	debug_print_mesh_hit(const t_ray *ray, int tri_idx, double t);

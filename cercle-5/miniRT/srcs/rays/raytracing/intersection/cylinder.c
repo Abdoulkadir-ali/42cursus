@@ -12,15 +12,6 @@
 
 #include "raytracing.h"
 
-typedef struct s_entry_point
-{
-	t_vec3	p;
-	t_vec3	center;
-	double	radius;
-	double	height;
-	double	h;
-}	t_entry_point;
-
 /*
 ** Calculates UV coordinates and tangent space for a cylinder intersection.
 */

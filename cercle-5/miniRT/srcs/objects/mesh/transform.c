@@ -10,45 +10,38 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
+#include "objects.h"
+#include "raytracing.h"
 
-/**
- * Minimal JSON parser helper to find a key.
- */
-char	*json_find_key(char *json, const char *key)
+void	mesh_apply_transform(t_mesh *mesh, t_transform transform)
 {
-	char	*ptr;
-	size_t	len;
+	t_mat4	m;
+	t_mat4	rot;
+	int		i;
 
-	if (!json || !key)
-		return (NULL);
-	len = ft_strlen(key);
-	ptr = json;
-	while (*ptr)
+	if (!mesh)
+		return ;
+	m = mat4_transform(transform);
+	rot = mat4_rotation(transform.rotation);
+	i = 0;
+	while (i < mesh->vertex_count)
 	{
-		ptr = ft_strnstr(ptr, key, ft_strlen(ptr));
-		if (!ptr)
-			return (NULL);
-		if (ptr > json && *(ptr - 1) == '"' && *(ptr + len) == '"')
-			return (ptr + len + 1);
-		ptr++;
+		mesh->vertices[i] = mat4_mul_pos(m, mesh->vertices[i]);
+		if (mesh->normals)
+		{
+			mesh->normals[i] = mat4_mul_vec3(rot, mesh->normals[i]);
+			mesh->normals[i] = vec3_norm(mesh->normals[i]);
+		}
+		i++;
 	}
-	return (NULL);
-}
-
-/**
- * Minimal JSON parser helper to get an integer value.
- */
-int	json_get_int(char *json, const char *key)
-{
-	char	*ptr;
-
-	if (!json || !key)
-		return (-1);
-	ptr = json_find_key(json, key);
-	if (!ptr)
-		return (-1);
-	while (*ptr && (*ptr == ':' || *ptr == ' ' || *ptr == '"'))
-		ptr++;
-	return (ft_atoi(ptr));
+	mesh->bbox = aabb_create_empty();
+	i = 0;
+	while (i < mesh->vertex_count)
+	{
+		aabb_expand_point(&mesh->bbox, mesh->vertices[i]);
+		i++;
+	}
+	/* Reset transform since we baked it */
+	mesh->transform = (t_transform){0};
+    mesh->transform.scale = vec3(1, 1, 1);
 }

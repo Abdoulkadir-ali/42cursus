@@ -14,37 +14,25 @@
 # define OBJECTS_H
 
 /* 1. EXTERNAL DEPENDENCIES */
-# include "libft.h"
-# include "material.h"
-# include "maths.h"
-# include "types.h"
-# include "parser.h"
-# include "utils.h"
-# include <fcntl.h>
-# include <math.h>
-# include <stdbool.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-
-/* Debug print: only active when compiled with -DDEBUG */
-# ifdef DEBUG
-#  define ft_print_debug(...) (printf(__VA_ARGS__), fflush(stdout))
-# else
-#  define ft_print_debug(...) ((void)0)
-# endif
-
-/* 2. MODULE TYPES & ENUMS */
-
-#define GLB_MAGIC 0x46546C67
-#define CHUNK_JSON 0x4E4F534A
-#define CHUNK_BIN 0x004E4942
-#define BVH_BINS 16
+# include "core.h"
+# include "surface.h"
 
 /* ------------------------------------------------------------------------- */
 /*                             LEAF STRUCTURES                               */
 /* ------------------------------------------------------------------------- */
 
+
+typedef struct s_fbx_data
+{
+	t_vec3		*v;
+	uint32_t	vc;
+	int			*ri;
+	uint32_t	rc;
+	t_vec3		*vn;
+	uint32_t	nc;
+	t_vec2		*vu;
+	uint32_t	uc;
+}	t_fbx_data;
 
 struct					s_sphere
 {
@@ -108,6 +96,26 @@ struct					s_triangle
 	int					indices[3];
 };
 
+typedef struct s_bin {
+	t_aabb	bounds;
+	int		count;
+}	t_bin;
+
+typedef struct s_mbvh_node
+{
+	t_aabb				bbox;
+	int					left_or_first;
+	int					count;
+	int					axis;
+}						t_mbvh_node;
+
+typedef struct s_mbvh_ctx {
+	t_mesh_build_item	*items;
+	t_mbvh_node			*nodes;
+	int					node_count;
+}	t_mbvh_ctx;
+
+
 struct					s_mesh
 {
 	char				*name;
@@ -119,7 +127,8 @@ struct					s_mesh
 	int					tri_count;
 	t_aabb				bbox;
 	t_transform			transform;
-	t_bvh				*internal_bvh;
+	t_mbvh_node			*bvh_nodes;
+	int					*bvh_indices;
 	int					mat_id;
 };
 
@@ -315,7 +324,9 @@ bool					intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit);
 bool					mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist);
 
 /* 4. IMPLEMENTATION IMPORTS */
-# include "bvh.h"
+# include "parser.h"
+# include "utils.h"
 # include "raytracing.h"
+#include "debug.h"
 
 #endif

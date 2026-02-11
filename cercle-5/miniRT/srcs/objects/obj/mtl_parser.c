@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mtl_parser.c                                       :+:      :+:    :+:   */
+/*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/10 13:42:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "scene.h"
-#include "debug.h"
-#include "parser.h"
 
 /*
 ** Resolves relative texture path based on MTL file location.

@@ -14,21 +14,9 @@
 # define SCENE_H
 
 /* 1. EXTERNAL DEPENDENCIES */
-# include "libft.h"
+# include "core.h"
 # include "maths.h"
 # include "objects.h"
-# include "types.h"
-# include <stdbool.h>
-# include <stdio.h>
-# include <stdlib.h>
-
-# define INIT_SPHERE_CAP 16
-# define INIT_PLANE_CAP 16
-# define INIT_MESH_CAP 8
-# define INIT_ANIM_CAP 4
-# define INIT_MAT_CAP 32
-# define INIT_LIGHT_CAP 8
-# define INIT_CYL_CAP 16
 
 /* 2. MODULE TYPES */
 
@@ -104,8 +92,5 @@ bool				scene_add_light(t_scene *scene, t_light light);
 
 /* srcs/objects/rt/parsing/ (Global Selector) */
 t_scene				*parse_file(const char *path, void *mlx);
-
-/* 4. IMPLEMENTATION IMPORTS */
-# include "bvh.h"
 
 #endif

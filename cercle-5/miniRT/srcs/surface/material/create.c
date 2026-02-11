@@ -10,37 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "raytracing.h"
+#include "surface.h"
 
-/*
-** Loads an XPM texture from disk.
-** Populates the t_texture struct with image data and dimensions.
-** Returns true on success, false on failure.
-*/
-bool	load_texture_xpm(t_scene *scene, t_texture *tex, const char *path)
+t_material	*create_material(t_vec3 albedo, double metallic,
+				double roughness, t_vec3 emission, double refract_index,
+				double transparency, double reflectivity)
 {
-	void	*img;
-	int		w;
-	int		h;
+	t_material	*mat;
 
-	if (!scene || !scene->mlx)
-	{
-		fprintf(stderr, "Error: MLX not initialized for texture loading\n");
-		return (false);
-	}
-	ft_print_debug("DEBUG: Loading texture %s\n", path);
-	img = mlx_xpm_file_to_image(scene->mlx, (char *)path, &w, &h);
-	if (!img)
-	{
-		fprintf(stderr, "Error: Failed to load XPM texture: %s\n", path);
-		return (false);
-	}
-	tex->img = img;
-	tex->width = w;
-	tex->height = h;
-	tex->addr = mlx_get_data_addr(img, &tex->bpp, &tex->len, &tex->endian);
-	tex->type = TEX_BITMAP;
-	tex->scale = 1.0;
-	tex->color_a = vec3(255, 255, 255); /* Tint color if needed */
-	return (true);
+	mat = malloc(sizeof(t_material));
+	if (!mat)
+		return (NULL);
+	ft_memset(mat, 0, sizeof(t_material));
+	mat->albedo_map.type = TEX_SOLID;
+	mat->albedo_map.color_a = albedo;
+	mat->albedo_map.scale = 1.0;
+	mat->metallic = metallic;
+	mat->roughness = roughness;
+	mat->emission = emission;
+	mat->refract_index = refract_index;
+	mat->transparency = transparency;
+	mat->reflectivity = reflectivity;
+	mat->specular = 0.5;
+	mat->shininess = 32.0;
+	return (mat);
 }

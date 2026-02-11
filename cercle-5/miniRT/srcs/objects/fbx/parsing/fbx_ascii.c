@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fbx_ascii.c                                        :+:      :+:    :+:   */
+/*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 04:15:00 by abdoali           #+#    #+#             */
+/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include <sys/stat.h>
 
 static char	*resolve_fbx_path(const char *fbx_path, const char *tex_filename)
 {

@@ -12,14 +12,11 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <stdbool.h>
-# include <math.h>
-#include "maths.h"
+# include "core.h"
+# include "debug.h"
+# include "objects.h"
 
-# define PARSER_BUF_SIZE 65536
+# include "scene.h"
 
 typedef struct s_parser
 {

@@ -12,26 +12,6 @@
 
 #include "scene.h"
 
-
-
-/*
-** Adds a material to the scene.
-** reused existing identical materials to save memory.
-*/
-
-
-/*
-** Finds a material by name.
-** Returns -1 if not found.
-*/
-
-
-/*
-** Creates a UE-style default checkerboard material (dark/light gray).
-** Returns the material index, or -1 on failure.
-*/
-
-
 /*
 ** Adds a sphere to the scene.
 ** Automatically creates/retrieves the material based on temp_color.

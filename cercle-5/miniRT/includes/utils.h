@@ -12,8 +12,8 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-# include <stdbool.h>
-# include <stddef.h>
+# include "core.h"
+# include "debug.h"
 
 /* path_utils.c */
 char	*path_get_dir(const char *filepath);

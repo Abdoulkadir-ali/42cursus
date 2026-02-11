@@ -1,11 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bound.c                                            :+:      :+:    :+:   */
+/*   bound.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/07 15:40:00 by abdoali           #+#    #+#             */
+/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,3 +179,41 @@ void	aabb_expand_point(t_aabb *bbox, t_vec3 p)
 	bbox->max.y = fmax(bbox->max.y, p.y);
 	bbox->max.z = fmax(bbox->max.z, p.z);
 }
+
+/**
+ * Computes the surface area of an Axis-Aligned Bounding Box.
+ */
+double	aabb_surface_area(t_aabb bbox)
+{
+	t_vec3	d;
+
+	d = vec3_sub(bbox.max, bbox.min);
+	if (d.x < 0 || d.y < 0 || d.z < 0)
+		return (0);
+	return (2 * (d.x * d.y + d.y * d.z + d.z * d.x));
+}
+
+/**
+ * Fast AABB intersection test using the slabs method.
+ */
+bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray,
+			double *tmin, double *tmax)
+{
+	double	t1;
+	double	t2;
+
+	t1 = (aabb->min.x - ray->origin.x) * ray->inv_dir.x;
+	t2 = (aabb->max.x - ray->origin.x) * ray->inv_dir.x;
+	*tmin = fmin(t1, t2);
+	*tmax = fmax(t1, t2);
+	t1 = (aabb->min.y - ray->origin.y) * ray->inv_dir.y;
+	t2 = (aabb->max.y - ray->origin.y) * ray->inv_dir.y;
+	*tmin = fmax(*tmin, fmin(t1, t2));
+	*tmax = fmin(*tmax, fmax(t1, t2));
+	t1 = (aabb->min.z - ray->origin.z) * ray->inv_dir.z;
+	t2 = (aabb->max.z - ray->origin.z) * ray->inv_dir.z;
+	*tmin = fmax(*tmin, fmin(t1, t2));
+	*tmax = fmin(*tmax, fmax(t1, t2));
+	return (*tmax >= 0 && *tmax >= *tmin);
+}
+

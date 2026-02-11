@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh_utils.c                                       :+:      :+:    :+:   */
+/*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@gemini.google.com> +#    +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 00:00:00 by antigravity       #+#    #+#             */
+/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "bvh.h"
-#include "libft.h"
-#include <stdlib.h>
 
 /**
  * Initializes a mesh structure, allocating memory for vertices, indices, etc.
@@ -69,7 +67,9 @@ void	mesh_free(t_mesh *mesh)
 		free(mesh->indices);
 	if (mesh->name)
 		free(mesh->name);
-	if (mesh->internal_bvh)
-		bvh_destroy(mesh->internal_bvh);
+	if (mesh->bvh_nodes)
+		free(mesh->bvh_nodes);
+	if (mesh->bvh_indices)
+		free(mesh->bvh_indices);
 	ft_memset(mesh, 0, sizeof(t_mesh));
 }

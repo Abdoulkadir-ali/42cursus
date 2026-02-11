@@ -1,19 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   obj_parser.c                                       :+:      :+:    :+:   */
+/*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 05:00:00 by abdoali           #+#    #+#             */
+/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "scene.h"
-#include "debug.h"
-#include "parser.h"
-#include "utils.h"
 
 static void	obj_parse_v(t_obj_ctx *ctx, t_parser *p)
 {
@@ -195,10 +192,10 @@ bool	parse_obj(const char *path, t_scene *scene)
 	if ((fd = open(path, O_RDONLY)) < 0) return (false);
 	parser_init(&p, fd);
 
-	while (!p.eof)
+	while (true)
 	{
 		parser_skip_whitespace(&p);
-		if (p.eof) break;
+		if (p.eof && p.cursor >= p.bytes_read) break;
 		if (parser_peek(&p) == '#') { while (parser_peek(&p) && parser_peek(&p) != '\n') parser_advance(&p); continue; }
 		
 		int i = 0;
@@ -235,6 +232,8 @@ bool	parse_obj(const char *path, t_scene *scene)
 	mesh.mat_id = ctx.current_mat_id >= 0 ? ctx.current_mat_id : 0;
 	
 	free(ctx.temp_v); free(ctx.temp_vt); free(ctx.temp_vn);
+	
+	mesh_build_bvh(&mesh);
 	scene_add_mesh(scene, mesh);
 	return (true);
 }

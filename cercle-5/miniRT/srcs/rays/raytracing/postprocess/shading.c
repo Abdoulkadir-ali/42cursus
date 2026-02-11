@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shading.c                                          :+:      :+:    :+:   */
+/*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 03:00:00 by abdoali           #+#    #+#             */
+/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
-
 
 /*
 ** Checks if a point is in shadow for a given light source.
@@ -84,7 +84,6 @@ static void	get_material(t_shading_ctx *ctx)
 		ctx->mat = (t_material){0};
 	if (h->ref.type == TYPE_MESH || h->ref.type == TYPE_ANIM)
 	{
-#ifdef DEBUG
 		static int dbg_cnt = 0;
 		if (dbg_cnt++ < 5)
 			printf("DEBUG SHADE: type=%d idx=%d mat_id=%d tex_type=%d "
@@ -96,7 +95,6 @@ static void	get_material(t_shading_ctx *ctx)
 				ctx->mat.albedo_map.color_a.y,
 				ctx->mat.albedo_map.color_a.z,
 				h->normal.x, h->normal.y, h->normal.z);
-#endif
 	}
 }
 

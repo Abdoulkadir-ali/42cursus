@@ -13,23 +13,9 @@
 # define GUI_H
 
 /* 1. EXTERNAL DEPENDENCIES */
-# include "libft.h"
+# include "core.h"
+# include "debug.h"
 # include "maths.h"
-# include "mlx.h"
-# include "types.h"
-# include <X11/X.h>
-# include <X11/keysym.h>
-# include <dirent.h>
-# include <pthread.h>
-# include <stdbool.h>
-# include <stdio.h>
-# include <sys/time.h>
-
-/* 2. CONSTANTS */
-# define THREAD_COUNT 12
-# define TILE_SIZE 32
-# define ZOOM_SPEED 2.0
-# define MOUSE_SENSITIVITY 0.005
 
 /* 3. MODULE TYPES */
 struct					s_camera_controller
@@ -166,7 +152,6 @@ void					camera_rotate_yaw(t_gui *gui, double delta_yaw);
 void					camera_rotate_pitch(t_gui *gui, double delta_pitch);
 
 /* 5. IMPLEMENTATION IMPORTS */
-# include "bvh.h"
 # include "raytracing.h"
 # include "scene.h"
 
