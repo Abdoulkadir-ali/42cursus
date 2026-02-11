@@ -15,13 +15,15 @@
 
 void	print_vec2(t_vec2 *v)
 {
-	if (!v) return ;
+	if (!v)
+		return ;
 	printf("vec2(%.4f, %.4f)", v->x, v->y);
 }
 
 void	print_vec3(t_vec3 *v)
 {
-	if (!v) return ;
+	if (!v)
+		return ;
 	printf("vec3(%.4f, %.4f, %.4f, w: %.4f)", v->x, v->y, v->z, v->w);
 }
 
@@ -30,30 +32,36 @@ void	print_mat4(t_mat4 *m)
 	int	i;
 	int	j;
 
-	if (!m) return ;
+	if (!m)
+		return ;
 	printf("mat4(\n");
-	for (i = 0; i < 4; i++)
+	i = 0;
+	while (i < 4)
 	{
 		printf("  [ ");
-		for (j = 0; j < 4; j++)
+		j = 0;
+		while (j < 4)
 		{
 			printf("%.4f", m->m[i][j]);
 			if (j < 3)
 				printf(", ");
+			j++;
 		}
 		printf(" ]\n");
+		i++;
 	}
 	printf(")");
 }
 
 void	print_transform(t_transform *t)
 {
-	if (!t) return ;
+	if (!t)
+		return ;
 	printf("transform(\n");
 	printf("  pos: ");
 	print_vec3(&t->pos);
-	printf("\n  rot: pitch: %.4f, yaw: %.4f, roll: %.4f", \
-		t->rotation.pitch, t->rotation.yaw, t->rotation.roll);
+	printf("\n  rot: pitch: %.4f, ", t->rotation.pitch);
+	printf("yaw: %.4f, roll: %.4f", t->rotation.yaw, t->rotation.roll);
 	printf("\n  scale: ");
 	print_vec3(&t->scale);
 	printf("\n  forward: ");
@@ -67,7 +75,8 @@ void	print_transform(t_transform *t)
 
 void	print_aabb(t_aabb *b)
 {
-	if (!b) return ;
+	if (!b)
+		return ;
 	printf("aabb(\n  min: ");
 	print_vec3(&b->min);
 	printf("\n  max: ");

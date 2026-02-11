@@ -1,37 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:47:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:47:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 15:10:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 15:10:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "debug.h"
+#include "parser.h"
 
-/* Extract directory part from a filepath. */
-char	*path_get_dir(const char *filepath)
+void	print_parser(t_parser *p)
 {
-	char	*slash;
-	char	*dir;
-	size_t	len;
+	const char	*eof_str;
 
-	if (!filepath)
-		return (NULL);
-	slash = ft_strrchr(filepath, '/');
-	if (slash)
-	{
-		len = slash - filepath + 1;
-		dir = ft_substr(filepath, 0, len);
-	}
-	else
-	{
-		dir = ft_strdup("./");
-	}
-	return (dir);
+	if (!p)
+		return ;
+	eof_str = "false";
+	if (p->eof)
+		eof_str = "true";
+	printf("parser(\n  fd: %d\n  cursor: %zu\n", p->fd, p->cursor);
+	printf("  bytes_read: %zu\n  eof: %s\n)", p->bytes_read, eof_str);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create.c                                           :+:      :+:    :+:   */
+/*   load.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -41,6 +41,6 @@ bool	load_texture_xpm(t_scene *scene, t_texture *tex, const char *path)
 	tex->addr = mlx_get_data_addr(img, &tex->bpp, &tex->len, &tex->endian);
 	tex->type = TEX_BITMAP;
 	tex->scale = 1.0;
-	tex->color_a = vec3(255, 255, 255); /* Tint color if needed */
+	tex->color_a = vec3(255, 255, 255);
 	return (true);
 }

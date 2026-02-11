@@ -3,41 +3,72 @@
 /*                                                        :::      ::::::::   */
 /*   trace.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@gemini.google.com> +#    +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 00:00:00 by antigravity       #+#    #+#             */
+/*   Updated: 2026/02/11 20:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
+
+static int	pack_color(t_vec3 color)
+{
+	int	r;
+	int	g;
+	int	b;
+
+	r = ((int)color.x & 0xFF) << 16;
+	g = ((int)color.y & 0xFF) << 8;
+	b = (int)color.z & 0xFF;
+	return (r | g | b);
+}
+
+struct s_fill_params
+{
+	int		x;
+	int		y;
+	int		color;
+	char	*pixel_addr;
+};
+
+static void	fill_block(t_render_ctx *ctx, struct s_fill_params *params)
+{
+	int		dx;
+	int		dy;
+	char	*dst;
+
+	dy = 0;
+	while (dy < ctx->step && (params->y + dy) < ctx->gui->win.height)
+	{
+		dst = params->pixel_addr + (dy * ctx->gui->win.line_len);
+		dx = 0;
+		while (dx < ctx->step && (params->x + dx) < ctx->gui->win.width)
+		{
+			*(unsigned int *)(dst + (dx * 4)) = params->color;
+			dx++;
+		}
+		dy++;
+	}
+}
 
 void	process_pixel(t_render_ctx *ctx, int x, int y, char *pixel_addr)
 {
 	t_ray	ray;
 	t_vec3	color;
 	int		c_int;
-	int		dx;
-	int		dy;
-	char	*dst;
+	struct s_fill_params	params;
 
 	make_camera_ray(ctx, x, y, &ray);
 	color = trace_ray(ctx->gui->bvh, &ray, ctx->gui->scene);
-	c_int = (((int)color.x & 0xFF) << 16) | (((int)color.y & 0xFF) << 8)
-		| ((int)color.z & 0xFF);
+	c_int = pack_color(color);
 	if (ctx->step > 1)
 	{
-		dy = 0;
-		while (dy < ctx->step && (y + dy) < ctx->gui->win.height)
-		{
-			dst = pixel_addr + (dy * ctx->gui->win.line_len);
-			dx = 0;
-			while (dx < ctx->step && (x + dx) < ctx->gui->win.width)
-			{
-				*(unsigned int *)(dst + (dx * 4)) = c_int;
-				dx++;
-			}
-			dy++;
-		}
+		params.x = x;
+		params.y = y;
+		params.color = c_int;
+		params.pixel_addr = pixel_addr;
+		fill_block(ctx, &params);
 	}
 	else
 		*(unsigned int *)pixel_addr = c_int;

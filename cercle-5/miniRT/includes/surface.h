@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mat4.c                                             :+:      :+:    :+:   */
+/*   surface.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,6 +17,9 @@
 # include "core.h"
 # include "debug.h"
 # include "maths.h"
+typedef struct s_scene	t_scene;
+
+
 
 /* 2. MODULE TYPES */
 typedef enum e_tex_type
@@ -44,9 +47,9 @@ typedef struct s_texture
 
 typedef struct s_material
 {
-	char		*name; /* Added for MTL parsing */
-	t_texture albedo_map; // Replaces t_vec3 albedo
-	t_texture bump_map;   // Optional bump texture
+	char		*name; /* Added for MTL parsing. */
+	t_texture	albedo_map; /* Replaces t_vec3 albedo. */
+	t_texture	bump_map; /* Optional bump texture. */
 	double		specular;
 	double		shininess;
 	double		metallic;
@@ -57,10 +60,19 @@ typedef struct s_material
 	double		reflectivity;
 }				t_material;
 
+typedef struct s_material_params
+{
+	t_vec3		albedo;
+	double		metallic;
+	double		roughness;
+	t_vec3		emission;
+	double		refract_index;
+	double		transparency;
+	double		reflectivity;
+}					t_material_params;
+
 /* 3. FUNCTION PROTOTYPES */
-t_material		*create_material(t_vec3 albedo, double metallic,
-					double roughness, t_vec3 emission, double refract_index,
-					double transparency, double reflectivity);
+t_material		*create_material(t_material_params params);
 
 int					scene_add_material(t_scene *scene, t_vec3 color);
 int					scene_find_material(t_scene *scene, const char *name);

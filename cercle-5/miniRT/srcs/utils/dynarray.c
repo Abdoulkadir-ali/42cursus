@@ -3,9 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dynarray.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@gemini.google.com> +#    +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 00:00:00 by antigravity       #+#    #+#             */
+/*   Created: 2026/02/11 13:47:02 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 13:47:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -13,17 +14,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/**
- * Ensures that the array capability is sufficient to hold at least one more element.
- * If *count >= *cap, doubles the capacity (or sets to initial 16).
- *
- * @param array Pointer to the array pointer (void**).
- * @param count Current number of elements.
- * @param cap Pointer to current capacity.
- * @param elem_size Size of a single element.
- * @return true on success, false on allocation failure.
- */
-bool	dynarray_ensure(void **array, size_t count, size_t *cap, size_t elem_size)
+/* Ensure capacity for one more element. */
+bool	dynarray_ensure(void **array, size_t count,
+		size_t *cap, size_t elem_size)
 {
 	void	*new_ptr;
 	size_t	new_cap;
@@ -37,7 +30,8 @@ bool	dynarray_ensure(void **array, size_t count, size_t *cap, size_t elem_size)
 	new_ptr = realloc(*array, new_cap * elem_size);
 	if (!new_ptr)
 	{
-		fprintf(stderr, "Error: Memory allocation failed in dynarray_ensure\n");
+		fprintf(stderr,
+			"Error: Memory allocation failed in dynarray_ensure\n");
 		return (false);
 	}
 	*array = new_ptr;

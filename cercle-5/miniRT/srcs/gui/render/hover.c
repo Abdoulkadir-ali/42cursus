@@ -3,9 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hover.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@gemini.google.com> +#    +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 00:00:00 by antigravity       #+#    #+#             */
+/*   Updated: 2026/02/11 20:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +32,7 @@ bool	update_hover(t_gui *gui, t_render_ctx *ctx)
 {
 	t_hit	hit;
 	t_ray	ray;
+	t_panel	panel;
 
 	if (gui->input.mouse_x != g_hover.x || gui->input.mouse_y != g_hover.y
 		|| gui->render.dirty)
@@ -43,8 +45,9 @@ bool	update_hover(t_gui *gui, t_render_ctx *ctx)
 	}
 	if (g_hover.active)
 	{
-		draw_panel(gui, g_hover.x + 20, g_hover.y + 20, 220, 100,
-			0x050505, 0x00D0D0);
+		panel = (t_panel){g_hover.x + 20, g_hover.y + 20, 220, 100,
+			0x050505, 0x00D0D0};
+		draw_panel(gui, panel);
 		return (true);
 	}
 	return (false);

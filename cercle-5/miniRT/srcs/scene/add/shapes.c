@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   scene_add.c                                        :+:      :+:    :+:   */
+/*   shapes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 02:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 03:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 15:35:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,41 +85,5 @@ bool	scene_add_cone(t_scene *scene, t_cone cone)
 			&scene->cone_cap, sizeof(t_cone)))
 		return (false);
 	scene->cones[scene->cone_count++] = cone;
-	return (true);
-}
-
-/*
-** Adds a mesh to the scene.
-*/
-bool	scene_add_mesh(t_scene *scene, t_mesh mesh)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->meshes, &scene->mesh_count,
-			&scene->mesh_cap, sizeof(t_mesh)))
-		return (false);
-	scene->meshes[scene->mesh_count++] = mesh;
-	return (true);
-}
-
-/*
-** Adds an animated mesh to the scene.
-*/
-bool	scene_add_animated(t_scene *scene, t_skinned_mesh animated)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->animated, &scene->anim_count,
-			&scene->anim_cap, sizeof(t_skinned_mesh)))
-		return (false);
-	scene->animated[scene->anim_count++] = animated;
-	return (true);
-}
-
-/*
-** Adds a light to the scene.
-*/
-bool	scene_add_light(t_scene *scene, t_light light)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->lights, &scene->light_count,
-			&scene->light_cap, sizeof(t_light)))
-		return (false);
-	scene->lights[scene->light_count++] = light;
 	return (true);
 }

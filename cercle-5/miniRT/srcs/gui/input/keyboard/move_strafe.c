@@ -1,37 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
+/*   move_strafe.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:47:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:47:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 16:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "gui.h"
 
-/* Extract directory part from a filepath. */
-char	*path_get_dir(const char *filepath)
+void	move_left_press(t_gui *gui)
 {
-	char	*slash;
-	char	*dir;
-	size_t	len;
+	gui->cam_ctrl.moving_left = true;
+}
 
-	if (!filepath)
-		return (NULL);
-	slash = ft_strrchr(filepath, '/');
-	if (slash)
-	{
-		len = slash - filepath + 1;
-		dir = ft_substr(filepath, 0, len);
-	}
-	else
-	{
-		dir = ft_strdup("./");
-	}
-	return (dir);
+void	move_left_release(t_gui *gui)
+{
+	gui->cam_ctrl.moving_left = false;
+}
+
+void	move_right_press(t_gui *gui)
+{
+	gui->cam_ctrl.moving_right = true;
+}
+
+void	move_right_release(t_gui *gui)
+{
+	gui->cam_ctrl.moving_right = false;
 }

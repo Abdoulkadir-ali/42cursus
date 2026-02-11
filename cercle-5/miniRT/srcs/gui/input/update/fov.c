@@ -1,37 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
+/*   fov.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:47:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:47:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 16:40:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 16:40:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "gui.h"
 
-/* Extract directory part from a filepath. */
-char	*path_get_dir(const char *filepath)
+void	update_fov(t_gui *gui, t_camera_controller *ctrl)
 {
-	char	*slash;
-	char	*dir;
-	size_t	len;
-
-	if (!filepath)
-		return (NULL);
-	slash = ft_strrchr(filepath, '/');
-	if (slash)
+	if (ctrl->zooming_in)
 	{
-		len = slash - filepath + 1;
-		dir = ft_substr(filepath, 0, len);
+		ctrl->target_fov -= 1.0;
+		clamp_fov(&ctrl->target_fov);
 	}
-	else
+	if (ctrl->zooming_out)
 	{
-		dir = ft_strdup("./");
+		ctrl->target_fov += 1.0;
+		clamp_fov(&ctrl->target_fov);
 	}
-	return (dir);
+	if (fabs(ctrl->target_fov - ctrl->camera->fov) > 1e-2)
+	{
+		ctrl->camera->fov += (ctrl->target_fov - ctrl->camera->fov)
+			* ctrl->lerp_factor;
+		gui->render.dirty = true;
+	}
 }

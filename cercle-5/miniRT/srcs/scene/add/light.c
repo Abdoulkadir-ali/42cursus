@@ -1,37 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
+/*   light.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:47:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:47:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 15:35:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "scene.h"
 
-/* Extract directory part from a filepath. */
-char	*path_get_dir(const char *filepath)
+/*
+** Adds a light to the scene.
+*/
+bool	scene_add_light(t_scene *scene, t_light light)
 {
-	char	*slash;
-	char	*dir;
-	size_t	len;
-
-	if (!filepath)
-		return (NULL);
-	slash = ft_strrchr(filepath, '/');
-	if (slash)
-	{
-		len = slash - filepath + 1;
-		dir = ft_substr(filepath, 0, len);
-	}
-	else
-	{
-		dir = ft_strdup("./");
-	}
-	return (dir);
+	if (!DYNARRAY_ENSURE_INT(&scene->lights, &scene->light_count,
+			&scene->light_cap, sizeof(t_light)))
+		return (false);
+	scene->lights[scene->light_count++] = light;
+	return (true);
 }

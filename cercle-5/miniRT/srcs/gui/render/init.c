@@ -6,6 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/05 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/11 20:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +16,8 @@
 ** Initializes MLX window and image.
 ** Returns false on failure.
 */
-/*
-** Initializes MLX window and image.
-** Returns false on failure.
-*/
 static bool	init_window(t_gui *gui)
 {
-	/* gui->win.mlx is already set */
 	if (!gui->win.mlx)
 		return (false);
 	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.width,

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 13:42:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/11 15:16:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ static bool	init_arrays(t_scene *s)
 	s->lights = ft_calloc(s->light_cap, sizeof(t_light));
 	s->cone_cap = INIT_CYL_CAP;
 	s->cones = ft_calloc(s->cone_cap, sizeof(t_cone));
-	if (!s->spheres || !s->planes || !s->cylinders || !s->meshes
-		|| !s->animated || !s->materials || !s->lights || !s->cones)
+	if (!s->spheres || !s->planes || !s->cylinders || !s->meshes || !s->animated
+		|| !s->materials || !s->lights || !s->cones)
 		return (false);
 	return (true);
 }

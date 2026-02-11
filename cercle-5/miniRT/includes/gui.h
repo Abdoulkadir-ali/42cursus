@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mat4.c                                             :+:      :+:    :+:   */
+/*   gui.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -111,6 +111,16 @@ typedef struct s_key_action
 	void				(*release_action)(t_gui *gui);
 }						t_key_action;
 
+typedef struct s_panel
+{
+	int				x;
+	int				y;
+	int				w;
+	int				h;
+	int				bg;
+	int				brd;
+} 					t_panel;
+
 /* 4. FUNCTION PROTOTYPES */
 
 /* srcs/gui/init.c */
@@ -122,7 +132,8 @@ void					gui_loop(t_gui *gui);
 
 /* srcs/gui/render.c */
 void					gui_render(t_gui *gui);
-void					draw_panel(t_gui *gui, int x, int y, int w, int h, int bg, int brd);
+void					render_tiles(t_render_ctx *ctx);
+void					draw_panel(t_gui *gui, t_panel panel);
 void					draw_ui_panels(t_gui *gui);
 void					draw_ui_text(t_gui *gui, t_camera_controller *ctrl);
 bool					update_hover(t_gui *gui, t_render_ctx *ctx);

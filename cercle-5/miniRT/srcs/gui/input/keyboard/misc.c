@@ -1,37 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
+/*   misc.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:47:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:47:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 16:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "gui.h"
 
-/* Extract directory part from a filepath. */
-char	*path_get_dir(const char *filepath)
+void	map_next_press(t_gui *gui)
 {
-	char	*slash;
-	char	*dir;
-	size_t	len;
+	gui_next_map(gui);
+}
 
-	if (!filepath)
-		return (NULL);
-	slash = ft_strrchr(filepath, '/');
-	if (slash)
-	{
-		len = slash - filepath + 1;
-		dir = ft_substr(filepath, 0, len);
-	}
-	else
-	{
-		dir = ft_strdup("./");
-	}
-	return (dir);
+void	exit_press(t_gui *gui)
+{
+	mlx_loop_end(gui->win.mlx);
 }

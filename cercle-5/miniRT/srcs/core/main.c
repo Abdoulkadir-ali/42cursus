@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 17:45:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/11 13:08:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static void	cleanup(t_scene *scene, t_bvh *bvh, t_gui *gui)
 ** Initializes the application components.
 ** Loads the scene, builds the BVH, and initializes the GUI.
 */
-static t_gui	*init_app(const char *path, t_scene **scene, t_bvh **bvh, void *mlx)
+static t_gui	*init_app(const char *path, t_scene **scene,
+		t_bvh **bvh, void *mlx)
 {
 	*scene = parse_file(path, mlx);
 	if (!*scene)
@@ -47,32 +48,8 @@ static t_gui	*init_app(const char *path, t_scene **scene, t_bvh **bvh, void *mlx
 	return (gui_init(*scene, *bvh, mlx));
 }
 
-/*
-** Main entry point.
-** Parses arguments, initializes the application, and runs the GUI loop.
-*/
-int	main(int ac, char **av)
+static int	start_gui(t_gui *gui, t_scene *scene, t_bvh *bvh, void *mlx)
 {
-	const char	*path;
-	t_scene		*scene;
-	t_bvh		*bvh;
-	t_gui		*gui;
-	void		*mlx;
-
-	path = "maps/rt/test2.rt";
-	if (ac > 1)
-		path = av[1];
-	ft_print_debug("DEBUG: Starting miniRT with map: %s\n", path);
-	mlx = mlx_init();
-	if (!mlx)
-	{
-		fprintf(stderr, "Failed to initialize MLX\n");
-		return (1);
-	}
-
-	scene = NULL;
-	bvh = NULL;
-	gui = init_app(path, &scene, &bvh, mlx);
 	if (!gui)
 	{
 		fprintf(stderr, "Failed to initialize GUI\n");
@@ -83,4 +60,38 @@ int	main(int ac, char **av)
 	gui_loop(gui);
 	cleanup(scene, bvh, gui);
 	return (0);
+}
+
+static int	run_app(const char *path)
+{
+	t_scene	*scene;
+	t_bvh	*bvh;
+	t_gui	*gui;
+	void	*mlx;
+
+	ft_print_debug("DEBUG: Starting miniRT with map: %s\n", path);
+	mlx = mlx_init();
+	if (!mlx)
+	{
+		fprintf(stderr, "Failed to initialize MLX\n");
+		return (1);
+	}
+	scene = NULL;
+	bvh = NULL;
+	gui = init_app(path, &scene, &bvh, mlx);
+	return (start_gui(gui, scene, bvh, mlx));
+}
+
+/*
+** Main entry point.
+** Parses arguments, initializes the application, and runs the GUI loop.
+*/
+int	main(int ac, char **av)
+{
+	const char	*path;
+
+	path = "maps/rt/test2.rt";
+	if (ac > 1)
+		path = av[1];
+	return (run_app(path));
 }

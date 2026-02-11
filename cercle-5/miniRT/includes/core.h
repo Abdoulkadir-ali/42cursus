@@ -14,42 +14,40 @@
 # define EXTSTD_H
 
 /* std */
-# include <fcntl.h>
-# include <sys/stat.h>
-# include <math.h>
-# include <stdbool.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <zlib.h>
-# include <float.h>
-# include <stddef.h>
-# include <stdint.h>
-# include <string.h>
 # include <X11/X.h>
 # include <X11/keysym.h>
 # include <dirent.h>
+# include <fcntl.h>
+# include <float.h>
+# include <math.h>
 # include <pthread.h>
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdint.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/stat.h>
 # include <sys/time.h>
+# include <unistd.h>
+# include <zlib.h>
 
 /* package */
 # include "libft.h"
 # include "mlx.h"
 
-
 /* 2. MODULE TYPES & ENUMS */
-#define DEBUG 0
-#define GLB_MAGIC 0x46546C67
-#define CHUNK_JSON 0x4E4F534A
-#define CHUNK_BIN 0x004E4942
-#define BVH_BINS 16
+# define DEBUG 0
+# define GLB_MAGIC 0x46546C67
+# define CHUNK_JSON 0x4E4F534A
+# define CHUNK_BIN 0x004E4942
+# define BVH_BINS 16
 
 /* 2. CONSTANTS */
 # define THREAD_COUNT 12
 # define TILE_SIZE 32
 # define ZOOM_SPEED 2.0
 # define MOUSE_SENSITIVITY 0.005
-
 
 # define EPSILON 0.001
 # define MAX_LEAF_OBJECTS 4
@@ -62,7 +60,7 @@
 # define INIT_MAT_CAP 32
 # define INIT_LIGHT_CAP 8
 # define INIT_CYL_CAP 16
-#define MAX_VALUE 1e30
+# define MAX_VALUE 1e30
 
 /* Enums */
 typedef enum e_type
@@ -77,13 +75,13 @@ typedef enum e_type
 	TYPE_ANIM,
 	TYPE_CYLINDER,
 	TYPE_CONE
-}	t_type;
+}									t_type;
 
 typedef enum e_light_type
 {
 	LIGHT_POINT,
 	LIGHT_SPOT
-}	t_light_type;
+}									t_light_type;
 
 /* Forward Declarations of Structs */
 typedef struct s_scene				t_scene;
@@ -126,7 +124,7 @@ typedef struct s_vertex				t_vertex;
 typedef struct s_triangle			t_triangle;
 typedef struct s_heightmap			t_heightmap;
 typedef struct s_mesh_build_item	t_mesh_build_item;
-
+typedef struct s_scene				t_scene;
 typedef struct s_parser				t_parser;
 typedef struct s_obj_ctx			t_obj_ctx;
 typedef struct s_parse_obj			t_parse_obj;

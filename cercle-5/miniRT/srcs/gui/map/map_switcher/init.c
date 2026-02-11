@@ -1,37 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:47:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:47:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 16:20:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 16:20:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "gui.h"
 
-/* Extract directory part from a filepath. */
-char	*path_get_dir(const char *filepath)
+int		count_maps(void);
+void	fill_map_list(t_gui *gui);
+void	set_current_index(t_gui *gui);
+
+void	gui_map_switcher_init(t_gui *gui)
 {
-	char	*slash;
-	char	*dir;
-	size_t	len;
+	int	count;
 
-	if (!filepath)
-		return (NULL);
-	slash = ft_strrchr(filepath, '/');
-	if (slash)
-	{
-		len = slash - filepath + 1;
-		dir = ft_substr(filepath, 0, len);
-	}
-	else
-	{
-		dir = ft_strdup("./");
-	}
-	return (dir);
+	count = count_maps();
+	if (count == 0)
+		return ;
+	gui->map_info.files = ft_calloc(count + 1, sizeof(char *));
+	if (!gui->map_info.files)
+		return ;
+	fill_map_list(gui);
+	set_current_index(gui);
 }

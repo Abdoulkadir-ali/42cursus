@@ -1,37 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
+/*   mesh.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:47:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:47:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 15:10:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 15:10:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "debug.h"
+#include "objects.h"
 
-/* Extract directory part from a filepath. */
-char	*path_get_dir(const char *filepath)
+void	print_mesh(t_mesh *m)
 {
-	char	*slash;
-	char	*dir;
-	size_t	len;
+	const char	*name;
 
-	if (!filepath)
-		return (NULL);
-	slash = ft_strrchr(filepath, '/');
-	if (slash)
-	{
-		len = slash - filepath + 1;
-		dir = ft_substr(filepath, 0, len);
-	}
-	else
-	{
-		dir = ft_strdup("./");
-	}
-	return (dir);
+	if (!m)
+		return ;
+	name = "NULL";
+	if (m->name)
+		name = m->name;
+	printf("mesh(\n  name: %s\n", name);
+	printf("  tri_count: %d\n  mat_id: %d\n  bbox: ",
+		m->tri_count, m->mat_id);
+	print_aabb(&m->bbox);
+	printf("\n  transform: ");
+	print_transform(&m->transform);
+	printf("\n)");
 }

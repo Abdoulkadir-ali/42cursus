@@ -1,37 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
+/*   gui.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:47:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:47:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 15:10:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 15:10:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "debug.h"
+#include "gui.h"
 
-/* Extract directory part from a filepath. */
-char	*path_get_dir(const char *filepath)
+void	print_gui(t_gui *g)
 {
-	char	*slash;
-	char	*dir;
-	size_t	len;
+	const char	*dirty;
 
-	if (!filepath)
-		return (NULL);
-	slash = ft_strrchr(filepath, '/');
-	if (slash)
-	{
-		len = slash - filepath + 1;
-		dir = ft_substr(filepath, 0, len);
-	}
-	else
-	{
-		dir = ft_strdup("./");
-	}
-	return (dir);
+	if (!g)
+		return ;
+	dirty = "false";
+	if (g->render.dirty)
+		dirty = "true";
+	printf("gui(\n  win: %dx%d\n", g->win.width, g->win.height);
+	printf("  render: scale: %d, dirty: %s, fps: %.2f\n",
+		g->render.scale, dirty, g->render.fps);
+	printf("  map: %d maps, current: %d\n)",
+		g->map_info.count, g->map_info.current_idx);
 }
