@@ -73,6 +73,7 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 		if (!aabb_intersect_fast(&node->bbox, ray, &t_min, &t_max)
 			|| t_min > hit->t)
 			continue ;
+		
 		if (node->left || node->right)
 		{
 			h_l = node->left && aabb_intersect_fast(&node->left->bbox, ray, &t_l, &tm_l);
@@ -80,7 +81,8 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 			
 			if (h_l && h_r)
 			{
-				if (ptr >= 126) continue; /* Stack safety */
+				if (ptr >= 126) continue;
+				/* Push the FURTHER one first, so we pop the CLOSER one first */
 				if (t_l > t_r) 
 				{
 					stack[ptr++] = node->left;
@@ -105,10 +107,11 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 		}
 		else
 		{
-			//printf("DEBUG: BVH Leaf VISIT: refs=%zu\n", node->num_refs);
 			i = 0;
 			while (i < node->num_refs)
 			{
+				temp_hit.t = MAX_VALUE;
+				temp_hit.ref.type = TYPE_NONE;
 				if (intersect_object(ray, bvh->scene, node->refs[i], &temp_hit)
 					&& temp_hit.t < hit->t)
 					*hit = temp_hit;

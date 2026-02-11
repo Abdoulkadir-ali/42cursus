@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "debug.h"
 
 static void	obj_parse_v(t_obj_ctx *ctx, t_parser *p)
 {
@@ -137,6 +138,8 @@ static void	obj_parse_f(t_obj_ctx *ctx, t_parser *p)
 		add_vert(ctx, vi[i], vti[i], vni[i]);
 		add_vert(ctx, vi[i+1], vti[i+1], vni[i+1]);
 	}
+	if (count > 0)
+		ft_print_debug("DEBUG: Parsed face with %d vertices -> %d triangles\n", count, count - 2);
 }
 
 static void	obj_parse_mtllib(t_obj_ctx *ctx, t_parser *p, t_scene *scene, const char *obj_path)
@@ -191,6 +194,7 @@ bool	parse_obj(const char *path, t_scene *scene)
 	ctx.bbox = aabb_create_empty();
 	if ((fd = open(path, O_RDONLY)) < 0) return (false);
 	parser_init(&p, fd);
+	ft_print_debug("DEBUG: Starting parse of OBJ: %s\n", path);
 
 	while (true)
 	{
@@ -217,7 +221,37 @@ bool	parse_obj(const char *path, t_scene *scene)
 	}
 	close(fd);
 
+	ft_print_debug("DEBUG: Parsing finished. Initial vertices count: %zu\n", ctx.v_count);
+	for (size_t i = 0; i < ctx.v_count && i < 5; i++)
+	{
+		ft_print_debug("DEBUG: v[%zu]: ", i);
+		print_vec3(&ctx.temp_v[i]);
+		ft_print_debug("\n");
+	}
+
 	if (ctx.out_v_count == 0) { free(ctx.temp_v); free(ctx.temp_vt); free(ctx.temp_vn); return (false); }
+
+	/* Generate normals if missing */
+	if (ctx.vn_count == 0)
+	{
+		ft_print_debug("DEBUG: Generating normals for %s\n", path);
+		ctx.out_vn = ft_calloc(ctx.out_v_count, sizeof(t_vec3));
+		if (ctx.out_vn)
+		{
+			for (size_t i = 0; i < ctx.out_i_count; i += 3)
+			{
+				int i0 = ctx.out_i[i], i1 = ctx.out_i[i+1], i2 = ctx.out_i[i+2];
+				t_vec3 v0 = ctx.out_v[i0], v1 = ctx.out_v[i1], v2 = ctx.out_v[i2];
+				t_vec3 fn = vec3_cross(vec3_sub(v1, v0), vec3_sub(v2, v0));
+				ctx.out_vn[i0] = vec3_add(ctx.out_vn[i0], fn);
+				ctx.out_vn[i1] = vec3_add(ctx.out_vn[i1], fn);
+				ctx.out_vn[i2] = vec3_add(ctx.out_vn[i2], fn);
+			}
+			for (size_t i = 0; i < ctx.out_v_count; i++)
+				ctx.out_vn[i] = vec3_norm(ctx.out_vn[i]);
+			ctx.vn_count = ctx.out_v_count;
+		}
+	}
 
 	t_mesh mesh;
 	ft_memset(&mesh, 0, sizeof(t_mesh));
@@ -231,9 +265,15 @@ bool	parse_obj(const char *path, t_scene *scene)
 	mesh.bbox = ctx.bbox;
 	mesh.mat_id = ctx.current_mat_id >= 0 ? ctx.current_mat_id : 0;
 	
+	if (ctx.out_vn) ft_print_debug("DEBUG: OBJ %s has %zu normals.\n", path, ctx.vn_count);
+	else ft_print_debug("DEBUG: OBJ %s has NO normals.\n", path);
+
+	print_obj_ctx(&ctx);
 	free(ctx.temp_v); free(ctx.temp_vt); free(ctx.temp_vn);
 	
 	mesh_build_bvh(&mesh);
+	ft_print_debug("DEBUG: OBJ parse complete: %d triangles, %d vertices.\n", mesh.tri_count, mesh.vertex_count);
+	print_mesh(&mesh);
 	scene_add_mesh(scene, mesh);
 	return (true);
 }

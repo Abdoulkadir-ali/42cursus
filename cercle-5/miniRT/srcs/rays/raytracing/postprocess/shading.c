@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   types.h                                            :+:      :+:    :+:   */
+/*   shading.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/11 12:41:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ static bool	is_in_shadow(t_scene *scene, const t_bvh *bvh, t_vec3 p, t_vec3 ldir
 	ray_init(&shadow_ray, p, vec3_norm(ldir));
 	// ray_init handles inv_dir and sign now
 	if (bvh_occluded(bvh, &shadow_ray, dist))
+	{
 		return (true);
+	}
 	i = 0;
 	while (i < scene->plane_count)
 	{
@@ -82,20 +84,6 @@ static void	get_material(t_shading_ctx *ctx)
 		ctx->mat = ctx->scene->materials[ctx->scene->animated[h->ref.index].base.mat_id];
 	else
 		ctx->mat = (t_material){0};
-	if (h->ref.type == TYPE_MESH || h->ref.type == TYPE_ANIM)
-	{
-		static int dbg_cnt = 0;
-		if (dbg_cnt++ < 5)
-			printf("DEBUG SHADE: type=%d idx=%d mat_id=%d tex_type=%d "
-				"colorA=(%.0f,%.0f,%.0f) normal=(%.2f,%.2f,%.2f)\n",
-				h->ref.type, h->ref.index,
-				ctx->scene->meshes[h->ref.index].mat_id,
-				ctx->mat.albedo_map.type,
-				ctx->mat.albedo_map.color_a.x,
-				ctx->mat.albedo_map.color_a.y,
-				ctx->mat.albedo_map.color_a.z,
-				h->normal.x, h->normal.y, h->normal.z);
-	}
 }
 
 /*
@@ -177,6 +165,14 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
 	{
 		total = vec3_add(total, calc_light(&ctx, scene->lights[i]));
 		i++;
+	}
+	if (0) /* DEBUG NORMALS */
+	{
+		if (hit->ref.type == TYPE_MESH || hit->ref.type == TYPE_ANIM)
+		{
+			t_vec3 n = vec3_scale(vec3_add(ctx.hit->normal, vec3(1, 1, 1)), 0.5);
+			return (vec3_scale(n, 255.0));
+		}
 	}
 	if (total.x > 255) total.x = 255;
 	if (total.y > 255) total.y = 255;

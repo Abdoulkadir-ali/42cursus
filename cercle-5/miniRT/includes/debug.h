@@ -15,8 +15,12 @@
 
 # include "core.h"
 
-/* Debug print: only active when compiled with -DDEBUG */
-# ifdef DEBUG
+# ifndef DEBUG
+#  define DEBUG 1
+# endif
+
+/* Debug print: only active when compiled with -DDEBUG or DEBUG 1 */
+# if DEBUG
 #  define ft_print_debug(...) (printf(__VA_ARGS__), fflush(stdout))
 # else
 #  define ft_print_debug(...) ((void)0)

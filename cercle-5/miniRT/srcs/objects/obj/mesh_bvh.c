@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "debug.h"
 
 static void	get_triangle_info(t_mesh *mesh, int tri_idx, t_mesh_build_item *out)
 {
@@ -22,6 +23,11 @@ static void	get_triangle_info(t_mesh *mesh, int tri_idx, t_mesh_build_item *out)
 	out->index = tri_idx;
 	out->bbox.min = vec3_min(v0, vec3_min(v1, v2));
 	out->bbox.max = vec3_max(v0, vec3_max(v1, v2));
+	
+	/* Pad AABB to avoid zero-thickness boxes (common source of glitches) */
+	out->bbox.min = vec3_sub(out->bbox.min, vec3(1e-4, 1e-4, 1e-4));
+	out->bbox.max = vec3_add(out->bbox.max, vec3(1e-4, 1e-4, 1e-4));
+
 	out->centroid = vec3_scale(vec3_add(v0, vec3_add(v1, v2)), 1.0 / 3.0);
 }
 
@@ -98,11 +104,11 @@ static int	build_recursive(t_mbvh_ctx *ctx, int first, int count)
 		else { min_val = centroid_bounds.min.z; max_val = centroid_bounds.max.z; }
 
 		if (max_val - min_val < 1e-5) continue;
-
+		
 		t_bin	bins[BVH_BINS];
 		for (int b = 0; b < BVH_BINS; b++) { bins[b].count = 0; bins[b].bounds = aabb_create_empty(); }
 
-		double	scale = BVH_BINS / (max_val - min_val);
+		double	scale = BVH_BINS / ((max_val - min_val) + 1e-9); /* Add epsilon to prevent div by zero */
 		for (int i = 0; i < count; i++)
 		{
 			double val;
@@ -179,6 +185,7 @@ static int	build_recursive(t_mbvh_ctx *ctx, int first, int count)
 	build_recursive(ctx, first, mid);
 	node->left_or_first = build_recursive(ctx, first + mid, count - mid);
 	
+	debug_print_bvh_build(count, 0, false);
 	return (node_idx);
 }
 
@@ -215,6 +222,9 @@ void	mesh_build_bvh(t_mesh *mesh)
 		mesh->bvh_indices[i * 3 + 1] = mesh->indices[tri * 3 + 1];
 		mesh->bvh_indices[i * 3 + 2] = mesh->indices[tri * 3 + 2];
 	}
+	
+	debug_print_bvh_build(mesh->tri_count, 0, false);
+	ft_print_debug("DEBUG: Mesh BVH built: %d nodes for %d tris\n", ctx.node_count, mesh->tri_count);
 	
 	free(ctx.items);
 	// printf("Mesh BVH built: %d nodes for %d tris\n", ctx.node_count, mesh->tri_count);

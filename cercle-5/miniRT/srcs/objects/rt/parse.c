@@ -75,16 +75,23 @@ t_parse_obj	parse_mesh_entry(t_parser *p, t_type type)
 	char c = parser_peek(p);
 	if ((c >= '0' && c <= '9') || c == '-' || c == '.')
 	{
+		size_t saved_cursor = p->cursor;
 		if (parse_vec3(p, &obj.data.mesh_info.transform.scale))
 			;
 		else
 		{
+			p->cursor = saved_cursor;
 			s = parse_double(p);
 			obj.data.mesh_info.transform.scale = vec3(s, s, s);
 		}
 	}
 	else
 		obj.data.mesh_info.transform.scale = vec3(1, 1, 1);
+	
+	ft_print_debug("DEBUG: Parsed Mesh Scale: %.4f, %.4f, %.4f\n", 
+		obj.data.mesh_info.transform.scale.x, 
+		obj.data.mesh_info.transform.scale.y, 
+		obj.data.mesh_info.transform.scale.z);
 
 	/* 4. Optional Color */
 	parser_skip_whitespace(p);
