@@ -63,7 +63,6 @@ int	main(int ac, char **av)
 	if (ac > 1)
 		path = av[1];
 	ft_print_debug("DEBUG: Starting miniRT with map: %s\n", path);
-	/* Initialize MLX early for texture loading */
 	mlx = mlx_init();
 	if (!mlx)
 	{
@@ -80,7 +79,7 @@ int	main(int ac, char **av)
 		cleanup(scene, bvh, NULL);
 		return (1);
 	}
-	gui->win.mlx = mlx; /* Store it in gui */
+	gui->win.mlx = mlx;
 	gui_loop(gui);
 	cleanup(scene, bvh, gui);
 	return (0);
