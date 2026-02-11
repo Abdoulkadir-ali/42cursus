@@ -12,8 +12,6 @@
 #include "scene.h"
 #include "material.h"
 
-
-
 /*
 ** Adds a material to the scene.
 ** reused existing identical materials to save memory.

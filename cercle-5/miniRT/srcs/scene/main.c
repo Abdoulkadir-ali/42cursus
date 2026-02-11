@@ -57,13 +57,14 @@ int	main(int ac, char **av)
 	t_scene		*scene;
 	t_bvh		*bvh;
 	t_gui		*gui;
+	void		*mlx;
 
 	path = "maps/rt/test2.rt";
 	if (ac > 1)
 		path = av[1];
 	ft_print_debug("DEBUG: Starting miniRT with map: %s\n", path);
 	/* Initialize MLX early for texture loading */
-	void *mlx = mlx_init();
+	mlx = mlx_init();
 	if (!mlx)
 	{
 		fprintf(stderr, "Failed to initialize MLX\n");
