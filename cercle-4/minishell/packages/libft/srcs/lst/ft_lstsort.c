@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 19:50:33 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 04:08:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/11 11:36:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ft_lstsort(t_nodes **lst, int (*cmp)(void *, void *))
 		return ;
 	sort_attempts = 0;
 	i = *lst;
-	while (i)
+	while (i && sort_attempts < 100000)
 	{
 		j = i->next;
 		while (j)
@@ -37,5 +37,6 @@ void	ft_lstsort(t_nodes **lst, int (*cmp)(void *, void *))
 			j = j->next;
 		}
 		i = i->next;
+		sort_attempts++;
 	}
 }
