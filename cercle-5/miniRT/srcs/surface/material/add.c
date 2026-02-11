@@ -12,31 +12,7 @@
 #include "scene.h"
 #include "material.h"
 
-/*
-** Ensures that the array has enough capacity to add a new element.
-** Resizes the array if necessary.
-*/
-static bool	ensure_capacity(void **array, int *count, int *cap, size_t elem_size)
-{
-	void	*tmp;
-	int		new_cap;
 
-	if (*count < *cap)
-		return (true);
-	if (*cap == 0)
-		new_cap = 16;
-	else
-		new_cap = *cap * 2;
-	tmp = realloc(*array, new_cap * elem_size);
-	if (!tmp)
-	{
-		printf("Error: Memory allocation failed while resizing scene array\n");
-		return (false);
-	}
-	*array = tmp;
-	*cap = new_cap;
-	return (true);
-}
 
 /*
 ** Adds a material to the scene.
@@ -56,7 +32,7 @@ int	scene_add_material(t_scene *scene, t_vec3 color)
 			return (i);
 		i++;
 	}
-	if (!ensure_capacity((void **)&scene->materials, &scene->mat_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->materials, &scene->mat_count,
 			&scene->mat_cap, sizeof(t_material)))
 		return (-1);
 	ft_memset(&scene->materials[scene->mat_count], 0, sizeof(t_material));
@@ -93,7 +69,7 @@ int	scene_find_material(t_scene *scene, const char *name)
 */
 int	scene_add_named_material(t_scene *scene, const char *name)
 {
-	if (!ensure_capacity((void **)&scene->materials, &scene->mat_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->materials, &scene->mat_count,
 			&scene->mat_cap, sizeof(t_material)))
 		return (-1);
 	ft_memset(&scene->materials[scene->mat_count], 0, sizeof(t_material));
@@ -113,7 +89,7 @@ int	scene_add_named_material(t_scene *scene, const char *name)
 int	scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 		t_vec3 color_b, double scale)
 {
-	if (!ensure_capacity((void **)&scene->materials, &scene->mat_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->materials, &scene->mat_count,
 			&scene->mat_cap, sizeof(t_material)))
 		return (-1);
 	ft_memset(&scene->materials[scene->mat_count], 0, sizeof(t_material));

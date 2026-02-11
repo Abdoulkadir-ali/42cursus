@@ -119,9 +119,21 @@ t_aabb	aabb_from_ref(t_scene *scene, t_bvh_ref ref)
 		return (cylinder_aabb(&scene->cylinders[ref.index]));
 	if (ref.type == TYPE_CONE)
 		return (cone_aabb(&scene->cones[ref.index]));
+	/* Optimization: P5 - Check for identity transform */
 	if (ref.type == TYPE_MESH)
+	{
+		if (scene->meshes[ref.index].transform.pos.x == 0 &&
+			scene->meshes[ref.index].transform.pos.y == 0 &&
+			scene->meshes[ref.index].transform.pos.z == 0 &&
+			scene->meshes[ref.index].transform.rotation.pitch == 0 &&
+			scene->meshes[ref.index].transform.rotation.yaw == 0 &&
+			scene->meshes[ref.index].transform.scale.x == 1 &&
+			scene->meshes[ref.index].transform.scale.y == 1 &&
+			scene->meshes[ref.index].transform.scale.z == 1)
+			return (scene->meshes[ref.index].bbox);
 		return (aabb_transform(scene->meshes[ref.index].bbox, \
 			scene->meshes[ref.index].transform));
+	}
 	if (ref.type == TYPE_ANIM)
 		return (aabb_transform(scene->animated[ref.index].base.bbox, \
 			scene->animated[ref.index].base.transform));
@@ -152,4 +164,17 @@ t_aabb	aabb_union(const t_aabb *a, const t_aabb *b)
 	bbox.max = vec3(fmax(a->max.x, b->max.x), fmax(a->max.y, b->max.y), \
 		fmax(a->max.z, b->max.z));
 	return (bbox);
+}
+
+/**
+ * Expands an AABB to include a point.
+ */
+void	aabb_expand_point(t_aabb *bbox, t_vec3 p)
+{
+	bbox->min.x = fmin(bbox->min.x, p.x);
+	bbox->min.y = fmin(bbox->min.y, p.y);
+	bbox->min.z = fmin(bbox->min.z, p.z);
+	bbox->max.x = fmax(bbox->max.x, p.x);
+	bbox->max.y = fmax(bbox->max.y, p.y);
+	bbox->max.z = fmax(bbox->max.z, p.z);
 }

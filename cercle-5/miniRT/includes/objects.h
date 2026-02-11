@@ -19,12 +19,20 @@
 # include "maths.h"
 # include "types.h"
 # include "parser.h"
+# include "utils.h"
 # include <fcntl.h>
 # include <math.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+
+/* Debug print: only active when compiled with -DDEBUG */
+# ifdef DEBUG
+#  define ft_print_debug(...) (printf(__VA_ARGS__), fflush(stdout))
+# else
+#  define ft_print_debug(...) ((void)0)
+# endif
 
 /* 2. MODULE TYPES & ENUMS */
 
@@ -116,6 +124,8 @@ struct					s_mesh
 };
 
 void					mesh_apply_transform(t_mesh *mesh, t_transform transform);
+bool					mesh_init(t_mesh *mesh, int v_count, int i_count, bool has_uvs, bool has_normals);
+void					mesh_free(t_mesh *mesh);
 
 struct					s_bone_weight
 {

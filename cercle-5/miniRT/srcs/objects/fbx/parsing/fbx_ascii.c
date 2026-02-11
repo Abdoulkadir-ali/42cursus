@@ -15,13 +15,11 @@
 static char	*resolve_fbx_path(const char *fbx_path, const char *tex_filename)
 {
 	char	*dir;
-	char	*last_slash;
 	char	*full_path;
 
-	last_slash = ft_strrchr(fbx_path, '/');
-	if (!last_slash)
+	dir = path_get_dir(fbx_path);
+	if (!dir)
 		return (ft_strdup(tex_filename));
-	dir = ft_substr(fbx_path, 0, last_slash - fbx_path + 1);
 	full_path = ft_strjoin(dir, tex_filename);
 	free(dir);
 	return (full_path);
@@ -79,17 +77,16 @@ static int	parse_texture(char *p, char *end, t_scene *scene, const char *fbx_pat
 	
 	mat_id = scene_add_named_material(scene, "FBX_Mat");
 	if (load_texture_xpm(scene, &scene->materials[mat_id].albedo_map, full_path))
-		printf("FBX Texture Loaded: %s\n", full_path);
+		ft_print_debug("FBX Texture Loaded: %s\n", full_path);
 	free(full_path);
 	return (mat_id);
 }
 
 static void	*parse_array(char **p, int *count, size_t sz, void (*f)(char **, void *))
 {
-	int		cap;
-	int		i;
+	size_t	cap;
+	size_t	i;
 	void	*arr;
-	void	*tmp;
 
 	cap = 10000;
 	i = 0;
@@ -101,18 +98,12 @@ static void	*parse_array(char **p, int *count, size_t sz, void (*f)(char **, voi
 		*p = fbx_next(*p);
 		if (!**p || **p == '}')
 			break ;
-		if (i >= cap)
-		{
-			cap *= 2;
-			tmp = realloc(arr, sz * cap);
-			if (!tmp)
-				return (free(arr), NULL);
-			arr = tmp;
-		}
+		if (!dynarray_ensure(&arr, i, &cap, sz))
+			return (free(arr), NULL);
 		f(p, (char *)arr + (i * sz));
 		i++;
 	}
-	*count = i;
+	*count = (int)i;
 	return (arr);
 }
 
@@ -230,7 +221,7 @@ bool	parse_fbx_ascii(const char *path, t_scene *scene)
 	
 	if (!(p = find_node(p, end, "PolygonVertexIndex:")))
 	{
-		if (m.base.vertices) free(m.base.vertices);
+		mesh_free(&m.base);
 		free(buf);
 		return (false);
 	}
@@ -253,7 +244,7 @@ bool	parse_fbx_ascii(const char *path, t_scene *scene)
 	
 	if (!m.base.vertices || !ri)
 	{
-		if (m.base.vertices) free(m.base.vertices);
+		mesh_free(&m.base);
 		if (ri) free(ri);
 		if (rn) free(rn);
 		if (ru) free(ru);

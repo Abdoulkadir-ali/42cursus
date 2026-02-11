@@ -12,12 +12,6 @@
 #include "objects.h"
 
 /**
- * Parses a plane entry from tokens.
- * 
- * @param tokens The array of strings.
- * @return The parsed object data.
- */
-/**
  * Parses a plane entry from the buffered parser.
  */
 t_parse_obj	parse_plane(t_parser *p)

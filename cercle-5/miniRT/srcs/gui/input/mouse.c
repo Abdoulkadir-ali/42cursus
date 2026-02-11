@@ -16,15 +16,13 @@ static void	handle_scroll(int button, t_gui *gui)
 	if (button == Button4)
 	{
 		gui->cam_ctrl.target_fov -= ZOOM_SPEED;
-		if (gui->cam_ctrl.target_fov < 10)
-			gui->cam_ctrl.target_fov = 10;
+		clamp_fov(&gui->cam_ctrl.target_fov);
 		gui->render.dirty = true;
 	}
 	else if (button == Button5)
 	{
 		gui->cam_ctrl.target_fov += ZOOM_SPEED;
-		if (gui->cam_ctrl.target_fov > 170)
-			gui->cam_ctrl.target_fov = 170;
+		clamp_fov(&gui->cam_ctrl.target_fov);
 		gui->render.dirty = true;
 	}
 }
@@ -79,10 +77,7 @@ static void	handle_mouse_rotation(t_gui *gui, int dx, int dy)
 static void	handle_mouse_zoom_drag(t_gui *gui, int dy)
 {
 	gui->cam_ctrl.target_fov -= dy * 0.1;
-	if (gui->cam_ctrl.target_fov < 10)
-		gui->cam_ctrl.target_fov = 10;
-	if (gui->cam_ctrl.target_fov > 170)
-		gui->cam_ctrl.target_fov = 170;
+	clamp_fov(&gui->cam_ctrl.target_fov);
 	gui->render.dirty = true;
 }
 

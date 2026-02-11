@@ -12,31 +12,7 @@
 
 #include "scene.h"
 
-/*
-** Ensures that the array has enough capacity to add a new element.
-** Resizes the array if necessary.
-*/
-static bool	ensure_capacity(void **array, int *count, int *cap, size_t elem_size)
-{
-	void	*tmp;
-	int		new_cap;
 
-	if (*count < *cap)
-		return (true);
-	if (*cap == 0)
-		new_cap = 16;
-	else
-		new_cap = *cap * 2;
-	tmp = realloc(*array, new_cap * elem_size);
-	if (!tmp)
-	{
-		printf("Error: Memory allocation failed while resizing scene array\n");
-		return (false);
-	}
-	*array = tmp;
-	*cap = new_cap;
-	return (true);
-}
 
 /*
 ** Adds a material to the scene.
@@ -68,7 +44,7 @@ bool	scene_add_sphere(t_scene *scene, t_sphere sphere)
 	if (mat_id < 0)
 		return (false);
 	sphere.mat_id = mat_id;
-	if (!ensure_capacity((void **)&scene->spheres, &scene->sphere_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->spheres, &scene->sphere_count,
 			&scene->sphere_cap, sizeof(t_sphere)))
 		return (false);
 	scene->spheres[scene->sphere_count++] = sphere;
@@ -87,7 +63,7 @@ bool	scene_add_plane(t_scene *scene, t_plane plane)
 	if (mat_id < 0)
 		return (false);
 	plane.mat_id = mat_id;
-	if (!ensure_capacity((void **)&scene->planes, &scene->plane_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->planes, &scene->plane_count,
 			&scene->plane_cap, sizeof(t_plane)))
 		return (false);
 	scene->planes[scene->plane_count++] = plane;
@@ -106,7 +82,7 @@ bool	scene_add_cylinder(t_scene *scene, t_cylinder cylinder)
 	if (mat_id < 0)
 		return (false);
 	cylinder.mat_id = mat_id;
-	if (!ensure_capacity((void **)&scene->cylinders, &scene->cylinder_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->cylinders, &scene->cylinder_count,
 			&scene->cylinder_cap, sizeof(t_cylinder)))
 		return (false);
 	scene->cylinders[scene->cylinder_count++] = cylinder;
@@ -125,7 +101,7 @@ bool	scene_add_cone(t_scene *scene, t_cone cone)
 	if (mat_id < 0)
 		return (false);
 	cone.mat_id = mat_id;
-	if (!ensure_capacity((void **)&scene->cones, &scene->cone_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->cones, &scene->cone_count,
 			&scene->cone_cap, sizeof(t_cone)))
 		return (false);
 	scene->cones[scene->cone_count++] = cone;
@@ -137,7 +113,7 @@ bool	scene_add_cone(t_scene *scene, t_cone cone)
 */
 bool	scene_add_mesh(t_scene *scene, t_mesh mesh)
 {
-	if (!ensure_capacity((void **)&scene->meshes, &scene->mesh_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->meshes, &scene->mesh_count,
 			&scene->mesh_cap, sizeof(t_mesh)))
 		return (false);
 	scene->meshes[scene->mesh_count++] = mesh;
@@ -149,7 +125,7 @@ bool	scene_add_mesh(t_scene *scene, t_mesh mesh)
 */
 bool	scene_add_animated(t_scene *scene, t_skinned_mesh animated)
 {
-	if (!ensure_capacity((void **)&scene->animated, &scene->anim_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->animated, &scene->anim_count,
 			&scene->anim_cap, sizeof(t_skinned_mesh)))
 		return (false);
 	scene->animated[scene->anim_count++] = animated;
@@ -161,7 +137,7 @@ bool	scene_add_animated(t_scene *scene, t_skinned_mesh animated)
 */
 bool	scene_add_light(t_scene *scene, t_light light)
 {
-	if (!ensure_capacity((void **)&scene->lights, &scene->light_count,
+	if (!DYNARRAY_ENSURE_INT(&scene->lights, &scene->light_count,
 			&scene->light_cap, sizeof(t_light)))
 		return (false);
 	scene->lights[scene->light_count++] = light;

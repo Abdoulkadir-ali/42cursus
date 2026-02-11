@@ -61,8 +61,7 @@ int	main(int ac, char **av)
 	path = "maps/rt/test2.rt";
 	if (ac > 1)
 		path = av[1];
-	printf("DEBUG: Starting miniRT with map: %s\n", path);
-	fflush(stdout);
+	ft_print_debug("DEBUG: Starting miniRT with map: %s\n", path);
 	/* Initialize MLX early for texture loading */
 	void *mlx = mlx_init();
 	if (!mlx)

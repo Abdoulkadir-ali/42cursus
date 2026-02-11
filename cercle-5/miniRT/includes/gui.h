@@ -89,6 +89,7 @@ typedef struct s_render_state
 	bool				dirty;
 	double				fps;
 	long long			last_time;
+	bool				last_dirty;
 }						t_render_state;
 
 typedef struct s_input_ctxs
@@ -134,6 +135,13 @@ void					gui_loop(t_gui *gui);
 
 /* srcs/gui/render.c */
 void					gui_render(t_gui *gui);
+void					draw_panel(t_gui *gui, int x, int y, int w, int h, int bg, int brd);
+void					draw_ui_panels(t_gui *gui);
+void					draw_ui_text(t_gui *gui, t_camera_controller *ctrl);
+bool					update_hover(t_gui *gui, t_render_ctx *ctx);
+void					draw_hover_text(t_gui *gui);
+void					process_pixel(t_render_ctx *ctx, int x, int y, char *pixel_addr);
+void					make_camera_ray(t_render_ctx *ctx, double x, double y, t_ray *ray);
 
 /* srcs/gui/map_switcher.c */
 void					gui_map_switcher_init(t_gui *gui);
@@ -145,6 +153,7 @@ int						key_release(int keycode, t_gui *gui);
 int						mouse_click(int button, int x, int y, t_gui *gui);
 int						mouse_release(int button, int x, int y, t_gui *gui);
 int						mouse_motion(int x, int y, t_gui *gui);
+void					gui_update_input(t_gui *gui);
 
 /* srcs/gui/camera/ */
 void					camera_move_forward(t_camera *camera, double speed);
@@ -164,5 +173,7 @@ void					camera_rotate_pitch(t_gui *gui, double delta_pitch);
 /* Window Management */
 int						gui_window_resize(int width, int height, t_gui *gui);
 int						gui_window_close(t_gui *gui);
+
+void					clamp_fov(double *fov);
 
 #endif

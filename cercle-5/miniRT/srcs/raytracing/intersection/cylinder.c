@@ -31,12 +31,7 @@ static void	get_cylinder_uv(t_entry_point pt, t_cylinder *cy, t_hit *hit,
 	t_vec3	v_ax;
 	double	u_v[2];
 
-	if (fabs(cy->transform.forward.y) > 0.9)
-		u_ax = vec3(1, 0, 0);
-	else
-		u_ax = vec3(0, 1, 0);
-	v_ax = vec3_norm(vec3_cross(cy->transform.forward, u_ax));
-	u_ax = vec3_norm(vec3_cross(v_ax, cy->transform.forward));
+	vec3_orthonormal_basis(cy->transform.forward, &u_ax, &v_ax);
 	if (cap)
 	{
 		hit->u = (vec3_dot(vec3_sub(pt.p, pt.center), u_ax) / pt.radius + 1) * 0.5;
@@ -75,7 +70,7 @@ static bool	check_bottom_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 	{
 		p = vec3_add(ray->origin, vec3_scale(ray->direction, t));
 		if (vec3_mag_sq(vec3_sub(p, cy->transform.pos))
-			<= pow(cy->transform.scale.x, 2))
+			<= cy->transform.scale.x * cy->transform.scale.x)
 		{
 			*tm = t;
 			hit->t = t;
@@ -108,7 +103,8 @@ static bool	check_top_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 	if (t > EPSILON && t < *tm)
 	{
 		p = vec3_add(ray->origin, vec3_scale(ray->direction, t));
-		if (vec3_mag_sq(vec3_sub(p, top)) <= pow(cy->transform.scale.x, 2))
+		if (vec3_mag_sq(vec3_sub(p, top)) <= cy->transform.scale.x
+			* cy->transform.scale.x)
 		{
 			*tm = t;
 			hit->t = t;
@@ -126,21 +122,19 @@ static bool	check_top_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 ** Checks a single solution of the quadratic for cylinder body intersection.
 */
 static bool	check_body_t(const t_ray *ray, t_cylinder *cy, double t,
-		double *tm_hit[2])
+		double *tm, t_hit *hit)
 {
 	t_vec3			p;
 	double			h;
 	t_entry_point	pt;
-	t_hit			*hit;
 
-	hit = (t_hit *)tm_hit[1];
-	if (t > EPSILON && t < *(double *)tm_hit[0])
+	if (t > EPSILON && t < *tm)
 	{
 		p = vec3_add(ray->origin, vec3_scale(ray->direction, t));
 		h = vec3_dot(vec3_sub(p, cy->transform.pos), cy->transform.forward);
 		if (h >= 0 && h <= cy->transform.scale.y)
 		{
-			*(double *)tm_hit[0] = t;
+			*tm = t;
 			hit->t = t;
 			hit->point = p;
 			hit->normal = vec3_norm(vec3_sub(vec3_sub(p, cy->transform.pos),
@@ -164,21 +158,19 @@ static bool	check_body(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit)
 	t_vec3	oc;
 	double	dd;
 	double	od;
-	void	*args[2];
 
 	oc = vec3_sub(ray->origin, cy->transform.pos);
 	dd = vec3_dot(ray->direction, cy->transform.forward);
 	od = vec3_dot(oc, cy->transform.forward);
 	cf[0] = vec3_dot(ray->direction, ray->direction) - dd * dd;
 	cf[1] = 2.0 * (vec3_dot(ray->direction, oc) - dd * od);
-	cf[2] = vec3_dot(oc, oc) - od * od - pow(cy->transform.scale.x, 2);
+	cf[2] = vec3_dot(oc, oc) - od * od - cy->transform.scale.x
+		* cy->transform.scale.x;
 	if (!solve_quadratic(cf[0], cf[1], cf[2], &t[0], &t[1]))
 		return (false);
-	args[0] = tm;
-	args[1] = hit;
-	if (check_body_t(ray, cy, t[0], (double **)args))
+	if (check_body_t(ray, cy, t[0], tm, hit))
 		return (true);
-	return (check_body_t(ray, cy, t[1], (double **)args));
+	return (check_body_t(ray, cy, t[1], tm, hit));
 }
 
 /*

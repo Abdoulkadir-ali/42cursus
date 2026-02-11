@@ -153,7 +153,10 @@ static void	read_node_header(int fd, t_fbx_bin_node *node, bool is_64bit)
 	ft_memset(node->name, 0, sizeof(node->name));
 	if (node->name_len > 0)
 	{
-		size_t to_read = (node->name_len < sizeof(node->name) - 1) ? node->name_len : sizeof(node->name) - 1;
+		size_t name_limit = sizeof(node->name) - 1;
+		size_t to_read = node->name_len;
+		if (to_read > name_limit)
+			to_read = name_limit;
 		safe_read(fd, node->name, to_read);
 		if (node->name_len > to_read) lseek(fd, node->name_len - to_read, SEEK_CUR);
 	}
@@ -171,27 +174,39 @@ static void	parse_nodes(int fd, uint64_t end_offset, bool is_64, t_fbx_data *d, 
 			break ;
 		if (ft_strcmp(n.name, "Vertices") == 0 && !d->v)
 		{
-			printf("   Depth %d: Reading Vertices...\n", depth); fflush(stdout);
+			ft_print_debug("   Depth %d: Reading Vertices...\n", depth);
 			d->v = read_fbx_array(fd, &d->vc, 8);
-			if (d->v) { printf("   Depth %d: Got Vertices: %u floats\n", depth, d->vc); fflush(stdout); d->vc /= 3; }
+			if (d->v)
+			{
+				ft_print_debug("   Depth %d: Got Vertices: %u floats\n", depth, d->vc);
+				d->vc /= 3;
+			}
 		}
 		else if (ft_strcmp(n.name, "PolygonVertexIndex") == 0 && !d->ri)
 		{
-			printf("   Depth %d: Reading Indices...\n", depth); fflush(stdout);
+			ft_print_debug("   Depth %d: Reading Indices...\n", depth);
 			d->ri = (int*)read_fbx_array(fd, &d->rc, 4);
-			if (d->ri) { printf("   Depth %d: Got Indices: %u\n", depth, d->rc); fflush(stdout); }
+			ft_print_debug("   Depth %d: Got Indices: %u\n", depth, d->rc);
 		}
 		else if (ft_strcmp(n.name, "Normals") == 0 && !d->vn)
 		{
-			printf("   Depth %d: Reading Normals...\n", depth); fflush(stdout);
+			ft_print_debug("   Depth %d: Reading Normals...\n", depth);
 			d->vn = read_fbx_array(fd, &d->nc, 8);
-			if (d->vn) { printf("   Depth %d: Got Normals: %u floats\n", depth, d->nc); fflush(stdout); d->nc /= 3; }
+			if (d->vn)
+			{
+				ft_print_debug("   Depth %d: Got Normals: %u floats\n", depth, d->nc);
+				d->nc /= 3;
+			}
 		}
 		else if (ft_strcmp(n.name, "UV") == 0 && !d->vu)
 		{
-			printf("   Depth %d: Reading UVs...\n", depth); fflush(stdout);
+			ft_print_debug("   Depth %d: Reading UVs...\n", depth);
 			d->vu = read_fbx_array(fd, &d->uc, 8);
-			if (d->vu) { printf("   Depth %d: Got UVs: %u floats\n", depth, d->uc); fflush(stdout); d->uc /= 2; }
+			if (d->vu)
+			{
+				ft_print_debug("   Depth %d: Got UVs: %u floats\n", depth, d->uc);
+				d->uc /= 2;
+			}
 		}
 		else
 		{
@@ -203,6 +218,26 @@ static void	parse_nodes(int fd, uint64_t end_offset, bool is_64, t_fbx_data *d, 
 	}
 }
 
+static t_vec3	*repack_doubles_to_vec3(double *raw, uint32_t count)
+{
+	t_vec3		*out;
+	uint32_t	i;
+
+	out = ft_calloc(count, sizeof(t_vec3));
+	if (!out)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		out[i].x = raw[i * 3];
+		out[i].y = raw[i * 3 + 1];
+		out[i].z = raw[i * 3 + 2];
+		out[i].w = 0.0;
+		i++;
+	}
+	return (out);
+}
+
 bool	parse_fbx_binary(const char *path, t_scene *scene)
 {
 	int				fd;
@@ -211,50 +246,57 @@ bool	parse_fbx_binary(const char *path, t_scene *scene)
 	t_skinned_mesh	mesh;
 	t_fbx_data		d;
 
-	printf("DEBUG: parse_fbx_binary starting for %s\n", path); fflush(stdout);
+	ft_print_debug("DEBUG: parse_fbx_binary starting for %s\n", path);
 	if ((fd = open(path, O_RDONLY)) < 0)
 		return (false);
 	if (read(fd, header, 23) < 23 || read(fd, &version, 4) < 4)
 	{
-		printf("DEBUG ERR: Failed to read FBX binary header\n"); fflush(stdout);
+		fprintf(stderr, "Error: Failed to read FBX binary header\n");
 		return (close(fd), false);
 	}
-	printf("DEBUG: FBX Binary Version: %u\n", version); fflush(stdout);
+	ft_print_debug("DEBUG: FBX Binary Version: %u\n", version);
 	ft_memset(&mesh, 0, sizeof(t_skinned_mesh));
 	ft_memset(&d, 0, sizeof(t_fbx_data));
 	mesh.base.name = ft_strdup(path);
-	printf("DEBUG: starting parse_nodes recursion\n"); fflush(stdout);
+	ft_print_debug("DEBUG: starting parse_nodes recursion\n");
 	parse_nodes(fd, (uint64_t)-1, version >= 7500, &d, 0);
 	close(fd);
-	printf("DEBUG: parse_nodes finished. counts: vc=%u nc=%u\n", d.vc, d.nc); fflush(stdout);
+	ft_print_debug("DEBUG: parse_nodes finished. counts: vc=%u nc=%u\n", d.vc, d.nc);
 	if (!d.v || !d.ri)
 	{
-		printf("DEBUG ERR: FBX missing critical data\n"); fflush(stdout);
+		fprintf(stderr, "Error: FBX missing critical data\n");
 		free(mesh.base.name);
 		free(d.v); free(d.ri); free(d.vn); free(d.vu);
 		return (false);
 	}
 	if (d.vc > 1000000)
 	{
-		printf("ERROR: FBX mesh too large (%d vertices, limit 1M)\n", d.vc);
+		fprintf(stderr, "Error: FBX mesh too large (%d vertices, limit 1M)\n", d.vc);
 		free(mesh.base.name);
 		free(d.v); free(d.ri); free(d.vn); free(d.vu);
 		return (false);
 	}
-	mesh.base.vertices = d.v;
-	printf("DEBUG: calling fbx_build_flat\n"); fflush(stdout);
+	mesh.base.vertices = repack_doubles_to_vec3((double *)d.v, d.vc);
+	free(d.v);
+	d.v = NULL;
+	if (d.vn)
+	{
+		t_vec3 *rn = repack_doubles_to_vec3((double *)d.vn, d.nc);
+		free(d.vn);
+		d.vn = rn;
+	}
+	ft_print_debug("DEBUG: calling fbx_build_flat\n");
 	fbx_build_flat(&mesh.base, d.ri, (int)d.rc, d.vn, (int)d.nc, d.vu, (int)d.uc, (int)d.vc);
-	printf("DEBUG: fbx_build_flat finished\n"); fflush(stdout);
+	ft_print_debug("DEBUG: fbx_build_flat finished\n");
 	if (d.vn) free(d.vn);
 	if (d.vu) free(d.vu);
 	free(d.ri);
 	if (mesh.base.tri_count == 0)
 	{
-		free(mesh.base.name);
-		free(mesh.base.vertices);
+		mesh_free(&mesh.base);
 		return (false);
 	}
 	mesh_build_bvh(&mesh.base);
-	printf("FBX Binary Loaded: %s (%d tris)\n", path, mesh.base.tri_count);
+	ft_print_debug("FBX Binary Loaded: %s (%d tris)\n", path, mesh.base.tri_count);
 	return (scene_add_animated(scene, mesh));
 }

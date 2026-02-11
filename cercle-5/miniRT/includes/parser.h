@@ -43,4 +43,8 @@ int		parse_int(t_parser *p);
 double	parse_double(t_parser *p);
 bool	parse_vec3(t_parser *p, t_vec3 *out);
 
+/* JSON Minimal (S7) */
+char	*json_find_key(char *json, const char *key);
+int		json_get_int(char *json, const char *key);
+
 #endif

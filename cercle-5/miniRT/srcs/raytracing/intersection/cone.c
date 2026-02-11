@@ -21,12 +21,7 @@ static void	get_cone_uv(t_hit *hit, t_cone *cone, t_vec3 radial, double h)
 	t_vec3	v_ax;
 	double	u_v[2];
 
-	if (fabs(cone->transform.forward.y) > 0.9)
-		u_ax = vec3(1, 0, 0);
-	else
-		u_ax = vec3(0, 1, 0);
-	v_ax = vec3_norm(vec3_cross(cone->transform.forward, u_ax));
-	u_ax = vec3_norm(vec3_cross(v_ax, cone->transform.forward));
+	vec3_orthonormal_basis(cone->transform.forward, &u_ax, &v_ax);
 	u_v[0] = vec3_dot(radial, u_ax);
 	u_v[1] = vec3_dot(radial, v_ax);
 	hit->u = (atan2(u_v[1], u_v[0]) + M_PI) / (2 * M_PI);
@@ -75,7 +70,8 @@ static bool	check_cone_body(const t_ray *ray, t_cone *cone,
 	double	v[2];
 
 	oc = vec3_sub(ray->origin, cone->transform.pos);
-	m = pow(cone->transform.scale.x / cone->transform.scale.y, 2);
+	m = (cone->transform.scale.x / cone->transform.scale.y)
+		* (cone->transform.scale.x / cone->transform.scale.y);
 	v[0] = vec3_dot(ray->direction, cone->transform.forward);
 	v[1] = vec3_dot(oc, cone->transform.forward);
 	cf[0] = vec3_dot(ray->direction, ray->direction) - (1 + m)

@@ -67,22 +67,6 @@ t_scene	*create_scene(const char *name)
 }
 
 /*
-** Frees resources associated with a mesh.
-*/
-void	destroy_mesh(t_mesh *m)
-{
-	if (!m)
-		return ;
-	free(m->name);
-	free(m->vertices);
-	free(m->normals);
-	free(m->uvs);
-	free(m->indices);
-	if (m->internal_bvh)
-		bvh_destroy(m->internal_bvh);
-}
-
-/*
 ** Frees all memory associated with the scene and its objects.
 */
 void	destroy_scene(t_scene *scene)
@@ -98,12 +82,12 @@ void	destroy_scene(t_scene *scene)
 	free(scene->cones);
 	i = 0;
 	while (i < scene->mesh_count)
-		destroy_mesh(&scene->meshes[i++]);
+		mesh_free(&scene->meshes[i++]);
 	free(scene->meshes);
 	i = 0;
 	while (i < scene->anim_count)
 	{
-		destroy_mesh(&scene->animated[i].base);
+		mesh_free(&scene->animated[i].base);
 		free(scene->animated[i].skeleton);
 		free(scene->animated[i].bone_matrices);
 		i++;

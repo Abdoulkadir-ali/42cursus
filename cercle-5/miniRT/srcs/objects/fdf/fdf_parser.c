@@ -178,8 +178,7 @@ static bool	fdf_init_mesh(t_mesh *mesh, int v_count, int i_count, const char *p)
 	mesh->indices = ft_calloc(i_count, sizeof(int));
 	if (!mesh->vertices || !mesh->normals || !mesh->uvs || !mesh->indices)
 	{
-		(free(mesh->vertices), free(mesh->normals), free(mesh->uvs), \
-			free(mesh->indices));
+		mesh_free(mesh);
 		return (false);
 	}
 	mesh->name = ft_strdup(p);
@@ -206,8 +205,7 @@ bool	parse_fdf(const char *path, t_scene *scene)
 	mesh_build_bvh(&mesh);
 	if (!scene_add_mesh(scene, mesh))
 	{
-		(free(mesh.name), free(mesh.vertices), free(mesh.normals), \
-			free(mesh.uvs), free(mesh.indices));
+		mesh_free(&mesh);
 		return (false);
 	}
 	return (true);

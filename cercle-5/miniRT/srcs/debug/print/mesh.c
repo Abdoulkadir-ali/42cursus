@@ -44,7 +44,7 @@ void	debug_print_mesh_bake(const t_mesh *mesh, bool start)
 	fflush(stdout);
 }
 
-void	debug_print_triangle_test(int tri_idx, const t_vec3 v[3])
+void	debug_print_triangle_test(int tri_idx, const t_vec3 *v)
 {
 	(void)v;
 	printf("DEBUG: Testing triangle %d\n", tri_idx);

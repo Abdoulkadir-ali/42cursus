@@ -58,13 +58,8 @@ static t_bvh_node	*init_leaf_node(t_build_item *items, size_t count)
 	return (node);
 }
 
-static double	aabb_surface_area(t_aabb bbox)
-{
-	t_vec3	d;
 
-	d = vec3_sub(bbox.max, bbox.min);
-	return (2.0 * (d.x * d.y + d.y * d.z + d.z * d.x));
-}
+
 
 static t_bvh_node	*build_recursive(t_build_item *items, size_t count)
 {
@@ -109,29 +104,6 @@ static t_bvh_node	*build_recursive(t_build_item *items, size_t count)
 		else if (axis == 1) qsort(items, count, sizeof(t_build_item), compare_y);
 		else qsort(items, count, sizeof(t_build_item), compare_z);
 
-		/* Full Sweep SAH (O(N) per axis with accumulation) */
-		/* We need precomputed areas to do this in O(N). For simplicity, O(N^2) on Scenes (small N) is acceptable. */
-		/* Actually, let's just do O(N^2) plain sweep for robustness on scene objects which are usually < 1000 */
-		
-		/* Optimization: Only sweep a subset if count is huge, but for scene objects it is usually fine */
-		
-		t_aabb	accum_l = aabb_create_empty();
-		
-		/* We can optimize the inner loop by pre-calculating right boxes or just re-uniting. */
-		/* Given N is small (<1000 mostly), brute force sweep IS fine. */
-		
-		for (size_t i = 0; i < count - 1; i++)
-		{
-			accum_l = aabb_union(&accum_l, &items[i].bbox);
-			/* Checking every single split is best for quality */
-			
-			/* We need right box. Recomputing it every time is O(N^2). */
-			/* Let's construct a temporary array of right-to-left boxes to make it O(N) */
-			/* But allocation inside loop is bad. */
-			
-			/* Let's stick to the bins but INCREASE resolution significantly */
-			/* Or just accept O(N^2) because N is small? 100 objects -> 10000 ops. Fast. */
-		}
 		
 		/* Better Algorithm: Binned SAH with 128 bins (high res) + Termination Check */
 		for (int s = 1; s < 32; s++)
@@ -166,7 +138,7 @@ static t_bvh_node	*build_recursive(t_build_item *items, size_t count)
 
 	if (best_axis == 0) qsort(items, count, sizeof(t_build_item), compare_x);
 	else if (best_axis == 1) qsort(items, count, sizeof(t_build_item), compare_y);
-	else if (best_axis == 2) qsort(items, count, sizeof(t_build_item), compare_z);
+	/* If best_axis == 2, items are already sorted by Z from the last iteration */
 	
 	node->left = build_recursive(items, best_split);
 	if (!node->left) { free(node); return (NULL); }

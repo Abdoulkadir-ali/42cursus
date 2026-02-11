@@ -30,17 +30,11 @@ static void	get_sphere_uv(t_vec3 normal, double *u, double *v)
 */
 static void	set_sphere_hit_data(const t_ray *ray, t_sphere *sp, t_hit *hit)
 {
-	t_vec3	up;
-
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
 	hit->normal = vec3_scale(vec3_sub(hit->point, sp->transform.pos),
 			1.0 / sqrt(sp->radius_sq));
 	get_sphere_uv(hit->normal, &hit->u, &hit->v);
-	up = vec3(0, 1, 0);
-	if (fabs(vec3_dot(hit->normal, up)) > 0.99)
-		up = vec3(0, 0, 1);
-	hit->tangent = vec3_norm(vec3_cross(up, hit->normal));
-	hit->bitangent = vec3_norm(vec3_cross(hit->normal, hit->tangent));
+	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
 }
 
 /*

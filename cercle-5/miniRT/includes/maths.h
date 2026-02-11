@@ -38,6 +38,14 @@ typedef struct s_mat4
 	double				m[4][4];
 }						t_mat4;
 
+struct		s_ray
+{
+	t_vec3	origin;
+	t_vec3	direction;
+	t_vec3	inv_dir;
+	int		sign[3];
+};
+
 typedef struct s_aabb
 {
 	t_vec3				min;
@@ -166,6 +174,23 @@ static inline bool	vec3_compare(t_vec3 a, t_vec3 b)
 	return (a.x == b.x && a.y == b.y && a.z == b.z);
 }
 
+/*
+** Computes an orthonormal basis (tangent, bitangent) from a normal vector.
+** Uses the "stable up vector" trick to avoid degenerate cross products.
+*/
+static inline void	vec3_orthonormal_basis(t_vec3 normal, t_vec3 *tangent,
+		t_vec3 *bitangent)
+{
+	t_vec3	up;
+
+	if (fabs(normal.y) > 0.9)
+		up = vec3(1, 0, 0);
+	else
+		up = vec3(0, 1, 0);
+	*bitangent = vec3_norm(vec3_cross(normal, up));
+	*tangent = vec3_norm(vec3_cross(*bitangent, normal));
+}
+
 static inline t_vec3	get_camera_forward(double pitch, double yaw)
 {
 	return (vec3(cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw)));
@@ -233,16 +258,7 @@ static inline t_vec3	mat4_mul_vec3(t_mat4 m, t_vec3 v)
 	return (res);
 }
 
-static inline t_mat4	mat4_id(void)
-{
-	t_mat4	m;
 
-	int i, j;
-	for (i = 0; i < 4; i++)
-		for (j = 0; j < 4; j++)
-			m.m[i][j] = (i == j);
-	return (m);
-}
 
 static inline t_mat4	mat4_scale_inplace(t_mat4 m, double s)
 {

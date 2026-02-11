@@ -28,7 +28,7 @@ bool	load_texture_xpm(t_scene *scene, t_texture *tex, const char *path)
 		fprintf(stderr, "Error: MLX not initialized for texture loading\n");
 		return (false);
 	}
-	printf("DEBUG: Loading texture %s\n", path);
+	ft_print_debug("DEBUG: Loading texture %s\n", path);
 	img = mlx_xpm_file_to_image(scene->mlx, (char *)path, &w, &h);
 	if (!img)
 	{

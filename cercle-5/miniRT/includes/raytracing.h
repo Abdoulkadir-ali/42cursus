@@ -30,13 +30,7 @@
 
 /* 2. MODULE TYPES */
 
-struct		s_ray
-{
-	t_vec3	origin;
-	t_vec3	direction;
-	t_vec3	inv_dir;
-	int		sign[3];
-};
+
 
 struct		s_hit
 {

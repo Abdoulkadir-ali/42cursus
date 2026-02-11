@@ -45,29 +45,26 @@ t_parse_obj	parse_mesh_entry(t_parser *p, t_type type)
 	char		path[1024];
 
 	obj.type = TYPE_NONE;
-	printf("DEBUG: Starting parse_mesh_entry\n");
-	fflush(stdout);
+	ft_print_debug("DEBUG: Starting parse_mesh_entry\n");
 	if (!parse_token(p, path, 1024))
 	{
-		printf("DEBUG ERR: Failed to parse mesh path\n");
-		fflush(stdout);
+		ft_print_debug("DEBUG ERR: Failed to parse mesh path\n");
 		return (obj);
 	}
-	printf("DEBUG: Mesh path parsed: %s\n", path);
-	fflush(stdout);
+	ft_print_debug("DEBUG: Mesh path parsed: %s\n", path);
 	obj.type = type;
 	obj.data.mesh_info.path = ft_strdup(path);
 	obj.data.mesh_info.color = vec3(255, 255, 255);
 	
 	/* 1. Position */
 	if (!parse_vec3(p, &obj.data.mesh_info.transform.pos)) {
-		printf("DEBUG ERR: Failed to parse mesh position\n");
+		ft_print_debug("DEBUG ERR: Failed to parse mesh position\n");
 		return (free(obj.data.mesh_info.path), (obj.type = TYPE_NONE), obj);
 	}
 	
 	/* 2. Rotation */
 	if (!parse_vec3(p, &rot)) {
-		printf("DEBUG ERR: Failed to parse mesh rotation\n");
+		ft_print_debug("DEBUG ERR: Failed to parse mesh rotation\n");
 		return (free(obj.data.mesh_info.path), (obj.type = TYPE_NONE), obj);
 	}
 	obj.data.mesh_info.transform.rotation = (t_rotator){rot.x, rot.y, rot.z};
@@ -99,29 +96,43 @@ static t_parse_obj dispatch_scan(t_parser *p, char *id)
 {
     t_parse_obj obj;
 
-    obj.type = TYPE_NONE;
-	if (ft_strcmp(id, "A") == 0)
-		obj = parse_ambient(p);
-	else if (ft_strcmp(id, "C") == 0)
-		obj = parse_camera(p);
-	else if (ft_strcmp(id, "L") == 0)
-		obj = parse_light(p);
-	else if (ft_strcmp(id, "sp") == 0)
-		obj = parse_sphere(p);
-	else if (ft_strcmp(id, "pl") == 0)
-		obj = parse_plane(p);
-	else if (ft_strcmp(id, "cy") == 0)
-		obj = parse_cylinder(p);
-	else if (ft_strcmp(id, "cn") == 0)
-		obj = parse_cone(p);
-	else if (ft_strcmp(id, "sl") == 0)
-		obj = parse_spot_light(p);
-	else if (ft_strcmp(id, "fbx") == 0)
-		obj = parse_mesh_entry(p, TYPE_ANIM);
-	else if (ft_strcmp(id, "obj") == 0 || ft_strcmp(id, "fdf") == 0 \
-		|| ft_strcmp(id, "glb") == 0 || ft_strcmp(id, "m") == 0)
-		obj = parse_mesh_entry(p, TYPE_MESH);
-    return (obj);
+	char c;
+
+	obj.type = TYPE_NONE;
+	if (!id || !*id)
+		return (obj);
+	c = id[0];
+	switch (c)
+	{
+		case 'A': return (parse_ambient(p));
+		case 'C': return (parse_camera(p));
+		case 'L': return (parse_light(p));
+		case 's':
+			if (id[1] == 'p') return (parse_sphere(p));
+			if (id[1] == 'l') return (parse_spot_light(p));
+			break ;
+		case 'p':
+			if (id[1] == 'l') return (parse_plane(p));
+			break ;
+		case 'c':
+			if (id[1] == 'y') return (parse_cylinder(p));
+			if (id[1] == 'n') return (parse_cone(p));
+			break ;
+		case 'f':
+			if (ft_strcmp(id, "fbx") == 0) return (parse_mesh_entry(p, TYPE_ANIM));
+			if (ft_strcmp(id, "fdf") == 0) return (parse_mesh_entry(p, TYPE_MESH));
+			break ;
+		case 'o':
+			if (ft_strcmp(id, "obj") == 0) return (parse_mesh_entry(p, TYPE_MESH));
+			break ;
+		case 'g':
+			if (ft_strcmp(id, "glb") == 0) return (parse_mesh_entry(p, TYPE_MESH));
+			break ;
+		case 'm':
+			if (id[1] == '\0') return (parse_mesh_entry(p, TYPE_MESH));
+			break ;
+	}
+	return (obj);
 }
 
 /**
@@ -136,22 +147,19 @@ static bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, \
 	int				mat_id;
 
 	ret = false;
-	printf("DEBUG: handle_mesh_injection for %s with ext %s\n", obj->data.mesh_info.path, ext ? ext : "NULL");
-	fflush(stdout);
-	printf("DEBUG: calling validate_file for %s\n", obj->data.mesh_info.path);
-	fflush(stdout);
+	ft_print_debug("DEBUG: handle_mesh_injection for %s with ext %s\n", obj->data.mesh_info.path, ext ? ext : "NULL");
+	ft_print_debug("DEBUG: calling validate_file for %s\n", obj->data.mesh_info.path);
 	if (!validate_file(obj->data.mesh_info.path))
 	{
-		printf("DEBUG ERR: File not found or invalid: %s\n", obj->data.mesh_info.path);
+		fprintf(stderr, "Error: File not found or invalid: %s\n", obj->data.mesh_info.path);
 		return (false);
 	}
-	printf("DEBUG: validate_file passed, checking extension: %s\n", ext ? ext : "NONE");
-	fflush(stdout);
+	ft_print_debug("DEBUG: validate_file passed, checking extension: %s\n", ext ? ext : "NONE");
 	if (ext && ft_strcmp(ext, ".fbx") == 0)
 	{
-		printf("DEBUG: calling parse_fbx\n"); fflush(stdout);
+		ft_print_debug("DEBUG: calling parse_fbx\n");
 		ret = parse_fbx(obj->data.mesh_info.path, scene);
-		printf("DEBUG: parse_fbx returned %d\n", ret); fflush(stdout);
+		ft_print_debug("DEBUG: parse_fbx returned %d\n", ret);
 	}
 	else if (ext && ft_strcmp(ext, ".obj") == 0)
 		ret = parse_obj(obj->data.mesh_info.path, scene);
@@ -162,7 +170,7 @@ static bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, \
 	
 	if (!ret)
 	{
-		printf("DEBUG ERR: Failed to parse specific format for %s\n", obj->data.mesh_info.path);
+		fprintf(stderr, "Error: Failed to parse %s\n", obj->data.mesh_info.path);
 		return (false);
 	}
 	mat_id = scene_add_material(scene, obj->data.mesh_info.color);
@@ -181,14 +189,14 @@ static bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, \
 		mesh->transform = obj->data.mesh_info.transform;
 		mesh_apply_transform(mesh, mesh->transform);
 		/* Only override material if it's not already set by the mesh parser (e.g. MTL) */
-		printf("DEBUG: Mesh mat_id before override: %d (type %d)\n", mesh->mat_id, scene->materials[mesh->mat_id].albedo_map.type);
+		ft_print_debug("DEBUG: Mesh mat_id before override: %d (type %d)\n", mesh->mat_id, scene->materials[mesh->mat_id].albedo_map.type);
 		if (scene->materials[mesh->mat_id].albedo_map.type != TEX_BITMAP)
 		{
 			mesh->mat_id = mat_id;
-			printf("DEBUG: Mesh mat_id overridden to %d\n", mat_id);
+			ft_print_debug("DEBUG: Mesh mat_id overridden to %d\n", mat_id);
 		}
 		else
-			printf("DEBUG: Mesh mat_id KEPT as %d (is BITMAP)\n", mesh->mat_id);
+			ft_print_debug("DEBUG: Mesh mat_id KEPT as %d (is BITMAP)\n", mesh->mat_id);
 	}
 	return (true);
 }
@@ -232,16 +240,15 @@ bool	parse_rt(const char *path, t_scene *scene)
     t_parse_obj obj;
     bool        status;
 
-	printf("DEBUG: parse_rt size of t_parse_obj: %zu, size of t_parser: %zu\n", sizeof(t_parse_obj), sizeof(t_parser)); fflush(stdout);
+	ft_print_debug("DEBUG: parse_rt size of t_parse_obj: %zu, size of t_parser: %zu\n", sizeof(t_parse_obj), sizeof(t_parser));
 	status = true;
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 	{
-		printf("Error: Could not open .rt file %s\n", path);
+		fprintf(stderr, "Error: Could not open .rt file %s\n", path);
 		return (false);
 	}
-	printf("DEBUG: parse_rt opening %s\n", path);
-	fflush(stdout);
+	ft_print_debug("DEBUG: parse_rt opening %s\n", path);
 	p = malloc(sizeof(t_parser));
 	if (!p) { close(fd); return (false); }
     parser_init(p, fd);

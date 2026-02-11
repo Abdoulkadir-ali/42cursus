@@ -37,56 +37,8 @@ static bool	intersect_object(const t_ray *ray, t_scene *scene,
 	return (res);
 }
 
-/*
-** Optimized AABB intersection using precomputed inverse ray direction.
-*/
-static inline bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray,
-		double *tmin, double *tmax)
-{
-	double	t0;
-	double	t1;
-	double	min;
-	double	max;
 
-	/* X Axis */
-	t0 = (aabb->min.x - ray->origin.x) * ray->inv_dir.x;
-	t1 = (aabb->max.x - ray->origin.x) * ray->inv_dir.x;
-	if (ray->sign[0])
-	{
-		double tmp = t0; t0 = t1; t1 = tmp;
-	}
-	min = t0;
-	max = t1;
-	if (min > max) return (false);
 
-	/* Y Axis */
-	t0 = (aabb->min.y - ray->origin.y) * ray->inv_dir.y;
-	t1 = (aabb->max.y - ray->origin.y) * ray->inv_dir.y;
-	if (ray->sign[1])
-	{
-		double tmp = t0; t0 = t1; t1 = tmp;
-	}
-	min = fmax(min, t0);
-	max = fmin(max, t1);
-	if (min > max) return (false);
-
-	/* Z Axis */
-	t0 = (aabb->min.z - ray->origin.z) * ray->inv_dir.z;
-	t1 = (aabb->max.z - ray->origin.z) * ray->inv_dir.z;
-	if (ray->sign[2])
-	{
-		double tmp = t0; t0 = t1; t1 = tmp;
-	}
-	min = fmax(min, t0);
-	max = fmin(max, t1);
-	
-	if (max < 0 || min > max)
-		return (false);
-	
-	*tmin = min;
-	*tmax = max;
-	return (true);
-}
 
 /*
 ** Iterative traversal for finding the closest intersection.

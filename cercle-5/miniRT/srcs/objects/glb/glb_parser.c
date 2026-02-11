@@ -11,50 +11,9 @@
 
 #include "objects.h"
 
-/**
- * Minimal JSON parser helper to find a key.
- */
-static char	*json_find_key(char *json, const char *key)
-{
-	char	*ptr;
-	size_t	len;
-
-	if (!json || !key)
-		return (NULL);
-	len = ft_strlen(key);
-	ptr = json;
-	while (*ptr)
-	{
-		ptr = ft_strnstr(ptr, key, ft_strlen(ptr));
-		if (!ptr)
-			return (NULL);
-		if (ptr > json && *(ptr - 1) == '"' && *(ptr + len) == '"')
-			return (ptr + len + 1);
-		ptr++;
-	}
-	return (NULL);
-}
-
-/**
- * Minimal JSON parser helper to get an integer value.
- */
-static int	json_get_int(char *json, const char *key)
-{
-	char	*ptr;
-
-	if (!json || !key)
-		return (-1);
-	ptr = json_find_key(json, key);
-	if (!ptr)
-		return (-1);
-	while (*ptr && (*ptr == ':' || *ptr == ' ' || *ptr == '"'))
-		ptr++;
-	return (ft_atoi(ptr));
-}
-
-/**
- * Processes the type string from the JSON accessor entry.
- */
+/*
+** Processes the type string from the JSON accessor entry.
+*/
 static void	process_type_string(char *ptr, t_accessor *acc)
 {
 	char	*t;
@@ -244,7 +203,6 @@ static bool	load_mesh_data(t_mesh *mesh, char *json, char *bin)
 		return (false);
 	mesh->tri_count = acc.count / 3;
 	fill_attributes(mesh, json, bin, ids);
-	parse_accessor(json, ids[3], &acc);
 	if (acc.component_type == 5123)
 		handle_indices_short(mesh, json, bin, ids[3]);
 	else
@@ -286,10 +244,9 @@ bool	parse_glb(const char *path, t_scene *scene)
 	if (load_mesh_data(&mesh, buf[0], buf[1]))
 	{
 		(mesh_build_bvh(&mesh), scene_add_mesh(scene, mesh));
-		printf("GLB: Loaded %s with %d triangles\n", path, mesh.tri_count);
+		ft_print_debug("GLB: Loaded %s with %d triangles\n", path, mesh.tri_count);
 	}
 	else
-		(free(mesh.name), free(mesh.vertices), free(mesh.normals), \
-			free(mesh.uvs), free(mesh.indices));
+		mesh_free(&mesh);
 	return (free(buf[0]), free(buf[1]), true);
 }

@@ -19,7 +19,7 @@ void	parser_init(t_parser *p, int fd)
 
 	if (!p)
 	{
-		printf("DEBUG ERR: parser_init received NULL pointer!\n");
+		fprintf(stderr, "Error: parser_init received NULL pointer\n");
 		fflush(stdout);
 		return ;
 	}
@@ -31,7 +31,7 @@ void	parser_init(t_parser *p, int fd)
 	n = read(p->fd, p->buffer, PARSER_BUF_SIZE);
 	if (n < 0)
 	{
-		printf("DEBUG ERR: parser_init read() error\n");
+		fprintf(stderr, "Error: parser_init read() error\n");
 		p->bytes_read = 0;
 		p->eof = true;
 	}

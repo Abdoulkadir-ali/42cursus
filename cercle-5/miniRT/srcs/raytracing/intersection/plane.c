@@ -20,12 +20,7 @@ static void	get_plane_uv(t_vec3 p, t_vec3 n, t_hit *hit)
 	t_vec3	u_axis;
 	t_vec3	v_axis;
 
-	if (fabs(n.y) > 0.9)
-		u_axis = vec3(1, 0, 0);
-	else
-		u_axis = vec3(0, 1, 0);
-	v_axis = vec3_norm(vec3_cross(n, u_axis));
-	u_axis = vec3_norm(vec3_cross(v_axis, n));
+	vec3_orthonormal_basis(n, &u_axis, &v_axis);
 	hit->u = vec3_dot(p, u_axis) * 0.1;
 	hit->v = vec3_dot(p, v_axis) * 0.1;
 	hit->tangent = u_axis;

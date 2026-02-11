@@ -20,12 +20,11 @@
  */
 bool	parse_fbx(const char *path, t_scene *scene)
 {
-	printf("DEBUG: Inside parse_fbx function entry point for %s\n", path); fflush(stdout);
 	int		fd;
 	char	header[30];
 	ssize_t	ret;
 
-	printf("DEBUG: parse_fbx starting check for %s\n", path); fflush(stdout);
+	ft_print_debug("DEBUG: parse_fbx starting check for %s\n", path);
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 		return (false);
@@ -33,9 +32,9 @@ bool	parse_fbx(const char *path, t_scene *scene)
 	close(fd);
 	if (ret >= 18 && ft_strncmp(header, "Kaydara FBX Binary", 18) == 0)
 	{
-		printf("DEBUG: parse_fbx identified Binary format\n"); fflush(stdout);
+		ft_print_debug("DEBUG: parse_fbx identified Binary format\n");
 		return (parse_fbx_binary(path, scene));
 	}
-	printf("DEBUG: parse_fbx defaulting to ASCII\n"); fflush(stdout);
+	ft_print_debug("DEBUG: parse_fbx defaulting to ASCII\n");
 	return (parse_fbx_ascii(path, scene));
 }

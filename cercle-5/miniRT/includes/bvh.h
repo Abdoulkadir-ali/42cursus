@@ -57,4 +57,61 @@ t_aabb					aabb_create_empty(void);
 /* 5. IMPLEMENTATION IMPORTS */
 # include "scene.h"
 
+static inline double	aabb_surface_area(t_aabb bbox)
+{
+	t_vec3	d;
+
+	d = vec3_sub(bbox.max, bbox.min);
+	return (2.0 * (d.x * d.y + d.y * d.z + d.z * d.x));
+}
+
+/*
+** Optimized AABB intersection using precomputed inverse ray direction.
+*/
+static inline bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray,
+		double *tmin, double *tmax)
+{
+	double	t0;
+	double	t1;
+	double	min;
+	double	max;
+
+	t0 = (aabb->min.x - ray->origin.x) * ray->inv_dir.x;
+	t1 = (aabb->max.x - ray->origin.x) * ray->inv_dir.x;
+	if (ray->sign[0])
+	{
+		double tmp = t0; t0 = t1; t1 = tmp;
+	}
+	min = t0;
+	max = t1;
+	if (min > max) return (false);
+	t0 = (aabb->min.y - ray->origin.y) * ray->inv_dir.y;
+	t1 = (aabb->max.y - ray->origin.y) * ray->inv_dir.y;
+	if (ray->sign[1])
+	{
+		double tmp = t0; t0 = t1; t1 = tmp;
+	}
+	min = fmax(min, t0);
+	max = fmin(max, t1);
+	if (min > max) return (false);
+	t0 = (aabb->min.z - ray->origin.z) * ray->inv_dir.z;
+	t1 = (aabb->max.z - ray->origin.z) * ray->inv_dir.z;
+	if (ray->sign[2])
+	{
+		double tmp = t0; t0 = t1; t1 = tmp;
+	}
+	min = fmax(min, t0);
+	max = fmin(max, t1);
+	if (max < 0 || min > max)
+		return (false);
+	*tmin = min;
+	*tmax = max;
+	return (true);
+}
+
+/* bvh_destroy */
+void	bvh_destroy(t_bvh *bvh);
+t_aabb	aabb_union(const t_aabb *a, const t_aabb *b);
+void	aabb_expand_point(t_aabb *bbox, t_vec3 p);
+
 #endif
