@@ -14,7 +14,7 @@
 
 /**
  * Parses the ambient light entry from tokens.
- * 
+ *
  * @param tokens The array of strings.
  * @return The parsed object data.
  */

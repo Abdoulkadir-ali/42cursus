@@ -81,6 +81,7 @@ t_aabb	aabb_transform(t_aabb local, t_transform t)
 	t_vec3	c[8];
 	t_mat4	m;
 	int		i;
+	t_vec3	v;
 
 	m = mat4_transform(t);
 	c[0] = local.min;
@@ -96,7 +97,7 @@ t_aabb	aabb_transform(t_aabb local, t_transform t)
 	i = -1;
 	while (++i < 8)
 	{
-		t_vec3 v = mat4_mul_pos(m, c[i]);
+		v = mat4_mul_pos(m, c[i]);
 		w.min.x = fmin(w.min.x, v.x);
 		w.min.y = fmin(w.min.y, v.y);
 		w.min.z = fmin(w.min.z, v.z);
@@ -123,21 +124,21 @@ t_aabb	aabb_from_ref(t_scene *scene, t_bvh_ref ref)
 	/* Optimization: P5 - Check for identity transform */
 	if (ref.type == TYPE_MESH)
 	{
-		if (scene->meshes[ref.index].transform.pos.x == 0 &&
-			scene->meshes[ref.index].transform.pos.y == 0 &&
-			scene->meshes[ref.index].transform.pos.z == 0 &&
-			scene->meshes[ref.index].transform.rotation.pitch == 0 &&
-			scene->meshes[ref.index].transform.rotation.yaw == 0 &&
-			scene->meshes[ref.index].transform.scale.x == 1 &&
-			scene->meshes[ref.index].transform.scale.y == 1 &&
-			scene->meshes[ref.index].transform.scale.z == 1)
+		if (scene->meshes[ref.index].transform.pos.x == 0
+			&& scene->meshes[ref.index].transform.pos.y == 0
+			&& scene->meshes[ref.index].transform.pos.z == 0
+			&& scene->meshes[ref.index].transform.rotation.pitch == 0
+			&& scene->meshes[ref.index].transform.rotation.yaw == 0
+			&& scene->meshes[ref.index].transform.scale.x == 1
+			&& scene->meshes[ref.index].transform.scale.y == 1
+			&& scene->meshes[ref.index].transform.scale.z == 1)
 			return (scene->meshes[ref.index].bbox);
-		return (aabb_transform(scene->meshes[ref.index].bbox, \
-			scene->meshes[ref.index].transform));
+		return (aabb_transform(scene->meshes[ref.index].bbox,
+				scene->meshes[ref.index].transform));
 	}
 	if (ref.type == TYPE_ANIM)
-		return (aabb_transform(scene->animated[ref.index].base.bbox, \
-			scene->animated[ref.index].base.transform));
+		return (aabb_transform(scene->animated[ref.index].base.bbox,
+				scene->animated[ref.index].base.transform));
 	return (aabb_create_empty());
 }
 
@@ -160,10 +161,10 @@ t_aabb	aabb_union(const t_aabb *a, const t_aabb *b)
 {
 	t_aabb	bbox;
 
-	bbox.min = vec3(fmin(a->min.x, b->min.x), fmin(a->min.y, b->min.y), \
-		fmin(a->min.z, b->min.z));
-	bbox.max = vec3(fmax(a->max.x, b->max.x), fmax(a->max.y, b->max.y), \
-		fmax(a->max.z, b->max.z));
+	bbox.min = vec3(fmin(a->min.x, b->min.x), fmin(a->min.y, b->min.y),
+			fmin(a->min.z, b->min.z));
+	bbox.max = vec3(fmax(a->max.x, b->max.x), fmax(a->max.y, b->max.y),
+			fmax(a->max.z, b->max.z));
 	return (bbox);
 }
 
@@ -196,8 +197,8 @@ double	aabb_surface_area(t_aabb bbox)
 /**
  * Fast AABB intersection test using the slabs method.
  */
-bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray,
-			double *tmin, double *tmax)
+bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray, double *tmin,
+		double *tmax)
 {
 	double	t1;
 	double	t2;
@@ -216,4 +217,3 @@ bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray,
 	*tmax = fmin(*tmax, fmax(t1, t2));
 	return (*tmax >= 0 && *tmax >= *tmin);
 }
-

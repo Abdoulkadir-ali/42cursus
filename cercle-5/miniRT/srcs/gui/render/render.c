@@ -14,16 +14,19 @@
 
 static void	setup_camera_transform(t_gui *gui, t_render_ctx *ctx)
 {
+	double	pitch;
+	double	yaw;
+
 	ctx->transform = gui->cam_ctrl.camera->transform;
-	ctx->transform.forward = get_camera_forward(
-		gui->cam_ctrl.transform.rotation.pitch,
-		gui->cam_ctrl.transform.rotation.yaw);
-	ctx->transform.right = vec3_norm(vec3_cross(
-			ctx->transform.forward, vec3(0, 1, 0)));
+	pitch = gui->cam_ctrl.transform.rotation.pitch;
+	yaw = gui->cam_ctrl.transform.rotation.yaw;
+	ctx->transform.forward = get_camera_forward(pitch, yaw);
+	ctx->transform.right = vec3_norm(vec3_cross(ctx->transform.forward, vec3(0,
+					1, 0)));
 	if (vec3_mag_sq(ctx->transform.right) < 1e-6)
 		ctx->transform.right = vec3(1, 0, 0);
 	ctx->transform.up = vec3_cross(ctx->transform.right,
-		ctx->transform.forward);
+			ctx->transform.forward);
 	gui->cam_ctrl.camera->transform = ctx->transform;
 }
 
@@ -69,8 +72,8 @@ void	gui_render(t_gui *gui)
 
 	setup_ctx(gui, &ctx);
 	ctx.tiles_x = (gui->win.width + TILE_SIZE - 1) / TILE_SIZE;
-	ctx.total_tiles = ctx.tiles_x
-		* ((gui->win.height + TILE_SIZE - 1) / TILE_SIZE);
+	ctx.total_tiles = ctx.tiles_x * ((gui->win.height + TILE_SIZE - 1)
+			/ TILE_SIZE);
 	ctx.next_tile_id = 0;
 	pthread_mutex_init(&ctx.mutex, NULL);
 	render_tiles(&ctx);

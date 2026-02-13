@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:10:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/12 18:26:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include "core.h"
 # include "debug.h"
+
+typedef struct s_quadratic			t_quadratic;
+typedef struct s_quadratic_roots	t_quadratic_roots;
 
 struct s_vec2
 {
@@ -64,6 +67,19 @@ struct s_transform
 	t_vec3				forward;
 	t_vec3				right;
 	t_vec3				up;
+};
+
+struct s_quadratic
+{
+	double				a;
+	double				b;
+	double				c;
+};
+
+struct s_quadratic_roots
+{
+	double				t1;
+	double				t2;
 };
 
 
@@ -116,7 +132,7 @@ t_vec3		mat4_mul_pos(t_mat4 m, t_vec3 v);
 
 
 /* Roots */
-bool					solve_quadratic(double a, double b, double c,
-							double *t1, double *t2);
+bool					solve_quadratic(t_quadratic q,
+							t_quadratic_roots *roots);
 
 #endif

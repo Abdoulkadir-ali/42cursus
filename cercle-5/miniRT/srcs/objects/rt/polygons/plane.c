@@ -30,8 +30,8 @@ t_parse_obj	parse_plane(t_parser *p)
 	if (vec3_mag_sq(res.data.plane.transform.forward) == 0.0)
 		res.data.plane.transform.forward = vec3(0, 1, 0);
 	else
-		res.data.plane.transform.forward = \
-			vec3_norm(res.data.plane.transform.forward);
+		res.data.plane.transform.forward
+			= vec3_norm(res.data.plane.transform.forward);
 	res.data.plane.mat_id = 0;
 	res.data.plane.temp_color = rgb;
 	res.type = TYPE_PLANE;

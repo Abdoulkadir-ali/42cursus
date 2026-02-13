@@ -36,4 +36,3 @@ void	camera_rotate_pitch(t_gui *gui, double delta_pitch)
 	if (gui->cam_ctrl.target_rot.pitch < -M_PI / 2)
 		gui->cam_ctrl.target_rot.pitch = -M_PI / 2;
 }
-

@@ -145,7 +145,8 @@ static bool	check_body_t(const t_ray *ray, t_cylinder *cy, double t,
 static bool	check_body(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit)
 {
 	double	cf[3];
-	double	t[2];
+	t_quadratic	q;
+	t_quadratic_roots	roots;
 	t_vec3	oc;
 	double	dd;
 	double	od;
@@ -157,11 +158,14 @@ static bool	check_body(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit)
 	cf[1] = 2.0 * (vec3_dot(ray->direction, oc) - dd * od);
 	cf[2] = vec3_dot(oc, oc) - od * od - cy->transform.scale.x
 		* cy->transform.scale.x;
-	if (!solve_quadratic(cf[0], cf[1], cf[2], &t[0], &t[1]))
+	q.a = cf[0];
+	q.b = cf[1];
+	q.c = cf[2];
+	if (!solve_quadratic(q, &roots))
 		return (false);
-	if (check_body_t(ray, cy, t[0], tm, hit))
+	if (check_body_t(ray, cy, roots.t1, tm, hit))
 		return (true);
-	return (check_body_t(ray, cy, t[1], tm, hit));
+	return (check_body_t(ray, cy, roots.t2, tm, hit));
 }
 
 /*

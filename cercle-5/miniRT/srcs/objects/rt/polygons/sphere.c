@@ -24,7 +24,7 @@ t_parse_obj	parse_sphere(t_parser *p)
 	res.type = TYPE_NONE;
 	if (!parse_vec3(p, &res.data.sphere.transform.pos))
 		return (res);
-	diameter = parse_double(p); 
+	diameter = parse_double(p);
 	if (!parse_vec3(p, &rgb))
 		return (res);
 	res.data.sphere.radius_sq = (float)((diameter / 2.0) * (diameter / 2.0));

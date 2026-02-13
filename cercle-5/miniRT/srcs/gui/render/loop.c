@@ -62,12 +62,10 @@ void	gui_loop(t_gui *gui)
 {
 	mlx_hook(gui->win.win, KeyPress, KeyPressMask, key_press, gui);
 	mlx_hook(gui->win.win, KeyRelease, KeyReleaseMask, key_release, gui);
-	mlx_hook(gui->win.win, ButtonPress, ButtonPressMask, mouse_click,
-		gui);
+	mlx_hook(gui->win.win, ButtonPress, ButtonPressMask, mouse_click, gui);
 	mlx_hook(gui->win.win, ButtonRelease, ButtonReleaseMask, mouse_release,
 		gui);
-	mlx_hook(gui->win.win, MotionNotify, PointerMotionMask, mouse_motion,
-		gui);
+	mlx_hook(gui->win.win, MotionNotify, PointerMotionMask, mouse_motion, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
 	mlx_loop_hook(gui->win.mlx, (int (*)())render_loop, gui);
 	mlx_loop(gui->win.mlx);

@@ -113,13 +113,34 @@ typedef struct s_key_action
 
 typedef struct s_panel
 {
-	int				x;
-	int				y;
-	int				w;
-	int				h;
-	int				bg;
-	int				brd;
-} 					t_panel;
+	int					x;
+	int					y;
+	int					w;
+	int					h;
+	int					bg;
+	int					brd;
+}						t_panel;
+
+typedef struct s_fill_params
+{
+	int					x;
+	int					y;
+	int					color;
+	char				*pixel_addr;
+}						t_fill_params;
+
+typedef struct s_tile_vars
+{
+	int					id;
+	int					tx;
+	int					ty;
+	int					x;
+	int					y;
+	int					bpp_step;
+	int					row_step;
+	char				*row_ptr;
+	char				*pixel_ptr;
+}						t_tile_vars;
 
 /* 4. FUNCTION PROTOTYPES */
 
@@ -132,14 +153,18 @@ void					gui_loop(t_gui *gui);
 
 /* srcs/gui/render.c */
 void					gui_render(t_gui *gui);
+unsigned int			color_blend(unsigned int dst, int src, float alpha);
+int						panel_color(t_panel panel, int i, int j);
 void					render_tiles(t_render_ctx *ctx);
 void					draw_panel(t_gui *gui, t_panel panel);
 void					draw_ui_panels(t_gui *gui);
 void					draw_ui_text(t_gui *gui, t_camera_controller *ctrl);
 bool					update_hover(t_gui *gui, t_render_ctx *ctx);
 void					draw_hover_text(t_gui *gui);
-void					process_pixel(t_render_ctx *ctx, int x, int y, char *pixel_addr);
-void					make_camera_ray(t_render_ctx *ctx, double x, double y, t_ray *ray);
+void					process_pixel(t_render_ctx *ctx, int x, int y,
+							char *pixel_addr);
+void					make_camera_ray(t_render_ctx *ctx, double x, double y,
+							t_ray *ray);
 
 /* srcs/gui/map_switcher.c */
 void					gui_map_switcher_init(t_gui *gui);
@@ -154,6 +179,8 @@ int						mouse_motion(int x, int y, t_gui *gui);
 void					gui_update_input(t_gui *gui);
 
 /* srcs/gui/camera/ */
+void					camera_move(t_camera *camera, t_vec3 direction,
+							double speed);
 void					camera_move_forward(t_camera *camera, double speed);
 void					camera_move_backward(t_camera *camera, double speed);
 void					camera_move_left(t_camera *camera, double speed);
@@ -162,6 +189,27 @@ void					camera_move_up(t_camera *camera, double speed);
 void					camera_move_down(t_camera *camera, double speed);
 void					camera_rotate_yaw(t_gui *gui, double delta_yaw);
 void					camera_rotate_pitch(t_gui *gui, double delta_pitch);
+
+void					move_forward_press(t_gui *gui);
+void					move_forward_release(t_gui *gui);
+void					move_backward_press(t_gui *gui);
+void					move_backward_release(t_gui *gui);
+void					move_left_press(t_gui *gui);
+void					move_left_release(t_gui *gui);
+void					move_right_press(t_gui *gui);
+void					move_right_release(t_gui *gui);
+void					move_up_press(t_gui *gui);
+void					move_up_release(t_gui *gui);
+void					move_down_press(t_gui *gui);
+void					move_down_release(t_gui *gui);
+void					zoom_in_press(t_gui *gui);
+void					zoom_in_release(t_gui *gui);
+void					zoom_out_press(t_gui *gui);
+void					zoom_out_release(t_gui *gui);
+void					speed_up_press(t_gui *gui);
+void					speed_down_press(t_gui *gui);
+void					map_next_press(t_gui *gui);
+void					exit_press(t_gui *gui);
 
 /* 5. IMPLEMENTATION IMPORTS */
 # include "raytracing.h"

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/30 17:39:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/12 20:44:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # endif
 
 # include "libft.h"
+# include <stdbool.h>
 # include <unistd.h>
 
 /* Flags structure for bonus handling */
@@ -72,6 +73,8 @@ int					ft_toupper(int c);
 int					ft_isspace(char c);
 int					ft_strrchri(char *str, char c);
 int					ft_strchri(char *str, char c);
+
+char				*skip_spaces(char *p);
 
 void				ft_putchar_fd(char c, int fd);
 void				ft_putendl_fd(char *s, int fd);
@@ -121,6 +124,7 @@ char				*ft_strldup(char *str, size_t l);
 char				*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char				*ft_substr(char const *s, unsigned int start,
 						unsigned int len);
+char				*skip_spaces(char *p);
 
 int					ft_check_base(const char *base);
 size_t				ft_nbrlen_base(long long int n, size_t base);

@@ -24,15 +24,7 @@ static int	pack_color(t_vec3 color)
 	return (r | g | b);
 }
 
-struct s_fill_params
-{
-	int		x;
-	int		y;
-	int		color;
-	char	*pixel_addr;
-};
-
-static void	fill_block(t_render_ctx *ctx, struct s_fill_params *params)
+static void	fill_block(t_render_ctx *ctx, t_fill_params *params)
 {
 	int		dx;
 	int		dy;
@@ -54,10 +46,10 @@ static void	fill_block(t_render_ctx *ctx, struct s_fill_params *params)
 
 void	process_pixel(t_render_ctx *ctx, int x, int y, char *pixel_addr)
 {
-	t_ray	ray;
-	t_vec3	color;
-	int		c_int;
-	struct s_fill_params	params;
+	t_ray			ray;
+	t_vec3			color;
+	int				c_int;
+	t_fill_params	params;
 
 	make_camera_ray(ctx, x, y, &ray);
 	color = trace_ray(ctx->gui->bvh, &ray, ctx->gui->scene);

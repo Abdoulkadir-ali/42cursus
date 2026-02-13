@@ -12,22 +12,9 @@
 
 #include "gui.h"
 
-struct s_tile_vars
-{
-	int		id;
-	int		tx;
-	int		ty;
-	int		x;
-	int		y;
-	int		bpp_step;
-	int		row_step;
-	char	*row_ptr;
-	char	*pixel_ptr;
-};
-
 static void	render_tile(t_render_ctx *ctx, int id)
 {
-	struct s_tile_vars	v;
+	t_tile_vars	v;
 
 	v.tx = (id % ctx->tiles_x) * TILE_SIZE;
 	v.ty = (id / ctx->tiles_x) * TILE_SIZE;
@@ -55,7 +42,7 @@ static void	render_tile(t_render_ctx *ctx, int id)
 static void	*render_tile_worker(void *arg)
 {
 	t_render_ctx	*ctx;
-	int			id;
+	int				id;
 
 	ctx = (t_render_ctx *)arg;
 	while (1)

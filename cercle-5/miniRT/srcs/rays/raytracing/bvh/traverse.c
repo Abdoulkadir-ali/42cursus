@@ -15,8 +15,8 @@
 /*
 ** Dispatches ray intersection to the correct object type.
 */
-static bool	intersect_object(const t_ray *ray, t_scene *scene,
-		t_bvh_ref ref, t_hit *hit)
+static bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
+		t_hit *hit)
 {
 	bool	res;
 
@@ -37,9 +37,6 @@ static bool	intersect_object(const t_ray *ray, t_scene *scene,
 		hit->ref = ref;
 	return (res);
 }
-
-
-
 
 /*
 ** Iterative traversal for finding the closest intersection.
@@ -73,17 +70,18 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 		if (!aabb_intersect_fast(&node->bbox, ray, &t_min, &t_max)
 			|| t_min > hit->t)
 			continue ;
-		
 		if (node->left || node->right)
 		{
-			h_l = node->left && aabb_intersect_fast(&node->left->bbox, ray, &t_l, &tm_l);
-			h_r = node->right && aabb_intersect_fast(&node->right->bbox, ray, &t_r, &tm_r);
-			
+			h_l = node->left && aabb_intersect_fast(&node->left->bbox, ray,
+					&t_l, &tm_l);
+			h_r = node->right && aabb_intersect_fast(&node->right->bbox, ray,
+					&t_r, &tm_r);
 			if (h_l && h_r)
 			{
-				if (ptr >= 126) continue;
+				if (ptr >= 126)
+					continue ;
 				/* Push the FURTHER one first, so we pop the CLOSER one first */
-				if (t_l > t_r) 
+				if (t_l > t_r)
 				{
 					stack[ptr++] = node->left;
 					stack[ptr++] = node->right;
@@ -96,12 +94,14 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 			}
 			else if (h_l)
 			{
-				if (ptr >= 127) continue;
+				if (ptr >= 127)
+					continue ;
 				stack[ptr++] = node->left;
 			}
 			else if (h_r)
 			{
-				if (ptr >= 127) continue;
+				if (ptr >= 127)
+					continue ;
 				stack[ptr++] = node->right;
 			}
 		}
@@ -119,7 +119,8 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 			}
 		}
 	}
-	//if (hit->ref.type != TYPE_NONE) printf("DEBUG: BVH HIT: t=%f, type=%d\n", hit->t, hit->ref.type);
+	//if (hit->ref.type != TYPE_NONE)
+		//printf("DEBUG: BVH HIT: t=%f, type=%d\n",hit->t, hit->ref.type);
 	return (hit->ref.type != TYPE_NONE);
 }
 
@@ -148,9 +149,12 @@ bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 			continue ;
 		if (node->left || node->right)
 		{
-			if (ptr >= 126) continue; /* Stack safety */
-			if (node->right) stack[ptr++] = node->right;
-			if (node->left) stack[ptr++] = node->left;
+			if (ptr >= 126)
+				continue ; /* Stack safety */
+			if (node->right)
+				stack[ptr++] = node->right;
+			if (node->left)
+				stack[ptr++] = node->left;
 		}
 		else
 		{
@@ -159,12 +163,15 @@ bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 			{
 				if (node->refs[i].type == TYPE_MESH)
 				{
-					if (mesh_occluded(ray, &bvh->scene->meshes[node->refs[i].index], max_t))
+					if (mesh_occluded(ray,
+							&bvh->scene->meshes[node->refs[i].index], max_t))
 						return (true);
 				}
 				else if (node->refs[i].type == TYPE_ANIM)
 				{
-					if (mesh_occluded(ray, &bvh->scene->animated[node->refs[i].index].base, max_t))
+					if (mesh_occluded(ray,
+							&bvh->scene->animated[node->refs[i].index].base,
+							max_t))
 						return (true);
 				}
 				else if (intersect_object(ray, bvh->scene, node->refs[i], &temp)
@@ -176,4 +183,3 @@ bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 	}
 	return (false);
 }
-

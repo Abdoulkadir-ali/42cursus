@@ -1,5 +1,5 @@
 NAME        = miniRT
-MAKEFLAGS	+= j4
+MAKEFLAGS	+= j8
 MINILIBX_DIR = packages/minilibx-linux
 MINILIBX    = $(MINILIBX_DIR)/libmlx.a
 LIBFT_DIR   = packages/libft

@@ -51,7 +51,6 @@ t_parse_obj	parse_cone(t_parser *p)
 	t_parse_obj	res;
 
 	res.type = TYPE_NONE;
-	/* t_cone layout matches t_cylinder, so cast is safe */
 	if (parse_base(p, (t_cylinder *)&res.data.cone))
 		res.type = TYPE_CONE;
 	return (res);

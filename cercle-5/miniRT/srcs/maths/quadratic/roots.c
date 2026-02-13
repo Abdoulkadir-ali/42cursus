@@ -17,16 +17,16 @@
 ** Stores the two roots in t1 and t2.
 ** Returns true if real roots exist, false otherwise.
 */
-bool	solve_quadratic(double a, double b, double c, double *t1, double *t2)
+bool	solve_quadratic(t_quadratic q, t_quadratic_roots *roots)
 {
 	double	discriminant;
 	double	sqrt_d;
 
-	discriminant = b * b - 4 * a * c;
+	discriminant = q.b * q.b - 4 * q.a * q.c;
 	if (discriminant < 0)
 		return (false);
 	sqrt_d = sqrt(discriminant);
-	*t1 = (-b - sqrt_d) / (2 * a);
-	*t2 = (-b + sqrt_d) / (2 * a);
+	roots->t1 = (-q.b - sqrt_d) / (2 * q.a);
+	roots->t2 = (-q.b + sqrt_d) / (2 * q.a);
 	return (true);
 }

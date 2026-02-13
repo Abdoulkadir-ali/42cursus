@@ -14,7 +14,7 @@
 
 /**
  * Parses a camera entry from tokens.
- * 
+ *
  * @param tokens The array of strings.
  * @return The parsed object data.
  */

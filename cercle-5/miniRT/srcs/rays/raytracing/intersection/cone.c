@@ -66,7 +66,8 @@ static bool	check_cone_body(const t_ray *ray, t_cone *cone,
 	t_vec3	oc;
 	double	m;
 	double	cf[3];
-	double	rt[2];
+	t_quadratic	q;
+	t_quadratic_roots	roots;
 	double	v[2];
 
 	oc = vec3_sub(ray->origin, cone->transform.pos);
@@ -78,13 +79,16 @@ static bool	check_cone_body(const t_ray *ray, t_cone *cone,
 		* v[0] * v[0];
 	cf[1] = 2 * (vec3_dot(ray->direction, oc) - (1 + m) * v[0] * v[1]);
 	cf[2] = vec3_dot(oc, oc) - (1 + m) * v[1] * v[1];
-	if (!solve_quadratic(cf[0], cf[1], cf[2], &rt[0], &rt[1]))
+	q.a = cf[0];
+	q.b = cf[1];
+	q.c = cf[2];
+	if (!solve_quadratic(q, &roots))
 		return (false);
-	*t = rt[0];
+	*t = roots.t1;
 	if (!(*t > EPSILON && (v[1] + *t * v[0]) >= 0
 			&& (v[1] + *t * v[0]) <= y_cutoff))
 	{
-		*t = rt[1];
+		*t = roots.t2;
 		if (!(*t > EPSILON && (v[1] + *t * v[0]) >= 0
 				&& (v[1] + *t * v[0]) <= y_cutoff))
 			return (false);

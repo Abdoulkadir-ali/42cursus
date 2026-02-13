@@ -14,7 +14,7 @@
 
 /**
  * Parses a point light entry from tokens.
- * 
+ *
  * @param tokens The array of strings.
  * @return The parsed object data.
  */
@@ -31,9 +31,7 @@ t_parse_obj	parse_light(t_parser *p)
 	res.data.light.brightness = parse_double(p);
 	res.data.light.type = LIGHT_POINT;
 	res.data.light.rgb = vec3(255, 255, 255);
-	
-	/* Optional Color */
-	parser_skip_whitespace(p);
+	parser_skip_spaces(p);
 	if (parser_peek(p) && parser_peek(p) != '\n')
 		parse_vec3(p, &res.data.light.rgb);
 	res.type = TYPE_LIGHT;
@@ -56,13 +54,12 @@ t_parse_obj	parse_spot_light(t_parser *p)
 		return (res);
 	res.data.light.brightness = parse_double(p);
 	fov = parse_double(p);
-	res.data.light.transform.forward = \
-		vec3_norm(res.data.light.transform.forward);
-	res.data.light.cutoff = cos((fov * M_PI / 180.0) / 2.0);
+	res.data.light.transform.forward
+		= vec3_norm(res.data.light.transform.forward);
+	res.data.light.cutoff
+		= cos((fov * M_PI / 180.0) / 2.0);
 	res.data.light.rgb = vec3(255, 255, 255);
-
-	/* Optional Color */
-	parser_skip_whitespace(p);
+	parser_skip_spaces(p);
 	if (parser_peek(p) && parser_peek(p) != '\n')
 		parse_vec3(p, &res.data.light.rgb);
 	res.type = TYPE_LIGHT;

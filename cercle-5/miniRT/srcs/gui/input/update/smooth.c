@@ -35,7 +35,7 @@ void	smooth_position(t_gui *gui, t_camera_controller *ctrl)
 	if (vec3_mag_sq(pos_diff) > 1e-6)
 	{
 		ctrl->transform.pos = vec3_add(ctrl->transform.pos,
-			vec3_scale(pos_diff, ctrl->lerp_factor));
+				vec3_scale(pos_diff, ctrl->lerp_factor));
 		gui->render.dirty = true;
 	}
 }

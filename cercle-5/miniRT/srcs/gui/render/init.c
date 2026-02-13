@@ -20,8 +20,8 @@ static bool	init_window(t_gui *gui)
 {
 	if (!gui->win.mlx)
 		return (false);
-	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.width,
-			gui->win.height, "miniRT");
+	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.width, gui->win.height,
+			"miniRT");
 	if (!gui->win.win)
 	{
 		free(gui->win.mlx);
@@ -78,6 +78,8 @@ t_gui	*gui_init(t_scene *scene, t_bvh *bvh, void *mlx)
 	}
 	init_camera(gui);
 	gui_map_switcher_init(gui);
+	mlx_hook(gui->win.win, 22, 1L << 17, gui_window_resize, gui);
+	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
 	return (gui);
 }
 
@@ -108,4 +110,3 @@ void	gui_destroy(t_gui *gui)
 	}
 	free(gui);
 }
-

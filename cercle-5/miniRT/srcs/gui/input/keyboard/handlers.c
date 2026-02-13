@@ -12,27 +12,6 @@
 
 #include "gui.h"
 
-void	move_forward_press(t_gui *gui);
-void	move_forward_release(t_gui *gui);
-void	move_backward_press(t_gui *gui);
-void	move_backward_release(t_gui *gui);
-void	move_left_press(t_gui *gui);
-void	move_left_release(t_gui *gui);
-void	move_right_press(t_gui *gui);
-void	move_right_release(t_gui *gui);
-void	move_up_press(t_gui *gui);
-void	move_up_release(t_gui *gui);
-void	move_down_press(t_gui *gui);
-void	move_down_release(t_gui *gui);
-void	zoom_in_press(t_gui *gui);
-void	zoom_in_release(t_gui *gui);
-void	zoom_out_press(t_gui *gui);
-void	zoom_out_release(t_gui *gui);
-void	speed_up_press(t_gui *gui);
-void	speed_down_press(t_gui *gui);
-void	map_next_press(t_gui *gui);
-void	exit_press(t_gui *gui);
-
 static t_key_action	g_keymap[] = {
 	{XK_w, move_forward_press, move_forward_release},
 	{XK_z, move_forward_press, move_forward_release},

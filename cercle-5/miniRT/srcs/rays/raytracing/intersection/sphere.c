@@ -45,15 +45,22 @@ bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit)
 {
 	t_vec3	oc;
 	double	cf[3];
-	double	t[2];
+	t_quadratic	q;
+	t_quadratic_roots	roots;
 
 	oc = vec3_sub(ray->origin, sp->transform.pos);
 	cf[0] = vec3_dot(ray->direction, ray->direction);
 	cf[1] = 2.0 * vec3_dot(oc, ray->direction);
 	cf[2] = vec3_dot(oc, oc) - sp->radius_sq;
-	if (!solve_quadratic(cf[0], cf[1], cf[2], &t[0], &t[1]))
+	q.a = cf[0];
+	q.b = cf[1];
+	q.c = cf[2];
+	if (!solve_quadratic(q, &roots))
 		return (false);
-	hit->t = (t[0] > EPSILON) ? t[0] : t[1];
+	if (roots.t1 > EPSILON)
+		hit->t = roots.t1;
+	else
+		hit->t = roots.t2;
 	if (hit->t < EPSILON)
 		return (false);
 	set_sphere_hit_data(ray, sp, hit);
