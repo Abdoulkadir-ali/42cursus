@@ -72,8 +72,6 @@ static bool	fbx_bin_parse(t_fbx_bin_ctx *ctx)
 	return (true);
 }
 
-bool		fbx_bin_build_mesh(t_fbx_bin_ctx *ctx);
-
 bool	parse_fbx_binary(const char *path, t_scene *scene)
 {
 	t_fbx_bin_ctx	ctx;

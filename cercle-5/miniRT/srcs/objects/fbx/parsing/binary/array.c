@@ -82,8 +82,8 @@ static void	*fbx_read_array_payload(int fd, t_fbx_array *a)
 	return (fbx_read_compressed(fd, a, uncomp_data, &uncomp_len));
 }
 
-void		*fbx_convert_array(t_fbx_array *a, void *uncomp,
-			size_t elem_sz, uint32_t *count);
+void		*fbx_convert_array(t_fbx_array *a, void *uncomp, size_t elem_sz,
+				uint32_t *count);
 
 void	*read_fbx_array(int fd, uint32_t *count, size_t elem_sz)
 {
@@ -97,4 +97,3 @@ void	*read_fbx_array(int fd, uint32_t *count, size_t elem_sz)
 		return (NULL);
 	return (fbx_convert_array(&a, uncomp_data, elem_sz, count));
 }
-

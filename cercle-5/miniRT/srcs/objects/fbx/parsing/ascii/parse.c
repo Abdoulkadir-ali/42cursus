@@ -36,7 +36,8 @@ static bool	ascii_parse_mesh(t_fbx_ascii_ctx *ctx)
 	return (true);
 }
 
-static bool	ascii_build_mesh(t_fbx_ascii_ctx *ctx, t_scene *scene, const char *path)
+static bool	ascii_build_mesh(t_fbx_ascii_ctx *ctx, t_scene *scene,
+		const char *path)
 {
 	t_fbx_flat_params	p;
 
@@ -57,40 +58,52 @@ static bool	ascii_build_mesh(t_fbx_ascii_ctx *ctx, t_scene *scene, const char *p
 	return (true);
 }
 
+static bool	parse_fbx_ascii_internal(t_fbx_ascii_ctx *ctx, t_scene *scene,
+		const char *path)
+{
+	if (!ascii_parse_mesh(ctx))
+		return (false);
+	if (!ascii_build_mesh(ctx, scene, path))
+		return (false);
+	ft_print_debug("FBX ASCII Loaded: %s (%d tris)\n", path,
+		ctx->mesh.base.tri_count);
+	return (scene_add_animated(scene, ctx->mesh));
+}
+
+static bool	setup_ctx(t_fbx_ascii_ctx *ctx, const char *path)
+{
+	size_t	size;
+
+	ft_memset(ctx, 0, sizeof(*ctx));
+	ctx->path = path;
+	ctx->buf = read_file_content(path, &size);
+	if (!ctx->buf)
+		return (false);
+	ctx->p = ctx->buf;
+	ctx->end = ctx->buf + size;
+	ft_memset(&ctx->mesh, 0, sizeof(t_skinned_mesh));
+	ctx->mesh.base.name = ft_strdup(path);
+	if (!ctx->mesh.base.name)
+	{
+		free(ctx->buf);
+		return (false);
+	}
+	return (true);
+}
+
 bool	parse_fbx_ascii(const char *path, t_scene *scene)
 {
 	t_fbx_ascii_ctx	ctx;
-	size_t			size;
 
 	ft_print_debug("DEBUG: parse_fbx_ascii starting for %s\n", path);
-	ft_memset(&ctx, 0, sizeof(ctx));
-	ctx.path = path;
-	ctx.buf = read_file_content(path, &size);
-	if (!ctx.buf)
+	if (!setup_ctx(&ctx, path))
 		return (false);
-	ctx.p = ctx.buf;
-	ctx.end = ctx.buf + size;
-	ft_memset(&ctx.mesh, 0, sizeof(t_skinned_mesh));
-	ctx.mesh.base.name = ft_strdup(path);
-	if (!ctx.mesh.base.name)
-	{
-		free(ctx.buf);
-		return (false);
-	}
-	if (!ascii_parse_mesh(&ctx))
-	{
-		free(ctx.mesh.base.name);
-		free(ctx.buf);
-		return (false);
-	}
-	if (!ascii_build_mesh(&ctx, scene, path))
+	if (!parse_fbx_ascii_internal(&ctx, scene, path))
 	{
 		mesh_free(&ctx.mesh.base);
 		free(ctx.buf);
 		return (false);
 	}
 	free(ctx.buf);
-	ft_print_debug("FBX ASCII Loaded: %s (%d tris)\n", path,
-		ctx.mesh.base.tri_count);
-	return (scene_add_animated(scene, ctx.mesh));
+	return (true);
 }

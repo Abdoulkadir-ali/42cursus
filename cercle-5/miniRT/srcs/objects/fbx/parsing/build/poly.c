@@ -59,8 +59,8 @@ static void	fbx_emit_tris(t_fbx_build *b, int vn, int si)
 	i = 1;
 	while (i < vn - 1)
 	{
-		if (b->v[0] < b->vc && b->v[i] < b->vc
-			&& b->v[i + 1] < b->vc && b->vp <= b->tc * 3 - 3)
+		if (b->v[0] < b->vc && b->v[i] < b->vc && b->v[i + 1] < b->vc
+			&& b->vp <= b->tc * 3 - 3)
 		{
 			fbx_emit_vertex(b, b->v[0], si, 0);
 			fbx_emit_vertex(b, b->v[i], si, i);

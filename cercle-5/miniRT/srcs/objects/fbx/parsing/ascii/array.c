@@ -12,8 +12,8 @@
 
 #include "objects.h"
 
-void	*parse_array(char **p, int *count, size_t sz,
-		void (*f)(char **, void *))
+void	*parse_array(char **p, int *count, size_t sz, void (*f)(char **,
+			void *))
 {
 	size_t	cap;
 	size_t	i;

@@ -33,8 +33,8 @@ static bool	io_read_lines(t_parser *p, t_fbx_buf *b)
 	while (parser_get_line(p, line, sizeof(line)))
 	{
 		line_len = ft_strlen(line);
-		if (!dynarray_ensure((void **)&b->buf, b->len + line_len + 2,
-				&b->cap, sizeof(char)))
+		if (!dynarray_ensure((void **)&b->buf, b->len + line_len + 2, &b->cap,
+				sizeof(char)))
 			return (false);
 		ft_memcpy(b->buf + b->len, line, line_len);
 		b->len += line_len;

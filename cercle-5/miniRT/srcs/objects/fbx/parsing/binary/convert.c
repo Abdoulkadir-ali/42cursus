@@ -36,11 +36,11 @@ static void	*fbx_convert_float_to_double(t_fbx_array *a, void *uncomp,
 	return (final_data);
 }
 
-void	*fbx_convert_array(t_fbx_array *a, void *uncomp,
-		size_t elem_sz, uint32_t *count)
+void	*fbx_convert_array(t_fbx_array *a, void *uncomp, size_t elem_sz,
+		uint32_t *count)
 {
-	void		*final_data;
-	size_t		copy_sz;
+	void	*final_data;
+	size_t	copy_sz;
 
 	if (a->actual_sz == elem_sz)
 	{

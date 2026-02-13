@@ -14,8 +14,8 @@
 
 static bool	fbx_bin_set_vertices(t_fbx_bin_ctx *ctx)
 {
-	ctx->mesh.base.vertices = repack_doubles_to_vec3(
-		(double *)ctx->data.v, ctx->data.vc);
+	ctx->mesh.base.vertices = repack_doubles_to_vec3((double *)ctx->data.v,
+			ctx->data.vc);
 	free(ctx->data.v);
 	ctx->data.v = NULL;
 	if (!ctx->mesh.base.vertices)

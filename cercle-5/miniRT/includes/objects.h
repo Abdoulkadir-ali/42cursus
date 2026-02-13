@@ -631,8 +631,6 @@ char					*advance_to_data(char *p, char *end);
 char					*read_file_content(const char *path, size_t *out_size);
 void					*parse_array(char **p, int *count, size_t sz,
 							void (*f)(char **, void *));
-static void				parse_nodes_depth(t_fbx_parse_ctx *ctx,
-							uint64_t end_offset, int depth);
 void					f_vec3(char **p, void *dst);
 void					f_vec2(char **p, void *dst);
 void					f_int(char **p, void *dst);
