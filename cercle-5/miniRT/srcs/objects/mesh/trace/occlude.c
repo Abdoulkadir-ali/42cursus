@@ -49,7 +49,7 @@ static bool	leaf_occluded(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 	return (false);
 }
 
-static void	push_children(t_mesh *mesh, int node_idx, const t_ray *ray,
+static void	push_mesh_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		t_occ_ctx *ctx)
 {
 	t_occ_child	child;
@@ -91,7 +91,7 @@ bool	mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist)
 				return (true);
 		}
 		else
-			push_children(mesh, ctx.node_idx, ray, &ctx);
+			push_mesh_children(mesh, ctx.node_idx, ray, &ctx);
 	}
 	return (false);
 }

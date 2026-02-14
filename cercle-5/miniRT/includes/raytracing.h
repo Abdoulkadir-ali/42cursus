@@ -196,30 +196,34 @@ int						compare_y(const void *a, const void *b);
 int						compare_z(const void *a, const void *b);
 size_t					collect_objects(t_scene *scene, t_build_item *items);
 
+void					process_leaf(const t_bvh_node *node, const t_ray *ray,
+							const t_bvh *bvh, t_hit *hit);
+void					push_both_children(t_bvh_node *stack[128], int *ptr,
+							t_bvh_node *left, t_bvh_node *right, t_vec2 left_t,
+							t_vec2 right_t);
+void					push_single_child(t_bvh_node *stack[128], int *ptr,
+							t_bvh_node *child);
+void					push_children(t_bvh_node *stack[128], int *ptr,
+							t_bvh_node *left, t_bvh_node *right, t_vec2 left_t,
+							t_vec2 right_t, bool h_l, bool h_r);
+void					process_internal_node(t_bvh_node *node,
+							t_bvh_node *stack[128], int *ptr, const t_ray *ray);
+
 typedef struct s_child_intersections
 {
-	tvec2	left_t;
-	tvec2	right_t;
-	bool	h_l;
-	bool	h_r;
-}				t_child_intersections;
+	t_vec2				left_t;
+	t_vec2				right_t;
+	bool				h_l;
+	bool				h_r;
+}						t_child_intersections;
 
 typedef struct s_push_data
 {
-	t_bvh_node	*left;
-	t_bvh_node	*right;
-	tvec2		left_t;
-	tvec2		right_t;
-}				t_push_data;
-
-typedef struct s_push_args
-{
-	t_bvh_node	*stack[128];
-	int			*ptr;
-	t_push_data	data;
-	bool		h_l;
-	bool		h_r;
-}				t_push_args;
+	t_bvh_node			*left;
+	t_bvh_node			*right;
+	t_vec2				left_t;
+	t_vec2				right_t;
+}						t_push_data;
 
 /* srcs/raytracing/bvh/traverse/ */
 t_child_intersections	get_child_intersections(const t_bvh_node *node,
@@ -228,7 +232,8 @@ void					push_both_children(t_bvh_node *stack[128], int *ptr,
 							t_push_data *data);
 void					push_single_child(t_bvh_node *stack[128], int *ptr,
 							t_bvh_node *child);
-void					push_children(t_push_args *args);
+void					push_children(t_bvh_node *stack[128], int *ptr,
+							t_push_data *data, bool h_l, bool h_r);
 void					process_internal_node(t_bvh_node *node,
 							t_bvh_node *stack[128], int *ptr, const t_ray *ray);
 

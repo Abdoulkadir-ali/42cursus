@@ -63,7 +63,7 @@ static bool	bvh_prepare_ctx(t_mbvh_ctx *ctx, t_mesh *mesh)
 	return (true);
 }
 
-static int	build_recursive(t_mbvh_ctx *ctx, int first, int count)
+static int	build_mesh_recursive(t_mbvh_ctx *ctx, int first, int count)
 {
 	t_mbvh_node		*node;
 	t_bvh_split		split;
@@ -86,8 +86,8 @@ static int	build_recursive(t_mbvh_ctx *ctx, int first, int count)
 		return (bvh_make_leaf(node, first, count, node_idx));
 	node->count = 0;
 	node->axis = split.axis;
-	build_recursive(ctx, first, mid);
-	node->left_or_first = build_recursive(ctx, first + mid, count - mid);
+	build_mesh_recursive(ctx, first, mid);
+	node->left_or_first = build_mesh_recursive(ctx, first + mid, count - mid);
 	debug_print_bvh_build(count, 0, false);
 	return (node_idx);
 }
@@ -100,7 +100,7 @@ void	mesh_build_bvh(t_mesh *mesh)
 		return ;
 	if (!bvh_prepare_ctx(&ctx, mesh))
 		return ;
-	build_recursive(&ctx, 0, mesh->tri_count);
+	build_mesh_recursive(&ctx, 0, mesh->tri_count);
 	bvh_copy_indices(mesh, &ctx);
 	debug_print_bvh_build(mesh->tri_count, 0, false);
 	ft_print_debug("DEBUG: Mesh BVH built: %d nodes for %d tris\n",

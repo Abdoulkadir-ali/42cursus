@@ -64,7 +64,7 @@ static bool	traverse_bvh_occluded(const t_bvh *bvh, const t_ray *ray,
 	t_bvh_node	*stack[128];
 	int			ptr;
 	t_bvh_node	*node;
-	tvec2		t_times;
+	t_vec2		t_times;
 	bool		intersects;
 
 	ptr = 0;

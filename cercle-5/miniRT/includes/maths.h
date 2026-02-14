@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/14 17:20:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/14 17:22:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,6 @@
 
 typedef struct s_quadratic			t_quadratic;
 typedef struct s_quadratic_roots	t_quadratic_roots;
-
-typedef struct s_vec2				t_vec2;
-typedef struct s_vec3				t_vec3;
-typedef struct s_mat4				t_mat4;
-typedef struct s_aabb				t_aabb;
-typedef struct s_rotator			t_rotator;
-typedef struct s_transform			t_transform;
-typedef struct s_ray				t_ray;
 
 struct s_vec2
 {

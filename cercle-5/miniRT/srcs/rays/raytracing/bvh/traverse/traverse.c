@@ -17,7 +17,7 @@ static bool	traverse_bvh(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 	t_bvh_node	*stack[128];
 	int			ptr;
 	t_bvh_node	*node;
-	tvec2		t_times;
+	t_vec2		t_times;
 	bool		intersects;
 
 	ptr = 0;
@@ -44,4 +44,4 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 	hit->t = MAX_VALUE;
 	hit->ref.type = TYPE_NONE;
 	return (traverse_bvh(bvh, ray, hit));
-}
+}uni
