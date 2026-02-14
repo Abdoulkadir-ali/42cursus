@@ -15,7 +15,7 @@
 /*
 ** Helper function to process leaf nodes for occlusion.
 */
-static bool	process_leaf(const t_bvh_node *node, const t_ray *ray,
+static bool	process_occluded_leaf(const t_bvh_node *node, const t_ray *ray,
 		const t_bvh *bvh, double max_t)
 {
 	size_t	i;
@@ -80,7 +80,7 @@ static bool	traverse_bvh_occluded(const t_bvh *bvh, const t_ray *ray,
 			process_internal_node_occluded(node, stack, &ptr);
 		else
 		{
-			if (process_leaf(node, ray, bvh, max_t))
+			if (process_occluded_leaf(node, ray, bvh, max_t))
 				return (true);
 		}
 	}

@@ -44,4 +44,4 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 	hit->t = MAX_VALUE;
 	hit->ref.type = TYPE_NONE;
 	return (traverse_bvh(bvh, ray, hit));
-}uni
+}
