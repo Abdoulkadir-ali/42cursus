@@ -71,7 +71,7 @@ static void	parse_nodes_depth(t_fbx_parse_ctx *ctx, uint64_t end_offset,
 		if (n.end_offset == 0)
 			break ;
 		parse_node_data(ctx, &n, depth);
-		if (lseek(ctx->fd, (off_t) n.end_offset, SEEK_SET) == (off_t) -1)
+		if (lseek(ctx->fd, (off_t) n.end_offset, SEEK_SET) == (off_t) - 1)
 			break ;
 	}
 }

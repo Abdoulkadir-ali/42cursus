@@ -48,7 +48,7 @@ static void	process_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 	}
 }
 
-static void	push_children(t_mesh *mesh, int node_idx, const t_ray *ray,
+static void	push_mesh_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		t_trace_ctx *ctx)
 {
 	t_child_ctx	child;
@@ -92,7 +92,7 @@ static void	process_node(t_mesh *mesh, const t_ray *ray, t_trace_ctx *ctx)
 	if (node->count > 0)
 		process_leaf(mesh, node, ray, ctx);
 	else
-		push_children(mesh, ctx->node_idx, ray, ctx);
+		push_mesh_children(mesh, ctx->node_idx, ray, ctx);
 }
 
 void	intersect_traverse_mesh(t_mesh *mesh, const t_ray *ray,

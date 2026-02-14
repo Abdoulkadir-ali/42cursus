@@ -620,6 +620,7 @@ bool					parse_fbx(const char *path, t_scene *scene);
 bool					parse_glb(const char *path, t_scene *scene);
 bool					parse_fbx_ascii(const char *path, t_scene *scene);
 bool					parse_fbx_binary(const char *path, t_scene *scene);
+bool					fbx_bin_build_mesh(t_fbx_bin_ctx *ctx);
 void					fbx_build_flat(t_mesh *m, t_fbx_flat_params *p);
 bool					fbx_setup_build(t_fbx_build *b, t_mesh *m,
 							t_fbx_flat_params *p);

@@ -64,10 +64,7 @@ char	*read_file_content(const char *path, size_t *out_size)
 	}
 	close(fd);
 	if (!b.buf)
-	{
 		b.buf = ft_strdup("");
-		b.len = 0;
-	}
 	b.buf[b.len] = '\0';
 	*out_size = b.len;
 	return (b.buf);

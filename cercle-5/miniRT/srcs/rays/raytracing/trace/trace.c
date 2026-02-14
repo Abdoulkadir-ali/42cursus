@@ -17,8 +17,8 @@
 */
 static inline void	ray_compute_inv(t_ray *ray)
 {
-	ray->inv_dir = vec3(1.0 / ray->direction.x, 1.0 / ray->direction.y,
-			1.0 / ray->direction.z);
+	ray->inv_dir = vec3(1.0 / ray->direction.x, 1.0 / ray->direction.y, 1.0
+			/ ray->direction.z);
 	ray->sign[0] = (ray->inv_dir.x < 0);
 	ray->sign[1] = (ray->inv_dir.y < 0);
 	ray->sign[2] = (ray->inv_dir.z < 0);
@@ -50,27 +50,10 @@ void	ray_normalize_direction(t_ray *ray)
 t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *scene)
 {
 	t_hit	hit;
-	t_hit	plane_hit;
 	bool	hit_any;
-	int		i;
 
 	hit_any = bvh_intersect(bvh, ray, &hit);
-	i = 0;
-	while (i < scene->plane_count)
-	{
-		if (intersect_plane(ray, &scene->planes[i], &plane_hit))
-		{
-			if (!hit_any || plane_hit.t < hit.t)
-			{
-				hit = plane_hit;
-				hit.ref.type = TYPE_PLANE;
-				hit.ref.index = i;
-				hit_any = true;
-			}
-		}
-		i++;
-	}
 	if (hit_any)
-		return (compute_color(&hit, scene, bvh, ray, 0));
+		return (compute_color(&hit, scene, bvh, ray));
 	return (vec3(0, 0, 0));
 }

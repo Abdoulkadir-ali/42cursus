@@ -1,31 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   plane.c                                            :+:      :+:    :+:   */
+/*   intersect.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 14:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:15:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
-
-/*
-** Calculates UV coordinates and tangent space for a plane.
-*/
-static void	get_plane_uv(t_vec3 p, t_vec3 n, t_hit *hit)
-{
-	t_vec3	u_axis;
-	t_vec3	v_axis;
-
-	vec3_orthonormal_basis(n, &u_axis, &v_axis);
-	hit->u = vec3_dot(p, u_axis) * 0.1;
-	hit->v = vec3_dot(p, v_axis) * 0.1;
-	hit->tangent = u_axis;
-	hit->bitangent = v_axis;
-}
 
 /*
 ** Intersects a ray with a plane.

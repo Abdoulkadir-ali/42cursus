@@ -24,7 +24,6 @@ void	update_skinned_mesh(t_skinned_mesh *mesh)
 	int		b;
 	t_vec3	v;
 	t_vec3	res;
-	t_vec3	trans;
 	int		bone_id;
 
 	if (!mesh->skeleton || mesh->bone_count == 0 || !mesh->base.vertices)
@@ -40,8 +39,9 @@ void	update_skinned_mesh(t_skinned_mesh *mesh)
 			if (mesh->weights[i].weights[b] <= 0.0f)
 				continue ;
 			bone_id = mesh->weights[i].bone_ids[b];
-			trans = mat4_mul_vec3(mesh->bone_matrices[bone_id], v);
-			res = vec3_add(res, vec3_scale(trans, mesh->weights[i].weights[b]));
+			res = vec3_add(res,
+					vec3_scale(mat4_mul_vec3(mesh->bone_matrices[bone_id], v),
+						mesh->weights[i].weights[b]));
 		}
 		mesh->base.vertices[i] = res;
 	}
@@ -49,7 +49,7 @@ void	update_skinned_mesh(t_skinned_mesh *mesh)
 
 /**
 
-	* Calculates the forward kinematics for the skeleton recursively or iteratively.
+	* Calculates the forward kinematics for the skeleton.
  *
  * @param mesh The mesh whose skeleton should be updated.
  */
