@@ -198,14 +198,6 @@ size_t					collect_objects(t_scene *scene, t_build_item *items);
 
 void					process_leaf(const t_bvh_node *node, const t_ray *ray,
 							const t_bvh *bvh, t_hit *hit);
-void					push_both_children(t_bvh_node *stack[128], int *ptr,
-							t_bvh_node *left, t_bvh_node *right, t_vec2 left_t,
-							t_vec2 right_t);
-void					push_single_child(t_bvh_node *stack[128], int *ptr,
-							t_bvh_node *child);
-void					push_children(t_bvh_node *stack[128], int *ptr,
-							t_bvh_node *left, t_bvh_node *right, t_vec2 left_t,
-							t_vec2 right_t, bool h_l, bool h_r);
 void					process_internal_node(t_bvh_node *node,
 							t_bvh_node *stack[128], int *ptr, const t_ray *ray);
 

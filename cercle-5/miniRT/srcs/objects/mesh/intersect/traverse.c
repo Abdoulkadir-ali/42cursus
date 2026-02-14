@@ -22,7 +22,7 @@ void	intersect_init_ctx(t_trace_ctx *ctx, t_hit *hit)
 	ctx->stack[ctx->top++] = 0;
 }
 
-static void	process_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
+static void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 		t_trace_ctx *ctx)
 {
 	t_leaf_ctx	leaf;
@@ -90,7 +90,7 @@ static void	process_node(t_mesh *mesh, const t_ray *ray, t_trace_ctx *ctx)
 		|| t_min >= ctx->best_t)
 		return ;
 	if (node->count > 0)
-		process_leaf(mesh, node, ray, ctx);
+		process_mesh_leaf(mesh, node, ray, ctx);
 	else
 		push_mesh_children(mesh, ctx->node_idx, ray, ctx);
 }
