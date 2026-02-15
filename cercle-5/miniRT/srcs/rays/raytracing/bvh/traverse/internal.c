@@ -23,5 +23,7 @@ void	process_internal_node(t_bvh_node *node, t_bvh_node *stack[128],
 	data.right = node->right;
 	data.left_t = intersections.left_t;
 	data.right_t = intersections.right_t;
-	push_children(stack, ptr, &data, intersections.h_l, intersections.h_r);
+	data.h_l = intersections.h_l;
+	data.h_r = intersections.h_r;
+	push_children(stack, ptr, &data);
 }

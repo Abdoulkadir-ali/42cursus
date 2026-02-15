@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "build.h"
+#include "raytracing.h"
 
 static double	compute_split_cost(t_build_item *items, size_t split,
 		size_t count, double p_area)
@@ -68,9 +68,6 @@ static t_split_info	try_axis_splits(t_build_item *items, size_t count,
 						double p_area, int axis)
 {
 	t_split_info	info;
-	int				s;
-	size_t			split;
-	double			cost;
 
 	if (axis == 0)
 		qsort(items, count, sizeof(t_build_item), compare_x);

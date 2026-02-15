@@ -121,6 +121,10 @@ t_bvh_node				*build_recursive(t_build_item *items, size_t count);
 t_bvh					*bvh_create(t_scene *scene);
 void					bvh_destroy(t_bvh *bvh);
 t_aabb					aabb_from_ref(t_scene *s, t_bvh_ref ref);
+t_aabb					sphere_aabb(t_sphere *sp);
+t_aabb					plane_aabb(t_plane *pl);
+t_aabb					cylinder_aabb(t_cylinder *cy);
+t_aabb					cone_aabb(t_cone *co);
 t_aabb					aabb_union(const t_aabb *a, const t_aabb *b);
 t_aabb					aabb_create_empty(void);
 
@@ -215,6 +219,8 @@ typedef struct s_push_data
 	t_bvh_node			*right;
 	t_vec2				left_t;
 	t_vec2				right_t;
+	bool				h_l;
+	bool				h_r;
 }						t_push_data;
 
 /* srcs/raytracing/bvh/traverse/ */
@@ -225,9 +231,13 @@ void					push_both_children(t_bvh_node *stack[128], int *ptr,
 void					push_single_child(t_bvh_node *stack[128], int *ptr,
 							t_bvh_node *child);
 void					push_children(t_bvh_node *stack[128], int *ptr,
-							t_push_data *data, bool h_l, bool h_r);
+							t_push_data *data);
 void					process_internal_node(t_bvh_node *node,
 							t_bvh_node *stack[128], int *ptr, const t_ray *ray);
+
+
+
+t_aabb	sphere_aabb(t_sphere *sp);
 
 /* 4. IMPLEMENTATION IMPORTS */
 # include "scene.h"

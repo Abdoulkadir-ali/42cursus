@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/15 03:09:41 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/15 03:09:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "build.h"
+#include "raytracing.h"
 
 static t_aabb	compute_bbox(t_build_item *items, size_t count)
 {
@@ -53,7 +53,7 @@ static int	build_children(t_bvh_node *node, t_build_item *items,
 }
 
 static t_bvh_node	*build_internal_node(t_build_item *items, size_t count,
-						t_aabb bbox)
+		t_aabb bbox)
 {
 	t_bvh_node		*node;
 	t_split_info	info;
@@ -86,3 +86,4 @@ t_bvh_node	*build_recursive(t_build_item *items, size_t count)
 	if (count <= MAX_LEAF_OBJECTS)
 		return (init_leaf_node(items, count));
 	return (build_internal_node(items, count, bbox));
+}

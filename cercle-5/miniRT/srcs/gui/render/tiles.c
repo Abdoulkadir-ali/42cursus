@@ -94,7 +94,4 @@ void	render_tiles(t_render_ctx *ctx)
 	start_threads(threads, ctx);
 	join_threads(threads);
 	gettimeofday(&end, NULL);
-	ft_print_debug("PERF: Frame rendered in %.3f ms (%d tiles, %d threads)\n",
-		((end.tv_sec - start.tv_sec) * 1000.0) + ((end.tv_usec - start.tv_usec) / 1000.0),
-		ctx->total_tiles, THREAD_COUNT);
 }

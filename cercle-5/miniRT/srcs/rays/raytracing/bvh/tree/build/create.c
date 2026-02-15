@@ -5,12 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/15 03:07:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "build.h"
 #include "raytracing.h"
 
 t_bvh	*bvh_create(t_scene *scene)

@@ -35,13 +35,12 @@ void	push_single_child(t_bvh_node *stack[128], int *ptr, t_bvh_node *child)
 	stack[(*ptr)++] = child;
 }
 
-void	push_children(t_bvh_node *stack[128], int *ptr, t_push_data *data,
-		bool h_l, bool h_r)
+void	push_children(t_bvh_node *stack[128], int *ptr, t_push_data *data)
 {
-	if (h_l && h_r)
+	if (data->h_l && data->h_r)
 		push_both_children(stack, ptr, data);
-	else if (h_l)
+	else if (data->h_l)
 		push_single_child(stack, ptr, data->left);
-	else if (h_r)
+	else if (data->h_r)
 		push_single_child(stack, ptr, data->right);
 }
