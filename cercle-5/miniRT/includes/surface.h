@@ -82,6 +82,7 @@ int					scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 
 
 bool	load_texture_xpm(t_scene *scene, t_texture *tex, const char *path);
+bool	load_texture(t_scene *scene, t_texture *tex, const char *path);
 t_vec3	sample_texture(t_texture *tex, double u, double v);
 
 #endif

@@ -53,6 +53,12 @@ static void	set_hit_uv(t_hit_calc *c)
 		* c->in->bary.x + uvs[2].y * c->in->bary.y;
 }
 
+static void	set_hit_tangent(t_hit_calc *c)
+{
+	vec3_orthonormal_basis(c->in->hit->normal,
+		&c->in->hit->tangent, &c->in->hit->bitangent);
+}
+
 void	update_mesh_hit(t_mesh_hit_ctx *ctx)
 {
 	t_hit_calc	calc;
@@ -65,6 +71,7 @@ void	update_mesh_hit(t_mesh_hit_ctx *ctx)
 	ctx->hit->t = ctx->t;
 	set_hit_point(&calc);
 	set_hit_normal(&calc);
+	set_hit_tangent(&calc);
 	if (ctx->mesh->uvs)
 		set_hit_uv(&calc);
 }

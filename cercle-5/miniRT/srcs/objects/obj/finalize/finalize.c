@@ -25,7 +25,6 @@ bool	obj_build_mesh(t_scene *scene, t_obj_ctx *ctx, const char *path)
 	obj_init_mesh(&mesh, ctx, path);
 	obj_set_mat_id(&mesh, ctx);
 	obj_free_ctx(ctx);
-	mesh_build_bvh(&mesh);
 	scene_add_mesh(scene, mesh);
 	return (true);
 }
