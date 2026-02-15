@@ -24,6 +24,7 @@ static bool	read_header(int fd, t_glb_header *h)
 static bool	read_json_chunk(int fd, char **json)
 {
 	t_chunk_header	c;
+	uint32_t		pad;
 
 	if (read(fd, &c, 8) < 8)
 		return (false);
@@ -38,6 +39,9 @@ static bool	read_json_chunk(int fd, char **json)
 		*json = NULL;
 		return (false);
 	}
+	pad = (4 - (c.length % 4)) % 4;
+	if (pad > 0)
+		lseek(fd, pad, SEEK_CUR);
 	return (true);
 }
 

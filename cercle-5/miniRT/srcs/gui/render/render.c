@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "profiler.h"
 
 static void	setup_camera_transform(t_gui *gui, t_render_ctx *ctx)
 {
@@ -70,13 +71,13 @@ void	gui_render(t_gui *gui)
 {
 	t_render_ctx	ctx;
 
+	PROF_RESET();
 	setup_ctx(gui, &ctx);
 	ctx.tiles_x = (gui->win.width + TILE_SIZE - 1) / TILE_SIZE;
 	ctx.total_tiles = ctx.tiles_x * ((gui->win.height + TILE_SIZE - 1)
 			/ TILE_SIZE);
 	ctx.next_tile_id = 0;
-	pthread_mutex_init(&ctx.mutex, NULL);
 	render_tiles(&ctx);
-	pthread_mutex_destroy(&ctx.mutex);
+	PROF_PRINT();
 	finish_render(gui, &ctx);
 }

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "profiler.h"
 
 bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit)
 {
@@ -18,6 +19,7 @@ bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit)
 
 	if (!mesh || !mesh->bvh_nodes)
 		return (false);
+	PROF_INC(g_mesh_calls);
 	intersect_init_ctx(&ctx, hit);
 	intersect_traverse_mesh(mesh, ray, &ctx);
 	return (intersect_finish_hit(&ctx, mesh, hit, ray));

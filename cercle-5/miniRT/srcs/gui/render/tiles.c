@@ -47,14 +47,9 @@ static void	*render_tile_worker(void *arg)
 	ctx = (t_render_ctx *)arg;
 	while (1)
 	{
-		pthread_mutex_lock(&ctx->mutex);
-		if (ctx->next_tile_id >= ctx->total_tiles)
-		{
-			pthread_mutex_unlock(&ctx->mutex);
+		id = __sync_fetch_and_add(&ctx->next_tile_id, 1);
+		if (id >= ctx->total_tiles)
 			break ;
-		}
-		id = ctx->next_tile_id++;
-		pthread_mutex_unlock(&ctx->mutex);
 		render_tile(ctx, id);
 	}
 	return (NULL);

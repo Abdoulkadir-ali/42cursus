@@ -45,7 +45,6 @@ struct					s_camera_controller
 struct					s_render_ctx
 {
 	t_gui				*gui;
-	pthread_mutex_t		mutex;
 	int					next_tile_id;
 	int					total_tiles;
 	int					tiles_x;

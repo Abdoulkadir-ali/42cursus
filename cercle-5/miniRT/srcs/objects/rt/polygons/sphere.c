@@ -27,7 +27,7 @@ t_parse_obj	parse_sphere(t_parser *p)
 	diameter = parse_double(p);
 	if (!parse_vec3(p, &rgb))
 		return (res);
-	res.data.sphere.radius_sq = (float)((diameter / 2.0) * (diameter / 2.0));
+	res.data.sphere.radius_sq = (diameter / 2.0) * (diameter / 2.0);
 	res.data.sphere.mat_id = 0;
 	res.data.sphere.temp_color = rgb;
 	res.type = TYPE_SPHERE;

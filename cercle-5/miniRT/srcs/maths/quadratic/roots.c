@@ -22,6 +22,8 @@ bool	solve_quadratic(t_quadratic q, t_quadratic_roots *roots)
 	double	discriminant;
 	double	sqrt_d;
 
+	if (fabs(q.a) < EPSILON)
+		return (false);
 	discriminant = q.b * q.b - 4 * q.a * q.c;
 	if (discriminant < 0)
 		return (false);

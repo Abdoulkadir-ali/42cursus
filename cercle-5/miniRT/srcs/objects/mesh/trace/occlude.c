@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "profiler.h"
 
 static void	init_occ_ctx(t_occ_ctx *ctx)
 {
@@ -19,30 +20,19 @@ static void	init_occ_ctx(t_occ_ctx *ctx)
 	ctx->stack[ctx->top++] = 0;
 }
 
-static void	get_tri_vertices(t_mesh *mesh, int tri, t_vec3 v[3])
-{
-	int	*idx;
-
-	idx = &mesh->bvh_indices[tri * 3];
-	v[0] = mesh->vertices[idx[0]];
-	v[1] = mesh->vertices[idx[1]];
-	v[2] = mesh->vertices[idx[2]];
-}
-
 static bool	leaf_occluded(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 		double dist)
 {
 	int		i;
 	int		tri;
-	t_vec3	v[3];
 	double	t;
 
 	i = 0;
 	while (i < node->count)
 	{
 		tri = node->left_or_first + i;
-		get_tri_vertices(mesh, tri, v);
-		if (intersect_triangle_fast(ray, v, &t, NULL) && t < dist)
+		if (intersect_tri_precomp(ray, &mesh->tri_cache[tri], &t, NULL)
+			&& t < dist)
 			return (true);
 		i++;
 	}
@@ -62,9 +52,26 @@ static void	push_mesh_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 	child.hit_r = aabb_intersect_fast(
 			&mesh->bvh_nodes[child.right_idx].bbox, ray,
 			&child.tr_min, &child.tr_max);
-	if (child.hit_l)
+	if (child.hit_l && child.tl_min >= ctx->dist)
+		child.hit_l = false;
+	if (child.hit_r && child.tr_min >= ctx->dist)
+		child.hit_r = false;
+	if (child.hit_l && child.hit_r)
+	{
+		if (child.tl_min > child.tr_min)
+		{
+			ctx->stack[ctx->top++] = child.left_idx;
+			ctx->stack[ctx->top++] = child.right_idx;
+		}
+		else
+		{
+			ctx->stack[ctx->top++] = child.right_idx;
+			ctx->stack[ctx->top++] = child.left_idx;
+		}
+	}
+	else if (child.hit_l)
 		ctx->stack[ctx->top++] = child.left_idx;
-	if (child.hit_r)
+	else if (child.hit_r)
 		ctx->stack[ctx->top++] = child.right_idx;
 }
 
@@ -72,19 +79,16 @@ bool	mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist)
 {
 	t_occ_ctx	ctx;
 	t_mbvh_node	*node;
-	double		t_min;
-	double		t_max;
 
 	if (!mesh || !mesh->bvh_nodes)
 		return (false);
+	PROF_INC(g_mesh_occ_calls);
 	init_occ_ctx(&ctx);
+	ctx.dist = dist;
 	while (ctx.top > 0)
 	{
 		ctx.node_idx = ctx.stack[--ctx.top];
 		node = &mesh->bvh_nodes[ctx.node_idx];
-		if (!aabb_intersect_fast(&node->bbox, ray, &t_min, &t_max)
-			|| t_min >= dist)
-			continue ;
 		if (node->count > 0)
 		{
 			if (leaf_occluded(mesh, node, ray, dist))

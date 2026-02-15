@@ -24,7 +24,7 @@
 struct					s_sphere
 {
 	t_transform			transform;
-	float				radius_sq;
+	double				radius_sq;
 	int					mat_id;
 	t_vec3				temp_color;
 };
@@ -89,6 +89,13 @@ typedef struct s_bin
 	int					count;
 }						t_bin;
 
+typedef struct s_tri_precomp
+{
+	t_vec3				v0;
+	t_vec3				e1;
+	t_vec3				e2;
+}						t_tri_precomp;
+
 typedef struct s_mbvh_node
 {
 	t_aabb				bbox;
@@ -117,6 +124,7 @@ struct					s_mesh
 	t_transform			transform;
 	t_mbvh_node			*bvh_nodes;
 	int					*bvh_indices;
+	t_tri_precomp		*tri_cache;
 	int					mat_id;
 };
 
@@ -355,6 +363,7 @@ typedef struct s_occ_ctx
 	int					stack[64];
 	int					top;
 	int					node_idx;
+	double				dist;
 }						t_occ_ctx;
 
 typedef struct s_leaf_ctx
@@ -694,10 +703,13 @@ bool					mtl_is_tag(char *p, const char *tag);
 
 /* Build logic */
 void					mesh_build_bvh(t_mesh *mesh);
+void					mesh_build_tri_cache(t_mesh *mesh);
 bool					intersect_triangle(const t_ray *ray, t_vec3 v[3],
 							double *t, t_vec2 *uv);
 bool					intersect_triangle_fast(const t_ray *ray, t_vec3 v[3],
 							double *t, t_vec2 *uv);
+bool					intersect_tri_precomp(const t_ray *ray,
+							const t_tri_precomp *tc, double *t, t_vec2 *uv);
 bool					intersect_mesh(const t_ray *ray, t_mesh *mesh,
 							t_hit *hit);
 bool					mesh_occluded(const t_ray *ray, t_mesh *mesh,

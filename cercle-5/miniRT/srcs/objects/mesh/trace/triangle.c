@@ -52,3 +52,37 @@ bool	intersect_triangle_fast(const t_ray *ray, t_vec3 v[3], double *t,
 		tri_set_uv(uv, &hit);
 	return (true);
 }
+
+static bool	tri_precomp_bary(const t_ray *ray, const t_tri_precomp *tc,
+		t_tri_hit *hit)
+{
+	hit->pvec = vec3_cross(ray->direction, tc->e2);
+	hit->det = vec3_dot(tc->e1, hit->pvec);
+	if (hit->det > -1e-8 && hit->det < 1e-8)
+		return (false);
+	hit->inv_det = 1.0 / hit->det;
+	hit->tvec = vec3_sub(ray->origin, tc->v0);
+	hit->u = vec3_dot(hit->tvec, hit->pvec) * hit->inv_det;
+	if (hit->u < 0.0 || hit->u > 1.0)
+		return (false);
+	hit->qvec = vec3_cross(hit->tvec, tc->e1);
+	hit->v = vec3_dot(ray->direction, hit->qvec) * hit->inv_det;
+	if (hit->v < 0.0 || hit->u + hit->v > 1.0)
+		return (false);
+	return (true);
+}
+
+bool	intersect_tri_precomp(const t_ray *ray, const t_tri_precomp *tc,
+		double *t, t_vec2 *uv)
+{
+	t_tri_hit	hit;
+
+	if (!tri_precomp_bary(ray, tc, &hit))
+		return (false);
+	*t = vec3_dot(tc->e2, hit.qvec) * hit.inv_det;
+	if (*t <= EPSILON)
+		return (false);
+	if (uv)
+		tri_set_uv(uv, &hit);
+	return (true);
+}

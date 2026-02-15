@@ -17,6 +17,12 @@
 */
 static t_vec3	clamp_color(t_vec3 color)
 {
+	if (color.x < 0)
+		color.x = 0;
+	if (color.y < 0)
+		color.y = 0;
+	if (color.z < 0)
+		color.z = 0;
 	if (color.x > 255)
 		color.x = 255;
 	if (color.y > 255)
@@ -36,7 +42,6 @@ t_vec3	pixel_color(t_vec3 obj, t_vec3 light, double intensity)
 	f.x = (obj.x / 255.0) * (light.x / 255.0) * intensity * 255.0;
 	f.y = (obj.y / 255.0) * (light.y / 255.0) * intensity * 255.0;
 	f.z = (obj.z / 255.0) * (light.z / 255.0) * intensity * 255.0;
-	clamp_color(f);
 	return (f);
 }
 

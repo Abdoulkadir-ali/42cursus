@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 13:08:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/15 03:49:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "gui.h"
+#include <locale.h>
 
 /*
 ** Cleans up all resources.
@@ -90,6 +91,7 @@ int	main(int ac, char **av)
 {
 	const char	*path;
 
+	setlocale(LC_NUMERIC, "C");
 	path = "maps/rt/test2.rt";
 	if (ac > 1)
 		path = av[1];

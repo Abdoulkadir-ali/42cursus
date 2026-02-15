@@ -28,6 +28,9 @@ void	fill_hit_record(t_hit *hit, const t_ray *ray, t_cone *cone, double t)
 	h = vec3_dot(vec3_sub(p, cone->transform.pos), cone->transform.forward);
 	temp = vec3_sub(p, cone->transform.pos);
 	radial = vec3_sub(temp, vec3_scale(cone->transform.forward, h));
-	hit->normal = vec3_norm(radial);
+	if (vec3_dot(radial, radial) < EPSILON * EPSILON)
+		hit->normal = cone->transform.forward;
+	else
+		hit->normal = vec3_norm(radial);
 	get_cone_uv(hit, cone, radial, h);
 }

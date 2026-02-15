@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "profiler.h"
 
 void	intersect_init_ctx(t_trace_ctx *ctx, t_hit *hit)
 {
@@ -27,17 +28,14 @@ static void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 {
 	t_leaf_ctx	leaf;
 	int			i;
-	int			*idx;
 
 	i = 0;
 	while (i < node->count)
 	{
+		PROF_INC(g_mesh_tri_tests);
 		leaf.tri = node->left_or_first + i;
-		idx = &mesh->bvh_indices[leaf.tri * 3];
-		leaf.v[0] = mesh->vertices[idx[0]];
-		leaf.v[1] = mesh->vertices[idx[1]];
-		leaf.v[2] = mesh->vertices[idx[2]];
-		if (intersect_triangle_fast(ray, leaf.v, &leaf.t, &leaf.uv)
+		if (intersect_tri_precomp(ray, &mesh->tri_cache[leaf.tri],
+				&leaf.t, &leaf.uv)
 			&& leaf.t < ctx->best_t)
 		{
 			ctx->best_t = leaf.t;
@@ -59,6 +57,10 @@ static void	push_mesh_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 			ray, &child.tl_min, &child.tl_max);
 	child.hit_r = aabb_intersect_fast(&mesh->bvh_nodes[child.right_idx].bbox,
 			ray, &child.tr_min, &child.tr_max);
+	if (child.hit_l && child.tl_min >= ctx->best_t)
+		child.hit_l = false;
+	if (child.hit_r && child.tr_min >= ctx->best_t)
+		child.hit_r = false;
 	if (child.hit_l && child.hit_r)
 	{
 		if (child.tl_min > child.tr_min)
@@ -81,14 +83,10 @@ static void	push_mesh_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 static void	process_node(t_mesh *mesh, const t_ray *ray, t_trace_ctx *ctx)
 {
 	t_mbvh_node	*node;
-	double		t_min;
-	double		t_max;
 
 	ctx->node_idx = ctx->stack[--ctx->top];
 	node = &mesh->bvh_nodes[ctx->node_idx];
-	if (!aabb_intersect_fast(&node->bbox, ray, &t_min, &t_max)
-		|| t_min >= ctx->best_t)
-		return ;
+	PROF_INC(g_mesh_aabb_tests);
 	if (node->count > 0)
 		process_mesh_leaf(mesh, node, ray, ctx);
 	else

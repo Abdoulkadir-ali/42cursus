@@ -19,6 +19,7 @@ bool	intersect_cone(const t_ray *ray, t_cone *cone, t_hit *hit)
 {
 	double	t;
 
+	t = DBL_MAX;
 	if (check_cone_body(ray, cone, &t, cone->transform.scale.y))
 	{
 		if (t < hit->t)

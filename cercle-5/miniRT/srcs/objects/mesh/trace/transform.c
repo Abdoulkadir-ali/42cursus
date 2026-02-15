@@ -59,5 +59,7 @@ void	mesh_apply_transform(t_mesh *mesh, t_transform transform)
 	apply_mesh_transform(mesh, m, rot);
 	update_mesh_bbox(mesh);
 	reset_mesh_transform(mesh);
+	if (mesh->tri_cache)
+		mesh_build_tri_cache(mesh);
 	debug_print_mesh_bake(mesh, false);
 }

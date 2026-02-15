@@ -49,7 +49,7 @@
 # define ZOOM_SPEED 2.0
 # define MOUSE_SENSITIVITY 0.005
 
-# define EPSILON 0.001
+# define EPSILON 1e-6
 # define MAX_LEAF_OBJECTS 4
 # define PARSER_BUF_SIZE 65536
 

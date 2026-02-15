@@ -17,7 +17,7 @@ t_vec3	vec3_norm(t_vec3 a)
 	double	mag;
 
 	mag = vec3_mag(a);
-	if (mag == 0)
+	if (mag < 1e-12)
 		return ((t_vec3){0, 0, 0, 0});
 	return (vec3_scale(a, 1.0 / mag));
 }

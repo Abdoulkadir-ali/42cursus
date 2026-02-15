@@ -12,16 +12,6 @@
 
 #include "raytracing.h"
 
-static int	wrap_coord(double v, int size)
-{
-	int	val;
-
-	val = (int)(v * size) % size;
-	if (val < 0)
-		val += size;
-	return (val);
-}
-
 static t_vec3	sample_checker(t_texture *tex, double u, double v)
 {
 	int	ch;
@@ -36,17 +26,43 @@ static t_vec3	sample_checker(t_texture *tex, double u, double v)
 	return (tex->color_b);
 }
 
-static t_vec3	sample_bitmap(t_texture *tex, double u, double v)
+static t_vec3	texel_at(t_texture *tex, int x, int y)
 {
-	int				xy[2];
 	char			*px;
 	unsigned int	cl;
 
-	xy[0] = wrap_coord(u, tex->width);
-	xy[1] = wrap_coord(v, tex->height);
-	px = tex->addr + (xy[1] * tex->len + xy[0] * (tex->bpp / 8));
+	x = x % tex->width;
+	if (x < 0)
+		x += tex->width;
+	y = y % tex->height;
+	if (y < 0)
+		y += tex->height;
+	px = tex->addr + (y * tex->len + x * (tex->bpp / 8));
 	cl = *(unsigned int *)px;
 	return (vec3((cl >> 16) & 0xFF, (cl >> 8) & 0xFF, cl & 0xFF));
+}
+
+static t_vec3	sample_bitmap(t_texture *tex, double u, double v)
+{
+	double	fx;
+	double	fy;
+	t_vec3	top;
+	t_vec3	bot;
+
+	fx = u * tex->width - 0.5;
+	fy = v * tex->height - 0.5;
+	top = vec3_add(
+			vec3_scale(texel_at(tex, (int)floor(fx), (int)floor(fy)),
+				1.0 - (fx - floor(fx))),
+			vec3_scale(texel_at(tex, (int)floor(fx) + 1, (int)floor(fy)),
+				fx - floor(fx)));
+	bot = vec3_add(
+			vec3_scale(texel_at(tex, (int)floor(fx), (int)floor(fy) + 1),
+				1.0 - (fx - floor(fx))),
+			vec3_scale(texel_at(tex, (int)floor(fx) + 1, (int)floor(fy) + 1),
+				fx - floor(fx)));
+	return (vec3_add(vec3_scale(top, 1.0 - (fy - floor(fy))),
+			vec3_scale(bot, fy - floor(fy))));
 }
 
 /*

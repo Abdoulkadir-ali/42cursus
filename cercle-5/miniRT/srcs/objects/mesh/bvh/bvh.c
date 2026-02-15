@@ -102,6 +102,7 @@ void	mesh_build_bvh(t_mesh *mesh)
 		return ;
 	build_mesh_recursive(&ctx, 0, mesh->tri_count);
 	bvh_copy_indices(mesh, &ctx);
+	mesh_build_tri_cache(mesh);
 	debug_print_bvh_build(mesh->tri_count, 0, false);
 	ft_print_debug("DEBUG: Mesh BVH built: %d nodes for %d tris\n",
 		ctx.node_count, mesh->tri_count);

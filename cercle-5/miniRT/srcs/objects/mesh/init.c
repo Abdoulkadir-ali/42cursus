@@ -77,5 +77,7 @@ void	mesh_free(t_mesh *mesh)
 		free(mesh->bvh_nodes);
 	if (mesh->bvh_indices)
 		free(mesh->bvh_indices);
+	if (mesh->tri_cache)
+		free(mesh->tri_cache);
 	ft_memset(mesh, 0, sizeof(t_mesh));
 }

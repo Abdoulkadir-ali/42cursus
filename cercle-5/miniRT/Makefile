@@ -9,7 +9,7 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -O3 -ffast-math -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -MMD -MP
+CFLAGS      = -Wall -Wextra -Werror -O3 -ffast-math -flto -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -DPROFILE_MESH -MMD -MP
 RM          = rm -f
 SRCS_DIR    = srcs
 OBJS_DIR    = objs

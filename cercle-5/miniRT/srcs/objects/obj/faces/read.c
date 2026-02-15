@@ -17,11 +17,23 @@ void	obj_face_init(t_obj_face *face)
 	face->count = 0;
 }
 
+static void	skip_hspace(t_parser *p)
+{
+	char	c;
+
+	c = parser_peek(p);
+	while (c == ' ' || c == '\t' || c == '\r')
+	{
+		parser_advance(p);
+		c = parser_peek(p);
+	}
+}
+
 void	obj_face_read(t_parser *p, t_obj_face *face)
 {
 	while (face->count < 32)
 	{
-		parser_skip_spaces(p);
+		skip_hspace(p);
 		if (!parser_peek(p) || parser_peek(p) == '\n')
 			break ;
 		face->vi[face->count] = parse_int(p);
