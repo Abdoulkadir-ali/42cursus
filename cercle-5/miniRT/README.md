@@ -19,39 +19,51 @@
 
 ### 📐 **Geometry & Primitives**
 - **Core Shapes**: Precise mathematical intersection for Spheres, Planes, Cylinders, and Cones.
-- **Complex Meshes**: Render high-poly models with thousands of triangles.
-- **Transformations**: Full support for world-space translation, rotation, and scaling.
+- **Complex Meshes**: Render high-poly models with tens of thousands of triangles (tested with 10K+ face models at 30+ FPS).
+- **Transformations**: Full support for world-space translation, rotation, and scaling with automatic BVH rebuild.
 
 ### 🚀 **Performance Optimization**
-- **Optimized BVH**: Bounding Volume Hierarchy using **Binned Surface Area Heuristic (SAH)** for ultra-fast ray-mesh intersection.
-- **AABB Slab Test**: High-performance Axis-Aligned Bounding Box intersection tests.
-- **Multi-threading**: Leverages `pthreads` to distribute rendering tasks across CPU cores.
+- **Two-Level BVH**: Scene-level pointer-based BVH + per-mesh flat-array BVH using **Binned Surface Area Heuristic (SAH)** with 16 bins.
+- **Stackless Near-Child Traversal**: Optimized BVH traversal that jumps directly to the nearer child and only pushes the far child onto the stack.
+- **NaN-Safe AABB Slab Test**: Custom `ft_dmin`/`ft_dmax` and `safe_rcp` to handle edge cases under `-ffast-math` compilation.
+- **Thread-Local Profiler Counters**: Per-thread counters flushed at end of frame to avoid atomic contention during rendering.
+- **Multi-threading**: Tile-based rendering with `pthreads` distributing 32×32 pixel tiles across 12 CPU cores.
+- **Precomputed Triangle Cache**: Edge vectors precomputed once for Möller-Trumbore intersection, avoiding redundant math per ray.
 
 ### 🎨 **Materials & Textures**
-- **XPM Support**: Map textures and bump maps onto objects using MinilibX.
-- **Advanced Materials**: Support for metallic properties, roughness, emission, and refraction.
-- **Lighting**: Point lights, Spot lights, and configurable Ambient lighting.
+- **Multi-Format Textures**: Load textures from XPM (via MinilibX), JPG, PNG, and BMP (via stb_image).
+- **MTL Material Support**: Full Wavefront MTL parsing — `Kd` (diffuse), `Ks` (specular), `Ns` (shininess), `d` (opacity), and `map_Kd` (texture maps).
+- **Bump Mapping**: Normal perturbation via tangent-space bump maps with automatic tangent/bitangent computation for all object types including meshes.
+- **Advanced Materials**: Support for metallic properties, roughness, emission, refraction index, transparency, and reflectivity.
+- **Lighting**: Point lights, Spot lights, and configurable Ambient lighting with Blinn-Phong shading and shadow rays.
 
 ### 📂 **Universal Parsing**
-- support for multiple model formats:
-  - **.obj**: Standard Wavefront models with MTL support.
-  - **.fbx**: Both Binary and ASCII formats.
+- Support for multiple model formats:
+  - **.obj**: Standard Wavefront models with MTL material and texture support.
+  - **.fbx**: Both Binary and ASCII formats with animation/skinning.
   - **.glb**: Binary glTF for modern asset support.
-  - **.fdf**: Custom heightmap format.
+  - **.fdf**: Custom heightmap format with auto-triangulation.
   - **.rt**: Custom scene definition language.
+
+### 🔍 **Built-in Profiler**
+- Real-time per-frame statistics: frame time, FPS, mesh calls, AABB tests, triangle tests, and occlusion queries.
+- Compile with `-DPROFILE_MESH` to enable (enabled by default).
 
 ---
 
 ## 🏗️ **Project Layout**
 
-- `srcs/core/` — Program entry, signal handling, and interactive loops.
-- `srcs/rays/` — Raytracing kernels, BVH traversal, and shading logic.
-- `srcs/objects/` — Primitive definitions and advanced model parsers.
-- `srcs/parser/` — Scene and model parsing infrastructure (RT, JSON, etc.).
-- `srcs/gui/` — MinilibX wrappers, window management, and frame buffering.
-- `srcs/utils/` — Math library (vectors, matrices), dynarrays, and path helpers.
+- `srcs/core/` — Program entry and main loop.
+- `srcs/rays/` — Raytracing kernels, BVH construction/traversal, intersection tests, and shading pipeline.
+- `srcs/objects/` — Primitive definitions, mesh BVH, and model parsers (OBJ, FBX, GLB, FDF).
+- `srcs/parser/` — Scene and model parsing infrastructure (RT, JSON, double parsing).
+- `srcs/surface/` — Material system, texture loading (XPM + stb_image), and texture sampling.
+- `srcs/gui/` — MinilibX window management, camera controls, tile-based multi-threaded rendering.
+- `srcs/maths/` — Vector/matrix math library (vec2, vec3, mat4, quadratics).
+- `srcs/utils/` — Dynamic arrays, path utilities.
+- `srcs/debug/` — Profiler, debug printers for objects/scene/BVH.
 - `includes/` — Project headers and public APIs.
-- `packages/` — Bundled dependencies like `libft` and `minilibx-linux`.
+- `packages/` — Bundled dependencies: `libft`, `minilibx-linux`, `stb_image.h`.
 
 ---
 
@@ -68,7 +80,7 @@ make
 ```
 
 ### Common Targets
-- `make` — Builds the `miniRT` executable.
+- `make` — Builds the `miniRT` executable (with `-O3 -ffast-math -flto -pthread`).
 - `make clean` — Removes object files.
 - `make fclean` — Removes objects and the binary.
 - `make re` — Full rebuild.
@@ -80,12 +92,21 @@ make
 Start the renderer by passing a scene file:
 
 ```bash
-./miniRT maps/rt/obj_showcase.rt
+./miniRT maps/rt/obj_showcase5.rt
 ```
+
+### Example Scenes
+- `maps/rt/test.rt` — Basic primitives test.
+- `maps/rt/obj_showcase5.rt` — Garen OBJ model with texture.
+- `maps/rt/fdf_showcase.rt` — FDF heightmap rendering.
+- `maps/rt/fbx_showcase.rt` — FBX model showcase.
+- `maps/rt/megacity.rt` — Stress test with heavy geometry.
 
 ### Interactive Controls
 - `WASD / QE` — Move camera.
 - `Arrows` — Rotate camera.
+- `+/-` — Adjust movement speed.
+- `Scroll` — Zoom (FOV adjustment).
 - `N` — Cycle through available maps in the `maps/` directory.
 - `ESC` — Exit program.
 
@@ -93,10 +114,14 @@ Start the renderer by passing a scene file:
 
 ## 🧪 **Testing & Debugging**
 
-- **Debug Print**: The project includes a comprehensive debug printing system for vectors, transforms, and object states.
-- **Leaks**: Use Valgrind to ensure memory safety during complex model parsing:
+- **Profiler Output**: Real-time frame stats printed to terminal when compiled with `-DPROFILE_MESH`:
+```
+PROF[100]: 28.8ms (34.7 FPS) mesh=230400 aabb=9434077 tri=5490739 occ=185501
+```
+- **Debug Print**: Comprehensive debug printing system for vectors, transforms, BVH structure, and object states.
+- **Leaks**: Use Valgrind to ensure memory safety:
 ```bash
-valgrind --leak-check=full --show-leak-kinds=all ./miniRT maps/rt/obj_showcase.rt
+valgrind --leak-check=full --show-leak-kinds=all ./miniRT maps/rt/test.rt
 ```
 
 ---
