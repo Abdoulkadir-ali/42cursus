@@ -14,10 +14,7 @@
 
 void	get_forward(double pitch, double yaw, t_vec3 *out)
 {
-	out->x = cos(pitch) * sin(yaw);
-	out->y = sin(pitch);
-	out->z = cos(pitch) * cos(yaw);
-	*out = vec3_norm(*out);
+	*out = vec3_norm(vec3(cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw)));
 }
 
 void	apply_movement(t_camera_controller *ctrl, t_vec3 fwd, t_vec3 right)

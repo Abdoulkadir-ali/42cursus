@@ -64,7 +64,8 @@ bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
 			obj->data.mesh_info.path);
 		return (false);
 	}
-	mat_id = scene_add_material(scene, obj->data.mesh_info.color);
+	mat_id = scene_add_checker_material(scene, obj->data.mesh_info.color,
+			vec3_scale(obj->data.mesh_info.color, 0.3), 10.0);
 	if (obj->type == TYPE_ANIM && scene->anim_count > 0)
 		apply_anim_material(scene, obj, mat_id);
 	else if (obj->type == TYPE_MESH && scene->mesh_count > 0)

@@ -26,7 +26,7 @@ t_bvh	*bvh_create(t_scene *scene)
 		return (NULL);
 	bvh->scene = scene;
 	total = scene->sphere_count + scene->plane_count + scene->cylinder_count
-		+ scene->cone_count + scene->mesh_count;
+		+ scene->cone_count + scene->mesh_count + scene->anim_count;
 	if (total == 0)
 	{
 		bvh->root = NULL;

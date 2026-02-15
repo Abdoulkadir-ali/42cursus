@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "profiler.h"
 
 static void	render_tile(t_render_ctx *ctx, int id)
 {
@@ -52,6 +53,7 @@ static void	*render_tile_worker(void *arg)
 			break ;
 		render_tile(ctx, id);
 	}
+	PROF_FLUSH();
 	return (NULL);
 }
 

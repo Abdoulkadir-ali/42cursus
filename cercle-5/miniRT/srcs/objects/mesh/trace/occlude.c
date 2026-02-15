@@ -13,13 +13,6 @@
 #include "objects.h"
 #include "profiler.h"
 
-static void	init_occ_ctx(t_occ_ctx *ctx)
-{
-	ctx->top = 0;
-	ctx->node_idx = 0;
-	ctx->stack[ctx->top++] = 0;
-}
-
 static bool	leaf_occluded(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 		double dist)
 {
@@ -39,63 +32,75 @@ static bool	leaf_occluded(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 	return (false);
 }
 
-static void	push_mesh_children(t_mesh *mesh, int node_idx, const t_ray *ray,
+static int	pick_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		t_occ_ctx *ctx)
 {
-	t_occ_child	child;
+	t_occ_child	c;
 
-	child.left_idx = node_idx + 1;
-	child.right_idx = mesh->bvh_nodes[node_idx].left_or_first;
-	child.hit_l = aabb_intersect_fast(
-			&mesh->bvh_nodes[child.left_idx].bbox, ray,
-			&child.tl_min, &child.tl_max);
-	child.hit_r = aabb_intersect_fast(
-			&mesh->bvh_nodes[child.right_idx].bbox, ray,
-			&child.tr_min, &child.tr_max);
-	if (child.hit_l && child.tl_min >= ctx->dist)
-		child.hit_l = false;
-	if (child.hit_r && child.tr_min >= ctx->dist)
-		child.hit_r = false;
-	if (child.hit_l && child.hit_r)
+	c.left_idx = node_idx + 1;
+	c.right_idx = mesh->bvh_nodes[node_idx].left_or_first;
+	c.hit_l = aabb_intersect_fast(
+			&mesh->bvh_nodes[c.left_idx].bbox, ray,
+			&c.tl_min, &c.tl_max);
+	c.hit_r = aabb_intersect_fast(
+			&mesh->bvh_nodes[c.right_idx].bbox, ray,
+			&c.tr_min, &c.tr_max);
+	if (c.hit_l && c.tl_min >= ctx->dist)
+		c.hit_l = false;
+	if (c.hit_r && c.tr_min >= ctx->dist)
+		c.hit_r = false;
+	if (c.hit_l && c.hit_r)
 	{
-		if (child.tl_min > child.tr_min)
+		if (c.tl_min > c.tr_min)
 		{
-			ctx->stack[ctx->top++] = child.left_idx;
-			ctx->stack[ctx->top++] = child.right_idx;
+			ctx->stack[ctx->top++] = c.left_idx;
+			return (c.right_idx);
 		}
-		else
-		{
-			ctx->stack[ctx->top++] = child.right_idx;
-			ctx->stack[ctx->top++] = child.left_idx;
-		}
+		ctx->stack[ctx->top++] = c.right_idx;
+		return (c.left_idx);
 	}
-	else if (child.hit_l)
-		ctx->stack[ctx->top++] = child.left_idx;
-	else if (child.hit_r)
-		ctx->stack[ctx->top++] = child.right_idx;
+	if (c.hit_l)
+		return (c.left_idx);
+	if (c.hit_r)
+		return (c.right_idx);
+	return (-1);
 }
 
 bool	mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist)
 {
 	t_occ_ctx	ctx;
 	t_mbvh_node	*node;
+	int			node_idx;
+	double		tmin;
+	double		tmax;
 
 	if (!mesh || !mesh->bvh_nodes)
 		return (false);
+	if (!aabb_intersect_fast(&mesh->bvh_nodes[0].bbox, ray, &tmin, &tmax)
+		|| tmin >= dist)
+		return (false);
 	PROF_INC(g_mesh_occ_calls);
-	init_occ_ctx(&ctx);
+	ctx.top = 0;
 	ctx.dist = dist;
-	while (ctx.top > 0)
+	node_idx = 0;
+	while (1)
 	{
-		ctx.node_idx = ctx.stack[--ctx.top];
-		node = &mesh->bvh_nodes[ctx.node_idx];
+		node = &mesh->bvh_nodes[node_idx];
 		if (node->count > 0)
 		{
 			if (leaf_occluded(mesh, node, ray, dist))
 				return (true);
+			if (ctx.top == 0)
+				return (false);
+			node_idx = ctx.stack[--ctx.top];
+			continue ;
 		}
-		else
-			push_mesh_children(mesh, ctx.node_idx, ray, &ctx);
+		node_idx = pick_occ_children(mesh, node_idx, ray, &ctx);
+		if (node_idx < 0)
+		{
+			if (ctx.top == 0)
+				return (false);
+			node_idx = ctx.stack[--ctx.top];
+		}
 	}
-	return (false);
 }

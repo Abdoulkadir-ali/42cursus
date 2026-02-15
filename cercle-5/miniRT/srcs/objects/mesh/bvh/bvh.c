@@ -51,6 +51,10 @@ static bool	bvh_prepare_ctx(t_mbvh_ctx *ctx, t_mesh *mesh)
 		bvh_get_triangle_info(mesh, i, &ctx->items[i]);
 		i++;
 	}
+	if (mesh->bvh_nodes)
+		free(mesh->bvh_nodes);
+	if (mesh->bvh_indices)
+		free(mesh->bvh_indices);
 	mesh->bvh_nodes = ft_calloc(mesh->tri_count * 2, sizeof(t_mbvh_node));
 	mesh->bvh_indices = malloc(sizeof(int) * mesh->tri_count * 3);
 	if (!mesh->bvh_nodes || !mesh->bvh_indices)

@@ -12,8 +12,24 @@
 
 #include "raytracing.h"
 
+static inline double	ft_dmin(double a, double b)
+{
+	if (a < b)
+		return (a);
+	return (b);
+}
+
+static inline double	ft_dmax(double a, double b)
+{
+	if (a > b)
+		return (a);
+	return (b);
+}
+
 /**
  * Fast AABB intersection test using the slabs method.
+ * Uses ft_dmin/ft_dmax instead of fmin/fmax to avoid undefined behaviour
+ * with NaN under -ffast-math / -ffinite-math-only.
  */
 bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray, double *tmin,
 		double *tmax)
@@ -23,15 +39,15 @@ bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray, double *tmin,
 
 	t1 = (aabb->min.x - ray->origin.x) * ray->inv_dir.x;
 	t2 = (aabb->max.x - ray->origin.x) * ray->inv_dir.x;
-	*tmin = fmin(t1, t2);
-	*tmax = fmax(t1, t2);
+	*tmin = ft_dmin(t1, t2);
+	*tmax = ft_dmax(t1, t2);
 	t1 = (aabb->min.y - ray->origin.y) * ray->inv_dir.y;
 	t2 = (aabb->max.y - ray->origin.y) * ray->inv_dir.y;
-	*tmin = fmax(*tmin, fmin(t1, t2));
-	*tmax = fmin(*tmax, fmax(t1, t2));
+	*tmin = ft_dmax(*tmin, ft_dmin(t1, t2));
+	*tmax = ft_dmin(*tmax, ft_dmax(t1, t2));
 	t1 = (aabb->min.z - ray->origin.z) * ray->inv_dir.z;
 	t2 = (aabb->max.z - ray->origin.z) * ray->inv_dir.z;
-	*tmin = fmax(*tmin, fmin(t1, t2));
-	*tmax = fmin(*tmax, fmax(t1, t2));
+	*tmin = ft_dmax(*tmin, ft_dmin(t1, t2));
+	*tmax = ft_dmin(*tmax, ft_dmax(t1, t2));
 	return (*tmax >= 0 && *tmax >= *tmin);
 }

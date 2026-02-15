@@ -16,8 +16,12 @@
 bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit)
 {
 	t_trace_ctx	ctx;
+	double		tmin;
+	double		tmax;
 
 	if (!mesh || !mesh->bvh_nodes)
+		return (false);
+	if (!aabb_intersect_fast(&mesh->bvh_nodes[0].bbox, ray, &tmin, &tmax))
 		return (false);
 	PROF_INC(g_mesh_calls);
 	intersect_init_ctx(&ctx, hit);

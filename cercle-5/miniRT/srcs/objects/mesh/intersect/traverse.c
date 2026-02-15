@@ -20,7 +20,6 @@ void	intersect_init_ctx(t_trace_ctx *ctx, t_hit *hit)
 	ctx->best_tri = -1;
 	hit->t = MAX_VALUE;
 	ctx->best_t = hit->t;
-	ctx->stack[ctx->top++] = 0;
 }
 
 static void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
@@ -46,56 +45,63 @@ static void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 	}
 }
 
-static void	push_mesh_children(t_mesh *mesh, int node_idx, const t_ray *ray,
+static int	pick_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		t_trace_ctx *ctx)
 {
-	t_child_ctx	child;
+	t_child_ctx	c;
 
-	child.left_idx = node_idx + 1;
-	child.right_idx = mesh->bvh_nodes[node_idx].left_or_first;
-	child.hit_l = aabb_intersect_fast(&mesh->bvh_nodes[child.left_idx].bbox,
-			ray, &child.tl_min, &child.tl_max);
-	child.hit_r = aabb_intersect_fast(&mesh->bvh_nodes[child.right_idx].bbox,
-			ray, &child.tr_min, &child.tr_max);
-	if (child.hit_l && child.tl_min >= ctx->best_t)
-		child.hit_l = false;
-	if (child.hit_r && child.tr_min >= ctx->best_t)
-		child.hit_r = false;
-	if (child.hit_l && child.hit_r)
+	c.left_idx = node_idx + 1;
+	c.right_idx = mesh->bvh_nodes[node_idx].left_or_first;
+	c.hit_l = aabb_intersect_fast(&mesh->bvh_nodes[c.left_idx].bbox,
+			ray, &c.tl_min, &c.tl_max);
+	c.hit_r = aabb_intersect_fast(&mesh->bvh_nodes[c.right_idx].bbox,
+			ray, &c.tr_min, &c.tr_max);
+	if (c.hit_l && c.tl_min >= ctx->best_t)
+		c.hit_l = false;
+	if (c.hit_r && c.tr_min >= ctx->best_t)
+		c.hit_r = false;
+	if (c.hit_l && c.hit_r)
 	{
-		if (child.tl_min > child.tr_min)
+		if (c.tl_min > c.tr_min)
 		{
-			ctx->stack[ctx->top++] = child.left_idx;
-			ctx->stack[ctx->top++] = child.right_idx;
+			ctx->stack[ctx->top++] = c.left_idx;
+			return (c.right_idx);
 		}
-		else
-		{
-			ctx->stack[ctx->top++] = child.right_idx;
-			ctx->stack[ctx->top++] = child.left_idx;
-		}
+		ctx->stack[ctx->top++] = c.right_idx;
+		return (c.left_idx);
 	}
-	else if (child.hit_l)
-		ctx->stack[ctx->top++] = child.left_idx;
-	else if (child.hit_r)
-		ctx->stack[ctx->top++] = child.right_idx;
-}
-
-static void	process_node(t_mesh *mesh, const t_ray *ray, t_trace_ctx *ctx)
-{
-	t_mbvh_node	*node;
-
-	ctx->node_idx = ctx->stack[--ctx->top];
-	node = &mesh->bvh_nodes[ctx->node_idx];
-	PROF_INC(g_mesh_aabb_tests);
-	if (node->count > 0)
-		process_mesh_leaf(mesh, node, ray, ctx);
-	else
-		push_mesh_children(mesh, ctx->node_idx, ray, ctx);
+	if (c.hit_l)
+		return (c.left_idx);
+	if (c.hit_r)
+		return (c.right_idx);
+	return (-1);
 }
 
 void	intersect_traverse_mesh(t_mesh *mesh, const t_ray *ray,
 		t_trace_ctx *ctx)
 {
-	while (ctx->top > 0)
-		process_node(mesh, ray, ctx);
+	t_mbvh_node	*node;
+	int			node_idx;
+
+	node_idx = 0;
+	while (1)
+	{
+		PROF_INC(g_mesh_aabb_tests);
+		node = &mesh->bvh_nodes[node_idx];
+		if (node->count > 0)
+		{
+			process_mesh_leaf(mesh, node, ray, ctx);
+			if (ctx->top == 0)
+				return ;
+			node_idx = ctx->stack[--ctx->top];
+			continue ;
+		}
+		node_idx = pick_children(mesh, node_idx, ray, ctx);
+		if (node_idx < 0)
+		{
+			if (ctx->top == 0)
+				return ;
+			node_idx = ctx->stack[--ctx->top];
+		}
+	}
 }

@@ -13,12 +13,27 @@
 #include "raytracing.h"
 
 /*
+** Clamp near-zero to tiny epsilon so 1/d stays finite (avoids inf*0 = NaN
+** inside aabb_intersect_fast under -ffast-math / -ffinite-math-only).
+*/
+static inline double	safe_rcp(double d)
+{
+	if (d < 1e-20 && d > -1e-20)
+	{
+		if (d >= 0.0)
+			return (1.0 / 1e-20);
+		return (1.0 / -1e-20);
+	}
+	return (1.0 / d);
+}
+
+/*
 ** Computes inverse direction and sign bits for a ray.
 */
 static inline void	ray_compute_inv(t_ray *ray)
 {
-	ray->inv_dir = vec3(1.0 / ray->direction.x, 1.0 / ray->direction.y, 1.0
-			/ ray->direction.z);
+	ray->inv_dir = vec3(safe_rcp(ray->direction.x),
+			safe_rcp(ray->direction.y), safe_rcp(ray->direction.z));
 	ray->sign[0] = (ray->inv_dir.x < 0);
 	ray->sign[1] = (ray->inv_dir.y < 0);
 	ray->sign[2] = (ray->inv_dir.z < 0);

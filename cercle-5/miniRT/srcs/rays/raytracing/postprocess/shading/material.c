@@ -53,11 +53,13 @@ void	apply_bump(t_shading_ctx *ctx)
 	m_n.x = (s.x / 255.0) * 2.0 - 1.0;
 	m_n.y = (s.y / 255.0) * 2.0 - 1.0;
 	m_n.z = (s.z / 255.0) * 2.0 - 1.0;
+	m_n.w = 0.0;
 	n_n.x = ctx->hit->tangent.x * m_n.x + ctx->hit->bitangent.x * m_n.y
 		+ ctx->hit->normal.x * m_n.z;
 	n_n.y = ctx->hit->tangent.y * m_n.x + ctx->hit->bitangent.y * m_n.y
 		+ ctx->hit->normal.y * m_n.z;
 	n_n.z = ctx->hit->tangent.z * m_n.x + ctx->hit->bitangent.z * m_n.y
 		+ ctx->hit->normal.z * m_n.z;
+	n_n.w = 0.0;
 	ctx->hit->normal = vec3_norm(n_n);
 }
