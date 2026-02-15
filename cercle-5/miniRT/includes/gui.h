@@ -13,6 +13,16 @@
 #ifndef GUI_H
 # define GUI_H
 
+# define RENDER_W 1920
+# define RENDER_H 1080
+# define PANEL_RADIUS 6
+# define COL_BG 0x0A0A12
+# define COL_ACCENT 0xE0A820
+# define COL_FPS 0x20E060
+# define COL_TEXT 0xD0D0D8
+# define COL_HOVER 0x20C8D0
+# define COL_BORDER 0x333340
+
 /* 1. EXTERNAL DEPENDENCIES */
 # include "core.h"
 # include "debug.h"
@@ -67,6 +77,13 @@ typedef struct s_window
 	int					endian;
 	int					width;
 	int					height;
+	void				*disp_img;
+	char				*disp_addr;
+	int					disp_bpp;
+	int					disp_line_len;
+	int					disp_endian;
+	int					disp_w;
+	int					disp_h;
 }						t_window;
 
 typedef struct s_render_state
@@ -217,6 +234,7 @@ void					exit_press(t_gui *gui);
 /* Window Management */
 int						gui_window_resize(int width, int height, t_gui *gui);
 int						gui_window_close(t_gui *gui);
+void					upscale_image(t_gui *gui);
 
 void					clamp_fov(double *fov);
 

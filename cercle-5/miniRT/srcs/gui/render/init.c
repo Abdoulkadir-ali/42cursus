@@ -14,6 +14,7 @@
 
 /*
 ** Initializes MLX window and image.
+** Creates both the render image (fixed resolution) and display image.
 ** Returns false on failure.
 */
 static bool	init_window(t_gui *gui)
@@ -23,13 +24,16 @@ static bool	init_window(t_gui *gui)
 	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.width, gui->win.height,
 			"miniRT");
 	if (!gui->win.win)
-	{
-		free(gui->win.mlx);
 		return (false);
-	}
 	gui->win.img = mlx_new_image(gui->win.mlx, gui->win.width, gui->win.height);
 	gui->win.addr = mlx_get_data_addr(gui->win.img, &gui->win.bpp,
 			&gui->win.line_len, &gui->win.endian);
+	gui->win.disp_w = gui->win.width;
+	gui->win.disp_h = gui->win.height;
+	gui->win.disp_img = mlx_new_image(gui->win.mlx, gui->win.disp_w,
+			gui->win.disp_h);
+	gui->win.disp_addr = mlx_get_data_addr(gui->win.disp_img,
+			&gui->win.disp_bpp, &gui->win.disp_line_len, &gui->win.disp_endian);
 	return (true);
 }
 
@@ -68,8 +72,8 @@ t_gui	*gui_init(t_scene *scene, t_bvh *bvh, void *mlx)
 	ft_memset(gui, 0, sizeof(t_gui));
 	gui->scene = scene;
 	gui->bvh = bvh;
-	gui->win.width = 1280;
-	gui->win.height = 720;
+	gui->win.width = RENDER_W;
+	gui->win.height = RENDER_H;
 	gui->win.mlx = mlx;
 	if (!init_window(gui))
 	{
@@ -92,6 +96,8 @@ void	gui_destroy(t_gui *gui)
 
 	if (!gui)
 		return ;
+	if (gui->win.disp_img)
+		mlx_destroy_image(gui->win.mlx, gui->win.disp_img);
 	if (gui->win.img)
 		mlx_destroy_image(gui->win.mlx, gui->win.img);
 	if (gui->win.win)

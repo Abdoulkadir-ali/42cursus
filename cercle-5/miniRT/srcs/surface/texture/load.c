@@ -48,30 +48,12 @@ static bool	load_stbi(t_texture *tex, const char *path)
 	int				h;
 	int				ch;
 	unsigned char	*data;
-	unsigned char	tmp;
-	int				i;
 
 	data = stbi_load(path, &w, &h, &ch, 4);
 	if (!data)
 		return (false);
-	i = 0;
-	while (i < w * h * 4)
-	{
-		tmp = data[i];
-		data[i] = data[i + 2];
-		data[i + 2] = tmp;
-		i += 4;
-	}
-	tex->img = NULL;
-	tex->width = w;
-	tex->height = h;
-	tex->bpp = 32;
-	tex->len = w * 4;
-	tex->endian = 0;
-	tex->addr = (char *)data;
-	tex->type = TEX_BITMAP;
-	tex->scale = 1.0;
-	tex->color_a = vec3(255, 255, 255);
+	convert_rgba_to_bgra(data, w * h * 4);
+	init_texture_props(tex, w, h, (char *)data);
 	return (true);
 }
 

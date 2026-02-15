@@ -1,31 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   obj_finalize.c                                     :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/15 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
 
-bool	obj_build_mesh(t_scene *scene, t_obj_ctx *ctx, const char *path)
+void	intersect_init_ctx(t_trace_ctx *ctx, t_hit *hit)
 {
-	t_mesh	mesh;
-
-	if (ctx->out_v_count == 0)
-	{
-		obj_free_ctx(ctx);
-		return (false);
-	}
-	obj_generate_normals(ctx);
-	obj_init_mesh(&mesh, ctx, path);
-	obj_set_mat_id(&mesh, ctx);
-	obj_free_ctx(ctx);
-	mesh_build_bvh(&mesh);
-	scene_add_mesh(scene, mesh);
-	return (true);
+	ctx->top = 0;
+	ctx->node_idx = 0;
+	ctx->best_tri = -1;
+	hit->t = MAX_VALUE;
+	ctx->best_t = hit->t;
 }

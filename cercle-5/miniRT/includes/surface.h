@@ -80,7 +80,8 @@ int					scene_add_named_material(t_scene *scene, const char *name);
 int					scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 					t_vec3 color_b, double scale);
 
-
+void	convert_rgba_to_bgra(unsigned char *data, int size);
+void	init_texture_props(t_texture *tex, int w, int h, char *data);
 bool	load_texture_xpm(t_scene *scene, t_texture *tex, const char *path);
 bool	load_texture(t_scene *scene, t_texture *tex, const char *path);
 t_vec3	sample_texture(t_texture *tex, double u, double v);

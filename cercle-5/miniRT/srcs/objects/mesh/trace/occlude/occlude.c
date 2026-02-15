@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   obj_finalize.c                                     :+:      :+:    :+:   */
+/*   occlude.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/15 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "profiler.h"
 
-bool	obj_build_mesh(t_scene *scene, t_obj_ctx *ctx, const char *path)
+bool	mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist)
 {
-	t_mesh	mesh;
+	double	tmin;
+	double	tmax;
 
-	if (ctx->out_v_count == 0)
-	{
-		obj_free_ctx(ctx);
+	if (!mesh || !mesh->bvh_nodes)
 		return (false);
-	}
-	obj_generate_normals(ctx);
-	obj_init_mesh(&mesh, ctx, path);
-	obj_set_mat_id(&mesh, ctx);
-	obj_free_ctx(ctx);
-	mesh_build_bvh(&mesh);
-	scene_add_mesh(scene, mesh);
-	return (true);
+	if (!aabb_intersect_fast(&mesh->bvh_nodes[0].bbox, ray, &tmin, &tmax)
+		|| tmin >= dist)
+		return (false);
+	PROF_INC(g_mesh_occ_calls);
+	return (traverse_occlude(mesh, ray, dist));
 }

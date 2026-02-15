@@ -52,6 +52,8 @@ void	glb_parse_accessor(char *json, int index, t_accessor *acc)
 		return ;
 	acc->buffer_view = json_get_int(ptr, "bufferView");
 	acc->byte_offset = json_get_int(ptr, "byteOffset");
+	if (acc->byte_offset < 0)
+		acc->byte_offset = 0;
 	acc->component_type = json_get_int(ptr, "componentType");
 	acc->count = json_get_int(ptr, "count");
 	process_type_string(ptr, acc);
@@ -78,6 +80,8 @@ void	glb_parse_buffer_view(char *json, int index, t_buffer_view *bv)
 		return ;
 	bv->buffer = json_get_int(ptr, "buffer");
 	bv->byte_offset = json_get_int(ptr, "byteOffset");
+	if (bv->byte_offset < 0)
+		bv->byte_offset = 0;
 	bv->byte_length = json_get_int(ptr, "byteLength");
 	bv->byte_stride = json_get_int(ptr, "byteStride");
 	if (bv->byte_stride <= 0)

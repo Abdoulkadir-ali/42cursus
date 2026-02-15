@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   obj_finalize.c                                     :+:      :+:    :+:   */
+/*   leaf.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/15 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
 
-bool	obj_build_mesh(t_scene *scene, t_obj_ctx *ctx, const char *path)
+bool	leaf_occluded(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
+		double dist)
 {
-	t_mesh	mesh;
+	int		i;
+	int		tri;
+	double	t;
 
-	if (ctx->out_v_count == 0)
+	i = 0;
+	while (i < node->count)
 	{
-		obj_free_ctx(ctx);
-		return (false);
+		tri = node->left_or_first + i;
+		if (intersect_tri_precomp(ray, &mesh->tri_cache[tri], &t, NULL)
+			&& t < dist)
+			return (true);
+		i++;
 	}
-	obj_generate_normals(ctx);
-	obj_init_mesh(&mesh, ctx, path);
-	obj_set_mat_id(&mesh, ctx);
-	obj_free_ctx(ctx);
-	mesh_build_bvh(&mesh);
-	scene_add_mesh(scene, mesh);
-	return (true);
+	return (false);
 }

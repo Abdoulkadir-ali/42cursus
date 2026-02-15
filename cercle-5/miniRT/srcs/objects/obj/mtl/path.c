@@ -34,49 +34,31 @@ void	mtl_handle_map_kd(t_scene *scene, char *p, int cur_mat,
 	free(tex_path);
 }
 
-static void	mtl_handle_kd(t_scene *scene, char *p, int cur_mat)
+static void	mtl_dispatch_extended(t_scene *scene, char *p, int cur_mat)
 {
 	double	r;
 	double	g;
 	double	b;
 
-	r = atof(p);
-	p = mtl_skip_ws(p);
-	while (*p && !ft_isspace(*p))
-		p++;
-	g = atof(mtl_skip_ws(p));
-	p = mtl_skip_ws(p);
-	while (*p && !ft_isspace(*p))
-		p++;
-	b = atof(mtl_skip_ws(p));
-	scene->materials[cur_mat].albedo_map.color_a = vec3(r * 255, g * 255,
-			b * 255);
-}
-
-static void	mtl_handle_ks_ns_d(t_scene *scene, char *p, int cur_mat,
-		const char *tag)
-{
-	double	val;
-
-	val = atof(p);
-	if (ft_strcmp(tag, "Ks") == 0)
-		scene->materials[cur_mat].specular = val;
-	else if (ft_strcmp(tag, "Ns") == 0)
-		scene->materials[cur_mat].shininess = val;
-	else if (ft_strcmp(tag, "d") == 0)
-		scene->materials[cur_mat].transparency = 1.0 - val;
-}
-
-static void	mtl_dispatch_extended(t_scene *scene, char *p, int cur_mat)
-{
 	if (mtl_is_tag(p, "Kd"))
-		mtl_handle_kd(scene, mtl_skip_ws(p + 2), cur_mat);
+	{
+		p = mtl_skip_ws(p + 2);
+		r = atof(p);
+		while (*p && !ft_isspace(*p))
+			p++;
+		g = atof(mtl_skip_ws(p));
+		while (*p && !ft_isspace(*p))
+			p++;
+		b = atof(mtl_skip_ws(p));
+		scene->materials[cur_mat].albedo_map.color_a = vec3(r * 255,
+				g * 255, b * 255);
+	}
 	else if (mtl_is_tag(p, "Ks"))
-		mtl_handle_ks_ns_d(scene, mtl_skip_ws(p + 2), cur_mat, "Ks");
+		scene->materials[cur_mat].specular = atof(mtl_skip_ws(p + 2));
 	else if (mtl_is_tag(p, "Ns"))
-		mtl_handle_ks_ns_d(scene, mtl_skip_ws(p + 2), cur_mat, "Ns");
+		scene->materials[cur_mat].shininess = atof(mtl_skip_ws(p + 2));
 	else if (mtl_is_tag(p, "d"))
-		mtl_handle_ks_ns_d(scene, mtl_skip_ws(p + 1), cur_mat, "d");
+		scene->materials[cur_mat].transparency = 1.0 - atof(mtl_skip_ws(p + 1));
 }
 
 void	mtl_parse_line(t_scene *scene, char *line, int *cur_mat,

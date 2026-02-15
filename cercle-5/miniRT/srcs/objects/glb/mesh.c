@@ -43,6 +43,7 @@ static bool	alloc_mesh_arrays(t_mesh *mesh, char *json, int ids[4],
 	t_accessor	acc;
 
 	glb_parse_accessor(json, ids[0], &acc);
+	mesh->vertex_count = acc.count;
 	mesh->vertices = ft_calloc(acc.count, sizeof(t_vec3));
 	mesh->normals = ft_calloc(acc.count, sizeof(t_vec3));
 	mesh->uvs = ft_calloc(acc.count, sizeof(t_vec2));
