@@ -12,7 +12,9 @@
 
 #include "gui.h"
 
-static t_key_action	g_keymap[] = {
+static t_key_action	*get_keymap(void)
+{
+	static t_key_action	keymap[] = {
 	{XK_w, move_forward_press, move_forward_release},
 	{XK_z, move_forward_press, move_forward_release},
 	{XK_s, move_backward_press, move_backward_release},
@@ -31,20 +33,25 @@ static t_key_action	g_keymap[] = {
 	{XK_minus, zoom_out_press, zoom_out_release},
 	{XK_Escape, exit_press, NULL},
 	{0, NULL, NULL}
-};
+	};
+
+	return (keymap);
+}
 
 int	key_press(int keycode, t_gui *gui)
 {
-	int	i;
+	t_key_action	*keymap;
+	int				i;
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
+	keymap = get_keymap();
 	i = 0;
-	while (g_keymap[i].key != 0)
+	while (keymap[i].key != 0)
 	{
-		if (g_keymap[i].key == keycode && g_keymap[i].press_action)
+		if (keymap[i].key == keycode && keymap[i].press_action)
 		{
-			g_keymap[i].press_action(gui);
+			keymap[i].press_action(gui);
 			return (0);
 		}
 		i++;
@@ -54,16 +61,18 @@ int	key_press(int keycode, t_gui *gui)
 
 int	key_release(int keycode, t_gui *gui)
 {
-	int	i;
+	t_key_action	*keymap;
+	int				i;
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
+	keymap = get_keymap();
 	i = 0;
-	while (g_keymap[i].key != 0)
+	while (keymap[i].key != 0)
 	{
-		if (g_keymap[i].key == keycode && g_keymap[i].release_action)
+		if (keymap[i].key == keycode && keymap[i].release_action)
 		{
-			g_keymap[i].release_action(gui);
+			keymap[i].release_action(gui);
 			return (0);
 		}
 		i++;
