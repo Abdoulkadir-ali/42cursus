@@ -47,6 +47,7 @@ static bool	alloc_index_data(t_mesh *mesh, t_mesh_init init)
 bool	mesh_init(t_mesh *mesh, t_mesh_init init)
 {
 	ft_memset(mesh, 0, sizeof(t_mesh));
+	mesh->transform.scale = vec3(1, 1, 1);
 	mesh->vertex_count = init.v_count;
 	mesh->tri_count = init.i_count / 3;
 	if (!alloc_vertex_data(mesh, init))

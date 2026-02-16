@@ -27,6 +27,8 @@ bool	scene_add_sphere(t_scene *scene, t_sphere sphere)
 	if (!DYNARRAY_ENSURE_INT(&scene->spheres, &scene->sphere_count,
 			&scene->sphere_cap, sizeof(t_sphere)))
 		return (false);
+	if (vec3_mag_sq(sphere.transform.scale) < 1e-6)
+		sphere.transform.scale = vec3(1, 1, 1);
 	scene->spheres[scene->sphere_count++] = sphere;
 	return (true);
 }
@@ -46,6 +48,8 @@ bool	scene_add_plane(t_scene *scene, t_plane plane)
 	if (!DYNARRAY_ENSURE_INT(&scene->planes, &scene->plane_count,
 			&scene->plane_cap, sizeof(t_plane)))
 		return (false);
+	if (vec3_mag_sq(plane.transform.scale) < 1e-6)
+		plane.transform.scale = vec3(1, 1, 1);
 	scene->planes[scene->plane_count++] = plane;
 	return (true);
 }
@@ -65,6 +69,8 @@ bool	scene_add_cylinder(t_scene *scene, t_cylinder cylinder)
 	if (!DYNARRAY_ENSURE_INT(&scene->cylinders, &scene->cylinder_count,
 			&scene->cylinder_cap, sizeof(t_cylinder)))
 		return (false);
+	if (vec3_mag_sq(cylinder.transform.scale) < 1e-6)
+		cylinder.transform.scale = vec3(1, 1, 1);
 	scene->cylinders[scene->cylinder_count++] = cylinder;
 	return (true);
 }
@@ -84,6 +90,8 @@ bool	scene_add_cone(t_scene *scene, t_cone cone)
 	if (!DYNARRAY_ENSURE_INT(&scene->cones, &scene->cone_count,
 			&scene->cone_cap, sizeof(t_cone)))
 		return (false);
+	if (vec3_mag_sq(cone.transform.scale) < 1e-6)
+		cone.transform.scale = vec3(1, 1, 1);
 	scene->cones[scene->cone_count++] = cone;
 	return (true);
 }

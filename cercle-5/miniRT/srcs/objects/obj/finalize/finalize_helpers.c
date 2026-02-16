@@ -22,6 +22,7 @@ void	obj_free_ctx(t_obj_ctx *ctx)
 void	obj_init_mesh(t_mesh *mesh, t_obj_ctx *ctx, const char *path)
 {
 	ft_memset(mesh, 0, sizeof(t_mesh));
+	mesh->transform.scale = vec3(1, 1, 1);
 	mesh->name = ft_strdup(path);
 	mesh->vertices = ctx->out_v;
 	mesh->normals = ctx->out_vn;
