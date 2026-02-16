@@ -29,11 +29,12 @@ static void	setup_default_scene(t_scene *scene)
 	scene->camera.fov = 70;
 	ft_memset(&light, 0, sizeof(t_light));
 	light.type = LIGHT_POINT;
-	light.transform.pos = vec3(15, 25, 30);
+	light.transform.pos = vec3(-30, 200, 30);
 	light.brightness = 0.8;
 	light.rgb = vec3(255, 255, 255);
 	scene_add_light(scene, light);
 	light.transform.pos = vec3(-15, 40, 10);
+	light.rgb = vec3(100, 50, 30);
 	scene_add_light(scene, light);
 	light.transform.pos = vec3(0, 60, -20);
 	scene_add_light(scene, light);
