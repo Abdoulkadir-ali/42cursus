@@ -37,3 +37,28 @@ double	vec3_mag(t_vec3 a)
 {
 	return (sqrt(vec3_mag_sq(a)));
 }
+
+// Ray reflection: R = I - 2(N . I)N
+t_vec3 vec3_reflect(t_vec3 I, t_vec3 N)
+{
+	return vec3_sub(I, vec3_scale(N, 2 * vec3_dot(I, N)));
+}
+
+// Ray refraction using Snell's Law
+t_vec3 vec3_refract(t_vec3 I, t_vec3 N, double ior)
+{
+	double cosi = -fmax(-1.0, fmin(1.0, vec3_dot(I, N)));
+	double etai = 1.0;
+	double etat = ior;
+	t_vec3 n = N;
+	if (cosi < 0) {
+		cosi = -cosi;
+		n = vec3_scale(N, -1.0);
+		double tmp = etai; etai = etat; etat = tmp;
+	}
+	double eta = etai / etat;
+	double k = 1.0 - eta * eta * (1.0 - cosi * cosi);
+	if (k < 0)
+		return (t_vec3){0, 0, 0, 0}; // Total internal reflection
+	return vec3_add(vec3_scale(I, eta), vec3_scale(n, eta * cosi - sqrt(k)));
+}

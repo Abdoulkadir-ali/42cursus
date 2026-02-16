@@ -16,17 +16,23 @@
 /* 1. EXTERNAL DEPENDENCIES */
 # include "core.h"
 # include "surface.h"
+# include "physics.h"
 
 /* ------------------------------------------------------------------------- */
 /*                             LEAF STRUCTURES                               */
 /* ------------------------------------------------------------------------- */
 
-struct					s_sphere
+struct				s_sphere
 {
-	t_transform			transform;
-	double				radius_sq;
-	int					mat_id;
-	t_vec3				temp_color;
+	t_transform		transform;
+	double			radius_sq;
+	int				mat_id;
+	t_vec3			temp_color;
+	/* physics state stored separately */
+	t_physics_body      phys;
+	/* Caching for deformation */
+	bool				is_deformed;
+	t_mat4				inv_transform;
 };
 
 struct					s_plane
@@ -126,6 +132,9 @@ struct					s_mesh
 	int					*bvh_indices;
 	t_tri_precomp		*tri_cache;
 	int					mat_id;
+	/* Physics */
+	t_physics_body		phys;
+	t_collider			collider;
 };
 
 typedef struct s_mesh_init

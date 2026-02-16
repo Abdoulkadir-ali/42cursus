@@ -17,12 +17,10 @@
 /*
 ** Cleans up all resources.
 */
-static void	cleanup(t_scene *scene, t_bvh *bvh, t_gui *gui)
+static void	cleanup(t_scene *scene, t_gui *gui)
 {
 	if (gui)
 		gui_destroy(gui);
-	if (bvh)
-		bvh_destroy(bvh);
 	if (scene)
 		destroy_scene(scene);
 }
@@ -31,42 +29,43 @@ static void	cleanup(t_scene *scene, t_bvh *bvh, t_gui *gui)
 ** Initializes the application components.
 ** Loads the scene, builds the BVH, and initializes the GUI.
 */
-static t_gui	*init_app(const char *path, t_scene **scene,
-		t_bvh **bvh, void *mlx)
+static t_gui	*init_app(const char *path, t_scene **scene, void *mlx)
 {
+	t_gui	*gui;
+
 	*scene = parse_file(path, mlx);
 	if (!*scene)
 	{
 		fprintf(stderr, "Failed to load scene: %s\n", path);
 		return (NULL);
 	}
-	*bvh = bvh_create(*scene);
-	if (!*bvh)
+	(*scene)->bvh = bvh_create(*scene);
+	if (!(*scene)->bvh)
 	{
 		fprintf(stderr, "Failed to create BVH\n");
 		return (NULL);
 	}
-	return (gui_init(*scene, *bvh, mlx));
+	gui = gui_init(*scene, mlx);
+	return (gui);
 }
 
-static int	start_gui(t_gui *gui, t_scene *scene, t_bvh *bvh, void *mlx)
+static int	start_gui(t_gui *gui, t_scene *scene, void *mlx)
 {
 	if (!gui)
 	{
 		fprintf(stderr, "Failed to initialize GUI\n");
-		cleanup(scene, bvh, NULL);
+		cleanup(scene, NULL);
 		return (1);
 	}
 	gui->win.mlx = mlx;
 	gui_loop(gui);
-	cleanup(scene, bvh, gui);
+	cleanup(scene, gui);
 	return (0);
 }
 
 static int	run_app(const char *path)
 {
 	t_scene	*scene;
-	t_bvh	*bvh;
 	t_gui	*gui;
 	void	*mlx;
 
@@ -78,9 +77,9 @@ static int	run_app(const char *path)
 		return (1);
 	}
 	scene = NULL;
-	bvh = NULL;
-	gui = init_app(path, &scene, &bvh, mlx);
-	return (start_gui(gui, scene, bvh, mlx));
+	scene = NULL;
+	gui = init_app(path, &scene, mlx);
+	return (start_gui(gui, scene, mlx));
 }
 
 /*

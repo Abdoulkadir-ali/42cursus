@@ -15,7 +15,6 @@
 bool	load_scene_and_bvh(t_gui *gui, const char *path)
 {
 	t_scene	*new_s;
-	t_bvh	*new_b;
 
 	ft_print_debug("Switching to map: %s\n", path);
 	new_s = parse_file(path, gui->win.mlx);
@@ -24,16 +23,14 @@ bool	load_scene_and_bvh(t_gui *gui, const char *path)
 		fprintf(stderr, "Error: Failed to load map %s\n", path);
 		return (false);
 	}
-	new_b = bvh_create(new_s);
-	if (!new_b)
+	new_s->bvh = bvh_create(new_s);
+	if (!new_s->bvh)
 	{
 		fprintf(stderr, "Error: Failed to create BVH for %s\n", path);
 		destroy_scene(new_s);
 		return (false);
 	}
-	bvh_destroy(gui->bvh);
 	destroy_scene(gui->scene);
 	gui->scene = new_s;
-	gui->bvh = new_b;
 	return (true);
 }

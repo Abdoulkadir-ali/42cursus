@@ -32,6 +32,13 @@ void	gui_update_input(t_gui *gui)
 	right = vec3_norm(vec3_cross(fwd, vec3(0, 1, 0)));
 	if (vec3_mag_sq(right) < 1e-6)
 		right = vec3(1, 0, 0);
+	
+	/* Update transform vectors for use in ray generation */
+	t_vec3 up = vec3_norm(vec3_cross(right, fwd));
+	ctrl->transform.forward = fwd;
+	ctrl->transform.right = right;
+	ctrl->transform.up = up;
+
 	apply_movement(ctrl, fwd, right);
 	smooth_rotation(gui, ctrl);
 	smooth_position(gui, ctrl);

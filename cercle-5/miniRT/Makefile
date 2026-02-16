@@ -12,6 +12,7 @@ CC          = cc
 CFLAGS      = -Wall -Wextra -Werror -O3 -ffast-math -flto -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -DPROFILE_MESH -MMD -MP
 RM          = rm -f
 SRCS_DIR    = srcs
+# Exclude old physics.c if it still exists (handled by file deletion)
 OBJS_DIR    = objs
 SRCS        = $(shell find $(SRCS_DIR) -name "*.c")
 OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))

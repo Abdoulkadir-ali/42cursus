@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "scene.h"
+#include "raytracing.h"
 
 /*
 ** Initializes the memory pools for scene objects.
@@ -41,6 +42,40 @@ static bool	init_arrays(t_scene *s)
 }
 
 /*
+** Frees all memory associated with the scene and its objects.
+*/
+void	destroy_scene(t_scene *scene)
+{
+	int	i;
+
+	if (!scene)
+		return ;
+	if (scene->bvh)
+		bvh_destroy(scene->bvh);
+	free(scene->name);
+	free(scene->spheres);
+	free(scene->planes);
+	free(scene->cylinders);
+	free(scene->cones);
+	i = 0;
+	while (i < scene->mesh_count)
+		mesh_free(&scene->meshes[i++]);
+	free(scene->meshes);
+	i = 0;
+	while (i < scene->anim_count)
+	{
+		mesh_free(&scene->animated[i].base);
+		free(scene->animated[i].skeleton);
+		free(scene->animated[i].bone_matrices);
+		i++;
+	}
+	free(scene->animated);
+	free(scene->materials);
+	free(scene->lights);
+	free(scene);
+}
+
+/*
 ** Creates a new scene with default settings and empty object lists.
 */
 t_scene	*create_scene(const char *name)
@@ -64,36 +99,4 @@ t_scene	*create_scene(const char *name)
 	s->ambient.rgb = vec3(0, 0, 0);
 	scene_add_material(s, vec3(255, 0, 255));
 	return (s);
-}
-
-/*
-** Frees all memory associated with the scene and its objects.
-*/
-void	destroy_scene(t_scene *scene)
-{
-	int	i;
-
-	if (!scene)
-		return ;
-	free(scene->name);
-	free(scene->spheres);
-	free(scene->planes);
-	free(scene->cylinders);
-	free(scene->cones);
-	i = 0;
-	while (i < scene->mesh_count)
-		mesh_free(&scene->meshes[i++]);
-	free(scene->meshes);
-	i = 0;
-	while (i < scene->anim_count)
-	{
-		mesh_free(&scene->animated[i].base);
-		free(scene->animated[i].skeleton);
-		free(scene->animated[i].bone_matrices);
-		i++;
-	}
-	free(scene->animated);
-	free(scene->materials);
-	free(scene->lights);
-	free(scene);
 }

@@ -41,6 +41,31 @@ int	scene_add_material(t_scene *scene, t_vec3 color)
 	scene->materials[scene->mat_count].albedo_map.scale = 1.0;
 	scene->materials[scene->mat_count].specular = 0.5;
 	scene->materials[scene->mat_count].shininess = 32.0;
+
+	/* Magic Colors for Advanced Materials */
+	if (color.x == 255 && color.y == 0 && color.z == 255) /* Magenta = Glass */
+	{
+		scene->materials[scene->mat_count].refract_index = 1.5;
+		scene->materials[scene->mat_count].transparency = 0.9;
+		scene->materials[scene->mat_count].reflectivity = 0.1;
+		scene->materials[scene->mat_count].specular = 0.9;
+		scene->materials[scene->mat_count].shininess = 128.0;
+	}
+	else if (color.x == 0 && color.y == 255 && color.z == 255) /* Cyan = Mirror */
+	{
+		scene->materials[scene->mat_count].reflectivity = 0.8;
+		scene->materials[scene->mat_count].specular = 0.9;
+		scene->materials[scene->mat_count].shininess = 256.0;
+	}
+	else if (color.x == 0 && color.y == 0 && color.z == 255) /* Blue = Water */
+	{
+		scene->materials[scene->mat_count].refract_index = 1.33;
+		scene->materials[scene->mat_count].transparency = 0.8;
+		scene->materials[scene->mat_count].reflectivity = 0.2;
+		scene->materials[scene->mat_count].specular = 0.8;
+		scene->materials[scene->mat_count].shininess = 64.0;
+	}
+
 	return (scene->mat_count++);
 }
 

@@ -62,7 +62,7 @@ struct				s_scene
 	int				light_cap;
 
 	/* The Accelerator */
-	t_bvh_node		*top_level_bvh;
+	struct s_bvh	*bvh;
 };
 
 /* 3. FUNCTION PROTOTYPES */

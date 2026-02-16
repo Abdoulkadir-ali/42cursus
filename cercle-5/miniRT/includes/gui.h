@@ -15,6 +15,21 @@
 
 # define RENDER_W 1920
 # define RENDER_H 1080
+#
+/* Auto-refresh configuration:
+ * - Set `GUI_AUTOREFRESH_PHYSICS` to 1 to force a render every frame while
+ *   physics simulation is enabled. Set to 0 to keep the legacy "dirty only"
+ *   behavior.
+ * - `GUI_AUTOREFRESH_SCALE` controls the downscale factor used during
+ *   auto-refresh to keep rendering fast while simulating physics.
+ */
+# ifndef GUI_AUTOREFRESH_PHYSICS
+#  define GUI_AUTOREFRESH_PHYSICS 1
+# endif
+
+# ifndef GUI_AUTOREFRESH_SCALE
+#  define GUI_AUTOREFRESH_SCALE 2
+# endif
 # define PANEL_RADIUS 6
 # define COL_BG 0x0A0A12
 # define COL_ACCENT 0xE0A820
@@ -27,6 +42,43 @@
 # include "core.h"
 # include "debug.h"
 # include "maths.h"
+
+typedef enum e_widget_type
+{
+	WIDGET_LABEL,
+	WIDGET_BUTTON,
+	WIDGET_CHECKBOX,
+	WIDGET_SLIDER,
+	WIDGET_COLOR_PICKER,
+	WIDGET_PANEL
+}						t_widget_type;
+
+typedef struct s_widget	t_widget;
+typedef void			(*t_widget_callback)(t_widget *widget,
+				struct s_gui *gui);
+
+struct					s_widget
+{
+	t_widget_type		type;
+	int x, y, w, h;
+	char				*label;
+	int value;     // For checkbox, slider, etc.
+	int color;     // For color picker
+	double dvalue; // For sliders
+	t_widget_callback	on_click;
+	t_widget_callback	on_change;
+	void				*userdata;
+	t_widget			*next;
+};
+
+t_widget				*widget_create(t_widget_type type, int x, int y, int w,
+							int h, const char *label);
+void					widget_add(struct s_gui *gui, t_widget *widget);
+void					widget_draw_all(struct s_gui *gui);
+void					widget_handle_mouse(struct s_gui *gui, int button,
+							int x, int y);
+void					widget_handle_key(struct s_gui *gui, int keycode);
+void					widget_init_default(t_gui *gui);
 
 /* 3. MODULE TYPES */
 struct					s_camera_controller
@@ -112,12 +164,19 @@ struct					s_gui
 {
 	t_window			win;
 	t_scene				*scene;
-	t_bvh				*bvh;
 	t_camera_controller	cam_ctrl;
 	t_render_state		render;
 	t_input_ctx			input;
 	t_map				map_info;
-	void				*widgets;
+	t_widget			*widgets;
+
+	// --- UI/Physics/Lighting State ---
+	bool				physics_enabled;
+	double				phys_accumulator;
+	double				phys_fixed_dt;
+	int					phys_max_steps;
+	int ambient_color; // RGB packed int
+	double				ambient_intensity;
 };
 
 typedef struct s_key_action
@@ -161,7 +220,7 @@ typedef struct s_tile_vars
 /* 4. FUNCTION PROTOTYPES */
 
 /* srcs/gui/init.c */
-t_gui					*gui_init(t_scene *scene, t_bvh *bvh, void *mlx);
+t_gui					*gui_init(t_scene *scene, void *mlx);
 void					gui_destroy(t_gui *gui);
 
 /* srcs/gui/loop.c */

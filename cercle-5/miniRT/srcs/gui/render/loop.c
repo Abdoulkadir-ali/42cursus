@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "physics.h"
 
 /*
 ** Returns current time in milliseconds.
@@ -41,7 +42,53 @@ static int	render_loop(void *param)
 		if (delta > 0)
 			gui->render.fps = 0.9 * gui->render.fps + 0.1 * (1.0 / delta);
 	}
+	else
+		delta = 0.016; // default to ~60 FPS
 	gui->render.last_time = current_time;
+
+
+	// --- PHYSICS UPDATE (fixed-timestep accumulator) ---
+	if (gui->scene && gui->physics_enabled)
+	{
+		double fixed_dt = (gui->phys_fixed_dt > 0.0) ? gui->phys_fixed_dt : (1.0 / 60.0);
+		gui->phys_accumulator += delta;
+		int steps = 0;
+		while (gui->phys_accumulator >= fixed_dt && steps < gui->phys_max_steps)
+		{
+			update_physics(gui->scene, fixed_dt);
+			gui->phys_accumulator -= fixed_dt;
+			steps++;
+		}
+		if (steps > 0)
+		{
+			/* Rebuild top-level BVH (TLAS) to reflect transformed objects. */
+			if (gui->scene->bvh)
+				bvh_destroy(gui->scene->bvh);
+			gui->scene->bvh = bvh_create(gui->scene);
+			gui->render.dirty = true;
+		}
+	}
+
+	/* Auto-refresh & downscale when physics is running if enabled by define */
+#if GUI_AUTOREFRESH_PHYSICS
+	if (gui->physics_enabled)
+	{
+		gui->render.dirty = true;
+		/* use a downscale to speed up continuous renders */
+		if (gui->render.scale < GUI_AUTOREFRESH_SCALE)
+			gui->render.scale = GUI_AUTOREFRESH_SCALE;
+	}
+#endif
+
+	// --- AMBIENT LIGHT UPDATE ---
+	if (gui->scene) {
+		t_ambient *amb = &gui->scene->ambient;
+		amb->rgb.x = ((gui->ambient_color >> 16) & 0xFF) / 255.0 * gui->ambient_intensity;
+		amb->rgb.y = ((gui->ambient_color >> 8) & 0xFF) / 255.0 * gui->ambient_intensity;
+		amb->rgb.z = (gui->ambient_color & 0xFF) / 255.0 * gui->ambient_intensity;
+		amb->brightness = gui->ambient_intensity;
+	}
+
 	gui_update_input(gui);
 	if (gui->render.dirty || gui->render.last_dirty)
 	{

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/14 17:22:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/16 17:14:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ struct		s_ray
 	t_vec3	direction;
 	t_vec3	inv_dir;
 	int		sign[3];
+	int		depth;
 };
 
 struct s_aabb
@@ -129,7 +130,11 @@ t_mat4		mat4_translation(t_vec3 v);
 t_mat4		mat4_scaling(t_vec3 v);
 t_mat4		mat4_rotation(t_rotator r);
 t_mat4		mat4_transform(t_transform t);
+t_mat4		mat4_inverse_transform(t_transform t);
 t_vec3		mat4_mul_pos(t_mat4 m, t_vec3 v);
+
+t_vec3      vec3_reflect(t_vec3 I, t_vec3 N);
+t_vec3      vec3_refract(t_vec3 I, t_vec3 N, double ior);
 
 
 /* Roots */

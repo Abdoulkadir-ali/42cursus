@@ -42,7 +42,7 @@ bool	update_hover(t_gui *gui, t_render_ctx *ctx)
 		make_camera_ray(ctx, g_hover.x * gui->win.width / gui->win.disp_w,
 			g_hover.y * gui->win.height / gui->win.disp_h, &ray);
 		ft_memset(&hit, 0, sizeof(t_hit));
-		g_hover.active = bvh_intersect(gui->bvh, &ray, &hit);
+		g_hover.active = bvh_intersect(gui->scene->bvh, &ray, &hit);
 	}
 	if (g_hover.active)
 	{

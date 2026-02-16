@@ -68,7 +68,8 @@ size_t	collect_objects(t_scene *scene, t_build_item *items)
 
 	k = 0;
 	add_items(items, &k, TYPE_SPHERE, scene);
-	add_items(items, &k, TYPE_PLANE, scene);
+	/* Planes are handled globally, not in BVH to avoid infinite bbox issues */
+	/* add_items(items, &k, TYPE_PLANE, scene); */
 	add_items(items, &k, TYPE_CYLINDER, scene);
 	add_items(items, &k, TYPE_CONE, scene);
 	return (collect_complex(scene, items, k));

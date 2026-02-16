@@ -58,6 +58,24 @@ void	mesh_apply_transform(t_mesh *mesh, t_transform transform)
 	rot = mat4_rotation(transform.rotation);
 	apply_mesh_transform(mesh, m, rot);
 	update_mesh_bbox(mesh);
+	
+	/* Initialize Physics Collider (Capsule Approximation) */
+	mesh->phys.is_static = true; /* Environment mesh */
+	mesh->phys.mass = 0.0;
+	mesh->phys.elasticity = 0.5;
+	mesh->collider.type = COLLIDER_CAPSULE;
+	
+	double width_x = mesh->bbox.max.x - mesh->bbox.min.x;
+	double width_z = mesh->bbox.max.z - mesh->bbox.min.z;
+	double radius = (width_x < width_z ? width_x : width_z) * 0.5;
+	double cx = (mesh->bbox.min.x + mesh->bbox.max.x) * 0.5;
+	double cz = (mesh->bbox.min.z + mesh->bbox.max.z) * 0.5;
+
+	/* Shrink capsule slightly to fit inside AABB? Or match? */
+	mesh->collider.data.capsule.radius = radius;
+	mesh->collider.data.capsule.a = vec3(cx, mesh->bbox.min.y, cz);
+	mesh->collider.data.capsule.b = vec3(cx, mesh->bbox.max.y, cz);
+
 	reset_mesh_transform(mesh);
 	mesh_build_bvh(mesh);
 	debug_print_mesh_bake(mesh, false);

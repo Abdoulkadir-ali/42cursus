@@ -62,7 +62,7 @@ static void	init_camera(t_gui *gui)
 ** Main initialization function for the GUI subsystem.
 ** Allocates memory and initializes MLX, window, camera, and map switcher.
 */
-t_gui	*gui_init(t_scene *scene, t_bvh *bvh, void *mlx)
+t_gui	*gui_init(t_scene *scene, void *mlx)
 {
 	t_gui	*gui;
 
@@ -71,10 +71,17 @@ t_gui	*gui_init(t_scene *scene, t_bvh *bvh, void *mlx)
 		return (NULL);
 	ft_memset(gui, 0, sizeof(t_gui));
 	gui->scene = scene;
-	gui->bvh = bvh;
 	gui->win.width = RENDER_W;
 	gui->win.height = RENDER_H;
 	gui->win.mlx = mlx;
+	// --- Initialize new GUI state ---
+	gui->physics_enabled = true;
+	/* physics timing defaults */
+	gui->phys_accumulator = 0.0;
+	gui->phys_fixed_dt = 1.0 / 60.0;
+	gui->phys_max_steps = 5;
+	gui->ambient_color = 0xFFFFFF;
+	gui->ambient_intensity = 1.0;
 	if (!init_window(gui))
 	{
 		free(gui);
@@ -82,6 +89,7 @@ t_gui	*gui_init(t_scene *scene, t_bvh *bvh, void *mlx)
 	}
 	init_camera(gui);
 	gui_map_switcher_init(gui);
+	widget_init_default(gui);
 	mlx_hook(gui->win.win, 22, 1L << 17, gui_window_resize, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
 	return (gui);

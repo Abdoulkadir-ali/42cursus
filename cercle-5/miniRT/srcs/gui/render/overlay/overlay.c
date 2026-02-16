@@ -80,18 +80,50 @@ static void	draw_ui_text_footer(t_gui *gui, t_camera_controller *ctrl, int c)
 
 void	draw_ui_text(t_gui *gui, t_camera_controller *ctrl)
 {
-	char	buf[128];
+	char buf[128];
+	int y = 38;
 
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, 38, COL_ACCENT,
-		"miniRT");
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, 62, COL_TEXT,
-		"WASD  Move   SPACE/SHIFT  Up/Down");
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, 82, COL_TEXT,
-		"LMB   Look   MMB          Zoom");
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, 102, COL_TEXT,
-		"+/-   Speed  N            Next map");
+	mlx_string_put(gui->win.mlx, gui->win.win, 32, y, COL_ACCENT, "miniRT");
+	y += 24;
+	mlx_string_put(gui->win.mlx, gui->win.win, 32, y, COL_TEXT, "WASD  Move   SPACE/SHIFT  Up/Down");
+	y += 20;
+	mlx_string_put(gui->win.mlx, gui->win.win, 32, y, COL_TEXT, "LMB   Look   MMB          Zoom");
+	y += 20;
+	mlx_string_put(gui->win.mlx, gui->win.win, 32, y, COL_TEXT, "+/-   Speed  N            Next map");
+	y += 20;
+
+	// --- Physics Checkbox ---
+	snprintf(buf, sizeof(buf), "[ %c ] Simulate Physics", gui->physics_enabled ? 'X' : ' ');
+	mlx_string_put(gui->win.mlx, gui->win.win, 32, y, COL_TEXT, buf);
+	y += 20;
+
+	// --- Ambient Light Controls ---
+	snprintf(buf, sizeof(buf), "Ambient Intensity: %.2f", gui->ambient_intensity);
+	mlx_string_put(gui->win.mlx, gui->win.win, 32, y, COL_TEXT, buf);
+	y += 20;
+	snprintf(buf, sizeof(buf), "Ambient Color: #%06X", gui->ambient_color & 0xFFFFFF);
+	mlx_string_put(gui->win.mlx, gui->win.win, 32, y, COL_TEXT, buf);
+	y += 20;
+
+	// --- Object Info Widget ---
+	// For demonstration, show info for first mesh if available
+	if (gui->scene && gui->scene->mesh_count > 0) {
+		t_mesh *mesh = &gui->scene->meshes[0];
+		snprintf(buf, sizeof(buf), "Object: %s", mesh->name ? mesh->name : "(unnamed)");
+		mlx_string_put(gui->win.mlx, gui->win.win, 350, 38, COL_ACCENT, buf);
+		snprintf(buf, sizeof(buf), "Material: %d", mesh->mat_id);
+		mlx_string_put(gui->win.mlx, gui->win.win, 350, 58, COL_TEXT, buf);
+		snprintf(buf, sizeof(buf), "Vertices: %d", mesh->vertex_count);
+		mlx_string_put(gui->win.mlx, gui->win.win, 350, 78, COL_TEXT, buf);
+		snprintf(buf, sizeof(buf), "Transform: Pos(%.2f,%.2f,%.2f)",
+			mesh->transform.pos.x, mesh->transform.pos.y, mesh->transform.pos.z);
+		mlx_string_put(gui->win.mlx, gui->win.win, 350, 98, COL_TEXT, buf);
+	}
+
 	draw_ui_text_footer(gui, ctrl, COL_TEXT);
 	snprintf(buf, sizeof(buf), "%.0f FPS", gui->render.fps);
-	mlx_string_put(gui->win.mlx, gui->win.win, gui->win.disp_w - 108, 40,
-		COL_FPS, buf);
+	mlx_string_put(gui->win.mlx, gui->win.win, gui->win.disp_w - 108, 40, COL_FPS, buf);
+
+	// Draw all widgets
+	widget_draw_all(gui);
 }
