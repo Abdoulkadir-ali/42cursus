@@ -34,6 +34,9 @@ bool	dynarray_ensure(void **array, size_t count,
 			"Error: Memory allocation failed in dynarray_ensure\n");
 		return (false);
 	}
+	/* Zero out the new portion of the array */
+	ft_memset((char *)new_ptr + (*cap * elem_size), 0,
+		(new_cap - *cap) * elem_size);
 	*array = new_ptr;
 	*cap = new_cap;
 	return (true);

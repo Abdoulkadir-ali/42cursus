@@ -34,7 +34,7 @@ void	glb_extract_data(t_extract_ctx ctx)
 	}
 }
 
-void	glb_handle_indices_short(t_mesh *mesh, char *json, char *bin, int idx)
+void	glb_handle_indices_short(t_mesh *mesh, t_json_value *json, char *bin, int idx)
 {
 	t_accessor		acc;
 	t_buffer_view	bv;

@@ -27,16 +27,20 @@ char	*mtl_resolve_path(const char *mtl_path, const char *tex_filename)
 
 void	mtl_trim_line_end(char *p)
 {
-	char	*end;
+	int	len;
 
-	end = p;
-	while (*end && *end != '\n' && *end != '\r')
-		end++;
-	*end = 0;
+	len = (int)ft_strlen(p);
+	while (len > 0 && ft_isspace(p[len - 1]))
+	{
+		p[len - 1] = 0;
+		len--;
+	}
 }
 
 char	*mtl_skip_ws(char *p)
 {
+	if (!p)
+		return (NULL);
 	while (*p && (*p == ' ' || *p == '\t'))
 		p++;
 	return (p);

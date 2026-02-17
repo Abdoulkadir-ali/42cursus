@@ -65,6 +65,14 @@ int	scene_add_material(t_scene *scene, t_vec3 color)
 		scene->materials[scene->mat_count].specular = 0.8;
 		scene->materials[scene->mat_count].shininess = 64.0;
 	}
+	else if (color.x == 200 && color.y == 160 && color.z == 255) /* Lavender = Glass */
+	{
+		scene->materials[scene->mat_count].refract_index = 1.5;
+		scene->materials[scene->mat_count].transparency = 0.7;
+		scene->materials[scene->mat_count].reflectivity = 0.2;
+		scene->materials[scene->mat_count].specular = 0.9;
+		scene->materials[scene->mat_count].shininess = 128.0;
+	}
 
 	return (scene->mat_count++);
 }

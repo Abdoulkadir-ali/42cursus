@@ -61,6 +61,11 @@ struct				s_scene
 	int				light_count;
 	int				light_cap;
 
+	/* Animation Clips */
+	t_animation		*clips;
+	int				clip_count;
+	int				clip_cap;
+
 	/* The Accelerator */
 	struct s_bvh	*bvh;
 };

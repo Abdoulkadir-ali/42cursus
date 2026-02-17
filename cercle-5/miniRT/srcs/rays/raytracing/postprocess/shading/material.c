@@ -21,19 +21,26 @@ void	get_material(t_shading_ctx *ctx)
 	int		mat_id;
 
 	h = ctx->hit;
-	if (h->ref.type == TYPE_SPHERE)
+	mat_id = 0;
+	if (h->ref.type == TYPE_SPHERE && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->sphere_count)
 		mat_id = ctx->scene->spheres[h->ref.index].mat_id;
-	else if (h->ref.type == TYPE_PLANE)
+	else if (h->ref.type == TYPE_PLANE && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->plane_count)
 		mat_id = ctx->scene->planes[h->ref.index].mat_id;
-	else if (h->ref.type == TYPE_CYLINDER)
+	else if (h->ref.type == TYPE_CYLINDER && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->cylinder_count)
 		mat_id = ctx->scene->cylinders[h->ref.index].mat_id;
-	else if (h->ref.type == TYPE_CONE)
+	else if (h->ref.type == TYPE_CONE && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->cone_count)
 		mat_id = ctx->scene->cones[h->ref.index].mat_id;
-	else if (h->ref.type == TYPE_MESH)
+	else if (h->ref.type == TYPE_MESH && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->mesh_count)
 		mat_id = ctx->scene->meshes[h->ref.index].mat_id;
-	else if (h->ref.type == TYPE_ANIM)
+	else if (h->ref.type == TYPE_ANIM && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->anim_count)
 		mat_id = ctx->scene->animated[h->ref.index].base.mat_id;
-	else
+	if (mat_id < 0 || mat_id >= ctx->scene->mat_count)
 		mat_id = 0;
 	ctx->mat = ctx->scene->materials[mat_id];
 }
@@ -47,7 +54,7 @@ void	apply_bump(t_shading_ctx *ctx)
 	t_vec3	m_n;
 	t_vec3	n_n;
 
-	if (ctx->mat.bump_map.type == TEX_SOLID || !ctx->mat.bump_map.img)
+	if (ctx->mat.bump_map.type == TEX_SOLID || !ctx->mat.bump_map.addr)
 		return ;
 	s = sample_texture(&ctx->mat.bump_map, ctx->hit->u, ctx->hit->v);
 	m_n.x = (s.x / 255.0) * 2.0 - 1.0;

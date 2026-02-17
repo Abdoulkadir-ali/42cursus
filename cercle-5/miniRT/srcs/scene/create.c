@@ -97,6 +97,6 @@ t_scene	*create_scene(const char *name)
 	}
 	s->ambient.brightness = 0;
 	s->ambient.rgb = vec3(0, 0, 0);
-	scene_add_material(s, vec3(255, 0, 255));
+	scene_add_material(s, vec3(200, 160, 255));
 	return (s);
 }

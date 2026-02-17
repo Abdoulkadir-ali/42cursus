@@ -36,6 +36,8 @@ void	obj_parse_mtllib(t_obj_ctx *ctx, t_parser *p, t_scene *scene,
 		full = ft_strdup(name);
 	if (dir)
 		free(dir);
+	if (ctx->first_mtl_id == -1)
+		ctx->first_mtl_id = scene->mat_count;
 	parse_mtl(scene, full);
 	free(full);
 }

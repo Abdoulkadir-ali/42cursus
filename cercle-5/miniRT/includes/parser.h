@@ -41,8 +41,68 @@ int		parse_int(t_parser *p);
 double	parse_double(t_parser *p);
 bool	parse_vec3(t_parser *p, t_vec3 *out);
 
-/* JSON Minimal (S7) */
-char	*json_find_key(char *json, const char *key);
-int		json_get_int(char *json, const char *key);
+/* JSON Parser (Robust) */
+typedef enum e_json_type
+{
+	JSON_NULL,
+	JSON_BOOL,
+	JSON_NUMBER,
+	JSON_STRING,
+	JSON_ARRAY,
+	JSON_OBJECT
+}	t_json_type;
+
+typedef struct s_json_value t_json_value;
+
+typedef struct s_json_member
+{
+	char			*key;
+	t_json_value	*value;
+}	t_json_member;
+
+typedef struct s_json_hash_entry
+{
+	char						*key;
+	t_json_value				*value;
+	struct s_json_hash_entry	*next;
+}	t_json_hash_entry;
+
+typedef struct s_json_object
+{
+	t_json_member		**members;
+	t_json_hash_entry	**hashmap;
+	size_t				count;
+	size_t				hash_size;
+}	t_json_object;
+
+typedef struct s_json_array
+{
+	t_json_value	**elements;
+	size_t			count;
+}	t_json_array;
+
+struct s_json_value
+{
+	t_json_type	type;
+	union
+	{
+		bool			boolean;
+		double			number;
+		char			*string;
+		t_json_array	array;
+		t_json_object	object;
+	}	u;
+};
+
+t_json_value	*json_parse(const char *json_str);
+void			json_free(t_json_value *value);
+
+/* JSON Query Helpers */
+t_json_value	*json_get(t_json_value *value, const char *key);
+t_json_value	*json_at(t_json_value *value, size_t index);
+const char		*json_as_string(t_json_value *value);
+double			json_as_number(t_json_value *value);
+bool			json_as_bool(t_json_value *value);
+int				json_get_int(t_json_value *obj, const char *key);
 
 #endif

@@ -50,6 +50,8 @@ typedef struct s_material
 	char		*name; /* Added for MTL parsing. */
 	t_texture	albedo_map; /* Replaces t_vec3 albedo. */
 	t_texture	bump_map; /* Optional bump texture. */
+	t_texture	roughness_map; /* Added for PBR. */
+	t_texture	metallic_map; /* Added for PBR. */
 	double		specular;
 	double		shininess;
 	double		metallic;
@@ -83,6 +85,7 @@ int					scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 void	convert_rgba_to_bgra(unsigned char *data, int size);
 void	init_texture_props(t_texture *tex, int w, int h, char *data);
 bool	load_texture_xpm(t_scene *scene, t_texture *tex, const char *path);
+bool	load_texture_from_memory(t_texture *tex, unsigned char *buffer, int size);
 bool	load_texture(t_scene *scene, t_texture *tex, const char *path);
 t_vec3	sample_texture(t_texture *tex, double u, double v);
 

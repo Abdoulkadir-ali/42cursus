@@ -16,6 +16,7 @@ static void	init_ctx(t_obj_ctx *ctx)
 {
 	ft_memset(ctx, 0, sizeof(t_obj_ctx));
 	ctx->current_mat_id = -1;
+	ctx->first_mtl_id = -1;
 	ctx->bbox = aabb_create_empty();
 }
 

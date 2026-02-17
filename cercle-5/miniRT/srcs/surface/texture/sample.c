@@ -74,7 +74,7 @@ t_vec3	sample_texture(t_texture *tex, double u, double v)
 		return (tex->color_a);
 	if (tex->type == TEX_CHECKER)
 		return (sample_checker(tex, u, v));
-	if (tex->type == TEX_BITMAP && tex->img)
+	if (tex->type == TEX_BITMAP && tex->addr)
 		return (sample_bitmap(tex, u, v));
 	return (vec3(255, 0, 255));
 }

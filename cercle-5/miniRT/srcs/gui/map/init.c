@@ -12,10 +12,6 @@
 
 #include "gui.h"
 
-int		count_maps(void);
-void	fill_map_list(t_gui *gui);
-void	set_current_index(t_gui *gui);
-
 void	gui_map_switcher_init(t_gui *gui)
 {
 	int	count;

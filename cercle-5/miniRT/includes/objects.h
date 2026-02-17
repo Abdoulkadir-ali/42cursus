@@ -18,6 +18,8 @@
 # include "surface.h"
 # include "physics.h"
 
+typedef struct s_json_value	t_json_value;
+
 /* ------------------------------------------------------------------------- */
 /*                             LEAF STRUCTURES                               */
 /* ------------------------------------------------------------------------- */
@@ -117,6 +119,30 @@ typedef struct s_mbvh_ctx
 	int					node_count;
 }						t_mbvh_ctx;
 
+typedef struct s_bone_weight
+{
+	int					bone_ids[4];
+	double				weights[4];
+}						t_bone_weight;
+
+typedef struct s_transform_q
+{
+	t_vec3				pos;
+	t_vec3				rot; /* Quaternion */
+	t_vec3				scale;
+}						t_transform_q;
+
+typedef struct s_bone
+{
+	char				*name;
+	int					node_idx;
+	int					parent;
+	t_mat4				local_transform;
+	t_mat4				bind_pose;
+	t_mat4				inv_bind_pose;
+	t_transform_q		trs;
+}						t_bone;
+
 struct					s_mesh
 {
 	char				*name;
@@ -132,10 +158,59 @@ struct					s_mesh
 	int					*bvh_indices;
 	t_tri_precomp		*tri_cache;
 	int					mat_id;
+	t_bone_weight		*skin_data;
+	t_bone				*skeleton;
+	int					bone_count;
+	t_mat4				*bone_matrices;
+	t_vec3				*base_vertices;
+	t_vec3				*base_normals;
 	/* Physics */
 	t_physics_body		phys;
+	int					current_anim;
+	double				anim_time;
 	t_collider			collider;
 };
+
+typedef enum e_interpolation
+{
+	INTERP_LINEAR,
+	INTERP_STEP,
+	INTERP_CUBIC
+}						t_interpolation;
+
+typedef struct s_anim_sampler
+{
+	float				*inputs;
+	float				*outputs;
+	int					count;
+	t_interpolation		method;
+}						t_anim_sampler;
+
+typedef enum e_anim_path
+{
+	PATH_TRANSLATION,
+	PATH_ROTATION,
+	PATH_SCALE,
+	PATH_WEIGHTS
+}						t_anim_path;
+
+typedef struct s_anim_channel
+{
+	int					node_idx;
+	t_anim_path			path;
+	int					sampler_idx;
+}						t_anim_channel;
+
+typedef struct s_animation
+{
+	char				*name;
+	t_anim_channel		*channels;
+	int					channel_count;
+	t_anim_sampler		*samplers;
+	int					sampler_count;
+	double				max_time;
+	double				current_time;
+}						t_animation;
 
 typedef struct s_mesh_init
 {
@@ -149,21 +224,6 @@ void					mesh_apply_transform(t_mesh *mesh,
 							t_transform transform);
 bool					mesh_init(t_mesh *mesh, t_mesh_init init);
 void					mesh_free(t_mesh *mesh);
-
-struct					s_bone_weight
-{
-	int					bone_ids[4];
-	double				weights[4];
-};
-
-struct					s_bone
-{
-	char				*name;
-	int					parent;
-	t_mat4				local_transform;
-	t_mat4				bind_pose;
-	t_mat4				inv_bind_pose;
-};
 
 typedef struct s_glb_header
 {
@@ -281,6 +341,7 @@ typedef struct s_obj_ctx
 	size_t				out_i_count;
 	size_t				out_i_cap;
 	int					current_mat_id;
+	int					first_mtl_id;
 	t_aabb				bbox;
 }						t_obj_ctx;
 
@@ -601,17 +662,24 @@ void					fdf_triangulate(t_mesh *mesh, int w, int h);
 bool					fdf_init_mesh(t_mesh *mesh, int v_count, int i_count,
 							const char *p);
 
-void					glb_parse_accessor(char *json, int index,
+void					glb_parse_accessor(t_json_value *json, int index,
 							t_accessor *acc);
-void					glb_parse_buffer_view(char *json, int index,
+void					glb_parse_buffer_view(t_json_value *json, int index,
 							t_buffer_view *bv);
 void					glb_extract_data(t_extract_ctx ctx);
-void					glb_handle_indices_short(t_mesh *mesh, char *json,
+void					glb_handle_indices_short(t_mesh *mesh, t_json_value *json,
 							char *bin, int idx);
-void					glb_fill_attributes(t_mesh *mesh, char *json, char *bin,
-							int ids[4]);
-bool					glb_load_mesh_data(t_mesh *mesh, char *json, char *bin);
+void					glb_fill_attributes(t_mesh *mesh, t_json_value *json, char *bin,
+							int ids[6]);
+bool					glb_load_primitive(t_mesh *mesh, t_json_value *json, char *bin,
+							int mesh_idx, int prim_idx, int mat_id);
+int						*glb_load_materials(t_scene *scene, t_json_value *json,
+							char *bin);
 bool					glb_read_buffers(int fd, char *buf[2]);
+void					glb_load_skeleton(t_mesh *mesh, t_json_value *json,
+							char *bin);
+void					glb_load_animations(t_scene *scene, t_json_value *json,
+							char *bin);
 
 /* Parsing Helpers */
 bool					validate_file(const char *path);
@@ -767,6 +835,10 @@ void					bvh_sweep_left(t_bin *bins, double *left_area,
 void					bvh_sweep_right(t_bvh_sah *s, int axis);
 void					bvh_eval_axis(t_bvh_eval_ctx *e);
 bool					bvh_find_split(t_bvh_find_ctx *f);
+
+/* srcs/objects/glb/anim_system.c */
+void					glb_update_mesh_anim(t_mesh *mesh, t_scene *scene,
+							double dt);
 
 /* 4. IMPLEMENTATION IMPORTS */
 # include "debug.h"

@@ -69,6 +69,8 @@ static int	run_app(const char *path)
 	t_gui	*gui;
 	void	*mlx;
 
+	printf("RUN_APP_START: path='%s'\n", path);
+	fflush(stdout);
 	ft_print_debug("DEBUG: Starting miniRT with map: %s\n", path);
 	mlx = mlx_init();
 	if (!mlx)
@@ -90,6 +92,8 @@ int	main(int ac, char **av)
 {
 	const char	*path;
 
+	printf("--- MINIRT STARTUP (VER: 2026.02.17.0503) ---\n");
+	fflush(stdout);
 	setlocale(LC_NUMERIC, "C");
 	path = "maps/rt/test2.rt";
 	if (ac > 1)

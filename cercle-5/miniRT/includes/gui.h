@@ -286,6 +286,12 @@ void					speed_down_press(t_gui *gui);
 void					map_next_press(t_gui *gui);
 void					exit_press(t_gui *gui);
 
+
+int		count_maps(void);
+void	fill_map_list(t_gui *gui);
+void	set_current_index(t_gui *gui);
+
+
 /* 5. IMPLEMENTATION IMPORTS */
 # include "raytracing.h"
 # include "scene.h"

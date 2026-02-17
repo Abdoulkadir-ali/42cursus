@@ -46,6 +46,20 @@ static int	render_loop(void *param)
 		delta = 0.016; // default to ~60 FPS
 	gui->render.last_time = current_time;
 
+	// --- ANIMATION UPDATE ---
+	if (gui->scene && gui->scene->clip_count > 0)
+	{
+		for (int i = 0; i < gui->scene->mesh_count; i++)
+		{
+			t_mesh *mesh = &gui->scene->meshes[i];
+			if (mesh->skeleton)
+			{
+				glb_update_mesh_anim(mesh, gui->scene, delta);
+				gui->render.dirty = true;
+			}
+		}
+	}
+
 
 	// --- PHYSICS UPDATE (fixed-timestep accumulator) ---
 	if (gui->scene && gui->physics_enabled)

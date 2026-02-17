@@ -67,10 +67,15 @@ size_t	collect_objects(t_scene *scene, t_build_item *items)
 	size_t	k;
 
 	k = 0;
+	ft_print_debug("BVH Collect: spheres=%d, planes=%d, cylinders=%d, cones=%d, meshes=%d, anim=%d\n",
+		scene->sphere_count, scene->plane_count, scene->cylinder_count,
+		scene->cone_count, scene->mesh_count, scene->anim_count);
 	add_items(items, &k, TYPE_SPHERE, scene);
 	/* Planes are handled globally, not in BVH to avoid infinite bbox issues */
 	/* add_items(items, &k, TYPE_PLANE, scene); */
 	add_items(items, &k, TYPE_CYLINDER, scene);
 	add_items(items, &k, TYPE_CONE, scene);
-	return (collect_complex(scene, items, k));
+	k = collect_complex(scene, items, k);
+	ft_print_debug("BVH Collect Finished: total items=%zu\n", k);
+	return (k);
 }

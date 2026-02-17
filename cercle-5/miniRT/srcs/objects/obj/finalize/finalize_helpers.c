@@ -38,4 +38,6 @@ void	obj_set_mat_id(t_mesh *mesh, t_obj_ctx *ctx)
 	mesh->mat_id = 0;
 	if (ctx->current_mat_id >= 0)
 		mesh->mat_id = ctx->current_mat_id;
+	else if (ctx->first_mtl_id >= 0)
+		mesh->mat_id = ctx->first_mtl_id;
 }

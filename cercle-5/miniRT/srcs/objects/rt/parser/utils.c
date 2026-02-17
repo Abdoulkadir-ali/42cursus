@@ -39,24 +39,41 @@ static void	setup_default_scene(t_scene *scene)
 	light.transform.pos = vec3(0, 60, -20);
 	scene_add_light(scene, light);
 	ft_memset(&plane, 0, sizeof(t_plane));
-	plane.transform.pos = vec3(0, 0, 0);
+	plane.transform.pos = vec3(0, -1000, -1000);
 	plane.transform.forward = vec3(0, 1, 0);
 	plane.temp_color = vec3(150, 150, 150);
 	scene_add_plane(scene, plane);
 }
 
-static void	autoframe_camera(t_scene *scene)
+static void	align_and_frame_meshes(t_scene *scene, int start_idx)
 {
-	t_mesh	*mesh;
+	t_vec3	min_pt;
+	t_vec3	max_pt;
 	t_vec3	center;
-	double	size;
 	t_vec3	fwd;
+	double	size;
+	int		i;
+	double	offset_y;
 
-	if (scene->mesh_count <= 0)
+	if (start_idx >= scene->mesh_count)
 		return ;
-	mesh = &scene->meshes[scene->mesh_count - 1];
-	center = vec3_scale(vec3_add(mesh->bbox.min, mesh->bbox.max), 0.5);
-	size = vec3_mag(vec3_sub(mesh->bbox.max, mesh->bbox.min));
+	min_pt = vec3(INFINITY, INFINITY, INFINITY);
+	max_pt = vec3(-INFINITY, -INFINITY, -INFINITY);
+	i = start_idx - 1;
+	while (++i < scene->mesh_count)
+	{
+		min_pt = vec3_min(min_pt, scene->meshes[i].bbox.min);
+		max_pt = vec3_max(max_pt, scene->meshes[i].bbox.max);
+	}
+	offset_y = 0.0;
+	if (min_pt.y < 0)
+		offset_y = -min_pt.y;
+	i = start_idx - 1;
+	while (++i < scene->mesh_count)
+		scene->meshes[i].transform.pos.y += offset_y;
+	center = vec3_scale(vec3_add(min_pt, max_pt), 0.5);
+	center.y += offset_y;
+	size = vec3_mag(vec3_sub(max_pt, min_pt));
 	if (size < 1e-6)
 		size = 10.0;
 	scene->camera.transform.pos = vec3_add(center, vec3(0, size * 0.3, size
@@ -73,7 +90,9 @@ static void	autoframe_camera(t_scene *scene)
 static bool	parse_by_ext(const char *ext, const char *path, t_scene *scene)
 {
 	bool	ok;
+	int		start_idx;
 
+	start_idx = scene->mesh_count;
 	if (is_mesh_ext(ext))
 		setup_default_scene(scene);
 	if (ft_strcmp(ext, "rt") == 0)
@@ -92,7 +111,7 @@ static bool	parse_by_ext(const char *ext, const char *path, t_scene *scene)
 		return (false);
 	}
 	if (ok)
-		autoframe_camera(scene);
+		align_and_frame_meshes(scene, start_idx);
 	return (ok);
 }
 
@@ -116,6 +135,8 @@ t_scene	*parse_file(const char *path, void *mlx)
 	const char	*ext;
 	bool		success;
 
+	printf("PARSING_FILE: %s\n", path);
+	fflush(stdout);
 	ext = rt_get_extension(path);
 	if (!validate_file(path))
 	{

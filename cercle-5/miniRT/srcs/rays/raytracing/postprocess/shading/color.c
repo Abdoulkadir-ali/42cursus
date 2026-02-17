@@ -63,6 +63,10 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
 	ctx.ray = ray;
 	get_material(&ctx);
 	ctx.albedo = sample_texture(&ctx.mat.albedo_map, hit->u, hit->v);
+	if (ctx.mat.roughness_map.type == TEX_BITMAP)
+		ctx.mat.roughness = sample_texture(&ctx.mat.roughness_map, hit->u, hit->v).x / 255.0;
+	if (ctx.mat.metallic_map.type == TEX_BITMAP)
+		ctx.mat.metallic = sample_texture(&ctx.mat.metallic_map, hit->u, hit->v).x / 255.0;
 	apply_bump(&ctx);
 	
 	/* 1. Local Illumination (Ambient + Diffuse/Spec) */

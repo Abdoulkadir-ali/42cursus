@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include <math.h>
 
 static int	parse_sign(t_parser *p)
 {
@@ -66,6 +67,28 @@ static double	parse_fraction_part(t_parser *p)
 	return (result);
 }
 
+static double	parse_exponent_part(t_parser *p)
+{
+	double	exponent;
+	int		sign;
+	char	c;
+
+	c = parser_peek(p);
+	if (c != 'e' && c != 'E')
+		return (1.0);
+	parser_advance(p);
+	sign = 1;
+	c = parser_peek(p);
+	if (c == '-' || c == '+')
+	{
+		if (c == '-')
+			sign = -1;
+		parser_advance(p);
+	}
+	exponent = parse_integer_part(p);
+	return (pow(10.0, exponent * sign));
+}
+
 double	parse_double(t_parser *p)
 {
 	double	result;
@@ -75,5 +98,6 @@ double	parse_double(t_parser *p)
 	sign = parse_sign(p);
 	result = parse_integer_part(p);
 	result += parse_fraction_part(p);
+	result *= parse_exponent_part(p);
 	return (result * sign);
 }

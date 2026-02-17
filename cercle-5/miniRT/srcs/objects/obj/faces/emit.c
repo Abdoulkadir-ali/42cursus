@@ -19,6 +19,11 @@ void	obj_face_emit_tris(t_obj_ctx *ctx, t_obj_face *face)
 	i = 1;
 	while (i < face->count - 1)
 	{
+		if (face->vi[0] == 0 || face->vi[i] == 0 || face->vi[i + 1] == 0)
+		{
+			i++;
+			continue ;
+		}
 		obj_add_vert(ctx, face->vi[0], face->vti[0], face->vni[0]);
 		obj_add_vert(ctx, face->vi[i], face->vti[i], face->vni[i]);
 		obj_add_vert(ctx, face->vi[i + 1], face->vti[i + 1], face->vni[i + 1]);

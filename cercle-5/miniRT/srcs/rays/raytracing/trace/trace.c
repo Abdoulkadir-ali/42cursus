@@ -71,6 +71,8 @@ t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *scene)
 	int		i;
 
 	hit.t = 1e30;
+	hit.ref.type = TYPE_NONE;
+	hit.ref.index = -1;
 	hit_any = bvh_intersect(bvh, ray, &hit);
 	if (!hit_any)
 		hit.t = 1e30;
@@ -86,6 +88,8 @@ t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *scene)
 				if (temp_hit.t < hit.t)
 				{
 					hit = temp_hit;
+					hit.ref.type = TYPE_PLANE;
+					hit.ref.index = i;
 					hit_any = true;
 				}
 			}

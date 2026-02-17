@@ -14,6 +14,8 @@
 
 int	obj_fix_index(int idx, int count)
 {
+	if (idx == 0)
+		return (-1);
 	if (idx < 0)
 		return (count + idx);
 	return (idx - 1);
@@ -23,6 +25,8 @@ void	obj_set_out_vertex(t_obj_ctx *ctx, int vi, int vti, int vni)
 {
 	if (vi >= 0 && vi < (int)ctx->v_count)
 		ctx->out_v[ctx->out_v_count] = ctx->temp_v[vi];
+	else
+		ctx->out_v[ctx->out_v_count] = (t_vec3){0, 0, 0, 1.0};
 	if (vti >= 0 && vti < (int)ctx->vt_count)
 		ctx->out_vt[ctx->out_v_count] = ctx->temp_vt[vti];
 	else

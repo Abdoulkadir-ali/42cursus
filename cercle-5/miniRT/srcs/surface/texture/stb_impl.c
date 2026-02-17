@@ -18,9 +18,6 @@
 #pragma GCC diagnostic ignored "-Wtype-limits"
 
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_ONLY_JPEG
-#define STBI_ONLY_PNG
-#define STBI_ONLY_BMP
 #include "../../packages/stb_image.h"
 
 #pragma GCC diagnostic pop

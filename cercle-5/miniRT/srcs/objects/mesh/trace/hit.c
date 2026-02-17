@@ -40,9 +40,16 @@ static void	set_hit_normal(t_hit_calc *c)
 		c->in->hit->normal = vec3_scale(c->in->hit->normal, -1.0);
 }
 
+static t_vec3	get_face_normal(t_hit_calc *c)
+{
+	return (vec3_norm(vec3_cross(vec3_sub(c->v[1], c->v[0]),
+				vec3_sub(c->v[2], c->v[0]))));
+}
+
 static void	set_hit_uv(t_hit_calc *c)
 {
 	t_vec2	uvs[3];
+	t_vec3	raw_n;
 
 	uvs[0] = c->in->mesh->uvs[c->idx[0]];
 	uvs[1] = c->in->mesh->uvs[c->idx[1]];
@@ -51,6 +58,12 @@ static void	set_hit_uv(t_hit_calc *c)
 		* c->in->bary.x + uvs[2].x * c->in->bary.y;
 	c->in->hit->v = uvs[0].y * (1.0 - c->in->bary.x - c->in->bary.y) + uvs[1].y
 		* c->in->bary.x + uvs[2].y * c->in->bary.y;
+	if (c->in->mesh->normals)
+		raw_n = c->in->mesh->normals[c->idx[0]];
+	else
+		raw_n = get_face_normal(c);
+	if (vec3_dot(c->in->ray->direction, raw_n) > 0)
+		c->in->hit->u = 1.0 - c->in->hit->u;
 }
 
 static void	set_hit_tangent(t_hit_calc *c)
