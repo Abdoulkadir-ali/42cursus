@@ -39,7 +39,7 @@ static void	setup_default_scene(t_scene *scene)
 	light.transform.pos = vec3(0, 60, -20);
 	scene_add_light(scene, light);
 	ft_memset(&plane, 0, sizeof(t_plane));
-	plane.transform.pos = vec3(0, -1000, -1000);
+	plane.transform.pos = vec3(0, 0, 0);
 	plane.transform.forward = vec3(0, 1, 0);
 	plane.temp_color = vec3(150, 150, 150);
 	scene_add_plane(scene, plane);
