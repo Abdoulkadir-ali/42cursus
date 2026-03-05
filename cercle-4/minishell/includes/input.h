@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:14:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:15:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,7 @@ char		*append_line(char *line, char *new_line, char code);
 char		*get_prompt(int is_initial);
 char		*read_input(char *prompt, t_shell_state *state);
 char		*read_raw_input(char *prompt, t_shell_state *state);
-char		*handle_parenthesis(char *line, char *trimmed,
-				t_shell_state *state);
 char		*handle_multiline_input(char *line, t_shell_state *state);
-char		*read_function_body(char *line, size_t n, t_shell_state *state);
-
 
 /* Extender (srcs/input/reader/extender.c and extenders/) */
 t_op_def	*get_ops(void);
@@ -83,9 +79,9 @@ t_op_def	*ext_get_op_def(t_op_def *ops, char code);
 char		ext_analyze_input(char *line);
 
 /* Extender helpers (srcs/input/reader/extenders/) */
-int		handle_escape(char *line, char *p);
+int			handle_escape(char *line, char *p);
 char		check_quote_state(const char *s);
-int		check_parenthesis_state(const char *s);
+int			check_parenthesis_state(const char *s);
 char		check_trailing_op(char *line, t_op_def *ops);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 23:27:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:14:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,17 @@ static void	handle_dotdot(char **stack, int *j)
 	}
 }
 
-static int	add_component(char **stack, int *j, const char *comp)
+static int	add_component(char **stack, int *j, const char *comp, int max)
 {
 	if (ft_strcmp(comp, ".") == 0)
-	{
 		return (0);
-	}
 	if (ft_strcmp(comp, "..") == 0)
 	{
 		handle_dotdot(stack, j);
 		return (0);
 	}
+	if (*j >= max - 1)
+		return (-1);
 	stack[(*j)++] = ft_strdup(comp);
 	return (1);
 }
@@ -66,7 +66,11 @@ static void	process_components(const char *base, char **stack, int *count)
 	comp = extract_next_component(base, &pos);
 	while (comp)
 	{
-		add_component(stack, count, comp);
+		if (add_component(stack, count, comp, CD_MAX_COMPONENTS) < 0)
+		{
+			free(comp);
+			break ;
+		}
 		free(comp);
 		comp = extract_next_component(base, &pos);
 	}
@@ -76,7 +80,7 @@ char	**collect_components(const char *base, int *count)
 {
 	char	**stack;
 
-	stack = malloc(sizeof(char *) * 1024);
+	stack = malloc(sizeof(char *) * CD_MAX_COMPONENTS);
 	if (!stack)
 	{
 		*count = 0;

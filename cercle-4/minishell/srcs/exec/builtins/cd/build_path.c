@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 04:28:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:24:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ static size_t	calc_len(char **stack, int count, int leading_slashes)
 	size_t	len;
 	int		i;
 
-	len = 0;
-	if (leading_slashes > 0)
-		len += (leading_slashes == 2) ? 2 : 1;
 	i = 0;
+	len = 0;
+	while (leading_slashes-- > 0)
+		len++;
 	while (i < count)
 	{
 		len += ft_strlen(stack[i]);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:18:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:25:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,7 @@ static char	*expand_here_word(char *word, t_shell_state *state, int quoted)
 
 	use_word = word;
 	if (!quoted)
-	{
-		use_word = expand_heredoc(word, state->envp, state->exit_code);
-		if (!use_word)
-			use_word = word;
-	}
+		return (expand_delim(word, quoted, state));
 	return (use_word);
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:07:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:14:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 // CUSTOM
 # include "state.h"
 # include "parsing.h"
+
+# define CD_MAX_COMPONENTS	1024
 
 typedef struct s_export_ctx
 {

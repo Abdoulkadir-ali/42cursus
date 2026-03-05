@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:17:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:24:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,13 @@ static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
 	char	*filename;
 	int		fd;
 	char	*value;
-	char	*delim;
+	char	*delim;	
 
 	value = tok->value;
 	delim = value;
 	if (!tok->quoted)
 	{
-		delim = expand_heredoc(value, state->envp, state->exit_code);
-		if (!delim)
-			delim = value;
+		delim = expand_delim(value, tok->quoted, state);
 	}
 	filename = generate_tmp_filename(&fd);
 	if (fd != -1)

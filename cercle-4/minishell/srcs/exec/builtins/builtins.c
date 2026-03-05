@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:07:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:07:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,9 @@ static int	builtin_colon(char **args, t_shell_state *state)
 	return (0);
 }
 
-static const t_builtin_def	g_builtins[] = {
-{"echo", ft_echo},
-{"cd", ft_cd},
-{"pwd", ft_pwd},
-{"export", ft_export},
-{"unset", ft_unset},
-{"env", ft_env},
-{"exit", ft_exit},
-{":", builtin_colon},
-{NULL, NULL}
-};
+static const t_builtin_def	g_builtins[] = {{"echo", ft_echo}, {"cd", ft_cd},
+		{"pwd", ft_pwd}, {"export", ft_export}, {"unset", ft_unset}, {"env",
+		ft_env}, {"exit", ft_exit}, {":", builtin_colon}, {NULL, NULL}};
 
 int	is_builtin(char *cmd, char **args, int is_quoted)
 {

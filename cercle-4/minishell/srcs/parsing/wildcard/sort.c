@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 05:01:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:13:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,9 @@ void	sort_list(t_nodes **list)
 {
 	t_nodes	*i;
 	t_nodes	*j;
-	int		attempts;
 
-	attempts = 0;
 	i = *list;
-	while (i && attempts++ < 10000)
+	while (i)
 	{
 		j = i->next;
 		while (j)
