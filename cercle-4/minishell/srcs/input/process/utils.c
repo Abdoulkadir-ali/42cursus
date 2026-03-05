@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 22:41:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 04:12:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ int	is_whitespace_only(char *str)
 int	expand_and_check_error(t_nodes **segment, t_shell_state *state,
 		int *new_exit_code)
 {
-	expand_tokens(segment, state->envp, state->exit_code);
+	if (expand_tokens(segment, state->envp, state->exit_code))
+		state->expansion_error = 1;
 	if (state->expansion_error)
 	{
 		*new_exit_code = state->exit_code;

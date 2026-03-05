@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:15:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int			is_quoted_delim(const char *delim);
 char		*remove_quotes_heredoc(char *str);
 char		*generate_tmp_filename(int *fd_out);
 char		*handle_heredoc_input(char **args, t_shell_state *state);
+char		*expand_delim(const char *delim, int quoted, t_shell_state *state);
 void		read_heredoc_loop(char *delim, int fd, t_shell_state *state);
 char		*prepare_stop_str(char *delim, t_heredoc *ctx);
 char		*heredoc_read_line(void);
@@ -108,9 +109,3 @@ char		*build_path_from_stack(char **stack, int count,
 				int leading_slashes);
 char		*normalize_logical(const char *path, t_shell_state *state);
 #endif
-
-/* srcs/exec/heredoc/heredoc_consume.c */
-void	consume_heredocs(t_nodes *tokens, t_shell_state *state);
-
-/* srcs/exec/heredoc/heredoc_input.c */
-char	*handle_heredoc_input(char **args, t_shell_state *state);

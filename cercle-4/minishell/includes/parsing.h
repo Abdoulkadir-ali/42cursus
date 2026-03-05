@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 04:11:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ typedef struct s_token_expansion
 	t_nodes			*head;
 	t_nodes			*tail;
 	t_nodes			*prev;
+	int				expansion_error;
 }					t_token_expansion;
 
 t_ast				*process_redirections(t_ast *cmd_node, t_nodes *tokens);
@@ -117,7 +118,7 @@ void				add_token_node(t_nodes **head, t_nodes **tail, char *val,
 						int quoted);
 t_nodes				*tokenizer(char *str);
 t_ast				*ast_builder(t_nodes *tokens);
-void				expand_tokens(t_nodes **tokens, char **env, int status);
+int					expand_tokens(t_nodes **tokens, char **env, int status);
 char				*expand_string(char *str, char **env, int status);
 char				*expand_heredoc(char *str, char **env, int status);
 char				*get_env_value(char *var_name, char **envp);

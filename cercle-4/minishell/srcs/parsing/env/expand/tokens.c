@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:01:48 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 04:10:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static void	handle_word_node(t_token_expansion *exp, t_nodes *curr,
 	free(curr);
 }
 
-void	expand_tokens(t_nodes **tokens, char **env, int status)
+int	expand_tokens(t_nodes **tokens, char **env, int status)
 {
 	t_token_expansion	exp;
 	t_nodes				*curr;
@@ -84,4 +84,5 @@ void	expand_tokens(t_nodes **tokens, char **env, int status)
 			exp.prev = exp.tail;
 	}
 	*tokens = exp.head;
+	return (exp.expansion_error);
 }

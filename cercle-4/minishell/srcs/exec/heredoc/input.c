@@ -6,25 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:15:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-void	consume_heredocs(t_nodes *tokens, t_shell_state *state)
-{
-	while (tokens)
-	{
-		process_heredoc(tokens, state);
-		tokens = tokens->next;
-	}
-}
-
 static char	*get_heredoc_delim(char **args, t_shell_state *state, int *quoted)
 {
 	char	*delim;
-	char	*expanded;
 
 	delim = args[0];
 	*quoted = 0;
@@ -32,9 +22,7 @@ static char	*get_heredoc_delim(char **args, t_shell_state *state, int *quoted)
 		*quoted = ft_atoi(args[1]);
 	if (!(*quoted))
 	{
-		expanded = expand_heredoc(delim, state->envp, state->exit_code);
-		if (expanded)
-			return (expanded);
+		return (expand_delim(args[0], *quoted, state));
 	}
 	return (delim);
 }

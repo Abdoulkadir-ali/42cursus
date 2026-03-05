@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 23:46:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,9 @@ char	*get_command_line(t_shell_state *state)
 	if (!line)
 		return (NULL);
 	trimmed = ft_strtrim(line, " \t");
-	{
-		handled = handle_parenthesis(line, trimmed, state);
-		if (handled)
-			return (handled);
-	}
-	return (handle_multiline_input(line, state));
+	handled = handle_parenthesis(line, trimmed, state);
+	free(trimmed);
+	if (handled)
+		return (handled);
+	return (line);
 }
