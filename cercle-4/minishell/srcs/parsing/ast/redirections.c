@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/02/09 04:12:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:07:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,13 @@ static void	apply_redir(t_ast **cmd_node, t_nodes *redir_token_node)
 	t_token	*tok;
 	char	**args;
 	t_ast	*redir_node;
+	t_token	*delim_tok;
 
 	tok = (t_token *)redir_token_node->content;
 	args = ft_calloc(3, sizeof(char *));
 	if (redir_token_node->next)
 	{
-		t_token *delim_tok = (t_token *)redir_token_node->next->content;
+		delim_tok = (t_token *)redir_token_node->next->content;
 		args[0] = ft_strdup(delim_tok->value);
 		if (tok->type == TOKEN_HEREDOC || tok->type == TOKEN_HERESTR)
 			args[1] = ft_itoa(delim_tok->quoted);

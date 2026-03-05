@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_input.c                                    :+:      :+:    :+:   */
+/*   consume.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/26 05:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 23:42:57 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/05 10:20:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/05 22:17:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,45 +65,4 @@ void	consume_heredocs(t_nodes *tokens, t_shell_state *state)
 		process_heredoc(tokens, state);
 		tokens = tokens->next;
 	}
-}
-
-char	*handle_heredoc_input(char **args, t_shell_state *state)
-{
-	char	*filename;
-	int		fd;
-	char	*delim;
-	int		quoted;
-	char	*use_delim;
-
-	delim = args[0];
-	quoted = 0;
-	if (args[1])
-		quoted = ft_atoi(args[1]);
-	use_delim = delim;
-	if (!quoted)
-	{
-		use_delim = expand_heredoc(delim, state->envp, state->exit_code);
-		if (!use_delim)
-			use_delim = delim;
-	}
-	filename = generate_tmp_filename(&fd);
-	if (fd == -1)
-	{
-		perror("heredoc tmp");
-		free(filename);
-		if (!quoted && use_delim != delim)
-			free(use_delim);
-		return (NULL);
-	}
-	read_heredoc_loop(use_delim, fd, state);
-	close(fd);
-	if (!quoted && use_delim != delim)
-		free(use_delim);
-	if (g_last_signal == 130)
-	{
-		unlink(filename);
-		free(filename);
-		return (NULL);
-	}
-	return (filename);
 }

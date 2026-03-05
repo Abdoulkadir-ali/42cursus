@@ -1,16 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc.c                                          :+:      :+:    :+:   */
+/*   scan.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 04:12:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:18:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+static int	create_tmp_file(int *fd, char **tmp_file)
+{
+	*tmp_file = generate_tmp_filename(fd);
+	if (*fd == -1 || !*tmp_file)
+	{
+		free(*tmp_file);
+		return (1);
+	}
+	return (0);
+}
+
+static char	*expand_here_word(char *word, t_shell_state *state, int quoted)
+{
+	char	*use_word;
+
+	use_word = word;
+	if (!quoted)
+	{
+		use_word = expand_heredoc(word, state->envp, state->exit_code);
+		if (!use_word)
+			use_word = word;
+	}
+	return (use_word);
+}
+
+static void	write_here_word(int fd, char *use_word)
+{
+	write(fd, use_word, ft_strlen(use_word));
+	write(fd, "\n", 1);
+}
 
 static int	handle_herestr(t_ast *node, t_shell_state *state)
 {
@@ -20,27 +51,16 @@ static int	handle_herestr(t_ast *node, t_shell_state *state)
 	int		quoted;
 	char	*use_word;
 
-	tmp_file = generate_tmp_filename(&fd);
-	if (fd == -1 || !tmp_file)
-	{
-		free(tmp_file);
+	if (create_tmp_file(&fd, &tmp_file))
 		return (1);
-	}
 	if (node->args && node->args[0])
 	{
 		word = node->args[0];
 		quoted = 0;
 		if (node->args[1])
 			quoted = ft_atoi(node->args[1]);
-		use_word = word;
-		if (!quoted)
-		{
-			use_word = expand_heredoc(word, state->envp, state->exit_code);
-			if (!use_word)
-				use_word = word;
-		}
-		write(fd, use_word, ft_strlen(use_word));
-		write(fd, "\n", 1);
+		use_word = expand_here_word(word, state, quoted);
+		write_here_word(fd, use_word);
 		if (!quoted && use_word != word)
 			free(use_word);
 	}

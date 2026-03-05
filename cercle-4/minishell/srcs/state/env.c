@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 23:25:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:06:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ static char	**duplicate_env_base(char **envp)
 		heap_env[i] = ft_strdup(envp[i]);
 		if (!heap_env[i])
 		{
-			/* free previously duplicated entries and the array */
 			while (--i >= 0)
 				free(heap_env[i]);
 			free(heap_env);

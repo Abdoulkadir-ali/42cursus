@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 04:12:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,3 +108,9 @@ char		*build_path_from_stack(char **stack, int count,
 				int leading_slashes);
 char		*normalize_logical(const char *path, t_shell_state *state);
 #endif
+
+/* srcs/exec/heredoc/heredoc_consume.c */
+void	consume_heredocs(t_nodes *tokens, t_shell_state *state);
+
+/* srcs/exec/heredoc/heredoc_input.c */
+char	*handle_heredoc_input(char **args, t_shell_state *state);

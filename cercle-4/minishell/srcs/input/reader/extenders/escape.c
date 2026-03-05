@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   core.h                                             :+:      :+:    :+:   */
+/*   extender_escape.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:09:09 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/05 10:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/05 22:11:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CORE_H
-# define CORE_H
+#include "input.h"
 
-// CUSTOM
-# include "exec.h"
-# include "input.h"
-# include "libft.h"
-# include "parsing.h"
-# include "state.h"
+int	handle_escape(char *line, char *p)
+{
+	int	count;
 
-int	minishell(int ac, char **av, char **envp);
-int	main(int ac, char **av, char **envp);
-
-#endif
+	count = 0;
+	while (p >= line && *p == '\\')
+	{
+		count++;
+		p--;
+	}
+	if (count % 2 != 0)
+		return (1);
+	return (0);
+}

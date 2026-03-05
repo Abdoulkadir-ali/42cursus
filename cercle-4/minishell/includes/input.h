@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 03:46:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:14:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,16 @@ char		*handle_parenthesis(char *line, char *trimmed,
 char		*handle_multiline_input(char *line, t_shell_state *state);
 char		*read_function_body(char *line, size_t n, t_shell_state *state);
 
-/* Extender (srcs/core/reader/extender.c) */
+
+/* Extender (srcs/input/reader/extender.c and extenders/) */
 t_op_def	*get_ops(void);
 t_op_def	*ext_get_op_def(t_op_def *ops, char code);
 char		ext_analyze_input(char *line);
+
+/* Extender helpers (srcs/input/reader/extenders/) */
+int		handle_escape(char *line, char *p);
+char		check_quote_state(const char *s);
+int		check_parenthesis_state(const char *s);
+char		check_trailing_op(char *line, t_op_def *ops);
 
 #endif
