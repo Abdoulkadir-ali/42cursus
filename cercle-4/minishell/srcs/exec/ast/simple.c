@@ -1,20 +1,16 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simple.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/05 22:24:37 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "exec.h"
-
-static int	path_is_set(t_shell_state *state)
-{
-	int	i;
-
-	i = 0;
-	while (state->envp && state->envp[i])
-	{
-		if (ft_strncmp(state->envp[i], "PATH=", 5) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 static void	child_execution(char *path, t_ast *node, t_shell_state *state)
 {
@@ -53,22 +49,12 @@ static int	run_external_command(char *path, t_ast *node, t_shell_state *state)
 	waitpid(pid, &status, 0);
 	setup_signals(SIGNAL_INTERACTIVE);
 	free(path);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	if (WIFSIGNALED(status))
-	{
-		if (WTERMSIG(status) == SIGINT)
-			write(1, "\n", 1);
-		else if (WTERMSIG(status) == SIGQUIT)
-			ft_puterror("Quit (core dumped)\n");
-		return (128 + WTERMSIG(status));
-	}
-	return (1);
+	return (handle_wait_status(status));
 }
 
 int	exec_simple_command(t_ast *node, t_shell_state *state)
 {
-	char		*path;
+	char	*path;
 
 	if (!node->args || !node->args[0])
 		return (0);
@@ -77,7 +63,7 @@ int	exec_simple_command(t_ast *node, t_shell_state *state)
 	path = find_path(node->args[0], state);
 	if (!path)
 	{
-		if (path_is_set(state))
+		if (ft_get_env("PATH", state->envp))
 			ft_puterror("%s: command not found\n", node->args[0]);
 		else
 			ft_puterror("%s: No such file or directory\n", node->args[0]);

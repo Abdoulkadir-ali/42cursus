@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:59:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 04:14:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,23 +51,6 @@ void	dump_tokens_list(t_nodes *head, const char *stage)
 	}
 	fprintf(f, "-- end %s --\n\n", stage);
 	fclose(f);
-}
-
-void	append_chunk_safe(char **res, char *chunk)
-{
-	char	*tmp;
-
-	if (!chunk)
-		return ;
-	if (!*res)
-		*res = chunk;
-	else
-	{
-		tmp = ft_strjoin(*res, chunk);
-		free(*res);
-		free(chunk);
-		*res = tmp;
-	}
 }
 
 void	add_token_node(t_nodes **head, t_nodes **tail, char *val, int quoted)

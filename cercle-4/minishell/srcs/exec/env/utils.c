@@ -6,11 +6,21 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 23:46:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 03:37:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+int	count_env(char **envp)
+{
+	int	count;
+
+	count = 0;
+	while (envp && envp[count])
+		count++;
+	return (count);
+}
 
 int	is_valid_ident(char *str)
 {

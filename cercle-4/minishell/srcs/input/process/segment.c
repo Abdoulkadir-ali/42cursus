@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:55:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 06:18:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,6 @@ static int	is_assignment_segment(t_nodes *segment)
 		return (0);
 	return (ft_strchr(first_tok->value, '=') != NULL
 		&& ft_strchr(first_tok->value, '=') != first_tok->value);
-}
-
-static int	is_valid_identifier(const char *str)
-{
-	const char	*p;
-
-	if (!str || (!ft_isalpha((unsigned char)str[0]) && str[0] != '_'))
-		return (0);
-	p = str;
-	while (*p && *p != '=')
-	{
-		if (!ft_isalnum((unsigned char)*p) && *p != '_')
-			return (0);
-		p++;
-	}
-	return (1);
 }
 
 static void	extract_key_value(t_token *first_tok, char **key, char **val)
@@ -65,7 +49,7 @@ int	try_handle_assignment_public(t_nodes *segment, t_shell_state *state)
 	if (!is_assignment_segment(segment))
 		return (0);
 	first_tok = (t_token *)segment->content;
-	if (!is_valid_identifier(first_tok->value) || segment->next)
+	if (!is_valid_ident(first_tok->value) || segment->next)
 		return (0);
 	extract_key_value(first_tok, &key, &val);
 	set_assignment(key, val, state);

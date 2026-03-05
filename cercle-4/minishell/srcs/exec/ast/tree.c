@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 23:42:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 04:12:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ int	exec_tree(t_ast *ast_node, t_shell_state *state)
 		|| node->type == TOKEN_APPEND || node->type == TOKEN_HEREDOC)
 		return (exec_redirection(node, state));
 	else if (node->type == TOKEN_AND)
-		return (exec_logical_and(node, state));
+		return (exec_logical(node, state, 1));
 	else if (node->type == TOKEN_OR)
-		return (exec_logical_or(node, state));
+		return (exec_logical(node, state, 0));
 	else if (node->type == TOKEN_SUBSHELL)
 		return (exec_subshell(node, state));
 	else if (node->type == TOKEN_SEMICOLON)

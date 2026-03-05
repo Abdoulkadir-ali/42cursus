@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:37:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,7 @@ static void	ft_unset_remove_at(char ***envp, int idx, t_shell_state *state)
 	int		i;
 	int		j;
 
-	count = 0;
-	while ((*envp)[count])
-		count++;
+	count = count_env(*envp);
 	new_env = ft_calloc(count, sizeof(char *));
 	i = 0;
 	j = 0;

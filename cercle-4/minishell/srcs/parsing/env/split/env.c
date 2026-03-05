@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:02:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:20:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,14 @@
 
 char	*get_env_value(char *var_name, char **envp)
 {
-	int		i;
-	int		len;
 	char	*val;
 
-	i = 0;
-	len = ft_strlen(var_name);
-	while (envp && envp[i])
-	{
-		if (ft_strncmp(envp[i], var_name, len) == 0 && envp[i][len] == '=')
-			return (ft_strdup(envp[i] + len + 1));
-		i++;
-	}
-	if (ft_strlen(var_name) == 3 && ft_strncmp(var_name, "UID", 4) == 0)
+	if (ft_strncmp(var_name, "UID", 4) == 0)
 		return (ft_itoa(getuid()));
-	val = ft_calloc(1, 1);
-	return (val);
+	val = ft_get_env(var_name, envp);
+	if (val)
+		return (ft_strdup(val));
+	return (ft_calloc(1, 1));
 }
 
 static char	*handle_special_dollar(char *str, int *i, int status)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:58:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,7 @@ static int	append_env_entry(char ***envp, char *new_entry,
 	char	**new_env;
 	int		i;
 
-	count = 0;
-	while ((*envp)[count])
-		count++;
+	count = count_env(*envp);
 	new_env = ft_calloc(count + 2, sizeof(char *));
 	if (!new_env)
 		return (1);

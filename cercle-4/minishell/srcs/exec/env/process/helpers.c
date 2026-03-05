@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process_helpers.c                                  :+:      :+:    :+:   */
+/*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:21:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ void	push_new_env_entry(char ***envp, char *new_entry)
 	char	**new_env;
 	int		i;
 
-	count = 0;
-	while ((*envp)[count])
-		count++;
+	count = count_env(*envp);
 	new_env = ft_calloc(count + 2, sizeof(char *));
 	i = -1;
 	while (++i < count)

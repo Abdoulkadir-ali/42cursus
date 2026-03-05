@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,13 @@ int			report_invalid_identifier(char *arg, t_export_ctx *ctx);
 int			exec_tree(t_ast *ast_node, t_shell_state *state);
 int			exec_simple_command(t_ast *node, t_shell_state *state);
 int			exec_subshell(t_ast *node, t_shell_state *state);
-int			exec_logical_or(t_ast *node, t_shell_state *state);
-int			exec_logical_and(t_ast *node, t_shell_state *state);
+int			exec_logical(t_ast *node, t_shell_state *state, int run_if_zero);
 int			exec_redirection(t_ast *node, t_shell_state *state);
 int			exec_pipe(t_ast *node, t_shell_state *state);
 int			is_builtin(char *cmd, char **args, int is_quoted);
 int			exec_builtin(char **args, t_shell_state *state);
 int			scan_heredocs(t_ast *ast_node, t_shell_state *state);
+int			handle_wait_status(int status);
 void		consume_heredocs(t_nodes *tokens, t_shell_state *state);
 int			ft_export(char **args, t_shell_state *state);
 int			ft_unset(char **args, t_shell_state *state);
@@ -78,6 +78,7 @@ int			ft_exit(char **args, t_shell_state *state);
 int			ft_set_env(char *key, char *value, t_shell_state *state);
 char		*find_path(char *cmd, t_shell_state *state);
 int			get_env_index(char *key, t_shell_state *state);
+int			count_env(char **envp);
 int			is_valid_ident(char *str);
 int			is_quoted_delim(const char *delim);
 char		*remove_quotes_heredoc(char *str);
