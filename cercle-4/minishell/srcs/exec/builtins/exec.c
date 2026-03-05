@@ -12,12 +12,11 @@
 
 #include "exec.h"
 
-int	is_builtin(char *cmd, char **args, int is_quoted)
+int	is_builtin(char *cmd, char **args)
 {
 	int					i;
 	const t_builtin_def	*builtins;
 
-	(void)is_quoted;
 	builtins = get_builtins();
 	if (!cmd)
 		return (0);

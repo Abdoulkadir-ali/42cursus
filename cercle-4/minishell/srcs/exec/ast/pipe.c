@@ -50,11 +50,7 @@ static int	wait_for_children(pid_t pid1, pid_t pid2)
 
 	waitpid(pid1, &status, 0);
 	waitpid(pid2, &status, 0);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
-	return (1);
+	return (handle_wait_status(status));
 }
 
 int	exec_pipe(t_ast *node, t_shell_state *state)

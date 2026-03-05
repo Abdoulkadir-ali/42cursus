@@ -69,24 +69,23 @@ static int	handle_herestr(t_ast *node, t_shell_state *state)
 
 int	scan_heredocs(t_ast *ast_node, t_shell_state *state)
 {
-	t_ast	*node;
 	char	*tmp_file;
 
 	if (!ast_node)
 		return (0);
-	node = ast_node;
-	if (node->type == TOKEN_HEREDOC)
+	if (ast_node->type == TOKEN_HEREDOC)
 	{
-		tmp_file = handle_heredoc_input(node->args, state);
+		tmp_file = handle_heredoc_input(ast_node->args, state);
 		if (!tmp_file)
 			return (1);
-		free(node->args[0]);
-		node->args[0] = tmp_file;
-		node->type = TOKEN_RED_IN;
+		free(ast_node->args[0]);
+		ast_node->args[0] = tmp_file;
+		ast_node->type = TOKEN_RED_IN;
 	}
-	else if (node->type == TOKEN_HERESTR)
-		return (handle_herestr(node, state));
-	if (scan_heredocs(node->left, state) || scan_heredocs(node->right, state))
+	else if (ast_node->type == TOKEN_HERESTR)
+		return (handle_herestr(ast_node, state));
+	if (scan_heredocs(ast_node->left, state)
+		|| scan_heredocs(ast_node->right, state))
 		return (1);
 	return (0);
 }

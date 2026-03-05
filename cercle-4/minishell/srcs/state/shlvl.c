@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:08:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:37:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,26 +36,39 @@ static int	calculate_shlvl(int existing_shlvl)
 	return (shlvl);
 }
 
-static void	update_shlvl_entry(char **heap_env, int idx, int shlvl)
+static char	*make_shlvl_str(int shlvl)
 {
-	char	shlvl_str[20];
+	char	*num;
+	char	*entry;
 
-	sprintf(shlvl_str, "SHLVL=%d", shlvl);
-	free(heap_env[idx]);
-	heap_env[idx] = ft_strdup(shlvl_str);
+	num = ft_itoa(shlvl);
+	if (!num)
+		return (NULL);
+	entry = ft_strjoin("SHLVL=", num);
+	free(num);
+	return (entry);
 }
 
-static void	add_shlvl_entry(char **heap_env, int shlvl)
+static void	set_shlvl_entry(char **heap_env, int idx, int shlvl)
 {
-	int		i;
-	char	shlvl_str[20];
+	char	*entry;
 
-	i = 0;
-	while (heap_env[i])
-		i++;
-	sprintf(shlvl_str, "SHLVL=%d", shlvl);
-	heap_env[i] = ft_strdup(shlvl_str);
-	heap_env[i + 1] = NULL;
+	entry = make_shlvl_str(shlvl);
+	if (!entry)
+		return ;
+	if (idx >= 0)
+	{
+		free(heap_env[idx]);
+		heap_env[idx] = entry;
+	}
+	else
+	{
+		idx = 0;
+		while (heap_env[idx])
+			idx++;
+		heap_env[idx] = entry;
+		heap_env[idx + 1] = NULL;
+	}
 }
 
 void	add_shlvl_to_env(char **heap_env)
@@ -65,13 +78,9 @@ void	add_shlvl_to_env(char **heap_env)
 
 	existing_idx = find_shlvl_index(heap_env);
 	if (existing_idx != -1)
-	{
-		shlvl = calculate_shlvl(atoi(heap_env[existing_idx] + 6));
-		update_shlvl_entry(heap_env, existing_idx, shlvl);
-	}
+		shlvl = calculate_shlvl(ft_atoi(heap_env[existing_idx] + 6));
 	else
-	{
 		shlvl = 1;
-		add_shlvl_entry(heap_env, shlvl);
-	}
+	set_shlvl_entry(heap_env, existing_idx, shlvl);
 }
+

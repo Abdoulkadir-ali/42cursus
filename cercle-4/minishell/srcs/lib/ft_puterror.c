@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 17:32:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 23:00:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:37:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@ void	ft_puterror(const char *fmt, ...)
 {
 	va_list	args;
 
-	fprintf(stderr, "minishell: ");
+	ft_putstr_fd("minishell: ", 2);
 	va_start(args, fmt);
 	vfprintf(stderr, fmt, args);
 	va_end(args);
 }
+

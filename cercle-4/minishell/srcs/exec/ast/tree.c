@@ -14,28 +14,26 @@
 
 int	exec_tree(t_ast *ast_node, t_shell_state *state)
 {
-	t_ast	*node;
-
 	if (!ast_node)
 		return (0);
-	node = ast_node;
-	if (node->type == TOKEN_WORD)
-		return (exec_simple_command(node, state));
-	else if (node->type == TOKEN_PIPE)
-		return (exec_pipe(node, state));
-	else if (node->type == TOKEN_RED_IN || node->type == TOKEN_RED_OUT
-		|| node->type == TOKEN_APPEND || node->type == TOKEN_HEREDOC)
-		return (exec_redirection(node, state));
-	else if (node->type == TOKEN_AND)
-		return (exec_logical(node, state, 1));
-	else if (node->type == TOKEN_OR)
-		return (exec_logical(node, state, 0));
-	else if (node->type == TOKEN_SUBSHELL)
-		return (exec_subshell(node, state));
-	else if (node->type == TOKEN_SEMICOLON)
+	if (ast_node->type == TOKEN_WORD)
+		return (exec_simple_command(ast_node, state));
+	else if (ast_node->type == TOKEN_PIPE)
+		return (exec_pipe(ast_node, state));
+	else if (ast_node->type == TOKEN_RED_IN || ast_node->type == TOKEN_RED_OUT
+		|| ast_node->type == TOKEN_APPEND
+		|| ast_node->type == TOKEN_HEREDOC)
+		return (exec_redirection(ast_node, state));
+	else if (ast_node->type == TOKEN_AND)
+		return (exec_logical(ast_node, state, 1));
+	else if (ast_node->type == TOKEN_OR)
+		return (exec_logical(ast_node, state, 0));
+	else if (ast_node->type == TOKEN_SUBSHELL)
+		return (exec_subshell(ast_node, state));
+	else if (ast_node->type == TOKEN_SEMICOLON)
 	{
-		exec_tree(node->left, state);
-		return (exec_tree(node->right, state));
+		exec_tree(ast_node->left, state);
+		return (exec_tree(ast_node->right, state));
 	}
 	return (0);
 }

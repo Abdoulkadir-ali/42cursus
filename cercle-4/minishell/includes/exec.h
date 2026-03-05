@@ -72,7 +72,7 @@ int					exec_logical(t_ast *node, t_shell_state *state,
 						int run_if_zero);
 int					exec_redirection(t_ast *node, t_shell_state *state);
 int					exec_pipe(t_ast *node, t_shell_state *state);
-int					is_builtin(char *cmd, char **args, int is_quoted);
+int					is_builtin(char *cmd, char **args);
 const t_builtin_def	*get_builtins(void);
 int					exec_builtin(char **args, t_shell_state *state);
 int					scan_heredocs(t_ast *ast_node, t_shell_state *state);

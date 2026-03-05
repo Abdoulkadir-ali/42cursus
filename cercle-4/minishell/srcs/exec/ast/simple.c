@@ -58,7 +58,7 @@ int	exec_simple_command(t_ast *node, t_shell_state *state)
 
 	if (!node->args || !node->args[0])
 		return (0);
-	if (is_builtin(node->args[0], node->args, node->is_quoted))
+	if (is_builtin(node->args[0], node->args))
 		return (exec_builtin(node->args, state));
 	path = find_path(node->args[0], state);
 	if (!path)

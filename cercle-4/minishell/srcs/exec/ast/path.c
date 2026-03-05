@@ -74,20 +74,6 @@ static char	*find_executable_in_paths(char *cmd, char *path_env)
 	return (NULL);
 }
 
-static char	*get_path_from_env(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp && envp[i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-			return (envp[i] + 5);
-		i++;
-	}
-	return (NULL);
-}
-
 char	*find_path(char *cmd, t_shell_state *state)
 {
 	char	*path_env;
@@ -101,7 +87,7 @@ char	*find_path(char *cmd, t_shell_state *state)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
-	path_env = get_path_from_env(state->envp);
+	path_env = ft_get_env("PATH", state->envp);
 	if (!path_env)
 		path_env = "/bin:/usr/bin:/usr/local/bin";
 	if (!*path_env)

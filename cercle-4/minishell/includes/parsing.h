@@ -128,7 +128,6 @@ t_nodes				*expand_and_split(char *str, char **envp, int exit_code);
 int					check_syntax(t_nodes *tokens);
 t_nodes				*expand_wildcard(char *pattern);
 t_nodes				*collect_matches(DIR *dir, char *pattern);
-int					ft_set_env(char *key, char *value, t_shell_state *state);
 char				**expand_wildcards(char **args);
 void				free_ast(t_ast *ast_node);
 void				del_token(void *content);

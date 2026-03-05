@@ -28,13 +28,12 @@ void	push_new_env_entry(char ***envp, char *new_entry)
 {
 	int		count;
 	char	**new_env;
-	int		i;
 
 	count = count_env(*envp);
 	new_env = ft_calloc(count + 2, sizeof(char *));
-	i = -1;
-	while (++i < count)
-		new_env[i] = (*envp)[i];
+	if (!new_env)
+		return ;
+	ft_memcpy(new_env, *envp, count * sizeof(char *));
 	new_env[count] = new_entry;
 	free(*envp);
 	*envp = new_env;
