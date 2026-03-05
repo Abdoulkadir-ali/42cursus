@@ -6,22 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 02:42:03 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 23:27:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-static char	*handle_home(t_shell_state *state)
-{
-	return (resolve_home(state));
-}
-
 static char	*handle_oldpwd(t_shell_state *state)
 {
 	char	*path;
 
-	path = get_env_val_simple("OLDPWD", state);
+	path = ft_get_env("OLDPWD", state->envp);
 	if (!path)
 	{
 		ft_puterror("cd: OLDPWD not set\n");
@@ -34,7 +29,7 @@ static char	*handle_oldpwd(t_shell_state *state)
 static char	*get_path_from_args(char **args, t_shell_state *state)
 {
 	if (!args[1] || ft_strncmp(args[1], "--", 3) == 0)
-		return (handle_home(state));
+		return (resolve_home(state));
 	else if (ft_strncmp(args[1], "-", 2) == 0)
 		return (handle_oldpwd(state));
 	else
@@ -48,7 +43,7 @@ static char	*check_cdpath(char *path, t_shell_state *state)
 
 	if (path && path[0] != '/' && !ft_strchr(path, '/'))
 	{
-		cdpath = get_env_val_simple("CDPATH", state);
+		cdpath = ft_get_env("CDPATH", state->envp);
 		candidate = cdpath_find(path, cdpath);
 		if (candidate)
 		{

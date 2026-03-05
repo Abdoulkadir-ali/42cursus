@@ -1,22 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process_update.c                                   :+:      :+:    :+:   */
+/*   update.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:21:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
-
-static void	handle_no_eq(t_export_ctx *ctx)
-{
-	if (ctx->new_entry)
-		free(ctx->new_entry);
-}
 
 static void	handle_append(char **envp, t_export_ctx *ctx)
 {
@@ -46,7 +40,8 @@ void	update_existing_env(char **envp, t_export_ctx *ctx)
 {
 	if (!ctx->eq)
 	{
-		handle_no_eq(ctx);
+		if (ctx->new_entry)
+			free(ctx->new_entry);
 		return ;
 	}
 	if (ctx->append)

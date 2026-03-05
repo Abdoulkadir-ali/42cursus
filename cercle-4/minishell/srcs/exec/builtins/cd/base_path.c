@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:58:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static char	*handle_relative_with_pwd(const char *path, t_shell_state *state,
 	char	*base;
 	char	*pwd;
 
-	pwd = get_env_val_simple("PWD", state);
+	pwd = ft_get_env("PWD", state->envp);
 	if (!pwd || pwd[0] == '\0')
 		return (NULL);
 	base = join_paths(pwd, path);

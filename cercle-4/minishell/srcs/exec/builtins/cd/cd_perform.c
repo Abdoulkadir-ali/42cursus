@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:45:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static char	*get_oldpwd(t_shell_state *state)
 {
 	char	*oldpwd;
 
-	oldpwd = get_env_val_simple("PWD", state);
+	oldpwd = ft_get_env("PWD", state->envp);
 	if (!oldpwd || oldpwd[0] == '\0')
 		oldpwd = get_cwd_dup();
 	else

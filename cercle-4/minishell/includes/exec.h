@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:07:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,12 @@ typedef struct s_heredoc
 	int				fd;
 }			t_heredoc;
 
+typedef struct s_builtin_def
+{
+	const char	*name;
+	int			(*func)(char **, t_shell_state *);
+}			t_builtin_def;
+
 /* Public API used by other translation units */
 void		print_sorted_env(char **envp);
 int			process_export_arg(char *arg, t_shell_state *state);
@@ -70,10 +76,9 @@ int			handle_wait_status(int status);
 void		consume_heredocs(t_nodes *tokens, t_shell_state *state);
 int			ft_export(char **args, t_shell_state *state);
 int			ft_unset(char **args, t_shell_state *state);
-int			ft_env(t_shell_state *state);
-int			ft_echo(char **args);
-
-int			ft_pwd(t_shell_state *state);
+int			ft_env(char **args, t_shell_state *state);
+int			ft_echo(char **args, t_shell_state *state);
+int			ft_pwd(char **args, t_shell_state *state);
 int			ft_exit(char **args, t_shell_state *state);
 int			ft_set_env(char *key, char *value, t_shell_state *state);
 char		*find_path(char *cmd, t_shell_state *state);
@@ -96,7 +101,6 @@ void		read_heredoc_lines(char *stop_str, int quoted, t_heredoc *ctx);
 
 int			ft_cd(char **args, t_shell_state *state);
 char		*get_cd_path(char **args, t_shell_state *state);
-char		*get_env_val_simple(char *key, t_shell_state *state);
 char		*get_cwd_dup(void);
 char		*resolve_home(t_shell_state *state);
 char		*cdpath_find(const char *name, char *cdpath);

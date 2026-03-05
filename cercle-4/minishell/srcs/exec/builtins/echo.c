@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/14 19:20:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,12 @@ static void	print_echo_args(char **args, int start)
 	}
 }
 
-int	ft_echo(char **args)
+int	ft_echo(char **args, t_shell_state *state)
 {
 	int	newline;
 	int	start;
 
+	(void)state;
 	start = parse_echo_options(args, &newline);
 	print_echo_args(args, start);
 	if (newline)

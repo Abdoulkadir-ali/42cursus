@@ -6,16 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 02:44:37 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/10 22:44:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
-
-char	*get_env_val_simple(char *key, t_shell_state *state)
-{
-	return (ft_get_env(key, state->envp));
-}
 
 char	*get_cwd_dup(void)
 {
