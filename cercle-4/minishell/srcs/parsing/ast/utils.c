@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:59:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,6 @@ t_ast	*create_node(t_token_type type, char **args, t_ast *left,
 	ast->right = right;
 	ast->is_quoted = 0;
 	return (ast);
-}
-
-void	dump_tokens_list(t_nodes *head, const char *stage)
-{
-	FILE	*f;
-	t_nodes	*cur;
-	t_token	*tok;
-
-	f = fopen("log/expand_debug.txt", "a");
-	if (!f)
-		return ;
-	fprintf(f, "-- %s --\n", stage);
-	cur = head;
-	while (cur)
-	{
-		tok = (t_token *)cur->content;
-		if (tok && tok->value)
-			fprintf(f, "type=%d quoted=%d expanded=%d val='%s'\n", tok->type,
-				tok->quoted, tok->expanded, tok->value);
-		else
-			fprintf(f, "<null token>\n");
-		cur = cur->next;
-	}
-	fprintf(f, "-- end %s --\n\n", stage);
-	fclose(f);
 }
 
 void	add_token_node(t_nodes **head, t_nodes **tail, char *val, int quoted)

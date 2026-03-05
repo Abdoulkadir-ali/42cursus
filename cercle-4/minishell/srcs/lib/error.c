@@ -6,15 +6,8 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:22:33 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:06:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lib.h"
-
-int	set_error(int code, const char *msg)
-{
-	if (msg)
-		ft_puterror("%s", msg);
-	return (code);
-}

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:37:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ t_token	*handle_separator(char **str)
 	token = alloc_token();
 	if (!token)
 		return (NULL);
-	rc = 0;
 	rc = dispatch_separator(str, token);
 	if (rc != 0)
 	{

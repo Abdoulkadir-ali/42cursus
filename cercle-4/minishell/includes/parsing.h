@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ int					process_matches_or_literal(t_token_expansion *ctx,
 						t_nodes *matches, t_token *exp_tok, t_nodes *exp_curr);
 t_ast				*create_node(t_token_type type, char **args, t_ast *left,
 						t_ast *right);
-void				dump_tokens_list(t_nodes *head, const char *stage);
 void				add_token_node(t_nodes **head, t_nodes **tail, char *val,
 						int quoted);
 t_nodes				*tokenizer(char *str);

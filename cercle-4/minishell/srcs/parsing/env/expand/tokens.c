@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:01:48 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ int	expand_tokens(t_nodes **tokens, char **env, int status)
 
 	ft_bzero(&exp, sizeof(exp));
 	curr = *tokens;
-	dump_tokens_list(*tokens, "before_expand_tokens");
 	while (curr)
 	{
 		next = curr->next;
