@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:15:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/05 23:18:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,6 @@
 # include "exec.h"
 # include "libft.h"
 # include "parsing.h"
-
-# define SIGNAL_INTERACTIVE 1
-# define SIGNAL_BLOCKING 2
-# define SIGNAL_HEREDOC 3
 
 typedef struct s_op_def
 {
