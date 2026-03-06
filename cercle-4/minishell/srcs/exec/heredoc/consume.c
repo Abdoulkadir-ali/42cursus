@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 02:31:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
 	filename = generate_tmp_filename(&fd);
 	if (fd != -1)
 	{
-		read_heredoc_loop(delim, fd, state);
+		read_heredoc_loop(delim, fd, state, tok->quoted);
 		close(fd);
 		unlink(filename);
 	}
@@ -103,4 +103,3 @@ void	consume_heredocs(t_nodes *tokens, t_shell_state *state)
 		tokens = tokens->next;
 	}
 }
-

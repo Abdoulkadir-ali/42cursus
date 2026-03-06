@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 14:20:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,15 @@ static int	handle_dq_backslash(t_exp_input *in, t_exp_output *out)
 static int	consume_backslash(t_exp_input *in, t_exp_state *st,
 		t_exp_output *out)
 {
+	char	ch;
+
 	in->pos++;
 	if (!in->str[in->pos])
 		return (1);
-	exp_push_char(out, in->str[in->pos]);
+	ch = in->str[in->pos];
+	if (!st->in_d_quote && (ch == '*' || ch == '?'))
+		exp_push_char(out, '\001');
+	exp_push_char(out, ch);
 	if (!st->in_d_quote)
 		st->has_quotes = 1;
 	in->pos++;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 23:42:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,12 @@ int	is_wildcard(const char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '*' && str[i] != '\\')
+		if (str[i] == '\001')
+		{
+			i += 2;
+			continue ;
+		}
+		if (str[i] == '*' || str[i] == '?')
 			return (1);
 		i++;
 	}
@@ -51,9 +56,19 @@ int	match_loop(char **pattern, char **str, char **star,
 {
 	while (**str)
 	{
-		if (**pattern == '*')
+		if (**pattern == '\001')
+		{
+			(*pattern)++;
+			if (**pattern == **str)
+				advance_both(pattern, str);
+			else if (*star)
+				backtrack_to_star(pattern, str, star, str_start);
+			else
+				return (0);
+		}
+		else if (**pattern == '*')
 			set_star(pattern, str, star, str_start);
-		else if (**pattern == **str)
+		else if (**pattern == '?' || **pattern == **str)
 			advance_both(pattern, str);
 		else if (*star)
 			backtrack_to_star(pattern, str, star, str_start);

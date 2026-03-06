@@ -17,7 +17,7 @@ t_nodes	*expand_wildcard(char *pattern)
 	DIR		*dir;
 	t_nodes	*files;
 
-	if (ft_strchr(pattern, '*') == NULL)
+	if (!ft_strchr(pattern, '*') && !ft_strchr(pattern, '?'))
 		return (NULL);
 	dir = opendir(".");
 	if (!dir)

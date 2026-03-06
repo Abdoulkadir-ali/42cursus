@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 22:24:37 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 02:37:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ int	exec_simple_command(t_ast *node, t_shell_state *state)
 	path = find_path(node->args[0], state);
 	if (!path)
 	{
-		if (ft_get_env("PATH", state->envp))
-			ft_puterror("%s: command not found\n", node->args[0]);
-		else
+		if (ft_strchr(node->args[0], '/'))
 			ft_puterror("%s: No such file or directory\n", node->args[0]);
+		else
+			ft_puterror("%s: command not found\n", node->args[0]);
 		return (127);
 	}
 	return (run_external_command(path, node, state));

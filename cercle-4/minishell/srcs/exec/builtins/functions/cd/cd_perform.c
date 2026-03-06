@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 02:31:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ static int	change_directory(char *path, t_shell_state *state)
 
 static int	handle_cd_error(char *path, char *oldpwd, char *norm_path)
 {
-	if (path[0] == '/')
-		return (0);
 	ft_puterror("cd: %s: ", path);
 	perror(NULL);
 	free(oldpwd);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 02:31:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static char	*write_heredoc_to_file(char *delim, t_shell_state *state,
 			free(delim);
 		return (NULL);
 	}
-	read_heredoc_loop(delim, fd, state);
+	read_heredoc_loop(delim, fd, state, quoted);
 	close(fd);
 	return (filename);
 }

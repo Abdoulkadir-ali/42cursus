@@ -24,14 +24,38 @@ char	*expand_delim(const char *delim, int quoted, t_shell_state *state)
 	return ((char *)delim);
 }
 
+static int	has_double_quote(const char *delim)
+{
+	int	i;
+
+	i = 0;
+	while (delim[i])
+	{
+		if (delim[i] == '"')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 char	*prepare_stop_str(char *delim, t_heredoc *ctx)
 {
 	int		quoted;
 	char	*stop_str;
+	char	*expanded;
 
 	quoted = is_quoted_delim(delim);
 	if (quoted)
+	{
 		stop_str = remove_quotes_heredoc(delim);
+		if (has_double_quote(delim) && stop_str)
+		{
+			expanded = expand_string(stop_str, ctx->state->envp,
+					ctx->state->exit_code);
+			free(stop_str);
+			stop_str = expanded;
+		}
+	}
 	else
 		stop_str = expand_string(delim, ctx->state->envp,
 				ctx->state->exit_code);

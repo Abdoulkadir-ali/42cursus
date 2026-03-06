@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:25:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:43:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,46 +23,49 @@ static int	create_tmp_file(int *fd, char **tmp_file)
 	return (0);
 }
 
-static char	*expand_here_word(char *word, t_shell_state *state, int quoted)
+static char	*get_herestr_word(t_ast *node, t_shell_state *state, int *quoted)
 {
-	char	*use_word;
+	char	*word;
 
-	use_word = word;
-	if (!quoted)
-		return (expand_delim(word, quoted, state));
-	return (use_word);
+	if (!node->args || !node->args[0])
+		return (NULL);
+	word = node->args[0];
+	*quoted = 0;
+	if (node->args[1])
+		*quoted = ft_atoi(node->args[1]);
+	if (!*quoted)
+		return (expand_delim(word, 0, state));
+	return (word);
 }
 
-static void	write_here_word(int fd, char *use_word)
+static void	write_herestr(t_ast *node, t_shell_state *state, int fd)
 {
+	char	*use_word;
+	int		quoted;
+
+	use_word = get_herestr_word(node, state, &quoted);
+	if (!use_word)
+		return ;
 	write(fd, use_word, ft_strlen(use_word));
 	write(fd, "\n", 1);
+	if (!quoted && use_word != node->args[0])
+		free(use_word);
 }
 
 static int	handle_herestr(t_ast *node, t_shell_state *state)
 {
 	char	*tmp_file;
 	int		fd;
-	char	*word;
-	int		quoted;
-	char	*use_word;
 
 	if (create_tmp_file(&fd, &tmp_file))
 		return (1);
-	if (node->args && node->args[0])
-	{
-		word = node->args[0];
-		quoted = 0;
-		if (node->args[1])
-			quoted = ft_atoi(node->args[1]);
-		use_word = expand_here_word(word, state, quoted);
-		write_here_word(fd, use_word);
-		if (!quoted && use_word != word)
-			free(use_word);
-	}
+	write_herestr(node, state, fd);
 	close(fd);
 	free(node->args[0]);
 	node->args[0] = tmp_file;
+	if (node->args[1])
+		free(node->args[1]);
+	node->args[1] = NULL;
 	node->type = TOKEN_RED_IN;
 	return (0);
 }
@@ -80,6 +83,9 @@ int	scan_heredocs(t_ast *ast_node, t_shell_state *state)
 			return (1);
 		free(ast_node->args[0]);
 		ast_node->args[0] = tmp_file;
+		if (ast_node->args[1])
+			free(ast_node->args[1]);
+		ast_node->args[1] = NULL;
 		ast_node->type = TOKEN_RED_IN;
 	}
 	else if (ast_node->type == TOKEN_HERESTR)

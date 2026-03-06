@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   match_helpers.c                                    :+:      :+:    :+:   */
+/*   helpers.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 06:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:31:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,14 @@ int	match_pattern(char *pattern, char *str)
 
 int	should_skip_entry(struct dirent *entry, char *pattern)
 {
-	if (entry->d_name[0] == '.' && pattern[0] != '.')
+	char	pat_first;
+
+	pat_first = pattern[0];
+	if (pat_first == '\001' && pattern[1])
+		pat_first = pattern[1];
+	if (entry->d_name[0] == '.' && pat_first != '.')
+		return (1);
+	if (ft_strcmp(entry->d_name, ".") == 0 || ft_strcmp(entry->d_name, "..") == 0)
 		return (1);
 	if (ft_strcmp(entry->d_name, pattern) == 0)
 		return (1);

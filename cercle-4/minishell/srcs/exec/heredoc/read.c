@@ -6,24 +6,25 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 14:21:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:09:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-void	read_heredoc_loop(char *delim, int fd, t_shell_state *state)
+void	read_heredoc_loop(char *delim, int fd, t_shell_state *state,
+		int is_quoted)
 {
 	char		*stop_str;
-	int			quoted;
 	t_heredoc	ctx;
 
 	ctx.state = state;
 	ctx.fd = fd;
 	stop_str = prepare_stop_str(delim, &ctx);
-	quoted = is_quoted_delim(delim);
+	if (!is_quoted)
+		is_quoted = is_quoted_delim(delim);
 	setup_signals(SIGNAL_HEREDOC);
-	read_heredoc_lines(stop_str, quoted, &ctx);
+	read_heredoc_lines(stop_str, is_quoted, &ctx);
 	setup_signals(SIGNAL_INTERACTIVE);
 	free(stop_str);
 }

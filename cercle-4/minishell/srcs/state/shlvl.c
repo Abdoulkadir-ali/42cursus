@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:37:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 00:23:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,3 @@ void	add_shlvl_to_env(char **heap_env)
 		shlvl = 1;
 	set_shlvl_entry(heap_env, existing_idx, shlvl);
 }
-

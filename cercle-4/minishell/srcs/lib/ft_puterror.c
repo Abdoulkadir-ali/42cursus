@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 17:32:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:37:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 00:23:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,3 @@ void	ft_puterror(const char *fmt, ...)
 	vfprintf(stderr, fmt, args);
 	va_end(args);
 }
-

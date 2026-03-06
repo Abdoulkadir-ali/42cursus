@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:05:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/02/09 04:12:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 02:31:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ static t_ast	*handle_simple_cmd(t_nodes *tokens)
 	count = count_cmd_args(tokens);
 	if (count == 0)
 	{
-		process_redirections(NULL, tokens);
+		node = process_redirections(NULL, tokens);
 		ft_lstclear(&tokens, del_token);
-		return (NULL);
+		return (node);
 	}
 	args = ft_calloc(count + 1, sizeof(char *));
 	fill_cmd_args(tokens, args);

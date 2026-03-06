@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:28:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 02:31:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char				*handle_heredoc_input(char **args, t_shell_state *state);
 char				*expand_delim(const char *delim, int quoted,
 						t_shell_state *state);
 void				read_heredoc_loop(char *delim, int fd,
-						t_shell_state *state);
+						t_shell_state *state, int is_quoted);
 char				*prepare_stop_str(char *delim, t_heredoc *ctx);
 char				*heredoc_read_line(void);
 char				*heredoc_read_line_non_tty(void);

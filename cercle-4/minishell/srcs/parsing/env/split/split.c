@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:37:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ static void	run_expansion_loop(t_expansion *exp)
 			continue ;
 		if (handle_dollar_split(&exp->input, &exp->state, &exp->output))
 			continue ;
+		if ((exp->state.in_s_quote || exp->state.in_d_quote)
+			&& (exp->input.str[exp->input.pos] == '*'
+				|| exp->input.str[exp->input.pos] == '?'))
+			exp_push_char(&exp->output, '\001');
 		exp_push_char(&exp->output, exp->input.str[exp->input.pos]);
 		if (!exp->state.in_s_quote && !exp->state.in_d_quote)
 			exp->state.has_quotes = 0;

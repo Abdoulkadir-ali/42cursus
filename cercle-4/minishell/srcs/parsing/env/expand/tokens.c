@@ -6,11 +6,30 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:01:48 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
+
+static void	strip_glob_escapes(char *s)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		if (s[i] == '\001')
+		{
+			i++;
+			continue ;
+		}
+		s[j++] = s[i++];
+	}
+	s[j] = '\0';
+}
 
 static void	process_expanded_list(t_token_expansion *exp,
 		t_nodes *expanded_list)
@@ -26,16 +45,22 @@ static void	process_expanded_list(t_token_expansion *exp,
 		exp_next = exp_curr->next;
 		exp_tok = (t_token *)exp_curr->content;
 		exp_tok->type = TOKEN_WORD;
-		if (!exp_tok->quoted && ft_strchr(exp_tok->value, '*'))
+		if (!exp_tok->quoted && is_wildcard(exp_tok->value))
 		{
 			matches = expand_wildcard(exp_tok->value);
 			if (matches)
 				process_matches_or_literal(exp, matches, exp_tok, exp_curr);
 			else
+			{
+				strip_glob_escapes(exp_tok->value);
 				append_node(&exp->head, &exp->tail, exp_curr);
+			}
 		}
 		else
+		{
+			strip_glob_escapes(exp_tok->value);
 			append_node(&exp->head, &exp->tail, exp_curr);
+		}
 		exp_curr = exp_next;
 	}
 }
