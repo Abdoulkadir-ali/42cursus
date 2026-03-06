@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:54:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,12 @@ static void	push_to_stack(t_nodes **stack, t_nodes *tokens)
 	}
 }
 
-static void	apply_redir(t_ast **cmd_node, t_nodes *redir_token_node)
+static char	**build_redir_args(t_token *tok, t_nodes *redir_token_node)
 {
-	t_token	*tok;
 	char	**args;
-	t_ast	*redir_node;
 	t_token	*delim_tok;
 	int		fd_len;
 
-	tok = (t_token *)redir_token_node->content;
 	args = ft_calloc(3, sizeof(char *));
 	if (redir_token_node->next)
 	{
@@ -60,6 +57,17 @@ static void	apply_redir(t_ast **cmd_node, t_nodes *redir_token_node)
 	}
 	else
 		args[0] = ft_strdup("");
+	return (args);
+}
+
+static void	apply_redir(t_ast **cmd_node, t_nodes *redir_token_node)
+{
+	t_token	*tok;
+	char	**args;
+	t_ast	*redir_node;
+
+	tok = (t_token *)redir_token_node->content;
+	args = build_redir_args(tok, redir_token_node);
 	redir_node = create_node(tok->type, args, *cmd_node, NULL);
 	*cmd_node = redir_node;
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 06:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:48:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ int	should_skip_entry(struct dirent *entry, char *pattern)
 		pat_first = pattern[1];
 	if (entry->d_name[0] == '.' && pat_first != '.')
 		return (1);
-	if (ft_strcmp(entry->d_name, ".") == 0 || ft_strcmp(entry->d_name, "..") == 0)
+	if (ft_strcmp(entry->d_name, ".") == 0 || ft_strcmp(entry->d_name,
+			"..") == 0)
 		return (1);
 	if (ft_strcmp(entry->d_name, pattern) == 0)
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 02:31:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 04:15:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,7 @@ static void	process_heredoc(t_nodes *tokens, t_shell_state *state)
 		{
 			next_tok = (t_token *)tokens->next->content;
 			if (next_tok->type == TOKEN_WORD)
-			{
 				handle_heredoc_word(next_tok, state);
-			}
 		}
 	}
 }

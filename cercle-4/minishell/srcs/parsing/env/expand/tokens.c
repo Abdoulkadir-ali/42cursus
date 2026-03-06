@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:01:48 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 03:50:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,42 +31,49 @@ static void	strip_glob_escapes(char *s)
 	s[j] = '\0';
 }
 
+static void	process_expanded_token(t_token_expansion *exp, t_token *exp_tok,
+		t_nodes *exp_curr)
+{
+	t_nodes	*matches;
+
+	exp_tok->type = TOKEN_WORD;
+	if (!exp_tok->quoted && is_wildcard(exp_tok->value))
+	{
+		matches = expand_wildcard(exp_tok->value);
+		if (matches)
+			process_matches_or_literal(exp, matches, exp_tok, exp_curr);
+		else
+		{
+			strip_glob_escapes(exp_tok->value);
+			append_node(&exp->head, &exp->tail, exp_curr);
+		}
+	}
+	else
+	{
+		strip_glob_escapes(exp_tok->value);
+		append_node(&exp->head, &exp->tail, exp_curr);
+	}
+}
+
 static void	process_expanded_list(t_token_expansion *exp,
 		t_nodes *expanded_list)
 {
 	t_nodes	*exp_curr;
 	t_nodes	*exp_next;
 	t_token	*exp_tok;
-	t_nodes	*matches;
 
 	exp_curr = expanded_list;
 	while (exp_curr)
 	{
 		exp_next = exp_curr->next;
 		exp_tok = (t_token *)exp_curr->content;
-		exp_tok->type = TOKEN_WORD;
-		if (!exp_tok->quoted && is_wildcard(exp_tok->value))
-		{
-			matches = expand_wildcard(exp_tok->value);
-			if (matches)
-				process_matches_or_literal(exp, matches, exp_tok, exp_curr);
-			else
-			{
-				strip_glob_escapes(exp_tok->value);
-				append_node(&exp->head, &exp->tail, exp_curr);
-			}
-		}
-		else
-		{
-			strip_glob_escapes(exp_tok->value);
-			append_node(&exp->head, &exp->tail, exp_curr);
-		}
+		process_expanded_token(exp, exp_tok, exp_curr);
 		exp_curr = exp_next;
 	}
 }
 
-static void	handle_word_node(t_token_expansion *exp, t_nodes *curr,
-		char **env, int status)
+static void	handle_word_node(t_token_expansion *exp, t_nodes *curr, char **env,
+		int status)
 {
 	t_token	*tok;
 	t_nodes	*expanded_list;
