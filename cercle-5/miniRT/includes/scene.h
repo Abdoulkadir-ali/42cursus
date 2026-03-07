@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 05:57:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 06:07:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void				destroy_scene(t_scene *scene);
 /* srcs/scene/add.c (Specialized Adders) */
 int					scene_add_material(t_scene *scene, t_vec3 color);
 int					scene_add_fresh_material(t_scene *scene, t_vec3 color);
+int					scene_clone_material(t_scene *scene, int src_id);
 int					scene_add_checker_material(t_scene *scene, t_vec3 a,
 					t_vec3 b, double scale);
 int					scene_find_material(t_scene *scene, const char *name);

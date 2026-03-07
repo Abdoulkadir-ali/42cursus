@@ -31,37 +31,70 @@ static bool	parse_mesh_file(t_parse_obj *obj, const char *ext, t_scene *scene)
 	return (false);
 }
 
-static void	apply_anim_material(t_scene *scene, t_parse_obj *obj, int mat_id, bool force, int start_idx)
+static bool	is_color_default(t_vec3 c)
 {
-	t_skinned_mesh	*anim;
-	int				i;
+	return (c.x == 255.0 && c.y == 255.0 && c.z == 255.0);
+}
 
-	i = start_idx;
-	while (i < scene->anim_count)
+static void	clone_instance_materials(t_scene *sc, int start_mesh)
+{
+	t_mesh	*mesh;
+	int		new_id;
+	int		i;
+
+	i = start_mesh;
+	while (i < sc->mesh_count)
 	{
-		anim = &scene->animated[i];
-		anim->base.transform = obj->data.mesh_info.transform;
-		mesh_apply_transform(&anim->base, anim->base.transform);
-		if (force || anim->base.mat_id <= 0
-			|| scene->materials[anim->base.mat_id].albedo_map.type == TEX_SOLID)
-			anim->base.mat_id = mat_id;
+		mesh = &sc->meshes[i];
+		new_id = scene_clone_material(sc, mesh->mat_id);
+		if (new_id >= 0)
+			mesh->mat_id = new_id;
 		i++;
 	}
 }
 
-static void	apply_mesh_material(t_scene *scene, t_parse_obj *obj, int mat_id, bool force, int start_idx)
+static void	apply_anim_material(t_scene *sc, t_parse_obj *obj,
+		int mat_id, bool force, int start)
+{
+	t_skinned_mesh	*anim;
+	t_vec3			em;
+	int				i;
+
+	em = obj->data.mesh_info.emission;
+	i = start;
+	while (i < sc->anim_count)
+	{
+		anim = &sc->animated[i];
+		anim->base.transform = obj->data.mesh_info.transform;
+		mesh_apply_transform(&anim->base, anim->base.transform);
+		if (force)
+			anim->base.mat_id = mat_id;
+		else if (vec3_mag_sq(em) > 0.0 && anim->base.mat_id >= 0
+			&& anim->base.mat_id < sc->mat_count)
+			sc->materials[anim->base.mat_id].emission = em;
+		i++;
+	}
+}
+
+static void	apply_mesh_material(t_scene *sc, t_parse_obj *obj,
+		int mat_id, bool force, int start)
 {
 	t_mesh	*mesh;
+	t_vec3	em;
 	int		i;
 
-	i = start_idx;
-	while (i < scene->mesh_count)
+	em = obj->data.mesh_info.emission;
+	i = start;
+	while (i < sc->mesh_count)
 	{
-		mesh = &scene->meshes[i];
+		mesh = &sc->meshes[i];
 		mesh->transform = obj->data.mesh_info.transform;
 		mesh_apply_transform(mesh, mesh->transform);
-		if (force || scene->materials[mesh->mat_id].albedo_map.type != TEX_BITMAP)
+		if (force)
 			mesh->mat_id = mat_id;
+		else if (vec3_mag_sq(em) > 0.0 && mesh->mat_id >= 0
+			&& mesh->mat_id < sc->mat_count)
+			sc->materials[mesh->mat_id].emission = em;
 		i++;
 	}
 }
@@ -72,12 +105,13 @@ static void	apply_material(t_parse_obj *obj, t_scene *scene,
 	int		mat_id;
 	bool	force;
 
-	force = false;
-	mat_id = scene_add_fresh_material(scene, obj->data.mesh_info.color);
-	if (vec3_mag_sq(obj->data.mesh_info.emission) > 0.0)
+	force = !is_color_default(obj->data.mesh_info.color);
+	mat_id = -1;
+	if (force)
 	{
-		scene->materials[mat_id].emission = obj->data.mesh_info.emission;
-		force = true;
+		mat_id = scene_add_fresh_material(scene, obj->data.mesh_info.color);
+		if (mat_id >= 0 && vec3_mag_sq(obj->data.mesh_info.emission) > 0.0)
+			scene->materials[mat_id].emission = obj->data.mesh_info.emission;
 	}
 	if (obj->type == TYPE_ANIM && scene->anim_count > start_anim)
 		apply_anim_material(scene, obj, mat_id, force, start_anim);
@@ -106,6 +140,7 @@ bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
 			return (false);
 		}
 		mesh_cache_save(obj->data.mesh_info.path, scene, start_mesh);
+		clone_instance_materials(scene, start_mesh);
 	}
 	apply_material(obj, scene, start_mesh, start_anim);
 	return (true);

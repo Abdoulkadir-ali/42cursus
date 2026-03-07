@@ -91,6 +91,18 @@ int	scene_add_material(t_scene *scene, t_vec3 color)
 	return (scene_add_fresh_material(scene, color));
 }
 
+int	scene_clone_material(t_scene *scene, int src_id)
+{
+	if (src_id < 0 || src_id >= scene->mat_count)
+		return (scene_add_fresh_material(scene, vec3(255, 255, 255)));
+	if (!DYNARRAY_ENSURE_INT(&scene->materials, &scene->mat_count,
+			&scene->mat_cap, sizeof(t_material)))
+		return (-1);
+	scene->materials[scene->mat_count] = scene->materials[src_id];
+	scene->materials[scene->mat_count].name = NULL;
+	return (scene->mat_count++);
+}
+
 /*
 ** Finds a material by name.
 ** Returns -1 if not found.

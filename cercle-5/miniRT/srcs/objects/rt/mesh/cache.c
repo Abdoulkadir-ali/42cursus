@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 05:27:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 06:07:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,12 +171,14 @@ static bool	restore_geo(t_mesh *mesh, const t_mesh_snap *snap)
 static bool	restore_one(const t_mesh_snap *snap, t_scene *scene)
 {
 	t_mesh	mesh;
+	int		inst_mat;
 
 	ft_memset(&mesh, 0, sizeof(t_mesh));
 	mesh.transform.scale = vec3(1, 1, 1);
 	mesh.vertex_count = snap->vertex_count;
 	mesh.tri_count = snap->tri_count;
-	mesh.mat_id = snap->mat_id;
+	inst_mat = scene_clone_material(scene, snap->mat_id);
+	mesh.mat_id = (inst_mat >= 0) ? inst_mat : snap->mat_id;
 	mesh.name = ft_strdup(snap->name ? snap->name : "");
 	if (!mesh.name)
 		return (false);
