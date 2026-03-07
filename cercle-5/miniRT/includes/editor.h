@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:51:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 20:54:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,18 @@ void		draw_scene_panel_bg(struct s_gui *gui);
 void		draw_scene_panel_text(struct s_gui *gui);
 bool		scene_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
 bool		scene_panel_handle_scroll(struct s_gui *gui, int button);
+
+/* srcs/gui/editor/inspector.c */
+const char	*type_name_str(t_type type);
+void		draw_inspector_bg(struct s_gui *gui);
+void		draw_inspector_text(struct s_gui *gui);
+bool		inspector_handle_click(struct s_gui *gui, t_vec2i mouse);
+
+/* srcs/gui/editor/transform_panel.c */
+t_transform	*get_selected_transform(struct s_gui *gui);
+void		draw_transform_panel(struct s_gui *gui, int x);
+
+/* srcs/gui/editor/material_panel.c */
+void		draw_material_panel_text(struct s_gui *gui, int x);
 
 #endif
