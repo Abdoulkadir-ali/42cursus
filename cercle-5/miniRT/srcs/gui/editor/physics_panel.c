@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 23:49:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ void	draw_physics_panel(t_gui *gui, t_physics_body *phys, int x)
 	y += 32;
 	draw_vec3_label(gui, x, y, "Angular vel", phys->angular_velocity);
 	y += 36;
-	sl[0] = (t_islider){"Mass (kg)", 0.01, 1000.0, &phys->mass};
-	sl[1] = (t_islider){"Elasticity", 0.0, 1.0, &phys->elasticity};
-	sl[2] = (t_islider){"Friction", 0.0, 1.0, &phys->friction};
+	sl[0] = (t_islider){"Mass (kg)", SL_MASS_MIN, SL_MASS_MAX, &phys->mass};
+	sl[1] = (t_islider){"Elasticity", SL_ELAST_MIN, SL_ELAST_MAX, &phys->elasticity};
+	sl[2] = (t_islider){"Friction", SL_FRIC_MIN, SL_FRIC_MAX, &phys->friction};
 	i = 0;
 	while (i < 3)
 	{
@@ -75,9 +75,9 @@ bool	physics_panel_handle_click(t_gui *gui, t_vec2i mouse,
 		return (false);
 	x = gui->win.disp_w - gui->inspector.width;
 	y = 140;
-	sl[0] = (t_islider){"Mass (kg)", 0.01, 1000.0, &phys->mass};
-	sl[1] = (t_islider){"Elasticity", 0.0, 1.0, &phys->elasticity};
-	sl[2] = (t_islider){"Friction", 0.0, 1.0, &phys->friction};
+	sl[0] = (t_islider){"Mass (kg)", SL_MASS_MIN, SL_MASS_MAX, &phys->mass};
+	sl[1] = (t_islider){"Elasticity", SL_ELAST_MIN, SL_ELAST_MAX, &phys->elasticity};
+	sl[2] = (t_islider){"Friction", SL_FRIC_MIN, SL_FRIC_MAX, &phys->friction};
 	i = 0;
 	while (i < 3)
 	{

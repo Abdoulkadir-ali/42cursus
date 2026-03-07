@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 21:44:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 23:49:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,15 @@ static void	build_tr_sliders(t_transform *tr, t_islider *sl, int *count)
 	int	i;
 
 	i = 0;
-	sl[i++] = (t_islider){"Pos X", -500.0, 500.0, &tr->pos.x};
-	sl[i++] = (t_islider){"Pos Y", -500.0, 500.0, &tr->pos.y};
-	sl[i++] = (t_islider){"Pos Z", -500.0, 500.0, &tr->pos.z};
-	sl[i++] = (t_islider){"Pitch", -3.14159, 3.14159, &tr->rotation.pitch};
-	sl[i++] = (t_islider){"Yaw", -3.14159, 3.14159, &tr->rotation.yaw};
-	sl[i++] = (t_islider){"Roll", -3.14159, 3.14159, &tr->rotation.roll};
-	sl[i++] = (t_islider){"Scale X", 0.01, 50.0, &tr->scale.x};
-	sl[i++] = (t_islider){"Scale Y", 0.01, 50.0, &tr->scale.y};
-	sl[i++] = (t_islider){"Scale Z", 0.01, 50.0, &tr->scale.z};
+	sl[i++] = (t_islider){"Pos X", SL_POS_MIN, SL_POS_MAX, &tr->pos.x};
+	sl[i++] = (t_islider){"Pos Y", SL_POS_MIN, SL_POS_MAX, &tr->pos.y};
+	sl[i++] = (t_islider){"Pos Z", SL_POS_MIN, SL_POS_MAX, &tr->pos.z};
+	sl[i++] = (t_islider){"Pitch", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.pitch};
+	sl[i++] = (t_islider){"Yaw", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.yaw};
+	sl[i++] = (t_islider){"Roll", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.roll};
+	sl[i++] = (t_islider){"Scale X", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+	sl[i++] = (t_islider){"Scale Y", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
+	sl[i++] = (t_islider){"Scale Z", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.z};
 	*count = i;
 }
 

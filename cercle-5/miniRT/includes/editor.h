@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 23:49:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,45 @@
 # define CRUD_PANEL_H   98
 # define CRUD_BTN_H     22
 # define CRUD_BTN_W     52
+
+/* --- Slider Range Constants --- */
+/* Transform */
+# define SL_POS_MIN     -500.0
+# define SL_POS_MAX      500.0
+# define SL_ROT_MIN     -3.14159
+# define SL_ROT_MAX      3.14159
+# define SL_SCALE_MIN    0.01
+# define SL_SCALE_MAX    50.0
+/* Material */
+# define SL_ROUGH_MIN    0.0
+# define SL_ROUGH_MAX    1.0
+# define SL_METAL_MIN    0.0
+# define SL_METAL_MAX    1.0
+# define SL_OPAC_MIN     0.0
+# define SL_OPAC_MAX     1.0
+# define SL_REFL_MIN     0.0
+# define SL_REFL_MAX     1.0
+# define SL_IOR_MIN      1.0
+# define SL_IOR_MAX      3.0
+# define SL_COL_MIN      0.0
+# define SL_COL_MAX      255.0
+# define SL_EMIT_MIN     0.0
+# define SL_EMIT_MAX     255.0
+/* Light */
+# define SL_INTENSITY_MIN  0.0
+# define SL_INTENSITY_MAX  5.0
+# define SL_CUTOFF_MIN     0.0
+# define SL_CUTOFF_MAX     90.0
+/* Ambient */
+# define SL_AMB_MIN      0.0
+# define SL_AMB_MAX      2.0
+/* Physics */
+# define SL_MASS_MIN     0.01
+# define SL_MASS_MAX     1000.0
+# define SL_ELAST_MIN    0.0
+# define SL_ELAST_MAX    1.0
+# define SL_FRIC_MIN     0.0
+# define SL_FRIC_MAX     1.0
 
 /* 2. MODULE TYPES */
 

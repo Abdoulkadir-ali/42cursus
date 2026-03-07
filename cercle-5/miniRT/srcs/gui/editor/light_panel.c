@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 23:49:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ static void	build_light_sliders(t_light *lt, t_islider *sl, int *count)
 	int	i;
 
 	i = 0;
-	sl[i++] = (t_islider){"Intensity", 0.0, 5.0, &lt->brightness};
-	sl[i++] = (t_islider){"Color R", 0.0, 1.0, &lt->rgb.x};
-	sl[i++] = (t_islider){"Color G", 0.0, 1.0, &lt->rgb.y};
-	sl[i++] = (t_islider){"Color B", 0.0, 1.0, &lt->rgb.z};
+	sl[i++] = (t_islider){"Intensity", SL_INTENSITY_MIN, SL_INTENSITY_MAX, &lt->brightness};
+	sl[i++] = (t_islider){"Color R", SL_COL_MIN, SL_COL_MAX, &lt->rgb.x};
+	sl[i++] = (t_islider){"Color G", SL_COL_MIN, SL_COL_MAX, &lt->rgb.y};
+	sl[i++] = (t_islider){"Color B", SL_COL_MIN, SL_COL_MAX, &lt->rgb.z};
 	if (lt->type == LIGHT_SPOT)
-		sl[i++] = (t_islider){"Cutoff (deg)", 0.0, 90.0, &lt->cutoff};
+		sl[i++] = (t_islider){"Cutoff (deg)", SL_CUTOFF_MIN, SL_CUTOFF_MAX, &lt->cutoff};
 	*count = i;
 }
 
@@ -86,10 +86,10 @@ void	draw_ambient_panel(t_gui *gui, int x)
 
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		x + 8, 88, COL_HOVER, "AMBIENT LIGHT");
-	sl[0] = (t_islider){"Intensity", 0.0, 2.0, &gui->scene->ambient.brightness};
-	sl[1] = (t_islider){"Color R", 0.0, 1.0, &gui->scene->ambient.rgb.x};
-	sl[2] = (t_islider){"Color G", 0.0, 1.0, &gui->scene->ambient.rgb.y};
-	sl[3] = (t_islider){"Color B", 0.0, 1.0, &gui->scene->ambient.rgb.z};
+	sl[0] = (t_islider){"Intensity", SL_AMB_MIN, SL_AMB_MAX, &gui->scene->ambient.brightness};
+	sl[1] = (t_islider){"Color R", SL_COL_MIN, SL_COL_MAX, &gui->scene->ambient.rgb.x};
+	sl[2] = (t_islider){"Color G", SL_COL_MIN, SL_COL_MAX, &gui->scene->ambient.rgb.y};
+	sl[3] = (t_islider){"Color B", SL_COL_MIN, SL_COL_MAX, &gui->scene->ambient.rgb.z};
 	y = 104;
 	i = 0;
 	while (i < 4)
@@ -110,10 +110,10 @@ bool	ambient_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	if (!gui->scene)
 		return (false);
 	x = gui->win.disp_w - gui->inspector.width;
-	sl[0] = (t_islider){"Intensity", 0.0, 2.0, &gui->scene->ambient.brightness};
-	sl[1] = (t_islider){"Color R", 0.0, 1.0, &gui->scene->ambient.rgb.x};
-	sl[2] = (t_islider){"Color G", 0.0, 1.0, &gui->scene->ambient.rgb.y};
-	sl[3] = (t_islider){"Color B", 0.0, 1.0, &gui->scene->ambient.rgb.z};
+	sl[0] = (t_islider){"Intensity", SL_AMB_MIN, SL_AMB_MAX, &gui->scene->ambient.brightness};
+	sl[1] = (t_islider){"Color R", SL_COL_MIN, SL_COL_MAX, &gui->scene->ambient.rgb.x};
+	sl[2] = (t_islider){"Color G", SL_COL_MIN, SL_COL_MAX, &gui->scene->ambient.rgb.y};
+	sl[3] = (t_islider){"Color B", SL_COL_MIN, SL_COL_MAX, &gui->scene->ambient.rgb.z};
 	y = 104;
 	i = 0;
 	while (i < 4)
