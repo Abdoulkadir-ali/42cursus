@@ -77,6 +77,7 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)
 	{
+		pick_at_mouse(gui, mouse);
 		gui->cam_ctrl.mouse_left_pressed = true;
 		gui->cam_ctrl.last_mouse = mouse;
 	}

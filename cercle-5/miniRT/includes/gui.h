@@ -19,8 +19,8 @@
 # define BUTTON_SCROLL_UP 4
 # define BUTTON_SCROLL_DOWN 5
 
-# define RENDER_W 1920
-# define RENDER_H 1080
+# define RENDER_W 1200
+# define RENDER_H 700
 #
 /* Auto-refresh configuration:
  * - Set `GUI_AUTOREFRESH_PHYSICS` to 1 to force a render every frame while
@@ -72,6 +72,9 @@ struct s_widget
 	int value;
 	int color;
 	double dvalue;
+	double dmin;
+	double dmax;
+	void *target;
 	t_widget_callback on_click;
 	t_widget_callback on_change;
 	void *userdata;
@@ -98,6 +101,9 @@ void	widget_handle_key(struct s_gui *gui, int keycode);
 void	widget_init_default(t_gui *gui);
 
 void	widget_draw_checkbox(struct s_gui *gui, t_widget *w);
+
+/* Editor state types (depends on t_widget being defined above) */
+# include "editor.h"
 
 /* 3. MODULE TYPES */
 struct s_camera_controller
@@ -194,6 +200,10 @@ struct s_gui
 	int phys_max_steps;
 	int ambient_color;
 	double ambient_intensity;
+	t_selection		selection;
+	t_inspector		inspector;
+	t_scene_panel	scene_panel;
+	t_slider_state	slider_state;
 };
 
 typedef struct s_key_action
