@@ -13,41 +13,45 @@
 #include "debug.h"
 #include "raytracing.h"
 
-void	print_bvh_node(t_bvh_node *n, int depth)
+void	print_bvh_node(const t_bvh *b, int idx, int depth)
 {
-	int			i;
-	const char	*leaf;
+	const t_bvh_node	*n;
+	int					i;
 
-	if (!n)
+	if (!b || idx < 0 || idx >= b->num_nodes)
 		return ;
-	leaf = "yes";
-	if (n->left || n->right)
-		leaf = "no";
+	n = &b->nodes[idx];
 	i = 0;
 	while (i < depth)
 	{
 		printf("  ");
 		i++;
 	}
-	printf("node(refs: %zu, leaf: %s, bbox: ", n->num_refs, leaf);
-	print_vec3(&n->bbox.min);
+	if (n->count > 0)
+		printf("leaf(refs[%d..%d], bbox: ", n->left_or_first,
+			n->left_or_first + n->count - 1);
+	else
+		printf("internal(left=%d, right=%d, bbox: ", idx + 1,
+			n->left_or_first);
+	print_vec3((t_vec3 *)&n->bbox.min);
 	printf(" to ");
-	print_vec3(&n->bbox.max);
+	print_vec3((t_vec3 *)&n->bbox.max);
 	printf(")\n");
-	if (n->left)
-		print_bvh_node(n->left, depth + 1);
-	if (n->right)
-		print_bvh_node(n->right, depth + 1);
+	if (n->count == 0)
+	{
+		print_bvh_node(b, idx + 1, depth + 1);
+		print_bvh_node(b, n->left_or_first, depth + 1);
+	}
 }
 
 void	print_bvh(t_bvh *b)
 {
 	if (!b)
 		return ;
-	printf("bvh(root:\n");
-	if (b->root)
-		print_bvh_node(b->root, 1);
+	printf("bvh(nodes=%d, refs=%d\n", b->num_nodes, b->num_refs);
+	if (b->num_nodes > 0)
+		print_bvh_node(b, 0, 1);
 	else
-		printf("  NULL\n");
+		printf("  empty\n");
 	printf(")\n");
 }

@@ -77,6 +77,7 @@ typedef struct s_material_params
 t_material		*create_material(t_material_params params);
 
 int					scene_add_material(t_scene *scene, t_vec3 color);
+int					scene_add_fresh_material(t_scene *scene, t_vec3 color);
 int					scene_find_material(t_scene *scene, const char *name);
 int					scene_add_named_material(t_scene *scene, const char *name);
 int					scene_add_checker_material(t_scene *scene, t_vec3 color_a,

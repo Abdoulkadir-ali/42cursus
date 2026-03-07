@@ -12,31 +12,32 @@
 
 #include "raytracing.h"
 
-/*
-** Helper function to process leaf nodes for occlusion.
-*/
-static bool	process_occluded_leaf(const t_bvh_node *node, const t_ray *ray,
-		const t_bvh *bvh, double max_t)
+static bool	process_leaf_occluded(const t_bvh *bvh, int node_idx,
+			const t_ray *ray, double max_t)
 {
-	size_t	i;
-	t_hit	temp;
+	const t_bvh_node	*node;
+	t_hit				temp;
+	int					i;
+	int					end;
 
-	i = 0;
-	while (i < node->num_refs)
+	node = &bvh->nodes[node_idx];
+	i = node->left_or_first;
+	end = i + node->count;
+	while (i < end)
 	{
-		if (node->refs[i].type == TYPE_MESH)
+		if (bvh->refs[i].type == TYPE_MESH)
 		{
-			if (mesh_occluded(ray, &bvh->scene->meshes[node->refs[i].index],
+			if (mesh_occluded(ray, &bvh->scene->meshes[bvh->refs[i].index],
 					max_t))
 				return (true);
 		}
-		else if (node->refs[i].type == TYPE_ANIM)
+		else if (bvh->refs[i].type == TYPE_ANIM)
 		{
 			if (mesh_occluded(ray,
-					&bvh->scene->animated[node->refs[i].index].base, max_t))
+					&bvh->scene->animated[bvh->refs[i].index].base, max_t))
 				return (true);
 		}
-		else if (intersect_object(ray, bvh->scene, node->refs[i], &temp)
+		else if (intersect_object(ray, bvh->scene, bvh->refs[i], &temp)
 			&& temp.t > EPSILON && temp.t < max_t)
 			return (true);
 		i++;
@@ -44,45 +45,37 @@ static bool	process_occluded_leaf(const t_bvh_node *node, const t_ray *ray,
 	return (false);
 }
 
-/*
-** Iterative traversal for shadow rays (any hit).
-*/
-static void	process_internal_node_occluded(t_bvh_node *node,
-		t_bvh_node *stack[128], int *ptr)
-{
-	if (*ptr >= 126)
-		return ;
-	if (node->right)
-		stack[(*ptr)++] = node->right;
-	if (node->left)
-		stack[(*ptr)++] = node->left;
-}
-
 static bool	traverse_bvh_occluded(const t_bvh *bvh, const t_ray *ray,
 		double max_t)
 {
-	t_bvh_node	*stack[128];
-	int			ptr;
-	t_bvh_node	*node;
-	t_vec2		t_times;
-	bool		intersects;
+	int					stack[128];
+	int					ptr;
+	int					i;
+	const t_bvh_node	*node;
+	double				tmin;
+	double				tmax;
 
 	ptr = 0;
-	stack[ptr++] = bvh->root;
+	stack[ptr++] = 0;
 	while (ptr > 0)
 	{
-		node = stack[--ptr];
-		intersects = aabb_intersect_fast(&node->bbox, ray, &t_times.x,
-				&t_times.y);
-		t_times.x = (t_times.x < 0.0) ? 0.0 : t_times.x;
-		if (!intersects || t_times.x > max_t)
+		i = stack[--ptr];
+		node = &bvh->nodes[i];
+		if (!aabb_intersect_fast(&node->bbox, ray, &tmin, &tmax))
 			continue ;
-		if (node->left || node->right)
-			process_internal_node_occluded(node, stack, &ptr);
-		else
+		if (tmin < 0.0)
+			tmin = 0.0;
+		if (tmin > max_t)
+			continue ;
+		if (node->count > 0)
 		{
-			if (process_occluded_leaf(node, ray, bvh, max_t))
+			if (process_leaf_occluded(bvh, i, ray, max_t))
 				return (true);
+		}
+		else if (ptr < 126)
+		{
+			stack[ptr++] = node->left_or_first;
+			stack[ptr++] = i + 1;
 		}
 	}
 	return (false);
@@ -90,7 +83,7 @@ static bool	traverse_bvh_occluded(const t_bvh *bvh, const t_ray *ray,
 
 bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 {
-	if (!bvh || !bvh->root)
+	if (!bvh || bvh->num_nodes == 0)
 		return (false);
 	return (traverse_bvh_occluded(bvh, ray, max_t));
 }

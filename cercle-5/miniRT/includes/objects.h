@@ -638,8 +638,10 @@ typedef struct s_fbx_ascii_ctx
 t_parse_obj				dispatch_scan(t_parser *p, char *id);
 t_parse_obj				parse_mesh_entry(t_parser *p, t_type type);
 bool					handle_mesh_injection(t_parse_obj *obj, const char *ext,
-							t_scene *scene);
-bool					process_object(t_scene *scene, t_parse_obj obj);
+							t_scene *scene);bool					mesh_cache_has(const char *path);
+bool					mesh_cache_save(const char *path, t_scene *scene,
+						int start_mesh);
+bool					mesh_cache_restore(const char *path, t_scene *scene);bool					process_object(t_scene *scene, t_parse_obj obj);
 const char				*rt_get_extension(const char *path);
 bool					rt_init_parser(t_rt_ctx *ctx, const char *path);
 bool					rt_parse_loop(t_scene *scene, t_rt_ctx *ctx);

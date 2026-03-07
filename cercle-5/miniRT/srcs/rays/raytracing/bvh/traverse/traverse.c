@@ -12,35 +12,63 @@
 
 #include "raytracing.h"
 
+static void	process_leaf_flat(const t_bvh *bvh, int node_idx,
+			const t_ray *ray, t_hit *hit)
+{
+	const t_bvh_node	*node;
+	t_hit				temp;
+	int					i;
+	int					end;
+
+	node = &bvh->nodes[node_idx];
+	i = node->left_or_first;
+	end = i + node->count;
+	while (i < end)
+	{
+		temp.t = MAX_VALUE;
+		temp.ref.type = TYPE_NONE;
+		if (intersect_object(ray, bvh->scene, bvh->refs[i], &temp)
+			&& temp.t < hit->t)
+			*hit = temp;
+		i++;
+	}
+}
+
 static bool	traverse_bvh(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 {
-	t_bvh_node	*stack[128];
-	int			ptr;
-	t_bvh_node	*node;
-	t_vec2		t_times;
-	bool		intersects;
+	int					stack[128];
+	int					ptr;
+	int					i;
+	const t_bvh_node	*node;
+	double				tmin;
+	double				tmax;
 
 	ptr = 0;
-	stack[ptr++] = bvh->root;
+	stack[ptr++] = 0;
 	while (ptr > 0)
 	{
-		node = stack[--ptr];
-		intersects = aabb_intersect_fast(&node->bbox, ray, &t_times.x,
-				&t_times.y);
-		t_times.x = (t_times.x < 0.0) ? 0.0 : t_times.x;
-		if (!intersects || t_times.x > hit->t)
+		i = stack[--ptr];
+		node = &bvh->nodes[i];
+		if (!aabb_intersect_fast(&node->bbox, ray, &tmin, &tmax))
 			continue ;
-		if (node->left || node->right)
-			process_internal_node(node, stack, &ptr, ray);
-		else
-			process_leaf(node, ray, bvh, hit);
+		if (tmin < 0.0)
+			tmin = 0.0;
+		if (tmin > hit->t)
+			continue ;
+		if (node->count > 0)
+			process_leaf_flat(bvh, i, ray, hit);
+		else if (ptr < 126)
+		{
+			stack[ptr++] = node->left_or_first;
+			stack[ptr++] = i + 1;
+		}
 	}
 	return (hit->ref.type != TYPE_NONE);
 }
 
 bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 {
-	if (!bvh || !bvh->root)
+	if (!bvh || bvh->num_nodes == 0)
 		return (false);
 	hit->t = MAX_VALUE;
 	hit->ref.type = TYPE_NONE;

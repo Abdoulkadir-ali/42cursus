@@ -12,7 +12,7 @@
 
 #include "raytracing.h"
 
-void	node_destroy(t_bvh_node *node)
+void	node_destroy(t_bvh_tmp_node *node)
 {
 	if (!node)
 		return ;

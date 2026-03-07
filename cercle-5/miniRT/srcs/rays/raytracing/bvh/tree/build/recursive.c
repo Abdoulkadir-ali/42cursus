@@ -36,7 +36,7 @@ static void	sort_items_by_axis(t_build_item *items, size_t count, int axis)
 		qsort(items, count, sizeof(t_build_item), compare_z);
 }
 
-static int	build_children(t_bvh_node *node, t_build_item *items,
+static int	build_children(t_bvh_tmp_node *node, t_build_item *items,
 		t_split_info info, size_t count)
 {
 	sort_items_by_axis(items, count, info.axis);
@@ -52,14 +52,14 @@ static int	build_children(t_bvh_node *node, t_build_item *items,
 	return (1);
 }
 
-static t_bvh_node	*build_internal_node(t_build_item *items, size_t count,
+static t_bvh_tmp_node	*build_internal_node(t_build_item *items, size_t count,
 		t_aabb bbox)
 {
-	t_bvh_node		*node;
+	t_bvh_tmp_node		*node;
 	t_split_info	info;
 	double			p_area;
 
-	node = ft_calloc(1, sizeof(t_bvh_node));
+	node = ft_calloc(1, sizeof(t_bvh_tmp_node));
 	if (!node)
 		return (NULL);
 	node->bbox = bbox;
@@ -78,7 +78,7 @@ static t_bvh_node	*build_internal_node(t_build_item *items, size_t count,
 	return (node);
 }
 
-t_bvh_node	*build_recursive(t_build_item *items, size_t count)
+t_bvh_tmp_node	*build_recursive(t_build_item *items, size_t count)
 {
 	t_aabb	bbox;
 

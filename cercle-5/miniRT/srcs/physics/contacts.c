@@ -39,14 +39,18 @@ static int	check_leaf_ref(t_scene *s, t_sphere *sphere, int idx,
 }
 
 static int	check_leaf(t_scene *s, t_sphere *sp, int idx,
-		t_bvh_node *node, t_contact *c, int count, int max)
+		const t_bvh *bvh, int node_idx, t_contact *c, int count, int max)
 {
-	size_t	i;
+	const t_bvh_node	*node;
+	int					i;
+	int					end;
 
-	i = 0;
-	while (i < node->num_refs && count < max)
+	node = &bvh->nodes[node_idx];
+	i = node->left_or_first;
+	end = i + node->count;
+	while (i < end && count < max)
 	{
-		if (check_leaf_ref(s, sp, idx, node->refs[i], &c[count]))
+		if (check_leaf_ref(s, sp, idx, bvh->refs[i], &c[count]))
 			count++;
 		i++;
 	}
@@ -56,26 +60,27 @@ static int	check_leaf(t_scene *s, t_sphere *sp, int idx,
 static int	traverse_bvh_contacts(t_scene *s, int idx, t_sphere *sp,
 		t_aabb saabb, t_contact *c, int count, int max)
 {
-	t_bvh_node	*stack[128];
-	int			ptr;
-	t_bvh_node	*node;
+	int					stack[128];
+	int					ptr;
+	int					i;
+	const t_bvh_node	*node;
 
 	ptr = 0;
-	if (s->bvh && s->bvh->root)
-		stack[ptr++] = s->bvh->root;
+	if (!s->bvh || s->bvh->num_nodes == 0)
+		return (count);
+	stack[ptr++] = 0;
 	while (ptr > 0 && count < max)
 	{
-		node = stack[--ptr];
-		if (!node || !aabb_overlap(node->bbox, saabb))
+		i = stack[--ptr];
+		node = &s->bvh->nodes[i];
+		if (!aabb_overlap(node->bbox, saabb))
 			continue ;
-		if (node->num_refs > 0)
-			count = check_leaf(s, sp, idx, node, c, count, max);
-		else
+		if (node->count > 0)
+			count = check_leaf(s, sp, idx, s->bvh, i, c, count, max);
+		else if (ptr < 126)
 		{
-			if (node->left)
-				stack[ptr++] = node->left;
-			if (node->right)
-				stack[ptr++] = node->right;
+			stack[ptr++] = node->left_or_first;
+			stack[ptr++] = i + 1;
 		}
 	}
 	return (count);

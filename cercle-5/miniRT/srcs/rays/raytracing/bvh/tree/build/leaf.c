@@ -14,12 +14,12 @@
 /* ************************************************************************** */
 #include "raytracing.h"
 
-t_bvh_node	*init_leaf_node(t_build_item *items, size_t count)
+t_bvh_tmp_node	*init_leaf_node(t_build_item *items, size_t count)
 {
-	t_bvh_node	*node;
+	t_bvh_tmp_node	*node;
 	size_t		i;
 
-	node = ft_calloc(1, sizeof(t_bvh_node));
+	node = ft_calloc(1, sizeof(t_bvh_tmp_node));
 	if (!node)
 		return (NULL);
 	node->bbox = aabb_create_empty();

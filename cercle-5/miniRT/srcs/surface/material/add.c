@@ -18,20 +18,8 @@
 ** Adds a material to the scene.
 ** reused existing identical materials to save memory.
 */
-int	scene_add_material(t_scene *scene, t_vec3 color)
+int	scene_add_fresh_material(t_scene *scene, t_vec3 color)
 {
-	int			i;
-	t_material	*m;
-
-	i = 0;
-	while (i < scene->mat_count)
-	{
-		m = &scene->materials[i];
-		if (m->albedo_map.type == TEX_SOLID
-			&& vec3_compare(m->albedo_map.color_a, color))
-			return (i);
-		i++;
-	}
 	if (!DYNARRAY_ENSURE_INT(&scene->materials, &scene->mat_count,
 			&scene->mat_cap, sizeof(t_material)))
 		return (-1);
@@ -83,6 +71,24 @@ int	scene_add_material(t_scene *scene, t_vec3 color)
 	}
 
 	return (scene->mat_count++);
+}
+
+int	scene_add_material(t_scene *scene, t_vec3 color)
+{
+	int			i;
+	t_material	*m;
+
+	i = 0;
+	while (i < scene->mat_count)
+	{
+		m = &scene->materials[i];
+		if (m->albedo_map.type == TEX_SOLID
+			&& vec3_compare(m->albedo_map.color_a, color)
+			&& vec3_mag_sq(m->emission) == 0.0)
+			return (i);
+		i++;
+	}
+	return (scene_add_fresh_material(scene, color));
 }
 
 /*

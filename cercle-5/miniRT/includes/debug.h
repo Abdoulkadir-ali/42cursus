@@ -52,7 +52,7 @@ void	print_ray(t_ray *r);
 void	print_hit(t_hit *h);
 void	print_parser(t_parser *p);
 void	print_gui(t_gui *g);
-void	print_bvh_node(t_bvh_node *n, int depth);
+void print_bvh_node(const t_bvh *b, int idx, int depth);
 void	print_bvh(t_bvh *b);
 
 /* Mesh Specific Debug */

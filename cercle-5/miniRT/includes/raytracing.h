@@ -28,17 +28,27 @@ struct s_bvh_ref
 
 struct s_bvh_node
 {
-	t_aabb bbox;
-	struct s_bvh_node *left;
-	struct s_bvh_node *right;
-	t_bvh_ref *refs;
-	size_t num_refs;
+	t_aabb	bbox;
+	int	left_or_first;
+	int	count;
 };
+
+typedef struct s_bvh_tmp_node
+{
+	t_aabb				bbox;
+	struct s_bvh_tmp_node	*left;
+	struct s_bvh_tmp_node	*right;
+	t_bvh_ref			*refs;
+	size_t				num_refs;
+}	t_bvh_tmp_node;
 
 struct s_bvh
 {
-	t_scene *scene;
-	t_bvh_node *root;
+	t_scene		*scene;
+	t_bvh_node	*nodes;
+	t_bvh_ref	*refs;
+	int			num_nodes;
+	int			num_refs;
 };
 
 typedef struct s_entry_point
@@ -114,11 +124,11 @@ typedef struct s_cap_params
 /* srcs/raytracing/bvh/tree/ */
 t_bvh			*bvh_create(t_scene *scene);
 void			bvh_destroy(t_bvh *bvh);
-void			node_destroy(t_bvh_node *node);
+void			node_destroy(t_bvh_tmp_node *node);
 t_split_info	find_best_split(t_build_item *items, size_t count,
 				double p_area);
-t_bvh_node		*init_leaf_node(t_build_item *items, size_t count);
-t_bvh_node		*build_recursive(t_build_item *items, size_t count);
+t_bvh_tmp_node	*init_leaf_node(t_build_item *items, size_t count);
+t_bvh_tmp_node	*build_recursive(t_build_item *items, size_t count);
 size_t			collect_objects(t_scene *scene, t_build_item *items);
 int				compare_x(const void *a, const void *b);
 int				compare_y(const void *a, const void *b);
@@ -143,36 +153,8 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
 bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t);
 bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 			t_hit *hit);
-void	process_leaf(const t_bvh_node *node, const t_ray *ray, const t_bvh *bvh,
-			t_hit *hit);
-void	process_internal_node(t_bvh_node *node, t_bvh_node *stack[128],
-			int *ptr, const t_ray *ray);
-
-typedef struct s_child_intersections
-{
-	t_vec2 left_t;
-	t_vec2 right_t;
-	bool h_l;
-	bool h_r;
-} t_child_intersections;
-
-typedef struct s_push_data
-{
-	t_bvh_node *left;
-	t_bvh_node *right;
-	t_vec2 left_t;
-	t_vec2 right_t;
-	bool h_l;
-	bool h_r;
-} t_push_data;
 
 t_vec3	clamp_color(t_vec3 color);
-t_child_intersections	get_child_intersections(const t_bvh_node *node,
-				const t_ray *ray);
-void	push_both_children(t_bvh_node *stack[128], int *ptr,
-			t_push_data *data);
-void	push_single_child(t_bvh_node *stack[128], int *ptr, t_bvh_node *child);
-void	push_children(t_bvh_node *stack[128], int *ptr, t_push_data *data);
 
 /* srcs/raytracing/trace/ */
 void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction);

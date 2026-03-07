@@ -33,27 +33,15 @@ void	debug_print_mesh_aabb(const t_ray *ray, double tmin, double tmax)
 
 void	debug_print_bvh_build(int tri_count, int depth, bool start)
 {
-	if (start)
-		printf("DEBUG: Starting BVH build for %d triangles...\n", tri_count);
-	else
-		printf("DEBUG: BVH Build depth %d: Finished processing %d items\n",
-			depth, tri_count);
-	fflush(stdout);
+	(void)tri_count;
+	(void)depth;
+	(void)start;
 }
 
 void	debug_print_mesh_bake(const t_mesh *mesh, bool start)
 {
-	const char	*name;
-
-	name = "OBJ";
-	if (mesh->name)
-		name = mesh->name;
-	if (start)
-		printf("DEBUG: Starting Mesh bake for '%s'...\n", name);
-	else
-		printf("DEBUG: Mesh '%s' bake complete (%d vertices transformed)\n",
-			name, mesh->vertex_count);
-	fflush(stdout);
+	(void)mesh;
+	(void)start;
 }
 
 void	debug_print_triangle_test(int tri_idx, const t_vec3 *v)

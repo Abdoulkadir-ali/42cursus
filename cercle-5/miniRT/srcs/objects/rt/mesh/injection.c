@@ -66,23 +66,14 @@ static void	apply_mesh_material(t_scene *scene, t_parse_obj *obj, int mat_id, bo
 	}
 }
 
-bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
+static void	apply_material(t_parse_obj *obj, t_scene *scene,
+		int start_mesh, int start_anim)
 {
 	int		mat_id;
 	bool	force;
-	int		start_anim;
-	int		start_mesh;
 
 	force = false;
-	start_anim = scene->anim_count;
-	start_mesh = scene->mesh_count;
-	if (!parse_mesh_file(obj, ext, scene))
-	{
-		fprintf(stderr, "Error: Failed to parse %s\n",
-			obj->data.mesh_info.path);
-		return (false);
-	}
-	mat_id = scene_add_material(scene, obj->data.mesh_info.color);
+	mat_id = scene_add_fresh_material(scene, obj->data.mesh_info.color);
 	if (vec3_mag_sq(obj->data.mesh_info.emission) > 0.0)
 	{
 		scene->materials[mat_id].emission = obj->data.mesh_info.emission;
@@ -92,5 +83,30 @@ bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
 		apply_anim_material(scene, obj, mat_id, force, start_anim);
 	else if (obj->type == TYPE_MESH && scene->mesh_count > start_mesh)
 		apply_mesh_material(scene, obj, mat_id, force, start_mesh);
+}
+
+bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
+{
+	int		start_anim;
+	int		start_mesh;
+
+	start_anim = scene->anim_count;
+	start_mesh = scene->mesh_count;
+	if (mesh_cache_has(obj->data.mesh_info.path))
+	{
+		if (!mesh_cache_restore(obj->data.mesh_info.path, scene))
+			return (false);
+	}
+	else
+	{
+		if (!parse_mesh_file(obj, ext, scene))
+		{
+			fprintf(stderr, "Error: Failed to parse %s\n",
+				obj->data.mesh_info.path);
+			return (false);
+		}
+		mesh_cache_save(obj->data.mesh_info.path, scene, start_mesh);
+	}
+	apply_material(obj, scene, start_mesh, start_anim);
 	return (true);
 }
