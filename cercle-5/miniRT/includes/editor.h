@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 21:44:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 22:24:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@
 # define INSPECTOR_W    280
 # define SCENE_PANEL_W  220
 # define ROW_H          24
+# define CRUD_PANEL_H   98
+# define CRUD_BTN_H     22
+# define CRUD_BTN_W     52
 
 /* 2. MODULE TYPES */
 
@@ -123,5 +126,17 @@ bool		try_islider_click(struct s_gui *gui, t_vec2i mouse,
 			t_vec2i pos, t_islider sl);
 void		update_inline_drag(struct s_gui *gui, int mouse_x);
 void		end_inline_drag(struct s_gui *gui);
+
+/* srcs/gui/editor/crud.c */
+void		editor_add_sphere(struct s_gui *gui);
+void		editor_add_plane(struct s_gui *gui);
+void		editor_add_cylinder(struct s_gui *gui);
+void		editor_add_cone(struct s_gui *gui);
+void		editor_add_light(struct s_gui *gui);
+void		editor_delete_selected(struct s_gui *gui);
+
+/* srcs/gui/editor/crud_ui.c */
+void		draw_crud_buttons(struct s_gui *gui);
+bool		crud_handle_click(struct s_gui *gui, t_vec2i mouse);
 
 #endif

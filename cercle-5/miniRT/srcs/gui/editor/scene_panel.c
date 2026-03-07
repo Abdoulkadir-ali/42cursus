@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:51:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 22:24:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ void	draw_scene_panel_text(t_gui *gui)
 		return ;
 	mlx_string_put(gui->win.mlx, gui->win.win, 12, 24, COL_ACCENT, "SCENE");
 	draw_scene_rows(gui);
+	draw_crud_buttons(gui);
 }
 
 bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
@@ -154,6 +155,8 @@ bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		return (false);
 	if (mouse.x < 0 || mouse.x >= gui->scene_panel.width)
 		return (false);
+	if (mouse.y >= gui->win.disp_h - CRUD_PANEL_H)
+		return (crud_handle_click(gui, mouse));
 	row = (mouse.y - 32 + gui->scene_panel.scroll) / ROW_H;
 	total = count_scene_rows(gui->scene);
 	if (row < 0 || row >= total)
