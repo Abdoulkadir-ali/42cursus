@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "editor.h"
 #include "physics.h"
 #include "raytracing.h"
 
@@ -82,7 +83,8 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 		if (!inspector_handle_click(gui, mouse)
 			&& !scene_panel_handle_click(gui, mouse))
 			pick_at_mouse(gui, mouse);
-		gui->cam_ctrl.mouse_left_pressed = true;
+		if (!gui->slider_state.dragging)
+			gui->cam_ctrl.mouse_left_pressed = true;
 		gui->cam_ctrl.last_mouse = mouse;
 	}
 	else if (button == BUTTON_MIDDLE)
@@ -101,7 +103,10 @@ int	mouse_release(int button, t_vec2i mouse, t_gui *gui)
 {
 	(void)mouse;
 	if (button == BUTTON_LEFT)
+	{
+		end_inline_drag(gui);
 		gui->cam_ctrl.mouse_left_pressed = false;
+	}
 	else if (button == BUTTON_MIDDLE)
 		gui->cam_ctrl.mouse_middle_pressed = false;
 	return (0);

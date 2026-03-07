@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:54:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 21:44:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,24 @@ typedef struct s_scene_panel
 	int		hovered_row;
 }	t_scene_panel;
 
+typedef struct s_islider
+{
+	const char	*label;
+	double		min;
+	double		max;
+	double		*ptr;
+}	t_islider;
+
 typedef struct s_slider_state
 {
 	bool			dragging;
 	int				drag_start_x;
 	double			drag_start_val;
+	double			*value_ptr;
+	double			dmin;
+	double			dmax;
+	int				track_x;
+	int				track_w;
 	struct s_widget	*target;
 }	t_slider_state;
 
@@ -99,5 +112,16 @@ void		draw_transform_panel(struct s_gui *gui, int x);
 
 /* srcs/gui/editor/material_panel.c */
 void		draw_material_panel_text(struct s_gui *gui, int x);
+bool		material_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
+
+/* srcs/gui/editor/transform_panel.c */
+bool		transform_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
+
+/* srcs/gui/editor/slider_inline.c */
+void		draw_slider_row(struct s_gui *gui, t_vec2i pos, t_islider sl);
+bool		try_islider_click(struct s_gui *gui, t_vec2i mouse,
+			t_vec2i pos, t_islider sl);
+void		update_inline_drag(struct s_gui *gui, int mouse_x);
+void		end_inline_drag(struct s_gui *gui);
 
 #endif

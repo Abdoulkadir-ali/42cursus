@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:54:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 21:44:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,11 @@ bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 			gui->inspector.tab = TAB_TRANSFORM;
 		else
 			gui->inspector.tab = TAB_MATERIAL;
+		return (true);
 	}
+	if (gui->inspector.tab == TAB_MATERIAL)
+		material_panel_handle_click(gui, mouse);
+	else
+		transform_panel_handle_click(gui, mouse);
 	return (true);
 }

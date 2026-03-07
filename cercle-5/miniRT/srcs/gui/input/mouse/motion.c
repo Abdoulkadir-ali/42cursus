@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "editor.h"
 
 static void	handle_mouse_rotation(t_gui *gui, int dx, int dy)
 {
@@ -46,9 +47,15 @@ int	mouse_motion(t_vec2i mouse, t_gui *gui)
 
 	if (!gui)
 		return (0);
-	delta = vec2i_sub(mouse, gui->cam_ctrl.last_mouse);
 	gui->input.mouse_x = mouse.x;
 	gui->input.mouse_y = mouse.y;
+	if (gui->slider_state.dragging)
+	{
+		update_inline_drag(gui, mouse.x);
+		gui->cam_ctrl.last_mouse = mouse;
+		return (0);
+	}
+	delta = vec2i_sub(mouse, gui->cam_ctrl.last_mouse);
 	if (gui->cam_ctrl.mouse_left_pressed)
 		handle_mouse_rotation(gui, delta.x, delta.y);
 	else if (gui->cam_ctrl.mouse_middle_pressed)

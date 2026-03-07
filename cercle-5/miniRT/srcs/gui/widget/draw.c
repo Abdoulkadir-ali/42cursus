@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 06:25:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:07:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 21:44:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	widget_draw_all(t_gui *gui)
 			widget_draw_checkbox(gui, w);
 		else if (w->type == WIDGET_LABEL)
 			widget_draw_label(gui, w);
+		else if (w->type == WIDGET_SLIDER)
+			widget_draw_slider(gui, w);
 		w = w->next;
 	}
 }

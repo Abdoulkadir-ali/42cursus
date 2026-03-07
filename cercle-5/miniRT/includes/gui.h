@@ -101,6 +101,7 @@ void	widget_handle_key(struct s_gui *gui, int keycode);
 void	widget_init_default(t_gui *gui);
 
 void	widget_draw_checkbox(struct s_gui *gui, t_widget *w);
+void	widget_draw_slider(struct s_gui *gui, t_widget *w);
 
 /* Editor state types (depends on t_widget being defined above) */
 # include "editor.h"

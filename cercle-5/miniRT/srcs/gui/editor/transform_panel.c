@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:55:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 21:44:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,33 +35,29 @@ t_transform	*get_selected_transform(t_gui *gui)
 	return (NULL);
 }
 
-static void	draw_double_row(t_gui *gui, int x, int y,
-	const char *label, double value)
+static void	build_tr_sliders(t_transform *tr, t_islider *sl, int *count)
 {
-	char	buf[64];
+	int	i;
 
-	snprintf(buf, sizeof(buf), "  %s %.3f", label, value);
-	mlx_string_put(gui->win.mlx, gui->win.win, x + 8, y, COL_TEXT, buf);
-}
-
-static void	draw_vec3_section(t_gui *gui, int x, int *y,
-	const char *sec, t_vec3 *v)
-{
-	mlx_string_put(gui->win.mlx, gui->win.win, x + 8, *y, COL_HOVER,
-		(char *)sec);
-	*y += 20;
-	draw_double_row(gui, x, *y, "X:", v->x);
-	*y += 18;
-	draw_double_row(gui, x, *y, "Y:", v->y);
-	*y += 18;
-	draw_double_row(gui, x, *y, "Z:", v->z);
-	*y += 24;
+	i = 0;
+	sl[i++] = (t_islider){"Pos X", -500.0, 500.0, &tr->pos.x};
+	sl[i++] = (t_islider){"Pos Y", -500.0, 500.0, &tr->pos.y};
+	sl[i++] = (t_islider){"Pos Z", -500.0, 500.0, &tr->pos.z};
+	sl[i++] = (t_islider){"Pitch", -3.14159, 3.14159, &tr->rotation.pitch};
+	sl[i++] = (t_islider){"Yaw", -3.14159, 3.14159, &tr->rotation.yaw};
+	sl[i++] = (t_islider){"Roll", -3.14159, 3.14159, &tr->rotation.roll};
+	sl[i++] = (t_islider){"Scale X", 0.01, 50.0, &tr->scale.x};
+	sl[i++] = (t_islider){"Scale Y", 0.01, 50.0, &tr->scale.y};
+	sl[i++] = (t_islider){"Scale Z", 0.01, 50.0, &tr->scale.z};
+	*count = i;
 }
 
 void	draw_transform_panel(t_gui *gui, int x)
 {
 	t_transform	*tr;
-	t_vec3		rot_deg;
+	t_islider	sl[9];
+	int			count;
+	int			i;
 	int			y;
 
 	tr = get_selected_transform(gui);
@@ -71,11 +67,41 @@ void	draw_transform_panel(t_gui *gui, int x)
 			x + 8, 90, COL_TEXT, "No transform");
 		return ;
 	}
-	y = 90;
-	rot_deg = vec3(tr->rotation.pitch * 57.296,
-			tr->rotation.yaw * 57.296,
-			tr->rotation.roll * 57.296);
-	draw_vec3_section(gui, x, &y, "Position", &tr->pos);
-	draw_vec3_section(gui, x, &y, "Rotation deg", &rot_deg);
-	draw_vec3_section(gui, x, &y, "Scale", &tr->scale);
+	mlx_string_put(gui->win.mlx, gui->win.win,
+		x + 8, 88, COL_HOVER, "TRANSFORM");
+	build_tr_sliders(tr, sl, &count);
+	y = 104;
+	i = 0;
+	while (i < count)
+	{
+		draw_slider_row(gui, vec2i(x + 8, y), sl[i]);
+		y += 30;
+		i++;
+	}
+}
+
+bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
+{
+	t_transform	*tr;
+	t_islider	sl[9];
+	int			count;
+	int			i;
+	int			y;
+	int			x;
+
+	tr = get_selected_transform(gui);
+	if (!tr)
+		return (false);
+	x = gui->win.disp_w - gui->inspector.width;
+	build_tr_sliders(tr, sl, &count);
+	y = 104;
+	i = 0;
+	while (i < count)
+	{
+		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i]))
+			return (true);
+		y += 30;
+		i++;
+	}
+	return (false);
 }
