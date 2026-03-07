@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mat4_transform.c                                   :+:      :+:    :+:   */
+/*   transform.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/06 20:07:32 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/06 20:07:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_mat4	mat4_translation(t_vec3 v)
 {
-	t_mat4	m;
+	t_mat4 m;
 
 	m = mat4_identity();
 	m.m[3][0] = v.x;
@@ -25,7 +25,7 @@ t_mat4	mat4_translation(t_vec3 v)
 
 t_mat4	mat4_scaling(t_vec3 v)
 {
-	t_mat4	m;
+	t_mat4 m;
 
 	m = mat4_identity();
 	m.m[0][0] = v.x;
@@ -36,10 +36,10 @@ t_mat4	mat4_scaling(t_vec3 v)
 
 t_mat4	mat4_rotation(t_rotator r)
 {
-	t_mat4	m;
-	t_vec3	ang;
-	t_vec3	c;
-	t_vec3	s;
+	t_mat4 m;
+	t_vec3 ang;
+	t_vec3 c;
+	t_vec3 s;
 
 	m = mat4_identity();
 	ang = vec3(r.pitch, r.yaw, r.roll);
@@ -60,9 +60,8 @@ t_mat4	mat4_rotation(t_rotator r)
 
 t_mat4	mat4_transform(t_transform t)
 {
-	t_mat4	m;
+	t_mat4 m;
 
-	/* M = S * R * T for Row-Major (V * M) */
 	m = mat4_mul(mat4_scaling(t.scale), mat4_rotation(t.rotation));
 	m = mat4_mul(m, mat4_translation(t.pos));
 	return (m);
@@ -70,13 +69,13 @@ t_mat4	mat4_transform(t_transform t)
 
 t_mat4	mat4_inverse_transform(t_transform t)
 {
-	t_mat4	inv_t;
-	t_mat4	inv_r;
-	t_mat4	inv_s;
-	t_mat4	r;
-	t_mat4	m;
-	int		i;
-	int		j;
+	t_mat4 inv_t;
+	t_mat4 inv_r;
+	t_mat4 inv_s;
+	t_mat4 r;
+	t_mat4 m;
+	int i;
+	int j;
 
 	r = mat4_rotation(t.rotation);
 	inv_r = mat4_identity();
@@ -88,11 +87,14 @@ t_mat4	mat4_inverse_transform(t_transform t)
 			inv_r.m[i][j] = r.m[j][i];
 	}
 	inv_t = mat4_translation(vec3_scale(t.pos, -1.0));
-	if (fabs(t.scale.x) < 1e-6) t.scale.x = 1.0;
-	if (fabs(t.scale.y) < 1e-6) t.scale.y = 1.0;
-	if (fabs(t.scale.z) < 1e-6) t.scale.z = 1.0;
-	inv_s = mat4_scaling(vec3(1.0 / t.scale.x, 1.0 / t.scale.y, 1.0 / t.scale.z));
-	/* M^-1 = (S*R*T)^-1 = T^-1 * R^-1 * S^-1 */
+	if (fabs(t.scale.x) < 1e-6)
+		t.scale.x = 1.0;
+	if (fabs(t.scale.y) < 1e-6)
+		t.scale.y = 1.0;
+	if (fabs(t.scale.z) < 1e-6)
+		t.scale.z = 1.0;
+	inv_s = mat4_scaling(vec3(1.0 / t.scale.x, 1.0 / t.scale.y, 1.0
+				/ t.scale.z));
 	m = mat4_mul(inv_t, inv_r);
 	m = mat4_mul(m, inv_s);
 	return (m);

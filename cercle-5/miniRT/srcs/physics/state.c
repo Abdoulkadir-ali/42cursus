@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.c                                            :+:      :+:    :+:   */
+/*   update.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@student.42.fr>    +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/16 18:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/02/16 18:00:00 by antigravity      ###   ########.fr       */
+/*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "physics_internal.h"
+
+#include "physics.h"
 
 /* Global singleton for physics configuration */
 static t_physics_state g_phys = {
     .gravity = {0, -9.81, 0, 0},
-    .global_damping = 0.5, /* Higher damping for stability */
+    .global_damping = 0.02, /* Light air resistance */
     .time_scale = 1.0,
 	.mesh_simplify_collision = 1
 };

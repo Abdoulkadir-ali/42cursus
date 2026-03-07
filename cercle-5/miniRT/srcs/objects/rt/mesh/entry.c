@@ -23,11 +23,13 @@ t_parse_obj	parse_mesh_entry(t_parser *p, t_type type)
 	obj.type = type;
 	obj.data.mesh_info.path = ft_strdup(path);
 	obj.data.mesh_info.color = vec3(255, 255, 255);
+	obj.data.mesh_info.emission = vec3(0, 0, 0);
 	if (!rt_parse_mesh_position(p, &obj))
 		return (rt_mesh_fail(obj));
 	if (!rt_parse_mesh_rotation(p, &obj))
 		return (rt_mesh_fail(obj));
 	rt_parse_scale(p, &obj);
 	rt_parse_mesh_color(p, &obj);
+	rt_parse_mesh_emission(p, &obj);
 	return (obj);
 }

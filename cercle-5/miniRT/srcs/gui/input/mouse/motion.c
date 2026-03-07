@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 16:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 16:35:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/06 20:08:09 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/06 20:08:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,29 @@ static void	handle_mouse_zoom_drag(t_gui *gui, int dy)
 	gui->render.dirty = true;
 }
 
-int	mouse_motion(int x, int y, t_gui *gui)
+static int	mlx_mouse_motion(int x, int y, t_gui *gui)
 {
-	int	dx;
-	int	dy;
+	return (mouse_motion(vec2i(x, y), gui));
+}
 
-	dx = x - gui->cam_ctrl.last_mouse_x;
-	dy = y - gui->cam_ctrl.last_mouse_y;
-	gui->input.mouse_x = x;
-	gui->input.mouse_y = y;
+int (*mouse_motion_hook(void))(int, int, t_gui *)
+{
+	return (mlx_mouse_motion);
+}
+
+int	mouse_motion(t_vec2i mouse, t_gui *gui)
+{
+	t_vec2i	delta;
+
+	if (!gui)
+		return (0);
+	delta = vec2i_sub(mouse, gui->cam_ctrl.last_mouse);
+	gui->input.mouse_x = mouse.x;
+	gui->input.mouse_y = mouse.y;
 	if (gui->cam_ctrl.mouse_left_pressed)
-		handle_mouse_rotation(gui, dx, dy);
+		handle_mouse_rotation(gui, delta.x, delta.y);
 	else if (gui->cam_ctrl.mouse_middle_pressed)
-		handle_mouse_zoom_drag(gui, dy);
-	gui->cam_ctrl.last_mouse_x = x;
-	gui->cam_ctrl.last_mouse_y = y;
+		handle_mouse_zoom_drag(gui, delta.y);
+	gui->cam_ctrl.last_mouse = mouse;
 	return (0);
 }

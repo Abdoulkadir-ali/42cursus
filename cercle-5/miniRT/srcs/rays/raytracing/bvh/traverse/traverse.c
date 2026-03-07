@@ -27,6 +27,7 @@ static bool	traverse_bvh(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 		node = stack[--ptr];
 		intersects = aabb_intersect_fast(&node->bbox, ray, &t_times.x,
 				&t_times.y);
+		t_times.x = (t_times.x < 0.0) ? 0.0 : t_times.x;
 		if (!intersects || t_times.x > hit->t)
 			continue ;
 		if (node->left || node->right)

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "parser.h"
-#include <math.h>
 
 static int	parse_sign(t_parser *p)
 {

@@ -45,29 +45,31 @@ int	key_press(int keycode, t_gui *gui)
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
-	// Toggle physics simulation with 'P'
+	/* Toggle physics simulation with P */
 	if (keycode == XK_p || keycode == XK_P)
 	{
 		gui->physics_enabled = !gui->physics_enabled;
 		gui->render.dirty = true;
 		return (0);
 	}
-	// Adjust ambient intensity with '[' and ']'
+	/* Adjust ambient intensity with [ and ] */
 	if (keycode == XK_bracketleft)
 	{
 		gui->ambient_intensity -= 0.05;
-		if (gui->ambient_intensity < 0.0) gui->ambient_intensity = 0.0;
+		if (gui->ambient_intensity < 0.0)
+			gui->ambient_intensity = 0.0;
 		gui->render.dirty = true;
 		return (0);
 	}
 	if (keycode == XK_bracketright)
 	{
 		gui->ambient_intensity += 0.05;
-		if (gui->ambient_intensity > 2.0) gui->ambient_intensity = 2.0;
+		if (gui->ambient_intensity > 2.0)
+			gui->ambient_intensity = 2.0;
 		gui->render.dirty = true;
 		return (0);
 	}
-	// Adjust ambient color with 'R', 'G', 'B' (shift for +, no shift for -)
+	/* Adjust ambient color with R, G, B */
 	if (keycode == XK_r)
 	{
 		int c = (gui->ambient_color >> 16) & 0xFF;

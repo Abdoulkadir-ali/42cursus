@@ -73,6 +73,14 @@ int	scene_add_material(t_scene *scene, t_vec3 color)
 		scene->materials[scene->mat_count].specular = 0.9;
 		scene->materials[scene->mat_count].shininess = 128.0;
 	}
+	else if (color.x == 255 && color.y == 255 && color.z == 0) /* Yellow = Emissive */
+	{
+		scene->materials[scene->mat_count].emission = vec3(255, 255, 150);
+		scene->materials[scene->mat_count].albedo_map.color_a
+			= vec3(255, 255, 150);
+		scene->materials[scene->mat_count].specular = 0.0;
+		scene->materials[scene->mat_count].shininess = 1.0;
+	}
 
 	return (scene->mat_count++);
 }

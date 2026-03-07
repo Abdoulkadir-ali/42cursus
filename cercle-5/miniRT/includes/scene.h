@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mat4.c                                             :+:      :+:    :+:   */
+/*   scene.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 11:45:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/06 20:30:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,12 @@
 struct				s_scene
 {
 	char			*name;
-	void			*mlx; /* Added for texture loading */
-
-	/* Memory Pools */
+	void			*mlx;
+	
 	t_sphere		*spheres;
 	int				sphere_count;
 	int				sphere_cap;
-
+	
 	t_plane			*planes;
 	int				plane_count;
 	int				plane_cap;

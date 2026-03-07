@@ -16,7 +16,6 @@
 # include "core.h"
 # include "debug.h"
 # include "objects.h"
-
 # include "scene.h"
 
 typedef struct s_parser
@@ -79,6 +78,7 @@ typedef struct s_json_array
 {
 	t_json_value	**elements;
 	size_t			count;
+	size_t			cap;
 }	t_json_array;
 
 struct s_json_value
@@ -105,4 +105,14 @@ double			json_as_number(t_json_value *value);
 bool			json_as_bool(t_json_value *value);
 int				json_get_int(t_json_value *obj, const char *key);
 
+
+void			json_skip_ws(const char **s);
+size_t			json_hash_key(const char *key, size_t size);
+void			*json_realloc(void *ptr, size_t old_size, size_t new_size);
+void			json_hash_insert(t_json_object *obj, char *key, t_json_value *val);
+char			*json_parse_inner_string(const char **s);
+t_json_value	*json_parse_inner_object(const char **s);
+t_json_value	*json_parse_inner_array(const char **s);
+t_json_value	*json_parse_inner_number(const char **s);
+t_json_value	*json_parse_inner_value(const char **s);
 #endif

@@ -74,6 +74,7 @@ static bool	traverse_bvh_occluded(const t_bvh *bvh, const t_ray *ray,
 		node = stack[--ptr];
 		intersects = aabb_intersect_fast(&node->bbox, ray, &t_times.x,
 				&t_times.y);
+		t_times.x = (t_times.x < 0.0) ? 0.0 : t_times.x;
 		if (!intersects || t_times.x > max_t)
 			continue ;
 		if (node->left || node->right)

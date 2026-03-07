@@ -3,23 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   update.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@student.42.fr>    +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/16 18:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/02/16 18:00:00 by antigravity      ###   ########.fr       */
+/*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "physics_internal.h"
+#include "physics.h"
+#include "objects.h"
+#include "scene.h"
+#include "debug.h"
 
 /* 
  * Main Entry Point for Physics Subsystem
  * Pipeline:
- * 1. Integrate: Apply forces (gravity) and update velocities/positions tentatively.
- * 2. Broadphase: Rebuild BVH and generate candidate pairs.
- * 3. Narrowphase: Generate contact manifold.
- * 4. Solve: Iteratively resolve velocity and position constraints.
- * 5. Finalize: (Optional) Apply sleeping, clear forces.
+ * 1. Integrate: Apply forces (gravity) and update velocities/positions.
+ * 2. Collision Detection: Generate contact manifold via BVH broadphase.
+ * 3. Solve: Iteratively resolve velocity and position constraints.
+ * Note: BVH is rebuilt by the caller (update_physics_step in loop.c)
+ *       after all substeps to avoid redundant rebuilds.
  */
 void update_physics(t_scene *scene, double dt)
 {
@@ -32,20 +35,31 @@ void update_physics(t_scene *scene, double dt)
     
     /* 1. Integrate Forces & Velocity */
     integrate_bodies(scene, dt);
+    phys_debug_spheres(scene);
 
-    /* 2 & 3. Collision Detection (Broad + Narrow) */
-    /* Rebuild TLAS for current frame positions */
+    /* 2. Collision Detection (Broad + Narrow) */
     if (scene->bvh)
         bvh_destroy(scene->bvh);
     scene->bvh = bvh_create(scene);
-    
     num_contacts = generate_contacts(scene, contacts, MAX_CONTACTS);
 
-    /* 4. Solve Constraints */
+    /* Debug: print collision info */
+    ft_print_debug("Physics: %d contacts, dt=%.4f\n", num_contacts, dt);
+    i = 0;
+    while (i < num_contacts)
+    {
+        ft_print_debug("  C[%d] pen=%.4f n=(%.2f,%.2f,%.2f) "
+            "ra=(%.2f,%.2f,%.2f)\n", i, contacts[i].penetration,
+            contacts[i].normal.x, contacts[i].normal.y,
+            contacts[i].normal.z, contacts[i].ra.x,
+            contacts[i].ra.y, contacts[i].ra.z);
+        i++;
+    }
+
+    /* 3. Solve Constraints */
     if (num_contacts > 0)
     {
         i = 0;
-        /* Iterative Solver */
         while (i < SOLVER_ITERATIONS)
         {
             solve_velocities(contacts, num_contacts);

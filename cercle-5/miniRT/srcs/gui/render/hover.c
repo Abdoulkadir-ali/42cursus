@@ -1,33 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hover.c                                            :+:      :+:    :+:   */
+/*   update.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/02/11 20:30:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+t_hover_cache	g_hover;
+
 /*
 ** Cache state for hover optimization (P4).
 */
-static struct s_hover_cache
-{
-	int		x;
-	int		y;
-	bool	active;
-	bool	hit;
-	long	last_frame;
-}	g_hover;
 
-/*
-** Updates hover state and draws panel if hit.
-** Returns true if a hit occurred (to draw text later).
-*/
 bool	update_hover(t_gui *gui, t_render_ctx *ctx)
 {
 	t_hit	hit;
@@ -46,8 +36,7 @@ bool	update_hover(t_gui *gui, t_render_ctx *ctx)
 	}
 	if (g_hover.active)
 	{
-		panel = (t_panel){g_hover.x + 16, g_hover.y + 16, 180, 40,
-			COL_BG, COL_HOVER};
+		panel = (t_panel){.x=g_hover.x+16, .y=g_hover.y+16, .w=180, .h=40, .bg=COL_BG, .brd=COL_HOVER, .pos=vec2i(g_hover.x+16,g_hover.y+16), .size=vec2i(180,40)};
 		draw_panel(gui, panel);
 		return (true);
 	}
@@ -63,9 +52,6 @@ void	draw_hover_text(t_gui *gui)
 	}
 }
 
-/*
-** Legacy wrapper if needed, or update render.c to use above.
-*/
 void	handle_hover(t_gui *gui, t_render_ctx *ctx)
 {
 	if (update_hover(gui, ctx))

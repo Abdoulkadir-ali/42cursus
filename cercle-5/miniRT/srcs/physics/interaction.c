@@ -1,16 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interaction.c                                      :+:      :+:    :+:   */
+/*   update.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: antigravity <antigravity@student.42.fr>    +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/16 20:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/02/16 20:00:00 by antigravity      ###   ########.fr       */
+/*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "physics_internal.h"
+#include "physics.h"
+#include "objects.h"
+#include "scene.h"
 #include "raytracing.h"
 
 /*

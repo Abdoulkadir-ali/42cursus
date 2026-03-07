@@ -5,41 +5,34 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 16:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 16:35:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/06 19:25:29 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/06 19:25:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-
-#include "raytracing.h"
 #include "physics.h"
-#include <math.h>
+#include "raytracing.h"
 
-static void shoot_force(t_gui *gui, int x, int y)
+static void	shoot_force(t_gui *gui, t_vec2i mouse)
 {
-	t_ray	ray;
-	double	scale;
-	double	aspect;
-	double	px, py;
-	t_vec3	dir;
+	t_ray	 ray;
+	double	 scale;
+	double	 aspect;
+	t_vec2	 p;
+	t_vec3	 dir;
 
-	if (!gui->scene) return;
-
-	/* 1. Generate Camera Ray */
+	if (!gui->scene)
+		return ;
 	scale = tan(gui->cam_ctrl.camera->fov * M_PI / 360.0);
 	aspect = (double)gui->win.width / (double)gui->win.height;
-	px = (2.0 * (x + 0.5) / gui->win.width - 1.0) * scale * aspect;
-	py = (1.0 - 2.0 * (y + 0.5) / gui->win.height) * scale;
-
+	p.x = (2.0 * (mouse.x + 0.5) / gui->win.width - 1.0) * scale * aspect;
+	p.y = (1.0 - 2.0 * (mouse.y + 0.5) / gui->win.height) * scale;
 	dir = vec3_add(gui->cam_ctrl.transform.forward,
-			vec3_add(vec3_scale(gui->cam_ctrl.transform.right, px),
-					 vec3_scale(gui->cam_ctrl.transform.up, py)));
+			vec3_add(vec3_scale(gui->cam_ctrl.transform.right, p.x),
+				vec3_scale(gui->cam_ctrl.transform.up, p.y)));
 	dir = vec3_norm(dir);
-	
 	ray_init(&ray, gui->cam_ctrl.transform.pos, dir);
-
-	/* 2. Delegate to Physics Engine */
 	physics_shoot_ray(gui->scene, ray, 10.0);
 }
 
@@ -59,38 +52,52 @@ static void	handle_scroll(int button, t_gui *gui)
 	}
 }
 
-int	mouse_click(int button, int x, int y, t_gui *gui)
+static int	mlx_mouse_click(int button, int x, int y, t_gui *gui)
 {
-	// Widget engine mouse handling
-	widget_handle_mouse(gui, button, x, y);
-	if (button == Button1)
+	return (mouse_click(button, vec2i(x, y), gui));
+}
+
+int	(*mouse_click_hook(void))(int, int, int, t_gui *)
+{
+	return (mlx_mouse_click);
+}
+
+static int	mlx_mouse_release(int button, int x, int y, t_gui *gui)
+{
+	return (mouse_release(button, vec2i(x, y), gui));
+}
+
+int	(*mouse_release_hook(void))(int, int, int, t_gui *)
+{
+	return (mlx_mouse_release);
+}
+
+int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
+{
+	widget_handle_mouse(gui, button, mouse);
+	if (button == BUTTON_LEFT)
 	{
 		gui->cam_ctrl.mouse_left_pressed = true;
-		gui->cam_ctrl.last_mouse_x = x;
-		gui->cam_ctrl.last_mouse_y = y;
+		gui->cam_ctrl.last_mouse = mouse;
 	}
-	else if (button == Button2)
+	else if (button == BUTTON_MIDDLE)
 	{
 		gui->cam_ctrl.mouse_middle_pressed = true;
-		gui->cam_ctrl.last_mouse_x = x;
-		gui->cam_ctrl.last_mouse_y = y;
+		gui->cam_ctrl.last_mouse = mouse;
 	}
-	else if (button == 3) /* Right Click */
-	{
-		shoot_force(gui, x, y);
-	}
+	else if (button == BUTTON_RIGHT)
+		shoot_force(gui, mouse);
 	else
 		handle_scroll(button, gui);
 	return (0);
 }
 
-int	mouse_release(int button, int x, int y, t_gui *gui)
+int	mouse_release(int button, t_vec2i mouse, t_gui *gui)
 {
-	(void)x;
-	(void)y;
-	if (button == Button1)
+	(void)mouse;
+	if (button == BUTTON_LEFT)
 		gui->cam_ctrl.mouse_left_pressed = false;
-	else if (button == Button2)
+	else if (button == BUTTON_MIDDLE)
 		gui->cam_ctrl.mouse_middle_pressed = false;
 	return (0);
 }

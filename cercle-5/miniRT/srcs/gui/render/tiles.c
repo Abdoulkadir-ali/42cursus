@@ -31,7 +31,7 @@ static void	render_tile(t_render_ctx *ctx, int id)
 		v.pixel_ptr = v.row_ptr;
 		while (v.x < v.tx + TILE_SIZE && v.x < ctx->gui->win.width)
 		{
-			process_pixel(ctx, v.x, v.y, v.pixel_ptr);
+			process_pixel(ctx, vec2i(v.x, v.y), v.pixel_ptr);
 			v.x += ctx->step;
 			v.pixel_ptr += v.bpp_step;
 		}
@@ -57,24 +57,24 @@ static void	*render_tile_worker(void *arg)
 	return (NULL);
 }
 
-static void	start_threads(pthread_t *threads, t_render_ctx *ctx)
+static void	start_threads(pthread_t *threads, t_render_ctx *ctx, int count)
 {
 	int	i;
 
 	i = 0;
-	while (i < THREAD_COUNT)
+	while (i < count)
 	{
 		pthread_create(&threads[i], NULL, render_tile_worker, ctx);
 		i++;
 	}
 }
 
-static void	join_threads(pthread_t *threads)
+static void	join_threads(pthread_t *threads, int count)
 {
 	int	i;
 
 	i = 0;
-	while (i < THREAD_COUNT)
+	while (i < count)
 	{
 		pthread_join(threads[i], NULL);
 		i++;
@@ -83,12 +83,22 @@ static void	join_threads(pthread_t *threads)
 
 void	render_tiles(t_render_ctx *ctx)
 {
-	pthread_t		threads[THREAD_COUNT];
+	pthread_t		*threads;
 	struct timeval	start;
 	struct timeval	end;
+	int				num_cores;
 
+	num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+	if (num_cores < 1)
+		num_cores = 1;
+	else if (num_cores > 128)
+		num_cores = 128;
+	threads = malloc(sizeof(pthread_t) * num_cores);
+	if (!threads)
+		return ;
 	gettimeofday(&start, NULL);
-	start_threads(threads, ctx);
-	join_threads(threads);
+	start_threads(threads, ctx, num_cores);
+	join_threads(threads, num_cores);
 	gettimeofday(&end, NULL);
+	free(threads);
 }

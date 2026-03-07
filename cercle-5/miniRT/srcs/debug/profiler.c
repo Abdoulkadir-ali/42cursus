@@ -42,9 +42,9 @@ void	prof_print_frame(void)
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	ms = (end.tv_sec - g_prof_start.tv_sec) * 1000.0
 		+ (end.tv_nsec - g_prof_start.tv_nsec) / 1e6;
-	printf("PROF[%d]: %.1fms (%.1f FPS) mesh=%ld aabb=%ld tri=%ld occ=%ld\n",
+	/* printf("PROF[%d]: %.1fms (%.1f FPS) mesh=%ld aabb=%ld tri=%ld occ=%ld\n",
 		g_prof_frame, ms, 1000.0 / ms,
-		g_mesh_calls, g_mesh_aabb_tests, g_mesh_tri_tests, g_mesh_occ_calls);
+		g_mesh_calls, g_mesh_aabb_tests, g_mesh_tri_tests, g_mesh_occ_calls); */
 	fflush(stdout);
 	if (g_frame_count < 1024)
 		g_frame_times[g_frame_count++] = ms;

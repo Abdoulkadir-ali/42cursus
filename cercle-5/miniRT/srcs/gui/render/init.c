@@ -74,7 +74,7 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	gui->win.width = RENDER_W;
 	gui->win.height = RENDER_H;
 	gui->win.mlx = mlx;
-	// --- Initialize new GUI state ---
+	/* Initialize new GUI state */
 	gui->physics_enabled = true;
 	/* physics timing defaults */
 	gui->phys_accumulator = 0.0;

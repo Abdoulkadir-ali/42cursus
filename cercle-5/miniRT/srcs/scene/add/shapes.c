@@ -14,7 +14,6 @@
 
 /*
 ** Adds a sphere to the scene.
-** Automatically creates/retrieves the material based on temp_color.
 */
 bool	scene_add_sphere(t_scene *scene, t_sphere sphere)
 {

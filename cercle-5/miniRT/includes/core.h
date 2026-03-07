@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXTSTD_H
-# define EXTSTD_H
+#ifndef CORE_H
+# define CORE_H
 
 /* std */
 # include <X11/X.h>
@@ -44,7 +44,6 @@
 # define BVH_BINS 16
 
 /* 2. CONSTANTS */
-# define THREAD_COUNT 12
 # define TILE_SIZE 32
 # define ZOOM_SPEED 2.0
 # define MOUSE_SENSITIVITY 0.005
@@ -80,7 +79,8 @@ typedef enum e_type
 typedef enum e_light_type
 {
 	LIGHT_POINT,
-	LIGHT_SPOT
+	LIGHT_SPOT,
+	LIGHT_EMISSIVE
 }									t_light_type;
 
 /* Forward Declarations of Structs */
@@ -124,7 +124,6 @@ typedef struct s_vertex				t_vertex;
 typedef struct s_triangle			t_triangle;
 typedef struct s_heightmap			t_heightmap;
 typedef struct s_mesh_build_item	t_mesh_build_item;
-typedef struct s_scene				t_scene;
 typedef struct s_parser				t_parser;
 typedef struct s_obj_ctx			t_obj_ctx;
 typedef struct s_parse_obj			t_parse_obj;

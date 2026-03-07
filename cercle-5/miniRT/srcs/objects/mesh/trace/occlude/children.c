@@ -29,6 +29,8 @@ int	pick_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 	t_occ_child	c;
 
 	test_occ_children(mesh, node_idx, ray, &c);
+	c.tl_min = (c.tl_min < 0.0) ? 0.0 : c.tl_min;
+	c.tr_min = (c.tr_min < 0.0) ? 0.0 : c.tr_min;
 	if (c.hit_l && c.tl_min >= ctx->dist)
 		c.hit_l = false;
 	if (c.hit_r && c.tr_min >= ctx->dist)

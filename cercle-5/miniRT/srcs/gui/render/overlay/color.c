@@ -17,46 +17,40 @@
 */
 unsigned int	color_blend(unsigned int dst, int src, float alpha)
 {
-	int	r;
-	int	g;
-	int	b;
+	t_vec3i	rgb;
 
-	r = ((src >> 16) & 0xFF) * alpha + ((dst >> 16) & 0xFF) * (1.0 - alpha);
-	g = ((src >> 8) & 0xFF) * alpha + ((dst >> 8) & 0xFF) * (1.0 - alpha);
-	b = (src & 0xFF) * alpha + (dst & 0xFF) * (1.0 - alpha);
-	return ((r << 16) | (g << 8) | b);
+	rgb.x = ((src >> 16) & 0xFF) * alpha + ((dst >> 16) & 0xFF) * (1.0 - alpha);
+	rgb.y = ((src >> 8) & 0xFF) * alpha + ((dst >> 8) & 0xFF) * (1.0 - alpha);
+	rgb.z = (src & 0xFF) * alpha + (dst & 0xFF) * (1.0 - alpha);
+	return ((rgb.x << 16) | (rgb.y << 8) | rgb.z);
+}
+
+static t_vec2i	corner_delta(t_panel p, t_vec2i pos)
+{
+	int		r;
+	t_vec2i	d;
+
+	r = PANEL_RADIUS;
+	d = vec2i(0, 0);
+	if (pos.x < p.x + r && pos.y < p.y + r)
+		d = vec2i(p.x + r - pos.x, p.y + r - pos.y);
+	else if (pos.x >= p.x + p.w - r && pos.y < p.y + r)
+		d = vec2i(pos.x - (p.x + p.w - r - 1), p.y + r - pos.y);
+	else if (pos.x < p.x + r && pos.y >= p.y + p.h - r)
+		d = vec2i(p.x + r - pos.x, pos.y - (p.y + p.h - r - 1));
+	else if (pos.x >= p.x + p.w - r && pos.y >= p.y + p.h - r)
+		d = vec2i(pos.x - (p.x + p.w - r - 1), pos.y - (p.y + p.h - r - 1));
+	return (d);
 }
 
 static bool	is_rounded_corner(t_panel p, int i, int j)
 {
-	int	dx;
-	int	dy;
-	int	r;
+	int		r;
+	t_vec2i	d;
 
 	r = PANEL_RADIUS;
-	dx = 0;
-	dy = 0;
-	if (i < p.x + r && j < p.y + r)
-	{
-		dx = p.x + r - i;
-		dy = p.y + r - j;
-	}
-	else if (i >= p.x + p.w - r && j < p.y + r)
-	{
-		dx = i - (p.x + p.w - r - 1);
-		dy = p.y + r - j;
-	}
-	else if (i < p.x + r && j >= p.y + p.h - r)
-	{
-		dx = p.x + r - i;
-		dy = j - (p.y + p.h - r - 1);
-	}
-	else if (i >= p.x + p.w - r && j >= p.y + p.h - r)
-	{
-		dx = i - (p.x + p.w - r - 1);
-		dy = j - (p.y + p.h - r - 1);
-	}
-	return (dx * dx + dy * dy > r * r);
+	d = corner_delta(p, vec2i(i, j));
+	return (d.x * d.x + d.y * d.y > r * r);
 }
 
 int	panel_color(t_panel panel, int i, int j)

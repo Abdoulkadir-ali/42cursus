@@ -34,6 +34,13 @@ void	rt_parse_mesh_color(t_parser *p, t_parse_obj *obj)
 		parse_vec3(p, &obj->data.mesh_info.color);
 }
 
+void	rt_parse_mesh_emission(t_parser *p, t_parse_obj *obj)
+{
+	parser_skip_spaces(p);
+	if (parser_peek(p) && parser_peek(p) != '\n')
+		parse_vec3(p, &obj->data.mesh_info.emission);
+}
+
 t_parse_obj	rt_mesh_fail(t_parse_obj obj)
 {
 	free(obj.data.mesh_info.path);

@@ -30,9 +30,7 @@ struct				s_sphere
 	double			radius_sq;
 	int				mat_id;
 	t_vec3			temp_color;
-	/* physics state stored separately */
 	t_physics_body      phys;
-	/* Caching for deformation */
 	bool				is_deformed;
 	t_mat4				inv_transform;
 };
@@ -284,6 +282,7 @@ struct					s_mesh_info
 	char				*path;
 	t_transform			transform;
 	t_vec3				color;
+	t_vec3				emission;
 };
 
 struct					s_heightmap
@@ -651,6 +650,7 @@ t_parse_obj				rt_mesh_fail(t_parse_obj obj);
 bool					rt_parse_mesh_position(t_parser *p, t_parse_obj *obj);
 bool					rt_parse_mesh_rotation(t_parser *p, t_parse_obj *obj);
 void					rt_parse_mesh_color(t_parser *p, t_parse_obj *obj);
+void					rt_parse_mesh_emission(t_parser *p, t_parse_obj *obj);
 
 /* 3. PARSING */
 bool					fdf_get_dimensions(const char *path, int *w, int *h);

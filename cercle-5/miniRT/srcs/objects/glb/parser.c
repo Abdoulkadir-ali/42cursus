@@ -28,7 +28,27 @@ static void	init_mesh(t_mesh *mesh, const char *path)
 
 static void	finalize_mesh(t_scene *scene, t_mesh *mesh, const char *path)
 {
+	int		i;
+	double	tmp;
+
 	(void)path;
+	
+	/* Automatic Z-up to Y-up Conversion (+90 deg pitch) */
+	i = 0;
+	while (i < mesh->vertex_count)
+	{
+		tmp = mesh->vertices[i].y;
+		mesh->vertices[i].y = -mesh->vertices[i].z;
+		mesh->vertices[i].z = tmp;
+		if (mesh->normals)
+		{
+			tmp = mesh->normals[i].y;
+			mesh->normals[i].y = -mesh->normals[i].z;
+			mesh->normals[i].z = tmp;
+		}
+		i++;
+	}
+
 	if (mesh->skin_data && mesh->vertex_count > 0)
 	{
 		mesh->base_vertices = malloc(sizeof(t_vec3) * mesh->vertex_count);

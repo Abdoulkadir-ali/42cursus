@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   trace.c                                            :+:      :+:    :+:   */
+/*   update.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/02/11 20:30:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "gui.h"
 
@@ -44,20 +45,20 @@ static void	fill_block(t_render_ctx *ctx, t_fill_params *params)
 	}
 }
 
-void	process_pixel(t_render_ctx *ctx, int x, int y, char *pixel_addr)
+void	process_pixel(t_render_ctx *ctx, t_vec2i pos, char *pixel_addr)
 {
 	t_ray			ray;
 	t_vec3			color;
 	int				c_int;
 	t_fill_params	params;
 
-	make_camera_ray(ctx, x, y, &ray);
+	make_camera_ray(ctx, pos.x, pos.y, &ray);
 	color = trace_ray(ctx->gui->scene->bvh, &ray, ctx->gui->scene);
 	c_int = pack_color(color);
 	if (ctx->step > 1)
 	{
-		params.x = x;
-		params.y = y;
+		params.x = pos.x;
+		params.y = pos.y;
 		params.color = c_int;
 		params.pixel_addr = pixel_addr;
 		fill_block(ctx, &params);
