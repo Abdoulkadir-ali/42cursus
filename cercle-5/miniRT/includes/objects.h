@@ -135,8 +135,7 @@ typedef struct s_bone
 	char				*name;
 	int					node_idx;
 	int					parent;
-	t_mat4				local_transform;
-	t_mat4				bind_pose;
+	t_mat4				local_transform;	t_mat4				global_transform;	t_mat4				bind_pose;
 	t_mat4				inv_bind_pose;
 	t_transform_q		trs;
 }						t_bone;
@@ -162,6 +161,7 @@ struct					s_mesh
 	t_mat4				*bone_matrices;
 	t_vec3				*base_vertices;
 	t_vec3				*base_normals;
+	int					node_idx;
 	/* Physics */
 	t_physics_body		phys;
 	int					current_anim;
@@ -679,7 +679,10 @@ int						*glb_load_materials(t_scene *scene, t_json_value *json,
 							char *bin);
 bool					glb_read_buffers(int fd, char *buf[2]);
 void					glb_load_skeleton(t_mesh *mesh, t_json_value *json,
-							char *bin);
+							char *bin, int extra_count);
+int						glb_count_extra_anim_nodes(t_json_value *json);
+void					glb_fill_extra_anim_nodes(t_mesh *mesh,
+							t_json_value *json);
 void					glb_load_animations(t_scene *scene, t_json_value *json,
 							char *bin);
 

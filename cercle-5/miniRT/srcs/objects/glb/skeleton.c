@@ -93,7 +93,8 @@ static void	glb_log(const char *fmt, ...)
 	va_end(args);
 }
 
-void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin)
+void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin,
+		int extra_count)
 {
 	glb_log("GLB: Attempting to load skeleton...\n");
 	t_json_value	*skins = json_get(json, "skins");
@@ -112,11 +113,11 @@ void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin)
 	if (!joints) return;
 	int count = joints->u.array.count;
 	
-	glb_log("GLB: Building skeleton with %d bones (IBM acc: %d)...\n", 
-		count, (int)json_get_int(skin, "inverseBindMatrices"));
+	glb_log("GLB: Building skeleton with %d bones + %d extra (IBM acc: %d)...\n", 
+		count, extra_count, (int)json_get_int(skin, "inverseBindMatrices"));
 
-	mesh->skeleton = malloc(sizeof(t_bone) * count);
-	mesh->bone_matrices = malloc(sizeof(t_mat4) * count);
+	mesh->skeleton = malloc(sizeof(t_bone) * (count + extra_count));
+	mesh->bone_matrices = malloc(sizeof(t_mat4) * (count + extra_count));
 	mesh->bone_count = count;
 	
 	/* IBMs */
@@ -194,4 +195,149 @@ void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin)
 	}
 	free(node_map);
 	glb_log("GLB: Skeleton built successfully with %d bones.\n", count);
+}
+
+/* Count animation channel target nodes not already in the skin joints.
+** Called before glb_load_skeleton so we can malloc the right size upfront. */
+int	glb_count_extra_anim_nodes(t_json_value *json)
+{
+	t_json_value	*skins;
+	t_json_value	*joints;
+	t_json_value	*anims;
+	t_json_value	*channels;
+	int				*known;
+	int				extra;
+	int				node_idx;
+	int				i;
+
+	skins = json_get(json, "skins");
+	if (!skins) return (0);
+	joints = json_get(json_at(skins, 0), "joints");
+	if (!joints) return (0);
+	anims = json_get(json, "animations");
+	if (!anims || anims->u.array.count == 0) return (0);
+	channels = json_get(json_at(anims, 0), "channels");
+	if (!channels) return (0);
+	known = ft_calloc(65536, sizeof(int));
+	if (!known) return (0);
+	i = 0;
+	while (i < (int)joints->u.array.count)
+	{
+		node_idx = (int)json_as_number(json_at(joints, i));
+		if (node_idx >= 0 && node_idx < 65536)
+			known[node_idx] = 1;
+		i++;
+	}
+	extra = 0;
+	i = 0;
+	while (i < (int)channels->u.array.count)
+	{
+		node_idx = (int)json_get_int(
+			json_get(json_at(channels, i), "target"), "node");
+		if (node_idx >= 0 && node_idx < 65536 && !known[node_idx])
+		{
+			known[node_idx] = 1;
+			extra++;
+		}
+		i++;
+	}
+	free(known);
+	return (extra);
+}
+
+/* Fill the extra bone slots (after the joints) with animated non-joint nodes.
+** Called after glb_load_skeleton, which has already allocated the slots. */
+static void	fill_bone_trs(t_bone *bone, t_json_value *node)
+{
+	t_json_value	*jt;
+	t_json_value	*jr;
+	t_json_value	*js;
+	t_vec3			t;
+	t_vec3			r;
+	double			s[3];
+
+	t = vec3(0, 0, 0);
+	r.x = 0; r.y = 0; r.z = 0; r.w = 1;
+	s[0] = 1; s[1] = 1; s[2] = 1;
+	jt = json_get(node, "translation");
+	if (jt)
+		t = vec3(json_as_number(json_at(jt, 0)),
+			json_as_number(json_at(jt, 1)),
+			json_as_number(json_at(jt, 2)));
+	jr = json_get(node, "rotation");
+	if (jr)
+	{
+		r.x = json_as_number(json_at(jr, 0));
+		r.y = json_as_number(json_at(jr, 1));
+		r.z = json_as_number(json_at(jr, 2));
+		r.w = json_as_number(json_at(jr, 3));
+	}
+	js = json_get(node, "scale");
+	if (js)
+	{
+		s[0] = json_as_number(json_at(js, 0));
+		s[1] = json_as_number(json_at(js, 1));
+		s[2] = json_as_number(json_at(js, 2));
+	}
+	bone->trs.pos = t;
+	bone->trs.rot = r;
+	bone->trs.scale = vec3(s[0], s[1], s[2]);
+	bone->local_transform = make_transform(t, r, s);
+	bone->global_transform = bone->local_transform;
+	bone->inv_bind_pose = mat4_identity();
+	bone->bind_pose = bone->local_transform;
+}
+
+void	glb_fill_extra_anim_nodes(t_mesh *mesh, t_json_value *json)
+{
+	t_json_value	*skins;
+	t_json_value	*joints;
+	t_json_value	*anims;
+	t_json_value	*channels;
+	t_json_value	*nodes_arr;
+	t_bone			*bone;
+	int				*known;
+	int				node_idx;
+	int				i;
+
+	if (!mesh->skeleton) return ;
+	skins = json_get(json, "skins");
+	if (!skins) return ;
+	joints = json_get(json_at(skins, 0), "joints");
+	if (!joints) return ;
+	anims = json_get(json, "animations");
+	if (!anims || anims->u.array.count == 0) return ;
+	channels = json_get(json_at(anims, 0), "channels");
+	nodes_arr = json_get(json, "nodes");
+	if (!channels || !nodes_arr) return ;
+	known = ft_calloc(65536, sizeof(int));
+	if (!known) return ;
+	i = 0;
+	while (i < (int)joints->u.array.count)
+	{
+		node_idx = (int)json_as_number(json_at(joints, i));
+		if (node_idx >= 0 && node_idx < 65536)
+			known[node_idx] = 1;
+		i++;
+	}
+	i = 0;
+	while (i < (int)channels->u.array.count)
+	{
+		node_idx = (int)json_get_int(
+			json_get(json_at(channels, i), "target"), "node");
+		if (node_idx >= 0 && node_idx < 65536 && !known[node_idx])
+		{
+			known[node_idx] = 1;
+			bone = &mesh->skeleton[mesh->bone_count];
+			ft_memset(bone, 0, sizeof(t_bone));
+			bone->node_idx = node_idx;
+			bone->parent = -1;
+			fill_bone_trs(bone, json_at(nodes_arr, node_idx));
+			mesh->bone_matrices[mesh->bone_count] = mat4_identity();
+			mesh->bone_count++;
+		}
+		i++;
+	}
+	free(known);
+	glb_log("GLB: Skeleton extended to %d bones total.\n", mesh->bone_count);
 }
