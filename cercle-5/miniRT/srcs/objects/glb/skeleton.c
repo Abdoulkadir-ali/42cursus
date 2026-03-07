@@ -197,56 +197,55 @@ void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin,
 	glb_log("GLB: Skeleton built successfully with %d bones.\n", count);
 }
 
-/* Count animation channel target nodes not already in the skin joints.
-** Called before glb_load_skeleton so we can malloc the right size upfront. */
+/* Count non-joint GLTF nodes that reference a mesh — these need extra bone
+** slots so the rigid transform can follow an animated parent joint. */
 int	glb_count_extra_anim_nodes(t_json_value *json)
 {
 	t_json_value	*skins;
 	t_json_value	*joints;
-	t_json_value	*anims;
-	t_json_value	*channels;
-	int				*known;
+	t_json_value	*nodes_arr;
+	int				*is_joint;
 	int				extra;
 	int				node_idx;
+	int				nc;
 	int				i;
 
 	skins = json_get(json, "skins");
-	if (!skins) return (0);
+	if (!skins)
+		return (0);
 	joints = json_get(json_at(skins, 0), "joints");
-	if (!joints) return (0);
-	anims = json_get(json, "animations");
-	if (!anims || anims->u.array.count == 0) return (0);
-	channels = json_get(json_at(anims, 0), "channels");
-	if (!channels) return (0);
-	known = ft_calloc(65536, sizeof(int));
-	if (!known) return (0);
+	if (!joints)
+		return (0);
+	nodes_arr = json_get(json, "nodes");
+	if (!nodes_arr)
+		return (0);
+	nc = (int)nodes_arr->u.array.count;
+	is_joint = ft_calloc(65536, sizeof(int));
+	if (!is_joint)
+		return (0);
 	i = 0;
 	while (i < (int)joints->u.array.count)
 	{
 		node_idx = (int)json_as_number(json_at(joints, i));
 		if (node_idx >= 0 && node_idx < 65536)
-			known[node_idx] = 1;
+			is_joint[node_idx] = 1;
 		i++;
 	}
 	extra = 0;
 	i = 0;
-	while (i < (int)channels->u.array.count)
+	while (i < nc && i < 65536)
 	{
-		node_idx = (int)json_get_int(
-			json_get(json_at(channels, i), "target"), "node");
-		if (node_idx >= 0 && node_idx < 65536 && !known[node_idx])
-		{
-			known[node_idx] = 1;
+		if (!is_joint[i] && (int)json_get_int(json_at(nodes_arr, i), "mesh") >= 0)
 			extra++;
-		}
 		i++;
 	}
-	free(known);
+	free(is_joint);
 	return (extra);
 }
 
-/* Fill the extra bone slots (after the joints) with animated non-joint nodes.
-** Called after glb_load_skeleton, which has already allocated the slots. */
+/* For each non-joint GLTF node that references a mesh, add a bone slot and
+** link it to its nearest joint ancestor so the rigid transform inherits the
+** parent bone's animated global_transform automatically. */
 static void	fill_bone_trs(t_bone *bone, t_json_value *node)
 {
 	t_json_value	*jt;
@@ -292,52 +291,109 @@ void	glb_fill_extra_anim_nodes(t_mesh *mesh, t_json_value *json)
 {
 	t_json_value	*skins;
 	t_json_value	*joints;
-	t_json_value	*anims;
-	t_json_value	*channels;
 	t_json_value	*nodes_arr;
+	t_json_value	*node;
+	t_json_value	*children;
 	t_bone			*bone;
-	int				*known;
+	int				*is_joint;
+	int				*parent_map;
 	int				node_idx;
+	int				par_idx;
+	int				skel_idx;
+	int				child_idx;
+	int				nc;
 	int				i;
+	int				k;
 
-	if (!mesh->skeleton) return ;
+	if (!mesh->skeleton)
+		return ;
 	skins = json_get(json, "skins");
-	if (!skins) return ;
+	if (!skins)
+		return ;
 	joints = json_get(json_at(skins, 0), "joints");
-	if (!joints) return ;
-	anims = json_get(json, "animations");
-	if (!anims || anims->u.array.count == 0) return ;
-	channels = json_get(json_at(anims, 0), "channels");
+	if (!joints)
+		return ;
 	nodes_arr = json_get(json, "nodes");
-	if (!channels || !nodes_arr) return ;
-	known = ft_calloc(65536, sizeof(int));
-	if (!known) return ;
+	if (!nodes_arr)
+		return ;
+	nc = (int)nodes_arr->u.array.count;
+	is_joint = ft_calloc(65536, sizeof(int));
+	parent_map = malloc(sizeof(int) * 65536);
+	if (!is_joint || !parent_map)
+	{
+		free(is_joint);
+		free(parent_map);
+		return ;
+	}
+	i = 0;
+	while (i < 65536)
+		parent_map[i++] = -1;
 	i = 0;
 	while (i < (int)joints->u.array.count)
 	{
 		node_idx = (int)json_as_number(json_at(joints, i));
 		if (node_idx >= 0 && node_idx < 65536)
-			known[node_idx] = 1;
+			is_joint[node_idx] = 1;
 		i++;
 	}
+	/* Build parent map from each node's children array */
 	i = 0;
-	while (i < (int)channels->u.array.count)
+	while (i < nc && i < 65536)
 	{
-		node_idx = (int)json_get_int(
-			json_get(json_at(channels, i), "target"), "node");
-		if (node_idx >= 0 && node_idx < 65536 && !known[node_idx])
+		node = json_at(nodes_arr, i);
+		children = json_get(node, "children");
+		if (children)
 		{
-			known[node_idx] = 1;
+			k = 0;
+			while (k < (int)children->u.array.count)
+			{
+				child_idx = (int)json_as_number(json_at(children, k));
+				if (child_idx >= 0 && child_idx < 65536)
+					parent_map[child_idx] = i;
+				k++;
+			}
+		}
+		i++;
+	}
+	/* Add extra bones for non-joint mesh nodes */
+	i = 0;
+	while (i < nc && i < 65536)
+	{
+		node = json_at(nodes_arr, i);
+		if (!is_joint[i] && (int)json_get_int(node, "mesh") >= 0)
+		{
+			/* Walk up the hierarchy to find nearest joint ancestor */
+			par_idx = parent_map[i];
+			skel_idx = -1;
+			while (par_idx >= 0 && par_idx < 65536)
+			{
+				if (is_joint[par_idx])
+				{
+					k = 0;
+					while (k < mesh->bone_count)
+					{
+						if (mesh->skeleton[k].node_idx == par_idx)
+						{
+							skel_idx = k;
+							break ;
+						}
+						k++;
+					}
+					break ;
+				}
+				par_idx = parent_map[par_idx];
+			}
 			bone = &mesh->skeleton[mesh->bone_count];
 			ft_memset(bone, 0, sizeof(t_bone));
-			bone->node_idx = node_idx;
-			bone->parent = -1;
-			fill_bone_trs(bone, json_at(nodes_arr, node_idx));
+			bone->node_idx = i;
+			bone->parent = skel_idx;
+			fill_bone_trs(bone, node);
 			mesh->bone_matrices[mesh->bone_count] = mat4_identity();
 			mesh->bone_count++;
 		}
 		i++;
 	}
-	free(known);
+	free(is_joint);
+	free(parent_map);
 	glb_log("GLB: Skeleton extended to %d bones total.\n", mesh->bone_count);
 }

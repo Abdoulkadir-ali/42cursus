@@ -272,7 +272,10 @@ void glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 	
 	/* Perform CPU Skinning or rigid transform, then rebuild BVH */
 	if (mesh->skin_data)
+	{
 		glb_skin_mesh(mesh);
+		mesh_build_bvh(mesh);
+	}
 	else if (mesh->node_idx >= 0 && mesh->base_vertices)
 	{
 		int		bi;
@@ -322,5 +325,46 @@ void glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 			}
 			mesh_build_bvh(mesh);
 		}
+	}
+	else
+		return ;
+	/* Reapply the .rt scene transform (rotation/translation/scale) baked at load time.
+	** glb_skin_mesh and the rigid branch always write from base_vertices (GLB space),
+	** so the scene transform must be reapplied on top every frame. */
+	if (mesh->has_scene_transform)
+	{
+		int		i;
+		t_vec3	v;
+		t_vec3	n;
+		float	len;
+
+		i = 0;
+		while (i < mesh->vertex_count)
+		{
+			mesh->vertices[i] = mat4_mul_pos(mesh->scene_mat, mesh->vertices[i]);
+			if (mesh->normals)
+			{
+				v = mesh->normals[i];
+				n.x = v.x * mesh->scene_rot_mat.m[0][0]
+					+ v.y * mesh->scene_rot_mat.m[1][0]
+					+ v.z * mesh->scene_rot_mat.m[2][0];
+				n.y = v.x * mesh->scene_rot_mat.m[0][1]
+					+ v.y * mesh->scene_rot_mat.m[1][1]
+					+ v.z * mesh->scene_rot_mat.m[2][1];
+				n.z = v.x * mesh->scene_rot_mat.m[0][2]
+					+ v.y * mesh->scene_rot_mat.m[1][2]
+					+ v.z * mesh->scene_rot_mat.m[2][2];
+				len = sqrtf(n.x * n.x + n.y * n.y + n.z * n.z);
+				if (len > 0.0001f)
+				{
+					n.x /= len;
+					n.y /= len;
+					n.z /= len;
+				}
+				mesh->normals[i] = n;
+			}
+			i++;
+		}
+		mesh_build_bvh(mesh);
 	}
 }

@@ -162,6 +162,10 @@ struct					s_mesh
 	t_vec3				*base_vertices;
 	t_vec3				*base_normals;
 	int					node_idx;
+	/* Scene-level transform (baked from .rt file, reapplied each frame after skinning) */
+	t_mat4				scene_mat;
+	t_mat4				scene_rot_mat;
+	bool				has_scene_transform;
 	/* Physics */
 	t_physics_body		phys;
 	int					current_anim;

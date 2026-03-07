@@ -76,6 +76,9 @@ void	mesh_apply_transform(t_mesh *mesh, t_transform transform)
 	mesh->collider.data.capsule.a = vec3(cx, mesh->bbox.min.y, cz);
 	mesh->collider.data.capsule.b = vec3(cx, mesh->bbox.max.y, cz);
 
+	mesh->scene_mat = m;
+	mesh->scene_rot_mat = rot;
+	mesh->has_scene_transform = true;
 	reset_mesh_transform(mesh);
 	mesh_build_bvh(mesh);
 	debug_print_mesh_bake(mesh, false);
