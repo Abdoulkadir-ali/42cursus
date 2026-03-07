@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:49:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 23:57:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ t_transform	*get_selected_transform(t_gui *gui)
 	return (NULL);
 }
 
-static void	build_tr_sliders(t_transform *tr, t_islider *sl, int *count)
+static void	build_tr_sliders(t_transform *tr, t_type type,
+	t_islider *sl, int *count)
 {
 	int	i;
 
@@ -46,9 +47,19 @@ static void	build_tr_sliders(t_transform *tr, t_islider *sl, int *count)
 	sl[i++] = (t_islider){"Pitch", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.pitch};
 	sl[i++] = (t_islider){"Yaw", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.yaw};
 	sl[i++] = (t_islider){"Roll", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.roll};
-	sl[i++] = (t_islider){"Scale X", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
-	sl[i++] = (t_islider){"Scale Y", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
-	sl[i++] = (t_islider){"Scale Z", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.z};
+	if (type == TYPE_SPHERE)
+		sl[i++] = (t_islider){"Scale", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+	else if (type == TYPE_CYLINDER || type == TYPE_CONE)
+	{
+		sl[i++] = (t_islider){"Radius", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+		sl[i++] = (t_islider){"Height", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
+	}
+	else if (type == TYPE_MESH)
+	{
+		sl[i++] = (t_islider){"Scale X", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+		sl[i++] = (t_islider){"Scale Y", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
+		sl[i++] = (t_islider){"Scale Z", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.z};
+	}
 	*count = i;
 }
 
@@ -67,9 +78,11 @@ void	draw_transform_panel(t_gui *gui, int x)
 			x + 8, 90, COL_TEXT, "No transform");
 		return ;
 	}
+	if (gui->selection.type == TYPE_SPHERE)
+		tr->scale.y = tr->scale.z = tr->scale.x;
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		x + 8, 88, COL_HOVER, "TRANSFORM");
-	build_tr_sliders(tr, sl, &count);
+	build_tr_sliders(tr, gui->selection.type, sl, &count);
 	y = 104;
 	i = 0;
 	while (i < count)
@@ -93,7 +106,7 @@ bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	if (!tr)
 		return (false);
 	x = gui->win.disp_w - gui->inspector.width;
-	build_tr_sliders(tr, sl, &count);
+	build_tr_sliders(tr, gui->selection.type, sl, &count);
 	y = 104;
 	i = 0;
 	while (i < count)
