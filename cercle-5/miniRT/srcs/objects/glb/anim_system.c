@@ -169,6 +169,7 @@ static void glb_skin_mesh(t_mesh *mesh)
 		t_vec3 norm = vec3(0, 0, 0);
 		t_vec3 base_pos = mesh->base_vertices[i];
 		t_vec3 base_norm = mesh->base_normals ? mesh->base_normals[i] : vec3(0, 1, 0);
+		double tmp;
 		
 		t_bone_weight *bw = &mesh->skin_data[i];
 		
@@ -181,20 +182,17 @@ static void glb_skin_mesh(t_mesh *mesh)
 			{
 				t_mat4 *mat = &mesh->bone_matrices[bone_id];
 				
-				/* Transform Position */
+				/* Transform Position (row-vector: v * M) */
 				t_vec3 p = mat4_mul_pos(*mat, base_pos);
 				pos.x += p.x * w;
 				pos.y += p.y * w;
 				pos.z += p.z * w;
 				
-				/* Transform Normal (Approx: use same matrix rotation) */
-				/* Ideally use Inverse Transpose for non-uniform scale */
-				/* mat4_mul_vec3 uses translation, need mul_vec3_rot? */
-				/* Let's manually rotate normal */
+				/* Transform Normal (row-vector: n * M, read columns) */
 				t_vec3 n;
-				n.x = mat->m[0][0]*base_norm.x + mat->m[0][1]*base_norm.y + mat->m[0][2]*base_norm.z;
-				n.y = mat->m[1][0]*base_norm.x + mat->m[1][1]*base_norm.y + mat->m[1][2]*base_norm.z;
-				n.z = mat->m[2][0]*base_norm.x + mat->m[2][1]*base_norm.y + mat->m[2][2]*base_norm.z;
+				n.x = base_norm.x * mat->m[0][0] + base_norm.y * mat->m[1][0] + base_norm.z * mat->m[2][0];
+				n.y = base_norm.x * mat->m[0][1] + base_norm.y * mat->m[1][1] + base_norm.z * mat->m[2][1];
+				n.z = base_norm.x * mat->m[0][2] + base_norm.y * mat->m[1][2] + base_norm.z * mat->m[2][2];
 				
 				norm.x += n.x * w;
 				norm.y += n.y * w;
@@ -202,12 +200,19 @@ static void glb_skin_mesh(t_mesh *mesh)
 			}
 		}
 		
+		/* Apply the same Z→Y axis swap as finalize_mesh so output is in renderer space */
+		tmp = pos.y;
+		pos.y = -pos.z;
+		pos.z = tmp;
 		mesh->vertices[i] = pos;
+		
 		if (mesh->normals)
 		{
-			/* Normalize */
 			float len = sqrtf(norm.x*norm.x + norm.y*norm.y + norm.z*norm.z);
 			if (len > 0.0001f) { norm.x/=len; norm.y/=len; norm.z/=len; }
+			tmp = norm.y;
+			norm.y = -norm.z;
+			norm.z = tmp;
 			mesh->normals[i] = norm;
 		}
 	}

@@ -32,7 +32,21 @@ static void	finalize_mesh(t_scene *scene, t_mesh *mesh, const char *path)
 	double	tmp;
 
 	(void)path;
-	
+
+	/* Skinned meshes: capture base vertices in GLB space BEFORE axis swap.
+	** The IBM matrices are in GLB (Y-up) space, so base_vertices must match. */
+	if (mesh->skin_data && mesh->vertex_count > 0)
+	{
+		mesh->base_vertices = malloc(sizeof(t_vec3) * mesh->vertex_count);
+		mesh->base_normals = malloc(sizeof(t_vec3) * mesh->vertex_count);
+		if (mesh->base_vertices && mesh->vertices)
+			ft_memcpy(mesh->base_vertices, mesh->vertices,
+				sizeof(t_vec3) * mesh->vertex_count);
+		if (mesh->base_normals && mesh->normals)
+			ft_memcpy(mesh->base_normals, mesh->normals,
+				sizeof(t_vec3) * mesh->vertex_count);
+	}
+
 	/* Automatic Z-up to Y-up Conversion (+90 deg pitch) */
 	i = 0;
 	while (i < mesh->vertex_count)
@@ -47,18 +61,6 @@ static void	finalize_mesh(t_scene *scene, t_mesh *mesh, const char *path)
 			mesh->normals[i].z = tmp;
 		}
 		i++;
-	}
-
-	if (mesh->skin_data && mesh->vertex_count > 0)
-	{
-		mesh->base_vertices = malloc(sizeof(t_vec3) * mesh->vertex_count);
-		mesh->base_normals = malloc(sizeof(t_vec3) * mesh->vertex_count);
-		if (mesh->base_vertices && mesh->vertices)
-			ft_memcpy(mesh->base_vertices, mesh->vertices,
-				sizeof(t_vec3) * mesh->vertex_count);
-		if (mesh->base_normals && mesh->normals)
-			ft_memcpy(mesh->base_normals, mesh->normals,
-				sizeof(t_vec3) * mesh->vertex_count);
 	}
 	mesh_build_bvh(mesh);
 	scene_add_mesh(scene, *mesh);
