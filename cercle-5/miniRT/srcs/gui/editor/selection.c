@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:54:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@ void	select_object(t_gui *gui, t_type type, int index)
 	gui->selection.active = true;
 	gui->selection.bbox = aabb_from_ref(gui->scene, ref);
 	gui->inspector.visible = true;
+	if (type == TYPE_MESH)
+		gui->inspector.tab = TAB_INFO;
+	else if (type == TYPE_LIGHT)
+		gui->inspector.tab = TAB_LIGHT;
+	else
+		gui->inspector.tab = TAB_TRANSFORM;
 	ft_print_debug("[editor] selected %d idx=%d\n", (int)type, index);
 }
 

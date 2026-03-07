@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 21:44:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,48 @@ const char	*type_name_str(t_type type)
 	return ("Object");
 }
 
+static t_physics_body	*get_selected_physics(t_gui *gui)
+{
+	t_scene	*sc;
+
+	sc = gui->scene;
+	if (gui->selection.type == TYPE_SPHERE
+		&& gui->selection.index < sc->sphere_count)
+		return (&sc->spheres[gui->selection.index].phys);
+	if (gui->selection.type == TYPE_MESH
+		&& gui->selection.index < sc->mesh_count)
+		return (&sc->meshes[gui->selection.index].phys);
+	return (NULL);
+}
+
+static int	get_tabs(t_type type, t_inspect_tab tabs[3],
+	const char *labels[3])
+{
+	if (type == TYPE_SPHERE)
+	{
+		tabs[0] = TAB_TRANSFORM; labels[0] = "Transform";
+		tabs[1] = TAB_MATERIAL;  labels[1] = "Material";
+		tabs[2] = TAB_PHYSICS;   labels[2] = "Physics";
+		return (3);
+	}
+	if (type == TYPE_MESH)
+	{
+		tabs[0] = TAB_INFO;      labels[0] = "Info";
+		tabs[1] = TAB_MATERIAL;  labels[1] = "Material";
+		tabs[2] = TAB_PHYSICS;   labels[2] = "Physics";
+		return (3);
+	}
+	if (type == TYPE_LIGHT)
+	{
+		tabs[0] = TAB_TRANSFORM; labels[0] = "Transform";
+		tabs[1] = TAB_LIGHT;     labels[1] = "Light";
+		return (2);
+	}
+	tabs[0] = TAB_TRANSFORM; labels[0] = "Transform";
+	tabs[1] = TAB_MATERIAL;  labels[1] = "Material";
+	return (2);
+}
+
 static void	draw_inspector_header(t_gui *gui, int x)
 {
 	char	buf[64];
@@ -41,19 +83,25 @@ static void	draw_inspector_header(t_gui *gui, int x)
 
 static void	draw_inspector_tabs(t_gui *gui, int x)
 {
-	int	col_t;
-	int	col_m;
+	t_inspect_tab	tabs[3];
+	const char		*labels[3];
+	int				n;
+	int				step;
+	int				i;
 
-	col_t = COL_TEXT;
-	col_m = COL_TEXT;
-	if (gui->inspector.tab == TAB_TRANSFORM)
-		col_t = COL_ACCENT;
-	else
-		col_m = COL_ACCENT;
-	mlx_string_put(gui->win.mlx, gui->win.win,
-		x + 8, 70, col_t, "[Transform]");
-	mlx_string_put(gui->win.mlx, gui->win.win,
-		x + INSPECTOR_W / 2, 70, col_m, "[Material]");
+	n = get_tabs(gui->selection.type, tabs, labels);
+	step = INSPECTOR_W / n;
+	i = 0;
+	while (i < n)
+	{
+		if (gui->inspector.tab == tabs[i])
+			mlx_string_put(gui->win.mlx, gui->win.win,
+				x + step * i + 8, 70, COL_ACCENT, (char *)labels[i]);
+		else
+			mlx_string_put(gui->win.mlx, gui->win.win,
+				x + step * i + 8, 70, COL_TEXT, (char *)labels[i]);
+		i++;
+	}
 }
 
 void	draw_inspector_bg(t_gui *gui)
@@ -74,6 +122,26 @@ void	draw_inspector_bg(t_gui *gui)
 	draw_panel(gui, panel);
 }
 
+static void	dispatch_panel_draw(t_gui *gui, int x)
+{
+	t_physics_body	*phys;
+
+	if (gui->inspector.tab == TAB_TRANSFORM)
+		draw_transform_panel(gui, x);
+	else if (gui->inspector.tab == TAB_MATERIAL)
+		draw_material_panel_text(gui, x);
+	else if (gui->inspector.tab == TAB_PHYSICS)
+	{
+		phys = get_selected_physics(gui);
+		if (phys)
+			draw_physics_panel(gui, phys, x);
+	}
+	else if (gui->inspector.tab == TAB_LIGHT)
+		draw_light_panel(gui, x);
+	else if (gui->inspector.tab == TAB_INFO)
+		draw_mesh_info_panel(gui, x);
+}
+
 void	draw_inspector_text(t_gui *gui)
 {
 	int	x;
@@ -83,32 +151,49 @@ void	draw_inspector_text(t_gui *gui)
 	x = gui->win.disp_w - gui->inspector.width;
 	draw_inspector_header(gui, x);
 	draw_inspector_tabs(gui, x);
-	if (gui->inspector.tab == TAB_TRANSFORM)
-		draw_transform_panel(gui, x);
-	else
-		draw_material_panel_text(gui, x);
+	dispatch_panel_draw(gui, x);
+}
+
+static void	dispatch_panel_click(t_gui *gui, t_vec2i mouse)
+{
+	t_physics_body	*phys;
+
+	if (gui->inspector.tab == TAB_MATERIAL)
+		material_panel_handle_click(gui, mouse);
+	else if (gui->inspector.tab == TAB_TRANSFORM)
+		transform_panel_handle_click(gui, mouse);
+	else if (gui->inspector.tab == TAB_PHYSICS)
+	{
+		phys = get_selected_physics(gui);
+		if (phys)
+			physics_panel_handle_click(gui, mouse, phys);
+	}
+	else if (gui->inspector.tab == TAB_LIGHT)
+		light_panel_handle_click(gui, mouse);
 }
 
 bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 {
-	int	x;
+	t_inspect_tab	tabs[3];
+	const char		*labels[3];
+	int				n;
+	int				step;
+	int				x;
 
 	if (!gui->inspector.visible || !gui->selection.active)
 		return (false);
 	x = gui->win.disp_w - gui->inspector.width;
 	if (mouse.x < x || mouse.x >= gui->win.disp_w)
 		return (false);
+	n = get_tabs(gui->selection.type, tabs, labels);
+	step = INSPECTOR_W / n;
 	if (mouse.y >= 60 && mouse.y <= 84)
 	{
-		if (mouse.x < x + gui->inspector.width / 2)
-			gui->inspector.tab = TAB_TRANSFORM;
-		else
-			gui->inspector.tab = TAB_MATERIAL;
+		n = (mouse.x - x) / step;
+		if (n >= 0 && n < (int)(sizeof(tabs) / sizeof(*tabs)))
+			gui->inspector.tab = tabs[n];
 		return (true);
 	}
-	if (gui->inspector.tab == TAB_MATERIAL)
-		material_panel_handle_click(gui, mouse);
-	else
-		transform_panel_handle_click(gui, mouse);
+	dispatch_panel_click(gui, mouse);
 	return (true);
 }

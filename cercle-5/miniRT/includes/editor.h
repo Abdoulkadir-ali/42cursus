@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 22:24:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "core.h"
 # include "maths.h"
 # include "surface.h"
+# include "physics.h"
 
 /* --- Editor Color Constants --- */
 # define COL_SELECTED   0x20D870
@@ -47,7 +48,10 @@ typedef enum e_inspect_tab
 {
 	TAB_TRANSFORM,
 	TAB_MATERIAL,
-	TAB_OBJECT
+	TAB_OBJECT,
+	TAB_LIGHT,
+	TAB_PHYSICS,
+	TAB_INFO
 }	t_inspect_tab;
 
 typedef struct s_inspector
@@ -138,5 +142,19 @@ void		editor_delete_selected(struct s_gui *gui);
 /* srcs/gui/editor/crud_ui.c */
 void		draw_crud_buttons(struct s_gui *gui);
 bool		crud_handle_click(struct s_gui *gui, t_vec2i mouse);
+
+/* srcs/gui/editor/physics_panel.c */
+void		draw_physics_panel(struct s_gui *gui, t_physics_body *phys, int x);
+bool		physics_panel_handle_click(struct s_gui *gui, t_vec2i mouse,
+			t_physics_body *phys);
+
+/* srcs/gui/editor/light_panel.c */
+void		draw_light_panel(struct s_gui *gui, int x);
+bool		light_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
+void		draw_ambient_panel(struct s_gui *gui, int x);
+bool		ambient_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
+
+/* srcs/gui/editor/mesh_info_panel.c */
+void		draw_mesh_info_panel(struct s_gui *gui, int x);
 
 #endif
