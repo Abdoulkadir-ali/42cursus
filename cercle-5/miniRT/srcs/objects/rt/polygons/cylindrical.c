@@ -38,7 +38,7 @@ static bool	parse_base(t_parser *p, t_cylinder *out)
 
 t_parse_obj	parse_cylinder(t_parser *p)
 {
-	t_parse_obj	res;
+	t_parse_obj	res = {0};
 
 	res.type = TYPE_NONE;
 	if (parse_base(p, &res.data.cylinder))
@@ -48,7 +48,7 @@ t_parse_obj	parse_cylinder(t_parser *p)
 
 t_parse_obj	parse_cone(t_parser *p)
 {
-	t_parse_obj	res;
+	t_parse_obj	res = {0};
 
 	res.type = TYPE_NONE;
 	if (parse_base(p, (t_cylinder *)&res.data.cone))

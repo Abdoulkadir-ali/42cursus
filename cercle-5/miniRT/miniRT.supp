@@ -1,0 +1,32 @@
+# Valgrind suppression file for miniRT
+# Suppresses known false positives in third-party libraries.
+
+# minilibx mlx_int_anti_resize_win uses a stack-allocated XWindowAttributes
+# struct that it partially fills before passing to X11, which then writes it
+# to the socket. This is a known minilibx issue, not in our code.
+{
+   mlx_anti_resize_writev
+   Memcheck:Param
+   writev(vector[0])
+   fun:writev
+   obj:*libxcb*
+   obj:*libX11*
+   fun:_XSend
+   obj:*libX11*
+   fun:XWindowEvent
+   fun:mlx_int_wait_first_expose
+   fun:mlx_new_window
+}
+
+{
+   mlx_loop_writev
+   Memcheck:Param
+   writev(vector[0])
+   fun:__writev
+   obj:*libxcb*
+   obj:*libX11*
+   fun:_XSend
+   obj:*libX11*
+   fun:XPending
+   fun:mlx_loop
+}

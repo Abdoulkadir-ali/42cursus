@@ -29,7 +29,7 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIBFT):
+$(LIBFT): FORCE
 	$(MAKE) -C $(LIBFT_DIR)
 
 $(MINILIBX):
@@ -48,4 +48,4 @@ re: fclean all
 test: re
 	bash ~/tools/
 
-.PHONY: all clean fclean re test
+.PHONY: all clean fclean re test FORCE

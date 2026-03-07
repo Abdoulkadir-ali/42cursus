@@ -230,10 +230,12 @@ void glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 		return ;
 	
 	/* Use mesh->current_anim index */
-	if (mesh->current_anim < 0 || mesh->current_anim >= scene->clip_count)
+	if (mesh->anim_clip_count <= 0)
+		return ;
+	if (mesh->current_anim < 0 || mesh->current_anim >= mesh->anim_clip_count)
 		mesh->current_anim = 0; // Default to first
 		
-	t_animation *anim = &scene->clips[mesh->current_anim];
+	t_animation *anim = &scene->clips[mesh->anim_base + mesh->current_anim];
 	
 	mesh->anim_time += dt;
 	if (mesh->anim_time > anim->max_time)

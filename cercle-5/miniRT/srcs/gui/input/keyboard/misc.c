@@ -21,3 +21,9 @@ void	exit_press(t_gui *gui)
 {
 	mlx_loop_end(gui->win.mlx);
 }
+
+void	fullres_toggle(t_gui *gui)
+{
+	gui->render.force_fullres = !gui->render.force_fullres;
+	gui->render.dirty = true;
+}

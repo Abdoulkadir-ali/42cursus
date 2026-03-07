@@ -169,6 +169,8 @@ struct					s_mesh
 	/* Physics */
 	t_physics_body		phys;
 	int					current_anim;
+	int					anim_base;       /* index of first clip in scene->clips[] */
+	int					anim_clip_count; /* number of clips belonging to this mesh */
 	double				anim_time;
 	t_collider			collider;
 };

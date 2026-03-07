@@ -23,7 +23,7 @@
  */
 t_parse_obj	parse_light(t_parser *p)
 {
-	t_parse_obj	res;
+	t_parse_obj	res = {0};
 
 	res.type = TYPE_NONE;
 	if (!parse_vec3(p, &res.data.light.transform.pos))
@@ -43,7 +43,7 @@ t_parse_obj	parse_light(t_parser *p)
  */
 t_parse_obj	parse_spot_light(t_parser *p)
 {
-	t_parse_obj	res;
+	t_parse_obj	res = {0};
 	double		fov;
 
 	res.type = TYPE_NONE;

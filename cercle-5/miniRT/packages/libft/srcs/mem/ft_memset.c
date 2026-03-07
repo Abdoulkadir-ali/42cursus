@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 18:32:34 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 18:36:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 09:31:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 
 static void	ft_memset_handle_small(char **p, unsigned char byte, size_t *n)
 {
-	while (*n--)
+	while (*n > 0)
+	{
 		*(*p)++ = byte;
+		(*n)--;
+	}
 }
 
 static void	ft_memset_handle_align(char **p, unsigned char byte, size_t *n)

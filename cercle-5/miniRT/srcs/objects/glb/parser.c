@@ -175,8 +175,16 @@ bool	parse_glb(const char *path, t_scene *scene)
 		return (false);
 	}
 	glb_log("GLB: JSON parsed successfully, first 100 chars: %.100s\n", buf[0]);
+	int	mesh_base = scene->mesh_count;
 	process_glb_meshes(scene, json, buf[1], path);
+	int	anim_base = scene->clip_count;
 	glb_load_animations(scene, json, buf[1]);
+	int	anim_clip_count = scene->clip_count - anim_base;
+	for (int mi = mesh_base; mi < scene->mesh_count; mi++)
+	{
+		scene->meshes[mi].anim_base = anim_base;
+		scene->meshes[mi].anim_clip_count = anim_clip_count;
+	}
 	json_free(json);
 	free(buf[0]);
 	free(buf[1]);

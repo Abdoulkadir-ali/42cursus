@@ -34,7 +34,7 @@
 # endif
 
 # ifndef GUI_AUTOREFRESH_SCALE
-#  define GUI_AUTOREFRESH_SCALE 2
+#  define GUI_AUTOREFRESH_SCALE 5
 # endif
 # define PANEL_RADIUS 6
 # define COL_BG 0x0A0A12
@@ -160,6 +160,7 @@ typedef struct s_render_state
 {
 	int scale;
 	bool dirty;
+	bool force_fullres;
 	double fps;
 	long long last_time;
 	bool last_dirty;
@@ -312,6 +313,7 @@ void	speed_up_press(t_gui *gui);
 void	speed_down_press(t_gui *gui);
 void	map_next_press(t_gui *gui);
 void	exit_press(t_gui *gui);
+void	fullres_toggle(t_gui *gui);
 
 int	count_maps(void);
 void	fill_map_list(t_gui *gui);

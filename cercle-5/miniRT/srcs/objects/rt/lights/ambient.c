@@ -23,7 +23,7 @@
  */
 t_parse_obj	parse_ambient(t_parser *p)
 {
-	t_parse_obj	res;
+	t_parse_obj	res = {0};
 
 	res.type = TYPE_NONE;
 	res.data.ambient.brightness = parse_double(p);

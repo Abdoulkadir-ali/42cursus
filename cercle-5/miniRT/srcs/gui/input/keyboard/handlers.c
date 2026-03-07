@@ -32,6 +32,7 @@ static t_key_action	*get_keymap(void)
 	{XK_equal, zoom_in_press, zoom_in_release},
 	{XK_minus, zoom_out_press, zoom_out_release},
 	{XK_Escape, exit_press, NULL},
+	{XK_f, fullres_toggle, NULL},
 	{0, NULL, NULL}
 	};
 

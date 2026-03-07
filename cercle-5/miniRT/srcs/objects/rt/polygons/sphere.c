@@ -17,7 +17,7 @@
  */
 t_parse_obj	parse_sphere(t_parser *p)
 {
-	t_parse_obj	res;
+	t_parse_obj	res = {0};
 	double		diameter;
 	t_vec3		rgb;
 

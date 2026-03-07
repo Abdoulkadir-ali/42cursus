@@ -23,7 +23,7 @@
  */
 t_parse_obj	parse_camera(t_parser *p)
 {
-	t_parse_obj	res;
+	t_parse_obj	res = {0};
 	t_vec3		rot_v;
 
 	res.type = TYPE_NONE;

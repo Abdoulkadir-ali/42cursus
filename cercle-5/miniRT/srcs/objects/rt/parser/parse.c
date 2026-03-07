@@ -14,8 +14,8 @@
 
 bool	parse_rt(const char *path, t_scene *scene)
 {
-	t_rt_ctx	ctx;
-	t_parser	parser;
+	t_rt_ctx	ctx = {0};
+	t_parser	parser = {0};
 
 	ctx.parser = &parser;
 	if (!rt_init_parser(&ctx, path))

@@ -39,12 +39,8 @@ void	gui_update_input(t_gui *gui)
 	smooth_position(gui, ctrl);
 	ctrl->camera->transform = ctrl->transform;
 	update_fov(gui, ctrl);
-	if (ctrl->moving_forward || ctrl->moving_backward
-		|| ctrl->moving_left || ctrl->moving_right
-		|| ctrl->moving_up || ctrl->moving_down
-		|| ctrl->zooming_in || ctrl->zooming_out
-		|| ctrl->mouse_left_pressed || ctrl->mouse_middle_pressed)
-		gui->render.scale = 2;
-	else
+	if (gui->render.force_fullres)
 		gui->render.scale = 1;
+	else
+		gui->render.scale = 2;
 }
