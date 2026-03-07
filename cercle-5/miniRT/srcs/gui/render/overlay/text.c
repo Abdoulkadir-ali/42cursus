@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:16:32 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:20:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 20:51:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,18 @@
 
 void	draw_ui_help(t_gui *gui, int *y)
 {
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, *y, COL_ACCENT, "miniRT");
+	int	ox;
+
+	ox = SCENE_PANEL_W + 16;
+	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_ACCENT, "miniRT");
 	*y += 24;
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, *y, COL_TEXT,
+	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT,
 		"WASD  Move   SPACE/SHIFT  Up/Down");
 	*y += 20;
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, *y, COL_TEXT,
+	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT,
 		"LMB   Look   MMB          Zoom");
 	*y += 20;
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, *y, COL_TEXT,
+	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT,
 		"+/-   Speed  N            Next map");
 	*y += 20;
 }
@@ -30,18 +33,20 @@ void	draw_ui_help(t_gui *gui, int *y)
 void	draw_ui_status(t_gui *gui, int *y)
 {
 	char	buf[128];
+	int		ox;
 
+	ox = SCENE_PANEL_W + 16;
 	snprintf(buf, sizeof(buf), "[ %c ] Simulate Physics",
 		gui->physics_enabled ? 'X' : ' ');
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, *y, COL_TEXT, buf);
+	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT, buf);
 	*y += 20;
 	snprintf(buf, sizeof(buf), "Ambient Intensity: %.2f",
 		gui->ambient_intensity);
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, *y, COL_TEXT, buf);
+	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT, buf);
 	*y += 20;
 	snprintf(buf, sizeof(buf), "Ambient Color: #%06X",
 		gui->ambient_color & 0xFFFFFF);
-	mlx_string_put(gui->win.mlx, gui->win.win, 32, *y, COL_TEXT, buf);
+	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT, buf);
 	*y += 20;
 }
 

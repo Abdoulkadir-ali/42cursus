@@ -38,6 +38,8 @@ static void	shoot_force(t_gui *gui, t_vec2i mouse)
 
 static void	handle_scroll(int button, t_gui *gui)
 {
+	if (scene_panel_handle_scroll(gui, button))
+		return ;
 	if (button == Button4)
 	{
 		gui->cam_ctrl.target_fov -= ZOOM_SPEED;
@@ -77,7 +79,8 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)
 	{
-		pick_at_mouse(gui, mouse);
+		if (!scene_panel_handle_click(gui, mouse))
+			pick_at_mouse(gui, mouse);
 		gui->cam_ctrl.mouse_left_pressed = true;
 		gui->cam_ctrl.last_mouse = mouse;
 	}

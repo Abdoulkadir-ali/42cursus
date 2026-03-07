@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:46:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 20:51:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,12 @@ void		clear_selection(struct s_gui *gui);
 t_material	*get_selected_material(struct s_gui *gui);
 void		pick_at_mouse(struct s_gui *gui, t_vec2i mouse);
 void		rebuild_bvh(struct s_gui *gui);
+
+/* srcs/gui/editor/scene_panel.c */
+void		editor_init(struct s_gui *gui);
+void		draw_scene_panel_bg(struct s_gui *gui);
+void		draw_scene_panel_text(struct s_gui *gui);
+bool		scene_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
+bool		scene_panel_handle_scroll(struct s_gui *gui, int button);
 
 #endif

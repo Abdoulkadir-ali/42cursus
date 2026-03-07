@@ -90,6 +90,7 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	init_camera(gui);
 	gui_map_switcher_init(gui);
 	widget_init_default(gui);
+	editor_init(gui);
 	mlx_hook(gui->win.win, 22, 1L << 17, gui_window_resize, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
 	return (gui);

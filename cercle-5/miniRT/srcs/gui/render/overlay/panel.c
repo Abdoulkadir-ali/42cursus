@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:16:32 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:20:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/07 20:51:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,7 @@ void	draw_ui_panels(t_gui *gui)
 	int		bh;
 
 	bh = gui->win.disp_h;
-	panel = (t_panel){.x = 16, .y = 16, .w = 310, .h = 120, .bg = COL_BG,
-		.brd = COL_ACCENT, .pos = vec2i(16, 16), .size = vec2i(310, 120)};
-	draw_panel(gui, panel);
+	draw_scene_panel_bg(gui);
 	panel = (t_panel){.x = 16, .y = bh - 72, .w = 460, .h = 56, .bg = COL_BG,
 		.brd = COL_BORDER, .pos = vec2i(16, bh - 72), .size = vec2i(460, 56)};
 	draw_panel(gui, panel);

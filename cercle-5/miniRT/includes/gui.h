@@ -19,8 +19,8 @@
 # define BUTTON_SCROLL_UP 4
 # define BUTTON_SCROLL_DOWN 5
 
-# define RENDER_W 1200
-# define RENDER_H 700
+# define RENDER_W 2560
+# define RENDER_H 1440
 #
 /* Auto-refresh configuration:
  * - Set `GUI_AUTOREFRESH_PHYSICS` to 1 to force a render every frame while
