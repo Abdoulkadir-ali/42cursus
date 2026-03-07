@@ -223,6 +223,11 @@ static void glb_skin_mesh(t_mesh *mesh)
 void glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 {
 	if (!mesh->skeleton || scene->clip_count == 0) return;
+	/* Non-skinned meshes (cloth, accessories without skin weights) are driven
+	** by morph targets which we don't support. Their position is already baked
+	** correctly by mesh_apply_transform at load time — leave them static. */
+	if (!mesh->skin_data)
+		return ;
 	
 	/* Use mesh->current_anim index */
 	if (mesh->current_anim < 0 || mesh->current_anim >= scene->clip_count)
@@ -270,67 +275,12 @@ void glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 			update_bone_recursive(mesh, i, mat4_identity());
 	}
 	
-	/* Perform CPU Skinning or rigid transform, then rebuild BVH */
-	if (mesh->skin_data)
-	{
-		glb_skin_mesh(mesh);
-		mesh_build_bvh(mesh);
-	}
-	else if (mesh->node_idx >= 0 && mesh->base_vertices)
-	{
-		int		bi;
-		int		idx;
-		double	tmp;
-		t_mat4	*gmat;
-		t_vec3	p;
-		t_vec3	n;
-		float	len;
-
-		bi = find_bone(mesh, mesh->node_idx);
-		if (bi >= 0)
-		{
-			gmat = &mesh->skeleton[bi].global_transform;
-			idx = 0;
-			while (idx < mesh->vertex_count)
-			{
-				p = mat4_mul_pos(*gmat, mesh->base_vertices[idx]);
-				tmp = p.y;
-				p.y = -p.z;
-				p.z = tmp;
-				mesh->vertices[idx] = p;
-				if (mesh->normals && mesh->base_normals)
-				{
-					n.x = mesh->base_normals[idx].x * gmat->m[0][0]
-						+ mesh->base_normals[idx].y * gmat->m[1][0]
-						+ mesh->base_normals[idx].z * gmat->m[2][0];
-					n.y = mesh->base_normals[idx].x * gmat->m[0][1]
-						+ mesh->base_normals[idx].y * gmat->m[1][1]
-						+ mesh->base_normals[idx].z * gmat->m[2][1];
-					n.z = mesh->base_normals[idx].x * gmat->m[0][2]
-						+ mesh->base_normals[idx].y * gmat->m[1][2]
-						+ mesh->base_normals[idx].z * gmat->m[2][2];
-					len = sqrtf(n.x * n.x + n.y * n.y + n.z * n.z);
-					if (len > 0.0001f)
-					{
-						n.x /= len;
-						n.y /= len;
-						n.z /= len;
-					}
-					tmp = n.y;
-					n.y = -n.z;
-					n.z = tmp;
-					mesh->normals[idx] = n;
-				}
-				idx++;
-			}
-			mesh_build_bvh(mesh);
-		}
-	}
-	else
-		return ;
+	/* Perform CPU Skinning, rebuild BVH, and reapply the .rt scene transform. */
+	glb_skin_mesh(mesh);
+	mesh_build_bvh(mesh);
 	/* Reapply the .rt scene transform (rotation/translation/scale) baked at load time.
-	** glb_skin_mesh and the rigid branch always write from base_vertices (GLB space),
-	** so the scene transform must be reapplied on top every frame. */
+	** glb_skin_mesh always writes from base_vertices (GLB space), so the scene
+	** transform must be reapplied on top every frame. */
 	if (mesh->has_scene_transform)
 	{
 		int		i;
