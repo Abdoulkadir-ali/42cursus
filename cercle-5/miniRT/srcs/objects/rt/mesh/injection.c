@@ -153,5 +153,7 @@ bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
 		clone_instance_materials(scene, start_mesh);
 	}
 	apply_material(obj, scene, start_mesh, start_anim);
+	if (scene->mesh_count > start_mesh)
+		scene_add_group_for_subs(scene, obj->data.mesh_info.path, start_mesh);
 	return (true);
 }

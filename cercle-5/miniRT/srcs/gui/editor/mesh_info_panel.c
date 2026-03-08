@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:11:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,28 +24,33 @@ static void	draw_info_row(t_gui *gui, int x, int y,
 
 void	draw_mesh_info_panel(t_gui *gui, int x)
 {
-	t_mesh	*mesh;
-	char	buf[64];
-	int		y;
+	t_mesh_group	*g;
+	t_mesh			*mesh;
+	char			buf[64];
+	int				y;
 
-	if (!gui->scene || gui->selection.index >= gui->scene->mesh_count)
+	if (!gui->scene || gui->selection.index >= gui->scene->group_count)
 		return ;
-	mesh = &gui->scene->meshes[gui->selection.index];
+	g = &gui->scene->groups[gui->selection.index];
+	mesh = &gui->scene->meshes[g->start];
 	mlx_string_put(gui->win.mlx, gui->win.win, x + 8, 88, COL_HOVER, "MESH INFO");
 	y = 106;
-	if (mesh->name)
-		snprintf(buf, sizeof(buf), "%.24s", mesh->name);
+	if (g->name)
+		snprintf(buf, sizeof(buf), "%.24s", g->name);
 	else
 		snprintf(buf, sizeof(buf), "(unnamed)");
 	draw_info_row(gui, x, y, "Name:", buf);
 	y += 18;
+	snprintf(buf, sizeof(buf), "%d", g->sub_count);
+	draw_info_row(gui, x, y, "Sub-meshes:", buf);
+	y += 18;
 	snprintf(buf, sizeof(buf), "%d", mesh->vertex_count);
-	draw_info_row(gui, x, y, "Vertices:", buf);
+	draw_info_row(gui, x, y, "Vertices[0]:", buf);
 	y += 18;
 	snprintf(buf, sizeof(buf), "%d", mesh->tri_count);
-	draw_info_row(gui, x, y, "Triangles:", buf);
+	draw_info_row(gui, x, y, "Triangles[0]:", buf);
 	y += 18;
-	snprintf(buf, sizeof(buf), "%d", mesh->anim_clip_count);
+	snprintf(buf, sizeof(buf), "%d", g->anim_clip_count);
 	draw_info_row(gui, x, y, "Animations:", buf);
 	y += 18;
 	snprintf(buf, sizeof(buf), "%d", mesh->current_anim);

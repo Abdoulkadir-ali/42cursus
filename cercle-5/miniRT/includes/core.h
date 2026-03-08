@@ -56,6 +56,7 @@
 # define INIT_PLANE_CAP 16
 # define INIT_MESH_CAP 8
 # define INIT_ANIM_CAP 4
+# define INIT_GROUP_CAP 32
 # define INIT_MAT_CAP 32
 # define INIT_LIGHT_CAP 8
 # define INIT_CYL_CAP 16

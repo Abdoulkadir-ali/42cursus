@@ -285,6 +285,26 @@ struct					s_skinned_mesh
 	int					vertex_count;
 };
 
+/*
+** Group container: one entry per loaded model file.
+** Owns a contiguous range [start, start+sub_count) in scene->meshes[].
+** All editor-level state (transform sliders, pivot, physics) lives here;
+** individual submeshes are pure geometry + per-primitive rendering data.
+*/
+typedef struct s_mesh_group
+{
+	char			*name;          /* display name — GLB basename, owned heap */
+	char			*path;          /* source file path, owned heap */
+	int				start;         /* first submesh index in scene->meshes[] */
+	int				sub_count;     /* number of consecutive submeshes */
+	t_transform		transform;     /* editor-controlled delta (identity after bake) */
+	t_vec3			pivot;         /* union-bbox centre of all subs for SR+T */
+	t_physics_body	phys;
+	t_collider		collider;
+	int				anim_base;
+	int				anim_clip_count;
+}					t_mesh_group;
+
 /* Parsing and Build Types */
 
 struct					s_mesh_info

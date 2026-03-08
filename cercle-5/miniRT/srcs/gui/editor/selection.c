@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:11:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,56 @@ void	rebuild_bvh(t_gui *gui)
 	gui->scene->bvh = bvh_create(gui->scene);
 }
 
+/*
+** For TYPE_MESH the BVH uses flat mesh indices; map back to group index.
+*/
+static int	find_group_by_mesh(t_scene *sc, int mesh_idx)
+{
+	int	gi;
+
+	gi = 0;
+	while (gi < sc->group_count)
+	{
+		if (mesh_idx >= sc->groups[gi].start
+			&& mesh_idx < sc->groups[gi].start + sc->groups[gi].sub_count)
+			return (gi);
+		gi++;
+	}
+	return (-1);
+}
+
 void	select_object(t_gui *gui, t_type type, int index)
 {
-	t_bvh_ref	ref;
+	t_aabb			union_bbox;
+	t_mesh_group	*g;
+	int				si;
 
-	ref.type = (uint8_t)type;
-	ref.index = index;
 	gui->selection.type = type;
 	gui->selection.index = index;
 	gui->selection.active = true;
-	gui->selection.bbox = aabb_from_ref(gui->scene, ref);
+	/* For mesh groups compute the union bbox directly; for everything else
+	** keep using aabb_from_ref (which still operates on flat mesh indices). */
+	if (type == TYPE_MESH && index >= 0 && index < gui->scene->group_count)
+	{
+		g = &gui->scene->groups[index];
+		union_bbox = gui->scene->meshes[g->start].bbox;
+		si = 1;
+		while (si < g->sub_count)
+		{
+			union_bbox = aabb_union(&union_bbox,
+					&gui->scene->meshes[g->start + si].bbox);
+			si++;
+		}
+		gui->selection.bbox = union_bbox;
+	}
+	else
+	{
+		t_bvh_ref	ref;
+
+		ref.type = (uint8_t)type;
+		ref.index = index;
+		gui->selection.bbox = aabb_from_ref(gui->scene, ref);
+	}
 	gui->inspector.visible = true;
 	if (type == TYPE_MESH)
 		gui->inspector.tab = TAB_INFO;
@@ -63,8 +103,9 @@ static int	mat_id_of_selection(t_gui *gui)
 		return (sc->cylinders[sel->index].mat_id);
 	if (sel->type == TYPE_CONE)
 		return (sc->cones[sel->index].mat_id);
-	if (sel->type == TYPE_MESH)
-		return (sc->meshes[sel->index].mat_id);
+	if (sel->type == TYPE_MESH && sel->index >= 0
+		&& sel->index < sc->group_count)
+		return (sc->meshes[sc->groups[sel->index].start].mat_id);
 	return (-1);
 }
 
@@ -108,13 +149,22 @@ void	pick_at_mouse(t_gui *gui, t_vec2i mouse)
 {
 	t_ray	ray;
 	t_hit	hit;
+	int		grp;
 
 	if (!gui->scene || !gui->scene->bvh || !gui->cam_ctrl.camera)
 		return ;
 	compute_pick_ray(gui, mouse, &ray);
 	ft_memset(&hit, 0, sizeof(t_hit));
 	if (bvh_intersect(gui->scene->bvh, &ray, &hit))
-		select_object(gui, (t_type)hit.ref.type, hit.ref.index);
+	{
+		if ((t_type)hit.ref.type == TYPE_MESH)
+		{
+			grp = find_group_by_mesh(gui->scene, hit.ref.index);
+			select_object(gui, TYPE_MESH, (grp >= 0) ? grp : hit.ref.index);
+		}
+		else
+			select_object(gui, (t_type)hit.ref.type, hit.ref.index);
+	}
 	else
 		clear_selection(gui);
 	gui->render.dirty = true;

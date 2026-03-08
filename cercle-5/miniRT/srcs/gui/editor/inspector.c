@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 02:46:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:11:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ static t_physics_body	*get_selected_physics(t_gui *gui)
 		&& gui->selection.index < sc->sphere_count)
 		return (&sc->spheres[gui->selection.index].phys);
 	if (gui->selection.type == TYPE_MESH
-		&& gui->selection.index < sc->mesh_count)
-		return (&sc->meshes[gui->selection.index].phys);
+		&& gui->selection.index < sc->group_count)
+		return (&sc->groups[gui->selection.index].phys);
 	return (NULL);
 }
 

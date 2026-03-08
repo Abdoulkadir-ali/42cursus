@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:28:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:12:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,51 +15,48 @@
 
 static void	mesh_transform_sync(t_gui *gui)
 {
-	t_mesh	*lead;
-	t_scene	*sc;
-	int		gid;
-	t_mat4	s;
-	t_mat4	r;
-	t_mat4	sr;
-	t_vec3	piv;
-	t_mesh	*m;
-	t_vec3	local;
-	int		mi;
-	int		vi;
+	t_mesh_group	*g;
+	t_scene			*sc;
+	t_mat4			s;
+	t_mat4			r;
+	t_mat4			sr;
+	t_vec3			piv;
+	t_mesh			*m;
+	t_vec3			local;
+	int				si;
+	int				vi;
 
 	if (!gui->selection.active || gui->selection.type != TYPE_MESH)
 		return ;
 	sc = gui->scene;
-	lead = &sc->meshes[gui->selection.index];
-	if (!lead->edit_snap_verts)
+	if (gui->selection.index >= sc->group_count)
 		return ;
-	s = mat4_scaling(lead->transform.scale);
-	r = mat4_rotation(lead->transform.rotation);
+	g = &sc->groups[gui->selection.index];
+	if (!sc->meshes[g->start].edit_snap_verts)
+		return ;
+	s = mat4_scaling(g->transform.scale);
+	r = mat4_rotation(g->transform.rotation);
 	sr = mat4_mul(r, s);
-	piv = lead->edit_snap_pivot;
-	gid = lead->group_id;
-	mi = 0;
-	while (mi < sc->mesh_count)
+	piv = g->pivot;
+	si = 0;
+	while (si < g->sub_count)
 	{
-		m = &sc->meshes[mi];
-		if ((gid < 0 && m != lead) || (gid >= 0 && m->group_id != gid)
-			|| !m->edit_snap_verts)
+		m = &sc->meshes[g->start + si];
+		if (!m->edit_snap_verts)
 		{
-			mi++;
+			si++;
 			continue ;
 		}
-		if (m != lead)
-			m->transform = lead->transform;
 		vi = 0;
 		while (vi < m->vertex_count)
 		{
 			local = vec3_sub(m->edit_snap_verts[vi], piv);
 			local = mat4_mul_pos(sr, local);
 			m->vertices[vi] = vec3_add(vec3_add(local, piv),
-					lead->transform.pos);
+					g->transform.pos);
 			if (m->normals && m->edit_snap_norms)
 				m->normals[vi] = vec3_norm(mat4_mul_vec3(r,
-							m->edit_snap_norms[vi]));
+						m->edit_snap_norms[vi]));
 			vi++;
 		}
 		m->bbox = aabb_create_empty();
@@ -67,7 +64,7 @@ static void	mesh_transform_sync(t_gui *gui)
 		while (vi < m->vertex_count)
 			aabb_expand_point(&m->bbox, m->vertices[vi++]);
 		mesh_build_bvh(m);
-		mi++;
+		si++;
 	}
 }
 
@@ -108,7 +105,7 @@ t_transform	*get_selected_transform(t_gui *gui)
 	if (sel->type == TYPE_CONE)
 		return (&sc->cones[sel->index].transform);
 	if (sel->type == TYPE_MESH)
-		return (&sc->meshes[sel->index].transform);
+		return (&sc->groups[sel->index].transform);
 	return (NULL);
 }
 

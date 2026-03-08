@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:42:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:09:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,13 @@ typedef struct s_mesh_snap
 	t_physics_body	phys;
 }	t_mesh_snap;
 
+typedef struct s_group_snap
+{
+	t_transform		transform;
+	t_vec3			pivot;
+	t_physics_body	phys;
+}	t_group_snap;
+
 typedef struct s_scene_snap
 {
 	t_sphere	*spheres;	int	sphere_count;
@@ -229,6 +236,7 @@ typedef struct s_scene_snap
 	t_material	*materials;	int	mat_count;
 	t_mesh_snap	*meshes;	int	mesh_count;
 	int			mesh_group_count;
+	t_group_snap	*groups;	int	group_count;
 	t_ambient	ambient;
 	t_camera	camera;
 	int			ambient_color;

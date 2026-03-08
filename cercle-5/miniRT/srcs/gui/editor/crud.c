@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 02:46:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:09:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,10 @@ void	editor_add_obj(t_gui *gui, const char *path)
 		i++;
 	}
 	if (gui->scene->mesh_count > mesh_start)
-		select_object(gui, TYPE_MESH, mesh_start);
+	{
+		scene_add_group_for_subs(gui->scene, path, mesh_start);
+		select_object(gui, TYPE_MESH, gui->scene->group_count - 1);
+	}
 	rebuild_bvh(gui);
 	gui->render.dirty = true;
 }
@@ -251,7 +254,10 @@ void	editor_add_glb(t_gui *gui, const char *path)
 		i++;
 	}
 	if (gui->scene->mesh_count > mesh_start)
-		select_object(gui, TYPE_MESH, mesh_start);
+	{
+		scene_add_group_for_subs(gui->scene, path, mesh_start);
+		select_object(gui, TYPE_MESH, gui->scene->group_count - 1);
+	}
 	rebuild_bvh(gui);
 	gui->render.dirty = true;
 }

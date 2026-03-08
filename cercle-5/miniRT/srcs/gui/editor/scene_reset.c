@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 00:23:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:11:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,27 @@ static void	snap_meshes(t_scene_snap *snap, t_scene *sc)
 	}
 }
 
+static void	snap_groups(t_scene_snap *snap, t_scene *sc)
+{
+	int	i;
+
+	snap->group_count = sc->group_count;
+	snap->groups = NULL;
+	if (sc->group_count <= 0)
+		return ;
+	snap->groups = malloc(sc->group_count * sizeof(t_group_snap));
+	if (!snap->groups)
+		return ;
+	i = 0;
+	while (i < sc->group_count)
+	{
+		snap->groups[i].transform = sc->groups[i].transform;
+		snap->groups[i].pivot = sc->groups[i].pivot;
+		snap->groups[i].phys = sc->groups[i].phys;
+		i++;
+	}
+}
+
 /*
 ** Takes a snapshot of the scene immediately after parsing.
 ** Called once from gui_init, before the first frame is rendered.
@@ -82,6 +103,7 @@ void	scene_snap_take(t_scene_snap *snap, t_gui *gui)
 		sc->mat_count, sizeof(t_material));
 	snap->mat_count = sc->mat_count;
 	snap_meshes(snap, sc);
+	snap_groups(snap, sc);
 	snap->mesh_group_count = sc->mesh_group_count;
 	snap->ambient = sc->ambient;
 	snap->camera = sc->camera;
@@ -103,6 +125,7 @@ void	scene_snap_free(t_scene_snap *snap)
 	free(snap->lights);
 	free(snap->materials);
 	free(snap->meshes);
+	free(snap->groups);
 	ft_memset(snap, 0, sizeof(*snap));
 }
 
@@ -171,6 +194,22 @@ void	scene_reset(t_gui *gui)
 	}
 	sc->mesh_count = snap->mesh_count;
 	sc->mesh_group_count = snap->mesh_group_count;
+	/* Restore group transforms; free & truncate editor-added groups */
+	i = 0;
+	while (i < snap->group_count && i < sc->group_count)
+	{
+		sc->groups[i].transform = snap->groups[i].transform;
+		sc->groups[i].pivot = snap->groups[i].pivot;
+		sc->groups[i].phys = snap->groups[i].phys;
+		i++;
+	}
+	while (i < sc->group_count)
+	{
+		free(sc->groups[i].name);
+		free(sc->groups[i].path);
+		i++;
+	}
+	sc->group_count = snap->group_count;
 	sc->ambient = snap->ambient;
 	sc->camera = snap->camera;
 	gui->ambient_color = snap->ambient_color;

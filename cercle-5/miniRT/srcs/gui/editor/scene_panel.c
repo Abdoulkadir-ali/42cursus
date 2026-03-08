@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:41:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:10:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,46 +29,13 @@ void	editor_init(t_gui *gui)
 
 static int	count_mesh_entries(t_scene *sc)
 {
-	int	count;
-	int	last_gid;
-	int	i;
-
-	count = 0;
-	last_gid = -2;
-	i = 0;
-	while (i < sc->mesh_count)
-	{
-		if (sc->meshes[i].group_id < 0 || sc->meshes[i].group_id != last_gid)
-		{
-			last_gid = sc->meshes[i].group_id;
-			count++;
-		}
-		i++;
-	}
-	return (count);
+	return (sc->group_count);
 }
 
 static int	mesh_row_to_idx(t_scene *sc, int r)
 {
-	int	seen;
-	int	last_gid;
-	int	i;
-
-	seen = 0;
-	last_gid = -2;
-	i = 0;
-	while (i < sc->mesh_count)
-	{
-		if (sc->meshes[i].group_id < 0 || sc->meshes[i].group_id != last_gid)
-		{
-			if (seen == r)
-				return (i);
-			last_gid = sc->meshes[i].group_id;
-			seen++;
-		}
-		i++;
-	}
-	return (-1);
+	(void)sc;
+	return (r);	/* r IS the group index */
 }
 
 static int	count_scene_rows(t_scene *sc)
@@ -132,32 +99,19 @@ static const char	*row_type_prefix(t_type type)
 
 static void	draw_one_row(t_gui *gui, int y_px, t_type ty, int idx)
 {
-	char		buf[64];
-	int			col;
-	const char	*name;
-	const char	*slash;
-	const char	*dot;
-	size_t		len;
+	char	buf[64];
+	int		col;
 
 	col = COL_TEXT;
 	if (gui->selection.active && gui->selection.type == ty
 		&& gui->selection.index == idx)
 		col = COL_SELECTED;
 	if (ty == TYPE_MESH && idx >= 0
-		&& idx < gui->scene->mesh_count
-		&& gui->scene->meshes[idx].name)
+		&& idx < gui->scene->group_count
+		&& gui->scene->groups[idx].name)
 	{
-		name = gui->scene->meshes[idx].name;
-		slash = ft_strrchr(name, '/');
-		if (slash)
-			name = slash + 1;
-		dot = ft_strrchr(name, '.');
-		len = dot ? (size_t)(dot - name) : ft_strlen(name);
-		if (len > 55)
-			len = 55;
-		snprintf(buf, sizeof(buf), "[ME] ");
-		ft_memcpy(buf + 5, name, len);
-		buf[5 + len] = '\0';
+		snprintf(buf, sizeof(buf), "[ME] %.55s",
+			gui->scene->groups[idx].name);
 	}
 	else
 		snprintf(buf, sizeof(buf), "%s %d", row_type_prefix(ty), idx);

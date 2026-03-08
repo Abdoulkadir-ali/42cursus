@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 06:07:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:09:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,11 @@ struct				s_scene
 	t_mesh			*meshes;
 	int				mesh_count;
 	int				mesh_cap;
-	int				mesh_group_count;	/* next group_id to assign */
+	int				mesh_group_count;	/* next group_id to assign (legacy) */
+
+	t_mesh_group	*groups;          /* one entry per loaded model file */
+	int				group_count;
+	int				group_cap;
 
 	t_skinned_mesh	*animated;
 	int				anim_count;
@@ -95,6 +99,9 @@ bool				scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
 bool				scene_add_cone(t_scene *scene, t_cone cone);
 bool				scene_add_mesh(t_scene *scene, t_mesh mesh);
 bool				scene_add_animated(t_scene *scene, t_skinned_mesh animated);
+bool				scene_add_group(t_scene *scene, t_mesh_group g);
+bool				scene_add_group_for_subs(t_scene *scene, const char *path,
+					int start_mesh);
 bool				scene_add_light(t_scene *scene, t_light light);
 
 /* srcs/objects/rt/parsing/ (Global Selector) */

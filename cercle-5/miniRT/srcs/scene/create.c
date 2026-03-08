@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 15:16:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:09:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ static bool	init_arrays(t_scene *s)
 	s->meshes = ft_calloc(s->mesh_cap, sizeof(t_mesh));
 	s->anim_cap = INIT_ANIM_CAP;
 	s->animated = ft_calloc(s->anim_cap, sizeof(t_skinned_mesh));
+	s->group_cap = INIT_GROUP_CAP;
+	s->groups = ft_calloc(s->group_cap, sizeof(t_mesh_group));
 	s->mat_cap = INIT_MAT_CAP;
 	s->materials = ft_calloc(s->mat_cap, sizeof(t_material));
 	s->light_cap = INIT_LIGHT_CAP;
@@ -36,7 +38,7 @@ static bool	init_arrays(t_scene *s)
 	s->cone_cap = INIT_CYL_CAP;
 	s->cones = ft_calloc(s->cone_cap, sizeof(t_cone));
 	if (!s->spheres || !s->planes || !s->cylinders || !s->meshes || !s->animated
-		|| !s->materials || !s->lights || !s->cones)
+		|| !s->materials || !s->lights || !s->cones || !s->groups)
 		return (false);
 	return (true);
 }
@@ -70,6 +72,14 @@ void	destroy_scene(t_scene *scene)
 		i++;
 	}
 	free(scene->animated);
+	i = 0;
+	while (i < scene->group_count)
+	{
+		free(scene->groups[i].name);
+		free(scene->groups[i].path);
+		i++;
+	}
+	free(scene->groups);
 	free(scene->materials);
 	free(scene->lights);
 	free(scene);
