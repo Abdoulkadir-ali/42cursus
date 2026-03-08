@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:04:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:26:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,29 @@ void	draw_material_panel_text(t_gui *gui, int x)
 	}
 }
 
+static void	sync_group_materials(t_gui *gui)
+{
+	t_selection		*sel;
+	t_mesh_group	*g;
+	t_material		*lead;
+	int				si;
+	int				mat_id;
+
+	sel = &gui->selection;
+	if (!sel->active || sel->type != TYPE_MESH)
+		return ;
+	g = &gui->scene->groups[sel->index];
+	lead = &gui->scene->materials[gui->scene->meshes[g->start].mat_id];
+	si = 1;
+	while (si < g->sub_count)
+	{
+		mat_id = gui->scene->meshes[g->start + si].mat_id;
+		if (mat_id >= 0 && mat_id < gui->scene->mat_count)
+			gui->scene->materials[mat_id] = *lead;
+		si++;
+	}
+}
+
 bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 {
 	t_material	*mat;
@@ -78,7 +101,7 @@ bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	i = 0;
 	while (i < count)
 	{
-		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i], NULL))
+		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i], sync_group_materials))
 			return (true);
 		y += 30;
 		i++;

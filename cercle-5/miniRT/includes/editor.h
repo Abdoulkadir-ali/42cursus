@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:09:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 05:26:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@
 /* Transform */
 # define SL_POS_MIN     -500.0
 # define SL_POS_MAX      500.0
-# define SL_ROT_MIN     -3.14159
-# define SL_ROT_MAX      3.14159
+# define SL_ROT_MIN     -180.0
+# define SL_ROT_MAX      180.0
 # define SL_SCALE_MIN    0.0
 # define SL_SCALE_MAX    100.0
 /* Material */
