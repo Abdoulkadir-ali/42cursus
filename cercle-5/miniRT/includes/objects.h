@@ -736,6 +736,7 @@ void					update_object_material(void *obj_data, t_type type);
 
 /* File Specific Parsers */
 bool					parse_rt(const char *path, t_scene *scene);
+bool					parse_rt_fd(int fd, t_scene *scene);
 bool					parse_obj(const char *path, t_scene *scene);
 bool					parse_mtl(t_scene *scene, const char *path);
 bool					parse_fdf(const char *path, t_scene *scene);
