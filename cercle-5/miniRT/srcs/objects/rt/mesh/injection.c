@@ -130,6 +130,16 @@ bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
 	{
 		if (!mesh_cache_restore(obj->data.mesh_info.path, scene))
 			return (false);
+		/* cache restore resets group_id to -1 — assign a fresh one */
+		{
+			int	gid;
+			int	mi;
+
+			gid = scene->mesh_group_count++;
+			mi = start_mesh;
+			while (mi < scene->mesh_count)
+				scene->meshes[mi++].group_id = gid;
+		}
 	}
 	else
 	{

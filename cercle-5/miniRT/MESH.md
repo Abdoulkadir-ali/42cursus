@@ -1,172 +1,286 @@
-# MESH Editor — Full Improvement Plan
+# MESH — Architecture & Improvement Plan
 
-## Root-cause Analysis
-
-### Why .rt loads look correct but CLI / popup loads look glitchy
-
-The **`.rt` loading path** (`handle_mesh_injection` → `apply_mesh_material`):
-
-1. Parses explicit `pos / rotation / scale` from the `.rt` token
-2. Calls **`mesh_apply_transform(mesh, transform)`** on every sub-mesh which:
-   - Bakes the world transform into vertex positions (scale → rotate → translate)
-   - Stores a post-bake vertex snapshot in `edit_snap_verts` / `edit_snap_norms`
-   - Records `scene_mat` / `scene_rot_mat` (for per-frame skinning world re-apply)
-   - Sets `has_scene_transform = true`
-   - Resets `mesh->transform` to identity
-   - Rebuilds the per-mesh BVH
-3. Calls **`clone_instance_materials`** so every `.rt` instance owns independent
-   copies of each material (editing one model doesn't corrupt another).
-
-The **CLI / popup path** (`parse_glb` → `editor_add_glb`):
-
-- Calls `parse_glb` directly.  No transform is baked.
-- `has_scene_transform` stays **false** → for skinned/animated meshes
-  `glb_update_mesh_anim` skips the world-transform re-apply after each
-  skinning step, leaving the model in raw GLB local-space (often cm-scale,
-  at origin).
-- `edit_snap_verts` stays **NULL** → `mesh_transform_sync` returns early;
-  transform sliders in the inspector do nothing.
-- Materials are **not cloned** → editing one instance changes the material
-  for every other mesh that loaded the same GLB.
-- The `align_and_frame_meshes` helper (CLI path) sets `transform.pos.y` but
-  never bakes it, so the ground-plane can intersect the model.
-
-### Why each GLB appears as N separate scene-panel rows
-
-`parse_glb` creates one `t_mesh` per **primitive** (one material segment per
-body part).  A typical character GLB has 10–20 primitives.  The scene panel
-iterates `scene->mesh_count`, showing every primitive as its own `[ME] N` row.
-
-### Why the mesh inspector has no Transform tab
-
-`get_tabs()` in `inspector.c` gives meshes `[Info | Material | Physics]`.
-`TAB_TRANSFORM` was intentionally omitted, but `mesh_transform_sync` in
-`transform_panel.c` is already implemented and works correctly once
-`edit_snap_verts` is populated (i.e. after `mesh_apply_transform` is called).
+Phases 1–3 are committed.  This document records what remains: a confirmed
+bug, the structural debt that enables it, and the refactor plan.
 
 ---
 
-## Phase 1 — Fix visual glitch (editor_add_glb)  ✅ immediate
+## Current state (post Phase 3)
 
-**Files**: `srcs/gui/editor/crud.c`
+### group_id integer tag system
 
-**Changes**:
-- Mirror `editor_add_obj` in `editor_add_glb`:
-  - Iterate every newly-added mesh (`mesh_base … mesh_count - 1`)
-  - Call `mesh_apply_transform(mesh, mesh->transform)` (identity → no vertex
-    change, but sets snapshot + `has_scene_transform = true` + `scene_mat =
-    identity`)
-  - Call `scene_clone_material` for each sub-mesh so materials are instance-
-    owned
+Every `t_mesh` carries an integer `group_id`:
+- `-1` = standalone (OBJ / FBX / FDF or any non-group mesh)  
+- `≥ 0` = all submeshes that came from the same GLB file share one value
 
-**Why identity is fine here**: the user then moves / scales the mesh via the
-inspector (Phase 2).  The model appears at its GLB-local position (usually
-centred near origin), which is correct as a starting point.
+Code that needs to operate on a whole group must scan `scene->meshes[0..n]`
+looking for `m->group_id == gid`.  This pattern appears in `scene_panel.c`,
+`transform_panel.c`, and `scene_reset.c`.
 
-**CLI fix** (`srcs/objects/rt/parser/utils.c` → `align_and_frame_meshes`):
-- Instead of only setting `transform.pos.y`, also call
-  `mesh_apply_transform(mesh, mesh->transform)` after updating the pos — so
-  the baked Y offset actually moves the mesh vertices above the floor plane.
+### Where group_id is assigned
+
+| Call path | group_id assigned? | notes |
+|-----------|-------------------|-------|
+| `parse_glb` (direct, fresh parse) | ✅ at the bottom of `parse_glb` | `scene->mesh_group_count++` |
+| `editor_add_glb` (cache hit) | ✅ in `crud.c` after restore | explicit loop |
+| `handle_mesh_injection` (fresh parse) | ✅ via `parse_glb` internally | |
+| **`handle_mesh_injection` (cache hit)** | ❌ nobody assigns it | **BUG** |
 
 ---
 
-## Phase 2 — Transform tab in mesh inspector  ✅ immediate
+## Phase A — Immediate bug fix  ✅ DONE
 
-**Files**: `srcs/gui/editor/inspector.c`
+**File**: `srcs/objects/rt/mesh/injection.c`
 
-**Change**: add `TAB_TRANSFORM` as the first tab for `TYPE_MESH`:
+**Problem**: when the same GLB is referenced twice in a `.rt` file, the second
+load takes the cache-hit branch.  `mesh_cache_restore` calls `restore_one` for
+each sub-mesh, which resets `group_id = -1`.  Nothing in
+`handle_mesh_injection` reassigns a fresh `gid`.
+
+`mesh_transform_sync` checks:
+```c
+if ((gid < 0 && m != lead) || (gid >= 0 && m->group_id != gid))
+    continue;
 ```
-[Transform | Info | Material | Physics]
+With all sub-meshes at `group_id = -1` and `lead->group_id = -1`, every mesh
+except the lead is skipped → only the first sub-mesh moves.
+
+**Fix** (one block, mirroring `editor_add_glb`):
+```c
+if (mesh_cache_has(path))
+{
+    mesh_cache_restore(path, scene);
+    /* reassign fresh gid — restore_one resets to -1 */
+    int gid = scene->mesh_group_count++;
+    int mi  = start_mesh;
+    while (mi < scene->mesh_count)
+        scene->meshes[mi++].group_id = gid;
+}
 ```
-`mesh_transform_sync` already drives sliders correctly once Phase 1 is done.
 
 ---
 
-## Phase 3 — Single entry per GLB in scene panel
+## Structural debt — why this bug was possible
 
-**Strategy**: introduce a lightweight **mesh group** concept.
+### t_mesh carries group-level state
 
-### Data model (objects.h / scene.h)
+`t_mesh` is used for both "a submesh (one primitive of one GLB node)" and "a
+standalone mesh (one OBJ file)".  It mixes three unrelated concerns:
+
+**Geometry + rendering** — belongs on every submesh:
+```
+name, vertices, normals, uvs, indices
+vertex_count, tri_count, bbox
+bvh_nodes, bvh_indices, tri_cache
+mat_id
+```
+
+**Per-submesh animation** — belongs here but is messy:
+```
+skin_data, skeleton, bone_count, bone_matrices
+base_vertices, base_normals, node_idx
+scene_mat, scene_rot_mat, has_scene_transform
+current_anim, anim_time
+```
+
+**Group-level state** — does NOT belong on a submesh:
+```
+transform          ← one per group, not per primitive
+phys               ← one physics body per group
+collider           ← same
+edit_snap_verts    ← must be group-coordinated (shared pivot)
+edit_snap_norms
+edit_snap_pivot    ← must be shared or it rotates around different centres
+group_id           ← the integer tag itself
+anim_base          ← same clip range on every submesh (duplicated)
+anim_clip_count    ← same
+```
+
+Every submesh duplicates transform, phys, collider, anim_base/count.
+If an N-mesh GLB is in the scene, N copies of `t_physics_body` exist but only
+the one on `meshes[lead_idx]` is ever used.
+
+### s_skinned_mesh duplicates t_mesh fields
 
 ```c
-/* in s_mesh */
-int  group_id;   /* -1 = standalone; ≥0 = group index */
-
-/* in t_scene */
-int  mesh_group_count;
+struct s_skinned_mesh {
+    t_mesh         base;          // already has: skeleton, bone_matrices,
+                                  //   bone_count, base_vertices, vertex_count
+    t_vec3        *base_vertices; // DUPLICATE
+    t_bone        *skeleton;      // DUPLICATE
+    t_mat4        *bone_matrices; // DUPLICATE
+    t_bone_weight *weights;       // = base.skin_data (different name, same data)
+    int            bone_count;    // DUPLICATE
+    int            vertex_count;  // DUPLICATE
+};
 ```
 
-### Assignment rules
+`s_skinned_mesh` is stored in `scene->animated[]`, creating a second array
+that only the animation system knows about.  Code that wants to find a mesh by
+its scene index cannot use a single array; it has to check `animated[]` too.
+At the moment `animated[]` is effectively unused — all animation happens on
+`meshes[]` — but the struct still exists and confuses anyone reading the code.
 
-| Loader | group_id |
-|---|---|
-| `parse_glb` (runtime) | `scene->mesh_group_count` for all new meshes, then `++` |
-| `parse_obj`, `parse_fdf`, `parse_fbx` | `-1` (each mesh is standalone) |
-| Primitive shapes (sphere, plane …) | n/a — not in `meshes[]` |
+### scene->meshes[] + scene->animated[] split
 
-### Scene-panel changes
+```c
+t_mesh         *meshes;   int mesh_count;
+t_skinned_mesh *animated; int anim_count;
+```
 
-- `count_scene_rows`: count unique group IDs + standalone meshes (instead of
-  raw `mesh_count`)
-- `row_to_object`: map a row index to the **first** mesh of a group (or a
-  standalone mesh)
-- Show label: `[ME] <basename>` (strip path + extension from `mesh->name`),
-  e.g. `[ME] stylized_women`
-
-### Selection / transform
-
-- `gui->selection.index` points to the **first** mesh of the group
-- `mesh_transform_sync` is extended to apply transform changes to **all**
-  meshes sharing the same `group_id`
-- Delete: removes all meshes in the group
+Two parallel arrays for what is conceptually one list of models.  Selecting by
+scene-panel row, resetting the scene, and rendering all have to touch both
+arrays.  Currently only `meshes[]` is populated (animated GLB submeshes are
+stored there too), making `animated[]` dead weight.
 
 ---
 
-## Phase 4 — Material editing per submesh
+## Phase B — Architectural refactor (planned, not started)
 
-### Problem
+### Goal
 
-A GLB model can have 10–20 distinct materials (one per body part / primitive).
-The material tab currently only edits the material of the single selected
-`mesh->mat_id`, whereas a group selection points at the first mesh only.
+All group-level state lives in exactly one place.  No scanning.  Forgetting to
+set `group_id` becomes impossible because `group_id` no longer exists.
 
-### Solution: submesh picker inside Material tab
+### New container: t_mesh_group
 
-When the selected object is a mesh group:
+```c
+typedef struct s_mesh_group
+{
+    char            *name;          /* display name (GLB basename) */
+    char            *path;          /* source file path */
+    t_mesh          *subs;          /* owned, contiguous array of submeshes */
+    int              sub_count;
+    t_transform      transform;     /* ONE shared transform (pos/rot/scale) */
+    t_vec3           pivot;         /* shared pivot for SR+T in editor */
+    t_vec3         **snap_verts;    /* [si] → post-bake snapshot for subs[si] */
+    t_vec3         **snap_norms;
+    t_physics_body   phys;
+    t_collider       collider;
+    int              anim_base;
+    int              anim_clip_count;
+} t_mesh_group;
+```
 
-1. Draw a small **Submesh selector** row inside the Material tab:
-   `< Submesh 3 / 12 >` (prev / next arrow buttons)
-2. The selected submesh index is stored in a new `gui->inspector.submesh_idx`
-   field.
-3. `get_selected_material` is extended: for `TYPE_MESH` groups, it returns the
-   material at `scene->meshes[first + submesh_idx].mat_id`.
+### t_mesh reduced to pure geometry + per-primitive rendering
 
-### Material overrides (smart approach)
+```c
+struct s_mesh
+{
+    char             *name;
+    t_vec3           *vertices;
+    t_vec3           *normals;
+    t_vec2           *uvs;
+    int              *indices;
+    int               vertex_count;
+    int               tri_count;
+    t_aabb            bbox;
+    t_mbvh_node      *bvh_nodes;
+    int              *bvh_indices;
+    t_tri_precomp    *tri_cache;
+    int               mat_id;
+    /* skinning (per-primitive, only set on rigged meshes) */
+    t_bone_weight    *skin_data;
+    t_bone           *skeleton;
+    int               bone_count;
+    t_mat4           *bone_matrices;
+    t_vec3           *base_vertices;
+    t_vec3           *base_normals;
+    int               node_idx;
+    t_mat4            scene_mat;
+    t_mat4            scene_rot_mat;
+    bool              has_scene_transform;
+    double            anim_time;
+    /* REMOVED: transform, phys, collider, group_id,
+                edit_snap_verts, edit_snap_norms, edit_snap_pivot,
+                anim_base, anim_clip_count, current_anim */
+};
+```
 
-GLB materials can have PBR textures (albedo map, normal map, etc.).  Instead
-of replacing those entirely, expose a minimal **override** layer:
+### t_scene simplified
 
-| Override | Effect |
-|---|---|
-| **Color tint** (RGB 0–1) | Multiplied with `albedo_map.color_a` at shading |
-| **Emission scale** (0–10) | Multiplied with `material.emission` |
-| **Roughness** (0–1) | Replaces `material.roughness` if ≥ 0 |
-| **Metalness** (0–1) | Replaces `material.metalness` if ≥ 0 |
+```c
+/* before */
+t_mesh         *meshes;   int mesh_count;  int mesh_cap;  int mesh_group_count;
+t_skinned_mesh *animated; int anim_count;  int anim_cap;
 
-These overrides are stored directly inside `t_material` (no new fields needed
-since `albedo_map.color_a`, `emission`, `roughness`, `metalness` already
-exist).  Editing them via the material panel already works — the only missing
-piece is the submesh picker to choose which sub-mesh to edit.
+/* after */
+t_mesh_group   *groups;   int group_count; int group_cap;
+/* s_skinned_mesh removed entirely */
+```
+
+### transform sync — no scan needed
+
+```c
+static void group_transform_sync(t_mesh_group *g)
+{
+    t_mat4  s  = mat4_scaling(g->transform.scale);
+    t_mat4  r  = mat4_rotation(g->transform.rotation);
+    t_mat4  sr = mat4_mul(r, s);
+    for (int si = 0; si < g->sub_count; si++)
+    {
+        t_mesh *m = &g->subs[si];
+        for (int vi = 0; vi < m->vertex_count; vi++)
+        {
+            t_vec3 local = vec3_sub(g->snap_verts[si][vi], g->pivot);
+            local = mat4_mul_pos(sr, local);
+            m->vertices[vi] = vec3_add(vec3_add(local, g->pivot),
+                                       g->transform.pos);
+            if (m->normals && g->snap_norms[si])
+                m->normals[vi] = vec3_norm(mat4_mul_vec3(r, g->snap_norms[si][vi]));
+        }
+        m->bbox = aabb_from_mesh(m);
+        mesh_build_bvh(m);
+    }
+}
+```
+
+No `gid` integer, no scan, no "forgot to set group_id" class of bug.
+
+### Files to change (Phase B)
+
+| File | Change |
+|------|--------|
+| `includes/objects.h` | Add `t_mesh_group`; strip group fields from `t_mesh`; remove `s_skinned_mesh` |
+| `includes/scene.h` | Replace `meshes+animated` with `groups` |
+| `srcs/objects/glb/parser.c` | Fill `t_mesh_group` instead of flat array; BVH per sub |
+| `srcs/objects/mesh/init.c` | Remove `group_id` init; update `mesh_free` |
+| `srcs/objects/rt/mesh/cache.c` | Cache/restore `t_mesh_group` (geometry only) |
+| `srcs/objects/rt/mesh/injection.c` | Remove group_id block; populate group struct |
+| `srcs/gui/editor/crud.c` | `editor_add_glb` → add `t_mesh_group` to scene |
+| `srcs/gui/editor/transform_panel.c` | Replace scan with `group_transform_sync` |
+| `srcs/gui/editor/scene_panel.c` | Iterate `scene->groups` directly |
+| `srcs/gui/editor/scene_reset.c` | Reset `group_count` to snap |
+| `srcs/gui/editor/selection.c` | Select a `t_mesh_group` by index |
+| `srcs/rays/raytracing/intersect_mesh.c` | Iterate group subs |
+| `srcs/physics/**` | Operate on `group->phys` and `group->collider` |
+
+Estimated risk: **medium-high** (touches raytracer, physics, and animation
+frame loop).  Implement in isolation on a feature branch; keep Phase A live on
+main in the meantime.
 
 ---
 
-## Implementation schedule
+## What NOT to do prematurely
 
-| Phase | Scope | Files | Risk |
-|---|---|---|---|
-| Phase 1 | visual glitch + clone materials | `crud.c`, `utils.c` | low |
-| Phase 2 | Transform tab for mesh | `inspector.c` | trivial |
-| Phase 3 | Group concept + panel | `objects.h`, `scene.h`, `glb/parser.c`, `scene_panel.c`, `transform_panel.c` | medium |
-| Phase 4 | Submesh material picker | `inspector.c`, `material_panel.c`, `gui.h` | medium |
+- Do not merge `s_skinned_mesh` first in isolation — it is only meaningful
+  once the group container owns the animation clips.
+- Do not convert `scene->animated[]` to `scene->groups[]` without simultaneously
+  updating the animation frame loop (`glb_update_mesh_anim`).
+- Do not add more fields to `t_mesh` that belong on a group.
 
-Each phase is committed independently with a `git add -A && git commit`.
+---
+
+## Implementation order (Phase B)
+
+1. Define `t_mesh_group` in `objects.h`, leave `t_mesh` untouched.
+2. Add `scene->groups` alongside existing `meshes` array (keep both working).
+3. Port `parse_glb` → populate one `t_mesh_group` using the flat array it already builds.
+4. Port `editor_add_glb` and `handle_mesh_injection` to use `groups`.
+5. Port `scene_panel`, `transform_panel`, `scene_reset`, `selection`.
+6. Port raycaster (`intersect_mesh`) to iterate `groups[i].subs[j]`.
+7. Port physics and animation loops.
+8. Remove `meshes` array, remove `group_id` from `t_mesh`, remove `s_skinned_mesh`.
+9. Compile, run all test maps.
+
+Each numbered step is one commit.
