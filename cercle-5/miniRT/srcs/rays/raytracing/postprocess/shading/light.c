@@ -105,6 +105,107 @@ static void	apply_emissive(t_shading_ctx *ctx, t_vec3 *total,
 						ctx->mat.shininess))));
 }
 
+static void	add_tri_emission(t_shading_ctx *ctx, t_scene *sc, t_vec3 *total)
+{
+	int			i;
+	t_tri_shape	*tr;
+	t_vec3		c;
+
+	i = -1;
+	while (++i < sc->tri_count)
+	{
+		tr = &sc->tris[i];
+		if (tr->mat_id >= 0 && tr->mat_id < sc->mat_count
+			&& vec3_mag_sq(sc->materials[tr->mat_id].emission) > 1.0)
+		{
+			c = vec3_scale(vec3_add(vec3_add(tr->v[0], tr->v[1]), tr->v[2]),
+					1.0 / 3.0);
+			ctx->aux_v = vec3_sub(c, ctx->hit->point);
+			apply_emissive(ctx, total, &sc->materials[tr->mat_id],
+				vec3(0.5, 0, 0));
+		}
+	}
+}
+
+static void	add_rect_emission(t_shading_ctx *ctx, t_scene *sc, t_vec3 *total)
+{
+	int		i;
+	t_rect	*rc;
+
+	i = -1;
+	while (++i < sc->rect_count)
+	{
+		rc = &sc->rects[i];
+		if (rc->mat_id >= 0 && rc->mat_id < sc->mat_count
+			&& vec3_mag_sq(sc->materials[rc->mat_id].emission) > 1.0)
+		{
+			ctx->aux_v = vec3_sub(rc->transform.pos, ctx->hit->point);
+			apply_emissive(ctx, total, &sc->materials[rc->mat_id],
+				vec3(0.7, 0, 0));
+		}
+	}
+}
+
+static void	add_pyramid_emission(t_shading_ctx *ctx, t_scene *sc, t_vec3 *total)
+{
+	int			i;
+	t_pyramid	*py;
+
+	i = -1;
+	while (++i < sc->pyramid_count)
+	{
+		py = &sc->pyramids[i];
+		if (py->mat_id >= 0 && py->mat_id < sc->mat_count
+			&& vec3_mag_sq(sc->materials[py->mat_id].emission) > 1.0)
+		{
+			ctx->aux_v = vec3_sub(py->transform.pos, ctx->hit->point);
+			apply_emissive(ctx, total, &sc->materials[py->mat_id],
+				vec3(py->base_size * 0.5, 0, 0));
+		}
+	}
+}
+
+static void	add_box_emission(t_shading_ctx *ctx, t_scene *sc, t_vec3 *total)
+{
+	int		i;
+	t_box	*bx;
+	double	r;
+
+	i = -1;
+	while (++i < sc->box_count)
+	{
+		bx = &sc->boxes[i];
+		if (bx->mat_id >= 0 && bx->mat_id < sc->mat_count
+			&& vec3_mag_sq(sc->materials[bx->mat_id].emission) > 1.0)
+		{
+			r = fmax(fmax(bx->half_extents.x, bx->half_extents.y),
+					bx->half_extents.z);
+			ctx->aux_v = vec3_sub(bx->transform.pos, ctx->hit->point);
+			apply_emissive(ctx, total, &sc->materials[bx->mat_id],
+				vec3(r, 0, 0));
+		}
+	}
+}
+
+static void	add_capsule_emission(t_shading_ctx *ctx, t_scene *sc, t_vec3 *total)
+{
+	int			i;
+	t_capsule	*cap;
+
+	i = -1;
+	while (++i < sc->capsule_count)
+	{
+		cap = &sc->capsules[i];
+		if (cap->mat_id >= 0 && cap->mat_id < sc->mat_count
+			&& vec3_mag_sq(sc->materials[cap->mat_id].emission) > 1.0)
+		{
+			ctx->aux_v = vec3_sub(cap->transform.pos, ctx->hit->point);
+			apply_emissive(ctx, total, &sc->materials[cap->mat_id],
+				vec3(cap->radius + cap->half_height, 0, 0));
+		}
+	}
+}
+
 static void	add_sphere_emission(t_shading_ctx *ctx, t_scene *sc, t_vec3 *total)
 {
 	int			i;
@@ -133,6 +234,11 @@ void	add_emissive_lighting(t_shading_ctx *ctx, t_scene *sc, t_vec3 *total)
 	t_vec3	c;
 
 	add_sphere_emission(ctx, sc, total);
+	add_tri_emission(ctx, sc, total);
+	add_rect_emission(ctx, sc, total);
+	add_pyramid_emission(ctx, sc, total);
+	add_box_emission(ctx, sc, total);
+	add_capsule_emission(ctx, sc, total);
 	i = -1;
 	while (++i < sc->mesh_count)
 	{

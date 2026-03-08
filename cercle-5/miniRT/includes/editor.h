@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 06:19:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 09:21:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,8 @@ void		editor_add_light(struct s_gui *gui);
 void		editor_add_tri(struct s_gui *gui);
 void		editor_add_rect(struct s_gui *gui);
 void		editor_add_pyramid(struct s_gui *gui);
+void		editor_add_box(struct s_gui *gui);
+void		editor_add_capsule(struct s_gui *gui);
 void		editor_add_obj(struct s_gui *gui, const char *path);
 void		editor_add_glb(struct s_gui *gui, const char *path);
 void		editor_delete_selected(struct s_gui *gui);
@@ -240,6 +242,11 @@ typedef struct s_scene_snap
 	t_mesh_snap	*meshes;	int	mesh_count;
 	int			mesh_group_count;
 	t_group_snap	*groups;	int	group_count;
+	t_box		*boxes;		int	box_count;
+	t_capsule	*capsules;	int	capsule_count;
+	t_rect		*rects;		int	rect_count;
+	t_pyramid	*pyramids;	int	pyramid_count;
+	t_tri_shape	*tris;		int	tri_count;
 	t_ambient	ambient;
 	t_camera	camera;
 	int			ambient_color;

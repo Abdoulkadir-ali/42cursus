@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:12:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 07:52:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,32 @@ static void	sphere_scale_sync(t_gui *gui)
 	sp->inv_transform = mat4_inverse_transform(scale_only);
 }
 
+static void	box_scale_sync(t_gui *gui)
+{
+	t_selection	*sel;
+	t_box		*bx;
+
+	sel = &gui->selection;
+	if (!sel->active || sel->type != TYPE_BOX)
+		return ;
+	bx = &gui->scene->boxes[sel->index];
+	bx->half_extents = bx->transform.scale;
+}
+
+static void	capsule_dims_sync(t_gui *gui)
+{
+	t_selection	*sel;
+	t_capsule	*cap;
+
+	sel = &gui->selection;
+	if (!sel->active || sel->type != TYPE_CAPSULE)
+		return ;
+	cap = &gui->scene->capsules[sel->index];
+	cap->radius = cap->transform.scale.x;
+	cap->half_height = cap->transform.scale.y;
+	cap->transform.scale.z = cap->transform.scale.x;
+}
+
 t_transform	*get_selected_transform(t_gui *gui)
 {
 	t_selection	*sel;
@@ -104,6 +130,16 @@ t_transform	*get_selected_transform(t_gui *gui)
 		return (&sc->cylinders[sel->index].transform);
 	if (sel->type == TYPE_CONE)
 		return (&sc->cones[sel->index].transform);
+	if (sel->type == TYPE_RECT)
+		return (&sc->rects[sel->index].transform);
+	if (sel->type == TYPE_PYRAMID)
+		return (&sc->pyramids[sel->index].transform);
+	if (sel->type == TYPE_BOX)
+		return (&sc->boxes[sel->index].transform);
+	if (sel->type == TYPE_CAPSULE)
+		return (&sc->capsules[sel->index].transform);
+	if (sel->type == TYPE_TRI)
+		return (&sc->tris[sel->index].xform);
 	if (sel->type == TYPE_MESH)
 		return (&sc->groups[sel->index].transform);
 	return (NULL);
@@ -133,6 +169,17 @@ static void	build_tr_sliders(t_transform *tr, t_type type,
 		sl[i++] = (t_islider){"Scale X", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
 		sl[i++] = (t_islider){"Scale Y", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
 		sl[i++] = (t_islider){"Scale Z", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.z};
+	}
+	else if (type == TYPE_BOX)
+	{
+		sl[i++] = (t_islider){"Ext X", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+		sl[i++] = (t_islider){"Ext Y", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
+		sl[i++] = (t_islider){"Ext Z", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.z};
+	}
+	else if (type == TYPE_CAPSULE)
+	{
+		sl[i++] = (t_islider){"Radius", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+		sl[i++] = (t_islider){"Half-H", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
 	}
 	else if (type == TYPE_PLANE)
 		sl[i++] = (t_islider){"UV Scale", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
@@ -192,6 +239,10 @@ bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		cb = NULL;
 		if (gui->selection.type == TYPE_SPHERE && i == 6)
 			cb = sphere_scale_sync;
+		else if (gui->selection.type == TYPE_BOX && i >= 6)
+			cb = box_scale_sync;
+		else if (gui->selection.type == TYPE_CAPSULE && i >= 6)
+			cb = capsule_dims_sync;
 		else if (gui->selection.type == TYPE_MESH)
 			cb = mesh_transform_sync;
 		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i], cb))

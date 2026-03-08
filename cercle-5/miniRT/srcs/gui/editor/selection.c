@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 06:18:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 07:25:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,14 @@ static int	mat_id_of_selection(t_gui *gui)
 		return (sc->cones[sel->index].mat_id);
 	if (sel->type == TYPE_TRI)
 		return (sc->tris[sel->index].mat_id);
+	if (sel->type == TYPE_RECT)
+		return (sc->rects[sel->index].mat_id);
+	if (sel->type == TYPE_PYRAMID)
+		return (sc->pyramids[sel->index].mat_id);
+	if (sel->type == TYPE_BOX)
+		return (sc->boxes[sel->index].mat_id);
+	if (sel->type == TYPE_CAPSULE)
+		return (sc->capsules[sel->index].mat_id);
 	if (sel->type == TYPE_MESH && sel->index >= 0
 		&& sel->index < sc->group_count)
 		return (sc->meshes[sc->groups[sel->index].start].mat_id);

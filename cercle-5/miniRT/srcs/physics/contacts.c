@@ -91,6 +91,7 @@ static int	query_sphere(t_scene *s, int idx, t_contact *c, int count,
 {
 	t_sphere	*sphere;
 	t_aabb		saabb;
+	t_aabb		other;
 	int			p;
 
 	sphere = &s->spheres[idx];
@@ -104,6 +105,264 @@ static int	query_sphere(t_scene *s, int idx, t_contact *c, int count,
 		if (collide_sphere_plane(sphere, &s->planes[p++], &c[count]))
 			count++;
 	}
+	p = 0;
+	while (p < s->box_count && count < max)
+	{
+		other = box_aabb(&s->boxes[p]);
+		if (aabb_overlap(saabb, other)
+			&& collide_sphere_box(sphere, &s->boxes[p], &c[count]))
+			count++;
+		p++;
+	}
+	p = 0;
+	while (p < s->capsule_count && count < max)
+	{
+		other = capsule_aabb(&s->capsules[p]);
+		if (aabb_overlap(saabb, other)
+			&& collide_sphere_capsule(sphere, &s->capsules[p], &c[count]))
+			count++;
+		p++;
+	}
+	return (count);
+}
+
+static int	query_rect(t_scene *s, int idx, t_contact *c, int count, int max)
+{
+	t_rect	*rc;
+	t_aabb	raabb;
+	t_aabb	other;
+	int		p;
+
+	rc = &s->rects[idx];
+	if (rc->phys.is_static)
+		return (count);
+	raabb = rect_aabb(rc);
+	p = 0;
+	while (p < s->plane_count && count < max)
+	{
+		count += collide_rect_plane(rc, &s->planes[p], &c[count], max - count);
+		p++;
+	}
+	p = 0;
+	while (p < s->sphere_count && count < max)
+	{
+		other = sphere_aabb(&s->spheres[p]);
+		if (aabb_overlap(raabb, other))
+			count += collide_rect_sphere(rc, &s->spheres[p], &c[count],
+					max - count);
+		p++;
+	}
+	p = 0;
+	while (p < s->capsule_count && count < max)
+	{
+		other = capsule_aabb(&s->capsules[p]);
+		if (aabb_overlap(raabb, other))
+			count += collide_rect_capsule(rc, &s->capsules[p], &c[count],
+					max - count);
+		p++;
+	}
+	return (count);
+}
+
+static int	query_pyramid(t_scene *s, int idx, t_contact *c, int count, int max)
+{
+	t_pyramid	*py;
+	t_aabb		pyaabb;
+	t_aabb		other;
+	int			p;
+
+	py = &s->pyramids[idx];
+	if (py->phys.is_static)
+		return (count);
+	pyaabb = pyramid_aabb(py);
+	p = 0;
+	while (p < s->plane_count && count < max)
+	{
+		count += collide_pyramid_plane(py, &s->planes[p], &c[count],
+				max - count);
+		p++;
+	}
+	p = 0;
+	while (p < s->sphere_count && count < max)
+	{
+		other = sphere_aabb(&s->spheres[p]);
+		if (aabb_overlap(pyaabb, other))
+			count += collide_pyramid_sphere(py, &s->spheres[p], &c[count],
+					max - count);
+		p++;
+	}
+	p = 0;
+	while (p < s->capsule_count && count < max)
+	{
+		other = capsule_aabb(&s->capsules[p]);
+		if (aabb_overlap(pyaabb, other))
+			count += collide_pyramid_capsule(py, &s->capsules[p], &c[count],
+					max - count);
+		p++;
+	}
+	return (count);
+}
+
+static int	query_box(t_scene *s, int idx, t_contact *c, int count, int max)
+{
+	t_box	*bx;
+	t_aabb	baabb;
+	t_aabb	other;
+	int		p;
+
+	bx = &s->boxes[idx];
+	if (bx->phys.is_static)
+		return (count);
+	baabb = box_aabb(bx);
+	p = 0;
+	while (p < s->plane_count && count < max)
+	{
+		count += collide_box_plane(bx, &s->planes[p], &c[count], max - count);
+		p++;
+	}
+	p = idx + 1;
+	while (p < s->box_count && count < max)
+	{
+		other = box_aabb(&s->boxes[p]);
+		if (aabb_overlap(baabb, other)
+			&& collide_box_box(bx, &s->boxes[p], &c[count]))
+			count++;
+		p++;
+	}
+	p = 0;
+	while (p < s->capsule_count && count < max)
+	{
+		other = capsule_aabb(&s->capsules[p]);
+		if (aabb_overlap(baabb, other)
+			&& collide_box_capsule(bx, &s->capsules[p], &c[count]))
+			count++;
+		p++;
+	}
+	return (count);
+}
+
+static int	query_capsule(t_scene *s, int idx, t_contact *c, int count, int max)
+{
+	t_capsule	*cap;
+	t_aabb		caabb;
+	t_aabb		other;
+	int			p;
+
+	cap = &s->capsules[idx];
+	if (cap->phys.is_static)
+		return (count);
+	caabb = capsule_aabb(cap);
+	p = 0;
+	while (p < s->plane_count && count < max)
+	{
+		count += collide_capsule_plane(cap, &s->planes[p], &c[count], max - count);
+		p++;
+	}
+	p = idx + 1;
+	while (p < s->capsule_count && count < max)
+	{
+		other = capsule_aabb(&s->capsules[p]);
+		if (aabb_overlap(caabb, other)
+			&& collide_capsule_capsule(cap, &s->capsules[p], &c[count]))
+			count++;
+		p++;
+	}
+	p = 0;
+	while (p < s->box_count && count < max)
+	{
+		other = box_aabb(&s->boxes[p]);
+		if (aabb_overlap(caabb, other)
+			&& collide_box_capsule(&s->boxes[p], cap, &c[count]))
+			count++;
+		p++;
+	}
+	return (count);
+}
+
+static int	query_tri(t_scene *s, int idx, t_contact *c, int count, int max)
+{
+	t_tri_shape	*tr;
+	t_aabb		taabb;
+	t_aabb		other;
+	int			p;
+
+	tr = &s->tris[idx];
+	if (tr->phys.is_static)
+		return (count);
+	taabb = tri_shape_aabb(tr);
+	p = 0;
+	while (p < s->plane_count && count < max)
+	{
+		count += collide_tri_plane(tr, &s->planes[p], &c[count], max - count);
+		p++;
+	}
+	p = 0;
+	while (p < s->sphere_count && count < max)
+	{
+		other = sphere_aabb(&s->spheres[p]);
+		if (aabb_overlap(taabb, other))
+			count += collide_tri_sphere(tr, &s->spheres[p], &c[count],
+					max - count);
+		p++;
+	}
+	p = 0;
+	while (p < s->capsule_count && count < max)
+	{
+		other = capsule_aabb(&s->capsules[p]);
+		if (aabb_overlap(taabb, other))
+			count += collide_tri_capsule(tr, &s->capsules[p], &c[count],
+					max - count);
+		p++;
+	}
+	return (count);
+}
+
+static int	query_cylinder(t_scene *s, int idx, t_contact *c, int count,
+		int max)
+{
+	t_cylinder	*cy;
+	t_aabb		cyaabb;
+	t_aabb		other;
+	int			p;
+
+	cy = &s->cylinders[idx];
+	if (cy->phys.is_static)
+		return (count);
+	cyaabb = cylinder_aabb(cy);
+	p = 0;
+	while (p < s->plane_count && count < max)
+	{
+		count += collide_cylinder_plane(cy, &s->planes[p], &c[count],
+				max - count);
+		p++;
+	}
+	p = 0;
+	while (p < s->sphere_count && count < max)
+	{
+		other = sphere_aabb(&s->spheres[p]);
+		if (aabb_overlap(cyaabb, other)
+			&& collide_cylinder_sphere(cy, &s->spheres[p], &c[count]))
+			count++;
+		p++;
+	}
+	p = 0;
+	while (p < s->capsule_count && count < max)
+	{
+		other = capsule_aabb(&s->capsules[p]);
+		if (aabb_overlap(cyaabb, other)
+			&& collide_cylinder_capsule(cy, &s->capsules[p], &c[count]))
+			count++;
+		p++;
+	}
+	p = 0;
+	while (p < s->box_count && count < max)
+	{
+		other = box_aabb(&s->boxes[p]);
+		if (aabb_overlap(cyaabb, other)
+			&& collide_cylinder_box(cy, &s->boxes[p], &c[count]))
+			count++;
+		p++;
+	}
 	return (count);
 }
 
@@ -116,5 +375,23 @@ int	generate_contacts(t_scene *scene, t_contact *contacts, int max_c)
 	i = 0;
 	while (i < scene->sphere_count)
 		count = query_sphere(scene, i++, contacts, count, max_c);
+	i = 0;
+	while (i < scene->rect_count)
+		count = query_rect(scene, i++, contacts, count, max_c);
+	i = 0;
+	while (i < scene->pyramid_count)
+		count = query_pyramid(scene, i++, contacts, count, max_c);
+	i = 0;
+	while (i < scene->box_count)
+		count = query_box(scene, i++, contacts, count, max_c);
+	i = 0;
+	while (i < scene->capsule_count)
+		count = query_capsule(scene, i++, contacts, count, max_c);
+	i = 0;
+	while (i < scene->tri_count)
+		count = query_tri(scene, i++, contacts, count, max_c);
+	i = 0;
+	while (i < scene->cylinder_count)
+		count = query_cylinder(scene, i++, contacts, count, max_c);
 	return (count);
 }

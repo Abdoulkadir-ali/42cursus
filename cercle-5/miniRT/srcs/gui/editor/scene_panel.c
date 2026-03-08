@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:10:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 07:25:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,10 @@ static int	mesh_row_to_idx(t_scene *sc, int r)
 static int	count_scene_rows(t_scene *sc)
 {
 	return (sc->light_count + sc->sphere_count + sc->plane_count
-		+ sc->cylinder_count + sc->cone_count + count_mesh_entries(sc));
+		+ sc->cylinder_count + sc->cone_count + sc->tri_count
+		+ sc->rect_count + sc->pyramid_count
+		+ sc->box_count + sc->capsule_count
+		+ count_mesh_entries(sc));
 }
 
 static int	row_strip(int *r, int count, t_type t, t_type *ty, int *idx)
@@ -73,6 +76,16 @@ static void	row_to_object(t_gui *gui, int r, t_type *ty, int *idx)
 		return ;
 	if (row_strip(&r, sc->cone_count, TYPE_CONE, ty, idx))
 		return ;
+	if (row_strip(&r, sc->tri_count, TYPE_TRI, ty, idx))
+		return ;
+	if (row_strip(&r, sc->rect_count, TYPE_RECT, ty, idx))
+		return ;
+	if (row_strip(&r, sc->pyramid_count, TYPE_PYRAMID, ty, idx))
+		return ;
+	if (row_strip(&r, sc->box_count, TYPE_BOX, ty, idx))
+		return ;
+	if (row_strip(&r, sc->capsule_count, TYPE_CAPSULE, ty, idx))
+		return ;
 	if (r < count_mesh_entries(sc))
 	{
 		*ty = TYPE_MESH;
@@ -92,6 +105,16 @@ static const char	*row_type_prefix(t_type type)
 		return ("[CY]");
 	if (type == TYPE_CONE)
 		return ("[CO]");
+	if (type == TYPE_TRI)
+		return ("[TR]");
+	if (type == TYPE_RECT)
+		return ("[RC]");
+	if (type == TYPE_PYRAMID)
+		return ("[PY]");
+	if (type == TYPE_BOX)
+		return ("[BX]");
+	if (type == TYPE_CAPSULE)
+		return ("[CA]");
 	if (type == TYPE_MESH)
 		return ("[ME]");
 	return ("[??]");

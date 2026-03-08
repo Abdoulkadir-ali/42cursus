@@ -33,6 +33,10 @@ static bool	parse_base(t_parser *p, t_cylinder *out)
 	out->transform.scale = vec3(diameter / 2.0, height, diameter / 2.0);
 	out->mat_id = 0;
 	out->temp_color = rgb;
+	out->phys.mass = 1.0;
+	out->phys.elasticity = 0.5;
+	out->phys.friction = 0.5;
+	out->phys.is_static = false;
 	return (true);
 }
 

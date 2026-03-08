@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 06:17:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 07:23:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,22 @@ struct				s_scene
 	t_tri_shape		*tris;
 	int				tri_count;
 	int				tri_cap;
+
+	t_rect			*rects;
+	int				rect_count;
+	int				rect_cap;
+
+	t_pyramid		*pyramids;
+	int				pyramid_count;
+	int				pyramid_cap;
+
+	t_box			*boxes;
+	int				box_count;
+	int				box_cap;
+
+	t_capsule		*capsules;
+	int				capsule_count;
+	int				capsule_cap;
 
 	t_mesh			*meshes;
 	int				mesh_count;
@@ -102,6 +118,10 @@ bool				scene_add_plane(t_scene *scene, t_plane plane);
 bool				scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
 bool				scene_add_cone(t_scene *scene, t_cone cone);
 bool				scene_add_tri(t_scene *scene, t_tri_shape tri);
+bool				scene_add_rect(t_scene *scene, t_rect rect);
+bool				scene_add_pyramid(t_scene *scene, t_pyramid py);
+bool				scene_add_box(t_scene *scene, t_box box);
+bool				scene_add_capsule(t_scene *scene, t_capsule cap);
 bool				scene_add_mesh(t_scene *scene, t_mesh mesh);
 bool				scene_add_animated(t_scene *scene, t_skinned_mesh animated);
 bool				scene_add_group(t_scene *scene, t_mesh_group g);

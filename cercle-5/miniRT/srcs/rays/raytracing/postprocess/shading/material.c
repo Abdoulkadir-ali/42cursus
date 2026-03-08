@@ -37,6 +37,18 @@ void	get_material(t_shading_ctx *ctx)
 	else if (h->ref.type == TYPE_TRI && h->ref.index >= 0
 		&& h->ref.index < ctx->scene->tri_count)
 		mat_id = ctx->scene->tris[h->ref.index].mat_id;
+	else if (h->ref.type == TYPE_RECT && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->rect_count)
+		mat_id = ctx->scene->rects[h->ref.index].mat_id;
+	else if (h->ref.type == TYPE_PYRAMID && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->pyramid_count)
+		mat_id = ctx->scene->pyramids[h->ref.index].mat_id;
+	else if (h->ref.type == TYPE_BOX && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->box_count)
+		mat_id = ctx->scene->boxes[h->ref.index].mat_id;
+	else if (h->ref.type == TYPE_CAPSULE && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->capsule_count)
+		mat_id = ctx->scene->capsules[h->ref.index].mat_id;
 	else if (h->ref.type == TYPE_MESH && h->ref.index >= 0
 		&& h->ref.index < ctx->scene->mesh_count)
 		mat_id = ctx->scene->meshes[h->ref.index].mat_id;

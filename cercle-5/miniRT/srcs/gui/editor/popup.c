@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 06:22:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 07:29:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,16 +75,21 @@ static void	dispatch_shape(t_gui *gui, int i)
 		editor_add_rect(gui);
 	else if (i == 7)
 		editor_add_pyramid(gui);
+	else if (i == 8)
+		editor_add_box(gui);
+	else if (i == 9)
+		editor_add_capsule(gui);
 	gui->crud.popup = POPUP_NONE;
 	gui->render.dirty = true;
 }
 
 static void	draw_popup_shape(t_gui *gui)
 {
-	static const char	*labels[9] = {
+	static const char	*labels[11] = {
 		"Sphere", "Plane", "Cylinder",
 		"Cone", "Light", "Triangle",
-		"Rectangle", "Pyramid", "Mesh  \xe2\x86\x92"
+		"Rectangle", "Pyramid", "Box",
+		"Capsule", "Mesh  \xe2\x86\x92"
 	};
 	int					ox;
 	int					oy;
@@ -93,17 +98,17 @@ static void	draw_popup_shape(t_gui *gui)
 	int					bg;
 	int					i;
 
-	draw_modal_bg(gui, POPUP_PAD * 2 + 36 + 3 * (POPUP_ITEM_H + 8) + 40,
+	draw_modal_bg(gui, POPUP_PAD * 2 + 36 + 4 * (POPUP_ITEM_H + 8) + 40,
 		&ox, &oy);
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		ox + POPUP_PAD, oy + POPUP_PAD, COL_ACCENT, "Add Object");
 	bw = (POPUP_W - POPUP_PAD * 4) / 3;
 	bh = POPUP_ITEM_H;
 	i = 0;
-	while (i < 9)
+	while (i < 11)
 	{
 		bg = 0x22222E;
-		if (i == 8)
+		if (i == 10)
 			bg = 0x1E2A1E;
 		draw_popup_btn(gui,
 			ox + POPUP_PAD + (i % 3) * (bw + POPUP_PAD),
@@ -112,7 +117,7 @@ static void	draw_popup_shape(t_gui *gui)
 		i++;
 	}
 	draw_popup_btn(gui, ox + POPUP_W - 90 - POPUP_PAD,
-		oy + 36 + POPUP_PAD + 3 * (bh + 8) + 4,
+		oy + 36 + POPUP_PAD + 4 * (bh + 8) + 4,
 		90, 26, "Cancel", 0x2A1A1A);
 }
 
@@ -127,17 +132,17 @@ static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 
 	bw = (POPUP_W - POPUP_PAD * 4) / 3;
 	bh = POPUP_ITEM_H;
-	modal_h = POPUP_PAD * 2 + 36 + 3 * (POPUP_ITEM_H + 8) + 40;
+	modal_h = POPUP_PAD * 2 + 36 + 4 * (POPUP_ITEM_H + 8) + 40;
 	ox = (gui->win.disp_w - POPUP_W) / 2;
 	oy = (gui->win.disp_h - modal_h) / 2;
 	i = 0;
-	while (i < 9)
+	while (i < 11)
 	{
 		if (phit(mouse,
 				ox + POPUP_PAD + (i % 3) * (bw + POPUP_PAD),
 				oy + 36 + POPUP_PAD + (i / 3) * (bh + 8), bw, bh))
 		{
-			if (i == 8)
+			if (i == 10)
 			{
 				gui->crud.popup = POPUP_MESH_FMT;
 				gui->render.dirty = true;
@@ -149,7 +154,7 @@ static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 		i++;
 	}
 	if (phit(mouse, ox + POPUP_W - 90 - POPUP_PAD,
-			oy + 36 + POPUP_PAD + 3 * (bh + 8) + 4, 90, 26))
+			oy + 36 + POPUP_PAD + 4 * (bh + 8) + 4, 90, 26))
 		gui->crud.popup = POPUP_NONE;
 	gui->render.dirty = true;
 	return (true);

@@ -33,6 +33,14 @@ static int	get_count_for_type(int type, t_scene *scene)
 		return (scene->cone_count);
 	else if (type == TYPE_TRI)
 		return (scene->tri_count);
+	else if (type == TYPE_RECT)
+		return (scene->rect_count);
+	else if (type == TYPE_PYRAMID)
+		return (scene->pyramid_count);
+	else if (type == TYPE_BOX)
+		return (scene->box_count);
+	else if (type == TYPE_CAPSULE)
+		return (scene->capsule_count);
 	else
 		return (0);
 }
@@ -78,6 +86,10 @@ size_t	collect_objects(t_scene *scene, t_build_item *items)
 	add_items(items, &k, TYPE_CYLINDER, scene);
 	add_items(items, &k, TYPE_CONE, scene);
 	add_items(items, &k, TYPE_TRI, scene);
+	add_items(items, &k, TYPE_RECT, scene);
+	add_items(items, &k, TYPE_PYRAMID, scene);
+	add_items(items, &k, TYPE_BOX, scene);
+	add_items(items, &k, TYPE_CAPSULE, scene);
 	k = collect_complex(scene, items, k);
 	ft_print_debug("BVH Collect Finished: total items=%zu\n", k);
 	return (k);

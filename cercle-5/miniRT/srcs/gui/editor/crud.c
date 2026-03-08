@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 06:22:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 07:26:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,30 @@ static void	delete_sel_cy_co(t_scene *sc, t_selection *sel)
 			(sc->tri_count - i - 1) * sizeof(t_tri_shape));
 		sc->tri_count--;
 	}
+	else if (sel->type == TYPE_RECT && i < sc->rect_count)
+	{
+		ft_memmove(sc->rects + i, sc->rects + i + 1,
+			(sc->rect_count - i - 1) * sizeof(t_rect));
+		sc->rect_count--;
+	}
+	else if (sel->type == TYPE_PYRAMID && i < sc->pyramid_count)
+	{
+		ft_memmove(sc->pyramids + i, sc->pyramids + i + 1,
+			(sc->pyramid_count - i - 1) * sizeof(t_pyramid));
+		sc->pyramid_count--;
+	}
+	else if (sel->type == TYPE_BOX && i < sc->box_count)
+	{
+		ft_memmove(sc->boxes + i, sc->boxes + i + 1,
+			(sc->box_count - i - 1) * sizeof(t_box));
+		sc->box_count--;
+	}
+	else if (sel->type == TYPE_CAPSULE && i < sc->capsule_count)
+	{
+		ft_memmove(sc->capsules + i, sc->capsules + i + 1,
+			(sc->capsule_count - i - 1) * sizeof(t_capsule));
+		sc->capsule_count--;
+	}
 }
 
 void	editor_delete_selected(t_gui *gui)
@@ -187,23 +211,6 @@ void	editor_delete_selected(t_gui *gui)
 	gui->render.dirty = true;
 }
 
-static t_tri_shape	make_screen_tri(t_vec3 a, t_vec3 b, t_vec3 c, t_vec3 col)
-{
-	t_tri_shape	tr;
-	t_vec3		e1;
-	t_vec3		e2;
-
-	ft_memset(&tr, 0, sizeof(tr));
-	tr.v[0] = a;
-	tr.v[1] = b;
-	tr.v[2] = c;
-	tr.temp_color = col;
-	e1 = vec3_sub(b, a);
-	e2 = vec3_sub(c, a);
-	tr.normal = vec3_norm(vec3_cross(e1, e2));
-	return (tr);
-}
-
 void	editor_add_tri(t_gui *gui)
 {
 	t_tri_shape	tr;
@@ -228,65 +235,107 @@ void	editor_add_tri(t_gui *gui)
 	gui->render.dirty = true;
 }
 
-static void	add_pyramid_sides(t_gui *gui, t_vec3 pos, t_vec3 apex, t_vec3 col)
-{
-	scene_add_tri(gui->scene, make_screen_tri(
-			vec3_add(pos, vec3(-1, 0, -1)),
-			vec3_add(pos, vec3(1, 0, -1)), apex, col));
-	scene_add_tri(gui->scene, make_screen_tri(
-			vec3_add(pos, vec3(1, 0, -1)),
-			vec3_add(pos, vec3(1, 0, 1)), apex, col));
-	scene_add_tri(gui->scene, make_screen_tri(
-			vec3_add(pos, vec3(1, 0, 1)),
-			vec3_add(pos, vec3(-1, 0, 1)), apex, col));
-	scene_add_tri(gui->scene, make_screen_tri(
-			vec3_add(pos, vec3(-1, 0, 1)),
-			vec3_add(pos, vec3(-1, 0, -1)), apex, col));
-}
-
 void	editor_add_rect(t_gui *gui)
 {
+	t_rect	rc;
 	t_vec3	pos;
-	t_vec3	col;
-	int		base;
+	t_vec3	right;
+	t_vec3	up;
 
 	if (!gui->scene)
 		return ;
 	pos = cam_fwd_pos(gui, 3.0);
-	col = vec3(0.6, 0.8, 0.5);
-	base = gui->scene->tri_count;
-	scene_add_tri(gui->scene, make_screen_tri(
-			vec3_add(pos, vec3(-1, -1, 0)), vec3_add(pos, vec3(1, -1, 0)),
-			vec3_add(pos, vec3(1, 1, 0)), col));
-	scene_add_tri(gui->scene, make_screen_tri(
-			vec3_add(pos, vec3(-1, -1, 0)), vec3_add(pos, vec3(1, 1, 0)),
-			vec3_add(pos, vec3(-1, 1, 0)), col));
-	select_object(gui, TYPE_TRI, base);
+	ft_memset(&rc, 0, sizeof(rc));
+	right = vec3(1, 0, 0);
+	up = vec3(0, 1, 0);
+	rc.v[0] = vec3_add(vec3_add(pos, vec3_scale(right, -1)),
+			vec3_scale(up, -1));
+	rc.v[1] = vec3_add(vec3_add(pos, vec3_scale(right, 1)),
+			vec3_scale(up, -1));
+	rc.v[2] = vec3_add(vec3_add(pos, vec3_scale(right, 1)),
+			vec3_scale(up, 1));
+	rc.v[3] = vec3_add(vec3_add(pos, vec3_scale(right, -1)),
+			vec3_scale(up, 1));
+	rc.normal = vec3(0, 0, -1);
+	rc.transform.pos = pos;
+	rc.transform.scale = vec3(1, 1, 1);
+	rc.phys.mass = 1.0;
+	rc.phys.elasticity = 0.5;
+	rc.phys.friction = 0.5;
+	rc.temp_color = vec3(0.6, 0.8, 0.5);
+	scene_add_rect(gui->scene, rc);
+	select_object(gui, TYPE_RECT, gui->scene->rect_count - 1);
 	rebuild_bvh(gui);
 	gui->render.dirty = true;
 }
 
 void	editor_add_pyramid(t_gui *gui)
 {
-	t_vec3	pos;
-	t_vec3	apex;
-	t_vec3	col;
-	int		base;
+	t_pyramid	py;
+	t_vec3		pos;
 
 	if (!gui->scene)
 		return ;
 	pos = cam_fwd_pos(gui, 3.0);
-	apex = vec3_add(pos, vec3(0, 2, 0));
-	col = vec3(0.9, 0.6, 0.3);
-	base = gui->scene->tri_count;
-	scene_add_tri(gui->scene, make_screen_tri(
-			vec3_add(pos, vec3(-1, 0, -1)), vec3_add(pos, vec3(1, 0, -1)),
-			vec3_add(pos, vec3(1, 0, 1)), col));
-	scene_add_tri(gui->scene, make_screen_tri(
-			vec3_add(pos, vec3(-1, 0, -1)), vec3_add(pos, vec3(1, 0, 1)),
-			vec3_add(pos, vec3(-1, 0, 1)), col));
-	add_pyramid_sides(gui, pos, apex, col);
-	select_object(gui, TYPE_TRI, base);
+	ft_memset(&py, 0, sizeof(py));
+	py.transform.pos = pos;
+	py.transform.scale = vec3(1, 1, 1);
+	py.up = vec3(0, 1, 0);
+	py.base_size = 2.0;
+	py.height = 2.0;
+	py.phys.mass = 1.0;
+	py.phys.elasticity = 0.5;
+	py.phys.friction = 0.5;
+	py.temp_color = vec3(0.9, 0.6, 0.3);
+	scene_add_pyramid(gui->scene, py);
+	select_object(gui, TYPE_PYRAMID, gui->scene->pyramid_count - 1);
+	rebuild_bvh(gui);
+	gui->render.dirty = true;
+}
+
+void	editor_add_box(t_gui *gui)
+{
+	t_box	bx;
+	t_vec3	pos;
+
+	if (!gui->scene)
+		return ;
+	pos = cam_fwd_pos(gui, 3.0);
+	ft_memset(&bx, 0, sizeof(bx));
+	bx.transform.pos = pos;
+	bx.transform.forward = vec3(1, 0, 0);
+	bx.transform.scale = vec3(1, 1, 1);
+	bx.half_extents = vec3(1.0, 1.0, 1.0);
+	bx.phys.mass = 1.0;
+	bx.phys.elasticity = 0.5;
+	bx.phys.friction = 0.5;
+	bx.temp_color = vec3(0.4, 0.7, 0.9);
+	scene_add_box(gui->scene, bx);
+	select_object(gui, TYPE_BOX, gui->scene->box_count - 1);
+	rebuild_bvh(gui);
+	gui->render.dirty = true;
+}
+
+void	editor_add_capsule(t_gui *gui)
+{
+	t_capsule	cap;
+	t_vec3		pos;
+
+	if (!gui->scene)
+		return ;
+	pos = cam_fwd_pos(gui, 3.0);
+	ft_memset(&cap, 0, sizeof(cap));
+	cap.transform.pos = pos;
+	cap.transform.scale = vec3(1, 1, 1);
+	cap.axis = vec3(0, 1, 0);
+	cap.radius = 0.5;
+	cap.half_height = 1.0;
+	cap.phys.mass = 1.0;
+	cap.phys.elasticity = 0.5;
+	cap.phys.friction = 0.5;
+	cap.temp_color = vec3(0.8, 0.4, 0.7);
+	scene_add_capsule(gui->scene, cap);
+	select_object(gui, TYPE_CAPSULE, gui->scene->capsule_count - 1);
 	rebuild_bvh(gui);
 	gui->render.dirty = true;
 }

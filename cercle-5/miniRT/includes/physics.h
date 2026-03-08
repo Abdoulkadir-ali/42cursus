@@ -23,6 +23,8 @@
 # define SOLVER_ITERATIONS 8
 # define BAUMGARTE 0.2
 # define SLOP 0.01
+/* Minimum approach speed for restitution to fire (kills spawn-jolt) */
+# define RESTITUTION_SLOP 1.0
 
 
 /* Forward declarations to avoid circular includes. Concrete types
@@ -38,6 +40,8 @@ typedef struct s_physics_body
 	double  mass;
 	double  elasticity; /* 0..1 bounce factor */
 	double  friction;   /* 0..1 friction coefficient */
+	t_vec3  inv_inertia; /* per-axis m/I (body space diagonal) — set by integrate */
+	t_vec3  center;      /* world-space center of mass — updated each frame     */
 }               t_physics_body;
 
 typedef struct s_physics_state
@@ -131,6 +135,43 @@ int     generate_contacts(t_scene *scene, t_contact *contacts, int max_c);
 bool    collide_sphere_sphere(t_sphere *a, t_sphere *b, t_contact *c);
 bool    collide_sphere_plane(t_sphere *s, t_plane *p, t_contact *c);
 bool    collide_sphere_mesh(t_sphere *s, t_mesh *m, t_contact *c);
+int     collide_tri_plane(struct s_tri_shape *tr, t_plane *pl,
+			t_contact *c, int max_c);
+int     collide_cylinder_plane(struct s_cylinder *cy, t_plane *pl,
+			t_contact *c, int max_c);
+int     collide_rect_plane(struct s_rect *rc, t_plane *pl,
+			t_contact *c, int max_c);
+int     collide_pyramid_plane(struct s_pyramid *py, t_plane *pl,
+			t_contact *c, int max_c);
+int     collide_box_plane(struct s_box *bx, t_plane *pl, t_contact *c, int max_c);
+int     collide_capsule_plane(struct s_capsule *cap, t_plane *pl, t_contact *c,
+			int max_c);
+bool    collide_sphere_capsule(struct s_sphere *sp, struct s_capsule *cap,
+			t_contact *c);
+bool    collide_sphere_box(struct s_sphere *sp, struct s_box *bx, t_contact *c);
+bool    collide_capsule_capsule(struct s_capsule *a, struct s_capsule *b,
+			t_contact *c);
+bool    collide_box_box(struct s_box *a, struct s_box *b, t_contact *c);
+bool    collide_box_capsule(struct s_box *bx, struct s_capsule *cap,
+			t_contact *c);
+bool    collide_cylinder_sphere(struct s_cylinder *cy, struct s_sphere *sp,
+			t_contact *c);
+bool    collide_cylinder_capsule(struct s_cylinder *cy, struct s_capsule *cap,
+			t_contact *c);
+bool    collide_cylinder_box(struct s_cylinder *cy, struct s_box *bx,
+			t_contact *c);
+int     collide_rect_sphere(struct s_rect *rc, struct s_sphere *sp,
+			t_contact *c, int max_c);
+int     collide_rect_capsule(struct s_rect *rc, struct s_capsule *cap,
+			t_contact *c, int max_c);
+int     collide_tri_sphere(struct s_tri_shape *tr, struct s_sphere *sp,
+			t_contact *c, int max_c);
+int     collide_tri_capsule(struct s_tri_shape *tr, struct s_capsule *cap,
+			t_contact *c, int max_c);
+int     collide_pyramid_sphere(struct s_pyramid *py, struct s_sphere *sp,
+			t_contact *c, int max_c);
+int     collide_pyramid_capsule(struct s_pyramid *py, struct s_capsule *cap,
+			t_contact *c, int max_c);
 
 /* Solver */
 void    solve_velocities(t_contact *contacts, int count);

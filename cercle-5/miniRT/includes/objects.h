@@ -45,6 +45,7 @@ struct					s_plane
 struct					s_cylinder
 {
 	t_transform			transform;
+	t_physics_body		phys;
 	int					mat_id;
 	t_vec3				temp_color;
 };
@@ -58,24 +59,52 @@ struct					s_cone
 
 struct					s_tri_shape
 {
+	t_transform			xform;
+	t_physics_body		phys;
 	t_vec3				v[3];
 	t_vec3				normal;
 	int					mat_id;
 	t_vec3				temp_color;
 };
 
-struct					s_rect_parse
+struct					s_rect
 {
+	t_transform			transform;
+	t_physics_body		phys;
 	t_vec3				v[4];
+	t_vec3				normal;
+	int					mat_id;
 	t_vec3				temp_color;
 };
 
-struct					s_pyramid_parse
+struct					s_pyramid
 {
-	t_vec3				center;
+	t_transform			transform;
+	t_physics_body		phys;
 	t_vec3				up;
 	double				base_size;
 	double				height;
+	int					mat_id;
+	t_vec3				temp_color;
+};
+
+struct					s_box
+{
+	t_transform			transform;
+	t_physics_body		phys;
+	t_vec3				half_extents;
+	int					mat_id;
+	t_vec3				temp_color;
+};
+
+struct					s_capsule
+{
+	t_transform			transform;
+	t_physics_body		phys;
+	t_vec3				axis;
+	double				radius;
+	double				half_height;
+	int					mat_id;
 	t_vec3				temp_color;
 };
 
@@ -369,8 +398,10 @@ struct					s_parse_obj
 		t_skinned_mesh	animated;
 		t_mesh_info		mesh_info;
 		t_tri_shape		tri_shape;
-		t_rect_parse	rect_parse;
-		t_pyramid_parse	pyramid_parse;
+		t_rect			rect;
+		t_pyramid		pyramid;
+		t_box			box;
+		t_capsule		capsule;
 	} data;
 };
 
@@ -757,8 +788,10 @@ t_parse_obj				parse_plane(t_parser *p);
 t_parse_obj				parse_cylinder(t_parser *p);
 t_parse_obj				parse_cone(t_parser *p);
 t_parse_obj				parse_tri_shape(t_parser *p);
-t_parse_obj				parse_rect_shape(t_parser *p);
+t_parse_obj				parse_rect(t_parser *p);
 t_parse_obj				parse_pyramid(t_parser *p);
+t_parse_obj				parse_box(t_parser *p);
+t_parse_obj				parse_capsule(t_parser *p);
 t_parse_obj				parse_mesh_entry(t_parser *p, t_type type);
 
 void					update_object_material(void *obj_data, t_type type);

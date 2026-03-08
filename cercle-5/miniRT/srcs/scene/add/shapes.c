@@ -109,3 +109,63 @@ bool	scene_add_tri(t_scene *scene, t_tri_shape tri)
 	scene->tris[scene->tri_count++] = tri;
 	return (true);
 }
+
+bool	scene_add_rect(t_scene *scene, t_rect rect)
+{
+	int	mat_id;
+
+	mat_id = scene_add_material(scene, rect.temp_color);
+	if (mat_id < 0)
+		return (false);
+	rect.mat_id = mat_id;
+	if (!DYNARRAY_ENSURE_INT(&scene->rects, &scene->rect_count,
+			&scene->rect_cap, sizeof(t_rect)))
+		return (false);
+	scene->rects[scene->rect_count++] = rect;
+	return (true);
+}
+
+bool	scene_add_pyramid(t_scene *scene, t_pyramid py)
+{
+	int	mat_id;
+
+	mat_id = scene_add_material(scene, py.temp_color);
+	if (mat_id < 0)
+		return (false);
+	py.mat_id = mat_id;
+	if (!DYNARRAY_ENSURE_INT(&scene->pyramids, &scene->pyramid_count,
+			&scene->pyramid_cap, sizeof(t_pyramid)))
+		return (false);
+	scene->pyramids[scene->pyramid_count++] = py;
+	return (true);
+}
+
+bool	scene_add_box(t_scene *scene, t_box box)
+{
+	int	mat_id;
+
+	mat_id = scene_add_material(scene, box.temp_color);
+	if (mat_id < 0)
+		return (false);
+	box.mat_id = mat_id;
+	if (!DYNARRAY_ENSURE_INT(&scene->boxes, &scene->box_count,
+			&scene->box_cap, sizeof(t_box)))
+		return (false);
+	scene->boxes[scene->box_count++] = box;
+	return (true);
+}
+
+bool	scene_add_capsule(t_scene *scene, t_capsule cap)
+{
+	int	mat_id;
+
+	mat_id = scene_add_material(scene, cap.temp_color);
+	if (mat_id < 0)
+		return (false);
+	cap.mat_id = mat_id;
+	if (!DYNARRAY_ENSURE_INT(&scene->capsules, &scene->capsule_count,
+			&scene->capsule_cap, sizeof(t_capsule)))
+		return (false);
+	scene->capsules[scene->capsule_count++] = cap;
+	return (true);
+}

@@ -34,7 +34,18 @@ void	physics_shoot_ray(t_scene *scene, t_ray ray, double impulse)
 		/* Identify the object and get its physics body */
 		if (hit.ref.type == TYPE_SPHERE)
 			phys = &scene->spheres[hit.ref.index].phys;
-		/* Add other types as needed */
+		else if (hit.ref.type == TYPE_TRI)
+			phys = &scene->tris[hit.ref.index].phys;
+		else if (hit.ref.type == TYPE_RECT)
+			phys = &scene->rects[hit.ref.index].phys;
+		else if (hit.ref.type == TYPE_PYRAMID)
+			phys = &scene->pyramids[hit.ref.index].phys;
+		else if (hit.ref.type == TYPE_BOX)
+			phys = &scene->boxes[hit.ref.index].phys;
+		else if (hit.ref.type == TYPE_CAPSULE)
+			phys = &scene->capsules[hit.ref.index].phys;
+		else if (hit.ref.type == TYPE_CYLINDER)
+			phys = &scene->cylinders[hit.ref.index].phys;
 
 		if (phys && !phys->is_static)
 		{
@@ -47,30 +58,33 @@ void	physics_shoot_ray(t_scene *scene, t_ray ray, double impulse)
 				phys->velocity = vec3_add(phys->velocity, delta_v);
 				
 				/* Angular Impulse (Torque) */
-				/* Need transform position to calculate lever arm */
-				t_vec3 center_pos;
-				if (hit.ref.type == TYPE_SPHERE)
-					center_pos = scene->spheres[hit.ref.index].transform.pos;
-				else if (hit.ref.type == TYPE_MESH)
-					center_pos = scene->meshes[hit.ref.index].transform.pos;
-				else
-					center_pos = (t_vec3){0}; /* Fallback or extend for other types */
+				t_vec3 center_pos = phys->center;
 					
 				t_vec3 hit_point = vec3_add(ray.origin, vec3_scale(ray.direction, hit.t));
 				t_vec3 r = vec3_sub(hit_point, center_pos);
 				t_vec3 force_vec = vec3_scale(ray.direction, impulse);
 				t_vec3 torque = vec3_cross(r, force_vec);
-				
-				/* Estimate Inertia (Solid Sphere approx for all dynamic bodies for now) */
-				/* I = 0.4 * mass * radius^2 */
-				/* inv_I = 2.5 / (mass * radius^2) */
-				/* We can use |r|^2 as approx radius^2 if hit is on surface */
-				double r2 = vec3_mag_sq(r);
-				if (r2 > 1e-6)
+				double inv_m = 1.0 / phys->mass;
+
+				/* Angular impulse: scale with lever arm length so all shapes
+				   feel consistent with spheres regardless of their inertia tensor.
+				   fmax(r², 1) prevents blow-up on near-center hits. */
+				if (vec3_mag_sq(r) > 1e-6)
 				{
-					double inv_inertia = 2.5 / (phys->mass * r2);
-					phys->angular_velocity = vec3_add(phys->angular_velocity, 
-							vec3_scale(torque, inv_inertia));
+					double inv_i = 2.5 * inv_m / fmax(vec3_mag_sq(r), 1.0);
+					t_vec3 dw = vec3_scale(torque, inv_i);
+
+					/* For cylinders: remove the spin component along the
+					   symmetry axis to avoid beyblade rotation. */
+					if (hit.ref.type == TYPE_CYLINDER)
+					{
+						t_vec3 ax = vec3_norm(
+							scene->cylinders[hit.ref.index].transform.forward);
+						dw = vec3_sub(dw,
+							vec3_scale(ax, vec3_dot(dw, ax)));
+					}
+					phys->angular_velocity = vec3_add(
+						phys->angular_velocity, dw);
 				}
 
 				printf("Physics: Impulse %.1f on Obj %d (Torque: %.2f)\n",

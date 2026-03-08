@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 06:18:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 07:54:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,14 @@ const char	*type_name_str(t_type type)
 		return ("Mesh");
 	if (type == TYPE_TRI)
 		return ("Triangle");
+	if (type == TYPE_RECT)
+		return ("Rectangle");
+	if (type == TYPE_PYRAMID)
+		return ("Pyramid");
+	if (type == TYPE_BOX)
+		return ("Box");
+	if (type == TYPE_CAPSULE)
+		return ("Capsule");
 	return ("Object");
 }
 
@@ -40,6 +48,24 @@ static t_physics_body	*get_selected_physics(t_gui *gui)
 	if (gui->selection.type == TYPE_SPHERE
 		&& gui->selection.index < sc->sphere_count)
 		return (&sc->spheres[gui->selection.index].phys);
+	if (gui->selection.type == TYPE_TRI
+		&& gui->selection.index < sc->tri_count)
+		return (&sc->tris[gui->selection.index].phys);
+	if (gui->selection.type == TYPE_CYLINDER
+		&& gui->selection.index < sc->cylinder_count)
+		return (&sc->cylinders[gui->selection.index].phys);
+	if (gui->selection.type == TYPE_RECT
+		&& gui->selection.index < sc->rect_count)
+		return (&sc->rects[gui->selection.index].phys);
+	if (gui->selection.type == TYPE_PYRAMID
+		&& gui->selection.index < sc->pyramid_count)
+		return (&sc->pyramids[gui->selection.index].phys);
+	if (gui->selection.type == TYPE_BOX
+		&& gui->selection.index < sc->box_count)
+		return (&sc->boxes[gui->selection.index].phys);
+	if (gui->selection.type == TYPE_CAPSULE
+		&& gui->selection.index < sc->capsule_count)
+		return (&sc->capsules[gui->selection.index].phys);
 	if (gui->selection.type == TYPE_MESH
 		&& gui->selection.index < sc->group_count)
 		return (&sc->groups[gui->selection.index].phys);
@@ -69,6 +95,14 @@ static int	get_tabs(t_type type, t_inspect_tab tabs[3],
 		tabs[0] = TAB_TRANSFORM; labels[0] = "Transform";
 		tabs[1] = TAB_LIGHT;     labels[1] = "Light";
 		return (2);
+	}
+	if (type == TYPE_TRI || type == TYPE_RECT || type == TYPE_PYRAMID
+		|| type == TYPE_BOX || type == TYPE_CAPSULE || type == TYPE_CYLINDER)
+	{
+		tabs[0] = TAB_TRANSFORM; labels[0] = "Transform";
+		tabs[1] = TAB_MATERIAL;  labels[1] = "Material";
+		tabs[2] = TAB_PHYSICS;   labels[2] = "Physics";
+		return (3);
 	}
 	tabs[0] = TAB_TRANSFORM; labels[0] = "Transform";
 	tabs[1] = TAB_MATERIAL;  labels[1] = "Material";

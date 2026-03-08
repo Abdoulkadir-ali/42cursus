@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 09:48:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,36 +21,44 @@ static double	get_inv_mass(t_physics_body *body)
 	return (1.0 / body->mass);
 }
 
-static void	apply_normal_impulse(t_contact *ct, double inv_a, double inv_b,
-		double vn)
+/*
+** Angular contribution to the impulse denominator for direction dir at arm r.
+** = inv_m * |(r × dir)|² projected through diagonal inv_inertia tensor.
+** This prevents the effective angular restitution from exceeding 1.0.
+*/
+static double	ang_term(t_physics_body *body, t_vec3 r, t_vec3 dir,
+		double inv_m)
 {
-	double	j;
-	t_vec3	impulse;
+	t_vec3	rxd;
 
-	j = -(1.0 + ct->restitution) * vn / (inv_a + inv_b);
-	impulse = vec3_scale(ct->normal, j);
-	if (ct->a && inv_a > 0.0)
-		ct->a->velocity = vec3_sub(ct->a->velocity,
-				vec3_scale(impulse, inv_a));
-	if (ct->b && inv_b > 0.0)
-		ct->b->velocity = vec3_add(ct->b->velocity,
-				vec3_scale(impulse, inv_b));
+	if (!body || inv_m < 1e-9)
+		return (0.0);
+	rxd = vec3_cross(r, dir);
+	return (inv_m * (rxd.x * rxd.x * body->inv_inertia.x
+			+ rxd.y * rxd.y * body->inv_inertia.y
+			+ rxd.z * rxd.z * body->inv_inertia.z));
 }
 
-static void	apply_torque(t_physics_body *body, t_vec3 r, t_vec3 f_impulse,
+/* Velocity of the body at contact arm r (linear + rotational). */
+static t_vec3	point_vel(t_physics_body *body, t_vec3 r)
+{
+	if (!body)
+		return (vec3(0, 0, 0));
+	return (vec3_add(body->velocity,
+			vec3_cross(body->angular_velocity, r)));
+}
+
+static void	apply_torque(t_physics_body *body, t_vec3 r, t_vec3 impulse,
 		double inv_m, double sign)
 {
 	t_vec3	torque;
-	double	r2;
-	double	inv_inertia;
+	t_vec3	dw;
 
-	torque = vec3_cross(r, vec3_scale(f_impulse, sign));
-	r2 = vec3_mag_sq(r);
-	inv_inertia = 0.0;
-	if (r2 > 1e-6)
-		inv_inertia = 2.5 / r2;
-	body->angular_velocity = vec3_add(body->angular_velocity,
-			vec3_scale(torque, inv_m * inv_inertia));
+	torque = vec3_cross(r, vec3_scale(impulse, sign));
+	dw.x = torque.x * inv_m * body->inv_inertia.x;
+	dw.y = torque.y * inv_m * body->inv_inertia.y;
+	dw.z = torque.z * inv_m * body->inv_inertia.z;
+	body->angular_velocity = vec3_add(body->angular_velocity, dw);
 }
 
 static void	apply_friction(t_contact *ct, double inv_a, double inv_b,
@@ -59,6 +67,7 @@ static void	apply_friction(t_contact *ct, double inv_a, double inv_b,
 	t_vec3	vt_vec;
 	t_vec3	tangent;
 	double	jt;
+	double	denom;
 	t_vec3	f_impulse;
 
 	vt_vec = vec3_sub(rel_v, vec3_scale(ct->normal,
@@ -66,7 +75,12 @@ static void	apply_friction(t_contact *ct, double inv_a, double inv_b,
 	if (vec3_mag_sq(vt_vec) <= 1e-6)
 		return ;
 	tangent = vec3_norm(vt_vec);
-	jt = -vec3_dot(rel_v, tangent) / (inv_a + inv_b);
+	denom = inv_a + inv_b
+		+ ang_term(ct->a, ct->ra, tangent, inv_a)
+		+ ang_term(ct->b, ct->rb, tangent, inv_b);
+	if (denom < 1e-9)
+		return ;
+	jt = -vec3_dot(rel_v, tangent) / denom;
 	if (jt > 0.0)
 		jt = 0.0;
 	f_impulse = vec3_scale(tangent, jt * ct->friction);
@@ -90,26 +104,47 @@ static void	solve_one_velocity(t_contact *ct, double inv_a, double inv_b)
 	t_vec3	vb;
 	t_vec3	rel_v;
 	double	vn;
+	double	denom;
+	double	j;
+	double	e;
+	t_vec3	impulse;
 
-	va = vec3(0, 0, 0);
-	vb = vec3(0, 0, 0);
-	if (ct->a)
-		va = ct->a->velocity;
-	if (ct->b)
-		vb = ct->b->velocity;
+	/* Use point velocity (linear + omega×r) for correct relative velocity */
+	va = point_vel(ct->a, ct->ra);
+	vb = point_vel(ct->b, ct->rb);
 	rel_v = vec3_sub(vb, va);
 	vn = vec3_dot(rel_v, ct->normal);
 	if (vn < 0.0)
-		apply_normal_impulse(ct, inv_a, inv_b, vn);
-	va = vec3(0, 0, 0);
-	vb = vec3(0, 0, 0);
-	if (ct->a)
-		va = vec3_add(ct->a->velocity,
-				vec3_cross(ct->a->angular_velocity, ct->ra));
-	if (ct->b)
-		vb = vec3_add(ct->b->velocity,
-				vec3_cross(ct->b->angular_velocity, ct->rb));
-	apply_friction(ct, inv_a, inv_b, vec3_sub(vb, va));
+	{
+		/* Full denominator: translational + rotational inertia */
+		denom = inv_a + inv_b
+			+ ang_term(ct->a, ct->ra, ct->normal, inv_a)
+			+ ang_term(ct->b, ct->rb, ct->normal, inv_b);
+		if (denom < 1e-9)
+			return ;
+		/* Only bounce when approach speed exceeds threshold (kills spawn jolt) */
+		e = 0.0;
+		if (vn < -RESTITUTION_SLOP)
+			e = ct->restitution;
+		j = -(1.0 + e) * vn / denom;
+		impulse = vec3_scale(ct->normal, j);
+		if (ct->a && inv_a > 0.0)
+		{
+			ct->a->velocity = vec3_sub(ct->a->velocity,
+					vec3_scale(impulse, inv_a));
+			apply_torque(ct->a, ct->ra, impulse, inv_a, -1.0);
+		}
+		if (ct->b && inv_b > 0.0)
+		{
+			ct->b->velocity = vec3_add(ct->b->velocity,
+					vec3_scale(impulse, inv_b));
+			apply_torque(ct->b, ct->rb, impulse, inv_b, 1.0);
+		}
+		/* Friction only when bodies are actually in contact (vn < 0) */
+		va = point_vel(ct->a, ct->ra);
+		vb = point_vel(ct->b, ct->rb);
+		apply_friction(ct, inv_a, inv_b, vec3_sub(vb, va));
+	}
 }
 
 void	solve_velocities(t_contact *c, int count)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:11:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 09:22:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,21 @@ void	scene_snap_take(t_scene_snap *snap, t_gui *gui)
 	snap_meshes(snap, sc);
 	snap_groups(snap, sc);
 	snap->mesh_group_count = sc->mesh_group_count;
+	snap_array((void **)&snap->boxes, sc->boxes,
+		sc->box_count, sizeof(t_box));
+	snap->box_count = sc->box_count;
+	snap_array((void **)&snap->capsules, sc->capsules,
+		sc->capsule_count, sizeof(t_capsule));
+	snap->capsule_count = sc->capsule_count;
+	snap_array((void **)&snap->rects, sc->rects,
+		sc->rect_count, sizeof(t_rect));
+	snap->rect_count = sc->rect_count;
+	snap_array((void **)&snap->pyramids, sc->pyramids,
+		sc->pyramid_count, sizeof(t_pyramid));
+	snap->pyramid_count = sc->pyramid_count;
+	snap_array((void **)&snap->tris, sc->tris,
+		sc->tri_count, sizeof(t_tri_shape));
+	snap->tri_count = sc->tri_count;
 	snap->ambient = sc->ambient;
 	snap->camera = sc->camera;
 	snap->ambient_color = gui->ambient_color;
@@ -126,6 +141,11 @@ void	scene_snap_free(t_scene_snap *snap)
 	free(snap->materials);
 	free(snap->meshes);
 	free(snap->groups);
+	free(snap->boxes);
+	free(snap->capsules);
+	free(snap->rects);
+	free(snap->pyramids);
+	free(snap->tris);
 	ft_memset(snap, 0, sizeof(*snap));
 }
 
@@ -210,6 +230,26 @@ void	scene_reset(t_gui *gui)
 		i++;
 	}
 	sc->group_count = snap->group_count;
+	sc->box_count = snap->box_count;
+	if (snap->box_count > 0)
+		ft_memcpy(sc->boxes, snap->boxes,
+			(size_t)snap->box_count * sizeof(t_box));
+	sc->capsule_count = snap->capsule_count;
+	if (snap->capsule_count > 0)
+		ft_memcpy(sc->capsules, snap->capsules,
+			(size_t)snap->capsule_count * sizeof(t_capsule));
+	sc->rect_count = snap->rect_count;
+	if (snap->rect_count > 0)
+		ft_memcpy(sc->rects, snap->rects,
+			(size_t)snap->rect_count * sizeof(t_rect));
+	sc->pyramid_count = snap->pyramid_count;
+	if (snap->pyramid_count > 0)
+		ft_memcpy(sc->pyramids, snap->pyramids,
+			(size_t)snap->pyramid_count * sizeof(t_pyramid));
+	sc->tri_count = snap->tri_count;
+	if (snap->tri_count > 0)
+		ft_memcpy(sc->tris, snap->tris,
+			(size_t)snap->tri_count * sizeof(t_tri_shape));
 	sc->ambient = snap->ambient;
 	sc->camera = snap->camera;
 	gui->ambient_color = snap->ambient_color;

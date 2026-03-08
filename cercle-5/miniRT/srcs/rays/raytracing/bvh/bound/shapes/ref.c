@@ -50,6 +50,14 @@ t_aabb	aabb_from_ref(t_scene *scene, t_bvh_ref ref)
 		return (cone_aabb(&scene->cones[ref.index]));
 	if (ref.type == TYPE_TRI)
 		return (tri_shape_aabb(&scene->tris[ref.index]));
+	if (ref.type == TYPE_RECT)
+		return (rect_aabb(&scene->rects[ref.index]));
+	if (ref.type == TYPE_PYRAMID)
+		return (pyramid_aabb(&scene->pyramids[ref.index]));
+	if (ref.type == TYPE_BOX)
+		return (box_aabb(&scene->boxes[ref.index]));
+	if (ref.type == TYPE_CAPSULE)
+		return (capsule_aabb(&scene->capsules[ref.index]));
 	if (ref.type == TYPE_MESH)
 		return (get_mesh_aabb(&scene->meshes[ref.index]));
 	if (ref.type == TYPE_ANIM)

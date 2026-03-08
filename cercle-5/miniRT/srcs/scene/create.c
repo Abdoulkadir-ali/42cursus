@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 06:17:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 07:23:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,18 @@ static bool	init_arrays(t_scene *s)
 	s->cones = ft_calloc(s->cone_cap, sizeof(t_cone));
 	s->tri_cap = INIT_TRI_CAP;
 	s->tris = ft_calloc(s->tri_cap, sizeof(t_tri_shape));
+	s->rect_cap = INIT_RECT_CAP;
+	s->rects = ft_calloc(s->rect_cap, sizeof(t_rect));
+	s->pyramid_cap = INIT_PYRAMID_CAP;
+	s->pyramids = ft_calloc(s->pyramid_cap, sizeof(t_pyramid));
+	s->box_cap = INIT_BOX_CAP;
+	s->boxes = ft_calloc(s->box_cap, sizeof(t_box));
+	s->capsule_cap = INIT_CAPSULE_CAP;
+	s->capsules = ft_calloc(s->capsule_cap, sizeof(t_capsule));
 	if (!s->spheres || !s->planes || !s->cylinders || !s->meshes || !s->animated
-		|| !s->materials || !s->lights || !s->cones || !s->groups || !s->tris)
+		|| !s->materials || !s->lights || !s->cones || !s->groups
+		|| !s->tris || !s->rects || !s->pyramids
+		|| !s->boxes || !s->capsules)
 		return (false);
 	return (true);
 }
@@ -62,6 +72,10 @@ void	destroy_scene(t_scene *scene)
 	free(scene->cylinders);
 	free(scene->cones);
 	free(scene->tris);
+	free(scene->rects);
+	free(scene->pyramids);
+	free(scene->boxes);
+	free(scene->capsules);
 	i = 0;
 	while (i < scene->mesh_count)
 		mesh_free(&scene->meshes[i++]);
