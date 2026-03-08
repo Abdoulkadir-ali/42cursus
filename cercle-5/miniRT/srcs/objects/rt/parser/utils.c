@@ -68,9 +68,15 @@ static void	align_and_frame_meshes(t_scene *scene, int start_idx)
 	offset_y = 0.0;
 	if (min_pt.y < 0)
 		offset_y = -min_pt.y;
+	/* Bake the Y offset into vertices via mesh_apply_transform so rays actually
+	** see the model above the ground plane (just setting transform.pos.y without
+	** baking has no visual effect on the already-built BVH). */
 	i = start_idx - 1;
 	while (++i < scene->mesh_count)
+	{
 		scene->meshes[i].transform.pos.y += offset_y;
+		mesh_apply_transform(&scene->meshes[i], scene->meshes[i].transform);
+	}
 	center = vec3_scale(vec3_add(min_pt, max_pt), 0.5);
 	center.y += offset_y;
 	size = vec3_mag(vec3_sub(max_pt, min_pt));

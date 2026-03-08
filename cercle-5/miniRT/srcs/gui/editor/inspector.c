@@ -56,10 +56,11 @@ static int	get_tabs(t_type type, t_inspect_tab tabs[3],
 	}
 	if (type == TYPE_MESH)
 	{
-		tabs[0] = TAB_INFO;      labels[0] = "Info";
-		tabs[1] = TAB_MATERIAL;  labels[1] = "Material";
-		tabs[2] = TAB_PHYSICS;   labels[2] = "Physics";
-		return (3);
+		tabs[0] = TAB_TRANSFORM; labels[0] = "Transform";
+		tabs[1] = TAB_INFO;      labels[1] = "Info";
+		tabs[2] = TAB_MATERIAL;  labels[2] = "Material";
+		tabs[3] = TAB_PHYSICS;   labels[3] = "Physics";
+		return (4);
 	}
 	if (type == TYPE_LIGHT)
 	{
@@ -83,8 +84,8 @@ static void	draw_inspector_header(t_gui *gui, int x)
 
 static void	draw_inspector_tabs(t_gui *gui, int x)
 {
-	t_inspect_tab	tabs[3];
-	const char		*labels[3];
+	t_inspect_tab	tabs[4];
+	const char		*labels[4];
 	int				n;
 	int				step;
 	int				i;
@@ -174,8 +175,8 @@ static void	dispatch_panel_click(t_gui *gui, t_vec2i mouse)
 
 bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 {
-	t_inspect_tab	tabs[3];
-	const char		*labels[3];
+	t_inspect_tab	tabs[4];
+	const char		*labels[4];
 	int				n;
 	int				step;
 	int				x;
@@ -190,7 +191,7 @@ bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 	if (mouse.y >= 60 && mouse.y <= 84)
 	{
 		n = (mouse.x - x) / step;
-		if (n >= 0 && n < (int)(sizeof(tabs) / sizeof(*tabs)))
+		if (n >= 0 && n < get_tabs(gui->selection.type, tabs, labels))
 			gui->inspector.tab = tabs[n];
 		return (true);
 	}

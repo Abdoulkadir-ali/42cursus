@@ -48,6 +48,9 @@ int	key_press(int keycode, t_gui *gui)
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
+	/* Track Shift state for popup path input (MLX always delivers level-0 keysyms) */
+	if (keycode == XK_Shift_L || keycode == XK_Shift_R)
+		gui->crud.shift_held = true;
 	/* Path input captures all keys while mesh-path popup is open */
 	if (popup_handle_key(gui, keycode))
 		return (0);
@@ -92,6 +95,8 @@ int	key_release(int keycode, t_gui *gui)
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
+	if (keycode == XK_Shift_L || keycode == XK_Shift_R)
+		gui->crud.shift_held = false;
 	keymap = get_keymap();
 	i = 0;
 	while (keymap[i].key != 0)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:40:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:56:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,6 +334,36 @@ bool	popup_handle_click(t_gui *gui, t_vec2i mouse)
 	return (false);
 }
 
+/*
+** Map an unshifted keysym to its Shift-level character.
+** MLX always delivers level-0 (unshifted) keysyms, so we do this ourselves.
+** Covers lowercase→uppercase and the AZERTY symbols needed in file paths.
+*/
+static char	popup_shift_char(int keycode)
+{
+	/* a-z → A-Z */
+	if (keycode >= 'a' && keycode <= 'z')
+		return ((char)(keycode - 32));
+	/* AZERTY-specific shifted symbols useful in file paths */
+	if (keycode == ':')  return ('/');   /* Maj+: → /  (AZERTY bottom row) */
+	if (keycode == ';')  return ('.');   /* Maj+; → .  (AZERTY bottom row) */
+	if (keycode == '.')  return ('>');
+	if (keycode == ',')  return ('<');
+	if (keycode == '-')  return ('_');   /* hyphen → underscore */
+	if (keycode == '1')  return ('!');
+	if (keycode == '2')  return ('@');
+	if (keycode == '3')  return ('#');
+	if (keycode == '4')  return ('$');
+	if (keycode == '5')  return ('%');
+	if (keycode == '6')  return ('^');
+	if (keycode == '7')  return ('&');
+	if (keycode == '8')  return ('*');
+	if (keycode == '9')  return ('(');
+	if (keycode == '0')  return (')');
+	/* Already uppercase or non-remapped — echo as-is */
+	return ((char)keycode);
+}
+
 bool	popup_handle_key(t_gui *gui, int keycode)
 {
 	if (gui->crud.popup != POPUP_MESH_PATH)
@@ -358,15 +388,26 @@ bool	popup_handle_key(t_gui *gui, int keycode)
 		gui->render.dirty = true;
 		return (true);
 	}
-	/* printable ASCII */
+	/* Resolve the character to append, accounting for Shift (MLX always
+	** delivers the unshifted/level-0 keysym regardless of modifier state). */
 	if (keycode >= 32 && keycode <= 126
 		&& gui->crud.path_len < (int)(sizeof(gui->crud.path_buf) - 1))
 	{
-		gui->crud.path_buf[gui->crud.path_len++] = (char)keycode;
-		gui->crud.path_buf[gui->crud.path_len] = '\0';
-		gui->crud.path_error = false;
-		gui->render.dirty = true;
+		char	ch;
+
+		if (gui->crud.shift_held)
+			ch = popup_shift_char(keycode);
+		else
+			ch = (char)keycode;
+		if (ch)
+		{
+			gui->crud.path_buf[gui->crud.path_len++] = ch;
+			gui->crud.path_buf[gui->crud.path_len] = '\0';
+			gui->crud.path_error = false;
+			gui->render.dirty = true;
+		}
 		return (true);
 	}
 	return (true);
 }
+

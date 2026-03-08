@@ -13,6 +13,7 @@
 #include "gui.h"
 #include "editor.h"
 #include "objects.h"
+#include "surface.h"
 
 static t_transform	make_obj_transform(t_vec3 pos, t_vec3 fwd, t_vec3 scl)
 {
@@ -205,13 +206,31 @@ void	editor_add_obj(t_gui *gui, const char *path)
 
 void	editor_add_glb(t_gui *gui, const char *path)
 {
-	int	mesh_start;
+	int		mesh_start;
+	int		i;
+	int		new_id;
 
 	if (!gui->scene)
 		return ;
 	mesh_start = gui->scene->mesh_count;
 	if (!parse_glb(path, gui->scene))
 		return ;
+	/* Mirror the .rt injection path:
+	** 1. Bake identity world transform → sets edit_snap_verts,
+	**    has_scene_transform and scene_mat so the animation system and the
+	**    transform editor both work correctly.
+	** 2. Clone materials so per-instance edits don't corrupt other meshes. */
+	i = mesh_start;
+	while (i < gui->scene->mesh_count)
+	{
+		mesh_apply_transform(&gui->scene->meshes[i],
+			gui->scene->meshes[i].transform);
+		new_id = scene_clone_material(gui->scene,
+			gui->scene->meshes[i].mat_id);
+		if (new_id >= 0)
+			gui->scene->meshes[i].mat_id = new_id;
+		i++;
+	}
 	if (gui->scene->mesh_count > mesh_start)
 		select_object(gui, TYPE_MESH, gui->scene->mesh_count - 1);
 	rebuild_bvh(gui);

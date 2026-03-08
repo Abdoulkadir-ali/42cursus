@@ -223,6 +223,7 @@ typedef struct s_crud_ui
 	char			path_buf[512];
 	int				path_len;
 	bool			path_error;
+	bool			shift_held;
 }	t_crud_ui;
 
 struct s_gui
