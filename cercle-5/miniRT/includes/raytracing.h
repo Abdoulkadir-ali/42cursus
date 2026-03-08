@@ -181,6 +181,7 @@ bool	intersect_cone(const t_ray *ray, t_cone *co, t_hit *hit);
 bool	intersect_tri_shape(const t_ray *ray, t_tri_shape *tr, t_hit *hit);
 bool	intersect_rect(const t_ray *ray, t_rect *rc, t_hit *hit);
 bool	intersect_pyramid(const t_ray *ray, t_pyramid *py, t_hit *hit);
+void	pyramid_cache_verts(t_pyramid *py);
 bool	intersect_box(const t_ray *ray, t_box *bx, t_hit *hit);
 bool	intersect_capsule(const t_ray *ray, t_capsule *cap, t_hit *hit);
 bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit);

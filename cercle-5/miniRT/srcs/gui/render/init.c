@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include <unistd.h>
 
 /*
 ** Initializes MLX window and image.
@@ -34,6 +35,11 @@ static bool	init_window(t_gui *gui)
 			gui->win.disp_h);
 	gui->win.disp_addr = mlx_get_data_addr(gui->win.disp_img,
 			&gui->win.disp_bpp, &gui->win.disp_line_len, &gui->win.disp_endian);
+	gui->win.gui_bg_img = mlx_new_image(gui->win.mlx, gui->win.disp_w,
+			gui->win.disp_h);
+	gui->win.gui_bg_addr = mlx_get_data_addr(gui->win.gui_bg_img,
+			&gui->win.gui_bg_bpp, &gui->win.gui_bg_line_len,
+			&gui->win.gui_bg_endian);
 	return (true);
 }
 
@@ -82,8 +88,21 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	gui->phys_max_steps = 5;
 	gui->ambient_color = 0xFFFFFF;
 	gui->ambient_intensity = 1.0;
+	gui->render.num_cores = (int)sysconf(_SC_NPROCESSORS_ONLN);
+	if (gui->render.num_cores < 1)
+		gui->render.num_cores = 1;
+	if (gui->render.num_cores > 128)
+		gui->render.num_cores = 128;
+	gui->render.threads = malloc(sizeof(pthread_t)
+			* (size_t)gui->render.num_cores);
+	if (!gui->render.threads)
+	{
+		free(gui);
+		return (NULL);
+	}
 	if (!init_window(gui))
 	{
+		free(gui->render.threads);
 		free(gui);
 		return (NULL);
 	}
@@ -104,6 +123,8 @@ void	gui_destroy(t_gui *gui)
 	if (!gui)
 		return ;
 	map_manager_destroy(gui);
+	if (gui->win.gui_bg_img)
+		mlx_destroy_image(gui->win.mlx, gui->win.gui_bg_img);
 	if (gui->win.disp_img)
 		mlx_destroy_image(gui->win.mlx, gui->win.disp_img);
 	if (gui->win.img)
@@ -112,5 +133,7 @@ void	gui_destroy(t_gui *gui)
 		mlx_destroy_window(gui->win.mlx, gui->win.win);
 	if (gui->win.mlx)
 		free(gui->win.mlx);
+	if (gui->render.threads)
+		free(gui->render.threads);
 	free(gui);
 }

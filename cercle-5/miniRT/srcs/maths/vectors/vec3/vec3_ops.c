@@ -12,6 +12,7 @@
 
 #include "maths.h"
 
+#ifndef VEC3_HOT_INLINE
 t_vec3	vec3_scale(t_vec3 a, double s)
 {
 	return ((t_vec3){a.x * s, a.y * s, a.z * s, a.w * s});
@@ -37,6 +38,7 @@ double	vec3_mag(t_vec3 a)
 {
 	return (sqrt(vec3_mag_sq(a)));
 }
+#endif
 
 t_vec3	vec3_reflect(t_vec3 I, t_vec3 N)
 {

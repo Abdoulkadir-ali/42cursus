@@ -86,6 +86,8 @@ struct					s_pyramid
 	double				height;
 	int					mat_id;
 	t_vec3				temp_color;
+	t_vec3				c[4];
+	t_vec3				apex;
 };
 
 struct					s_box

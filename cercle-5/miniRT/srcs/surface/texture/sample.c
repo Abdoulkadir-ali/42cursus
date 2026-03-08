@@ -46,23 +46,28 @@ static t_vec3	sample_bitmap(t_texture *tex, double u, double v)
 {
 	double	fx;
 	double	fy;
+	int		xi;
+	int		yi;
+	double	wx;
+	double	wy;
 	t_vec3	top;
 	t_vec3	bot;
 
 	fx = u * tex->width - 0.5;
 	fy = v * tex->height - 0.5;
-	top = vec3_add(
-			vec3_scale(texel_at(tex, (int)floor(fx), (int)floor(fy)),
-				1.0 - (fx - floor(fx))),
-			vec3_scale(texel_at(tex, (int)floor(fx) + 1, (int)floor(fy)),
-				fx - floor(fx)));
-	bot = vec3_add(
-			vec3_scale(texel_at(tex, (int)floor(fx), (int)floor(fy) + 1),
-				1.0 - (fx - floor(fx))),
-			vec3_scale(texel_at(tex, (int)floor(fx) + 1, (int)floor(fy) + 1),
-				fx - floor(fx)));
-	return (vec3_add(vec3_scale(top, 1.0 - (fy - floor(fy))),
-			vec3_scale(bot, fy - floor(fy))));
+	xi = (int)fx;
+	if (fx < 0.0 && (double)xi != fx)
+		xi--;
+	yi = (int)fy;
+	if (fy < 0.0 && (double)yi != fy)
+		yi--;
+	wx = fx - (double)xi;
+	wy = fy - (double)yi;
+	top = vec3_add(vec3_scale(texel_at(tex, xi, yi), 1.0 - wx),
+			vec3_scale(texel_at(tex, xi + 1, yi), wx));
+	bot = vec3_add(vec3_scale(texel_at(tex, xi, yi + 1), 1.0 - wx),
+			vec3_scale(texel_at(tex, xi + 1, yi + 1), wx));
+	return (vec3_add(vec3_scale(top, 1.0 - wy), vec3_scale(bot, wy)));
 }
 
 /*

@@ -161,6 +161,11 @@ typedef struct s_window
 	int disp_endian;
 	int disp_w;
 	int disp_h;
+	void *gui_bg_img;
+	char *gui_bg_addr;
+	int gui_bg_line_len;
+	int gui_bg_bpp;
+	int gui_bg_endian;
 } t_window;
 
 typedef struct s_render_state
@@ -171,6 +176,8 @@ typedef struct s_render_state
 	double fps;
 	long long last_time;
 	bool last_dirty;
+	int num_cores;
+	pthread_t *threads;
 } t_render_state;
 
 typedef struct s_input_ctxs
@@ -387,5 +394,21 @@ int	gui_window_close(t_gui *gui);
 void	upscale_image(t_gui *gui);
 
 void	clamp_fov(double *fov);
+
+/* Software bitmap font — draws text directly into disp_img */
+void	gui_draw_string(t_gui *gui, const char *str, int x, int y,
+			unsigned int color);
+
+/*
+** Override mlx_string_put to draw into disp_img instead of the X11 window.
+** This eliminates the GUI flash caused by drawing text after put_image_to_window.
+** Requires 'gui' (t_gui *) to be in scope at every call site.
+*/
+# ifdef mlx_string_put
+#  undef mlx_string_put
+# endif
+# define mlx_string_put(mlx_ref, win_ref, x, y, color, str) \
+	((void)(mlx_ref), (void)(win_ref), \
+	gui_draw_string((gui), (str), (x), (y), (unsigned int)(color)))
 
 #endif

@@ -24,7 +24,7 @@
 # define BAUMGARTE 0.2
 # define SLOP 0.01
 /* Minimum approach speed for restitution to fire (kills spawn-jolt) */
-# define RESTITUTION_SLOP 1.0
+# define RESTITUTION_SLOP 0.2
 
 
 /* Forward declarations to avoid circular includes. Concrete types
@@ -54,27 +54,18 @@ typedef struct s_physics_state
 
 /* Physics update loop */
 void	update_physics(t_scene *scene, double dt);
-void	resolve_collisions(t_scene *scene, struct s_sphere *sp);
 
 /* Physics debug */
 void	phys_debug_spheres(t_scene *scene);
 
-/* Gravity simulation */
-void	apply_gravity(t_scene *scene, float delta_time);
-
 /* Ray refraction */
 t_vec3	refract_ray(t_vec3 incident, t_vec3 normal, float n1, float n2);
 
-/* Collision detection helpers */
-bool    detect_sphere_plane_collision(const struct s_sphere *s,
-				const t_plane *pl, t_vec3 *out_normal, double *out_penetration);
-bool    detect_sphere_sphere_collision(const struct s_sphere *a,
-				const struct s_sphere *b, t_vec3 *out_normal, double *out_penetration);
-
+/* Sphere-mesh collision (mesh/collision.c) */
 bool    detect_sphere_mesh_collision(const struct s_sphere *s, struct s_mesh *m,
 				t_vec3 *out_normal, double *out_penetration);
 
-/* Generic collider API */
+/* Generic collider — kept for mesh capsule-simplification path */
 typedef enum e_collider_type
 {
 	COLLIDER_SPHERE,
@@ -87,21 +78,16 @@ typedef struct s_collider
 {
 	t_collider_type    type;
 	union {
-		double      radius;     /* for sphere */
-		t_vec3      half_extents;/* for box */
-		t_vec3      normal;     /* for plane (local) */
+		double      radius;
+		t_vec3      half_extents;
+		t_vec3      normal;
 		struct {
-			t_vec3 a;       /* start point (local) */
-			t_vec3 b;       /* end point (local) */
+			t_vec3 a;
+			t_vec3 b;
 			double radius;
 		} capsule;
 	} data;
 }               t_collider;
-
-/* Dispatch between collider types; transforms are the world transforms of the bodies. */
-bool    detect_collider_collision(const t_collider *a, const t_transform *ta,
-				const t_collider *b, const t_transform *tb,
-				t_vec3 *out_normal, double *out_penetration);
 
 /* Interaction */
 void	physics_shoot_ray(t_scene *scene, t_ray ray, double impulse);
@@ -132,46 +118,62 @@ void    integrate_bodies(t_scene *scene, double dt);
 
 /* Collision Detection */
 int     generate_contacts(t_scene *scene, t_contact *contacts, int max_c);
-bool    collide_sphere_sphere(t_sphere *a, t_sphere *b, t_contact *c);
-bool    collide_sphere_plane(t_sphere *s, t_plane *p, t_contact *c);
-bool    collide_sphere_mesh(t_sphere *s, t_mesh *m, t_contact *c);
-int     collide_tri_plane(struct s_tri_shape *tr, t_plane *pl,
-			t_contact *c, int max_c);
-int     collide_cylinder_plane(struct s_cylinder *cy, t_plane *pl,
-			t_contact *c, int max_c);
-int     collide_rect_plane(struct s_rect *rc, t_plane *pl,
-			t_contact *c, int max_c);
-int     collide_pyramid_plane(struct s_pyramid *py, t_plane *pl,
-			t_contact *c, int max_c);
-int     collide_box_plane(struct s_box *bx, t_plane *pl, t_contact *c, int max_c);
-int     collide_capsule_plane(struct s_capsule *cap, t_plane *pl, t_contact *c,
-			int max_c);
-bool    collide_sphere_capsule(struct s_sphere *sp, struct s_capsule *cap,
+
+/* ── GJK / EPA ──────────────────────────────────────────────────────────── */
+
+/*
+** Unified convex shape interface for GJK.
+** 'support' returns the world-space point furthest along dir.
+** 'center'  is the world-space center of mass.
+*/
+typedef t_vec3 (*t_support_fn)(const void *shape, t_vec3 dir);
+
+typedef struct s_gjk_shape
+{
+	const void		*data;
+	t_support_fn	support;
+	t_vec3			center;
+}	t_gjk_shape;
+
+/*
+** GJK simplex — up to 4 points in Minkowski-difference space.
+** a_pts / b_pts track the original support points on each shape
+** (needed by EPA for barycentric contact interpolation).
+*/
+typedef struct s_simplex
+{
+	t_vec3	pts[4];
+	t_vec3	a_pts[4];
+	t_vec3	b_pts[4];
+	int		n;
+}	t_simplex;
+
+/* Support functions (one per shape type) */
+t_vec3	gjk_support_sphere(const void *data, t_vec3 dir);
+t_vec3	gjk_support_box(const void *data, t_vec3 dir);
+t_vec3	gjk_support_capsule(const void *data, t_vec3 dir);
+t_vec3	gjk_support_cylinder(const void *data, t_vec3 dir);
+t_vec3	gjk_support_rect(const void *data, t_vec3 dir);
+t_vec3	gjk_support_tri(const void *data, t_vec3 dir);
+t_vec3	gjk_support_pyramid(const void *data, t_vec3 dir);
+t_vec3	gjk_support_mesh(const void *data, t_vec3 dir);
+
+/* GJK intersection test — fills 'out' simplex for EPA */
+bool	gjk_intersect(t_gjk_shape *a, t_gjk_shape *b, t_simplex *out);
+
+/* EPA — extracts MTD from GJK simplex */
+bool	gjk_epa(t_gjk_shape *a, t_gjk_shape *b, t_simplex *s,
+			t_vec3 *normal, double *depth,
+			t_vec3 *contact_a, t_vec3 *contact_b);
+
+/* Contact generation */
+int		gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
+			t_physics_body *ba, t_physics_body *bb,
+			t_transform *ta, t_transform *tb,
 			t_contact *c);
-bool    collide_sphere_box(struct s_sphere *sp, struct s_box *bx, t_contact *c);
-bool    collide_capsule_capsule(struct s_capsule *a, struct s_capsule *b,
-			t_contact *c);
-bool    collide_box_box(struct s_box *a, struct s_box *b, t_contact *c);
-bool    collide_box_capsule(struct s_box *bx, struct s_capsule *cap,
-			t_contact *c);
-bool    collide_cylinder_sphere(struct s_cylinder *cy, struct s_sphere *sp,
-			t_contact *c);
-bool    collide_cylinder_capsule(struct s_cylinder *cy, struct s_capsule *cap,
-			t_contact *c);
-bool    collide_cylinder_box(struct s_cylinder *cy, struct s_box *bx,
-			t_contact *c);
-int     collide_rect_sphere(struct s_rect *rc, struct s_sphere *sp,
-			t_contact *c, int max_c);
-int     collide_rect_capsule(struct s_rect *rc, struct s_capsule *cap,
-			t_contact *c, int max_c);
-int     collide_tri_sphere(struct s_tri_shape *tr, struct s_sphere *sp,
-			t_contact *c, int max_c);
-int     collide_tri_capsule(struct s_tri_shape *tr, struct s_capsule *cap,
-			t_contact *c, int max_c);
-int     collide_pyramid_sphere(struct s_pyramid *py, struct s_sphere *sp,
-			t_contact *c, int max_c);
-int     collide_pyramid_capsule(struct s_pyramid *py, struct s_capsule *cap,
-			t_contact *c, int max_c);
+
+int		gjk_vs_plane(t_gjk_shape *sa, t_physics_body *ba, t_transform *ta,
+			t_plane *pl, t_contact *c);
 
 /* Solver */
 void    solve_velocities(t_contact *contacts, int count);

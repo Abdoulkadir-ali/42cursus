@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 07:23:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 20:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void	destroy_scene(t_scene *scene)
 	free(scene->groups);
 	free(scene->materials);
 	free(scene->lights);
+	free(scene->emissive_cache);
 	free(scene);
 }
 

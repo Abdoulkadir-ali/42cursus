@@ -23,6 +23,12 @@ void	upscale_image(t_gui *gui)
 	unsigned int	*src_row;
 	unsigned int	*dst_row;
 
+	if (gui->win.width == gui->win.disp_w && gui->win.height == gui->win.disp_h)
+	{
+		ft_memcpy(gui->win.disp_addr, gui->win.addr,
+			(size_t)gui->win.disp_h * (size_t)gui->win.disp_line_len);
+		return ;
+	}
 	y = 0;
 	while (y < gui->win.disp_h)
 	{

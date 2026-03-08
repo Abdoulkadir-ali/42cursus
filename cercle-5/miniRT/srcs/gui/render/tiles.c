@@ -88,17 +88,12 @@ void	render_tiles(t_render_ctx *ctx)
 	struct timeval	end;
 	int				num_cores;
 
-	num_cores = sysconf(_SC_NPROCESSORS_ONLN);
-	if (num_cores < 1)
-		num_cores = 1;
-	else if (num_cores > 128)
-		num_cores = 128;
-	threads = malloc(sizeof(pthread_t) * num_cores);
-	if (!threads)
+	num_cores = ctx->gui->render.num_cores;
+	threads = ctx->gui->render.threads;
+	if (!threads || num_cores < 1)
 		return ;
 	gettimeofday(&start, NULL);
 	start_threads(threads, ctx, num_cores);
 	join_threads(threads, num_cores);
 	gettimeofday(&end, NULL);
-	free(threads);
 }

@@ -42,6 +42,14 @@ static bool	traverse_bvh(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 	const t_bvh_node	*node;
 	double				tmin;
 	double				tmax;
+	int					left;
+	int					right;
+	double				tmin_l;
+	double				tmax_l;
+	double				tmin_r;
+	double				tmax_r;
+	bool				hit_l;
+	bool				hit_r;
 
 	ptr = 0;
 	stack[ptr++] = 0;
@@ -57,10 +65,31 @@ static bool	traverse_bvh(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 			continue ;
 		if (node->count > 0)
 			process_leaf_flat(bvh, i, ray, hit);
-		else if (ptr < 126)
+		else if (ptr < 124)
 		{
-			stack[ptr++] = node->left_or_first;
-			stack[ptr++] = i + 1;
+			left = node->left_or_first;
+			right = i + 1;
+			hit_l = aabb_intersect_fast(&bvh->nodes[left].bbox,
+					ray, &tmin_l, &tmax_l);
+			hit_r = aabb_intersect_fast(&bvh->nodes[right].bbox,
+					ray, &tmin_r, &tmax_r);
+			if (hit_l && hit_r)
+			{
+				if (tmin_l <= tmin_r)
+				{
+					stack[ptr++] = right;
+					stack[ptr++] = left;
+				}
+				else
+				{
+					stack[ptr++] = left;
+					stack[ptr++] = right;
+				}
+			}
+			else if (hit_l)
+				stack[ptr++] = left;
+			else if (hit_r)
+				stack[ptr++] = right;
 		}
 	}
 	return (hit->ref.type != TYPE_NONE);

@@ -60,10 +60,10 @@ static void	finish_render(t_gui *gui, t_render_ctx *ctx)
 	upscale_image(gui);
 	draw_ui_panels(gui);
 	update_hover(gui, ctx);
-	mlx_put_image_to_window(gui->win.mlx, gui->win.win,
-		gui->win.disp_img, 0, 0);
 	draw_ui_text(gui, &gui->cam_ctrl);
 	draw_hover_text(gui);
+	mlx_put_image_to_window(gui->win.mlx, gui->win.win,
+		gui->win.disp_img, 0, 0);
 }
 
 /*

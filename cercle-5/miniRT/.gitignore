@@ -34,3 +34,5 @@ digest.txt
 subjects/
 *.log
 valgrind-out.txt
+*.md
+!README.md

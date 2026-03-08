@@ -3,9 +3,11 @@
 #include <math.h>
 
 /*
-** Build the 5 base corners and apex of a pyramid from its descriptor.
+** Precompute and cache the 5 pyramid vertices into py->c[] and py->apex.
+** Called once at BVH build time (before any render threads start), so the
+** per-ray hot path can just read the cached values.
 */
-static void	build_pyramid_verts(t_pyramid *py, t_vec3 c[4], t_vec3 *apex)
+void	pyramid_cache_verts(t_pyramid *py)
 {
 	t_vec3	ref;
 	t_vec3	right;
@@ -19,15 +21,15 @@ static void	build_pyramid_verts(t_pyramid *py, t_vec3 c[4], t_vec3 *apex)
 		ref = vec3(1, 0, 0);
 	right = vec3_norm(vec3_cross(py->up, ref));
 	fwd = vec3_cross(right, py->up);
-	c[0] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, h)),
+	py->c[0] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, h)),
 			vec3_scale(fwd, h));
-	c[1] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, -h)),
+	py->c[1] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, -h)),
 			vec3_scale(fwd, h));
-	c[2] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, -h)),
+	py->c[2] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, -h)),
 			vec3_scale(fwd, -h));
-	c[3] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, h)),
+	py->c[3] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, h)),
 			vec3_scale(fwd, -h));
-	*apex = vec3_add(py->transform.pos, vec3_scale(py->up, py->height));
+	py->apex = vec3_add(py->transform.pos, vec3_scale(py->up, py->height));
 }
 
 /*
@@ -63,19 +65,16 @@ static bool	try_face(const t_ray *ray, t_vec3 a, t_vec3 b, t_vec3 c,
 
 bool	intersect_pyramid(const t_ray *ray, t_pyramid *py, t_hit *hit)
 {
-	t_vec3	c[4];
-	t_vec3	apex;
 	double	best;
 	bool	any;
 
-	build_pyramid_verts(py, c, &apex);
 	best = 1e30;
 	any = false;
-	if (try_face(ray, c[0], c[1], c[2], &best, hit)) any = true;
-	if (try_face(ray, c[0], c[2], c[3], &best, hit)) any = true;
-	if (try_face(ray, c[0], c[1], apex, &best, hit)) any = true;
-	if (try_face(ray, c[1], c[2], apex, &best, hit)) any = true;
-	if (try_face(ray, c[2], c[3], apex, &best, hit)) any = true;
-	if (try_face(ray, c[3], c[0], apex, &best, hit)) any = true;
+	if (try_face(ray, py->c[0], py->c[1], py->c[2], &best, hit)) any = true;
+	if (try_face(ray, py->c[0], py->c[2], py->c[3], &best, hit)) any = true;
+	if (try_face(ray, py->c[0], py->c[1], py->apex, &best, hit)) any = true;
+	if (try_face(ray, py->c[1], py->c[2], py->apex, &best, hit)) any = true;
+	if (try_face(ray, py->c[2], py->c[3], py->apex, &best, hit)) any = true;
+	if (try_face(ray, py->c[3], py->c[0], py->apex, &best, hit)) any = true;
 	return (any);
 }

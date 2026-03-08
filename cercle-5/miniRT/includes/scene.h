@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 07:23:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 20:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@
 # include "objects.h"
 
 /* 2. MODULE TYPES */
+
+/* Compact ref used for the per-scene emissive lights cache. */
+struct s_emissive_ref
+{
+	t_type			type;
+	int				index;
+};
+typedef struct s_emissive_ref	t_emissive_ref;
 
 struct				s_scene
 {
@@ -92,6 +100,10 @@ struct				s_scene
 
 	/* The Accelerator */
 	struct s_bvh	*bvh;
+
+	/* Emissive-object cache: built at BVH create time, O(E) iteration */
+	t_emissive_ref	*emissive_cache;
+	int				emissive_n;
 };
 
 /* 3. FUNCTION PROTOTYPES */

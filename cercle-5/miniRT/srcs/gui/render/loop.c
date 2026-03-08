@@ -67,21 +67,19 @@ static void	update_physics_step(t_gui *gui, double delta)
 	if (!gui->scene || !gui->physics_enabled)
 		return ;
 	fixed_dt = (gui->phys_fixed_dt > 0.0) ? gui->phys_fixed_dt : (1.0 / 60.0);
+	/* Clamp delta to prevent runaway accumulation after stalls */
+	if (delta > fixed_dt * 3.0)
+		delta = fixed_dt * 3.0;
 	gui->phys_accumulator += delta;
 	steps = 0;
-	while (gui->phys_accumulator >= fixed_dt && steps < gui->phys_max_steps)
+	while (gui->phys_accumulator >= fixed_dt && steps < 3)
 	{
 		update_physics(gui->scene, fixed_dt);
 		gui->phys_accumulator -= fixed_dt;
 		steps++;
 	}
 	if (steps > 0)
-	{
-		if (gui->scene->bvh)
-			bvh_destroy(gui->scene->bvh);
-		gui->scene->bvh = bvh_create(gui->scene);
 		gui->render.dirty = true;
-	}
 }
 
 static void	update_autorefresh(t_gui *gui)

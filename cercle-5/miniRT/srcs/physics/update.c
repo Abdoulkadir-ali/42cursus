@@ -38,6 +38,9 @@ void update_physics(t_scene *scene, double dt)
     phys_debug_spheres(scene);
 
     /* 2. Collision Detection (Broad + Narrow) */
+    /* BVH is rebuilt here after integrate_bodies moves objects.
+       The caller (update_physics_step) must pass a valid BVH into
+       scene->bvh before the first substep; we update it each step. */
     if (scene->bvh)
         bvh_destroy(scene->bvh);
     scene->bvh = bvh_create(scene);
@@ -69,19 +72,6 @@ void update_physics(t_scene *scene, double dt)
     }
 }
 
-/* Stubs for API compatibility if called elsewhere */
-void resolve_collisions(t_scene *scene, struct s_sphere *sp)
-{
-    (void)scene;
-    (void)sp;
-}
-
-void apply_gravity(t_scene *scene, float delta_time)
-{
-    (void)scene;
-    (void)delta_time;
-}
-
 /* Helper for refract_ray (moved from old physics.c) */
 t_vec3	refract_ray(t_vec3 incident, t_vec3 normal, float n1, float n2)
 {
@@ -101,47 +91,4 @@ t_vec3	refract_ray(t_vec3 incident, t_vec3 normal, float n1, float n2)
 	return (vec3_add(part1, part2));
 }
 
-bool detect_sphere_sphere_collision(const t_sphere *a, const t_sphere *b,
-	t_vec3 *out_normal, double *out_penetration)
-{
-    t_contact c;
-    /* const cast for compatibility with new solver signature */
-    if (collide_sphere_sphere((t_sphere *)a, (t_sphere *)b, &c))
-    {
-        if (out_normal) *out_normal = c.normal;
-        if (out_penetration) *out_penetration = c.penetration;
-        return (true);
-    }
-    return (false);
-}
 
-/* Exposed for API compatibility */
-bool detect_sphere_plane_collision(const t_sphere *s, const t_plane *pl,
-    t_vec3 *out_normal, double *out_penetration)
-{
-    t_contact c;
-    if (collide_sphere_plane((t_sphere*)s, (t_plane*)pl, &c))
-    {
-        if (out_normal) *out_normal = c.normal;
-        if (out_penetration) *out_penetration = c.penetration;
-        return (true);
-    }
-    return (false);
-}
-
-/* Helper for generic collider API */
-bool detect_collider_collision(const t_collider *A, const t_transform *Ta,
-    const t_collider *B, const t_transform *Tb, t_vec3 *out_normal, double *out_penetration)
-{
-    /* Minimal implementation for fallback/helpers */
-    if (A->type == COLLIDER_SPHERE && B->type == COLLIDER_SPHERE)
-    {
-        t_sphere sa, sb;
-        sa.transform = *Ta; sa.radius_sq = A->data.radius * A->data.radius;
-        sa.phys.elasticity = 0.5; sa.phys.mass = 1.0;
-        sb.transform = *Tb; sb.radius_sq = B->data.radius * B->data.radius;
-        sb.phys.elasticity = 0.5; sb.phys.mass = 1.0;
-        return detect_sphere_sphere_collision(&sa, &sb, out_normal, out_penetration);
-    }
-    return (false);
-}

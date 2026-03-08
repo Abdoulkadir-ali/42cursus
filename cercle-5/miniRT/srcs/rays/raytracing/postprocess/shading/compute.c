@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 00:58:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 22:22:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static void	setup_shading(t_shading_ctx *ctx, t_hit *hit, t_scene *scene,
 		ctx->mat.metallic = sample_texture(&ctx->mat.metallic_map,
 				hit->u, hit->v).x / 255.0;
 	/* Map PBR fields into Blinn-Phong parameters used by calc_light */
-	ctx->mat.shininess = pow(1.0 - ctx->mat.roughness, 4.0) * 200.0 + 2.0;
+	ctx->mat.shininess = (double)powf((float)(1.0f - (float)ctx->mat.roughness),
+			4.0f) * 200.0 + 2.0;
 	ctx->mat.specular  = ctx->mat.specular * (1.0 - ctx->mat.metallic * 0.5)
 		+ ctx->mat.metallic * 0.9;
 	apply_bump(ctx);
@@ -94,9 +95,13 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
 	total = pixel_color(ctx.albedo, scene->ambient.rgb,
 			scene->ambient.brightness);
 	i = 0;
-	while (i < scene->light_count)
-		total = vec3_add(total, calc_light(&ctx, scene->lights[i++]));
-	add_emissive_lighting(&ctx, scene, &total);
+	if (ray->depth < 2)
+	{
+		while (i < scene->light_count)
+			total = vec3_add(total, calc_light(&ctx, scene->lights[i++]));
+	}
+	if (ray->depth == 0)
+		add_emissive_lighting(&ctx, scene, &total);
 	total = vec3_add(total, ctx.mat.emission);
 	if (ray->depth >= MAX_DEPTH)
 		return (clamp_color(total));
