@@ -27,10 +27,54 @@ void	editor_init(t_gui *gui)
 	gui->selection.index = -1;
 }
 
+static int	count_mesh_entries(t_scene *sc)
+{
+	int	count;
+	int	last_gid;
+	int	i;
+
+	count = 0;
+	last_gid = -2;
+	i = 0;
+	while (i < sc->mesh_count)
+	{
+		if (sc->meshes[i].group_id < 0 || sc->meshes[i].group_id != last_gid)
+		{
+			last_gid = sc->meshes[i].group_id;
+			count++;
+		}
+		i++;
+	}
+	return (count);
+}
+
+static int	mesh_row_to_idx(t_scene *sc, int r)
+{
+	int	seen;
+	int	last_gid;
+	int	i;
+
+	seen = 0;
+	last_gid = -2;
+	i = 0;
+	while (i < sc->mesh_count)
+	{
+		if (sc->meshes[i].group_id < 0 || sc->meshes[i].group_id != last_gid)
+		{
+			if (seen == r)
+				return (i);
+			last_gid = sc->meshes[i].group_id;
+			seen++;
+		}
+		i++;
+	}
+	return (-1);
+}
+
 static int	count_scene_rows(t_scene *sc)
 {
 	return (sc->light_count + sc->sphere_count + sc->plane_count
-		+ sc->cylinder_count + sc->cone_count + sc->mesh_count);
+		+ sc->cylinder_count + sc->cone_count + count_mesh_entries(sc));
 }
 
 static int	row_strip(int *r, int count, t_type t, t_type *ty, int *idx)
@@ -62,8 +106,11 @@ static void	row_to_object(t_gui *gui, int r, t_type *ty, int *idx)
 		return ;
 	if (row_strip(&r, sc->cone_count, TYPE_CONE, ty, idx))
 		return ;
-	if (row_strip(&r, sc->mesh_count, TYPE_MESH, ty, idx))
-		return ;
+	if (r < count_mesh_entries(sc))
+	{
+		*ty = TYPE_MESH;
+		*idx = mesh_row_to_idx(sc, r);
+	}
 }
 
 static const char	*row_type_prefix(t_type type)
@@ -85,14 +132,35 @@ static const char	*row_type_prefix(t_type type)
 
 static void	draw_one_row(t_gui *gui, int y_px, t_type ty, int idx)
 {
-	char	buf[64];
-	int		col;
+	char		buf[64];
+	int			col;
+	const char	*name;
+	const char	*slash;
+	const char	*dot;
+	size_t		len;
 
 	col = COL_TEXT;
 	if (gui->selection.active && gui->selection.type == ty
 		&& gui->selection.index == idx)
 		col = COL_SELECTED;
-	snprintf(buf, sizeof(buf), "%s %d", row_type_prefix(ty), idx);
+	if (ty == TYPE_MESH && idx >= 0
+		&& idx < gui->scene->mesh_count
+		&& gui->scene->meshes[idx].name)
+	{
+		name = gui->scene->meshes[idx].name;
+		slash = ft_strrchr(name, '/');
+		if (slash)
+			name = slash + 1;
+		dot = ft_strrchr(name, '.');
+		len = dot ? (size_t)(dot - name) : ft_strlen(name);
+		if (len > 55)
+			len = 55;
+		snprintf(buf, sizeof(buf), "[ME] ");
+		ft_memcpy(buf + 5, name, len);
+		buf[5 + len] = '\0';
+	}
+	else
+		snprintf(buf, sizeof(buf), "%s %d", row_type_prefix(ty), idx);
 	mlx_string_put(gui->win.mlx, gui->win.win, 12, y_px, col, buf);
 }
 

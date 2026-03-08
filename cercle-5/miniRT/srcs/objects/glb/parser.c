@@ -24,6 +24,7 @@ static void	init_mesh(t_mesh *mesh, const char *path)
 {
 	ft_memset(mesh, 0, sizeof(t_mesh));
 	mesh->name = ft_strdup(path);
+	mesh->group_id = -1;
 }
 
 static void	finalize_mesh(t_scene *scene, t_mesh *mesh, const char *path)
@@ -180,10 +181,12 @@ bool	parse_glb(const char *path, t_scene *scene)
 	int	anim_base = scene->clip_count;
 	glb_load_animations(scene, json, buf[1]);
 	int	anim_clip_count = scene->clip_count - anim_base;
+	int	gid = scene->mesh_group_count++;
 	for (int mi = mesh_base; mi < scene->mesh_count; mi++)
 	{
 		scene->meshes[mi].anim_base = anim_base;
 		scene->meshes[mi].anim_clip_count = anim_clip_count;
+		scene->meshes[mi].group_id = gid;
 	}
 	json_free(json);
 	free(buf[0]);

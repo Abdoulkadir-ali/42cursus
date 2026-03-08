@@ -15,39 +15,60 @@
 
 static void	mesh_transform_sync(t_gui *gui)
 {
-	t_mesh	*mesh;
+	t_mesh	*lead;
+	t_scene	*sc;
+	int		gid;
 	t_mat4	s;
 	t_mat4	r;
 	t_mat4	sr;
-	t_vec3	local;
 	t_vec3	piv;
-	int		i;
+	t_mesh	*m;
+	t_vec3	local;
+	int		mi;
+	int		vi;
 
 	if (!gui->selection.active || gui->selection.type != TYPE_MESH)
 		return ;
-	mesh = &gui->scene->meshes[gui->selection.index];
-	if (!mesh->edit_snap_verts)
+	sc = gui->scene;
+	lead = &sc->meshes[gui->selection.index];
+	if (!lead->edit_snap_verts)
 		return ;
-	s = mat4_scaling(mesh->transform.scale);
-	r = mat4_rotation(mesh->transform.rotation);
+	s = mat4_scaling(lead->transform.scale);
+	r = mat4_rotation(lead->transform.rotation);
 	sr = mat4_mul(r, s);
-	piv = mesh->edit_snap_pivot;
-	i = 0;
-	while (i < mesh->vertex_count)
+	piv = lead->edit_snap_pivot;
+	gid = lead->group_id;
+	mi = 0;
+	while (mi < sc->mesh_count)
 	{
-		local = vec3_sub(mesh->edit_snap_verts[i], piv);
-		local = mat4_mul_pos(sr, local);
-		mesh->vertices[i] = vec3_add(vec3_add(local, piv), mesh->transform.pos);
-		if (mesh->normals && mesh->edit_snap_norms)
-			mesh->normals[i] = vec3_norm(mat4_mul_vec3(r,
-						mesh->edit_snap_norms[i]));
-		i++;
+		m = &sc->meshes[mi];
+		if ((gid < 0 && m != lead) || (gid >= 0 && m->group_id != gid)
+			|| !m->edit_snap_verts)
+		{
+			mi++;
+			continue ;
+		}
+		if (m != lead)
+			m->transform = lead->transform;
+		vi = 0;
+		while (vi < m->vertex_count)
+		{
+			local = vec3_sub(m->edit_snap_verts[vi], piv);
+			local = mat4_mul_pos(sr, local);
+			m->vertices[vi] = vec3_add(vec3_add(local, piv),
+					lead->transform.pos);
+			if (m->normals && m->edit_snap_norms)
+				m->normals[vi] = vec3_norm(mat4_mul_vec3(r,
+							m->edit_snap_norms[vi]));
+			vi++;
+		}
+		m->bbox = aabb_create_empty();
+		vi = 0;
+		while (vi < m->vertex_count)
+			aabb_expand_point(&m->bbox, m->vertices[vi++]);
+		mesh_build_bvh(m);
+		mi++;
 	}
-	mesh->bbox = aabb_create_empty();
-	i = 0;
-	while (i < mesh->vertex_count)
-		aabb_expand_point(&mesh->bbox, mesh->vertices[i++]);
-	mesh_build_bvh(mesh);
 }
 
 static void	sphere_scale_sync(t_gui *gui)

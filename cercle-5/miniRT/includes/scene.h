@@ -44,6 +44,7 @@ struct				s_scene
 	t_mesh			*meshes;
 	int				mesh_count;
 	int				mesh_cap;
+	int				mesh_group_count;	/* next group_id to assign */
 
 	t_skinned_mesh	*animated;
 	int				anim_count;

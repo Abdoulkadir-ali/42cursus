@@ -199,7 +199,7 @@ void	editor_add_obj(t_gui *gui, const char *path)
 		i++;
 	}
 	if (gui->scene->mesh_count > mesh_start)
-		select_object(gui, TYPE_MESH, gui->scene->mesh_count - 1);
+		select_object(gui, TYPE_MESH, mesh_start);
 	rebuild_bvh(gui);
 	gui->render.dirty = true;
 }
@@ -232,7 +232,7 @@ void	editor_add_glb(t_gui *gui, const char *path)
 		i++;
 	}
 	if (gui->scene->mesh_count > mesh_start)
-		select_object(gui, TYPE_MESH, gui->scene->mesh_count - 1);
+		select_object(gui, TYPE_MESH, mesh_start);
 	rebuild_bvh(gui);
 	gui->render.dirty = true;
 }
