@@ -172,8 +172,10 @@ struct					s_mesh
 	int					anim_base;       /* index of first clip in scene->clips[] */
 	int					anim_clip_count; /* number of clips belonging to this mesh */
 	double				anim_time;
-	t_collider			collider;
-};
+	t_collider			collider;	/* Editor: post-bake snapshot for live transform editing */
+	t_vec3					*edit_snap_verts;
+	t_vec3					*edit_snap_norms;
+	t_vec3					edit_snap_pivot;};
 
 typedef enum e_interpolation
 {

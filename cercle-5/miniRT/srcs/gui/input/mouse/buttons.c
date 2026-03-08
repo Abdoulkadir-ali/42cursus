@@ -80,6 +80,9 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)
 	{
+		/* Popup intercepts all left-clicks while open */
+		if (popup_handle_click(gui, mouse))
+			return (0);
 		if (!inspector_handle_click(gui, mouse)
 			&& !scene_panel_handle_click(gui, mouse))
 			pick_at_mouse(gui, mouse);

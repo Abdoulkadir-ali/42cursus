@@ -51,4 +51,5 @@ void	draw_ui_text(t_gui *gui, t_camera_controller *ctrl)
 	widget_draw_all(gui);
 	draw_scene_panel_text(gui);
 	draw_inspector_text(gui);
+	draw_popup(gui);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   types.h                                            :+:      :+:    :+:   */
+/*   transform.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/08 01:13:15 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/08 01:13:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 static void	apply_mesh_transform(t_mesh *mesh, t_mat4 m, t_mat4 rot)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (i < mesh->vertex_count)
@@ -32,7 +32,7 @@ static void	apply_mesh_transform(t_mesh *mesh, t_mat4 m, t_mat4 rot)
 
 static void	update_mesh_bbox(t_mesh *mesh)
 {
-	int	i;
+	int i;
 
 	mesh->bbox = aabb_create_empty();
 	i = 0;
@@ -48,8 +48,8 @@ static void	reset_mesh_transform(t_mesh *mesh)
 
 void	mesh_apply_transform(t_mesh *mesh, t_transform transform)
 {
-	t_mat4	m;
-	t_mat4	rot;
+	t_mat4 m;
+	t_mat4 rot;
 
 	if (!mesh)
 		return ;
@@ -58,13 +58,33 @@ void	mesh_apply_transform(t_mesh *mesh, t_transform transform)
 	rot = mat4_rotation(transform.rotation);
 	apply_mesh_transform(mesh, m, rot);
 	update_mesh_bbox(mesh);
-	
+
+	/* Editor: save post-bake vertex snapshot for live transform editing */
+	if (!mesh->edit_snap_verts)
+	{
+		mesh->edit_snap_verts = malloc(sizeof(t_vec3) * mesh->vertex_count);
+		if (mesh->edit_snap_verts)
+			ft_memcpy(mesh->edit_snap_verts, mesh->vertices,
+				sizeof(t_vec3) * mesh->vertex_count);
+	}
+	if (mesh->normals && !mesh->edit_snap_norms)
+	{
+		mesh->edit_snap_norms = malloc(sizeof(t_vec3) * mesh->vertex_count);
+		if (mesh->edit_snap_norms)
+			ft_memcpy(mesh->edit_snap_norms, mesh->normals,
+				sizeof(t_vec3) * mesh->vertex_count);
+	}
+	mesh->edit_snap_pivot = vec3(
+		(mesh->bbox.min.x + mesh->bbox.max.x) * 0.5,
+		(mesh->bbox.min.y + mesh->bbox.max.y) * 0.5,
+		(mesh->bbox.min.z + mesh->bbox.max.z) * 0.5);
+
 	/* Initialize Physics Collider (Capsule Approximation) */
 	mesh->phys.is_static = true; /* Environment mesh */
 	mesh->phys.mass = 0.0;
 	mesh->phys.elasticity = 0.5;
 	mesh->collider.type = COLLIDER_CAPSULE;
-	
+
 	double width_x = mesh->bbox.max.x - mesh->bbox.min.x;
 	double width_z = mesh->bbox.max.z - mesh->bbox.min.z;
 	double radius = (width_x < width_z ? width_x : width_z) * 0.5;

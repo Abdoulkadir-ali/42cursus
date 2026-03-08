@@ -34,6 +34,7 @@ t_parse_obj	parse_plane(t_parser *p)
 			= vec3_norm(res.data.plane.transform.forward);
 	res.data.plane.mat_id = 0;
 	res.data.plane.temp_color = rgb;
+	res.data.plane.transform.scale = vec3(1, 1, 1);
 	res.type = TYPE_PLANE;
 	return (res);
 }

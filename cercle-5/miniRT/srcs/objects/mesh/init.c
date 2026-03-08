@@ -80,5 +80,9 @@ void	mesh_free(t_mesh *mesh)
 		free(mesh->bvh_indices);
 	if (mesh->tri_cache)
 		free(mesh->tri_cache);
+	if (mesh->edit_snap_verts)
+		free(mesh->edit_snap_verts);
+	if (mesh->edit_snap_norms)
+		free(mesh->edit_snap_norms);
 	ft_memset(mesh, 0, sizeof(t_mesh));
 }

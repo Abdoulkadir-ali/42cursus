@@ -88,6 +88,11 @@ t_bvh	*bvh_create(t_scene *scene)
 	root = build_tmp_tree(scene, total, &k);
 	if (!root)
 		return (free(bvh), NULL);
+	if (k == 0)
+	{
+		node_destroy(root);
+		return (bvh);
+	}
 	if (!alloc_flat(bvh, k))
 	{
 		node_destroy(root);

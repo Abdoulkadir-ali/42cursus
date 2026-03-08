@@ -202,9 +202,27 @@ typedef struct s_map_job
 	bool			active;
 }	t_map_job;
 
+typedef enum e_popup_step
+{
+	POPUP_NONE = 0,
+	POPUP_SHAPE,
+	POPUP_MESH_FMT,
+	POPUP_MESH_PATH,
+}	t_popup_step;
+
+typedef enum e_mesh_fmt
+{
+	MESH_FMT_OBJ,
+	MESH_FMT_GLB,
+}	t_mesh_fmt;
+
 typedef struct s_crud_ui
 {
-	bool	add_open;
+	t_popup_step	popup;
+	t_mesh_fmt		mesh_fmt;
+	char			path_buf[512];
+	int				path_len;
+	bool			path_error;
 }	t_crud_ui;
 
 struct s_gui

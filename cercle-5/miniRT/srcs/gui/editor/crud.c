@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 22:24:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 #include "editor.h"
+#include "objects.h"
 
 static t_transform	make_obj_transform(t_vec3 pos, t_vec3 fwd, t_vec3 scl)
 {
@@ -175,6 +176,44 @@ void	editor_delete_selected(t_gui *gui)
 		delete_sel_cy_co(sc, sel);
 	}
 	clear_selection(gui);
+	rebuild_bvh(gui);
+	gui->render.dirty = true;
+}
+
+void	editor_add_obj(t_gui *gui, const char *path)
+{
+	int		mesh_start;
+	int		i;
+
+	if (!gui->scene)
+		return ;
+	mesh_start = gui->scene->mesh_count;
+	if (!parse_obj(path, gui->scene))
+		return ;
+	i = mesh_start;
+	while (i < gui->scene->mesh_count)
+	{
+		mesh_apply_transform(&gui->scene->meshes[i],
+			gui->scene->meshes[i].transform);
+		i++;
+	}
+	if (gui->scene->mesh_count > mesh_start)
+		select_object(gui, TYPE_MESH, gui->scene->mesh_count - 1);
+	rebuild_bvh(gui);
+	gui->render.dirty = true;
+}
+
+void	editor_add_glb(t_gui *gui, const char *path)
+{
+	int	mesh_start;
+
+	if (!gui->scene)
+		return ;
+	mesh_start = gui->scene->mesh_count;
+	if (!parse_glb(path, gui->scene))
+		return ;
+	if (gui->scene->mesh_count > mesh_start)
+		select_object(gui, TYPE_MESH, gui->scene->mesh_count - 1);
 	rebuild_bvh(gui);
 	gui->render.dirty = true;
 }

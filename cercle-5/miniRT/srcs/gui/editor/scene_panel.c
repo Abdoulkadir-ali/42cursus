@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:05:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:41:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,10 @@ static void	draw_scene_rows(t_gui *gui)
 
 	total = count_scene_rows(gui->scene);
 	row = 0;
-	y_px = 48 - gui->scene_panel.scroll;
+	y_px = (CRUD_PANEL_H + 8) - gui->scene_panel.scroll;
 	while (row < total && y_px < gui->win.disp_h - 8)
 	{
-		if (y_px >= 36)
+	if (y_px >= (CRUD_PANEL_H + 4))
 		{
 			row_to_object(gui, row, &ty, &idx);
 			draw_one_row(gui, y_px, ty, idx);
@@ -144,11 +144,11 @@ void	draw_scene_panel_text(t_gui *gui)
 		return ;
 	total = gui->scene ? count_scene_rows(gui->scene) : 0;
 	snprintf(buf, sizeof(buf), "OBJECTS  %d", total);
-	mlx_string_put(gui->win.mlx, gui->win.win, 8, 16, COL_ACCENT, buf);
+	mlx_string_put(gui->win.mlx, gui->win.win, 8, CRUD_PANEL_H + 8, COL_ACCENT, buf);
 	if (!gui->scene || total == 0)
 	{
 		mlx_string_put(gui->win.mlx, gui->win.win,
-			16, 56, 0x505060, "(empty)");
+			16, CRUD_PANEL_H + 24, 0x505060, "(empty)");
 		draw_crud_buttons(gui);
 		return ;
 	}
@@ -167,9 +167,9 @@ bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		return (false);
 	if (mouse.x < 0 || mouse.x >= gui->scene_panel.width)
 		return (false);
-	if (mouse.y >= gui->win.disp_h - CRUD_PANEL_H)
+	if (mouse.y >= 0 && mouse.y < CRUD_PANEL_H)
 		return (crud_handle_click(gui, mouse));
-	row = (mouse.y - 32 + gui->scene_panel.scroll) / ROW_H;
+	row = (mouse.y - CRUD_PANEL_H + gui->scene_panel.scroll) / ROW_H;
 	total = count_scene_rows(gui->scene);
 	if (row < 0 || row >= total)
 		return (false);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:04:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:42:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,13 @@
 # define INSPECTOR_W    280
 # define SCENE_PANEL_W  220
 # define ROW_H          24
-# define CRUD_PANEL_H   56
+# define CRUD_PANEL_H   36
 # define CRUD_BTN_H     24
 # define CRUD_BTN_W     52
-# define CRUD_ADD_W     120
-# define CRUD_DROP_ITEM_H 22
+# define CRUD_ADD_W     90
+# define POPUP_W        360
+# define POPUP_ITEM_H   36
+# define POPUP_PAD      16
 
 /* --- Slider Range Constants --- */
 /* Transform */
@@ -43,8 +45,8 @@
 # define SL_POS_MAX      500.0
 # define SL_ROT_MIN     -3.14159
 # define SL_ROT_MAX      3.14159
-# define SL_SCALE_MIN    0.01
-# define SL_SCALE_MAX    50.0
+# define SL_SCALE_MIN    0.0
+# define SL_SCALE_MAX    100.0
 /* Material */
 # define SL_ROUGH_MIN    0.0
 # define SL_ROUGH_MAX    1.0
@@ -180,11 +182,19 @@ void		editor_add_plane(struct s_gui *gui);
 void		editor_add_cylinder(struct s_gui *gui);
 void		editor_add_cone(struct s_gui *gui);
 void		editor_add_light(struct s_gui *gui);
+void		editor_add_obj(struct s_gui *gui, const char *path);
+void		editor_add_glb(struct s_gui *gui, const char *path);
 void		editor_delete_selected(struct s_gui *gui);
 
 /* srcs/gui/editor/crud_ui.c */
 void		draw_crud_buttons(struct s_gui *gui);
 bool		crud_handle_click(struct s_gui *gui, t_vec2i mouse);
+
+/* srcs/gui/editor/popup.c */
+void		draw_popup(struct s_gui *gui);
+bool		popup_handle_click(struct s_gui *gui, t_vec2i mouse);
+bool		popup_handle_key(struct s_gui *gui, int keycode);
+void		popup_load_mesh(struct s_gui *gui);
 
 /* srcs/gui/editor/physics_panel.c */
 void		draw_physics_panel(struct s_gui *gui, t_physics_body *phys, int x);

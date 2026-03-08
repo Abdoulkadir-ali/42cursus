@@ -48,6 +48,16 @@ int	key_press(int keycode, t_gui *gui)
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
+	/* Path input captures all keys while mesh-path popup is open */
+	if (popup_handle_key(gui, keycode))
+		return (0);
+	/* Escape closes any open popup, then falls through to exit */
+	if (keycode == XK_Escape && gui->crud.popup != POPUP_NONE)
+	{
+		gui->crud.popup = POPUP_NONE;
+		gui->render.dirty = true;
+		return (0);
+	}
 	/* Toggle physics simulation with X */
 	if (keycode == XK_x || keycode == XK_X)
 	{

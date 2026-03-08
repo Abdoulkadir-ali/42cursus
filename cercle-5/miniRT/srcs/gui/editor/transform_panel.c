@@ -6,12 +6,49 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:04:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:28:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 #include "editor.h"
+
+static void	mesh_transform_sync(t_gui *gui)
+{
+	t_mesh	*mesh;
+	t_mat4	s;
+	t_mat4	r;
+	t_mat4	sr;
+	t_vec3	local;
+	t_vec3	piv;
+	int		i;
+
+	if (!gui->selection.active || gui->selection.type != TYPE_MESH)
+		return ;
+	mesh = &gui->scene->meshes[gui->selection.index];
+	if (!mesh->edit_snap_verts)
+		return ;
+	s = mat4_scaling(mesh->transform.scale);
+	r = mat4_rotation(mesh->transform.rotation);
+	sr = mat4_mul(r, s);
+	piv = mesh->edit_snap_pivot;
+	i = 0;
+	while (i < mesh->vertex_count)
+	{
+		local = vec3_sub(mesh->edit_snap_verts[i], piv);
+		local = mat4_mul_pos(sr, local);
+		mesh->vertices[i] = vec3_add(vec3_add(local, piv), mesh->transform.pos);
+		if (mesh->normals && mesh->edit_snap_norms)
+			mesh->normals[i] = vec3_norm(mat4_mul_vec3(r,
+						mesh->edit_snap_norms[i]));
+		i++;
+	}
+	mesh->bbox = aabb_create_empty();
+	i = 0;
+	while (i < mesh->vertex_count)
+		aabb_expand_point(&mesh->bbox, mesh->vertices[i++]);
+	mesh_build_bvh(mesh);
+}
 
 static void	sphere_scale_sync(t_gui *gui)
 {
@@ -79,6 +116,8 @@ static void	build_tr_sliders(t_transform *tr, t_type type,
 		sl[i++] = (t_islider){"Scale Y", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
 		sl[i++] = (t_islider){"Scale Z", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.z};
 	}
+	else if (type == TYPE_PLANE)
+		sl[i++] = (t_islider){"UV Scale", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
 	*count = i;
 }
 
@@ -135,6 +174,8 @@ bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		cb = NULL;
 		if (gui->selection.type == TYPE_SPHERE && i == 6)
 			cb = sphere_scale_sync;
+		else if (gui->selection.type == TYPE_MESH)
+			cb = mesh_transform_sync;
 		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i], cb))
 			return (true);
 		y += 30;
