@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:11:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 02:46:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ static int	get_tabs(t_type type, t_inspect_tab tabs[3],
 	}
 	if (type == TYPE_MESH)
 	{
-		tabs[0] = TAB_TRANSFORM; labels[0] = "Transform";
-		tabs[1] = TAB_INFO;      labels[1] = "Info";
+		tabs[0] = TAB_INFO;      labels[0] = "Info";
+		tabs[1] = TAB_TRANSFORM; labels[1] = "Transform";
 		tabs[2] = TAB_MATERIAL;  labels[2] = "Material";
 		tabs[3] = TAB_PHYSICS;   labels[3] = "Physics";
 		return (4);

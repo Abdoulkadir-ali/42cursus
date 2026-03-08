@@ -175,6 +175,7 @@ static bool	restore_one(const t_mesh_snap *snap, t_scene *scene)
 
 	ft_memset(&mesh, 0, sizeof(t_mesh));
 	mesh.transform.scale = vec3(1, 1, 1);
+	mesh.group_id = -1;
 	mesh.vertex_count = snap->vertex_count;
 	mesh.tri_count = snap->tri_count;
 	inst_mat = scene_clone_material(scene, snap->mat_id);

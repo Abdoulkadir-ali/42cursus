@@ -228,6 +228,7 @@ typedef struct s_scene_snap
 	t_light		*lights;	int	light_count;
 	t_material	*materials;	int	mat_count;
 	t_mesh_snap	*meshes;	int	mesh_count;
+	int			mesh_group_count;
 	t_ambient	ambient;
 	t_camera	camera;
 	int			ambient_color;

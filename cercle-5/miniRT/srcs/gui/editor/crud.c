@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:41:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 02:46:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,20 +209,39 @@ void	editor_add_glb(t_gui *gui, const char *path)
 	int		mesh_start;
 	int		i;
 	int		new_id;
+	int		gid;
 
 	if (!gui->scene)
 		return ;
 	mesh_start = gui->scene->mesh_count;
-	if (!parse_glb(path, gui->scene))
-		return ;
-	/* Mirror the .rt injection path:
-	** 1. Bake identity world transform → sets edit_snap_verts,
-	**    has_scene_transform and scene_mat so the animation system and the
-	**    transform editor both work correctly.
-	** 2. Clone materials so per-instance edits don't corrupt other meshes. */
+	if (mesh_cache_has(path))
+	{
+		/* Geometry already parsed: restore from cache (avoids re-parsing) */
+		if (!mesh_cache_restore(path, gui->scene))
+			return ;
+		/* Cache restore doesn't know about group IDs — assign a fresh one */
+		gid = gui->scene->mesh_group_count++;
+		i = mesh_start;
+		while (i < gui->scene->mesh_count)
+			gui->scene->meshes[i++].group_id = gid;
+	}
+	else
+	{
+		/* First import: full parse; parse_glb assigns group_id internally */
+		if (!parse_glb(path, gui->scene))
+			return ;
+		mesh_cache_save(path, gui->scene, mesh_start);
+	}
+	/* For every new submesh:
+	** 1. Bake an identity world transform so edit_snap_verts captures real
+	**    vertex positions (parse_glb zeros transform.scale via memset —
+	**    passing that directly would collapse all vertices to the origin).
+	** 2. Clone materials so per-instance edits are isolated. */
 	i = mesh_start;
 	while (i < gui->scene->mesh_count)
 	{
+		gui->scene->meshes[i].transform = (t_transform){0};
+		gui->scene->meshes[i].transform.scale = vec3(1, 1, 1);
 		mesh_apply_transform(&gui->scene->meshes[i],
 			gui->scene->meshes[i].transform);
 		new_id = scene_clone_material(gui->scene,

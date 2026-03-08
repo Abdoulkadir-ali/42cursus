@@ -82,6 +82,7 @@ void	scene_snap_take(t_scene_snap *snap, t_gui *gui)
 		sc->mat_count, sizeof(t_material));
 	snap->mat_count = sc->mat_count;
 	snap_meshes(snap, sc);
+	snap->mesh_group_count = sc->mesh_group_count;
 	snap->ambient = sc->ambient;
 	snap->camera = sc->camera;
 	snap->ambient_color = gui->ambient_color;
@@ -162,6 +163,14 @@ void	scene_reset(t_gui *gui)
 		sc->meshes[i].phys = snap->meshes[i].phys;
 		i++;
 	}
+	/* Free any meshes the user added via the editor popup */
+	while (i < sc->mesh_count)
+	{
+		mesh_free(&sc->meshes[i]);
+		i++;
+	}
+	sc->mesh_count = snap->mesh_count;
+	sc->mesh_group_count = snap->mesh_group_count;
 	sc->ambient = snap->ambient;
 	sc->camera = snap->camera;
 	gui->ambient_color = snap->ambient_color;

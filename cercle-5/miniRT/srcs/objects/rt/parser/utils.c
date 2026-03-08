@@ -75,6 +75,11 @@ static void	align_and_frame_meshes(t_scene *scene, int start_idx)
 	while (++i < scene->mesh_count)
 	{
 		scene->meshes[i].transform.pos.y += offset_y;
+		/* Ensure non-zero scale: init_mesh uses ft_memset so scale starts at 0.
+		** Calling mesh_apply_transform with scale=0 collapses all vertices to a
+		** single point.  An identity scale bake is the correct no-op here. */
+		if (scene->meshes[i].transform.scale.x == 0.0)
+			scene->meshes[i].transform.scale = vec3(1, 1, 1);
 		mesh_apply_transform(&scene->meshes[i], scene->meshes[i].transform);
 	}
 	center = vec3_scale(vec3_add(min_pt, max_pt), 0.5);
