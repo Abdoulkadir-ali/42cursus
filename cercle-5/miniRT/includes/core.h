@@ -60,6 +60,7 @@
 # define INIT_MAT_CAP 32
 # define INIT_LIGHT_CAP 8
 # define INIT_CYL_CAP 16
+# define INIT_TRI_CAP 64
 # define MAX_VALUE 1e30
 
 /* Enums */
@@ -74,7 +75,10 @@ typedef enum e_type
 	TYPE_MESH,
 	TYPE_ANIM,
 	TYPE_CYLINDER,
-	TYPE_CONE
+	TYPE_CONE,
+	TYPE_TRI,
+	TYPE_RECT,
+	TYPE_PYRAMID
 }									t_type;
 
 typedef enum e_light_type
@@ -111,6 +115,9 @@ typedef struct s_sphere				t_sphere;
 typedef struct s_plane				t_plane;
 typedef struct s_cylinder			t_cylinder;
 typedef struct s_cone				t_cone;
+typedef struct s_tri_shape			t_tri_shape;
+typedef struct s_rect_parse			t_rect_parse;
+typedef struct s_pyramid_parse		t_pyramid_parse;
 typedef struct s_light				t_light;
 typedef struct s_camera				t_camera;
 typedef struct s_ambient			t_ambient;

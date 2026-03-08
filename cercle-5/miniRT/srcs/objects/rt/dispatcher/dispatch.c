@@ -43,6 +43,12 @@ static t_parse_obj	dispatch_shapes(t_parser *p, char *id)
 		return (parse_cylinder(p));
 	if (id[0] == 'c' && id[1] == 'n')
 		return (parse_cone(p));
+	if (id[0] == 't' && id[1] == 'r')
+		return (parse_tri_shape(p));
+	if (id[0] == 'r' && id[1] == 'c')
+		return (parse_rect_shape(p));
+	if (id[0] == 'p' && id[1] == 'y')
+		return (parse_pyramid(p));
 	return (init_none());
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:26:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 06:19:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,9 @@ void		editor_add_plane(struct s_gui *gui);
 void		editor_add_cylinder(struct s_gui *gui);
 void		editor_add_cone(struct s_gui *gui);
 void		editor_add_light(struct s_gui *gui);
+void		editor_add_tri(struct s_gui *gui);
+void		editor_add_rect(struct s_gui *gui);
+void		editor_add_pyramid(struct s_gui *gui);
 void		editor_add_obj(struct s_gui *gui, const char *path);
 void		editor_add_glb(struct s_gui *gui, const char *path);
 void		editor_delete_selected(struct s_gui *gui);

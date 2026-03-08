@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:11:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 06:18:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ const char	*type_name_str(t_type type)
 		return ("Light");
 	if (type == TYPE_MESH)
 		return ("Mesh");
+	if (type == TYPE_TRI)
+		return ("Triangle");
 	return ("Object");
 }
 

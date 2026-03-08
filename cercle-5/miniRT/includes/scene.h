@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:09:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 06:17:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,10 @@ struct				s_scene
 	t_cone			*cones;
 	int				cone_count;
 	int				cone_cap;
+
+	t_tri_shape		*tris;
+	int				tri_count;
+	int				tri_cap;
 
 	t_mesh			*meshes;
 	int				mesh_count;
@@ -97,6 +101,7 @@ bool				scene_add_sphere(t_scene *scene, t_sphere sphere);
 bool				scene_add_plane(t_scene *scene, t_plane plane);
 bool				scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
 bool				scene_add_cone(t_scene *scene, t_cone cone);
+bool				scene_add_tri(t_scene *scene, t_tri_shape tri);
 bool				scene_add_mesh(t_scene *scene, t_mesh mesh);
 bool				scene_add_animated(t_scene *scene, t_skinned_mesh animated);
 bool				scene_add_group(t_scene *scene, t_mesh_group g);

@@ -29,6 +29,8 @@ bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 		res = intersect_cylinder(ray, &scene->cylinders[ref.index], hit);
 	else if (ref.type == TYPE_CONE)
 		res = intersect_cone(ray, &scene->cones[ref.index], hit);
+	else if (ref.type == TYPE_TRI)
+		res = intersect_tri_shape(ray, &scene->tris[ref.index], hit);
 	else if (ref.type == TYPE_MESH)
 		res = intersect_mesh(ray, &scene->meshes[ref.index], hit);
 	else if (ref.type == TYPE_ANIM)

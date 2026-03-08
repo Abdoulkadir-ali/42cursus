@@ -34,6 +34,9 @@ void	get_material(t_shading_ctx *ctx)
 	else if (h->ref.type == TYPE_CONE && h->ref.index >= 0
 		&& h->ref.index < ctx->scene->cone_count)
 		mat_id = ctx->scene->cones[h->ref.index].mat_id;
+	else if (h->ref.type == TYPE_TRI && h->ref.index >= 0
+		&& h->ref.index < ctx->scene->tri_count)
+		mat_id = ctx->scene->tris[h->ref.index].mat_id;
 	else if (h->ref.type == TYPE_MESH && h->ref.index >= 0
 		&& h->ref.index < ctx->scene->mesh_count)
 		mat_id = ctx->scene->meshes[h->ref.index].mat_id;

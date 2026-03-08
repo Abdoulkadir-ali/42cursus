@@ -48,6 +48,8 @@ t_aabb	aabb_from_ref(t_scene *scene, t_bvh_ref ref)
 		return (cylinder_aabb(&scene->cylinders[ref.index]));
 	if (ref.type == TYPE_CONE)
 		return (cone_aabb(&scene->cones[ref.index]));
+	if (ref.type == TYPE_TRI)
+		return (tri_shape_aabb(&scene->tris[ref.index]));
 	if (ref.type == TYPE_MESH)
 		return (get_mesh_aabb(&scene->meshes[ref.index]));
 	if (ref.type == TYPE_ANIM)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:09:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 06:22:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,12 @@ static void	delete_sel_cy_co(t_scene *sc, t_selection *sel)
 			(sc->cone_count - i - 1) * sizeof(t_cone));
 		sc->cone_count--;
 	}
+	else if (sel->type == TYPE_TRI && i < sc->tri_count)
+	{
+		ft_memmove(sc->tris + i, sc->tris + i + 1,
+			(sc->tri_count - i - 1) * sizeof(t_tri_shape));
+		sc->tri_count--;
+	}
 }
 
 void	editor_delete_selected(t_gui *gui)
@@ -177,6 +183,110 @@ void	editor_delete_selected(t_gui *gui)
 		delete_sel_cy_co(sc, sel);
 	}
 	clear_selection(gui);
+	rebuild_bvh(gui);
+	gui->render.dirty = true;
+}
+
+static t_tri_shape	make_screen_tri(t_vec3 a, t_vec3 b, t_vec3 c, t_vec3 col)
+{
+	t_tri_shape	tr;
+	t_vec3		e1;
+	t_vec3		e2;
+
+	ft_memset(&tr, 0, sizeof(tr));
+	tr.v[0] = a;
+	tr.v[1] = b;
+	tr.v[2] = c;
+	tr.temp_color = col;
+	e1 = vec3_sub(b, a);
+	e2 = vec3_sub(c, a);
+	tr.normal = vec3_norm(vec3_cross(e1, e2));
+	return (tr);
+}
+
+void	editor_add_tri(t_gui *gui)
+{
+	t_tri_shape	tr;
+	t_vec3		pos;
+	t_vec3		e1;
+	t_vec3		e2;
+
+	if (!gui->scene)
+		return ;
+	pos = cam_fwd_pos(gui, 3.0);
+	ft_memset(&tr, 0, sizeof(tr));
+	tr.v[0] = vec3_add(pos, vec3(-1, -1, 0));
+	tr.v[1] = vec3_add(pos, vec3(1, -1, 0));
+	tr.v[2] = vec3_add(pos, vec3(0, 1, 0));
+	tr.temp_color = vec3(0.6, 0.5, 0.9);
+	e1 = vec3_sub(tr.v[1], tr.v[0]);
+	e2 = vec3_sub(tr.v[2], tr.v[0]);
+	tr.normal = vec3_norm(vec3_cross(e1, e2));
+	scene_add_tri(gui->scene, tr);
+	select_object(gui, TYPE_TRI, gui->scene->tri_count - 1);
+	rebuild_bvh(gui);
+	gui->render.dirty = true;
+}
+
+static void	add_pyramid_sides(t_gui *gui, t_vec3 pos, t_vec3 apex, t_vec3 col)
+{
+	scene_add_tri(gui->scene, make_screen_tri(
+			vec3_add(pos, vec3(-1, 0, -1)),
+			vec3_add(pos, vec3(1, 0, -1)), apex, col));
+	scene_add_tri(gui->scene, make_screen_tri(
+			vec3_add(pos, vec3(1, 0, -1)),
+			vec3_add(pos, vec3(1, 0, 1)), apex, col));
+	scene_add_tri(gui->scene, make_screen_tri(
+			vec3_add(pos, vec3(1, 0, 1)),
+			vec3_add(pos, vec3(-1, 0, 1)), apex, col));
+	scene_add_tri(gui->scene, make_screen_tri(
+			vec3_add(pos, vec3(-1, 0, 1)),
+			vec3_add(pos, vec3(-1, 0, -1)), apex, col));
+}
+
+void	editor_add_rect(t_gui *gui)
+{
+	t_vec3	pos;
+	t_vec3	col;
+	int		base;
+
+	if (!gui->scene)
+		return ;
+	pos = cam_fwd_pos(gui, 3.0);
+	col = vec3(0.6, 0.8, 0.5);
+	base = gui->scene->tri_count;
+	scene_add_tri(gui->scene, make_screen_tri(
+			vec3_add(pos, vec3(-1, -1, 0)), vec3_add(pos, vec3(1, -1, 0)),
+			vec3_add(pos, vec3(1, 1, 0)), col));
+	scene_add_tri(gui->scene, make_screen_tri(
+			vec3_add(pos, vec3(-1, -1, 0)), vec3_add(pos, vec3(1, 1, 0)),
+			vec3_add(pos, vec3(-1, 1, 0)), col));
+	select_object(gui, TYPE_TRI, base);
+	rebuild_bvh(gui);
+	gui->render.dirty = true;
+}
+
+void	editor_add_pyramid(t_gui *gui)
+{
+	t_vec3	pos;
+	t_vec3	apex;
+	t_vec3	col;
+	int		base;
+
+	if (!gui->scene)
+		return ;
+	pos = cam_fwd_pos(gui, 3.0);
+	apex = vec3_add(pos, vec3(0, 2, 0));
+	col = vec3(0.9, 0.6, 0.3);
+	base = gui->scene->tri_count;
+	scene_add_tri(gui->scene, make_screen_tri(
+			vec3_add(pos, vec3(-1, 0, -1)), vec3_add(pos, vec3(1, 0, -1)),
+			vec3_add(pos, vec3(1, 0, 1)), col));
+	scene_add_tri(gui->scene, make_screen_tri(
+			vec3_add(pos, vec3(-1, 0, -1)), vec3_add(pos, vec3(1, 0, 1)),
+			vec3_add(pos, vec3(-1, 0, 1)), col));
+	add_pyramid_sides(gui, pos, apex, col);
+	select_object(gui, TYPE_TRI, base);
 	rebuild_bvh(gui);
 	gui->render.dirty = true;
 }

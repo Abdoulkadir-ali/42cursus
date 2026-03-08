@@ -144,6 +144,7 @@ double	aabb_surface_area(t_aabb bbox);
 bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray, double *tmin,
 			double *tmax);
 t_aabb	sphere_aabb(t_sphere *sp);
+t_aabb	tri_shape_aabb(t_tri_shape *tr);
 t_aabb	plane_aabb(t_plane *pl);
 t_aabb	cylinder_aabb(t_cylinder *cy);
 t_aabb	cone_aabb(t_cone *co);
@@ -173,6 +174,7 @@ bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit);
 bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit);
 bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit);
 bool	intersect_cone(const t_ray *ray, t_cone *co, t_hit *hit);
+bool	intersect_tri_shape(const t_ray *ray, t_tri_shape *tr, t_hit *hit);
 bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit);
 bool	intersect_triangle(const t_ray *ray, t_vec3 v[3], double *t,
 			t_vec2 *uv);

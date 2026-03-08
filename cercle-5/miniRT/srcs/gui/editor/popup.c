@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 01:56:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 06:22:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,37 +57,60 @@ static void	draw_popup_btn(t_gui *gui, int x, int y, int w, int h,
 
 /* ── Step 1: shape picker ─────────────────────────────────────────────────── */
 
+static void	dispatch_shape(t_gui *gui, int i)
+{
+	if (i == 0)
+		editor_add_sphere(gui);
+	else if (i == 1)
+		editor_add_plane(gui);
+	else if (i == 2)
+		editor_add_cylinder(gui);
+	else if (i == 3)
+		editor_add_cone(gui);
+	else if (i == 4)
+		editor_add_light(gui);
+	else if (i == 5)
+		editor_add_tri(gui);
+	else if (i == 6)
+		editor_add_rect(gui);
+	else if (i == 7)
+		editor_add_pyramid(gui);
+	gui->crud.popup = POPUP_NONE;
+	gui->render.dirty = true;
+}
+
 static void	draw_popup_shape(t_gui *gui)
 {
-	static const char	*labels[6] = {
-		"Sphere", "Plane", "Cylinder", "Cone", "Light", "Mesh  \xe2\x86\x92"
+	static const char	*labels[9] = {
+		"Sphere", "Plane", "Cylinder",
+		"Cone", "Light", "Triangle",
+		"Rectangle", "Pyramid", "Mesh  \xe2\x86\x92"
 	};
 	int					ox;
 	int					oy;
 	int					bw;
 	int					bh;
+	int					bg;
 	int					i;
 
-	/* 2 cols × 3 rows + title + cancel */
 	draw_modal_bg(gui, POPUP_PAD * 2 + 36 + 3 * (POPUP_ITEM_H + 8) + 40,
 		&ox, &oy);
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		ox + POPUP_PAD, oy + POPUP_PAD, COL_ACCENT, "Add Object");
-	bw = (POPUP_W - POPUP_PAD * 3) / 2;
+	bw = (POPUP_W - POPUP_PAD * 4) / 3;
 	bh = POPUP_ITEM_H;
 	i = 0;
-	while (i < 6)
+	while (i < 9)
 	{
-		int	col = i % 2;
-		int	row = i / 2;
-		int	bx = ox + POPUP_PAD + col * (bw + POPUP_PAD);
-		int	by = oy + 36 + POPUP_PAD + row * (bh + 8);
-		int	bg = (i == 5) ? 0x1E2A1E : 0x22222E;
-
-		draw_popup_btn(gui, bx, by, bw, bh, labels[i], bg);
+		bg = 0x22222E;
+		if (i == 8)
+			bg = 0x1E2A1E;
+		draw_popup_btn(gui,
+			ox + POPUP_PAD + (i % 3) * (bw + POPUP_PAD),
+			oy + 36 + POPUP_PAD + (i / 3) * (bh + 8),
+			bw, bh, labels[i], bg);
 		i++;
 	}
-	/* Cancel */
 	draw_popup_btn(gui, ox + POPUP_W - 90 - POPUP_PAD,
 		oy + 36 + POPUP_PAD + 3 * (bh + 8) + 4,
 		90, 26, "Cancel", 0x2A1A1A);
@@ -102,42 +125,29 @@ static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 	int	i;
 	int	modal_h;
 
-	bw = (POPUP_W - POPUP_PAD * 3) / 2;
+	bw = (POPUP_W - POPUP_PAD * 4) / 3;
 	bh = POPUP_ITEM_H;
 	modal_h = POPUP_PAD * 2 + 36 + 3 * (POPUP_ITEM_H + 8) + 40;
 	ox = (gui->win.disp_w - POPUP_W) / 2;
 	oy = (gui->win.disp_h - modal_h) / 2;
 	i = 0;
-	while (i < 6)
+	while (i < 9)
 	{
-		int	bx = ox + POPUP_PAD + (i % 2) * (bw + POPUP_PAD);
-		int	by = oy + 36 + POPUP_PAD + (i / 2) * (bh + 8);
-
-		if (phit(mouse, bx, by, bw, bh))
+		if (phit(mouse,
+				ox + POPUP_PAD + (i % 3) * (bw + POPUP_PAD),
+				oy + 36 + POPUP_PAD + (i / 3) * (bh + 8), bw, bh))
 		{
-			if (i == 0)
-				editor_add_sphere(gui);
-			else if (i == 1)
-				editor_add_plane(gui);
-			else if (i == 2)
-				editor_add_cylinder(gui);
-			else if (i == 3)
-				editor_add_cone(gui);
-			else if (i == 4)
-				editor_add_light(gui);
-			else
+			if (i == 8)
 			{
 				gui->crud.popup = POPUP_MESH_FMT;
 				gui->render.dirty = true;
 				return (true);
 			}
-			gui->crud.popup = POPUP_NONE;
-			gui->render.dirty = true;
+			dispatch_shape(gui, i);
 			return (true);
 		}
 		i++;
 	}
-	/* Cancel */
 	if (phit(mouse, ox + POPUP_W - 90 - POPUP_PAD,
 			oy + 36 + POPUP_PAD + 3 * (bh + 8) + 4, 90, 26))
 		gui->crud.popup = POPUP_NONE;

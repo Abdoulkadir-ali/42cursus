@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:09:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 06:17:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ static bool	init_arrays(t_scene *s)
 	s->lights = ft_calloc(s->light_cap, sizeof(t_light));
 	s->cone_cap = INIT_CYL_CAP;
 	s->cones = ft_calloc(s->cone_cap, sizeof(t_cone));
+	s->tri_cap = INIT_TRI_CAP;
+	s->tris = ft_calloc(s->tri_cap, sizeof(t_tri_shape));
 	if (!s->spheres || !s->planes || !s->cylinders || !s->meshes || !s->animated
-		|| !s->materials || !s->lights || !s->cones || !s->groups)
+		|| !s->materials || !s->lights || !s->cones || !s->groups || !s->tris)
 		return (false);
 	return (true);
 }
@@ -59,6 +61,7 @@ void	destroy_scene(t_scene *scene)
 	free(scene->planes);
 	free(scene->cylinders);
 	free(scene->cones);
+	free(scene->tris);
 	i = 0;
 	while (i < scene->mesh_count)
 		mesh_free(&scene->meshes[i++]);

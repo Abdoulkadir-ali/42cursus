@@ -82,7 +82,8 @@ t_bvh	*bvh_create(t_scene *scene)
 	bvh->scene = scene;
 	total = (size_t)scene->sphere_count + scene->plane_count
 		+ scene->cylinder_count + scene->cone_count
-		+ scene->mesh_count + scene->anim_count;
+		+ scene->mesh_count + scene->anim_count
+		+ scene->tri_count;
 	if (total == 0)
 		return (bvh);
 	root = build_tmp_tree(scene, total, &k);

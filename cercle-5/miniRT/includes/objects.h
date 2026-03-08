@@ -56,6 +56,29 @@ struct					s_cone
 	t_vec3				temp_color;
 };
 
+struct					s_tri_shape
+{
+	t_vec3				v[3];
+	t_vec3				normal;
+	int					mat_id;
+	t_vec3				temp_color;
+};
+
+struct					s_rect_parse
+{
+	t_vec3				v[4];
+	t_vec3				temp_color;
+};
+
+struct					s_pyramid_parse
+{
+	t_vec3				center;
+	t_vec3				up;
+	double				base_size;
+	double				height;
+	t_vec3				temp_color;
+};
+
 struct					s_light
 {
 	t_light_type		type;
@@ -345,6 +368,9 @@ struct					s_parse_obj
 		t_ambient		ambient;
 		t_skinned_mesh	animated;
 		t_mesh_info		mesh_info;
+		t_tri_shape		tri_shape;
+		t_rect_parse	rect_parse;
+		t_pyramid_parse	pyramid_parse;
 	} data;
 };
 
@@ -730,6 +756,9 @@ t_parse_obj				parse_sphere(t_parser *p);
 t_parse_obj				parse_plane(t_parser *p);
 t_parse_obj				parse_cylinder(t_parser *p);
 t_parse_obj				parse_cone(t_parser *p);
+t_parse_obj				parse_tri_shape(t_parser *p);
+t_parse_obj				parse_rect_shape(t_parser *p);
+t_parse_obj				parse_pyramid(t_parser *p);
 t_parse_obj				parse_mesh_entry(t_parser *p, t_type type);
 
 void					update_object_material(void *obj_data, t_type type);
