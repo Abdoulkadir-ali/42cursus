@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:16:32 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:51:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 00:58:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,27 +26,28 @@ void	draw_ui_help(t_gui *gui, int *y)
 		"LMB   Look   MMB          Zoom");
 	*y += 20;
 	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT,
-		"+/-   Speed  N            Next map");
+		"+/-   Speed  N/P  Maps  X  Physics");
 	*y += 20;
 }
 
 void	draw_ui_status(t_gui *gui, int *y)
 {
-	char	buf[128];
 	int		ox;
+	int		color;
+	char	buf[64];
 
 	ox = SCENE_PANEL_W + 16;
-	snprintf(buf, sizeof(buf), "[ %c ] Simulate Physics",
-		gui->physics_enabled ? 'X' : ' ');
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT, buf);
-	*y += 20;
-	snprintf(buf, sizeof(buf), "Ambient Intensity: %.2f",
-		gui->ambient_intensity);
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT, buf);
-	*y += 20;
-	snprintf(buf, sizeof(buf), "Ambient Color: #%06X",
-		gui->ambient_color & 0xFFFFFF);
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT, buf);
+	if (gui->physics_enabled)
+	{
+		color = 0x44FF44;
+		snprintf(buf, sizeof(buf), "[ X ]  PHYSICS  ON");
+	}
+	else
+	{
+		color = 0xFF4444;
+		snprintf(buf, sizeof(buf), "[   ]  PHYSICS  OFF");
+	}
+	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, color, buf);
 	*y += 20;
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:49:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:04:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ bool	physics_panel_handle_click(t_gui *gui, t_vec2i mouse,
 	i = 0;
 	while (i < 3)
 	{
-		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i]))
+		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i], NULL))
 			return (true);
 		y += 30;
 		i++;

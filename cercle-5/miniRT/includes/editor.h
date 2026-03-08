@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:49:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:04:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "core.h"
 # include "maths.h"
+# include "objects.h"
 # include "surface.h"
 # include "physics.h"
 
@@ -30,9 +31,11 @@
 # define INSPECTOR_W    280
 # define SCENE_PANEL_W  220
 # define ROW_H          24
-# define CRUD_PANEL_H   98
-# define CRUD_BTN_H     22
+# define CRUD_PANEL_H   56
+# define CRUD_BTN_H     24
 # define CRUD_BTN_W     52
+# define CRUD_ADD_W     120
+# define CRUD_DROP_ITEM_H 22
 
 /* --- Slider Range Constants --- */
 /* Transform */
@@ -51,8 +54,8 @@
 # define SL_OPAC_MAX     1.0
 # define SL_REFL_MIN     0.0
 # define SL_REFL_MAX     1.0
-# define SL_IOR_MIN      1.0
-# define SL_IOR_MAX      3.0
+# define SL_IOR_MIN      0.0
+# define SL_IOR_MAX      180.0
 # define SL_COL_MIN      0.0
 # define SL_COL_MAX      255.0
 # define SL_EMIT_MIN     0.0
@@ -127,6 +130,7 @@ typedef struct s_slider_state
 	double			dmax;
 	int				track_x;
 	int				track_w;
+	void			(*on_change)(struct s_gui *gui);
 	struct s_widget	*target;
 }	t_slider_state;
 
@@ -166,7 +170,7 @@ bool		transform_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
 /* srcs/gui/editor/slider_inline.c */
 void		draw_slider_row(struct s_gui *gui, t_vec2i pos, t_islider sl);
 bool		try_islider_click(struct s_gui *gui, t_vec2i mouse,
-			t_vec2i pos, t_islider sl);
+			t_vec2i pos, t_islider sl, void (*on_change)(struct s_gui *gui));
 void		update_inline_drag(struct s_gui *gui, int mouse_x);
 void		end_inline_drag(struct s_gui *gui);
 
@@ -195,5 +199,33 @@ bool		ambient_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
 
 /* srcs/gui/editor/mesh_info_panel.c */
 void		draw_mesh_info_panel(struct s_gui *gui, int x);
+
+/* srcs/gui/editor/scene_reset.c */
+
+typedef struct s_mesh_snap
+{
+	t_transform		transform;
+	int				mat_id;
+	t_physics_body	phys;
+}	t_mesh_snap;
+
+typedef struct s_scene_snap
+{
+	t_sphere	*spheres;	int	sphere_count;
+	t_plane		*planes;	int	plane_count;
+	t_cylinder	*cylinders;	int	cylinder_count;
+	t_cone		*cones;		int	cone_count;
+	t_light		*lights;	int	light_count;
+	t_material	*materials;	int	mat_count;
+	t_mesh_snap	*meshes;	int	mesh_count;
+	t_ambient	ambient;
+	t_camera	camera;
+	int			ambient_color;
+	double		ambient_intensity;
+}	t_scene_snap;
+
+void		scene_snap_take(t_scene_snap *snap, struct s_gui *gui);
+void		scene_snap_free(t_scene_snap *snap);
+void		scene_reset(struct s_gui *gui);
 
 #endif

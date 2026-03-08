@@ -101,10 +101,9 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 */
 void	gui_destroy(t_gui *gui)
 {
-	int	i;
-
 	if (!gui)
 		return ;
+	map_manager_destroy(gui);
 	if (gui->win.disp_img)
 		mlx_destroy_image(gui->win.mlx, gui->win.disp_img);
 	if (gui->win.img)
@@ -113,15 +112,5 @@ void	gui_destroy(t_gui *gui)
 		mlx_destroy_window(gui->win.mlx, gui->win.win);
 	if (gui->win.mlx)
 		free(gui->win.mlx);
-	if (gui->map_info.files)
-	{
-		i = 0;
-		while (i < gui->map_info.count)
-		{
-			free(gui->map_info.files[i]);
-			i++;
-		}
-		free(gui->map_info.files);
-	}
 	free(gui);
 }

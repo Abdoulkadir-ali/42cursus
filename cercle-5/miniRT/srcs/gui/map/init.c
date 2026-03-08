@@ -14,14 +14,11 @@
 
 void	gui_map_switcher_init(t_gui *gui)
 {
-	int	count;
-
-	count = count_maps();
-	if (count == 0)
-		return ;
-	gui->map_info.files = ft_calloc(count + 1, sizeof(char *));
-	if (!gui->map_info.files)
-		return ;
+	gui->map_info.head = NULL;
+	gui->map_info.current = NULL;
+	gui->map_info.count = 0;
 	fill_map_list(gui);
-	set_current_index(gui);
+	if (gui->map_info.count == 0)
+		return ;
+	set_current_entry(gui);
 }

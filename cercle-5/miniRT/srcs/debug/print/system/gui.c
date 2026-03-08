@@ -25,6 +25,7 @@ void	print_gui(t_gui *g)
 	printf("gui(\n  win: %dx%d\n", g->win.width, g->win.height);
 	printf("  render: scale: %d, dirty: %s, fps: %.2f\n",
 		g->render.scale, dirty, g->render.fps);
-	printf("  map: %d maps, current: %d\n)",
-		g->map_info.count, g->map_info.current_idx);
+	printf("  map: %d maps, current: %s\n)",
+		g->map_info.count,
+		g->map_info.current ? g->map_info.current->path : "none");
 }

@@ -6,15 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 16:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "editor.h"
+#include <math.h>
 
-bool	load_scene_and_bvh(t_gui *gui, const char *path);
-
-static void	reset_camera_view(t_gui *gui)
+void	reset_camera_view(t_gui *gui)
 {
 	t_vec3	f;
 
@@ -30,17 +30,46 @@ static void	reset_camera_view(t_gui *gui)
 
 void	gui_next_map(t_gui *gui)
 {
-	char	*path;
+	t_map_entry	*next;
 
-	if (gui->map_info.count == 0)
+	if (!gui->map_info.head || !gui->map_info.current)
 		return ;
-	gui->map_info.current_idx = (gui->map_info.current_idx + 1)
-		% gui->map_info.count;
-	path = gui->map_info.files[gui->map_info.current_idx];
-	if (load_scene_and_bvh(gui, path))
+	if (gui->map_job.active)
+		return ;
+	if (gui->map_info.current->next)
+		next = gui->map_info.current->next;
+	else
+		next = gui->map_info.head;
+	if (next == gui->map_info.current)
+		return ;
+	map_load_async(gui, next);
+}
+
+void	gui_prev_map(t_gui *gui)
+{
+	t_map_entry	*entry;
+	t_map_entry	*prev;
+
+	if (!gui->map_info.head || !gui->map_info.current)
+		return ;
+	if (gui->map_job.active)
+		return ;
+	/* walk list to find entry before current */
+	entry = gui->map_info.head;
+	prev = NULL;
+	while (entry && entry != gui->map_info.current)
 	{
-		gui->cam_ctrl.camera = &gui->scene->camera;
-		reset_camera_view(gui);
-		gui->render.dirty = true;
+		prev = entry;
+		entry = entry->next;
 	}
+	if (!prev)
+	{
+		/* current is head — wrap to tail */
+		prev = gui->map_info.head;
+		while (prev->next)
+			prev = prev->next;
+	}
+	if (prev == gui->map_info.current)
+		return ;
+	map_load_async(gui, prev);
 }

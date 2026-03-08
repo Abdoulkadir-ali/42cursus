@@ -11,23 +11,33 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "editor.h"
 
-void	set_current_index(t_gui *gui)
+/*
+** Finds the map entry matching the currently loaded scene's name and stores
+** the scene pointer in that entry (transferring ownership to the cache).
+** Takes the initial snapshot so scene_reset works from the first frame.
+** Falls back to head if no match is found.
+*/
+void	set_current_entry(t_gui *gui)
 {
-	int	i;
+	t_map_entry	*entry;
 
-	gui->map_info.current_idx = 0;
-	if (gui->scene && gui->scene->name)
+	entry = gui->map_info.head;
+	gui->map_info.current = gui->map_info.head;
+	while (entry)
 	{
-		i = 0;
-		while (i < gui->map_info.count)
+		if (gui->scene->name
+			&& ft_strcmp(gui->scene->name, entry->path) == 0)
 		{
-			if (ft_strcmp(gui->scene->name, gui->map_info.files[i]) == 0)
-			{
-				gui->map_info.current_idx = i;
-				break ;
-			}
-			i++;
+			gui->map_info.current = entry;
+			break ;
 		}
+		entry = entry->next;
+	}
+	if (gui->map_info.current)
+	{
+		gui->map_info.current->scene = gui->scene;
+		scene_snap_take(&gui->map_info.current->snap, gui);
 	}
 }

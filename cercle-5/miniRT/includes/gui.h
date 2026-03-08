@@ -179,12 +179,33 @@ typedef struct s_input_ctxs
 	int mouse_y;
 } t_input_ctx;
 
+typedef struct s_map_entry
+{
+	char				*path;
+	t_scene				*scene;
+	t_scene_snap		 snap;
+	struct s_map_entry	*next;
+}	t_map_entry;
+
 struct s_map
 {
-	char **files;
-	int count;
-	int current_idx;
+	t_map_entry	*head;
+	t_map_entry	*current;
+	int			 count;
 };
+
+typedef struct s_map_job
+{
+	pthread_t		tid;
+	t_map_entry		*entry;
+	bool			done;
+	bool			active;
+}	t_map_job;
+
+typedef struct s_crud_ui
+{
+	bool	add_open;
+}	t_crud_ui;
 
 struct s_gui
 {
@@ -205,6 +226,8 @@ struct s_gui
 	t_inspector		inspector;
 	t_scene_panel	scene_panel;
 	t_slider_state	slider_state;
+	t_map_job		map_job;
+	t_crud_ui		crud;
 };
 
 typedef struct s_key_action
@@ -273,9 +296,14 @@ void	draw_hover_text(t_gui *gui);
 void	process_pixel(t_render_ctx *ctx, t_vec2i pos, char *pixel_addr);
 void	make_camera_ray(t_render_ctx *ctx, double x, double y, t_ray *ray);
 
-/* srcs/gui/map_switcher.c */
+/* srcs/gui/map/ */
 void	gui_map_switcher_init(t_gui *gui);
 void	gui_next_map(t_gui *gui);
+void	gui_prev_map(t_gui *gui);
+bool	map_load_entry(t_gui *gui, t_map_entry *entry);
+void	map_load_async(t_gui *gui, t_map_entry *entry);
+void	reset_camera_view(t_gui *gui);
+void	map_manager_destroy(t_gui *gui);
 
 /* srcs/gui/input/ */
 int	key_press(int keycode, t_gui *gui);
@@ -323,12 +351,12 @@ void	zoom_out_release(t_gui *gui);
 void	speed_up_press(t_gui *gui);
 void	speed_down_press(t_gui *gui);
 void	map_next_press(t_gui *gui);
+void	map_prev_press(t_gui *gui);
 void	exit_press(t_gui *gui);
 void	fullres_toggle(t_gui *gui);
 
-int	count_maps(void);
 void	fill_map_list(t_gui *gui);
-void	set_current_index(t_gui *gui);
+void	set_current_entry(t_gui *gui);
 
 /* 5. IMPLEMENTATION IMPORTS */
 # include "raytracing.h"

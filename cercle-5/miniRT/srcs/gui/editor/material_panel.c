@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:49:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:04:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	build_mat_sliders(t_material *mat, t_islider *sl, int *count)
 	sl[i++] = (t_islider){"Metallic", SL_METAL_MIN, SL_METAL_MAX, &mat->metallic};
 	sl[i++] = (t_islider){"Opacity", SL_OPAC_MIN, SL_OPAC_MAX, &mat->transparency};
 	sl[i++] = (t_islider){"Reflectivity", SL_REFL_MIN, SL_REFL_MAX, &mat->reflectivity};
-	sl[i++] = (t_islider){"IOR", SL_IOR_MIN, SL_IOR_MAX, &mat->refract_index};
+	sl[i++] = (t_islider){"Refr.Angle", SL_IOR_MIN, SL_IOR_MAX, &mat->refract_index};
 	sl[i++] = (t_islider){"Albedo R", SL_COL_MIN, SL_COL_MAX, &mat->albedo_map.color_a.x};
 	sl[i++] = (t_islider){"Albedo G", SL_COL_MIN, SL_COL_MAX, &mat->albedo_map.color_a.y};
 	sl[i++] = (t_islider){"Albedo B", SL_COL_MIN, SL_COL_MAX, &mat->albedo_map.color_a.z};
@@ -78,7 +78,7 @@ bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	i = 0;
 	while (i < count)
 	{
-		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i]))
+		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i], NULL))
 			return (true);
 		y += 30;
 		i++;

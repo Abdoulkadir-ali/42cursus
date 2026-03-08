@@ -22,45 +22,37 @@ static bool	is_rt_file(const char *filename)
 	return (ft_strcmp(filename + len - 3, ".rt") == 0);
 }
 
-int	count_maps(void)
-{
-	DIR				*dir;
-	struct dirent	*entry;
-	int				count;
-
-	count = 0;
-	dir = opendir("maps/rt");
-	if (!dir)
-		return (0);
-	entry = readdir(dir);
-	while (entry != NULL)
-	{
-		if (entry->d_type == DT_REG && is_rt_file(entry->d_name))
-			count++;
-		entry = readdir(dir);
-	}
-	closedir(dir);
-	return (count);
-}
-
 void	fill_map_list(t_gui *gui)
 {
 	DIR				*dir;
 	struct dirent	*entry;
+	t_map_entry		*node;
+	t_map_entry		**tail;
 
 	dir = opendir("maps/rt");
 	if (!dir)
 		return ;
+	tail = &gui->map_info.head;
 	gui->map_info.count = 0;
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
 		if (entry->d_type == DT_REG && is_rt_file(entry->d_name))
 		{
-			gui->map_info.files[gui->map_info.count]
-				= ft_strjoin("maps/rt/", entry->d_name);
-			if (gui->map_info.files[gui->map_info.count])
-				gui->map_info.count++;
+			node = malloc(sizeof(t_map_entry));
+			if (node)
+			{
+				ft_memset(node, 0, sizeof(*node));
+				node->path = ft_strjoin("maps/rt/", entry->d_name);
+				if (node->path)
+				{
+					*tail = node;
+					tail = &node->next;
+					gui->map_info.count++;
+				}
+				else
+					free(node);
+			}
 		}
 		entry = readdir(dir);
 	}

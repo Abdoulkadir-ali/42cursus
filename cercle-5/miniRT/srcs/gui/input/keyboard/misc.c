@@ -17,6 +17,11 @@ void	map_next_press(t_gui *gui)
 	gui_next_map(gui);
 }
 
+void	map_prev_press(t_gui *gui)
+{
+	gui_prev_map(gui);
+}
+
 void	exit_press(t_gui *gui)
 {
 	mlx_loop_end(gui->win.mlx);

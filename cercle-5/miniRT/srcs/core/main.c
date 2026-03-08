@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 03:49:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 00:23:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	cleanup(t_scene *scene, t_gui *gui)
 {
 	if (gui)
 		gui_destroy(gui);
-	if (scene)
+	else if (scene)
 		destroy_scene(scene);
 }
 

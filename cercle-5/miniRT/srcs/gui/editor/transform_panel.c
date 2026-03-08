@@ -6,12 +6,31 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 23:57:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 01:04:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 #include "editor.h"
+
+static void	sphere_scale_sync(t_gui *gui)
+{
+	t_selection	*sel;
+	t_sphere	*sp;
+	t_transform	scale_only;
+
+	sel = &gui->selection;
+	if (!sel->active || sel->type != TYPE_SPHERE)
+		return ;
+	sp = &gui->scene->spheres[sel->index];
+	sp->transform.scale.y = sp->transform.scale.x;
+	sp->transform.scale.z = sp->transform.scale.x;
+	sp->radius_sq = sp->transform.scale.x * sp->transform.scale.x;
+	scale_only.pos = sp->transform.pos;
+	scale_only.scale = sp->transform.scale;
+	scale_only.rotation = (t_rotator){0, 0, 0};
+	sp->inv_transform = mat4_inverse_transform(scale_only);
+}
 
 t_transform	*get_selected_transform(t_gui *gui)
 {
@@ -111,7 +130,12 @@ bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	i = 0;
 	while (i < count)
 	{
-		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i]))
+		void	(*cb)(t_gui *);
+
+		cb = NULL;
+		if (gui->selection.type == TYPE_SPHERE && i == 6)
+			cb = sphere_scale_sync;
+		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i], cb))
 			return (true);
 		y += 30;
 		i++;

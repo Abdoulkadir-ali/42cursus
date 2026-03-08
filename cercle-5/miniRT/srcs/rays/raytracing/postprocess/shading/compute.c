@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/08 00:58:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ static void	setup_shading(t_shading_ctx *ctx, t_hit *hit, t_scene *scene,
 	if (ctx->mat.metallic_map.type == TEX_BITMAP)
 		ctx->mat.metallic = sample_texture(&ctx->mat.metallic_map,
 				hit->u, hit->v).x / 255.0;
+	/* Map PBR fields into Blinn-Phong parameters used by calc_light */
+	ctx->mat.shininess = pow(1.0 - ctx->mat.roughness, 4.0) * 200.0 + 2.0;
+	ctx->mat.specular  = ctx->mat.specular * (1.0 - ctx->mat.metallic * 0.5)
+		+ ctx->mat.metallic * 0.9;
 	apply_bump(ctx);
 }
 
@@ -38,8 +42,11 @@ static t_vec3	compute_refraction(t_shading_ctx *ctx, const t_ray *ray,
 	t_ray	refracted_ray;
 	t_vec3	refracted_color;
 
-	refracted_dir = vec3_refract(ray->direction, ctx->hit->normal,
-			ctx->mat.refract_index);
+	/* refract_index stores degrees (0-180); convert to IOR ratio (1.0-3.0) */
+	double	ior;
+
+	ior = 1.0 + (ctx->mat.refract_index / 180.0) * 2.0;
+	refracted_dir = vec3_refract(ray->direction, ctx->hit->normal, ior);
 	if (vec3_mag_sq(refracted_dir) < 1e-6)
 	{
 		*kr = 1.0;
