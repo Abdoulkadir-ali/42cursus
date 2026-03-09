@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:16:38 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:38:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:46:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	is_directory(const char *path)
 	return (S_ISDIR(statbuf.st_mode));
 }
 
-static int	is_fdf_file(const char *filename)
+int	is_fdf_file(const char *filename)
 {
 	int	len;
 

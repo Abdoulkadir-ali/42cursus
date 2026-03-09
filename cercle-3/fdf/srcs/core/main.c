@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 19:21:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:50:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@ int	main(int argc, char **argv)
 	t_data		data;
 	t_events	*events;
 
+	if (argc != 2)
+	{
+		ft_putstr_fd("Error: Usage ./fdf <path/to/file.fdf>", 1);
+		return (1);
+	}
 	XInitThreads();
 	if (!init_data_and_window(&data, argc, argv))
 		return (1);

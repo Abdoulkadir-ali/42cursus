@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:47:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:48:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,11 @@ void	apply_movement(t_movement_ctx *ctx, t_events *events)
 	vec2d_multiply_scalar(&ctx->v, ctx->speed);
 	delta = ctx->v;
 	vec2d_add(&events->camera->offset, delta);
-	if (!isfinite(events->camera->offset.x)
-		|| !isfinite(events->camera->offset.y))
+	if (events->camera->offset.x != events->camera->offset.x
+		|| events->camera->offset.y != events->camera->offset.y
+		|| events->camera->offset.x > OFFSET_LIMIT || events->camera->offset.x
+		< -OFFSET_LIMIT || events->camera->offset.y > OFFSET_LIMIT
+		|| events->camera->offset.y < -OFFSET_LIMIT)
 	{
 		events->camera->offset.x = 0.0;
 		events->camera->offset.y = 0.0;

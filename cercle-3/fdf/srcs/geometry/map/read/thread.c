@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 04:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:40:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:46:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	build_map_path(char *buf, size_t bufsize, const char *dir_path,
 {
 	ft_strlcpy(buf, dir_path, bufsize);
 	if (buf[ft_strlen(buf) - 1] != '/')
-		t_ft_strlcat(buf, "/", bufsize);
+		ft_strlcat(buf, "/", bufsize);
 	ft_strlcat(buf, filename, bufsize);
 }
 

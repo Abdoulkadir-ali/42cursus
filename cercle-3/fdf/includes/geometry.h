@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:40:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:48:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,10 @@
 # include "libft.h"
 # include "primitives.h"
 
+/* maximum allowed offset value before reset */
+# define OFFSET_LIMIT 1e300
+
 /* ========= THREADS ========== */
-typedef struct s_load_ctx
-{
-	struct dirent	*entry;
-	char		path[256];
-	size_t		i;
-	t_thread_res	res;
-} t_load_ctx;
 
 typedef struct s_thread_res
 {
@@ -43,13 +39,16 @@ typedef struct s_thread_res
 	size_t				count;
 }						t_thread_res;
 
-typedef struct s_load_thread_data
+typedef struct s_load_ctx
 {
-	t_maps				*m;
-	char				*path;
-	size_t				index;
-}						t_load_thread_data;
-
+	struct dirent		*entry;
+	char				path[256];
+	size_t				i;
+	t_thread_res		res;
+}						t_load_ctx;
+/* helpers used across modules */
+int		is_fdf_file(const char *filename);
+void	*load_map_thread_routine(void *arg);
 /* ========== VECTORS ========== */
 typedef struct s_tess_diagonal_ctx
 {
@@ -287,5 +286,13 @@ typedef struct s_find_min_max_ctx
 	float				min_val;
 	float				max_val;
 }						t_find_min_max_ctx;
+
+typedef struct s_load_thread_data
+{
+	t_maps				*m;
+	char				*path;
+	size_t				index;
+}						t_load_thread_data;
+
 
 #endif
