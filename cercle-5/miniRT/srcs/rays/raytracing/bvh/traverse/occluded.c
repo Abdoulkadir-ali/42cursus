@@ -131,6 +131,11 @@ static void	push_occ_children(int *stack, int *ptr, const t_bvh *bvh,
 		stack[(*ptr)++] = right;
 }
 
+/*
+** Occluded traversal: test each AABB exactly once.
+** Root is tested before the loop; all other nodes are tested eagerly by
+** push_occ_children before being pushed, so no re-test on pop.
+*/
 static bool	traverse_bvh_occluded(const t_bvh *bvh, const t_ray *ray,
 		double max_t)
 {
@@ -141,18 +146,21 @@ static bool	traverse_bvh_occluded(const t_bvh *bvh, const t_ray *ray,
 	double				tmin;
 	double				tmax;
 
+	/* Test root once. */
+	tmin = 0.0;
+	tmax = MAX_VALUE;
+	if (!aabb_intersect_fast(&bvh->nodes[0].bbox, ray, &tmin, &tmax))
+		return (false);
+	if (tmin < 0.0)
+		tmin = 0.0;
+	if (tmin > max_t)
+		return (false);
 	ptr = 0;
 	stack[ptr++] = 0;
 	while (ptr > 0)
 	{
 		i = stack[--ptr];
 		node = &bvh->nodes[i];
-		if (!aabb_intersect_fast(&node->bbox, ray, &tmin, &tmax))
-			continue ;
-		if (tmin < 0.0)
-			tmin = 0.0;
-		if (tmin > max_t)
-			continue ;
 		if (node->count > 0)
 		{
 			if (process_leaf_occluded(bvh, i, ray, max_t))

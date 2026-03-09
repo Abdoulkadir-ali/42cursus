@@ -67,8 +67,14 @@ t_vec3	calc_light(t_shading_ctx *ctx, t_light light)
 		return (vec3(0, 0, 0));
 	half = vec3_norm(vec3_add(ld_norm,
 				vec3_scale(ctx->ray->direction, -1.0)));
-	spec = (double)powf((float)fmax(0.0, vec3_dot(ctx->hit->normal, half)),
-			(float)ctx->mat.shininess);
+	{
+		float	ndoth;
+		ndoth = (float)fmax(0.0, vec3_dot(ctx->hit->normal, half));
+		if (ndoth < 0.01f)
+			spec = 0.0;
+		else
+			spec = (double)powf(ndoth, (float)ctx->mat.shininess);
+	}
 	return (vec3_add(pixel_color(ctx->albedo, light.rgb, light.brightness
 				* ndotl), vec3_scale(light.rgb, light.brightness
 				* ctx->mat.specular * spec)));
@@ -98,13 +104,21 @@ static void	apply_emissive(t_shading_ctx *ctx, t_vec3 *total,
 		return ;
 	att = light_attenuation(dist_surf * dist_surf);
 	bright = vec3_mag(mat->emission) / 255.0 * fmax(ld_rad.x, 0.5) * 3.0;
-	*total = vec3_add(*total, vec3_add(pixel_color(ctx->albedo, mat->emission,
-					bright * ndotl * att), vec3_scale(mat->emission, bright
-					* ctx->mat.specular * att * (double)powf((float)fmax(0.0,
-							vec3_dot(ctx->hit->normal, vec3_norm(vec3_add(ldir,
-										vec3_scale(ctx->ray->direction,
-											-1.0))))),
-						(float)ctx->mat.shininess))));
+	{
+		float	ndoth;
+		double	spec_e;
+		ndoth = (float)fmax(0.0, vec3_dot(ctx->hit->normal,
+					vec3_norm(vec3_add(ldir,
+							vec3_scale(ctx->ray->direction, -1.0)))));
+		if (ndoth < 0.01f)
+			spec_e = 0.0;
+		else
+			spec_e = (double)powf(ndoth, (float)ctx->mat.shininess);
+		*total = vec3_add(*total, vec3_add(pixel_color(ctx->albedo,
+						mat->emission, bright * ndotl * att),
+					vec3_scale(mat->emission,
+						bright * ctx->mat.specular * att * spec_e)));
+	}
 }
 
 static void	emissive_from_ref(t_shading_ctx *ctx, t_scene *sc, t_vec3 *total,

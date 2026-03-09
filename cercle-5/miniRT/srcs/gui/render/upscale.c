@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include <string.h>
 
 /*
 ** Nearest-neighbor upscale from render image to display image.
@@ -25,7 +26,7 @@ void	upscale_image(t_gui *gui)
 
 	if (gui->win.width == gui->win.disp_w && gui->win.height == gui->win.disp_h)
 	{
-		ft_memcpy(gui->win.disp_addr, gui->win.addr,
+		memcpy(gui->win.disp_addr, gui->win.addr,
 			(size_t)gui->win.disp_h * (size_t)gui->win.disp_line_len);
 		return ;
 	}

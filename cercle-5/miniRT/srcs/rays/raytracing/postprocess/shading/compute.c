@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 22:22:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 02:32:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,11 @@ static void	setup_shading(t_shading_ctx *ctx, t_hit *hit, t_scene *scene,
 		ctx->mat.metallic = sample_texture(&ctx->mat.metallic_map,
 				hit->u, hit->v).x / 255.0;
 	/* Map PBR fields into Blinn-Phong parameters used by calc_light */
-	ctx->mat.shininess = (double)powf((float)(1.0f - (float)ctx->mat.roughness),
-			4.0f) * 200.0 + 2.0;
+	{
+		float	r;
+		r = 1.0f - (float)ctx->mat.roughness;
+		ctx->mat.shininess = (double)(r * r * r * r) * 200.0 + 2.0;
+	}
 	ctx->mat.specular  = ctx->mat.specular * (1.0 - ctx->mat.metallic * 0.5)
 		+ ctx->mat.metallic * 0.9;
 	apply_bump(ctx);

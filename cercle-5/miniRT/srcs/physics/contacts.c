@@ -14,6 +14,7 @@
 #include "objects.h"
 #include "scene.h"
 #include "raytracing.h"
+#include <semaphore.h>
 
 /*
 ** GJK-based narrow phase for all convex shape pairs.
@@ -992,63 +993,120 @@ typedef struct s_gen_job
 	int			type;
 }	t_gen_job;
 
-static void	*contact_type_worker(void *arg)
+/*
+** Persistent thread pool — workers created once, sleep on semaphores.
+** One worker per type group; replaces the per-call pthread_create/join
+** that cost 10-50 us each and dominated physics time for small scenes.
+*/
+typedef struct s_phys_pool
 {
-	t_gen_job	*job;
-	int			i;
+	pthread_t	threads[PHYS_NUM_TYPES];
+	t_gen_job	jobs[PHYS_NUM_TYPES];
+	int			indices[PHYS_NUM_TYPES];
+	sem_t		start[PHYS_NUM_TYPES];
+	sem_t		done[PHYS_NUM_TYPES];
+	int			shutdown;
+	int			initialized;
+}	t_phys_pool;
 
-	job = (t_gen_job *)arg;
+static t_phys_pool	g_phys_pool;
+
+static void	run_contact_job(t_gen_job *job)
+{
+	int	i;
+
 	i = 0;
 	if (job->type == 0)
 		while (i < job->scene->sphere_count)
-			job->count = query_sphere(job->scene, i++, job->out, job->count, job->max_c);
+			job->count = query_sphere(job->scene, i++, job->out,
+					job->count, job->max_c);
 	else if (job->type == 1)
 		while (i < job->scene->box_count)
-			job->count = query_box(job->scene, i++, job->out, job->count, job->max_c);
+			job->count = query_box(job->scene, i++, job->out,
+					job->count, job->max_c);
 	else if (job->type == 2)
 		while (i < job->scene->capsule_count)
-			job->count = query_capsule(job->scene, i++, job->out, job->count, job->max_c);
+			job->count = query_capsule(job->scene, i++, job->out,
+					job->count, job->max_c);
 	else if (job->type == 3)
 		while (i < job->scene->cylinder_count)
-			job->count = query_cylinder(job->scene, i++, job->out, job->count, job->max_c);
+			job->count = query_cylinder(job->scene, i++, job->out,
+					job->count, job->max_c);
 	else if (job->type == 4)
 		while (i < job->scene->rect_count)
-			job->count = query_rect(job->scene, i++, job->out, job->count, job->max_c);
+			job->count = query_rect(job->scene, i++, job->out,
+					job->count, job->max_c);
 	else if (job->type == 5)
 		while (i < job->scene->tri_count)
-			job->count = query_tri(job->scene, i++, job->out, job->count, job->max_c);
+			job->count = query_tri(job->scene, i++, job->out,
+					job->count, job->max_c);
 	else
 		while (i < job->scene->pyramid_count)
-			job->count = query_pyramid(job->scene, i++, job->out, job->count, job->max_c);
-	return (NULL);
+			job->count = query_pyramid(job->scene, i++, job->out,
+					job->count, job->max_c);
+}
+
+static void	*pool_worker(void *arg)
+{
+	int	*idx;
+
+	idx = (int *)arg;
+	while (1)
+	{
+		sem_wait(&g_phys_pool.start[*idx]);
+		if (g_phys_pool.shutdown)
+		{
+			sem_post(&g_phys_pool.done[*idx]);
+			return (NULL);
+		}
+		run_contact_job(&g_phys_pool.jobs[*idx]);
+		sem_post(&g_phys_pool.done[*idx]);
+	}
+}
+
+static void	init_phys_pool(void)
+{
+	int	i;
+
+	i = 0;
+	while (i < PHYS_NUM_TYPES)
+	{
+		g_phys_pool.indices[i] = i;
+		sem_init(&g_phys_pool.start[i], 0, 0);
+		sem_init(&g_phys_pool.done[i], 0, 0);
+		pthread_create(&g_phys_pool.threads[i], NULL,
+			pool_worker, &g_phys_pool.indices[i]);
+		i++;
+	}
+	g_phys_pool.initialized = 1;
 }
 
 int	generate_contacts(t_scene *scene, t_contact *contacts, int max_c)
 {
 	static t_contact	bufs[PHYS_NUM_TYPES][MAX_CONTACTS];
-	t_gen_job			jobs[PHYS_NUM_TYPES];
-	pthread_t			threads[PHYS_NUM_TYPES];
 	int					count;
 	int					t;
 	int					n;
 
+	if (!g_phys_pool.initialized)
+		init_phys_pool();
 	t = 0;
 	while (t < PHYS_NUM_TYPES)
 	{
-		jobs[t] = (t_gen_job){scene, bufs[t], max_c, 0, t};
-		pthread_create(&threads[t], NULL, contact_type_worker, &jobs[t]);
+		g_phys_pool.jobs[t] = (t_gen_job){scene, bufs[t], max_c, 0, t};
+		sem_post(&g_phys_pool.start[t]);
 		t++;
 	}
 	count = 0;
 	t = 0;
 	while (t < PHYS_NUM_TYPES)
 	{
-		pthread_join(threads[t], NULL);
-		n = jobs[t].count;
+		sem_wait(&g_phys_pool.done[t]);
+		n = g_phys_pool.jobs[t].count;
 		if (count + n > max_c)
 			n = max_c - count;
 		if (n > 0)
-			memcpy(&contacts[count], jobs[t].out, sizeof(t_contact) * n);
+			memcpy(&contacts[count], bufs[t], sizeof(t_contact) * n);
 		count += n;
 		t++;
 	}

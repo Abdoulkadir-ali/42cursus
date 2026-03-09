@@ -18,11 +18,14 @@
 */
 static inline double	safe_rcp(double d)
 {
-	if (d < 1e-20 && d > -1e-20)
+	double	ad;
+	double	nd;
+
+	ad = __builtin_fabs(d);
+	if (__builtin_expect(ad < 1e-20, 0))
 	{
-		if (d >= 0.0)
-			return (1.0 / 1e-20);
-		return (1.0 / -1e-20);
+		nd = (d >= 0.0) ? 1e-20 : -1e-20;
+		return (1.0 / nd);
 	}
 	return (1.0 / d);
 }

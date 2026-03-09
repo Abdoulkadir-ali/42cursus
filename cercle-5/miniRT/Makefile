@@ -9,7 +9,7 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -DPROFILE_MESH -MMD -MP
+CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -MMD -MP
 RM          = rm -f
 SRCS_DIR    = srcs
 # Exclude old physics.c if it still exists (handled by file deletion)
@@ -48,4 +48,64 @@ re: fclean all
 test: re
 	bash ~/tools/
 
-.PHONY: all clean fclean re test FORCE
+# ── Profiling targets ────────────────────────────────────────────────────────
+#
+# callgrind (recommended — counts every instruction, sees all threads):
+#
+#   make profile
+#   ./miniRT-prof maps/rt/emissive_test.rt   (run 3-5 seconds, then close)
+#   callgrind_annotate --auto=yes callgrind.out.* | head -120
+#   OR open it in kcachegrind / qcachegrind if you install one:
+#   kcachegrind callgrind.out.*
+#
+# gprof (fast, single-threaded sampling only — misses pthread workers):
+#
+#   make gprof-build
+#   ./miniRT-gprof maps/rt/emissive_test.rt  (run 5-10 seconds, then close)
+#   gprof miniRT-gprof gmon.out | head -80
+
+PROF_OBJS_DIR = objs-prof
+PROF_OBJS     = $(patsubst $(SRCS_DIR)/%.c,$(PROF_OBJS_DIR)/%.o,$(SRCS))
+PROF_DEPS     = $(PROF_OBJS:.o=.d)
+
+# -O1 keeps the call graph readable; -g3 keeps symbols; no -flto (breaks gprof)
+PROF_CFLAGS   = -Wall -Wextra -O1 -g3 -pthread \
+                -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) \
+                -DDEBUG_EXTENDER -DPROFILE_MESH -MMD -MP
+
+-include $(PROF_DEPS)
+
+$(PROF_OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(PROF_CFLAGS) -c $< -o $@
+
+# callgrind target — no special compile flags needed; valgrind instruments at run time
+profile: $(LIBFT) $(MINILIBX) $(PROF_OBJS)
+	$(CC) $(PROF_CFLAGS) $(PROF_OBJS) $(LIBS) -o miniRT-prof
+	@echo ""
+	@echo "Binary: ./miniRT-prof"
+	@echo "Run:    valgrind --tool=callgrind --callgrind-out-file=callgrind.out \\"
+	@echo "          --collect-atstart=yes --instr-atstart=yes \\"
+	@echo "          ./miniRT-prof maps/rt/emissive_test.rt"
+	@echo "Read:   callgrind_annotate --auto=yes callgrind.out | head -120"
+
+# gprof target — needs -pg baked into the binary
+GPROF_CFLAGS  = $(PROF_CFLAGS) -pg
+GPROF_OBJS_DIR = objs-gprof
+GPROF_OBJS     = $(patsubst $(SRCS_DIR)/%.c,$(GPROF_OBJS_DIR)/%.o,$(SRCS))
+
+$(GPROF_OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(GPROF_CFLAGS) -c $< -o $@
+
+gprof-build: $(LIBFT) $(MINILIBX) $(GPROF_OBJS)
+	$(CC) $(GPROF_CFLAGS) $(GPROF_OBJS) $(LIBS) -o miniRT-gprof
+	@echo ""
+	@echo "Binary: ./miniRT-gprof"
+	@echo "Run:    ./miniRT-gprof maps/rt/emissive_test.rt  (close after ~5 s)"
+	@echo "Read:   gprof miniRT-prof gmon.out | head -80"
+
+prof-clean:
+	$(RM) -r $(PROF_OBJS_DIR) $(GPROF_OBJS_DIR) miniRT-prof miniRT-gprof gmon.out callgrind.out*
+
+.PHONY: all clean fclean re test FORCE profile gprof-build prof-clean
