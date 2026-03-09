@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:38:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:36:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,18 @@ t_map	*extract_submap(t_map *src, t_vec2 min, t_vec2 max)
 	int		w;
 	int		h;
 
+	if (!src
+		|| !src->points.pos
+		|| !src->points.raw
+		|| !src->points.color
+		|| !src->points.source_color
+		|| src->width <= 0
+		|| src->height <= 0)
+		return (NULL);
+	if (min.x < 0 || min.y < 0
+		|| max.x < min.x || max.y < min.y
+		|| max.x >= src->width || max.y >= src->height)
+		return (NULL);
 	w = max.x - min.x + 1;
 	h = max.y - min.y + 1;
 	if (w <= 0 || h <= 0)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 19:15:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:41:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_map	*create_test_grid(void)
 		return (NULL);
 	map->width = 50;
 	map->height = 50;
-	if (!allocate_map_arrays(map))
+	if (!allocate_map_points(map))
 		return (NULL);
 	init_grid_points(map);
 	find_min_max_z(map, &min_z, &max_z);

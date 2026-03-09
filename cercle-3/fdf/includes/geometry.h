@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 19:58:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:40:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <dirent.h>
 # include <fcntl.h>
 # include <math.h>
+# include <pthread.h>
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <time.h>
@@ -26,8 +27,30 @@
 # include "libft.h"
 # include "primitives.h"
 
-/* ========== VECTORS ========== */
+/* ========= THREADS ========== */
+typedef struct s_load_ctx
+{
+	struct dirent	*entry;
+	char		path[256];
+	size_t		i;
+	t_thread_res	res;
+} t_load_ctx;
 
+typedef struct s_thread_res
+{
+	pthread_t			*threads;
+	int					*active;
+	size_t				count;
+}						t_thread_res;
+
+typedef struct s_load_thread_data
+{
+	t_maps				*m;
+	char				*path;
+	size_t				index;
+}						t_load_thread_data;
+
+/* ========== VECTORS ========== */
 typedef struct s_tess_diagonal_ctx
 {
 	int					idx;

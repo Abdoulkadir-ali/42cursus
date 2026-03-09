@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:52:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:17:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,24 +53,15 @@ void	init_map_list(t_maps *m, char *dir_path)
 	count = count_fdf_files(dir);
 	closedir(dir);
 	if (count == 0)
-	{
-		init_test_map(m);
-		return ;
-	}
+		return (init_test_map(m));
 	allocate_maps(m, count);
 	dir = opendir(dir_path);
 	load_map_files(m, dir, count, dir_path);
 	closedir(dir);
+	if (!m->maps || !m->maps[0])
+		return (init_no_maps(m));
 	m->current_index = 0;
 	m->current_map = m->maps[0];
 	m->generated_id = 0;
 	m->is_generating = 0;
-}
-
-void	cycle_map(t_maps *m)
-{
-	if (!m->maps || m->count == 0)
-		return ;
-	m->current_index = (m->current_index + 1) % m->count;
-	m->current_map = m->maps[m->current_index];
 }

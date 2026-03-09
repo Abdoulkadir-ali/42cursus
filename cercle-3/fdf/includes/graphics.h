@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 21:52:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 04:21:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -603,7 +603,6 @@ int							raycast_process_pixel(t_graphics *g,
 								int shifted);
 t_graphics					*init_graphics(t_graphics_args args);
 void						init_frame_data(t_frame_data *f);
-
 void						draw_grid_raycast_threaded(t_graphics *g);
 void						draw_grid_threaded(t_graphics *g);
 int							get_point(t_graphics *g, int x, int y, t_point *p);
