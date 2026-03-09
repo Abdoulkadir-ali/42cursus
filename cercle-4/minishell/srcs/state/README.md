@@ -1,3 +1,52 @@
+# 🏷️ State Module
+
+> **Manages shell runtime state: environment, SHLVL, and signals.**
+>
+Ensures robust operation and context management during shell execution.
+
+![Language](https://img.shields.io/badge/Language-C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![Subsystem](https://img.shields.io/badge/Subsystem-State-blue?style=for-the-badge)
+
+---
+
+## 📖 Overview
+
+The state module tracks environment variables, shell level (SHLVL), and signal handling. It is critical for maintaining shell context and safe process management.
+
+---
+
+## 📂 Layout
+- `env.c` — environment variable management
+- `shlvl.c` — shell level (SHLVL) tracking
+- `signals.c` — signal setup and handling
+
+---
+
+## 🏗️ How It Works
+
+### `env.c`
+- Initializes, updates, and accesses environment variables
+- Ensures environment consistency across sessions and child processes
+- Typical operations: copy, update, export, unset
+
+### `shlvl.c`
+- Manages SHLVL environment variable (tracks shell recursion)
+- Increments SHLVL on startup, updates environment
+- Ensures correct SHLVL for subshells, prevents overflow/invalid values
+
+### `signals.c`
+- Sets up custom signal handlers (SIGINT, SIGQUIT)
+- Handles Ctrl+C and Ctrl+\ gracefully
+- Prevents unexpected shell exit, allows safe interruption
+
+---
+
+## 🛠️ Developer Notes
+- Initialize state early in shell startup
+- Signal handlers must not interfere with child processes
+- Always update SHLVL correctly for subshells
+
+For detailed function documentation, see the source files and header definitions in `includes/state.h`.
 # State Module
 
 This module manages the shell's runtime state, including environment variables, shell level (SHLVL), and signal handling. It is essential for maintaining the shell's context and ensuring robust operation during user interaction and process execution.
