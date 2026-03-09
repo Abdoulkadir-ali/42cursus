@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 03:04:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 03:35:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:24:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Wrap one token object into a list node and append it to the stream.
+ * @param tokens Address of the token-list head.
+ * @param token Newly allocated token object.
+ * @return 1 on success, 0 on allocation failure.
+ */
 static int	add_token_to_list(t_nodes **tokens, t_token *token)
 {
 	t_nodes	*new_node;
@@ -26,6 +32,11 @@ static int	add_token_to_list(t_nodes **tokens, t_token *token)
 	return (1);
 }
 
+/**
+ * @brief Check whether a token value contains only decimal digits.
+ * @param token Token under inspection.
+ * @return 1 when the token is purely numeric, otherwise 0.
+ */
 static int	is_numeric_token(t_token *token)
 {
 	int	i;
@@ -42,6 +53,11 @@ static int	is_numeric_token(t_token *token)
 	return (1);
 }
 
+/**
+ * @brief Skip leading spaces and shell comments before tokenization.
+ * @param pstr Address of the scan cursor in the input string.
+ * @return 1 when the string is exhausted after skipping, otherwise 0.
+ */
 static int	skip_spaces_and_comments(char **pstr)
 {
 	char	*s;
@@ -67,6 +83,11 @@ static int	skip_spaces_and_comments(char **pstr)
 	return (!*s);
 }
 
+/**
+ * @brief Extract the next token from the current scan position.
+ * @param pstr Address of the scan cursor in the input string.
+ * @return Newly allocated token, or NULL on failure.
+ */
 static t_token	*get_next_token(char **pstr)
 {
 	t_token	*token;
@@ -95,6 +116,11 @@ static t_token	*get_next_token(char **pstr)
 	return (token);
 }
 
+/**
+ * @brief Convert one input string into a linked list of shell tokens.
+ * @param str Raw command line to tokenize.
+ * @return Token list on success, or NULL on allocation or parse failure.
+ */
 t_nodes	*tokenizer(char *str)
 {
 	t_nodes	*tokens;

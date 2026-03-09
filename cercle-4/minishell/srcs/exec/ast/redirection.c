@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 22:20:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:20:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Validate a textual file descriptor used by a redirection node.
+ * @param str Candidate descriptor string from the parsed AST arguments.
+ * @return 1 when the string is a valid non-negative descriptor, else 0.
+ */
 static int	is_valid_fd(const char *str)
 {
 	char	*endptr;
@@ -25,6 +30,12 @@ static int	is_valid_fd(const char *str)
 	return (1);
 }
 
+/**
+ * @brief Open the file targeted by a redirection AST node.
+ * @param node Redirection node containing the filename and token type.
+ * @param fd Output slot receiving the opened descriptor on success.
+ * @return 0 on success, 1 when the target cannot be opened.
+ */
 static int	open_redirection_file(t_ast *node, int *fd)
 {
 	struct stat	target_st;
@@ -52,6 +63,11 @@ static int	open_redirection_file(t_ast *node, int *fd)
 	return (0);
 }
 
+/**
+ * @brief Select the descriptor replaced by a redirection node.
+ * @param node Redirection AST node containing optional explicit fd text.
+ * @return Target descriptor, or -1 when the explicit fd is invalid.
+ */
 static int	get_target_fd(t_ast *node)
 {
 	int	target_fd;
@@ -68,6 +84,13 @@ static int	get_target_fd(t_ast *node)
 	return (target_fd);
 }
 
+/**
+ * @brief Install an opened redirection descriptor onto its target fd.
+ * @param target_fd Descriptor that must be replaced for command execution.
+ * @param fd Open file descriptor backing the redirection.
+ * @param save_fd Output slot receiving the saved original descriptor.
+ * @return 0 on success, 1 when dup or dup2 fails.
+ */
 static int	setup_redirection(int target_fd, int fd, int *save_fd)
 {
 	*save_fd = dup(target_fd);
@@ -87,6 +110,12 @@ static int	setup_redirection(int target_fd, int fd, int *save_fd)
 	return (0);
 }
 
+/**
+ * @brief Execute the command wrapped by a single redirection AST node.
+ * @param node Redirection node whose left branch is the wrapped command.
+ * @param state Active shell state passed to recursive execution.
+ * @return Exit status of the wrapped command, or 1 on redirection failure.
+ */
 int	exec_redirection(t_ast *node, t_shell_state *state)
 {
 	int	fd;

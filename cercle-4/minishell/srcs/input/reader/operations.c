@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 07:09:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/25 22:21:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:40:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+/**
+ * @brief Return the static table of continuation operators and delimiters.
+ * @return Pointer to the static operator definition array.
+ */
 t_op_def	*get_ops(void)
 {
 	static t_op_def	ops[] = {
@@ -29,6 +33,12 @@ t_op_def	*get_ops(void)
 	return (ops);
 }
 
+/**
+ * @brief Resolve one operator definition from its continuation code.
+ * @param ops Operator definition table to search.
+ * @param code Continuation code returned by the extender logic.
+ * @return Pointer to the matching operator definition, or NULL.
+ */
 t_op_def	*ext_get_op_def(t_op_def *ops, char code)
 {
 	int	i;

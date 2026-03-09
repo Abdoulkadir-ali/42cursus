@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:24:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Allocate a fresh token object for separator tokenization.
+ * @return Newly allocated token object, or NULL on allocation failure.
+ */
 static t_token	*alloc_token(void)
 {
 	t_token	*token;
@@ -25,6 +29,12 @@ static t_token	*alloc_token(void)
 	return (token);
 }
 
+/**
+ * @brief Dispatch separator tokenization based on the current input character.
+ * @param str Address of the scan cursor in the input string.
+ * @param token Token object populated by the selected handler.
+ * @return 0 on success, non-zero on failure or unknown separator.
+ */
 static int	dispatch_separator(char **str, t_token *token)
 {
 	if (**str == '|')
@@ -44,6 +54,11 @@ static int	dispatch_separator(char **str, t_token *token)
 	return (1);
 }
 
+/**
+ * @brief Tokenize one separator or operator from the current scan position.
+ * @param str Address of the scan cursor in the input string.
+ * @return Newly allocated token, or NULL on failure.
+ */
 t_token	*handle_separator(char **str)
 {
 	t_token	*token;

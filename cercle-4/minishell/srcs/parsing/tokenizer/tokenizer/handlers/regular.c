@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/21 04:41:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:24:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Tokenize `|` or `||` from the current scan position.
+ * @param str Address of the scan cursor in the input string.
+ * @param token Token object populated by this handler.
+ * @return Non-zero on allocation failure, otherwise 0.
+ */
 int	handle_pipe(char **str, t_token *token)
 {
 	if (*(*str + 1) == '|')
@@ -29,6 +35,13 @@ int	handle_pipe(char **str, t_token *token)
 	return (token->value == NULL);
 }
 
+/**
+ * @brief Tokenize one parenthesis from the current scan position.
+ * @param str Address of the scan cursor in the input string.
+ * @param token Token object populated by this handler.
+ * @param left Non-zero for `(`, zero for `)`.
+ * @return Non-zero on allocation failure, otherwise 0.
+ */
 int	handle_paren(char **str, t_token *token, int left)
 {
 	if (left)
@@ -40,6 +53,12 @@ int	handle_paren(char **str, t_token *token, int left)
 	return (token->value == NULL);
 }
 
+/**
+ * @brief Tokenize `&` or `&&` from the current scan position.
+ * @param str Address of the scan cursor in the input string.
+ * @param token Token object populated by this handler.
+ * @return Non-zero on allocation failure, otherwise 0.
+ */
 int	handle_ampersand(char **str, t_token *token)
 {
 	if (*(*str + 1) == '&')
@@ -57,6 +76,12 @@ int	handle_ampersand(char **str, t_token *token)
 	return (token->value == NULL);
 }
 
+/**
+ * @brief Tokenize `<`, `<<`, or `<<<` from the current scan position.
+ * @param str Address of the scan cursor in the input string.
+ * @param token Token object populated by this handler.
+ * @return Non-zero on allocation failure, otherwise 0.
+ */
 int	handle_red_in(char **str, t_token *token)
 {
 	if (*(*str + 1) == '<')

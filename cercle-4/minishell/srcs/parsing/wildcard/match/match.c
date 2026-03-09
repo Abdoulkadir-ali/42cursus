@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:31:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:26:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Scan one directory stream and collect entries that match a pattern.
+ * @param dir Open directory stream positioned at the start of the scan.
+ * @param pat_copy Normalized wildcard pattern.
+ * @param require_dir Non-zero when only directory matches are accepted.
+ * @return Linked list of collected filenames, or NULL when no match is stored.
+ */
 t_nodes	*process_directory(DIR *dir, char *pat_copy, int require_dir)
 {
 	t_nodes			*files;
@@ -32,6 +39,12 @@ t_nodes	*process_directory(DIR *dir, char *pat_copy, int require_dir)
 	return (files);
 }
 
+/**
+ * @brief Prepare a pattern and collect every directory entry that matches it.
+ * @param dir Open directory stream used for enumeration.
+ * @param pattern Raw wildcard pattern from the caller.
+ * @return Linked list of collected filenames, or NULL on failure.
+ */
 t_nodes	*collect_matches(DIR *dir, char *pattern)
 {
 	char	*pat_copy;

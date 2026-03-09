@@ -1,17 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   base_path.c                                        :+:      :+:    :+:   */
+/*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Duplicate an absolute cd target and record its leading slashes.
+ * @param path Absolute path supplied to cd.
+ * @param leading_slashes Output flag for slash preservation rules.
+ * @return Newly allocated duplicate of the absolute path.
+ */
 static char	*handle_absolute_path(const char *path, int *leading_slashes)
 {
 	int		count;
@@ -30,6 +36,13 @@ static char	*handle_absolute_path(const char *path, int *leading_slashes)
 	return (base);
 }
 
+/**
+ * @brief Build a logical base path by joining the argument with PWD.
+ * @param path Relative path supplied to cd.
+ * @param state Shell state used to read PWD.
+ * @param leading_slashes Output flag for preserved leading slashes.
+ * @return Newly allocated joined path, or NULL when PWD is unavailable.
+ */
 static char	*handle_relative_with_pwd(const char *path, t_shell_state *state,
 		int *leading_slashes)
 {
@@ -49,6 +62,12 @@ static char	*handle_relative_with_pwd(const char *path, t_shell_state *state,
 	return (base);
 }
 
+/**
+ * @brief Build a logical base path by joining the argument with getcwd.
+ * @param path Relative path supplied to cd.
+ * @param leading_slashes Output flag for preserved leading slashes.
+ * @return Newly allocated joined path, or NULL when getcwd fails.
+ */
 static char	*handle_relative_with_cwd(const char *path, int *leading_slashes)
 {
 	char	*base;
@@ -71,6 +90,13 @@ static char	*handle_relative_with_cwd(const char *path, int *leading_slashes)
 	return (base);
 }
 
+/**
+ * @brief Build the base path later normalized by the logical cd helpers.
+ * @param path Raw path argument selected for cd.
+ * @param state Shell state used to inspect the current directory.
+ * @param leading_slashes Output count of preserved leading slashes.
+ * @return Newly allocated base path used by logical normalization.
+ */
 char	*build_base_path(const char *path, t_shell_state *state,
 		int *leading_slashes)
 {

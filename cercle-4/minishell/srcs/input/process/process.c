@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:38:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+/**
+ * @brief Tokenize one input line and reject it on syntax failure.
+ * @param line Raw command line received from the input layer.
+ * @param state Active shell state used for status propagation.
+ * @return Token list on success, or NULL on tokenization or syntax failure.
+ */
 static t_nodes	*tokenize_and_check(char *line, t_shell_state *state)
 {
 	t_nodes	*tokens;
@@ -34,6 +40,12 @@ static t_nodes	*tokenize_and_check(char *line, t_shell_state *state)
 	return (tokens);
 }
 
+/**
+ * @brief Detach one semicolon-delimited segment from the token stream.
+ * @param cursor Current token node where segment extraction starts.
+ * @param pnext Output slot receiving the next segment start.
+ * @return Head of the extracted segment token list.
+ */
 static t_nodes	*extract_segment(t_nodes *cursor, t_nodes **pnext)
 {
 	t_nodes	*segment;
@@ -48,6 +60,12 @@ static t_nodes	*extract_segment(t_nodes *cursor, t_nodes **pnext)
 	return (segment);
 }
 
+/**
+ * @brief Expand one segment, abort on expansion errors, then execute it.
+ * @param segment Semicolon-delimited token list for one command segment.
+ * @param state Active shell state used by expansion and execution.
+ * @return 1 when the segment is discarded on expansion failure, else 0.
+ */
 static int	process_segment_internal(t_nodes *segment, t_shell_state *state)
 {
 	if (expand_and_check_error(&segment, state, &state->exit_code))
@@ -56,6 +74,12 @@ static int	process_segment_internal(t_nodes *segment, t_shell_state *state)
 	return (0);
 }
 
+/**
+ * @brief Iterate over all semicolon-separated segments in one token list.
+ * @param tokens Token list produced from one input line.
+ * @param state Active shell state used during segment handling.
+ * @return This function does not return a value.
+ */
 static void	process_segments(t_nodes *tokens, t_shell_state *state)
 {
 	t_nodes	*cursor;
@@ -80,6 +104,12 @@ static void	process_segments(t_nodes *tokens, t_shell_state *state)
 	}
 }
 
+/**
+ * @brief Process one raw command line through tokenization and execution.
+ * @param line Raw command line from the input reader.
+ * @param state Active shell state shared across the shell session.
+ * @return This function does not return a value.
+ */
 void	process_input(char *line, t_shell_state *state)
 {
 	t_nodes	*tokens;

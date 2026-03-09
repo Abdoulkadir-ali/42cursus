@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Parse repeated `-n` options accepted by echo.
+ * @param args Argument vector passed to the builtin.
+ * @param newline Output flag cleared when `-n` is present.
+ * @return Index of the first non-option argument.
+ */
 static int	parse_echo_options(char **args, int *newline)
 {
 	int	i;
@@ -35,6 +41,12 @@ static int	parse_echo_options(char **args, int *newline)
 	return (i);
 }
 
+/**
+ * @brief Print echo arguments separated by a single space.
+ * @param args Argument vector passed to the builtin.
+ * @param start Index of the first argument that must be printed.
+ * @return This function does not return a value.
+ */
 static void	print_echo_args(char **args, int start)
 {
 	while (args[start])
@@ -46,6 +58,12 @@ static void	print_echo_args(char **args, int start)
 	}
 }
 
+/**
+ * @brief Execute the echo builtin with support for repeated `-n` flags.
+ * @param args Argument vector for the echo command.
+ * @param state Unused shell state.
+ * @return Always returns 0.
+ */
 int	ft_echo(char **args, t_shell_state *state)
 {
 	int	newline;

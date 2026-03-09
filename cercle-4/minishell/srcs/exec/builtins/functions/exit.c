@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:58:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Parse the numeric status passed to the exit builtin.
+ * @param arg Raw textual status argument.
+ * @return Parsed status value.
+ */
 static long long	parse_exit_argument(const char *arg)
 {
 	int			error;
@@ -36,6 +41,13 @@ static long long	parse_exit_argument(const char *arg)
 	return (val);
 }
 
+/**
+ * @brief Resolve the exit status requested by the builtin arguments.
+ * @param args Argument vector passed to the exit builtin.
+ * @param status Output slot receiving the selected status.
+ * @param state Shell state used for the default exit code.
+ * @return Always returns 0 after storing the status.
+ */
 static int	get_exit_status(char **args, long long *status,
 		t_shell_state *state)
 {
@@ -54,6 +66,12 @@ static int	get_exit_status(char **args, long long *status,
 	return (0);
 }
 
+/**
+ * @brief Terminate the shell with the status selected by builtin parsing.
+ * @param args Argument vector passed to the exit builtin.
+ * @param state Active shell state containing the last exit code.
+ * @return This function does not normally return because it exits.
+ */
 int	ft_exit(char **args, t_shell_state *state)
 {
 	long long	status;

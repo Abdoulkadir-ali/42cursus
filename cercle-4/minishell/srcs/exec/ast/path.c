@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 22:20:39 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:21:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Reject a resolved executable path when it targets a directory.
+ * @param path Candidate path returned by the PATH lookup.
+ * @return The original path or NULL when the path is a directory.
+ */
 static char	*validate_and_return(char *path)
 {
 	struct stat	st;
@@ -24,6 +29,12 @@ static char	*validate_and_return(char *path)
 	return (path);
 }
 
+/**
+ * @brief Build and validate one executable candidate from a PATH entry.
+ * @param dir Directory entry extracted from PATH.
+ * @param cmd Command name to append to the directory.
+ * @return Newly allocated executable path, or NULL when invalid.
+ */
 static char	*try_path(char *dir, char *cmd)
 {
 	char		*temp;
@@ -48,6 +59,12 @@ static char	*try_path(char *dir, char *cmd)
 	return (NULL);
 }
 
+/**
+ * @brief Search PATH entries until one executable match is found.
+ * @param cmd Command name requested by the simple command executor.
+ * @param path_env Raw PATH variable value.
+ * @return Newly allocated executable path, or NULL when none match.
+ */
 static char	*find_executable_in_paths(char *cmd, char *path_env)
 {
 	char	*start;
@@ -74,6 +91,12 @@ static char	*find_executable_in_paths(char *cmd, char *path_env)
 	return (NULL);
 }
 
+/**
+ * @brief Resolve a command name into the executable path to run.
+ * @param cmd Command token from the AST simple-command node.
+ * @param state Shell state used to read the PATH environment variable.
+ * @return Newly allocated executable path, or NULL when not found.
+ */
 char	*find_path(char *cmd, t_shell_state *state)
 {
 	char	*path_env;

@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:32:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Reject unsupported cd invocations with too many operands.
+ * @param args Argument vector passed to the cd builtin.
+ * @return 1 when the invocation is invalid, else 0.
+ */
 static int	validate_cd_args(char **args)
 {
 	if (args[1] && args[2])
@@ -22,6 +27,12 @@ static int	validate_cd_args(char **args)
 	return (0);
 }
 
+/**
+ * @brief Execute the cd builtin using the selected target path.
+ * @param args Argument vector passed to cd.
+ * @param state Active shell state whose directory variables are updated.
+ * @return Builtin status for the directory change request.
+ */
 int	ft_cd(char **args, t_shell_state *state)
 {
 	char	*path;
@@ -37,6 +48,10 @@ int	ft_cd(char **args, t_shell_state *state)
 	return (rc);
 }
 
+/**
+ * @brief Duplicate the current working directory using getcwd.
+ * @return Newly allocated current directory, or an empty string on failure.
+ */
 char	*get_cwd_dup(void)
 {
 	char	cwd[1024];
@@ -46,6 +61,11 @@ char	*get_cwd_dup(void)
 	return (ft_strdup(""));
 }
 
+/**
+ * @brief Resolve the home directory used by cd with no explicit operand.
+ * @param state Shell state used to inspect HOME.
+ * @return Newly allocated home path, or NULL when no home is available.
+ */
 char	*resolve_home(t_shell_state *state)
 {
 	char			*path;

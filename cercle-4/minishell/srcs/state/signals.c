@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 22:32:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:32:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:43:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 int			g_last_signal = 0;
 
+/**
+ * @brief Handle interactive-mode signals while readline owns the terminal.
+ * @param sig Signal number delivered to the shell process.
+ * @return This function does not return a value.
+ */
 static void	handle_interactive(int sig)
 {
 	if (sig == SIGINT)
@@ -26,6 +31,11 @@ static void	handle_interactive(int sig)
 	}
 }
 
+/**
+ * @brief Handle heredoc-mode signals during blocking heredoc reads.
+ * @param sig Signal number delivered to the shell process.
+ * @return This function does not return a value.
+ */
 static void	handle_heredoc(int sig)
 {
 	if (sig == SIGINT)
@@ -35,6 +45,11 @@ static void	handle_heredoc(int sig)
 	}
 }
 
+/**
+ * @brief Install one signal-handling mode for the shell process.
+ * @param handler SIGINT handler used for the requested runtime mode.
+ * @return This function does not return a value.
+ */
 static void	setup_signal_mode(void (*handler)(int))
 {
 	struct sigaction	sa;
@@ -48,6 +63,12 @@ static void	setup_signal_mode(void (*handler)(int))
 	rl_event_hook = NULL;
 }
 
+/**
+ * @brief Switch the shell signal behavior to the requested runtime mode.
+ * @param mode One of the defined signal modes for interactive, blocking, or
+ * heredoc execution.
+ * @return This function does not return a value.
+ */
 void	setup_signals(int mode)
 {
 	if (mode == SIGNAL_INTERACTIVE)

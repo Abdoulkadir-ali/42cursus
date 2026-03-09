@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 04:46:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:18:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Flush the current split word into the output token list.
+ * @param out Expansion output buffers and token-list accumulator.
+ * @return This function does not return a value.
+ */
 static void	flush_token(t_exp_output *out)
 {
 	if (out->word && *out->word)
@@ -21,6 +26,12 @@ static void	flush_token(t_exp_output *out)
 	}
 }
 
+/**
+ * @brief Split an expanded value on unquoted whitespace into output tokens.
+ * @param val Newly allocated expansion value.
+ * @param out Expansion output buffers and token-list accumulator.
+ * @return This function does not return a value.
+ */
 void	process_val_split(char *val, t_exp_output *out)
 {
 	int	k;

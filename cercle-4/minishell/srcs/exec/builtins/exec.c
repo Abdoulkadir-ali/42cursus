@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:32:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Check whether a command name should run through builtin dispatch.
+ * @param cmd Command name from the parsed argument vector.
+ * @param args Full argv used for special builtin cases such as env.
+ * @return 1 when the command is handled internally, else 0.
+ */
 int	is_builtin(char *cmd, char **args)
 {
 	int					i;
@@ -34,6 +40,11 @@ int	is_builtin(char *cmd, char **args)
 	return (0);
 }
 
+/**
+ * @brief Implement the minimal error handling for the `.` builtin.
+ * @param args Argument vector passed to builtin dispatch.
+ * @return Shell status for the dot builtin validation step.
+ */
 static int	exec_dot_builtin(char **args)
 {
 	if (!args[1])
@@ -45,6 +56,12 @@ static int	exec_dot_builtin(char **args)
 	return (0);
 }
 
+/**
+ * @brief Dispatch a builtin command through the registered builtin table.
+ * @param args Full argument vector for the builtin command.
+ * @param state Active shell state passed to the builtin implementation.
+ * @return Status code returned by the selected builtin.
+ */
 int	exec_builtin(char **args, t_shell_state *state)
 {
 	int					i;

@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:22:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Build the final KEY=VALUE entry used by export append mode.
+ * @param ctx Export parsing context containing the parsed key and suffix.
+ * @return Newly allocated environment entry.
+ */
 char	*create_appended_entry(t_export_ctx *ctx)
 {
 	char	*real_entry;
@@ -24,6 +29,12 @@ char	*create_appended_entry(t_export_ctx *ctx)
 	return (real_entry);
 }
 
+/**
+ * @brief Append a new entry to an environment array without shell-state sync.
+ * @param envp Address of the environment array being extended.
+ * @param new_entry Newly allocated environment entry.
+ * @return This function does not return a value.
+ */
 void	push_new_env_entry(char ***envp, char *new_entry)
 {
 	int		count;
@@ -39,6 +50,12 @@ void	push_new_env_entry(char ***envp, char *new_entry)
 	*envp = new_env;
 }
 
+/**
+ * @brief Update an already existing environment variable during export.
+ * @param ctx Export parsing context with the resolved index.
+ * @param envp Address of the environment array being updated.
+ * @return Always returns 0.
+ */
 int	process_existing_export(t_export_ctx *ctx, char ***envp)
 {
 	update_existing_env(*envp, ctx);
@@ -46,6 +63,12 @@ int	process_existing_export(t_export_ctx *ctx, char ***envp)
 	return (0);
 }
 
+/**
+ * @brief Add a new variable to the environment during export.
+ * @param ctx Export parsing context describing the new variable.
+ * @param envp Address of the environment array being extended.
+ * @return Always returns 0.
+ */
 int	process_new_export(t_export_ctx *ctx, char ***envp)
 {
 	char	*real_entry;

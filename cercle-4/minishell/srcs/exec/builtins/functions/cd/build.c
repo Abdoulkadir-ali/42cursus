@@ -1,17 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   build_path.c                                       :+:      :+:    :+:   */
+/*   build.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:24:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Free a component stack allocated during path normalization.
+ * @param stack Array of directory component strings.
+ * @param count Number of valid entries stored in the stack.
+ * @return This function does not return a value.
+ */
 static void	free_stack(char **stack, int count)
 {
 	int	i;
@@ -22,6 +28,13 @@ static void	free_stack(char **stack, int count)
 	free(stack);
 }
 
+/**
+ * @brief Compute the final string length for a normalized path.
+ * @param stack Array of normalized directory components.
+ * @param count Number of valid components in the stack.
+ * @param leading_slashes Number of leading slashes to preserve.
+ * @return Total string length excluding the trailing null byte.
+ */
 static size_t	calc_len(char **stack, int count, int leading_slashes)
 {
 	size_t	len;
@@ -41,6 +54,14 @@ static size_t	calc_len(char **stack, int count, int leading_slashes)
 	return (len);
 }
 
+/**
+ * @brief Copy normalized components into the destination path buffer.
+ * @param res Destination buffer sized for the normalized path.
+ * @param stack Array of normalized directory components.
+ * @param count Number of valid components in the stack.
+ * @param leading_slashes Number of leading slashes to preserve.
+ * @return This function does not return a value.
+ */
 static void	fill_path(char *res, char **stack, int count, int leading_slashes)
 {
 	char	*ptr;
@@ -67,6 +88,13 @@ static void	fill_path(char *res, char **stack, int count, int leading_slashes)
 	*ptr = '\0';
 }
 
+/**
+ * @brief Build the final normalized path string from collected components.
+ * @param stack Array of normalized directory components.
+ * @param count Number of valid components in the stack.
+ * @param leading_slashes Number of leading slashes to preserve.
+ * @return Newly allocated normalized path, or NULL on allocation failure.
+ */
 char	*build_path_from_stack(char **stack, int count, int leading_slashes)
 {
 	char	*res;

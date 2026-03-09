@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:05:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/03/06 02:31:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:59:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Count positional command arguments while skipping redirection payloads.
+ * @param tokens Token list representing one simple command region.
+ * @return Number of `TOKEN_WORD` arguments belonging to the command.
+ */
 static int	count_cmd_args(t_nodes *tokens)
 {
 	t_nodes	*curr;
@@ -30,6 +35,12 @@ static int	count_cmd_args(t_nodes *tokens)
 	return (count);
 }
 
+/**
+ * @brief Copy command arguments into the argv array stored on the AST node.
+ * @param tokens Token list representing one simple command region.
+ * @param args Destination argv array already sized for all command words.
+ * @return This function does not return a value.
+ */
 static void	fill_cmd_args(t_nodes *tokens, char **args)
 {
 	t_nodes	*curr;
@@ -52,6 +63,12 @@ static void	fill_cmd_args(t_nodes *tokens, char **args)
 		args[i] = NULL;
 }
 
+/**
+ * @brief Copy the quote state of the first command word into the AST node.
+ * @param node AST node describing the simple command.
+ * @param tokens Token list used to locate the first command word.
+ * @return This function does not return a value.
+ */
 static void	set_cmd_quoted_state(t_ast *node, t_nodes *tokens)
 {
 	t_nodes	*curr;
@@ -76,6 +93,11 @@ static void	set_cmd_quoted_state(t_ast *node, t_nodes *tokens)
 	}
 }
 
+/**
+ * @brief Build a simple-command AST node and wrap its redirections.
+ * @param tokens Token list representing one simple command.
+ * @return Root AST node for the command or its redirection chain.
+ */
 static t_ast	*handle_simple_cmd(t_nodes *tokens)
 {
 	char	**args;
@@ -99,6 +121,11 @@ static t_ast	*handle_simple_cmd(t_nodes *tokens)
 	return (node);
 }
 
+/**
+ * @brief Select whether a token list becomes a command node or subshell node.
+ * @param tokens Token list representing one AST leaf region.
+ * @return Root AST node for the parsed command or subshell.
+ */
 t_ast	*create_cmd_node(t_nodes *tokens)
 {
 	t_nodes	*curr;

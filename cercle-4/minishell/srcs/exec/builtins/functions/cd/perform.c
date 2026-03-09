@@ -1,17 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd_perform.c                                       :+:      :+:    :+:   */
+/*   perform.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 02:31:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Capture the old working directory before changing directories.
+ * @param state Shell state used to inspect PWD.
+ * @return Newly allocated previous working directory string.
+ */
 static char	*get_oldpwd(t_shell_state *state)
 {
 	char	*oldpwd;
@@ -24,6 +29,12 @@ static char	*get_oldpwd(t_shell_state *state)
 	return (oldpwd);
 }
 
+/**
+ * @brief Change directory using the logical normalized path when possible.
+ * @param path Requested cd target path.
+ * @param state Shell state used for logical normalization.
+ * @return Result of chdir.
+ */
 static int	change_directory(char *path, t_shell_state *state)
 {
 	char	*norm_path;
@@ -38,6 +49,13 @@ static int	change_directory(char *path, t_shell_state *state)
 	return (rc);
 }
 
+/**
+ * @brief Report a cd failure and release temporary directory strings.
+ * @param path Original path requested by the user.
+ * @param oldpwd Saved previous working directory.
+ * @param norm_path Extra normalized path to release when provided.
+ * @return Always returns 1.
+ */
 static int	handle_cd_error(char *path, char *oldpwd, char *norm_path)
 {
 	ft_puterror("cd: %s: ", path);
@@ -47,6 +65,12 @@ static int	handle_cd_error(char *path, char *oldpwd, char *norm_path)
 	return (1);
 }
 
+/**
+ * @brief Compute the new PWD value after a successful directory change.
+ * @param path Requested cd target path.
+ * @param state Shell state used for logical normalization.
+ * @return Newly allocated directory string for the updated PWD value.
+ */
 static char	*get_newpwd(char *path, t_shell_state *state)
 {
 	char	cwd[1024];
@@ -63,6 +87,12 @@ static char	*get_newpwd(char *path, t_shell_state *state)
 	return (newpwd);
 }
 
+/**
+ * @brief Perform the directory change and update PWD and OLDPWD.
+ * @param path Requested cd target path.
+ * @param state Active shell state whose environment is updated.
+ * @return 0 on success, 1 when chdir fails.
+ */
 int	perform_cd(char *path, t_shell_state *state)
 {
 	char	*oldpwd;

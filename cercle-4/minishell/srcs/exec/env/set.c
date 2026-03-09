@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:22:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Build one environment entry string from a key and optional value.
+ * @param key Environment variable name.
+ * @param value Optional value appended after `=`.
+ * @return Newly allocated KEY=VALUE string, or NULL on allocation failure.
+ */
 static char	*make_new_entry(char *key, char *value)
 {
 	char	*entry;
@@ -29,6 +35,14 @@ static char	*make_new_entry(char *key, char *value)
 	return (entry);
 }
 
+/**
+ * @brief Replace one existing environment entry in place.
+ * @param envp Address of the environment array being updated.
+ * @param idx Index of the entry that must be replaced.
+ * @param new_entry Newly allocated replacement entry.
+ * @param state Shell state that tracks the active environment pointer.
+ * @return This function does not return a value.
+ */
 static void	replace_env_at(char ***envp, int idx, char *new_entry,
 		t_shell_state *state)
 {
@@ -38,6 +52,13 @@ static void	replace_env_at(char ***envp, int idx, char *new_entry,
 		state->envp = *envp;
 }
 
+/**
+ * @brief Append one new environment entry to the environment array.
+ * @param envp Address of the environment array being extended.
+ * @param new_entry Newly allocated entry appended to the array.
+ * @param state Shell state that tracks the active environment pointer.
+ * @return 0 on success, 1 on allocation failure.
+ */
 static int	append_env_entry(char ***envp, char *new_entry,
 		t_shell_state *state)
 {
@@ -57,6 +78,12 @@ static int	append_env_entry(char ***envp, char *new_entry,
 	return (0);
 }
 
+/**
+ * @brief Find the index of one environment key in the active env array.
+ * @param key Environment variable name to search for.
+ * @param state Shell state providing the environment array.
+ * @return Matching index, or -1 when the key is absent.
+ */
 int	get_env_index(char *key, t_shell_state *state)
 {
 	int	i;
@@ -74,6 +101,13 @@ int	get_env_index(char *key, t_shell_state *state)
 	return (-1);
 }
 
+/**
+ * @brief Insert or replace one environment variable in shell state.
+ * @param key Environment variable name.
+ * @param value Optional value stored after `=`.
+ * @param state Shell state whose environment must be updated.
+ * @return 0 on success, 1 when the update cannot be completed.
+ */
 int	ft_set_env(char *key, char *value, t_shell_state *state)
 {
 	char	*new_entry;

@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:18:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Handle backslashes that appear inside double quotes.
+ * @param in Expansion input cursor.
+ * @param out Expansion output buffers.
+ * @return 1 when the backslash was consumed here, otherwise 0.
+ */
 static int	handle_dq_backslash(t_exp_input *in, t_exp_output *out)
 {
 	char	next;
@@ -26,6 +32,13 @@ static int	handle_dq_backslash(t_exp_input *in, t_exp_output *out)
 	return (0);
 }
 
+/**
+ * @brief Consume a backslash escape and append the escaped character.
+ * @param in Expansion input cursor.
+ * @param st Expansion quote state.
+ * @param out Expansion output buffers.
+ * @return Always returns 1 after consuming the escape sequence.
+ */
 static int	consume_backslash(t_exp_input *in, t_exp_state *st,
 		t_exp_output *out)
 {
@@ -44,6 +57,13 @@ static int	consume_backslash(t_exp_input *in, t_exp_state *st,
 	return (1);
 }
 
+/**
+ * @brief Process one backslash according to the current quote context.
+ * @param in Expansion input cursor.
+ * @param st Expansion quote state.
+ * @param out Expansion output buffers.
+ * @return 1 when a backslash sequence was handled, otherwise 0.
+ */
 int	handle_backslash_split(t_exp_input *in, t_exp_state *st, t_exp_output *out)
 {
 	if (in->str[in->pos] != '\\' || st->in_s_quote)

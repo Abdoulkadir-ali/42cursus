@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 07:09:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:12:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:39:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+/**
+ * @brief Detect unmatched quote or parenthesis state in one input line.
+ * @param s Input line being analyzed for continuation.
+ * @return Quote character, `p` for open parenthesis depth, or 0.
+ */
 static char	check_pairs_state(char *s)
 {
 	char	quote;
@@ -28,6 +33,11 @@ static char	check_pairs_state(char *s)
 	return (0);
 }
 
+/**
+ * @brief Analyze one line and decide whether multiline extension is needed.
+ * @param line Current input line.
+ * @return Continuation code describing the missing closing construct, or 0.
+ */
 char	ext_analyze_input(char *line)
 {
 	char		state_code;

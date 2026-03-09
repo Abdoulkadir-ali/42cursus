@@ -6,18 +6,28 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 13:36:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Handle `export` with no arguments by printing the sorted environment.
+ * @param state Shell state providing the environment array.
+ * @return Always returns 0.
+ */
 static int	handle_export_no_args(t_shell_state *state)
 {
 	print_sorted_env(state->envp);
 	return (0);
 }
 
+/**
+ * @brief Report an unsupported export option and print usage.
+ * @param arg Invalid option token passed to export.
+ * @return Shell usage error status 2.
+ */
 static int	handle_invalid_option(char *arg)
 {
 	char	opt[3];
@@ -35,6 +45,12 @@ static int	handle_invalid_option(char *arg)
 	return (2);
 }
 
+/**
+ * @brief Process each export operand and update the environment.
+ * @param args Argument vector passed to the export builtin.
+ * @param state Active shell state receiving variable updates.
+ * @return 0 on full success, 1 when at least one identifier is rejected.
+ */
 static int	process_export_args(char **args, t_shell_state *state)
 {
 	int	ret;
@@ -53,6 +69,12 @@ static int	process_export_args(char **args, t_shell_state *state)
 	return (ret);
 }
 
+/**
+ * @brief Execute the export builtin.
+ * @param args Argument vector for export.
+ * @param state Active shell state receiving environment changes.
+ * @return Builtin status for the requested export operation.
+ */
 int	ft_export(char **args, t_shell_state *state)
 {
 	if (!args[1])

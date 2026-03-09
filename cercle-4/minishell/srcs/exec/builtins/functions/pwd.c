@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:06:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Print the current working directory.
+ * @param args Unused builtin argument vector.
+ * @param state Shell state used as a fallback source for PWD.
+ * @return 0 on success, 1 when no directory can be reported.
+ */
 int	ft_pwd(char **args, t_shell_state *state)
 {
 	char	cwd[1024];

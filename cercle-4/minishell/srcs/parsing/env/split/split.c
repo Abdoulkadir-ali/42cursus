@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:18:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Finalize the current expansion result into a token list.
+ * @param out Expansion output buffers and token-list accumulator.
+ * @param st Expansion quote state.
+ * @return Head of the token list produced by expansion.
+ */
 static t_nodes	*finalize_expansion(t_exp_output *out, t_exp_state *st)
 {
 	if (out->word)
@@ -22,6 +28,11 @@ static t_nodes	*finalize_expansion(t_exp_output *out, t_exp_state *st)
 	return (out->head);
 }
 
+/**
+ * @brief Run the character-by-character split and expansion loop.
+ * @param exp Full expansion context containing input, state, and output.
+ * @return This function does not return a value.
+ */
 static void	run_expansion_loop(t_expansion *exp)
 {
 	while (exp->input.str[exp->input.pos])
@@ -43,6 +54,13 @@ static void	run_expansion_loop(t_expansion *exp)
 	}
 }
 
+/**
+ * @brief Expand one word into a token list with quote-aware field splitting.
+ * @param str Source word string.
+ * @param env Environment array used for expansion.
+ * @param status Last shell exit status.
+ * @return Head of the token list produced by expansion.
+ */
 t_nodes	*expand_and_split(char *str, char **env, int status)
 {
 	t_expansion	exp;

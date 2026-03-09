@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:06:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:43:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "state.h"
 
+/**
+ * @brief Duplicate the inherited environment into heap-owned storage.
+ * @param envp Environment array inherited from the parent process.
+ * @return Newly allocated environment copy, or NULL on allocation failure.
+ */
 static char	**duplicate_env_base(char **envp)
 {
 	int		env_count;
@@ -41,6 +46,13 @@ static char	**duplicate_env_base(char **envp)
 	return (heap_env);
 }
 
+/**
+ * @brief Initialize shell state and its owned environment copy.
+ * @param envp Environment array inherited from the parent process.
+ * @param heap_env Output slot receiving the duplicated environment.
+ * @param state Shell state structure initialized by this function.
+ * @return 0 on success, 1 on allocation failure.
+ */
 int	init_shell(char **envp, char ***heap_env, t_shell_state *state)
 {
 	*heap_env = duplicate_env_base(envp);
@@ -55,6 +67,12 @@ int	init_shell(char **envp, char ***heap_env, t_shell_state *state)
 	return (0);
 }
 
+/**
+ * @brief Look up one environment variable value by key.
+ * @param key Environment variable name without the trailing `=`.
+ * @param envp Environment array to search.
+ * @return Pointer to the value substring, or NULL when not found.
+ */
 char	*ft_get_env(const char *key, char **envp)
 {
 	int		i;

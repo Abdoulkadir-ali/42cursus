@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/25 23:15:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:24:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Extract the next quoted or unquoted chunk of a shell word.
+ * @param str Address of the scan cursor in the input string.
+ * @param quoted Output flag set when the chunk came from quotes.
+ * @return Newly allocated chunk string, or NULL on failure.
+ */
 static char	*get_chunk(char **str, int *quoted)
 {
 	char	*chunk;
@@ -37,6 +43,11 @@ static char	*get_chunk(char **str, int *quoted)
 	return (chunk);
 }
 
+/**
+ * @brief Skip the literal dollar in `$'` and `$"` word prefixes.
+ * @param str Address of the scan cursor in the input string.
+ * @return 1 when the prefix was consumed, otherwise 0.
+ */
 static int	skip_dollar_quote(char **str)
 {
 	if (**str == '$' && ((*str)[1] == '"' || (*str)[1] == '\''))
@@ -47,6 +58,12 @@ static int	skip_dollar_quote(char **str)
 	return (0);
 }
 
+/**
+ * @brief Concatenate one chunk onto the growing word buffer.
+ * @param acc Accumulated word string.
+ * @param chunk Newly allocated chunk to append.
+ * @return Newly allocated concatenated string.
+ */
 static char	*append_and_free(char *acc, char *chunk)
 {
 	char	*tmp;
@@ -57,6 +74,12 @@ static char	*append_and_free(char *acc, char *chunk)
 	return (tmp);
 }
 
+/**
+ * @brief Collect every chunk that belongs to the next shell word token.
+ * @param str Address of the scan cursor in the input string.
+ * @param quoted Output flag describing whether quotes were encountered.
+ * @return Newly allocated full word string, or NULL on failure.
+ */
 static char	*collect_word(char **str, int *quoted)
 {
 	char	*acc;
@@ -82,6 +105,11 @@ static char	*collect_word(char **str, int *quoted)
 	return (acc);
 }
 
+/**
+ * @brief Tokenize one shell word from the current scan position.
+ * @param str Address of the scan cursor in the input string.
+ * @return Newly allocated word token, or NULL on failure.
+ */
 t_token	*handle_word(char **str)
 {
 	t_token	*token;

@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 23:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Convert a raw waitpid status into the shell-visible exit code.
+ * @param status Raw status value returned by waitpid.
+ * @return Shell-compatible exit status, including signal offsets.
+ */
 int	handle_wait_status(int status)
 {
 	if (WIFEXITED(status))

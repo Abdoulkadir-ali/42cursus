@@ -1,17 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   extender_pairs.c                                   :+:      :+:    :+:   */
+/*   pairs.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:11:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:39:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+/**
+ * @brief Check whether the line ends inside a still-open quote context.
+ * @param s Input line being scanned.
+ * @return Open quote character when unmatched, otherwise 0.
+ */
 char	check_quote_state(const char *s)
 {
 	char	quote;
@@ -35,6 +40,11 @@ char	check_quote_state(const char *s)
 	return (quote);
 }
 
+/**
+ * @brief Compute the unmatched parenthesis depth outside quoted text.
+ * @param s Input line being scanned.
+ * @return Final parenthesis depth after scanning the full input line.
+ */
 int	check_parenthesis_state(const char *s)
 {
 	int		depth;

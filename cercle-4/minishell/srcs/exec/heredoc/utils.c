@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:48:38 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:27:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:26:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Expand a heredoc delimiter when quoting does not forbid it.
+ * @param delim Raw delimiter string.
+ * @param quoted Non-zero when the delimiter must stay literal.
+ * @param state Active shell state used for expansion.
+ * @return Expanded delimiter string, or the original delimiter pointer.
+ */
 char	*expand_delim(const char *delim, int quoted, t_shell_state *state)
 {
 	char	*expanded;
@@ -24,6 +31,11 @@ char	*expand_delim(const char *delim, int quoted, t_shell_state *state)
 	return ((char *)delim);
 }
 
+/**
+ * @brief Detect whether a delimiter contains a double quote.
+ * @param delim Raw delimiter string.
+ * @return 1 when a double quote is present, otherwise 0.
+ */
 static int	has_double_quote(const char *delim)
 {
 	int	i;
@@ -38,6 +50,12 @@ static int	has_double_quote(const char *delim)
 	return (0);
 }
 
+/**
+ * @brief Build the effective stop string used during heredoc comparison.
+ * @param delim Raw delimiter string.
+ * @param ctx Heredoc context carrying shell state.
+ * @return Newly allocated stop string used by the read loop.
+ */
 char	*prepare_stop_str(char *delim, t_heredoc *ctx)
 {
 	int		quoted;
@@ -64,6 +82,10 @@ char	*prepare_stop_str(char *delim, t_heredoc *ctx)
 	return (stop_str);
 }
 
+/**
+ * @brief Read one heredoc line when stdin is not attached to a tty.
+ * @return Newly allocated line without the trailing newline, or NULL on EOF.
+ */
 char	*heredoc_read_line_non_tty(void)
 {
 	char	*line;
@@ -78,6 +100,10 @@ char	*heredoc_read_line_non_tty(void)
 	return (line);
 }
 
+/**
+ * @brief Read one heredoc line from either readline or raw stdin.
+ * @return Newly allocated input line, or NULL on EOF.
+ */
 char	*heredoc_read_line(void)
 {
 	if (isatty(STDIN_FILENO))

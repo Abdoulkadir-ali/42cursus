@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:14:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/09 03:52:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:40:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+/**
+ * @brief Build the continuation prompt that matches the pending construct.
+ * @param code Continuation code returned by the extender analysis.
+ * @param ops Operator definition table used to resolve prompt labels.
+ * @return Newly allocated prompt string for the next input line.
+ */
 static char	*get_multiline_prompt(char code, t_op_def *ops)
 {
 	t_op_def	*def;
@@ -29,6 +35,13 @@ static char	*get_multiline_prompt(char code, t_op_def *ops)
 		return (ft_strdup(get_prompt(0)));
 }
 
+/**
+ * @brief Read one continuation line and append it to the current buffer.
+ * @param ls Line state containing the current buffer, code, and prompt.
+ * @param ops Operator definition table used for EOF diagnostics.
+ * @param state Active shell state used by the raw reader.
+ * @return Newly allocated combined line, or NULL on EOF or syntax failure.
+ */
 static char	*read_and_append_line(t_line_struct *ls, t_op_def *ops,
 		t_shell_state *state)
 {
@@ -55,6 +68,13 @@ static char	*read_and_append_line(t_line_struct *ls, t_op_def *ops,
 	return (temp);
 }
 
+/**
+ * @brief Prepare the continuation prompt, read one more line, and append it.
+ * @param ls Line state containing the current buffer and continuation code.
+ * @param ops Operator definition table used for prompt selection.
+ * @param state Active shell state used by the raw reader.
+ * @return Newly allocated combined line, or NULL on failure.
+ */
 static char	*read_next_line_and_append(t_line_struct *ls, t_op_def *ops,
 		t_shell_state *state)
 {
@@ -66,6 +86,12 @@ static char	*read_next_line_and_append(t_line_struct *ls, t_op_def *ops,
 	return (result);
 }
 
+/**
+ * @brief Keep reading continuation lines until the input becomes complete.
+ * @param line Initial input line already read from the user or stdin.
+ * @param state Active shell state used for error propagation.
+ * @return Final complete command line, or NULL on EOF or syntax failure.
+ */
 char	*handle_multiline_input(char *line, t_shell_state *state)
 {
 	char			code;

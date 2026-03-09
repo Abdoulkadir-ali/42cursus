@@ -1,17 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dollar_expand.c                                    :+:      :+:    :+:   */
+/*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 06:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 05:39:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:18:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Detect `$'` or `$"` outside quotes, which suppresses expansion.
+ * @param peek Lookahead information for the current dollar sign.
+ * @param st Expansion quote state.
+ * @return 1 when the next character is an unquoted quote, otherwise 0.
+ */
 static int	is_unquoted_quote(t_dollar_peek *peek, t_exp_state *st)
 {
 	int	b1;
@@ -24,6 +30,12 @@ static int	is_unquoted_quote(t_dollar_peek *peek, t_exp_state *st)
 	return (0);
 }
 
+/**
+ * @brief Detect cases where `$` must remain literal in token output mode.
+ * @param peek Lookahead information for the current dollar sign.
+ * @param st Expansion quote state.
+ * @return 1 when the target must not be expanded, otherwise 0.
+ */
 static int	is_bad_target(t_dollar_peek *peek, t_exp_state *st)
 {
 	if (!is_exp_target(peek->next) || st->in_s_quote || (peek->next == '"'
@@ -32,6 +44,14 @@ static int	is_bad_target(t_dollar_peek *peek, t_exp_state *st)
 	return (0);
 }
 
+/**
+ * @brief Expand a dollar expression when writing into a plain string buffer.
+ * @param in Expansion input cursor.
+ * @param st Expansion quote state.
+ * @param out Expansion output buffers.
+ * @param peek Lookahead information for the current dollar sign.
+ * @return Always returns 1 after handling the dollar sequence.
+ */
 int	expand_to_string(t_exp_input *in, t_exp_state *st, t_exp_output *out,
 		t_dollar_peek *peek)
 {
@@ -50,6 +70,14 @@ int	expand_to_string(t_exp_input *in, t_exp_state *st, t_exp_output *out,
 	return (1);
 }
 
+/**
+ * @brief Expand a dollar expression when building split token output.
+ * @param in Expansion input cursor.
+ * @param st Expansion quote state.
+ * @param out Expansion output buffers.
+ * @param peek Lookahead information for the current dollar sign.
+ * @return Always returns 1 after handling the dollar sequence.
+ */
 int	expand_to_tokens(t_exp_input *in, t_exp_state *st, t_exp_output *out,
 		t_dollar_peek *peek)
 {

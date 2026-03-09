@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 00:23:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:22:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Append data to an existing environment entry for `export VAR+=...`.
+ * @param envp Environment array containing the entry to update.
+ * @param ctx Export parsing context with the target index and suffix.
+ * @return This function does not return a value.
+ */
 static void	handle_append(char **envp, t_export_ctx *ctx)
 {
 	char	*joined;
@@ -30,12 +36,24 @@ static void	handle_append(char **envp, t_export_ctx *ctx)
 	free(ctx->new_entry);
 }
 
+/**
+ * @brief Replace an existing environment entry with a new export value.
+ * @param envp Environment array containing the entry to replace.
+ * @param ctx Export parsing context with the target index and new entry.
+ * @return This function does not return a value.
+ */
 static void	handle_replace(char **envp, t_export_ctx *ctx)
 {
 	free(envp[ctx->idx]);
 	envp[ctx->idx] = ctx->new_entry;
 }
 
+/**
+ * @brief Apply the export update rules to an existing environment entry.
+ * @param envp Environment array containing the matched key.
+ * @param ctx Export parsing context with append or replace metadata.
+ * @return This function does not return a value.
+ */
 void	update_existing_env(char **envp, t_export_ctx *ctx)
 {
 	if (!ctx->eq)
@@ -50,6 +68,12 @@ void	update_existing_env(char **envp, t_export_ctx *ctx)
 		handle_replace(envp, ctx);
 }
 
+/**
+ * @brief Process one export operand against the current shell environment.
+ * @param arg Raw export operand.
+ * @param state Shell state whose environment must be updated.
+ * @return 0 on success, 1 when the identifier is invalid.
+ */
 int	process_export_arg(char *arg, t_shell_state *state)
 {
 	t_export_ctx	ctx;

@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:15:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:25:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:40:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+/**
+ * @brief Append a continued line after removing the active trailing backslash.
+ * @param line Current accumulated input line.
+ * @param new_line Fresh continuation line.
+ * @param i Index of the trailing backslash to remove.
+ * @return Newly allocated concatenated line.
+ */
 static char	*append_with_backslash(char *line, char *new_line, int i)
 {
 	char	*result;
@@ -21,6 +28,12 @@ static char	*append_with_backslash(char *line, char *new_line, int i)
 	return (result);
 }
 
+/**
+ * @brief Append a continued line by inserting a literal newline first.
+ * @param line Current accumulated input line.
+ * @param new_line Fresh continuation line.
+ * @return Newly allocated concatenated line, or NULL on allocation failure.
+ */
 static char	*append_with_newline(char *line, char *new_line)
 {
 	char	*temp;
@@ -34,6 +47,13 @@ static char	*append_with_newline(char *line, char *new_line)
 	return (result);
 }
 
+/**
+ * @brief Merge one continuation line into the current accumulated input.
+ * @param line Current accumulated input line.
+ * @param new_line Fresh continuation line.
+ * @param code Continuation code that triggered the extra read.
+ * @return Newly allocated combined line, or NULL when inputs are missing.
+ */
 char	*append_line(char *line, char *new_line, char code)
 {
 	int	len;
@@ -51,6 +71,11 @@ char	*append_line(char *line, char *new_line, char code)
 		return (append_with_newline(line, new_line));
 }
 
+/**
+ * @brief Return the prompt string used by the reader layer.
+ * @param is_initial Non-zero for the main shell prompt, zero for fallback use.
+ * @return Prompt string, or NULL when stdin is not interactive.
+ */
 char	*get_prompt(int is_initial)
 {
 	if (!isatty(STDIN_FILENO))

@@ -6,17 +6,27 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 14:57:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:26:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Check whether a character is valid inside a variable name.
+ * @param c Character being inspected after a dollar sign.
+ * @return 1 for alphanumeric or underscore, otherwise 0.
+ */
 static int	is_var_char(char c)
 {
 	return (ft_isalnum(c) || c == '_');
 }
 
+/**
+ * @brief Run one expansion step while scanning a generic string.
+ * @param exp Expansion state holding input and output buffers.
+ * @return 1 when a handler consumed the current input, otherwise 0.
+ */
 static int	process_expand_char(t_expansion *exp)
 {
 	if (handle_backslash_split(&exp->input, &exp->state, &exp->output))
@@ -28,6 +38,13 @@ static int	process_expand_char(t_expansion *exp)
 	return (0);
 }
 
+/**
+ * @brief Expand shell syntax in a generic string.
+ * @param str Source string to expand.
+ * @param env Environment array used for variable lookup.
+ * @param status Last shell exit status used for `$?`.
+ * @return Newly allocated expanded string, or NULL on failure.
+ */
 char	*expand_string(char *str, char **env, int status)
 {
 	t_expansion	exp;
@@ -51,6 +68,13 @@ char	*expand_string(char *str, char **env, int status)
 	return (exp.output.str);
 }
 
+/**
+ * @brief Expand only heredoc-supported variables inside one line.
+ * @param str Source heredoc line.
+ * @param env Environment array used for variable lookup.
+ * @param status Last shell exit status used for `$?`.
+ * @return Newly allocated expanded line.
+ */
 char	*expand_heredoc(char *str, char **env, int status)
 {
 	char	*expanded;

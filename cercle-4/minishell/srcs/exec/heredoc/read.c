@@ -6,12 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 03:09:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:26:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Run the interactive heredoc read loop for one delimiter.
+ * @param delim Raw delimiter string attached to the heredoc.
+ * @param fd Destination descriptor receiving the heredoc body.
+ * @param state Active shell state passed to expansion helpers.
+ * @param is_quoted Non-zero when the delimiter disables line expansion.
+ * @return This function does not return a value.
+ */
 void	read_heredoc_loop(char *delim, int fd, t_shell_state *state,
 		int is_quoted)
 {
@@ -29,6 +37,11 @@ void	read_heredoc_loop(char *delim, int fd, t_shell_state *state,
 	free(stop_str);
 }
 
+/**
+ * @brief Report an unexpected EOF while reading a heredoc.
+ * @param stop_str Prepared stop string that was expected.
+ * @return This function does not return a value.
+ */
 void	handle_heredoc_eof(char *stop_str)
 {
 	const char	*error;
@@ -38,6 +51,14 @@ void	handle_heredoc_eof(char *stop_str)
 		ft_puterror("%s (wanted `%s')\n", error, stop_str);
 }
 
+/**
+ * @brief Route one heredoc line through quoted or unquoted processing.
+ * @param line Raw line read from the user or stdin.
+ * @param stop_str Prepared stop string.
+ * @param quoted Non-zero when delimiter quoting disables expansion.
+ * @param ctx Heredoc context carrying shell state and output fd.
+ * @return 1 when reading must stop, otherwise 0.
+ */
 int	process_heredoc_line(char *line, char *stop_str, int quoted, t_heredoc *ctx)
 {
 	if (quoted)
@@ -46,6 +67,13 @@ int	process_heredoc_line(char *line, char *stop_str, int quoted, t_heredoc *ctx)
 		return (process_line_unquoted(line, stop_str, ctx->fd, ctx));
 }
 
+/**
+ * @brief Read heredoc lines until EOF, signal, or delimiter match.
+ * @param stop_str Prepared stop string.
+ * @param quoted Non-zero when delimiter quoting disables expansion.
+ * @param ctx Heredoc context carrying shell state and output fd.
+ * @return This function does not return a value.
+ */
 void	read_heredoc_lines(char *stop_str, int quoted, t_heredoc *ctx)
 {
 	char	*line;

@@ -1,17 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   subshell.c                                         :+:      :+:    :+:   */
+/*   control.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 04:13:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Execute a subshell branch inside the forked child.
+ * @param node Subshell AST node whose left branch must run.
+ * @param state Active shell state passed to the executor.
+ * @return This function does not return. It exits with the branch status.
+ */
 static void	exec_subshell_child(t_ast *node, t_shell_state *state)
 {
 	int		status;
@@ -22,6 +28,11 @@ static void	exec_subshell_child(t_ast *node, t_shell_state *state)
 	exit(status);
 }
 
+/**
+ * @brief Wait for a subshell child and normalize its termination status.
+ * @param pid Process identifier returned by fork for the subshell.
+ * @return Shell-compatible exit status for the child process.
+ */
 static int	exec_subshell_parent(pid_t pid)
 {
 	int		status;
@@ -32,6 +43,12 @@ static int	exec_subshell_parent(pid_t pid)
 	return (handle_wait_status(status));
 }
 
+/**
+ * @brief Execute a subshell AST node in an isolated process.
+ * @param node AST node describing the subshell command group.
+ * @param state Active shell state shared by the executor.
+ * @return Exit status produced by the subshell execution.
+ */
 int	exec_subshell(t_ast *node, t_shell_state *state)
 {
 	pid_t	pid;
@@ -44,6 +61,13 @@ int	exec_subshell(t_ast *node, t_shell_state *state)
 	return (0);
 }
 
+/**
+ * @brief Execute a logical operator node with shell short-circuit rules.
+ * @param node AST node containing left and right command branches.
+ * @param state Active shell state passed through recursive execution.
+ * @param run_if_zero Non-zero for && semantics, zero for || semantics.
+ * @return Status of the last branch that was evaluated.
+ */
 int	exec_logical(t_ast *node, t_shell_state *state, int run_if_zero)
 {
 	int	left;

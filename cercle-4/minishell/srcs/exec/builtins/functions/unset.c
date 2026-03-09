@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Report an unsupported option passed to unset.
+ * @param opt Invalid option token.
+ * @return Shell usage error status 2.
+ */
 static int	ft_unset_handle_option(char *opt)
 {
 	ft_puterror("unset: %s: invalid option\n", opt);
@@ -19,6 +24,13 @@ static int	ft_unset_handle_option(char *opt)
 	return (2);
 }
 
+/**
+ * @brief Remove one environment entry from the shell environment array.
+ * @param envp Address of the environment array to rebuild.
+ * @param idx Index of the entry that must be removed.
+ * @param state Shell state keeping a pointer to the active environment.
+ * @return This function does not return a value.
+ */
 static void	ft_unset_remove_at(char ***envp, int idx, t_shell_state *state)
 {
 	int		count;
@@ -44,6 +56,12 @@ static void	ft_unset_remove_at(char ***envp, int idx, t_shell_state *state)
 		state->envp = *envp;
 }
 
+/**
+ * @brief Execute the unset builtin for each valid identifier argument.
+ * @param args Argument vector containing names to remove.
+ * @param state Active shell state whose environment is updated.
+ * @return Builtin status for the unset operation.
+ */
 int	ft_unset(char **args, t_shell_state *state)
 {
 	int	idx;

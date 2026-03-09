@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 19:49:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/26 02:07:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:24:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Tokenize `>`, `>>`, or `>|` from the current scan position.
+ * @param str Address of the scan cursor in the input string.
+ * @param token Token object populated by this handler.
+ * @return Non-zero on allocation failure, otherwise 0.
+ */
 int	handle_red_out(char **str, t_token *token)
 {
 	if (*(*str + 1) == '>')
@@ -35,6 +41,12 @@ int	handle_red_out(char **str, t_token *token)
 	return (token->value == NULL);
 }
 
+/**
+ * @brief Tokenize `;` or `;;` from the current scan position.
+ * @param str Address of the scan cursor in the input string.
+ * @param token Token object populated by this handler.
+ * @return Non-zero on allocation failure, otherwise 0.
+ */
 int	handle_semicolon(char **str, t_token *token)
 {
 	token->type = TOKEN_SEMICOLON;

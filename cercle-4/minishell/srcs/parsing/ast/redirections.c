@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/03/06 03:54:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:59:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Collect redirection tokens into a stack processed from right to left.
+ * @param stack Output stack of redirection token nodes.
+ * @param tokens Token list being scanned for redirections.
+ * @return This function does not return a value.
+ */
 static void	push_to_stack(t_nodes **stack, t_nodes *tokens)
 {
 	t_nodes	*curr;
@@ -33,6 +39,12 @@ static void	push_to_stack(t_nodes **stack, t_nodes *tokens)
 	}
 }
 
+/**
+ * @brief Build the argv-like payload stored on one redirection AST node.
+ * @param tok Redirection token that defines the node type.
+ * @param redir_token_node Token-list node pointing at the redirection token.
+ * @return Newly allocated redirection argument array.
+ */
 static char	**build_redir_args(t_token *tok, t_nodes *redir_token_node)
 {
 	char	**args;
@@ -60,6 +72,12 @@ static char	**build_redir_args(t_token *tok, t_nodes *redir_token_node)
 	return (args);
 }
 
+/**
+ * @brief Wrap the current command AST with one redirection AST node.
+ * @param cmd_node Address of the current command subtree root.
+ * @param redir_token_node Token-list node pointing at the redirection token.
+ * @return This function does not return a value.
+ */
 static void	apply_redir(t_ast **cmd_node, t_nodes *redir_token_node)
 {
 	t_token	*tok;
@@ -72,6 +90,12 @@ static void	apply_redir(t_ast **cmd_node, t_nodes *redir_token_node)
 	*cmd_node = redir_node;
 }
 
+/**
+ * @brief Wrap a command or subshell AST with every redirection in the tokens.
+ * @param cmd_node Existing command subtree to be wrapped.
+ * @param tokens Token list scanned for redirections.
+ * @return Root AST node after all redirections have been applied.
+ */
 t_ast	*process_redirections(t_ast *cmd_node, t_nodes *tokens)
 {
 	t_nodes	*stack;

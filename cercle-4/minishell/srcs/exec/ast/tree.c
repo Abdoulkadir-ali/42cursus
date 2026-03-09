@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 23:42:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Dispatch an AST node to the executor matching its token type.
+ * @param ast_node Node selected from the parsed command tree.
+ * @param state Active shell state shared across recursive execution.
+ * @return Exit status produced by the executed node.
+ */
 int	exec_tree(t_ast *ast_node, t_shell_state *state)
 {
 	if (!ast_node)

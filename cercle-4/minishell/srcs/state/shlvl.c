@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 00:23:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:43:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "state.h"
 
+/**
+ * @brief Find the existing `SHLVL` entry inside the environment array.
+ * @param heap_env Heap-owned environment array.
+ * @return Matching index, or -1 when `SHLVL` is absent.
+ */
 static int	find_shlvl_index(char **heap_env)
 {
 	int	i;
@@ -26,6 +31,11 @@ static int	find_shlvl_index(char **heap_env)
 	return (-1);
 }
 
+/**
+ * @brief Compute the next shell level value from the inherited one.
+ * @param existing_shlvl Parsed numeric value of the current `SHLVL`.
+ * @return Next shell level, wrapped to 1 when the value grows too large.
+ */
 static int	calculate_shlvl(int existing_shlvl)
 {
 	int	shlvl;
@@ -36,6 +46,11 @@ static int	calculate_shlvl(int existing_shlvl)
 	return (shlvl);
 }
 
+/**
+ * @brief Build the `SHLVL=` environment entry for a numeric level.
+ * @param shlvl Shell level that must be serialized.
+ * @return Newly allocated `SHLVL=<n>` string, or NULL on failure.
+ */
 static char	*make_shlvl_str(int shlvl)
 {
 	char	*num;
@@ -49,6 +64,13 @@ static char	*make_shlvl_str(int shlvl)
 	return (entry);
 }
 
+/**
+ * @brief Install the computed `SHLVL` entry into the environment array.
+ * @param heap_env Heap-owned environment array being updated.
+ * @param idx Existing `SHLVL` slot, or -1 when one must be appended.
+ * @param shlvl Shell level value that must be stored.
+ * @return This function does not return a value.
+ */
 static void	set_shlvl_entry(char **heap_env, int idx, int shlvl)
 {
 	char	*entry;
@@ -71,6 +93,11 @@ static void	set_shlvl_entry(char **heap_env, int idx, int shlvl)
 	}
 }
 
+/**
+ * @brief Ensure the shell environment contains an incremented `SHLVL`.
+ * @param heap_env Heap-owned environment array initialized for the shell.
+ * @return This function does not return a value.
+ */
 void	add_shlvl_to_env(char **heap_env)
 {
 	int	existing_idx;

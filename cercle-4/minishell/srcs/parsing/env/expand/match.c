@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:01:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:50:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:48:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Count how many wildcard matches were produced for one token.
+ * @param matches Linked list of matched path strings.
+ * @return Number of nodes stored in the match list.
+ */
 static int	count_match_nodes(t_nodes *matches)
 {
 	int	cnt;
@@ -25,6 +30,14 @@ static int	count_match_nodes(t_nodes *matches)
 	return (cnt);
 }
 
+/**
+ * @brief Convert wildcard match into token nodes and consume the source token.
+ * @param matches Linked list of matched path strings.
+ * @param new_head Output token-list head receiving the converted nodes.
+ * @param new_tail Output token-list tail receiving the converted nodes.
+ * @param exp_curr Original expanded token node being replaced.
+ * @return This function does not return a value.
+ */
 static void	consume_matches_to_list(t_nodes *matches, t_nodes **new_head,
 		t_nodes **new_tail, t_nodes *exp_curr)
 {
@@ -44,12 +57,25 @@ static void	consume_matches_to_list(t_nodes *matches, t_nodes **new_head,
 	free(exp_curr);
 }
 
+/**
+ * @brief Check whether a token type names a redirection operator.
+ * @param type Token type under inspection.
+ * @return 1 for supported redirection token types, otherwise 0.
+ */
 static int	is_redir_token_type(int type)
 {
 	return (type == TOKEN_RED_OUT || type == TOKEN_APPEND
 		|| type == TOKEN_RED_IN);
 }
 
+/**
+ * @brief Apply wildcard matches or keep the literal token after expansion.
+ * @param exp Token-expansion context being rebuilt.
+ * @param matches Linked list of wildcard matches for the current token.
+ * @param exp_tok Expanded token content under consideration.
+ * @param exp_curr Token-list node currently being processed.
+ * @return 1 on success, 0 when expansion triggers an ambiguous redirect error.
+ */
 int	process_matches_or_literal(t_token_expansion *exp, t_nodes *matches,
 		t_token *exp_tok, t_nodes *exp_curr)
 {

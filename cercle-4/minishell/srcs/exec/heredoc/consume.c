@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 04:15:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:27:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Process one quoted heredoc line without variable expansion.
+ * @param line Raw line read from heredoc input.
+ * @param stop_str Fully prepared stop delimiter.
+ * @param fd Destination descriptor receiving heredoc content.
+ * @return 1 when the delimiter is reached, otherwise 0.
+ */
 int	process_line_quoted(char *line, char *stop_str, int fd)
 {
 	char	*trimmed_line;
@@ -29,6 +36,14 @@ int	process_line_quoted(char *line, char *stop_str, int fd)
 	return (0);
 }
 
+/**
+ * @brief Process one unquoted heredoc line with variable expansion.
+ * @param line Raw line read from heredoc input.
+ * @param stop_str Fully prepared stop delimiter.
+ * @param fd Destination descriptor receiving heredoc content.
+ * @param ctx Heredoc context carrying shell state and target fd.
+ * @return 1 when the delimiter is reached, otherwise 0.
+ */
 int	process_line_unquoted(char *line, char *stop_str, int fd, t_heredoc *ctx)
 {
 	char	*expanded_candidate;
@@ -51,6 +66,12 @@ int	process_line_unquoted(char *line, char *stop_str, int fd, t_heredoc *ctx)
 	return (0);
 }
 
+/**
+ * @brief Consume one tokenizer word that follows a heredoc operator.
+ * @param tok Word token holding the delimiter text.
+ * @param state Active shell state used for delimiter expansion.
+ * @return This function does not return a value.
+ */
 static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
 {
 	char	*filename;
@@ -76,6 +97,12 @@ static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
 		free(delim);
 }
 
+/**
+ * @brief Inspect one token node and consume the heredoc that follows it.
+ * @param tokens Current linked-list node in the token stream.
+ * @param state Active shell state passed to heredoc readers.
+ * @return This function does not return a value.
+ */
 static void	process_heredoc(t_nodes *tokens, t_shell_state *state)
 {
 	t_token	*tok;
@@ -93,6 +120,12 @@ static void	process_heredoc(t_nodes *tokens, t_shell_state *state)
 	}
 }
 
+/**
+ * @brief Pre-consume every heredoc found in a token list.
+ * @param tokens Token stream produced before AST execution.
+ * @param state Active shell state passed to heredoc readers.
+ * @return This function does not return a value.
+ */
 void	consume_heredocs(t_nodes *tokens, t_shell_state *state)
 {
 	while (tokens)

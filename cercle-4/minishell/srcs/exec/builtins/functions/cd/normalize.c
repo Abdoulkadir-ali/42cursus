@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 02:42:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:30:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Build the normalized representation for the filesystem root.
+ * @param leading_slashes Number of leading slashes that must be preserved.
+ * @return Newly allocated root path string.
+ */
 static char	*handle_root_path(int leading_slashes)
 {
 	if (leading_slashes == 2)
@@ -20,6 +25,13 @@ static char	*handle_root_path(int leading_slashes)
 		return (ft_strdup("/"));
 }
 
+/**
+ * @brief Finalize a normalized path from collected components.
+ * @param stack Stack of normalized components.
+ * @param count Number of kept components.
+ * @param leading_slashes Number of leading slashes to preserve.
+ * @return Newly allocated normalized path string.
+ */
 static char	*norm_components(char **stack, int count, int leading_slashes)
 {
 	char	*res;
@@ -33,6 +45,12 @@ static char	*norm_components(char **stack, int count, int leading_slashes)
 	return (res);
 }
 
+/**
+ * @brief Compute the logical cd destination for a path operand.
+ * @param path Raw path operand passed to cd.
+ * @param state Shell state used to build the logical base path.
+ * @return Newly allocated normalized path, or a duplicate fallback.
+ */
 char	*normalize_logical(const char *path, t_shell_state *state)
 {
 	char	**stack;
@@ -52,6 +70,12 @@ char	*normalize_logical(const char *path, t_shell_state *state)
 	return (norm_components(stack, count, leading_slashes));
 }
 
+/**
+ * @brief Join two path fragments while preserving existing separators.
+ * @param a Left-hand path fragment.
+ * @param b Right-hand path fragment.
+ * @return Newly allocated joined path string.
+ */
 char	*join_paths(const char *a, const char *b)
 {
 	char	*tmp;

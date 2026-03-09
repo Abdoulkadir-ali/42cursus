@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:55:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:38:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+/**
+ * @brief Check whether a segment is a standalone assignment expression.
+ * @param segment Token list representing one semicolon-delimited segment.
+ * @return 1 when the first token is an assignment word, otherwise 0.
+ */
 static int	is_assignment_segment(t_nodes *segment)
 {
 	t_token	*first_tok;
@@ -23,6 +28,13 @@ static int	is_assignment_segment(t_nodes *segment)
 		&& ft_strchr(first_tok->value, '=') != first_tok->value);
 }
 
+/**
+ * @brief Split an assignment token into key and value strings.
+ * @param first_tok First token of the segment, expected to contain `=`.
+ * @param key Output slot receiving the variable name.
+ * @param val Output slot receiving the variable value.
+ * @return This function does not return a value.
+ */
 static void	extract_key_value(t_token *first_tok, char **key, char **val)
 {
 	char	*eq;
@@ -32,6 +44,13 @@ static void	extract_key_value(t_token *first_tok, char **key, char **val)
 	*val = ft_strdup(eq + 1);
 }
 
+/**
+ * @brief Apply one parsed assignment to shell state and update status.
+ * @param key Variable name extracted from the assignment token.
+ * @param val Variable value extracted from the assignment token.
+ * @param state Active shell state receiving the environment update.
+ * @return This function does not return a value.
+ */
 static void	set_assignment(char *key, char *val, t_shell_state *state)
 {
 	ft_set_env(key, val, state);
@@ -40,6 +59,12 @@ static void	set_assignment(char *key, char *val, t_shell_state *state)
 	state->exit_code = 0;
 }
 
+/**
+ * @brief Handle a segment as a direct variable assignment when possible.
+ * @param segment Token list representing one semicolon-delimited segment.
+ * @param state Active shell state receiving the environment update.
+ * @return 1 when the segment is consumed as an assignment, otherwise 0.
+ */
 int	try_handle_assignment_public(t_nodes *segment, t_shell_state *state)
 {
 	t_token	*first_tok;

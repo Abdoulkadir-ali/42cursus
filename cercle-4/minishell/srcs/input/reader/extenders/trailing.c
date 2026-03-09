@@ -1,17 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   extender_trailing.c                                :+:      :+:    :+:   */
+/*   trailing.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:12:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:39:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
+/**
+ * @brief Detect whether the line ends with an operator requiring continuation.
+ * @param line Current input line.
+ * @param ops Operator definition table returned by `get_ops`.
+ * @return Continuation code for the trailing operator, or 0.
+ */
 char	check_trailing_op(char *line, t_op_def *ops)
 {
 	char	*p;

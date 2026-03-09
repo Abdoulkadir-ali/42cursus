@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 03:02:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 00:26:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
+/**
+ * @brief Detect whether a string still contains active wildcard metacharacters.
+ * @param str String under inspection.
+ * @return 1 when `*` or `?` remains active, otherwise 0.
+ */
 int	is_wildcard(const char *str)
 {
 	int	i;
@@ -31,6 +36,14 @@ int	is_wildcard(const char *str)
 	return (0);
 }
 
+/**
+ * @brief Remember the latest `*` position for future backtracking.
+ * @param pattern Address of the current pattern cursor.
+ * @param str Address of the current string cursor.
+ * @param star Output pointer storing the most recent star position.
+ * @param str_start Output pointer storing the retry point in the string.
+ * @return This function does not return a value.
+ */
 static void	set_star(char **pattern, char **str, char **star, char **str_start)
 {
 	*star = *pattern;
@@ -38,12 +51,26 @@ static void	set_star(char **pattern, char **str, char **star, char **str_start)
 	*str_start = *str;
 }
 
+/**
+ * @brief Advance both the pattern and filename cursors by one character.
+ * @param pattern Address of the current pattern cursor.
+ * @param str Address of the current string cursor.
+ * @return This function does not return a value.
+ */
 static void	advance_both(char **pattern, char **str)
 {
 	(*pattern)++;
 	(*str)++;
 }
 
+/**
+ * @brief Retry the match from the character after the last remembered star.
+ * @param pattern Address of the current pattern cursor.
+ * @param str Address of the current string cursor.
+ * @param star Pointer to the most recent star position.
+ * @param str_start Pointer to the current retry position in the string.
+ * @return This function does not return a value.
+ */
 static void	backtrack_to_star(char **pattern, char **str, char **star,
 		char **str_start)
 {
@@ -51,6 +78,14 @@ static void	backtrack_to_star(char **pattern, char **str, char **star,
 	*str = ++(*str_start);
 }
 
+/**
+ * @brief Run the core wildcard matching loop with star backtracking.
+ * @param pattern Address of the current pattern cursor.
+ * @param str Address of the current filename cursor.
+ * @param star Address of the most recent star position.
+ * @param str_start Address of the retry point paired with that star.
+ * @return 1 when the string is consumed consistently, otherwise 0.
+ */
 int	match_loop(char **pattern, char **str, char **star,
 		char **str_start)
 {

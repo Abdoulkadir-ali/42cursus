@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 02:31:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 23:26:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Resolve the effective heredoc delimiter and quoted flag.
+ * @param args Heredoc argument vector containing delimiter metadata.
+ * @param state Active shell state used for delimiter expansion.
+ * @param quoted Output flag indicating whether the delimiter is quoted.
+ * @return Delimiter string to use for heredoc reading.
+ */
 static char	*get_heredoc_delim(char **args, t_shell_state *state, int *quoted)
 {
 	char	*delim;
@@ -27,6 +34,13 @@ static char	*get_heredoc_delim(char **args, t_shell_state *state, int *quoted)
 	return (delim);
 }
 
+/**
+ * @brief Write heredoc input into a temporary file and return its path.
+ * @param delim Effective heredoc delimiter.
+ * @param state Active shell state passed to the read loop.
+ * @param quoted Non-zero when the delimiter disables expansion.
+ * @return Newly allocated temporary filename, or NULL on failure.
+ */
 static char	*write_heredoc_to_file(char *delim, t_shell_state *state,
 		int quoted)
 {
@@ -47,6 +61,12 @@ static char	*write_heredoc_to_file(char *delim, t_shell_state *state,
 	return (filename);
 }
 
+/**
+ * @brief Collect heredoc input for one AST heredoc node.
+ * @param args Heredoc argument vector containing the delimiter and flags.
+ * @param state Active shell state passed to heredoc helpers.
+ * @return Temporary filename containing the heredoc body, or NULL.
+ */
 char	*handle_heredoc_input(char **args, t_shell_state *state)
 {
 	int		quoted;
