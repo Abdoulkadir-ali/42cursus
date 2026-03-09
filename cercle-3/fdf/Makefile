@@ -2,7 +2,7 @@ NAME = fdf
 
 CC = clang
 MAKEFLAGS += j8
-CFLAGS = -Wall -Wextra -I. -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math -Wno-nan-infinity-disabled
+CFLAGS = -Wall -Wextra -Werror -I. -I./includes -I./minilibx-linux -I./libft/includes -O3 -ffast-math -Wno-nan-infinity-disabled
 LDFLAGS = -L./minilibx-linux -lmlx -L./libft -lft -lX11 -lXext -lm -lpthread
 
 LIBFT_DIR = ./libft
