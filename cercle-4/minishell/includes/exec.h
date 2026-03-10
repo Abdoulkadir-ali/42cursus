@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 02:31:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:54:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ char				*generate_tmp_filename(int *fd_out);
 char				*handle_heredoc_input(char **args, t_shell_state *state);
 char				*expand_delim(const char *delim, int quoted,
 						t_shell_state *state);
-void				read_heredoc_loop(char *delim, int fd,
-						t_shell_state *state, int is_quoted);
+void				read_heredoc_loop(char *delim, int fd, t_shell_state *state,
+						int is_quoted);
 char				*prepare_stop_str(char *delim, t_heredoc *ctx);
 char				*heredoc_read_line(void);
 char				*heredoc_read_line_non_tty(void);
@@ -120,8 +120,8 @@ char				**collect_components(const char *base, int *count);
 char				*build_path_from_stack(char **stack, int count,
 						int leading_slashes);
 char				*normalize_logical(const char *path, t_shell_state *state);
-
-void	init_builtin_entry(t_builtin_def *entry, const char *name, int (*func)(char **, t_shell_state *));
-void	init_builtins(t_builtin_def *builtins);
+void				init_builtin_entry(t_builtin_def *entry, const char *name,
+						int (*func)(char **, t_shell_state *));
+void				init_builtins(t_builtin_def *builtins);
 
 #endif
