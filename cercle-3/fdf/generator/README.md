@@ -21,6 +21,8 @@ image-derived reliefs, and deterministic test inputs before launching the progra
 The generated files are written in the same `.fdf` format consumed by the
 geometry loader, which makes this folder a direct content pipeline into `maps/`.
 
+By default, generated files are written to `./maps/generated_maps`.
+
 ---
 
 ## 🗂️ **Directory Structure**
@@ -55,6 +57,7 @@ geometry loader, which makes this folder a direct content pipeline into `maps/`.
 - preserves aspect ratio while resizing to fit the requested dimensions
 - converts pixel luminance into height values
 - stores original pixel colors alongside heights in `.fdf` tokens
+- processes folders in sorted filename order for predictable output runs
 
 ### **Flat Mode**
 - creates a uniform zero-valued map
@@ -90,6 +93,9 @@ python3 generator/generate.py --mode image --image generator/pictures --width 30
 
 If no output name is provided for non-image modes, the script generates a unique
 filename automatically.
+
+For image mode, `--image` is mandatory. The script also rejects zero or negative
+dimensions before generation starts.
 
 ---
 
@@ -142,6 +148,7 @@ other modes remain usable.
 
 - Noise generation uses a thread pool to compute rows concurrently.
 - Image mode preserves aspect ratio before conversion.
+- Folder-based image conversion is processed in sorted order.
 - Output defaults to `maps/generated_maps/`, which keeps generated content
   separate from deterministic fixtures in `maps/test_maps/`.
 - This tool is ideal for creating large benchmark maps without editing `.fdf`
