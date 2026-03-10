@@ -1,20 +1,27 @@
 # 🌐 **FDF** - *Fil de Fer*
 
-> **A High-Performance 3D Wireframe Visualizer**  
-> Rendering topographic landscapes with unparalleled speed and aesthetic precision.
+> **A high-performance 3D terrain visualizer**  
+> Transforming `.fdf` heightmaps into interactive wireframe and filled landscapes
+> with a custom rendering pipeline built in C.
 
 ![Language](https://img.shields.io/badge/Language-C-00599C?style=for-the-badge&logo=c&logoColor=white)
 ![Graphics](https://img.shields.io/badge/Graphics-MiniLibX-orange?style=for-the-badge)
+![Architecture](https://img.shields.io/badge/Architecture-Modular-1f6feb?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Stable-success?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 ---
 
 ## 📖 **Overview**
 
-**FDF** (Fil de Fer) transforms raw topographic data into stunning, interactive 3D wireframe landscapes. Built with a custom graphics engine on top of MiniLibX, it features advanced rendering techniques like **Bresenham's Line Algorithm**, **Sutherland-Hodgman Clipping**, and a highly optimized **MVP (Model-View-Projection) Pipeline**.
+**FDF** is a 42-school graphics project that renders topographic maps as a live,
+interactive 3D scene. This implementation goes beyond the minimal wireframe goal
+with a full camera system, multiple projection modes, dynamic tessellation,
+runtime terrain generation, an information overlay, and a modular rendering
+pipeline split across dedicated engine subsystems.
 
-Explore terrains with smooth real-time rotations, dual projection modes, dynamic tessellation, and a suite of vibrant color themes.
+The project takes `.fdf` grid files, converts them into structured map data,
+applies camera and projection transforms, culls unnecessary geometry, and then
+rasterizes the result into the display buffer with custom line and triangle code.
 
 ---
 
@@ -22,166 +29,193 @@ Explore terrains with smooth real-time rotations, dual projection modes, dynamic
 
 | Feature | Description |
 | :--- | :--- |
-| **🚀 High-Performance Rendering** | SIMD-optimized vector math and multi-threaded processing for fluid 60 FPS visuals. |
-| **📐 Dual Projection Modes** | Switch seamlessly between **Parallel (Isometric)** and **Conic (Perspective)** views. |
-| **🎨 Dynamic Aesthetics** | Choose from rich color themes: *Matrix*, *Cyberpunk*, *Tron Blue*, *Neon Grid*, and more. |
-| **🔍 Interactive Exploration** | Full 3D camera control: rotate, zoom, pan, and fly through your terrain. |
-| **⚙️ Advanced Tesselation** | Adaptive mesh subdivision adds detail where it matters, reducing artifacts. |
-| **🖥️ GUI Overlay** | Real-time on-screen status display for active parameters and controls. |
+| **🚀 Real-Time Rendering** | Custom line, grid, and triangle drawing pipeline with depth-aware rasterization. |
+| **📐 Dual Projection Modes** | Switch between parallel and perspective views while keeping the scene interactive. |
+| **🎨 Dynamic Styling** | Height-based palettes, source-color mode, GUI themes, and runtime visual toggles. |
+| **🔍 Full Navigation** | Rotate, zoom, pan, align, and reset the camera in real time. |
+| **⚙️ Adaptive Detail** | LOD controls, tessellation levels, and render optimizations for larger terrains. |
+| **🖥️ Live GUI Overlay** | On-screen status panels expose rendering state, transforms, and controls. |
+| **🌋 Terrain Generation** | Built-in runtime generation plus an external Python generator for custom maps. |
 
 ---
 
 ## 🎮 **Controls**
-s
-Navigate your world with precision using keyboard and mouse inputs.
+
+Navigate the terrain with keyboard and mouse input.
 
 ### **Camera Movement & View**
 | Command | Action |
 | :--- | :--- |
-| `Arrow Keys` | **Translate** Camera (Pan X/Y) |
-| `Scroll Wheel` | **Zoom** In / Out |
-| `Left Click + Drag` | **Rotate** View Orbit |
-| `Right Click + Drag` | **Precision Rotate** |
-| `SPACE` | **Reset** Camera Position |
+| `Arrow Keys` | Translate camera on the X/Y plane |
+| `Scroll Wheel` | Zoom in or out |
+| `Left Click + Drag` | Rotate the view |
+| `Right Click + Drag` | Adjust precision rotation |
+| `SPACE` | Reset camera position |
 
-### **Rotation Controls**
+### **Rotation & Alignment**
 | Command | Action |
 | :--- | :--- |
-| `X` / `Y` / `Z` | Toggle Continuous Axis Rotation |
-| `W` + `+/-` | Adjust Rotation Speed |
-| `Q` / `E` / `U` | Align View to **Side**, **Front**, or **Top** |
-| `R` | Reset Rotation State |
+| `X` / `Y` / `Z` | Toggle continuous rotation around an axis |
+| `W` + `+/-` | Adjust rotation speed |
+| `Q` / `E` / `U` | Align view to side, front, or top |
+| `R` | Reset rotation state |
 
-### **Rendering Parameters**
+### **Rendering & Tuning**
 | Command | Action |
 | :--- | :--- |
-| `P` | Toggle **Projection Mode** (Parallel / Perspective) |
-| `+/-` | Sensitivity / Zoom adjustments |
-| `Page Up` / `Down` | Adjust **Tessellation Level** |
-| `Home` / `End` | Adjust **LOD** (Level of Detail) |
-| `A` + `+/-` | Adjust **FOV / Angle** |
-| `D` + `+/-` | Adjust **Dampening** |
-| `F` + `+/-` | Adjust **Frustum Margin** |
+| `P` | Toggle projection mode |
+| `+/-` | Apply combo-based adjustments to active parameters |
+| `Page Up` / `Page Down` | Adjust tessellation level |
+| `Home` / `End` | Adjust LOD |
+| `A` + `+/-` | Adjust field of view / angle |
+| `D` + `+/-` | Adjust dampening |
+| `F` + `+/-` | Adjust frustum margin |
 
-### **System & Aesthetics**
+### **System & Visual Toggles**
 | Command | Action |
 | :--- | :--- |
-| `TAB` | **Cycle Maps** (Next/Prev in directory) |
-| `S` | **Cycle GUI Themes** |
-| `C` | **Toggle Color Mode** (Height-Color vs Source-Color) |
-| `G` | **Generate New Map** (Press Key or Click GUI Button) |
-| `I` | Toggle Info Overlay |
-| `H` | Toggle Help Menu |
-| `ESC` | **Exit Application** |
+| `TAB` | Cycle loaded maps |
+| `S` | Cycle GUI theme or style |
+| `C` | Toggle color mode |
+| `G` | Generate a new runtime map |
+| `I` | Toggle information overlay |
+| `H` | Toggle help overlay |
+| `ESC` | Exit the application |
 
 ---
 
-## 🛠️ **Installation**
-
-Get **FDF** running on your Linux machine in seconds.
+## 🛠️ **Build & Run**
 
 ### **Prerequisites**
-- **GCC / Clang** compiler
-- **Make**
-- **X11** development libraries (`libx11-dev`, `libxext-dev`)
-- **MiniLibX** (download from the official repository and place in the `minilibx-linux/` directory)
 
-### **Build Instructions**
+- `gcc` or `clang`
+- `make`
+- X11 development libraries such as `libx11-dev` and `libxext-dev`
+- MiniLibX sources in `minilibx-linux/`
+
+### **Build**
 
 ```bash
-# 1. Clone the repository
-# 📥 Clone the repository
 git clone https://github.com/Abdoulkadir-ali/42cursus
 cd cercle-3/fdf
-
-# 2. Compile the project
 make
+```
 
-# 3. Run FDF
-./fdf <file.fdf>        # Load a specific map file
-./fdf <folder_name>     # Load all maps in a directory (cycle using TAB)
+### **Run**
 
-# Example:
-./fdf maps/42.fdf
+```bash
+./fdf maps/test_maps/00_simple.fdf
 ./fdf maps/test_maps/
+./fdf maps/generated_maps/
 ```
 
-> 💡 **Tip:** If you run `./fdf` without arguments, it defaults to loading maps from `maps/generated_maps/`!
+If you launch `./fdf` without an argument, the application defaults to the
+generated map directory.
 
 ---
 
-## 🧠 **Technical Architecture**
+## 🧠 **Architecture**
 
-The project is structured for modularity and performance.
+The codebase is organized as a modular engine with clear subsystem boundaries.
 
-### **Core Components**
-- **`srcs/core`**: Main loop and cleanup.
-- **`srcs/graphics`**: The heart of the renderer (Bresenham, Raycasting, Pixel/Line drawing).
-- **`srcs/render`**: Camera logic, Matrix transformations (Translation, Rotation, Scaling).
-- **`srcs/geometry`**: Vector math library, tessellation logic, and map parsing.
-- **`srcs/events`**: Robust input handling system.
-- **`srcs/gui`**: Overlay and HUD rendering.
+| Module | Responsibility |
+| :--- | :--- |
+| `srcs/core` | Bootstrap, runtime setup, and cleanup |
+| `srcs/window` | MLX window creation and initial display setup |
+| `srcs/events` | Mouse, keyboard, hooks, loop updates, and runtime toggles |
+| `srcs/geometry` | Map loading, parsing, styling, generation, and tessellation |
+| `srcs/render` | Camera handling, projection stages, culling, and render flow |
+| `srcs/graphics` | Frame buffers, rasterization, line drawing, grid traversal, and triangle fill |
+| `srcs/gui` | HUD, panels, labels, transforms, and visual themes |
+| `srcs/primitives` | Vectors, matrices, and shared math helpers |
 
-### **Optimization Techniques**
-- **SIMD (AVX/SSE)**: Vectorized math operations for heavy matrix multiplications and vertex transformations.
-- **View Frustum Culling**: Discards geometry outside the camera's view before the expensive rasterization stage.
-- **Backface Culling**: Optimized line drawing logic to skip hidden surfaces.
-- **Z-Buffering**: Accurate depth management for artifact-free 3D representation.
+### **Pipeline Summary**
+
+1. Load or generate map data.
+2. Prepare camera and projection transforms.
+3. Cull or simplify geometry when possible.
+4. Rasterize wireframe or filled output into buffers.
+5. Draw GUI overlays.
+6. Present the frame and respond to the next input event.
 
 ---
 
-## 🗺️ **Format Specification**
+## 🗺️ **Map Format**
 
-FDF reads `.fdf` files, a simple text-based format for 3D grids.
+FDF reads `.fdf` files as height grids.
 
-- **Rows**: Lines in the file correspond to grid Y-coordinates.
-- **Columns**: Space-separated values correspond to grid X-coordinates.
-- **Values**: Integers representing the **Z-height** at that point.
-- **Color (Optional)**: Hex code appended to height, e.g., `10,0xFF0000`.
+- Each line is one row of the map.
+- Each space-separated token is one point.
+- Integer values represent height on the Z axis.
+- Tokens can optionally include a source color in hexadecimal form.
 
-**Example:**
+### **Accepted Tokens**
+
 ```text
-0  0  0  0  0
-0 10 10 10  0
-0 10 20 10  0
-0 10 10 10  0
-0  0  0  0  0
+42
+-3
+10,0xFF0000
+0,0x00FFAA
+```
+
+### **Example**
+
+```text
+0 0 0 0 0
+0 10 10 10 0
+0 10 20 10 0
+0 10 10 10 0
+0 0 0 0 0
+```
+
+For a fuller description of the map format and usage patterns, see `maps/README.md`.
+
+---
+
+## 🌋 **Map Generation**
+
+FDF supports two complementary ways to create terrain.
+
+### **Runtime Generator**
+
+Inside the application, press `G` to generate a new procedural map from seeded
+noise. This is useful for live experimentation and render testing.
+
+### **Python Generator**
+
+The standalone tool in `generator/generate.py` can generate:
+
+- noise-based terrains
+- flat test grids
+- image-derived heightmaps with preserved source colors
+
+Example commands:
+
+```bash
+python3 generator/generate.py alpine --mode noise --width 300 --height 300 --scale 40
+python3 generator/generate.py baseline --mode flat --width 50 --height 50
+python3 generator/generate.py --mode image --image generator/pictures --width 250 --height 250 --scale 60
 ```
 
 ---
 
----
+## 📚 **Documentation Map**
 
-## 🌋 **Map Generator Tools**
+The repository now includes module-level READMEs for deeper navigation.
 
-FDF includes powerful tools to create your own maps beyond the standard set.
-
-### **1. Runtime Generator (Built-in)**
-Generate infinite unique terrains instantly while the app is running.
-- **Trigger**: Press `G` or click the **"GENERATE MAP"** button in the control panel.
-- **Tech**: Uses recursive 4-octave Perlin Noise to create realistic mountain ranges and valleys on the fly.
-
-### **2. Scripted Generator (Python)**
-Found in `generator/generate.py`, this script allows advanced map creation:
-
-**Convert Images to Maps:**
-Turn any image into a 3D terrain where brightness = height.
-```bash
-python3 generator/generate.py --mode image --image maps/texture.jpg --width 200 --height 200
-```
-*Supports batch processing of directories!*
-
-**Generate Huge Noise Maps:**
-Create massive maps for stress testing performance.
-```bash
-python3 generator/generate.py --mode noise --width 1000 --height 1000 --scale 50
-```
+| Path | Description |
+| :--- | :--- |
+| `srcs/README.md` | Full engine-level architecture overview |
+| `includes/README.md` | Public headers and interface layer |
+| `maps/README.md` | `.fdf` format, sample maps, and usage |
+| `generator/README.md` | External Python terrain generator |
+| `libft/README.md` | Custom support library used across the project |
 
 ---
 
 ## 📜 **License**
 
-This project is open-source and available under the [MIT License](LICENSE).
+This project is open-source and distributed under the [MIT License](LICENSE).
 
 ---
 
