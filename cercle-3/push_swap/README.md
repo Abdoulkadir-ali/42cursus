@@ -1,323 +1,224 @@
-# 🚀 Push Swap - 42 School Project
+# 🚀 Push Swap
 
 <div align="center">
 
 ![42 Logo](https://img.shields.io/badge/42-000000?style=for-the-badge&logo=42&logoColor=white)
 ![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
-![Makefile](https://img.shields.io/badge/Makefile-000000?style=for-the-badge&logo=makefile&logoColor=white)
+![Makefile](https://img.shields.io/badge/Build-Makefile-1f6feb?style=for-the-badge)
 
-**⭐ Master the art of sorting with minimal operations ⭐**
-
-*An efficient sorting algorithm using two stacks and limited operations*
-
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](https://github.com/Adoulkadir-ali/push_swap/actions)
-[![Norminette](https://img.shields.io/badge/norminette-passing-brightgreen?style=flat-square)](https://github.com/42School/norminette)
-[![Score](https://img.shields.io/badge/score-125%2F100-brightgreen?style=flat-square)](#)
+**A 42 sorting project built around two stacks, a restricted instruction set,
+and a cost-based insertion strategy.**
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## Overview
 
-- [🎯 Overview](#-overview)
-- [✨ Features](#-features)
-- [🎮 Operations](#-operations)
-- [🏗️ Building](#️-building)
-- [🚀 Usage](#-usage)
-- [📊 Algorithm](#-algorithm)
-- [🧪 Testing](#-testing)
-- [📁 Project Structure](#-project-structure)
-- [⚙️ Configuration](#️-configuration)
-- [🤝 Contributing](#-contributing)
-- [📈 Performance](#-performance)
-- [🙏 Acknowledgments](#-acknowledgments)
+`push_swap` sorts a list of unique integers using only the operations allowed by
+the 42 subject. The project contains two executables:
 
----
+- `push_swap`, which outputs the instruction sequence needed to sort the input
+- `checker`, which reads an instruction sequence from standard input and
+	verifies whether it sorts the stack correctly
 
-## 🎯 Overview
+The project is organized around a few clear layers:
 
-<div align="center">
-
-### **The Ultimate Sorting Challenge**
-
-Push Swap is a **42 School** algorithm project that challenges you to sort a stack of integers using **only two stacks** and a **limited set of operations**. The goal? Achieve perfect sorting with the **minimum number of moves**!
-
-🧠 **Think you can outsmart the algorithm?** Prove your optimization skills!
-
-</div>
-
-### 🎯 Challenge Description
-
-- **Input**: A stack of unique integers (positive/negative)
-- **Tools**: Stack A (unsorted) + Stack B (initially empty)
-- **Operations**: 11 specific stack manipulation commands
-- **Goal**: Sort stack A in ascending order using fewest operations
-- **Constraint**: Only use the allowed operations
+- parsing builds and validates the initial stacks
+- primitive moves implement the legal instruction set
+- the algorithm layer computes targets, costs, and move order
+- helper modules support the circular stack structure and shared output logic
 
 ---
 
-## ✨ Features
+## Allowed Operations
 
-<div align="center">
-
-| 🚀 Feature | Description |
-|------------|-------------|
-| **⚡ Efficient Sorting** | Advanced algorithms for optimal performance |
-| **🔄 Stack Operations** | Complete push_swap operation set |
-| **✅ Input Validation** | Robust parsing with error handling |
-| **🎯 Checker Program** | Validates sorting sequences |
-| **🧪 Test Suite** | Comprehensive component testing |
-| **🐛 Debug Mode** | Visual stack state debugging |
-| **📊 Performance Metrics** | Operation counting and analysis |
-
-</div>
-
----
-
-## 🎮 Operations
-
-### Core Operations
-
-| Operation | Description | Visual |
-|-----------|-------------|--------|
-| `sa` | Swap first 2 elements of stack A | 🔄 |
-| `sb` | Swap first 2 elements of stack B | 🔄 |
-| `ss` | `sa` + `sb` simultaneously | ⚡ |
-| `pa` | Push top of B to top of A | ⬆️ |
-| `pb` | Push top of A to top of B | ⬇️ |
-| `ra` | Rotate A upward (first → last) | ↻ |
-| `rb` | Rotate B upward (first → last) | ↻ |
-| `rr` | `ra` + `rb` simultaneously | 🚀 |
-| `rra` | Reverse rotate A (last → first) | ↺ |
-| `rrb` | Reverse rotate B (last → first) | ↺ |
-| `rrr` | `rra` + `rrb` simultaneously | 🌀 |
+| Operation | Description |
+| :--- | :--- |
+| `sa` | Swap the first two elements of stack `a` |
+| `sb` | Swap the first two elements of stack `b` |
+| `ss` | Perform `sa` and `sb` at the same time |
+| `pa` | Push the top of stack `b` onto stack `a` |
+| `pb` | Push the top of stack `a` onto stack `b` |
+| `ra` | Rotate stack `a` upward |
+| `rb` | Rotate stack `b` upward |
+| `rr` | Perform `ra` and `rb` at the same time |
+| `rra` | Reverse rotate stack `a` |
+| `rrb` | Reverse rotate stack `b` |
+| `rrr` | Perform `rra` and `rrb` at the same time |
 
 ---
 
-## 🏗️ Building
+## Build
 
-### 📋 Prerequisites
+### Requirements
 
-- **GCC** compiler (C99+ support)
-- **Make** build system
-- **Standard C library**
-- **Linux/Unix environment**
+- `cc`
+- `make`
+- a Unix-like environment
 
-### 🛠️ Compilation
+### Targets
 
 ```bash
-# 🎯 Build everything (push_swap + checker)
+# build push_swap
 make
 
-# 🚀 Build only push_swap
-make push_swap
+# build checker
+make bonus
 
-# ✅ Build only checker
-make checker
-
-# 🧪 Build all test programs
-make test
-
-# 🧹 Clean object files
+# remove objects
 make clean
 
-# 🗑️ Clean everything
+# remove objects and binaries
 make fclean
 
-# 🔄 Rebuild from scratch
+# full rebuild
 make re
 ```
 
-### 📦 Build Targets
-
-<div align="center">
-
-| Target | Description | Output |
-|--------|-------------|---------|
-| `make` | Build main programs | `push_swap`, `checker` |
-| `make bonus` | Build checker | `checker` |
-| `make test` | Build test suite | `tests/*` |
-| `make clean` | Remove objects | - |
-| `make fclean` | Remove all generated | - |
-| `make re` | Full rebuild | All binaries |
-
-</div>
+The project builds against the bundled libft in `packages/libft`.
 
 ---
 
-## 🚀 Usage
+## Usage
 
-### 🎮 Push Swap Program
+### push_swap
 
 ```bash
-# ✨ Basic usage
 ./push_swap 4 2 8 1 3
-
-# 📝 Space-separated in quotes
 ./push_swap "4 2 8 1 3"
-
-# 🎲 Random 100 numbers
-./push_swap $(seq 1 100 | sort -R)
-
-# 📊 Count operations
 ./push_swap 3 2 1 | wc -l
 ```
 
-### ✅ Checker Program
+### checker
 
 ```bash
-# 🔍 Validate push_swap output
 ./push_swap 3 2 1 | ./checker 3 2 1
-
-# ⌨️ Manual operation input
 echo -e "sa\npb\npa" | ./checker 2 1
-
-# 🐧 Use provided checker
 ./push_swap 3 2 1 | ./checker_linux 3 2 1
 ```
 
-### 🧪 Test Programs
+### quick random test
 
 ```bash
-# 🔢 Test argument parsing
-./tests/parser 1 5 34 "4145 4514 14515" 8 48
-
-# 🔄 Test stack operations
-./tests/move
-
-# 🧮 Test sorting algorithm
-./tests/algo
-
-# 💰 Test cost calculation
-./tests/cost
-
-# 🎯 Test target finding
-./tests/target
+ARG=$(seq 1 100 | sort -R)
+./push_swap $ARG | wc -l
+./push_swap $ARG | ./checker_linux $ARG
 ```
 
 ---
 
-## 📊 Algorithm
+## Algorithm Summary
 
-<div align="center">
+This implementation is built around a target-and-cost strategy rather than a
+fixed chunk table.
 
-### **🧠 Smart Sorting Strategy**
+At a high level, the flow is:
 
-The algorithm adapts based on input size for **optimal performance**:
+1. Parse the input and build stack `a` as a circular linked list.
+2. Reduce stack `a` by pushing values into stack `b`.
+3. For each candidate move, compute:
+	 - the target node in the opposite stack
+	 - the cost of reaching that target
+4. Move the cheapest candidate first.
+5. Reinsert nodes from `b` into `a` with combined rotations when possible.
+6. Rotate the final stack so the extreme value is at the head.
 
-</div>
+The algorithm code is split into:
 
-| Size | Strategy | Complexity |
-|------|----------|------------|
-| **≤ 5** | Direct sorting | O(1) |
-| **6-100** | Chunk sorting | O(n²) |
-| **101-500** | Advanced chunking | O(n log n) |
-
-### 🔍 Key Components
-
-- **🎯 Target Finding**: Optimal insertion positions
-- **💰 Cost Calculation**: Minimum operation paths
-- **📦 Chunk Management**: Divide & conquer approach
-- **⚡ Move Optimization**: Efficient operation sequences
-
----
-
-## 🧪 Testing
-
-### 🚀 Quick Test
-
-```bash
-# 🏃‍♂️ Run all tests
-make test
-
-# 📊 Test with 100 random numbers
-./push_swap $(seq 1 100 | sort -R) | wc -l
-
-# ✅ Validate sorting
-./push_swap $(seq 1 100 | sort -R) | ./checker_linux $(seq 1 100 | sort -R)
-```
-
-### 📈 Performance Testing
-
-```bash
-# 🏆 Test 100 numbers (should be < 700 operations)
-ARG=$(seq 1 100 | sort -R); ./push_swap $ARG | wc -l
-
-# 🏅 Test 500 numbers (should be < 5500 operations)
-ARG=$(seq 1 500 | sort -R); ./push_swap $ARG | wc -l
-```
-
-### 🐛 Debug Mode
-
-Enable visual debugging in `push_swap.h`:
-
-```c
-#define DEBUG 1
-```
+- `target/` for insertion targets
+- `cost/` for push-cost computation
+- `sort/` for the forward reduction phase and small-stack handling
+- `moves.c` and `push_swap.c` for top-level orchestration
 
 ---
 
-## 📁 Project Structure
+## Project Layout
 
-```
-push_swap/
-├── 🎯 includes/
-│   └── push_swap.h          # 📋 Main header & configurations
-├── 📂 srcs/
-│   ├── 🛠️ libft/           # 🔧 Custom C library
-│   └── 🚀 push_swap/       # 💻 Main source code
-│       ├── 🧠 algo/        # 🧮 Sorting algorithms
-│       │   ├── 💰 cost/    # 💸 Cost calculations
-│       │   ├── 🔄 sort/    # 📊 Sorting logic
-│       │   └── 🎯 target/  # 📍 Target positions
-│       ├── ✅ checker/     # 🔍 Checker program
-│       ├── 🛠️ helper/      # 🔧 Utility functions
-│       │   ├── 📺 display/ # 🖥️ Debug output
-│       │   ├── 📝 lst/     # 🔗 Linked lists
-│       │   └── 📚 stacks/  # 📦 Stack management
-│       ├── 🎯 main/        # 🚪 Program entry
-│       ├── 🔄 moves/       # 🎮 Stack operations
-│       └── 🔍 parsing/     # 📝 Input parsing
-│           ├── 🔄 moves/   # 🎯 Operation parsing
-│           └── 📚 stacks/  # 🔢 Number parsing
-├── 📦 obj/                 # 🏗️ Object files (generated)
-├── 🧪 tests/               # 🧪 Test executables (generated)
-├── 📋 Makefile            # ⚙️ Build configuration
-├── ✅ checker_linux       # 🐧 Provided checker
-├── 🚀 push_swap           # 🎯 Main executable
-└── 🧪 tester.sh          # 🧪 Test script
+```text
+.
+├── includes/
+│   ├── push_swap.h
+│   ├── README.md
+│   └── Example.md
+├── packages/
+│   └── libft/
+├── srcs/
+│   ├── algo/
+│   │   ├── cost/
+│   │   ├── sort/
+│   │   ├── target/
+│   │   ├── moves.c
+│   │   ├── push_swap.c
+│   │   └── README.md
+│   ├── checker/
+│   │   ├── checker.c
+│   │   └── README.md
+│   ├── helper/
+│   │   ├── display/
+│   │   ├── lst/
+│   │   └── README.md
+│   ├── main/
+│   │   ├── main.c
+│   │   └── README.md
+│   ├── moves/
+│   │   ├── push.c
+│   │   ├── reverse_rotate.c
+│   │   ├── rotate.c
+│   │   ├── swap.c
+│   │   └── README.md
+│   └── parsing/
+│       ├── moves/
+│       ├── stacks/
+│       └── README.md
+├── checker_linux
+├── Makefile
+├── tester.sh
+└── README.md
 ```
 
 ---
 
-## ⚙️ Configuration
+## Documentation Map
 
-### 🔧 Build Options
+The repository now includes folder-level documentation for most runtime areas:
 
-Edit `Makefile` for custom builds:
+- `includes/README.md`
+- `srcs/algo/README.md`
+- `srcs/checker/README.md`
+- `srcs/helper/README.md`
+- `srcs/main/README.md`
+- `srcs/moves/README.md`
+- `srcs/parsing/README.md`
 
-```makefile
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror
-DEBUG_FLAGS = -g -fsanitize=address
-```
-
-### 🎛️ Program Settings
-
-Configure in `push_swap.h`:
-
-```c
-#define DEBUG 0                    // 🐛 Debug output
-#define MULTIPLE_SIGN_INVALID 1    // ➕ Multiple signs handling
-#define CHUNK_SIZE_SMALL 20        // 📦 Small chunk size
-#define CHUNK_SIZE_MEDIUM 50       // 📦 Medium chunk size
-```
+Each subpackage also has its own README where needed.
 
 ---
 
-## 🤝 Contributing
+## Configuration Notes
+
+The main compile-time switches live in `includes/push_swap.h`.
+
+Important ones include:
+
+- `DEBUG`
+- `ASCENDING`
+- `MULTIPLE_SIGN_INVALID`
+
+These affect debug output, ordering behavior, and numeric parsing rules.
+
+---
+
+## Notes
+
+The stack implementation is based on circular linked lists. That choice affects
+parsing, primitive operations, and the algorithm itself, especially for rotate
+and reverse-rotate behavior.
+
+The checker and main program share most of the same runtime layers. The main
+difference is that `push_swap` generates operations, while `checker` consumes
+them and validates the result.
 
 <div align="center">
 
