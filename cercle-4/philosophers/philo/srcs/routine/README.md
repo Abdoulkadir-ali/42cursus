@@ -20,7 +20,7 @@ Implements the main thread routines for philosopher actions, including eating, s
 ### Global Pipeline
 1. Simulation starts in `philo()` (routine.c), which sets up mutexes, philosopher data, threads, and monitor.
 2. Each philosopher thread runs `philo_routine()` (routine.c), looping through eat, sleep, think, and death checks.
-3. `philo_eat()` (eat.c) handles fork acquisition, eating, and meal tracking.
+3. `philo_eat()` (eat.c) handles fork acquisition, eating, and meal count updates.
 4. `philo_sleep()` and `philo_think()` (sleep.c, think.c) update status and manage timing.
 5. `monitor_routine()` (routine.c) checks for philosopher death and meal completion using helpers from `death.c`.
 6. Helper functions in `helper.c` manage mutex initialization, thread creation, joining, and destruction.
