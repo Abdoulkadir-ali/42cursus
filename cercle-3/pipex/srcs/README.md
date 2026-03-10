@@ -1,132 +1,172 @@
-# Source Modules
+# 🔧 **Source Pipeline** - *From arguments to forked processes*
 
-This directory contains the full runtime implementation of `pipex`. Every stage
-of the program after argument parsing lives here: startup dispatch, command
-preparation, descriptor wiring, process orchestration, and shared error paths.
+> **A high-level map of the `srcs/` tree.**  
+> This README explains how the source folders fit together to turn command-line
+> arguments into a working shell pipeline with process orchestration, descriptor
+> wiring, command parsing, and exit-status propagation.
 
-At a high level, `srcs/` is where the project stops being a list of command-line
-arguments and starts behaving like a shell pipeline.
+![Language](https://img.shields.io/badge/Language-C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![Scope](https://img.shields.io/badge/Scope-srcs%2F-overview-1f6feb?style=for-the-badge)
+![Architecture](https://img.shields.io/badge/Architecture-pipeline-success?style=for-the-badge)
 
-The tree is intentionally split by responsibility rather than by execution order.
-That means each package stays small and focused, while the overall runtime still
-forms one clear pipeline when the folders are viewed together.
+---
 
-## Top-Level Package Layout
+## 📖 **Overview**
 
-The source tree is currently divided into five packages:
+The `srcs/` directory is the operational heart of the project. It contains the
+runtime code that turns validated arguments into a repeatable multi-process
+pipeline:
 
-- `core/` for program entry and mode selection
-- `command/` for turning raw command strings into executable argv/path data
-- `io/` for file redirection and here-doc materialization
-- `pipeline/` for pipe allocation, forking, child setup, and exit-status collection
-- `error/` for small shared failure helpers
+1. validate command-line shape and detect `here_doc` mode
+2. rewrite input side with temporary file in bonus mode
+3. allocate pipe array when needed
+4. fork one child process per command
+5. wire stdin/stdout descriptors for each child
+6. parse command strings and resolve executable paths
+7. call `execve` in each child
+8. wait for all children and return the last command's exit status
 
-Those packages are not independent subsystems in the abstract. They form one
-runtime chain where each package prepares the next one.
-
-## Global Runtime Flow
-
-The practical flow through `srcs/` is:
-
-1. `core/` validates the command-line shape and decides whether the program is running in normal mode or `here_doc` mode.
-2. `io/` may rewrite the effective input side in bonus mode by creating a temporary here-doc file.
-3. `pipeline/` builds the execution configuration and allocates the inter-process pipe array when more than one command is present.
-4. `pipeline/` forks one child per command.
-5. Each child uses `pipeline/` plus `io/` to receive the correct stdin/stdout endpoints.
-6. Each child hands its raw command string to `command/`.
-7. `command/` parses the string, resolves the executable path, and calls `execve`.
-8. The parent waits for all children and returns the exit status of the last command.
-
-That same logic can be sketched more compactly like this:
+At a high level, the runtime behaves like this:
 
 ```text
-main -> mode selection -> pipe allocation -> fork -> fd setup -> command resolution -> execve
-                                              |
-                                              v
-                                         wait/collect
+core -> io -> pipeline -> fork -> fd setup -> command -> execve
+                           |
+                           v
+                      wait/collect
 ```
 
-The important thing about this shape is that `pipex` does not have one giant
-monolithic function that does everything. Instead, the packages cooperate to
-build the same end result in layers.
+`error/` supports the entire flow with shared failure helpers.
 
-## How the Packages Fit Together
+---
+
+## 🚀 **Global Pipeline**
+
+The full runtime pipeline across `srcs/` is:
+
+1. `core/main.c` validates the argument count and calls `run_pipex`.
+2. `core/pipex.c` decides whether the program is running in standard mode or `here_doc` bonus mode.
+3. `io/here_doc.c` materializes a temporary here-doc file if bonus mode is active.
+4. `pipeline/pipex.c` builds the `t_config` structure and allocates the pipe array when more than one command is present.
+5. `pipeline/pipes.c` creates each inter-process pipe.
+6. `pipeline/process.c` forks one child per command.
+7. Each child uses `pipeline/process.c` and `io/io.c` to receive the correct stdin/stdout endpoints through `dup2`.
+8. `command/parser.c` splits the raw command string into an argument vector.
+9. `command/cmd.c` resolves the executable path directly or through `PATH`.
+10. `command/cmd.c` calls `execve` with the resolved path and argument vector.
+11. The parent process closes its own copies of the pipe descriptors as they are no longer needed.
+12. `pipeline/process.c` waits for all children and computes the final exit status from the last command.
+
+---
+
+## 🗂️ **Top-Level Folders**
 
 ### `core/`
 
-`core/` is the narrowest package in the tree, but it is the entry gate for the
-entire program.
+The control tower of the program.
 
-Its job is to:
+- Validates the command-line argument count and rejects invalid shapes.
+- Detects `here_doc` mode through the second argument.
+- Decides whether to run standard mode or bonus mode.
+- Normalizes the argv layout before the rest of the runtime begins.
 
-- reject invalid argument counts
-- detect `here_doc`
-- normalize the argv layout before the rest of the runtime begins
-
-It does not parse commands, open files, or manage children. It only decides how
-the rest of the runtime should start.
+In the global flow, `core/` is the entry and mode selection layer. It does not
+parse commands, open files, or manage children—it only decides how the rest of
+the runtime should start.
 
 ### `command/`
 
-`command/` owns the translation from a raw command string to an executable call.
+The command translation layer.
 
-Its job is to:
+- Splits raw command strings into argument vectors.
+- Resolves the executable directly (if it contains `/`) or through `PATH` search.
+- Preserves shell-like `126` (not executable) and `127` (not found) failure semantics.
+- Calls `execve` to replace the child process with the target command.
 
-- split the command string into an argument vector
-- resolve the executable directly or through `PATH`
-- preserve shell-like `126` and `127` failure semantics
-
-This package is intentionally simple. It is not a full shell parser. It assumes
-space-separated arguments and leaves advanced quoting or expansion behavior out
-of scope.
+In the global flow, `command/` is the final handoff from shell-land to process
+execution. It is intentionally simple and assumes space-separated arguments,
+leaving advanced quoting or expansion out of scope.
 
 ### `io/`
 
-`io/` owns the file-descriptor side of the project.
+The file-descriptor side of the project.
 
-Its job is to:
+- Opens the infile and outfile.
+- Switches between truncate mode (standard) and append mode (bonus).
+- Connects descriptors to stdin and stdout with `dup2`.
+- Implements the here-doc bonus path through a temporary file.
+- Validates file accessibility before attempting to open.
 
-- open the infile and outfile
-- switch between truncate and append mode
-- connect descriptors to stdin and stdout with `dup2`
-- implement the here-doc bonus path through a temporary file
-
-This package is where the project touches the filesystem most directly.
+In the global flow, `io/` is where the project touches the filesystem most
+directly. It wires the correct endpoints so each child sees the right input and
+output.
 
 ### `pipeline/`
 
-`pipeline/` is the structural center of the runtime.
+The structural center of the runtime.
 
-Its job is to:
+- Allocates the pipe array based on the number of commands.
+- Forks one child process per command.
+- Decides which child is first, middle, or last in the chain.
+- Closes inherited descriptors at the right moment to avoid deadlocks.
+- Waits for all children and computes the final exit status from the last command.
 
-- allocate the pipe array
-- fork one process per command
-- decide which child is first, middle, or last
-- close inherited descriptors at the right moment
-- wait for children and compute the final status
-
-This package does not decide what a command means. It decides how commands are
-connected together as processes.
+In the global flow, `pipeline/` is the process orchestration layer. It does not
+decide what a command means—it decides how commands are connected together as
+processes.
 
 ### `error/`
 
-`error/` is the smallest package, but it exists to keep repetitive low-level
-failure logic out of the main orchestration code.
+The small shared-support layer.
 
-Its job is to:
+- Centralizes a few `perror`-based failure paths.
+- Keeps return-code and cleanup behavior consistent across the codebase.
+- Stays intentionally small so the real control flow remains visible in the calling code.
 
-- centralize a few `perror`-based failure paths
-- keep return-code and cleanup behavior consistent where these helpers are used
+In the global flow, `error/` is supporting infrastructure rather than a pipeline
+stage of its own.
 
-The package stays intentionally small so the real control flow remains visible
-in the calling code.
+---
 
-## Data Layout Used Across `srcs/`
+## 🔄 **Typical Command Journey**
+
+For a standard two-command pipeline like `< in cmd1 | cmd2 > out`, the trip
+through `srcs/` looks like this:
+
+1. `core/main.c` receives the arguments and validates the count (exactly 5 arguments expected).
+2. `core/pipex.c` detects that `argv[1]` is not `"here_doc"`, so standard mode is active.
+3. `pipeline/pipex.c` builds the configuration: `argv[0]` is the infile, `argv[1]` and `argv[2]` are the two commands, `argv[3]` is the outfile.
+4. `pipeline/pipes.c` allocates one pipe (two file descriptors) since there are two commands.
+5. `pipeline/process.c` forks the first child.
+6. The first child uses `io/io.c` to connect stdin to the infile and stdout to the write end of the pipe.
+7. `command/parser.c` splits `"cmd1"` into an argument vector.
+8. `command/cmd.c` resolves the path for `cmd1` and calls `execve`.
+9. The parent closes the write end of the pipe (no longer needed).
+10. `pipeline/process.c` forks the second child.
+11. The second child connects stdin to the read end of the pipe and stdout to the outfile.
+12. `command/` resolves `cmd2` and calls `execve`.
+13. The parent waits for both children, stores the exit status of `cmd2`, and returns it as the program's exit code.
+
+---
+
+## 🧩 **How the Folders Depend on Each Other**
+
+- `core/` depends on `pipeline/` to run the actual multi-process logic.
+- `pipeline/` depends on `io/` to wire descriptors and on `command/` to execute strings.
+- `command/` depends on the environment `PATH` and filesystem access checks from `io/access.c`.
+- `io/` depends on filesystem APIs and bonus-mode logic for here-doc handling.
+- `error/` is a shared dependency used by all other folders.
+
+The tree is structured so that each folder owns one clear responsibility, and
+the dependencies flow downward through the runtime layers.
+
+---
+
+## 📊 **Data Layout Used Across `srcs/`**
 
 The runtime packages all rely on one shared interpretation of the normalized
 argument layout stored in `t_config`:
 
-- `argv[0]` is the infile or temporary here-doc file
+- `argv[0]` is the infile (or temporary here-doc file in bonus mode)
 - `argv[1]` through `argv[nb_cmds]` are command strings
 - `argv[nb_cmds + 1]` is the outfile
 
@@ -136,7 +176,9 @@ large number of separate values around.
 The other important shared data type is `t_pipe`, which stores one pair of file
 descriptors per pipe segment.
 
-## Parent and Child Responsibilities
+---
+
+## 👨‍👩‍👧 **Parent and Child Responsibilities**
 
 One of the easiest ways to understand `srcs/` is to split the runtime into
 parent-side and child-side responsibilities.
@@ -164,10 +206,12 @@ This parent/child split is the main reason the tree is arranged the way it is:
 `pipeline/` coordinates process structure, `io/` wires descriptors, and
 `command/` performs the final handoff into `execve`.
 
-## Status Propagation Rule
+---
 
-The whole runtime follows one important shell-like rule: the program returns the
-status of the last command in the pipeline.
+## ⚡ **Status Propagation Rule**
+
+The whole runtime follows one important shell-like rule: **the program returns
+the status of the last command in the pipeline.**
 
 That means `srcs/` is not just about launching processes successfully. It is
 also about preserving the behavior users expect from pipeline semantics.
@@ -175,25 +219,17 @@ also about preserving the behavior users expect from pipeline semantics.
 This is why the code remembers the pid of the last child and treats that child's
 status specially during the wait phase.
 
-## Build Relationship
+---
 
-The root `Makefile` compiles the entire `srcs/` tree recursively. That has two
-practical consequences:
-
-- folder organization matters because it defines how the project is documented and navigated
-- adding a new source file inside `srcs/` does not require editing a hardcoded source list
-
-The tree is therefore both a runtime structure and a maintainability structure.
-
-## Reading Order
+## 📚 **Reading Order**
 
 If you want to understand the code from top to bottom, the most useful order is:
 
-1. `core/`
-2. `io/` for understanding bonus-mode input rewriting
-3. `pipeline/` for the actual multi-process control flow
-4. `command/` for the final execution handoff
-5. `error/` for the small shared helpers used along the way
+1. `core/` — entry point and mode selection
+2. `io/` — understanding bonus-mode input rewriting and descriptor wiring
+3. `pipeline/` — the actual multi-process control flow
+4. `command/` — the final execution handoff
+5. `error/` — the small shared helpers used along the way
 
 That order follows the real runtime path closely enough that each next folder
 answers the obvious question raised by the previous one.
