@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 11:27:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 19:44:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ int	gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
 		return (0);
 	if (depth < 1e-9)
 		return (0);
-	/* normal: from A to B in the EPA convention is the MTD direction of A */
 	contact_pt = vec3_scale(vec3_add(contact_a, contact_b), 0.5);
 	c->normal = normal;
 	c->penetration = depth;
@@ -80,7 +79,6 @@ int	gjk_vs_plane(t_gjk_shape *sa, t_physics_body *ba, t_transform *ta,
 		n = vec3(0, 1, 0);
 	else
 		n = vec3_norm(pl->transform.up);
-	/* Deepest point of shape A in the -normal direction */
 	support = sa->support(sa->data, vec3_scale(n, -1.0));
 	to_support = vec3_sub(support, pl->transform.pos);
 	dist = vec3_dot(to_support, n);

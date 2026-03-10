@@ -21,20 +21,6 @@ static double	get_inv_mass(t_physics_body *body)
 	return (1.0 / body->mass);
 }
 
-// static t_vec3	get_velocity(t_physics_body *body)
-// {
-// 	if (!body)
-// 		return (vec3(0, 0, 0));
-// 	return (body->velocity);
-// }
-
-// static t_vec3	get_angular_vel(t_physics_body *body)
-// {
-// 	if (!body)
-// 		return (vec3(0, 0, 0));
-// 	return (body->angular_velocity);
-// }
-
 static void	apply_position_correction(t_contact *ct, double inv_a,
 		double inv_b)
 {

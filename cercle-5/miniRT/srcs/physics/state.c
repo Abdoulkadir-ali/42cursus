@@ -16,7 +16,7 @@
 /* Global singleton for physics configuration */
 static t_physics_state g_phys = {
     .gravity = {0, -9.81, 0, 0},
-    .global_damping = 0.12, /* Light air resistance */
+    .global_damping = 0.12,
     .time_scale = 1.0,
 	.mesh_simplify_collision = 1
 };

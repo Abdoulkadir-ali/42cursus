@@ -127,6 +127,24 @@ static void	integrate_sphere(t_sphere *sp, double dt, t_physics_state *state)
 	sp->phys.center = sp->transform.pos;
 }
 
+static void	init_rect_inertia(t_rect *rc)
+{
+	t_vec3	e0;
+	t_vec3	e1;
+	double	w2;
+	double	h2;
+
+	if (vec3_mag_sq(rc->phys.inv_inertia) > 1e-9)
+		return ;
+	e0 = vec3_sub(rc->v[1], rc->v[0]);
+	e1 = vec3_sub(rc->v[3], rc->v[0]);
+	w2 = vec3_mag_sq(e0) + 1e-9;
+	h2 = vec3_mag_sq(e1) + 1e-9;
+	rc->phys.inv_inertia.x = 12.0 / h2;
+	rc->phys.inv_inertia.y = 12.0 / (w2 + h2);
+	rc->phys.inv_inertia.z = 12.0 / w2;
+}
+
 static void	integrate_rect(t_rect *rc, double dt, t_physics_state *state)
 {
 	t_vec3	delta;
@@ -137,8 +155,16 @@ static void	integrate_rect(t_rect *rc, double dt, t_physics_state *state)
 		return ;
 	if (rc->phys.mass < 1e-6)
 		rc->phys.mass = 1.0;
-	if (vec3_mag_sq(rc->phys.inv_inertia) < 1e-9)
-		rc->phys.inv_inertia = vec3(3.0, 3.0, 3.0);
+	init_rect_inertia(rc);
+	delta = vec3_scale(vec3_add(vec3_add(rc->v[0], rc->v[1]),
+				vec3_add(rc->v[2], rc->v[3])), 0.25);
+	delta = vec3_sub(rc->transform.pos, delta);
+	i = 0;
+	while (i < 4)
+	{
+		rc->v[i] = vec3_add(rc->v[i], delta);
+		i++;
+	}
 	rc->phys.velocity = vec3_add(rc->phys.velocity,
 			vec3_scale(state->gravity, dt));
 	rc->phys.velocity = vec3_scale(rc->phys.velocity,
@@ -172,7 +198,13 @@ static void	integrate_pyramid(t_pyramid *py, double dt, t_physics_state *state)
 	if (py->phys.mass < 1e-6)
 		py->phys.mass = 1.0;
 	if (vec3_mag_sq(py->phys.inv_inertia) < 1e-9)
-		py->phys.inv_inertia = vec3(2.0, 2.0, 2.0);
+	{
+		const double	s2 = py->base_size * py->base_size + 1e-9;
+		const double	h2 = py->height * py->height + 1e-9;
+		py->phys.inv_inertia.x = 10.0 / (s2 * 0.25 + h2 * 0.4);
+		py->phys.inv_inertia.y = 6.0 / s2;
+		py->phys.inv_inertia.z = 10.0 / (s2 * 0.25 + h2 * 0.4);
+	}
 	py->phys.velocity = vec3_add(py->phys.velocity,
 			vec3_scale(state->gravity, dt));
 	py->phys.velocity = vec3_scale(py->phys.velocity,
@@ -183,10 +215,11 @@ static void	integrate_pyramid(t_pyramid *py, double dt, t_physics_state *state)
 	py->transform.rotation.pitch += rot_d.x;
 	py->transform.rotation.yaw += rot_d.y;
 	py->transform.rotation.roll += rot_d.z;
-	py->up = rot_by_ang(py->up, py->phys.angular_velocity, dt);
+	py->up = vec3_norm(rot_by_ang(py->up, py->phys.angular_velocity, dt));
 	py->transform.pos = vec3_add(py->transform.pos,
 			vec3_scale(py->phys.velocity, dt));
-	py->phys.center = py->transform.pos;
+	py->phys.center = vec3_add(py->transform.pos,
+			vec3_scale(py->up, py->height * 0.25));
 }
 
 static void	init_box_inertia(t_box *bx)
@@ -220,8 +253,8 @@ static void	integrate_box(t_box *bx, double dt, t_physics_state *state)
 	bx->transform.rotation.pitch += rot_d.x;
 	bx->transform.rotation.yaw += rot_d.y;
 	bx->transform.rotation.roll += rot_d.z;
-	bx->transform.forward = rot_by_ang(bx->transform.forward,
-			bx->phys.angular_velocity, dt);
+	bx->transform.forward = vec3_norm(rot_by_ang(bx->transform.forward,
+			bx->phys.angular_velocity, dt));
 	bx->transform.pos = vec3_add(bx->transform.pos,
 			vec3_scale(bx->phys.velocity, dt));
 	bx->phys.center = bx->transform.pos;
@@ -260,10 +293,24 @@ static void	integrate_capsule(t_capsule *cap, double dt, t_physics_state *state)
 	cap->transform.rotation.pitch += rot_d.x;
 	cap->transform.rotation.yaw += rot_d.y;
 	cap->transform.rotation.roll += rot_d.z;
-	cap->axis = rot_by_ang(cap->axis, cap->phys.angular_velocity, dt);
+	cap->axis = vec3_norm(rot_by_ang(cap->axis, cap->phys.angular_velocity, dt));
 	cap->transform.pos = vec3_add(cap->transform.pos,
 			vec3_scale(cap->phys.velocity, dt));
 	cap->phys.center = cap->transform.pos;
+}
+
+static void	init_tri_inertia(t_tri_shape *tr)
+{
+	double	a2;
+	double	b2;
+
+	if (vec3_mag_sq(tr->phys.inv_inertia) > 1e-9)
+		return ;
+	a2 = vec3_mag_sq(vec3_sub(tr->v[1], tr->v[0])) + 1e-9;
+	b2 = vec3_mag_sq(vec3_sub(tr->v[2], tr->v[0])) + 1e-9;
+	tr->phys.inv_inertia.x = 18.0 / b2;
+	tr->phys.inv_inertia.y = 18.0 / (a2 + b2);
+	tr->phys.inv_inertia.z = 18.0 / a2;
 }
 
 static void	integrate_tri(t_tri_shape *tr, double dt, t_physics_state *state)
@@ -276,8 +323,16 @@ static void	integrate_tri(t_tri_shape *tr, double dt, t_physics_state *state)
 		return ;
 	if (tr->phys.mass < 1e-6)
 		tr->phys.mass = 1.0;
-	if (vec3_mag_sq(tr->phys.inv_inertia) < 1e-9)
-		tr->phys.inv_inertia = vec3(3.0, 3.0, 3.0);
+	init_tri_inertia(tr);
+	delta = vec3_scale(vec3_add(vec3_add(tr->v[0], tr->v[1]), tr->v[2]),
+			1.0 / 3.0);
+	delta = vec3_sub(tr->xform.pos, delta);
+	i = 0;
+	while (i < 3)
+	{
+		tr->v[i] = vec3_add(tr->v[i], delta);
+		i++;
+	}
 	tr->phys.velocity = vec3_add(tr->phys.velocity,
 			vec3_scale(state->gravity, dt));
 	tr->phys.velocity = vec3_scale(tr->phys.velocity,
@@ -335,8 +390,8 @@ static void	integrate_cylinder(t_cylinder *cy, double dt, t_physics_state *state
 	cy->transform.rotation.pitch += rot_d.x;
 	cy->transform.rotation.yaw += rot_d.y;
 	cy->transform.rotation.roll += rot_d.z;
-	cy->transform.forward = rot_by_ang(cy->transform.forward,
-			cy->phys.angular_velocity, dt);
+	cy->transform.forward = vec3_norm(rot_by_ang(cy->transform.forward,
+			cy->phys.angular_velocity, dt));
 	cy->transform.pos = vec3_add(cy->transform.pos,
 			vec3_scale(cy->phys.velocity, dt));
 	cy->phys.center = vec3_add(cy->transform.pos,

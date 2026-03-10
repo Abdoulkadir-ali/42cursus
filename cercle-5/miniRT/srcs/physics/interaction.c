@@ -31,7 +31,6 @@ void	physics_shoot_ray(t_scene *scene, t_ray ray, double impulse)
 
 	if (bvh_intersect(scene->bvh, &ray, &hit))
 	{
-		/* Identify the object and get its physics body */
 		if (hit.ref.type == TYPE_SPHERE)
 			phys = &scene->spheres[hit.ref.index].phys;
 		else if (hit.ref.type == TYPE_TRI)
@@ -49,33 +48,20 @@ void	physics_shoot_ray(t_scene *scene, t_ray ray, double impulse)
 
 		if (phys && !phys->is_static)
 		{
-			/* Apply Impulse: v += J / m * direction */
-			/* Ensure mass is valid to avoid div by zero, though integrate fixes it */
 			if (phys->mass > 1e-6)
 			{
-				/* Linear Impulse */
 				t_vec3 delta_v = vec3_scale(ray.direction, impulse / phys->mass);
 				phys->velocity = vec3_add(phys->velocity, delta_v);
-				
-				/* Angular Impulse (Torque) */
 				t_vec3 center_pos = phys->center;
-					
 				t_vec3 hit_point = vec3_add(ray.origin, vec3_scale(ray.direction, hit.t));
 				t_vec3 r = vec3_sub(hit_point, center_pos);
 				t_vec3 force_vec = vec3_scale(ray.direction, impulse);
 				t_vec3 torque = vec3_cross(r, force_vec);
 				double inv_m = 1.0 / phys->mass;
-
-				/* Angular impulse: scale with lever arm length so all shapes
-				   feel consistent with spheres regardless of their inertia tensor.
-				   fmax(r², 1) prevents blow-up on near-center hits. */
 				if (vec3_mag_sq(r) > 1e-6)
 				{
 					double inv_i = 2.5 * inv_m / fmax(vec3_mag_sq(r), 1.0);
 					t_vec3 dw = vec3_scale(torque, inv_i);
-
-					/* For cylinders: remove the spin component along the
-					   symmetry axis to avoid beyblade rotation. */
 					if (hit.ref.type == TYPE_CYLINDER)
 					{
 						t_vec3 ax = vec3_norm(
@@ -86,9 +72,6 @@ void	physics_shoot_ray(t_scene *scene, t_ray ray, double impulse)
 					phys->angular_velocity = vec3_add(
 						phys->angular_velocity, dw);
 				}
-
-				printf("Physics: Impulse %.1f on Obj %d (Torque: %.2f)\n",
-						impulse, hit.ref.index, vec3_mag(torque));
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 09:48:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/09 19:46:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,13 +116,11 @@ static void	solve_one_velocity(t_contact *ct, double inv_a, double inv_b)
 	vn = vec3_dot(rel_v, ct->normal);
 	if (vn < 0.0)
 	{
-		/* Full denominator: translational + rotational inertia */
 		denom = inv_a + inv_b
 			+ ang_term(ct->a, ct->ra, ct->normal, inv_a)
 			+ ang_term(ct->b, ct->rb, ct->normal, inv_b);
 		if (denom < 1e-9)
 			return ;
-		/* Only bounce when approach speed exceeds threshold (kills spawn jolt) */
 		e = 0.0;
 		if (vn < -RESTITUTION_SLOP)
 			e = ct->restitution;
@@ -140,7 +138,6 @@ static void	solve_one_velocity(t_contact *ct, double inv_a, double inv_b)
 					vec3_scale(impulse, inv_b));
 			apply_torque(ct->b, ct->rb, impulse, inv_b, 1.0);
 		}
-		/* Friction only when bodies are actually in contact (vn < 0) */
 		va = point_vel(ct->a, ct->ra);
 		vb = point_vel(ct->b, ct->rb);
 		apply_friction(ct, inv_a, inv_b, vec3_sub(vb, va));

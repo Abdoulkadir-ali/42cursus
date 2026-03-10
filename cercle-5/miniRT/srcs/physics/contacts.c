@@ -225,49 +225,6 @@ static int	tri_vs_plane(t_tri_shape *tr, t_plane *pl, t_contact *c,
 	return (count);
 }
 
-static int	capsule_vs_plane(t_capsule *cap, t_plane *pl, t_contact *c,
-				int max_c)
-{
-	t_vec3	n;
-	t_vec3	poles[2];
-	t_vec3	cp;
-	t_vec3	to_v;
-	double	dist;
-	int			count;
-	int			i;
-
-	n = vec3_norm(pl->transform.up);
-	poles[0] = vec3_sub(cap->transform.pos,
-			vec3_scale(cap->axis, cap->half_height));
-	poles[1] = vec3_add(cap->transform.pos,
-			vec3_scale(cap->axis, cap->half_height));
-	count = 0;
-	i = 0;
-	while (i < 2 && count < max_c)
-	{
-		to_v = vec3_sub(poles[i], pl->transform.pos);
-		dist = vec3_dot(to_v, n) - cap->radius;
-		if (dist < 0.0)
-		{
-			cp = vec3_sub(poles[i], vec3_scale(n, cap->radius));
-			c[count].normal = vec3_scale(n, -1.0);
-			c[count].penetration = -dist;
-			c[count].a = &cap->phys;
-			c[count].b = NULL;
-			c[count].ta = &cap->transform;
-			c[count].tb = &pl->transform;
-			c[count].contact_point = cp;
-			c[count].ra = vec3_sub(cp, cap->phys.center);
-			c[count].rb = vec3(0, 0, 0);
-			c[count].restitution = fmin(cap->phys.elasticity, 0.5);
-			c[count].friction = sqrt(cap->phys.friction * 0.5);
-			count++;
-		}
-		i++;
-	}
-	return (count);
-}
-
 static int	pyramid_vs_plane(t_pyramid *py, t_plane *pl, t_contact *c,
 				int max_c)
 {
@@ -329,8 +286,6 @@ static int	pyramid_vs_plane(t_pyramid *py, t_plane *pl, t_contact *c,
 static int	check_leaf_ref(t_scene *s, t_sphere *sphere, int idx,
 		t_bvh_ref ref, t_contact *c)
 {
-	t_gjk_shape	sa;
-	t_gjk_shape	sb;
 	t_sphere	*other;
 	t_vec3		d;
 	double		dist_sq;
@@ -384,8 +339,6 @@ static int	check_leaf_ref(t_scene *s, t_sphere *sphere, int idx,
 		c->rb = vec3_sub(c->contact_point, m->phys.center);
 		return (1);
 	}
-	(void)sa;
-	(void)sb;
 	return (0);
 }
 
@@ -779,7 +732,8 @@ static int	query_capsule(t_scene *s, int idx, t_contact *c, int count,
 	p = 0;
 	while (p < s->plane_count && count < max)
 	{
-		count += capsule_vs_plane(cap, &s->planes[p], &c[count], max - count);
+		count += gjk_vs_plane(&sa, &cap->phys, &cap->transform,
+				&s->planes[p], &c[count]);
 		p++;
 	}
 	p = idx + 1;
