@@ -8,7 +8,6 @@ SRCS_DIR    = srcs
 OBJS_DIR    = objs
 
 SRCS        = $(shell find $(SRCS_DIR) -name "*.c")
-
 OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 
 LIBFT_DIR   = packages/libft

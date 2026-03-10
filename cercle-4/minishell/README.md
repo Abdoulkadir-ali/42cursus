@@ -1,111 +1,143 @@
-# 🐚 **Minishell** - *As beautiful as a shell*
+# 🐚 **Minishell** - *A small shell with a full pipeline behind it*
 
-> **A minimal bash-like shell implementation.**  
-> Recreating the core functionality of a Unix shell in C.
+> **A 42 minishell implementation in C.**  
+> This project recreates the essential behavior of a Unix shell: reading
+> commands, parsing them, expanding them, building execution structures, and
+> running them with the correct process, redirection, and signal behavior.
 
 ![Language](https://img.shields.io/badge/Language-C-00599C?style=for-the-badge&logo=c&logoColor=white)
-![Status](https://img.shields.io/badge/Status-In%20Progress-yellow?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+![Project](https://img.shields.io/badge/Project-42%20Minishell-1f6feb?style=for-the-badge)
+![Architecture](https://img.shields.io/badge/Architecture-Modular-success?style=for-the-badge)
 
 ---
 
 ## 📖 **Overview**
 
-**Minishell** is a 42 school project that involves creating a simplified shell. The goal is to understand how a shell works under the hood: process creation, synchronization, file file descriptors, pipes, redirections, and signal handling.
+Minishell is an educational shell project focused on the parts of Unix command
+execution that matter most:
+
+- process creation and waiting
+- pipes and file-descriptor redirections
+- shell tokenization and syntax validation
+- environment expansion and wildcard expansion
+- AST-based execution
+- signal-aware interactive behavior
+- in-process builtins that mutate shell state
+
+The codebase is organized as a real pipeline. A line of user input moves
+through reading, tokenization, expansion, AST building, heredoc preparation,
+and execution, then feeds its exit status back into the next prompt cycle.
 
 ---
 
-## ✨ **Features**
+## ✨ **What This Shell Supports**
 
-### 🧠 **Parsing & Expansion**
-- **Robust Tokenizer**: Handles complex command structures.
-- **Quote Handling**: Supports single (`'`) and double (`"`) quotes.
-  - Double quotes expand variables (`$USER`).
-# minishell
+- interactive prompt mode
+- command-line mode with `-c`
+- pipelines with `|`
+- logical operators `&&` and `||`
+- command grouping with parentheses / subshell execution
+- redirections `<`, `>`, `>>`, heredoc `<<`, and here-string handling
+- environment variable expansion
+- quote-aware parsing and expansion
+- wildcard expansion with `*` and `?`
+- builtin commands: `echo`, `cd`, `pwd`, `env`, `export`, `unset`, `exit`
 
-A compact POSIX-like shell implemented for the 42 cursus. This repository contains
-the tokenizer, parser, expansion/wildcard logic, heredoc handling, and the
-execution layer including builtins.
+---
 
-## Highlights
+## 🏗️ **Global Pipeline**
 
-- Tokenizer & AST-based execution
-- Quote handling and environment variable expansion
-- Builtins: `echo`, `cd`, `pwd`, `env`, `export`, `unset`, `exit`
-- Heredoc support with safe temporary-file creation
-- Ongoing refactors to reduce exported symbols and improve modularity
+At a high level, the shell runs this pipeline:
 
-## Layout (important folders)
+```text
+startup -> read -> tokenize -> validate -> expand -> build AST -> prepare heredocs -> execute -> store status
+```
 
-- `srcs/core` — main, signal handling, input loop
-- `srcs/parsing` — tokenizer, expansion, wildcard matching, AST builder
-- `srcs/exec` — execution layer, builtins, heredoc, env management
-   - `srcs/exec/builtins` — builtin wrappers
-   - `srcs/exec/env` — env helpers and builtin implementations
-   - `srcs/exec/heredoc` — heredoc generator/reader
-- `includes` — project headers
-- `packages/libft` — bundled libft static library
+In folder terms, the runtime flow is:
 
-## Build
+```text
+core -> input -> parsing -> exec
+          ^                    |
+          |                    v
+        state <----------------+
+```
 
-Requirements: a POSIX toolchain (`cc`), `make`, and `readline`.
+The stages are:
 
-# Minishell — a small, thoughtful shell implementation
+1. `core/` starts the shell and owns the main loop.
+2. `state/` initializes shell-owned environment data, `SHLVL`, and signal modes.
+3. `input/` reads one logical command line, including multiline continuation.
+4. `parsing/tokenizer/` builds a token list and checks syntax.
+5. `parsing/env/` expands variables and performs shell-style split behavior.
+6. `parsing/wildcard/` expands active wildcard patterns.
+7. `parsing/ast/` converts the transformed tokens into an execution tree.
+8. `exec/heredoc/` materializes heredoc input before normal execution starts.
+9. `exec/ast/` walks the tree and dispatches commands, pipes, redirections, logic, and subshells.
+10. `exec/builtins/` and `exec/env/` handle shell-owned builtins and mutable environment updates.
+11. The final status is written back into shell state for the next iteration.
 
-This project is an educational, focused implementation of a POSIX-like
-command-line shell written in C. Building a shell is an excellent way to gain
-hands-on experience with processes, file descriptors, inter-process
-communication, parsing, and Unix signals — all while producing a useful and
-tangible program.
+---
 
-The codebase is intentionally compact and readable so you can explore and
-modify the key subsystems without getting lost in unrelated complexity.
+## 🗂️ **Project Layout**
 
-Why this project is valuable:
+### `srcs/`
 
-- It demonstrates real-world systems programming patterns: fork/exec,
-   redirection, and safe resource cleanup.
-- It provides a practical exercise in tokenizer/parser design and
-   transformation (expansion and AST-based execution).
-- It is a teachable codebase: helper functions are kept small, and many
-   utilities are file-local (`static`) to make reasoning about the API surface
-   easier.
+The full implementation tree.
 
-## What this shell supports
+- `srcs/core/` — program entry and the main shell loop
+- `srcs/input/` — reading and preprocessing command lines
+- `srcs/parsing/` — tokenization, expansion, wildcard logic, and AST building
+- `srcs/exec/` — execution, builtins, heredocs, environment mutation
+- `srcs/state/` — shell-owned runtime state and signal policy
+- `srcs/lib/` — small shared runtime helpers
 
-- Command execution and pipelines (`|`)
-- Simple redirections: input `<`, output `>`, append `>>`
-- Heredoc (`<<`) with secure temporary-file handling
-- Variable expansion and quote handling
-- Common builtins: `echo`, `cd`, `pwd`, `env`, `export`, `unset`, `exit`
+For the high-level source-tree guide, see [srcs/README.md](srcs/README.md).
 
-## Project layout (quick guide)
+### `includes/`
 
-Top-level folders you will interact with:
+The public API layer of the project.
 
-- `includes/` — project headers and public APIs.
-- `srcs/core/` — program entry (`main.c`), signal setup and the interactive
-   loop.
-- `srcs/parsing/` — tokenizer, expansion, wildcard matching and AST builder.
-- `srcs/exec/` — execution layer and builtins. Subfolders:
-   - `builtins/` — builtin command drivers and glue to exec layer.
-   - `env/` — environment helpers and `export`/`unset` implementations.
-   - `heredoc/` — heredoc handling and temporary-file creation.
-   - `exec/` — process launching, pipe setup and redirection handling.
-- `packages/libft/` — bundled `libft` static library used at link time.
+- `core.h` — top-level program entry points
+- `input.h` — input pipeline APIs
+- `parsing.h` — tokens, AST, expansion, wildcard, and parser APIs
+- `exec.h` — execution and builtin APIs
+- `state.h` — shell state and signal APIs
+- `lib.h` — shared utility helpers
 
-File and design conventions:
+For the header-layer overview, see [includes/README.md](includes/README.md).
 
-- Keep helper functions `static` if they are only used in a single file.
-- Prefer explicit ownership of heap memory: document whether a caller must
-   free returned strings.
-- Group related local variables into small context structures where it
-   simplifies function signatures.
+### `packages/libft/`
 
-## Build instructions
+Bundled `libft` dependency used by the shell at build and runtime.
 
-Prerequisites: a C toolchain (`cc`), `make`, and the `readline` development
-headers.
+### Test and helper folders
+
+- `minishell_tester/` — bash-based tester and manual test assets
+- `minishell_tester2/` — python-based tester and generated case runner
+
+---
+
+## 🧠 **Why the Architecture Looks Like This**
+
+This project deliberately separates responsibilities:
+
+- `input/` deals with acquiring a complete command line
+- `parsing/` turns text into structured shell data
+- `exec/` turns that structured data into actual runtime behavior
+- `state/` keeps the environment and signal-sensitive state consistent across the whole shell
+
+That split keeps the project easier to reason about than a shell built as one
+large file with shared global logic everywhere.
+
+---
+
+## ⚙️ **Build**
+
+Prerequisites:
+
+- `cc`
+- `make`
+- `readline` and its development headers
 
 Build from the repository root:
 
@@ -113,106 +145,86 @@ Build from the repository root:
 make
 ```
 
-Common targets:
+Useful targets:
 
-- `make` — build the binary `minishell`.
-- `make clean` — remove object files.
-- `make fclean` — remove object files and the executable.
-- `make re` — full rebuild.
+- `make` — build `minishell`
+- `make clean` — remove object files
+- `make fclean` — remove object files and the executable
+- `make re` — full rebuild
 
-## Running the shell
+---
 
-Start an interactive shell:
+## ▶️ **Run**
+
+Start the interactive shell:
 
 ```bash
 ./minishell
 ```
 
-Run a single command and exit:
+Run one command with `-c`:
 
 ```bash
 ./minishell -c "echo hello"
 ```
 
-## Examples and behaviors
+---
 
-- Variable expansion respects quoting: `$VAR` inside double quotes expands,
-   single quotes are literal.
-- `export` and `unset` affect the runtime environment used by subsequent
-   commands in the same session.
-- Heredoc input is written to a secure temporary file which is then used as
-   stdin for the command; this avoids races and permissions issues.
+## 🔬 **Testing**
 
-## Testing and debugging
+This repository already includes tester folders you can use:
 
-- There is a `42_minishell_tester/` directory with community test scripts.
-   You can adapt or use its scripts to validate behavior.
-- To check memory safety, run the shell under Valgrind while exercising
-   builtins and pipelines:
+- `minishell_tester/`
+- `minishell_tester2/`
+
+Typical examples:
+
+```bash
+bash minishell_tester/tester
+```
+
+```bash
+python3 minishell_tester2/main.py
+```
+
+For memory checking, Valgrind is still useful:
 
 ```bash
 valgrind --leak-check=full --show-leak-kinds=all ./minishell
 ```
 
-- Use the environment-driven debug hooks in the code (`MINI_DEBUG_*`) to
-   enable verbose token or execution logging when needed.
+---
 
-## Developing and contributing
+## 📚 **Documentation Map**
 
-Contributions are welcome. Suggested workflow:
+The repository now includes subsystem READMEs that describe the shell in more
+detail:
 
-1. Create a feature branch for each logical change (e.g. `feature/wildcard`).
-2. Keep commits small and focused; include a test case when behavior changes.
-3. Run `make` and the test scripts locally before opening a PR.
+- [srcs/README.md](srcs/README.md) — high-level source pipeline
+- [includes/README.md](includes/README.md) — public header and API map
+- [srcs/core/README.md](srcs/core/README.md) — startup and main-loop flow
+- [srcs/input/README.md](srcs/input/README.md) — reader and input-processing flow
+- [srcs/parsing/README.md](srcs/parsing/README.md) — tokenization, expansion, AST, wildcard flow
+- [srcs/exec/README.md](srcs/exec/README.md) — heredoc and execution flow
+- [srcs/state/README.md](srcs/state/README.md) — runtime state and signal flow
 
-Coding preferences in this repo:
-
-- Small, well-named functions (a function-per-concept helps readability).
-- Limit the number of non-static symbols exported by a file — helpers should
-   be `static` when possible.
-- Check return values and propagate errors; avoid silent failures.
-
-## Further improvements you might try
-
-- Add job control (`fg`, `bg`) and signal-aware terminal control.
-- Improve the parser to support more shell grammar constructs.
-- Add a test harness that runs a matrix of shell commands and validates
-   outputs and exit codes.
-
-## License and attribution
-
-This repository includes a bundled test harness (`42_minishell_tester`) which
-may have its own license; check `42_minishell_tester/LICENSE`. Use this code
-for learning and experimentation — adapt licenses as appropriate for your
-use.
+Those files are the best place to read the implementation pipeline one stage at
+a time.
 
 ---
 
-If you want, I can add a `CONTRIBUTING.md` with a checklist and a short run
-book for developers (valgrind, test commands, CI hints). Tell me and I will
-add it.
+## 🛠️ **Development Notes**
 
-Example:
-
-```bash
-bash 42_minishell_tester/tester.sh a
-```
-
-## Recent refactors / notes
-
-- `export` logic and helpers were reorganized under `srcs/exec/env`.
-- Introduced a single `t_global_state g_state` and compatibility macros in
-   `includes/core.h` (e.g. `g_envp`, `g_exit_code`, `g_last_signal`).
-- Many helper functions were made `static` to reduce the public symbol surface.
-
-If you move files, update `Makefile`'s `SRCS` list.
-
-## Contributing
-
-Open small, focused PRs. Run `make` and the tester locally before submitting.
-Prefer `static` helpers when functions are only used in a single file.
+- Keep helper functions `static` when they are local to one translation unit.
+- Treat ownership clearly for allocated strings and lists.
+- Keep the pipeline readable: reader -> parser -> executor should stay easy to follow.
+- If files move, update the `SRCS` list in the `Makefile`.
 
 ---
 
-If you'd like, I can add a short development guide (valgrind usage, test
-matrix, recommended coding style). Tell me what to include next.
+## 🚧 **Potential Next Steps**
+
+- extend the grammar further
+- add job control
+- expand the automated test matrix
+- keep reducing unnecessary exported symbols across modules
