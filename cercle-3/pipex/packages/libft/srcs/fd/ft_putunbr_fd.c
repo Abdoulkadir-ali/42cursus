@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_putunbr_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/16 20:06:45 by abdali            #+#    #+#             */
-/*   Updated: 2025/11/04 09:57:31 by abdoali          ###   ########.fr       */
+/*   Created: 2025/10/24 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2025/11/04 10:59:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "libft.h"
 
-void	*ft_memset(void *s, int c, size_t n)
+void	ft_putunbr_fd(unsigned int n, int fd)
 {
-	unsigned char	*str;
-	unsigned char	byte;
+	char	str[10];
+	int		i;
 
-	str = (unsigned char *)s;
-	byte = (unsigned char)c;
-	if (!str)
-		return (str);
+	if (n == 0)
+		return (ft_putchar_fd('0', fd));
+	i = 0;
 	while (n)
-		str[n-- - 1] = byte;
-	return (str);
+	{
+		str[i++] = n % 10 + '0';
+		n = n / 10;
+	}
+	i--;
+	while (i >= 0)
+	{
+		ft_putchar_fd(str[i--], fd);
+	}
 }

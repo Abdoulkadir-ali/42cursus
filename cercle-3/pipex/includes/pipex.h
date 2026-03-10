@@ -6,14 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/09 00:00:00 by abdali            #+#    #+#             */
-/*   Updated: 2025/11/09 21:44:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 04:07:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "get_next_line.h"
 # include "libft.h"
 # include <errno.h>
 # include <fcntl.h>

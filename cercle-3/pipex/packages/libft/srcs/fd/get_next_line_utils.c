@@ -6,52 +6,36 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 19:13:14 by abdoali           #+#    #+#             */
-/*   Updated: 2025/11/09 16:47:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2025/11/12 17:56:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-#include <stdlib.h>
-#include <unistd.h>
+#include "libft.h"
 
-char	*ft_strldup(char *str, int l)
+int	gnl_strchr_idx(char *str, char c)
 {
-	char	*r;
-	int		i;
+	char	*pos;
 
 	if (!str)
-		return (NULL);
-	i = 0;
-	r = malloc(sizeof(char) * (l + 1));
-	if (!r)
-		return (NULL);
-	while (*str && i < l)
-		r[i++] = *str++;
-	r[i] = 0;
-	return (r);
+		return (-1);
+	pos = ft_strchr(str, c);
+	if (!pos)
+		return (-1);
+	return (pos - str);
 }
 
-char	*ft_realloc(char *s1, char *s2)
+char	*gnl_realloc(char *s1, char *s2)
 {
 	char	*res;
-	char	*temp;
-	int		total_len;
-	int		i;
 
-	i = 0;
-	total_len = ft_strlen(s1) + ft_strlen(s2);
-	res = malloc(sizeof(char) * (total_len + 1));
-	if (!res)
+	if (!s1 && !s2)
 		return (NULL);
-	temp = s1;
-	while (temp && *temp)
-		res[i++] = *temp++;
-	temp = s2;
-	while (temp && *temp)
-		res[i++] = *temp++;
-	res[i] = 0;
-	if (s1)
-		free(s1);
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (s1);
+	res = ft_strjoin(s1, s2);
+	free(s1);
 	return (res);
 }
 
