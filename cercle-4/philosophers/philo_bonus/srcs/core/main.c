@@ -6,12 +6,21 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 14:37:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 05:06:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+/**
+ * main - Entry point for the philo_bonus simulation.
+ * @ac: Argument count.
+ * @av: Argument vector.
+ *
+ * Validates argument count and values, parses rules, checks philosopher limit,
+ * and launches the simulation. Prints errors to stderr on invalid input.
+ * Returns 0 on success, 1 on error.
+ */
 int	main(int ac, char **av)
 {
 	t_rules	rules;

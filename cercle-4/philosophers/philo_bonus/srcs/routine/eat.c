@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:55:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 05:06:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+/**
+ * @brief Monitor meal completion for all philosophers.
+ * @param arg Pointer to rules struct (cast from void*).
+ * @return NULL when monitoring ends.
+ *
+ * Waits for meal_check semaphore from each philosopher, then signals stop.
+ */
 void	*meal_monitor(void *arg)
 {
 	t_rules	*rules;
@@ -28,6 +35,12 @@ void	*meal_monitor(void *arg)
 	return (NULL);
 }
 
+/**
+ * @brief Handle eating routine for a single philosopher (edge case).
+ * @param p Pointer to philosopher struct.
+ *
+ * Waits for fork, prints status, and loops sleeping forever.
+ */
 static void	handle_one_philo(t_philo *p)
 {
 	sem_wait(p->rules->forks);
@@ -36,6 +49,13 @@ static void	handle_one_philo(t_philo *p)
 		precise_usleep(1000);
 }
 
+/**
+ * @brief Acquire forks for a philosopher, 
+ * using waiter semaphore for deadlock avoidance.
+ * @param p Pointer to philosopher struct.
+ *
+ * Waits for waiter and forks, prints status for each.
+ */
 static void	take_forks(t_philo *p)
 {
 	if (p->rules->nb_philo > 1)
@@ -46,6 +66,12 @@ static void	take_forks(t_philo *p)
 	print_status(p, "has taken a fork");
 }
 
+/**
+ * @brief Release forks after eating, and signal waiter if needed.
+ * @param p Pointer to philosopher struct.
+ *
+ * Posts to forks and waiter semaphores.
+ */
 static void	drop_forks(t_philo *p)
 {
 	sem_post(p->rules->forks);
@@ -54,6 +80,13 @@ static void	drop_forks(t_philo *p)
 		sem_post(p->rules->waiter);
 }
 
+/**
+ * @brief Execute the eating routine for a philosopher.
+ * @param p Pointer to philosopher struct.
+ *
+ * Handles fork acquisition, eating, meal tracking, and fork release. 
+ * Signals meal completion if needed.
+ */
 void	philo_eat(t_philo *p)
 {
 	if (p->rules->nb_philo == 1)

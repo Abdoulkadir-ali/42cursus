@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 14:41:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 04:59:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,15 @@ static void	ft_putnbr(size_t n)
 	write(1, &c, 1);
 }
 
+/**
+ * @brief Print the status message for a philosopher in a thread-safe way.
+ * @param philo Pointer to the philosopher struct.
+ * @param msg Status message to print (e.g., "is eating", "died").
+ *
+ * Prints the timestamp, philosopher ID,
+	and status message. Sets the dead_flag if the message indicates death.
+ * Locks the dead_lock mutex to ensure output consistency across threads.
+ */
 void	print_status(t_philo *philo, char *msg)
 {
 	long	time;

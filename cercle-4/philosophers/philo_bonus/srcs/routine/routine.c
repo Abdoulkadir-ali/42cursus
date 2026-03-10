@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 09:25:44 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:43:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 05:06:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+/**
+ * @brief Initialize all semaphores used in the simulation.
+ * @param r Pointer to rules struct.
+ *
+ * Unlinks and opens semaphores for forks, print, stop, meal_check, and waiter.
+ */
 void	init_semaphores(t_rules *r)
 {
 	sem_unlink("/forks");
@@ -26,6 +32,13 @@ void	init_semaphores(t_rules *r)
 	r->waiter = sem_open("/waiter", O_CREAT, 0644, r->nb_philo - 1);
 }
 
+/**
+ * @brief Start the simulation by launching philosopher processes.
+ * @param rules Pointer to rules struct.
+ * @param philos Array of philosopher structs.
+ *
+ * Forks processes for each philosopher and starts their routines.
+ */
 void	start_simulation(t_rules *rules, t_philo *philos)
 {
 	size_t	i;
@@ -50,6 +63,13 @@ void	start_simulation(t_rules *rules, t_philo *philos)
 	}
 }
 
+/**
+ * @brief Terminate all philosopher processes and clean up semaphores.
+ * @param rules Pointer to rules struct.
+ * @param philos Array of philosopher structs.
+ *
+ * Sends SIGKILL to all processes, waits for them, closes and unlinks semaphores.
+ */
 void	terminate_simulation(t_rules *rules, t_philo *philos)
 {
 	size_t	i;
@@ -72,6 +92,13 @@ void	terminate_simulation(t_rules *rules, t_philo *philos)
 	sem_unlink("/waiter");
 }
 
+/**
+ * @brief Main routine for each philosopher process.
+ * @param p Pointer to philosopher struct.
+ *
+ * Initializes meal_lock, starts death monitor, 
+ * and loops through eat, sleep, think.
+ */
 void	philo_routine(t_philo *p)
 {
 	pthread_t	monitor;
@@ -90,6 +117,13 @@ void	philo_routine(t_philo *p)
 	}
 }
 
+/**
+ * @brief Entry point for simulation setup and process management.
+ * @param rules Pointer to rules struct.
+ *
+ * Initializes semaphores, launches simulation, 
+ * starts meal monitor if needed, waits for stop, and terminates.
+ */
 void	philo(t_rules *rules)
 {
 	t_philo		philos[MAX_PHILOS];

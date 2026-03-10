@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 14:37:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 05:03:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+/**
+ * @brief Monitor philosopher death based on time since last meal.
+ * @param arg Pointer to philosopher struct (cast from void*).
+ * @return NULL when monitoring ends.
+ *
+ * Waits for meal_lock, checks time, prints status and signals stop if dead.
+ */
 void	*death_monitor(void *arg)
 {
 	t_philo	*p;

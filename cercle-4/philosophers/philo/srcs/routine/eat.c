@@ -6,12 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 16:44:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 04:59:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Acquire forks for a philosopher,
+	handling single philosopher edge case.
+ * @param philo Pointer to the philosopher struct.
+ * @return 1 if unable to proceed (dead or single philosopher), 0 otherwise.
+ *
+ * Locks left fork, then right fork if possible. Prints status.
+ */
 static int	take_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_f);
@@ -32,6 +40,12 @@ static int	take_forks(t_philo *philo)
 	return (0);
 }
 
+/**
+ * @brief Perform eating action for a philosopher.
+ * @param philo Pointer to the philosopher struct.
+ *
+ * Updates last meal time, increments meal count, prints status, and sleeps.
+ */
 static void	perform_eating(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->meal_lock);
@@ -42,12 +56,25 @@ static void	perform_eating(t_philo *philo)
 	precise_usleep(philo->rules->time_to_eat);
 }
 
+/**
+ * @brief Release forks after eating.
+ * @param philo Pointer to the philosopher struct.
+ *
+ * Unlocks right and left forks.
+ */
 static void	drop_forks(t_philo *philo)
 {
 	pthread_mutex_unlock(philo->right_f);
 	pthread_mutex_unlock(philo->left_f);
 }
 
+/**
+ * @brief Execute the eating routine for a philosopher.
+ * @param philo Pointer to the philosopher struct.
+ * @return 1 if philosopher is done or dead, 0 otherwise.
+ *
+ * Calls fork acquisition, eating, and fork release. Checks meal completion.
+ */
 int	philo_eat(t_philo *philo)
 {
 	if (take_forks(philo))

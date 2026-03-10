@@ -2,51 +2,37 @@
 NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I includes
-
+RM          = rm -f
 SRCS_DIR = srcs
 OBJS_DIR = objs
 
-SRCS = srcs/core/main.c \
-       srcs/core/parse.c \
-	   srcs/lib/ft_atoll.c \
-	   srcs/lib/ft_putstr_fd.c \
-	   srcs/lib/ft_strlen.c \
-       srcs/lib/print.c \
-       srcs/lib/time.c \
-       srcs/routine/death.c \
-       srcs/routine/eat.c \
-       srcs/routine/routine.c \
-       srcs/routine/sleep.c \
-       srcs/routine/helper.c
-
-OBJS = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
-
-# Colors
-GREEN = \033[0;32m
-BLUE = \033[0;34m
-RED = \033[0;31m
-RESET = \033[0m
+SRCS        = $(shell find $(SRCS_DIR) -name "*.c")
+OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	@echo "$(GREEN)Linking $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
-	@echo "$(GREEN)$(NAME) ready!$(RESET)"
+$(NAME): $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
-	@echo "$(BLUE)Compiling $<...$(RESET)"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
 
 clean:
-	@echo "$(RED)Cleaning objects...$(RESET)"
-	@rm -rf $(OBJS_DIR)
+	$(RM) -r $(OBJS_DIR)
+	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	@echo "$(RED)Removing $(NAME)...$(RESET)"
-	@rm -f $(NAME)
+	$(RM) $(NAME)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+test: re
+	bash ~/tools/
+
+.PHONY: all clean fclean re test
+

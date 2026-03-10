@@ -1,17 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_atoll.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:05:05 by abdali            #+#    #+#             */
-/*   Updated: 2026/01/02 11:21:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 05:05:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+/**
+ * ft_atoll - Converts a string to a long long integer.
+ * @s: Input string to convert.
+ *
+ * Handles optional whitespace, sign, and digit parsing.
+ * Returns the converted value, or 0 if invalid.
+ */
 long long	ft_atoll(const char *s)
 {
 	long long	res;

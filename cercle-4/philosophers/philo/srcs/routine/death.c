@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 16:45:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 04:59:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Check if a philosopher has died based on time since last meal.
+ * @param philo Pointer to the philosopher struct.
+ * @return 1 if the philosopher died, 0 otherwise.
+ *
+ * Locks meal_lock, prints status if dead, and unlocks. Used by monitor.
+ */
 static int	died(t_philo *philo)
 {
 	t_rules	*r;
@@ -33,6 +40,13 @@ static int	died(t_philo *philo)
 	return (0);
 }
 
+/**
+ * @brief Check if all philosophers have finished their meals.
+ * @param philos Array of philosopher structs.
+ * @return 1 if all finished, 0 otherwise.
+ *
+ * Locks meal_lock for each philosopher, updates dead_flag if all finished.
+ */
 static int	check_meals(t_philo *philos)
 {
 	size_t	i;
@@ -62,6 +76,13 @@ static int	check_meals(t_philo *philos)
 	return (0);
 }
 
+/**
+ * @brief Check if any philosopher has died or all have finished meals.
+ * @param philos Array of philosopher structs.
+ * @return 1 if any died or all finished, 0 otherwise.
+ *
+ * Calls died for each philosopher and check_meals for completion.
+ */
 static int	check_all_philos(t_philo *philos)
 {
 	size_t	i;

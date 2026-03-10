@@ -6,12 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:56:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 05:07:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+/**
+ * parse_basic_args - Parses core simulation arguments.
+ * @rules: Pointer to rules struct to populate.
+ * @av: Argument vector.
+ *
+ * Converts arguments to numbers, checks validity, and fills rules struct.
+ * Returns 1 on invalid input, 0 on success.
+ */
 static int	parse_basic_args(t_rules *rules, char **av)
 {
 	long long	nb_philo;
@@ -33,6 +41,14 @@ static int	parse_basic_args(t_rules *rules, char **av)
 	return (0);
 }
 
+/**
+ * parse_meals - Parses optional meal count argument.
+ * @rules: Pointer to rules struct to populate.
+ * @av: Argument vector.
+ *
+ * Sets meal count or disables if not provided.
+ * Returns 1 on invalid input, 0 on success.
+ */
 static int	parse_meals(t_rules *rules, char **av)
 {
 	long long	nb_meals;
@@ -49,6 +65,14 @@ static int	parse_meals(t_rules *rules, char **av)
 	return (0);
 }
 
+/**
+ * parse_rules - Chains argument parsing for simulation rules.
+ * @rules: Pointer to rules struct to populate.
+ * @av: Argument vector.
+ *
+ * Calls parse_basic_args and parse_meals.
+ * Returns 1 on any invalid input, 0 on success.
+ */
 int	parse_rules(t_rules *rules, char **av)
 {
 	if (parse_basic_args(rules, av))

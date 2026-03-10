@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:57:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 04:54:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Parse basic simulation arguments and populate rules struct.
+ * @param rules Pointer to rules struct to fill.
+ * @param av Argument vector (simulation parameters).
+ * @return 0 on success, 1 on invalid input.
+ */
 static int	parse_basic_args(t_rules *rules, char **av)
 {
 	long long	nb_philo;
@@ -33,6 +39,12 @@ static int	parse_basic_args(t_rules *rules, char **av)
 	return (0);
 }
 
+/**
+ * @brief Parse optional meal count argument.
+ * @param rules Pointer to rules struct to fill.
+ * @param av Argument vector (simulation parameters).
+ * @return 0 on success, 1 on invalid input.
+ */
 static int	parse_meals(t_rules *rules, char **av)
 {
 	long long	nb_meals;

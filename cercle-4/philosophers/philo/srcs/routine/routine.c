@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 02:14:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/02 13:47:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 05:00:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Entry point for simulation setup and thread management.
+ * @param rules Pointer to rules struct.
+ *
+ * Initializes mutexes, philosopher data, threads, monitor, and handles cleanup.
+ */
 void	philo(t_rules *rules)
 {
 	pthread_t		philos[MAX_PHILOS];
@@ -26,6 +32,13 @@ void	philo(t_rules *rules)
 	destroy_mutexes(rules, forks);
 }
 
+/**
+ * @brief Main routine for each philosopher thread.
+ * @param arg Pointer to philosopher struct (cast from void*).
+ * @return NULL when routine ends.
+ *
+ * Loops through eating, sleeping, thinking, and death checks.
+ */
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
