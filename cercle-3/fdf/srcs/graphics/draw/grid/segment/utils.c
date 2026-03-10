@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/25 19:12:53 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 19:12:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Resolve the next grid coordinates for a segment neighbor.
+ * @param ctx Segment context to update.
+ * @param params Segment source parameters.
+ * @param is_horizontal Non-zero for horizontal neighbors, zero for vertical.
+ */
 void	compute_next_coords(t_segment_ctx *ctx, t_draw_line_params params,
 		int is_horizontal)
 {
@@ -27,6 +33,13 @@ void	compute_next_coords(t_segment_ctx *ctx, t_draw_line_params params,
 	}
 }
 
+/**
+ * @brief Build the tessellation context for one segment.
+ * @param ctx Segment context containing the resolved neighbor coordinates.
+ * @param g Graphics state providing map and render settings.
+ * @param params Segment source parameters.
+ * @return Initialized tessellation context.
+ */
 t_tessellation_ctx	init_tessellation_ctx(t_segment_ctx *ctx, t_graphics *g,
 		t_draw_line_params params)
 {

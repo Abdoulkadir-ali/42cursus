@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:21:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 21:38:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:09:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
+/**
+ * @brief Increase the target zoom using the configured zoom speed.
+ * @param ctx Camera manager owning the zoom state.
+ */
 void	zoom_in(t_camera_manager *ctx)
 {
 	double	factor;
@@ -22,6 +26,10 @@ void	zoom_in(t_camera_manager *ctx)
 		ctx->camera->target_scale = 100;
 }
 
+/**
+ * @brief Decrease the target zoom using the configured zoom speed.
+ * @param ctx Camera manager owning the zoom state.
+ */
 void	zoom_out(t_camera_manager *ctx)
 {
 	double	factor;
@@ -30,6 +38,10 @@ void	zoom_out(t_camera_manager *ctx)
 	ctx->camera->target_scale *= factor;
 }
 
+/**
+ * @brief Smoothly interpolate the current zoom toward the target zoom.
+ * @param ctx Camera manager owning the runtime zoom state.
+ */
 void	update_zoom(t_camera_manager *ctx)
 {
 	double	diff;

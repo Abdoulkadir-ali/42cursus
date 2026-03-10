@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:41:44 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:48:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:43:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ typedef struct s_load_ctx
 	t_thread_res		res;
 }						t_load_ctx;
 /* helpers used across modules */
-int		is_fdf_file(const char *filename);
-void	*load_map_thread_routine(void *arg);
+int						is_fdf_file(const char *filename);
+void					*load_map_thread_routine(void *arg);
 /* ========== VECTORS ========== */
 typedef struct s_tess_diagonal_ctx
 {
@@ -204,7 +204,7 @@ void					load_map_files(t_maps *m, DIR *dir, size_t count,
 int						is_directory(const char *path);
 
 t_map					*create_test_grid(void);
-t_map					*load_map(char *filename);
+t_map					*load_map(const char *filename);
 t_map					*tesselate_mesh(t_map *src);
 t_map					*init_tesselated_map(t_map *src, size_t *new_w,
 							size_t *new_h);
@@ -293,6 +293,5 @@ typedef struct s_load_thread_data
 	char				*path;
 	size_t				index;
 }						t_load_thread_data;
-
 
 #endif

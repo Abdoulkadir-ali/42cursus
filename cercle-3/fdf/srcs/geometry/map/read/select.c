@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:17:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Reset the map list to an empty state.
+ * @param m Map collection to reset.
+ */
 static void	init_no_maps(t_maps *m)
 {
 	m->map_files = NULL;
@@ -20,6 +24,11 @@ static void	init_no_maps(t_maps *m)
 	m->generated_id = 0;
 }
 
+/**
+ * @brief Allocate arrays used to store discovered maps.
+ * @param m Map collection to initialize.
+ * @param count Number of maps to reserve.
+ */
 static void	allocate_maps(t_maps *m, size_t count)
 {
 	m->map_files = ft_calloc(count, sizeof(char *));
@@ -28,6 +37,10 @@ static void	allocate_maps(t_maps *m, size_t count)
 	m->generated_id = 0;
 }
 
+/**
+ * @brief Initialize the fallback test map when no files are available.
+ * @param m Map collection to populate.
+ */
 static void	init_test_map(t_maps *m)
 {
 	m->current_map = create_test_grid();
@@ -39,6 +52,11 @@ static void	init_test_map(t_maps *m)
 	m->generated_id = 0;
 }
 
+/**
+ * @brief Discover maps in a directory and initialize the map list.
+ * @param m Map collection to fill.
+ * @param dir_path Directory that may contain `.fdf` maps.
+ */
 void	init_map_list(t_maps *m, char *dir_path)
 {
 	DIR		*dir;

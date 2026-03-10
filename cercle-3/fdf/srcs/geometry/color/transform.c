@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:24:11 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 19:11:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Clamp each component of an RGB vector in place.
+ * @param color Color vector to clamp.
+ * @param min Minimum allowed channel value.
+ * @param max Maximum allowed channel value.
+ */
 void	clamp_color(t_vec3 *color, int min, int max)
 {
 	color->x = clamp((int)color->x, min, max);
@@ -19,6 +25,12 @@ void	clamp_color(t_vec3 *color, int min, int max)
 	color->z = clamp((int)color->z, min, max);
 }
 
+/**
+ * @brief Apply an RGB offset and clamp the result.
+ * @param color Base color.
+ * @param shift Per-channel offset.
+ * @return Shifted and clamped color.
+ */
 t_vec3	shift_color(t_vec3 color, t_vec3 shift)
 {
 	vec3_add(&color, shift);
@@ -26,6 +38,13 @@ t_vec3	shift_color(t_vec3 color, t_vec3 shift)
 	return (color);
 }
 
+/**
+ * @brief Blend two colors linearly.
+ * @param c1 First color.
+ * @param c2 Second color.
+ * @param ratio Interpolation factor in the `[0, 1]` range.
+ * @return Interpolated color.
+ */
 t_vec3	interpolate_color(t_vec3 c1, t_vec3 c2, double ratio)
 {
 	t_vec3	res1;
@@ -45,6 +64,13 @@ t_vec3	interpolate_color(t_vec3 c1, t_vec3 c2, double ratio)
 	return (res1);
 }
 
+/**
+ * @brief Derive a gradient color from a height value.
+ * @param z Height value to colorize.
+ * @param min_z Minimum height in the map.
+ * @param max_z Maximum height in the map.
+ * @return Gradient color representing the given height.
+ */
 t_vec3	get_height_color(double z, int min_z, int max_z)
 {
 	t_vec3				c_low;

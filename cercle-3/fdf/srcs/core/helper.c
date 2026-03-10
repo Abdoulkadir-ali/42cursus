@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/26 19:20:34 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 19:40:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:37:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
+/**
+ * @brief Validate the startup arguments and resolve the requested map path.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @param map Output pointer receiving the resolved path.
+ * @return `1` when the path is usable, otherwise `0`.
+ */
 static int	check_args_and_map(int argc, char **argv, char **map)
 {
 	if (argc == 1)
@@ -34,6 +41,13 @@ static int	check_args_and_map(int argc, char **argv, char **map)
 	return (1);
 }
 
+/**
+ * @brief Initialize the top-level data aggregate and the MLX window system.
+ * @param data Application data aggregate to initialize.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @return `1` on success, otherwise `0`.
+ */
 int	init_data_and_window(t_data *data, int argc, char **argv)
 {
 	char	*map;
@@ -50,6 +64,13 @@ int	init_data_and_window(t_data *data, int argc, char **argv)
 	return (1);
 }
 
+/**
+ * @brief Initialize the camera manager and graphics runtime.
+ * @param data Application data aggregate receiving the new subsystems.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @return `1` on success, otherwise `0`.
+ */
 int	init_camera_and_graphics(t_data *data, int argc, char **argv)
 {
 	char			*map_file;
@@ -76,6 +97,11 @@ int	init_camera_and_graphics(t_data *data, int argc, char **argv)
 	return (1);
 }
 
+/**
+ * @brief Apply default render settings and prepare the first render state.
+ * @param data Application data aggregate holding the active subsystems.
+ * @return `1` on success, otherwise `0`.
+ */
 int	init_defaults_and_render(t_data *data)
 {
 	init_defaults(data);
@@ -84,6 +110,12 @@ int	init_defaults_and_render(t_data *data)
 	return (1);
 }
 
+/**
+ * @brief Create the event context, install hooks, and trigger the first redraw.
+ * @param data Application data aggregate holding the initialized subsystems.
+ * @param events Output pointer receiving the allocated event context.
+ * @return `1` on success, otherwise `0`.
+ */
 int	init_events_and_hooks(t_data *data, t_events **events)
 {
 	*events = init_events(&(t_events_args){data->window, data->graphics,

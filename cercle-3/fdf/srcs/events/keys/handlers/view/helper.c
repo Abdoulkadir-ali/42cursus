@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:48:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:24:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Adjust the camera move speed within the supported range.
+ * @param events Event context owning the camera state.
+ * @param increase Non-zero to increase the speed, zero to decrease it.
+ */
 void	adjust_move_speed(t_events *events, int increase)
 {
 	if (increase)
@@ -28,6 +33,11 @@ void	adjust_move_speed(t_events *events, int increase)
 	}
 }
 
+/**
+ * @brief Initialize the movement context from the current camera settings.
+ * @param ctx Movement context to populate.
+ * @param events Event context owning the camera state.
+ */
 void	init_movement_ctx(t_movement_ctx *ctx, t_events *events)
 {
 	ctx->v = create_vec2d(0, 0);
@@ -37,6 +47,11 @@ void	init_movement_ctx(t_movement_ctx *ctx, t_events *events)
 	ctx->speed = events->camera->move_speed;
 }
 
+/**
+ * @brief Build the movement vector from the currently held directional flags.
+ * @param ctx Movement context to update.
+ * @param events Event context owning the key state.
+ */
 void	calculate_movement_vector(t_movement_ctx *ctx, t_events *events)
 {
 	t_keys	*keyboard;
@@ -52,6 +67,11 @@ void	calculate_movement_vector(t_movement_ctx *ctx, t_events *events)
 		vec2d_add(&ctx->v, create_vec2d(1 * ctx->m, 0));
 }
 
+/**
+ * @brief Apply one frame of movement to the camera offset.
+ * @param ctx Movement context containing the resolved delta.
+ * @param events Event context owning the camera state.
+ */
 void	apply_movement(t_movement_ctx *ctx, t_events *events)
 {
 	t_vec2d	delta;
@@ -70,6 +90,10 @@ void	apply_movement(t_movement_ctx *ctx, t_events *events)
 	}
 }
 
+/**
+ * @brief Clamp the camera offset to a window-scaled safety range.
+ * @param events Event context owning the camera and window state.
+ */
 void	clamp_offset(t_events *events)
 {
 	double	max_off;

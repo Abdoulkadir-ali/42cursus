@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 21:52:25 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 15:29:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:39:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
+/**
+ * @brief Seed the graphics runtime with the default render options.
+ * @param data Application data aggregate owning the graphics state.
+ */
 void	init_defaults(t_data *data)
 {
 	data->graphics->render_config.render_mode = RENDER_LINES;
@@ -19,6 +23,12 @@ void	init_defaults(t_data *data)
 	data->graphics->render_config.use_depth_culling = 1;
 }
 
+/**
+ * @brief Allocate the main MLX image and the z-buffer for the window.
+ * @param win Window object receiving the image and z-buffer.
+ * @param mlx MLX connection pointer.
+ * @return `1` on success, otherwise `0`.
+ */
 int	init_window_main_image(t_window *win, void *mlx)
 {
 	t_image	*main_img;
@@ -43,6 +53,11 @@ int	init_window_main_image(t_window *win, void *mlx)
 	return (1);
 }
 
+/**
+ * @brief Initialize MLX itself and create the application window.
+ * @param data Application data aggregate receiving the MLX and window handles.
+ * @return `1` on success, otherwise `0`.
+ */
 int	init_window_system(t_data *data)
 {
 	data->mlx_ptr = mlx_init();
@@ -57,6 +72,11 @@ int	init_window_system(t_data *data)
 	return (1);
 }
 
+/**
+ * @brief Initialize the GUI and bind the current map and camera.
+ * @param data Application data aggregate holding the initialized subsystems.
+ * @return `1` on success, otherwise `0`.
+ */
 int	init_and_render(t_data *data)
 {
 	t_graphics	*g;

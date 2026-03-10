@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:59:50 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:53:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:21:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Write one pixel into the main image when it passes the depth test.
+ * @param g Graphics context owning the image and z-buffer.
+ * @param p Screen-space point to write.
+ */
 void	img_pixel_put_with_z(t_graphics *g, t_point p)
 {
 	char	*dst;

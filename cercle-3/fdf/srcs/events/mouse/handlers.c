@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 11:51:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:30:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Adjust the camera zoom speed within the allowed bounds.
+ * @param events Event context owning the active camera.
+ * @param increase Non-zero to increase the speed, zero to decrease it.
+ * @return Always `1` so callers can request a redraw.
+ */
 static int	adjust_zoom_speed(t_events *events, int increase)
 {
 	if (increase)
@@ -29,6 +35,13 @@ static int	adjust_zoom_speed(t_events *events, int increase)
 	return (1);
 }
 
+/**
+ * @brief Update mouse button state and anchor positions on click.
+ * @param button Mouse button identifier.
+ * @param x Mouse x position.
+ * @param y Mouse y position.
+ * @param mouse Mouse state to update.
+ */
 void	handle_mouse_click(int button, int x, int y, t_mouse *mouse)
 {
 	if (button == MOUSE_LEFT)
@@ -53,6 +66,12 @@ void	handle_mouse_click(int button, int x, int y, t_mouse *mouse)
 	}
 }
 
+/**
+ * @brief Handle scroll-wheel input for zoom or zoom-speed changes.
+ * @param button Mouse button identifier.
+ * @param events Event context owning the camera state.
+ * @return Always `1` so callers can request a redraw.
+ */
 int	handle_mouse_scroll(int button, t_events *events)
 {
 	if (button == MOUSE_SCROLL_UP)
@@ -72,6 +91,11 @@ int	handle_mouse_scroll(int button, t_events *events)
 	return (1);
 }
 
+/**
+ * @brief Clear the pressed state for a released mouse button.
+ * @param button Mouse button identifier.
+ * @param mouse Mouse state to update.
+ */
 void	handle_mouse_release(int button, t_mouse *mouse)
 {
 	if (button == MOUSE_LEFT)

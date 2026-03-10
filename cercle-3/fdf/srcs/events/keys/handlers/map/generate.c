@@ -6,13 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 00:35:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/25 23:30:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:25:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 #include "generator.h"
 
+/**
+ * @brief Rebind runtime pointers after a generated map replaces the current one.
+ * @param events Event context owning the runtime subsystems.
+ * @param new_map Newly generated map.
+ */
 static void	update_map_state(t_events *events, t_map *new_map)
 {
 	events->map = new_map;
@@ -36,6 +41,12 @@ static void	update_map_state(t_events *events, t_map *new_map)
 	}
 }
 
+/**
+ * @brief Generate a new procedural map and make it the active runtime map.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the map manager and runtime subsystems.
+ * @return `1` when a new map is installed, otherwise `0`.
+ */
 int	handle_g(int keycode, t_events *events)
 {
 	t_map	*new_map;

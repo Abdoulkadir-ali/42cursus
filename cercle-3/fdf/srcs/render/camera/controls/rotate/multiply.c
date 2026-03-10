@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 05:18:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 16:48:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:09:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
+/**
+ * @brief Multiply two 3x3 matrices stored as row vectors.
+ * @param a Left-hand matrix.
+ * @param b Right-hand matrix.
+ * @param out Output matrix receiving the product.
+ */
 static void	mat_mul(const t_vec3d a[3], const t_vec3d b[3], t_vec3d out[3])
 {
 	int	i;
@@ -26,6 +32,12 @@ static void	mat_mul(const t_vec3d a[3], const t_vec3d b[3], t_vec3d out[3])
 	}
 }
 
+/**
+ * @brief Multiply a 3x3 matrix by a vector.
+ * @param m Matrix to apply.
+ * @param v Input vector.
+ * @param result Output vector receiving the product.
+ */
 void	mat_vec_mul(const t_vec3d m[3], t_vec3d v, t_vec3d *result)
 {
 	t_vec3d	tmp;
@@ -40,6 +52,11 @@ void	mat_vec_mul(const t_vec3d m[3], t_vec3d v, t_vec3d *result)
 	vec3d_add(result, tmp);
 }
 
+/**
+ * @brief Compose the final camera rotation matrix from the axis matrices.
+ * @param cam Camera receiving the cached 3x3 rotation matrix.
+ * @param ctx Precomputed trigonometric rotation context.
+ */
 void	compose_rotation_matrix(t_camera *cam, t_rot_ctx *ctx)
 {
 	t_vec3d	rx[3];

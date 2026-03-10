@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 15:38:24 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:08:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:51:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+/**
+ * @brief Format a speed multiplier as `NN.NNx`.
+ * @param speed Numeric speed multiplier.
+ * @param buffer Output buffer receiving the formatted string.
+ */
 void	format_speed(double speed, char *buffer)
 {
 	int	whole;
@@ -28,6 +33,11 @@ void	format_speed(double speed, char *buffer)
 	buffer[6] = '\0';
 }
 
+/**
+ * @brief Format a floating-point value with one decimal digit.
+ * @param val Value to convert.
+ * @param buffer Output buffer receiving the formatted string.
+ */
 void	format_float(double val, char *buffer)
 {
 	int	whole;

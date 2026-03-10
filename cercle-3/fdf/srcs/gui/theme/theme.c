@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/13 16:27:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:51:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+/**
+ * @brief Build the Tron Blue GUI palette.
+ * @return Fully initialized Tron Blue theme.
+ */
 t_gui_theme	get_tron_blue_theme(void)
 {
 	t_gui_theme	theme;
@@ -25,6 +29,10 @@ t_gui_theme	get_tron_blue_theme(void)
 	return (theme);
 }
 
+/**
+ * @brief Build the Tron Orange GUI palette.
+ * @return Fully initialized Tron Orange theme.
+ */
 t_gui_theme	get_tron_orange_theme(void)
 {
 	t_gui_theme	theme;
@@ -38,6 +46,10 @@ t_gui_theme	get_tron_orange_theme(void)
 	return (theme);
 }
 
+/**
+ * @brief Build the Matrix-inspired GUI palette.
+ * @return Fully initialized Matrix theme.
+ */
 t_gui_theme	get_matrix_theme(void)
 {
 	t_gui_theme	theme;
@@ -51,6 +63,10 @@ t_gui_theme	get_matrix_theme(void)
 	return (theme);
 }
 
+/**
+ * @brief Build the Cyberpunk GUI palette.
+ * @return Fully initialized Cyberpunk theme.
+ */
 t_gui_theme	get_cyberpunk_theme(void)
 {
 	t_gui_theme	theme;
@@ -64,6 +80,10 @@ t_gui_theme	get_cyberpunk_theme(void)
 	return (theme);
 }
 
+/**
+ * @brief Build the Neon Grid GUI palette.
+ * @return Fully initialized Neon Grid theme.
+ */
 t_gui_theme	get_neon_grid_theme(void)
 {
 	t_gui_theme	theme;

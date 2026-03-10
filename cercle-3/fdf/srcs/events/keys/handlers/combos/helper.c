@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:27:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:18:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:30:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Clamp combo-controlled values into their supported ranges.
+ * @param events Event context owning the camera and map state.
+ */
 void	clamp_values(t_events *events)
 {
 	clamp_float(&events->lod_value, MIN_LOD_LEVEL, MAX_LOD_LEVEL);
@@ -21,6 +25,10 @@ void	clamp_values(t_events *events)
 	events->camera->z_scale = floor(events->camera->z_scale * 10.0) / 10.0;
 }
 
+/**
+ * @brief Apply the plus-key combo to the active flagged property.
+ * @param events Event context owning the combo-controlled state.
+ */
 void	apply_plus_changes(t_events *events)
 {
 	t_keys	*keyboard;
@@ -37,6 +45,10 @@ void	apply_plus_changes(t_events *events)
 	clamp_values(events);
 }
 
+/**
+ * @brief Apply the minus-key combo to the active flagged property.
+ * @param events Event context owning the combo-controlled state.
+ */
 void	apply_minus_changes(t_events *events)
 {
 	t_keys	*keyboard;
@@ -57,11 +69,21 @@ void	apply_minus_changes(t_events *events)
 	clamp_values(events);
 }
 
+/**
+ * @brief Apply the zero-key combo action.
+ * @param events Event context owning the combo-controlled state.
+ */
 void	apply_zero_changes(t_events *events)
 {
 	(void)events;
 }
 
+/**
+ * @brief Compare combo-controlled values against the stored snapshot.
+ * @param events Event context owning the current state.
+ * @param ctx Snapshot of the previous state.
+ * @return `1` when any tracked value changed, otherwise `0`.
+ */
 int	check_if_changed(t_events *events, t_combo_ctx *ctx)
 {
 	if (fabs(ctx->old_z - events->camera->z_scale) > 0.0001

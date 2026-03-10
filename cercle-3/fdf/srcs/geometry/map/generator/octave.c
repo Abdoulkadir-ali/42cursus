@@ -6,12 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:17:25 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:21:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 
+/**
+ * @brief Combine several Perlin octaves into one normalized sample.
+ * @param x Normalized x coordinate.
+ * @param y Normalized y coordinate.
+ * @param p Generation parameters.
+ * @param noise Initialized noise state.
+ * @return Normalized octave noise value.
+ */
 float	get_octave_noise(float x, float y, t_gen_params p, t_noise_state *noise)
 {
 	float	total;

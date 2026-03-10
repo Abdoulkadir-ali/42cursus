@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:35:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:51:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+/**
+ * @brief Fill a rectangular region inside the GUI image buffer.
+ * @param gui GUI object owning the destination image.
+ * @param pos Top-left rectangle position.
+ * @param size Rectangle size in pixels.
+ * @param color Fill color written to the buffer.
+ */
 void	draw_rect(t_gui *gui, t_vec2 pos, t_vec2 size, int color)
 {
 	int		x;
@@ -37,6 +44,10 @@ void	draw_rect(t_gui *gui, t_vec2 pos, t_vec2 size, int color)
 	}
 }
 
+/**
+ * @brief Draw the panel background and its right-edge accent border.
+ * @param gui GUI object providing theme colors and window size.
+ */
 void	draw_panel_background(t_gui *gui)
 {
 	t_vec2	pos;

@@ -6,13 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/25 22:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:18:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 #include "geometry.h"
 
+/**
+ * @brief Build procedural generation parameters from the current map.
+ * @param current_map Active map used as a size reference.
+ * @param generated_id Generation counter used to vary the seed.
+ * @return Filled runtime generation parameters.
+ */
 static t_gen_params	create_gen_params(t_map *current_map, int generated_id)
 {
 	t_gen_params	params;
@@ -34,6 +40,11 @@ static t_gen_params	create_gen_params(t_map *current_map, int generated_id)
 	return (params);
 }
 
+/**
+ * @brief Replace the active map with a newly generated one.
+ * @param maps Map collection owning the current map.
+ * @param new_map Generated map that becomes current.
+ */
 static void	replace_current_map(t_maps *maps, t_map *new_map)
 {
 	size_t	i;
@@ -57,6 +68,11 @@ static void	replace_current_map(t_maps *maps, t_map *new_map)
 	maps->generated_id++;
 }
 
+/**
+ * @brief Generate a new runtime map and install it as current.
+ * @param maps Map collection that owns the active terrain.
+ * @return Newly generated map, or `NULL` on failure.
+ */
 t_map	*generate_and_replace_map(t_maps *maps)
 {
 	t_gen_params	params;

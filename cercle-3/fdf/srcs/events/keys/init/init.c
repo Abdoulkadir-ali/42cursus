@@ -12,12 +12,22 @@
 
 #include "events.h"
 
+/**
+ * @brief Initialize both key press and key release dispatch tables.
+ * @param key_maps Key-map structure to populate.
+ */
 void	init_key_actions(t_key_maps *key_maps)
 {
 	set_key_actions(key_maps);
 	set_key_releases(key_maps);
 }
 
+/**
+ * @brief Dispatch a key press through the action lookup table.
+ * @param keycode X11 keycode to process.
+ * @param events Event context owning the key maps.
+ * @return Handler result, usually whether an immediate redraw is needed.
+ */
 int	key_press(int keycode, t_events *events)
 {
 	t_key_action	action;
@@ -37,6 +47,12 @@ int	key_press(int keycode, t_events *events)
 	return (0);
 }
 
+/**
+ * @brief Dispatch a key release through the release lookup table.
+ * @param keycode X11 keycode to process.
+ * @param events Event context owning the key maps.
+ * @return Handler result, or `0` when no release action exists.
+ */
 int	key_release(int keycode, t_events *events)
 {
 	t_key_action	action;

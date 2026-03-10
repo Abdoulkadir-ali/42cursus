@@ -6,13 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 19:57:43 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 20:06:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 #include <stdlib.h>
 
+/**
+ * @brief Convert projected endpoints into integer screen-space line data.
+ * @param start Start point.
+ * @param end End point.
+ * @param dlc Line context to populate.
+ */
 void	set_line_positions(t_point start, t_point end, t_draw_line_ctx *dlc)
 {
 	dlc->start_pos.x = (int)start.pos.x;
@@ -31,6 +37,11 @@ void	set_line_positions(t_point start, t_point end, t_draw_line_ctx *dlc)
 		dlc->sign.y = -1;
 }
 
+/**
+ * @brief Check whether the line start point lies inside the target image.
+ * @param dlc Prepared line context.
+ * @return `1` when the start point is inside the image, otherwise `0`.
+ */
 int	is_line_visible(t_draw_line_ctx *dlc)
 {
 	if (dlc->start_pos.x < 0 || dlc->start_pos.x >= (int)dlc->ctx.width
@@ -39,6 +50,11 @@ int	is_line_visible(t_draw_line_ctx *dlc)
 	return (1);
 }
 
+/**
+ * @brief Resolve the initial pixel and z-buffer addresses for a line.
+ * @param g Graphics state providing image and z-buffer storage.
+ * @param dlc Line context to update.
+ */
 void	set_line_pointers(t_graphics *g, t_draw_line_ctx *dlc)
 {
 	dlc->pixel_addr = g->window->main_img.img_addr + (dlc->start_pos.y
@@ -53,6 +69,14 @@ void	set_line_pointers(t_graphics *g, t_draw_line_ctx *dlc)
 		dlc->steps = dlc->delta.y;
 }
 
+/**
+ * @brief Build the full line rasterization context from two projected points.
+ * @param g Graphics state providing image and z-buffer data.
+ * @param start Start point.
+ * @param end End point.
+ * @param dlc Output line context.
+ * @return `1` when the line should be drawn, otherwise `0`.
+ */
 int	init_draw_line_ctx(t_graphics *g, t_point start, t_point end,
 		t_draw_line_ctx *dlc)
 {

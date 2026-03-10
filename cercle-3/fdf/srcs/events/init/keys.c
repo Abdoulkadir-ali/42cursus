@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 19:45:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Reset the keyboard state structure to the default released state.
+ * @param keys Keyboard state structure to initialize.
+ */
 void	init_keys(t_keys *keys)
 {
 	keys->up = 0;

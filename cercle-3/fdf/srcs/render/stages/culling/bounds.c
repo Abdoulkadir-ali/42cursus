@@ -6,13 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 17:19:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:21:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 #include "render.h"
 
+/**
+ * @brief Update visible map-index bounds from one sampled map point.
+ * @param x X index inside the base map.
+ * @param y Y index inside the base map.
+ * @param g Graphics context providing projection state.
+ * @param ctx Mutable min/max bound context.
+ */
 static void	update_bounds_for_point(size_t x, size_t y, t_graphics *g,
 		t_update_ctx *ctx)
 {
@@ -34,6 +41,12 @@ static void	update_bounds_for_point(size_t x, size_t y, t_graphics *g,
 	}
 }
 
+/**
+ * @brief Scan the base map on a coarse stride to estimate visible bounds.
+ * @param g Graphics context providing the active camera and base map.
+ * @param min Output minimum visible map index.
+ * @param max Output maximum visible map index.
+ */
 static void	process_points(t_graphics *g, t_vec2 *min, t_vec2 *max)
 {
 	size_t			x;
@@ -57,6 +70,12 @@ static void	process_points(t_graphics *g, t_vec2 *min, t_vec2 *max)
 	}
 }
 
+/**
+ * @brief Provide a centered fallback region when no sampled point was visible.
+ * @param g Graphics context providing the base map dimensions.
+ * @param min Output fallback minimum bound.
+ * @param max Output fallback maximum bound.
+ */
 static void	handle_fallback(t_graphics *g, t_vec2 *min, t_vec2 *max)
 {
 	int	cx;
@@ -70,6 +89,12 @@ static void	handle_fallback(t_graphics *g, t_vec2 *min, t_vec2 *max)
 	max->y = cy + 5;
 }
 
+/**
+ * @brief Clamp estimated bounds so they remain inside the base map.
+ * @param g Graphics context providing the base map dimensions.
+ * @param min Minimum bound to clamp.
+ * @param max Maximum bound to clamp.
+ */
 static void	clamp_to_map(t_graphics *g, t_vec2 *min, t_vec2 *max)
 {
 	if (min->x < 0)
@@ -82,6 +107,12 @@ static void	clamp_to_map(t_graphics *g, t_vec2 *min, t_vec2 *max)
 		max->y = (int)g->base_map->height - 1;
 }
 
+/**
+ * @brief Estimate the visible subrange of the base map.
+ * @param g Graphics context providing the base map and camera.
+ * @param min Output minimum visible map index.
+ * @param max Output maximum visible map index.
+ */
 void	get_visible_map_bounds(t_graphics *g, t_vec2 *min, t_vec2 *max)
 {
 	min->x = (int)g->base_map->width;

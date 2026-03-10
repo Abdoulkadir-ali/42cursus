@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:28:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:41:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
+/**
+ * @brief Create a synthetic fallback grid map.
+ * @return Allocated test grid, or `NULL` on allocation failure.
+ */
 t_map	*create_test_grid(void)
 {
 	t_map	*map;
@@ -35,6 +39,10 @@ t_map	*create_test_grid(void)
 	return (map);
 }
 
+/**
+ * @brief Release a map and all owned point buffers.
+ * @param map Map instance to destroy.
+ */
 void	free_map(t_map *map)
 {
 	if (!map)

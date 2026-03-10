@@ -6,18 +6,29 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 21:39:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:21:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "graphics.h"
 
+/**
+ * @brief Convert a degree value to radians.
+ * @param deg Angle in degrees.
+ * @return Angle in radians.
+ */
 static float	to_radians(float deg)
 {
 	return (deg * (M_PI / 180.0f));
 }
 
+/**
+ * @brief Build the projection matrix for parallel projection mode.
+ * @param cam Camera providing projection tuning parameters.
+ * @param aspect Aspect ratio used by the projection matrix.
+ * @return Parallel projection matrix.
+ */
 static t_matrix4	get_parallel_matrix(t_camera *cam, float aspect)
 {
 	t_matrix4	mat;
@@ -41,6 +52,12 @@ static t_matrix4	get_parallel_matrix(t_camera *cam, float aspect)
 	return (mat);
 }
 
+/**
+ * @brief Build the projection matrix for conic projection mode.
+ * @param cam Camera providing field-of-view parameters.
+ * @param aspect Aspect ratio used by the projection matrix.
+ * @return Conic projection matrix.
+ */
 static t_matrix4	get_conic_matrix(t_camera *cam, float aspect)
 {
 	t_matrix4	mat;
@@ -62,6 +79,12 @@ static t_matrix4	get_conic_matrix(t_camera *cam, float aspect)
 	return (mat);
 }
 
+/**
+ * @brief Select the active projection matrix for the current camera mode.
+ * @param cam Camera providing the projection type and tuning values.
+ * @param aspect Aspect ratio used by the projection matrix.
+ * @return Projection matrix matching the active camera mode.
+ */
 t_matrix4	get_projection_matrix(t_camera *cam, float aspect)
 {
 	if (cam->projection == PROJ_PARALLEL)

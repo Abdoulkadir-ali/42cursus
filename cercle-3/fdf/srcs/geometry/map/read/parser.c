@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:25:27 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:48:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Measure the width and height of a map file.
+ * @param fd Open file descriptor for the map.
+ * @param width Output widest row size.
+ * @param height Output number of non-empty rows.
+ */
 void	get_map_dimensions(int fd, size_t *width, size_t *height)
 {
 	char	*line;
@@ -34,6 +40,11 @@ void	get_map_dimensions(int fd, size_t *width, size_t *height)
 	}
 }
 
+/**
+ * @brief Allocate and initialize all point arrays for a map.
+ * @param map Map whose arrays must be allocated.
+ * @return `1` on success, otherwise `0`.
+ */
 int	allocate_map_points(t_map *map)
 {
 	size_t	total;
@@ -60,6 +71,11 @@ int	allocate_map_points(t_map *map)
 	return (1);
 }
 
+/**
+ * @brief Parse all rows from an opened map file.
+ * @param map Map being filled.
+ * @param fd Open file descriptor positioned at the start of the file.
+ */
 void	parse_map_data(t_map *map, int fd)
 {
 	char	*line;

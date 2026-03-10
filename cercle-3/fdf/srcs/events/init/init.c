@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 20:53:06 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:04:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:30:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Copy the initial graphics render settings into the event snapshot.
+ * @param e Event context to initialize.
+ */
 static void	init_events_graphics(t_events *e)
 {
 	if (e->graphics)
@@ -30,6 +34,11 @@ static void	init_events_graphics(t_events *e)
 	}
 }
 
+/**
+ * @brief Allocate and initialize the runtime event context.
+ * @param args Shared runtime pointers used by the event system.
+ * @return Newly allocated event context, or `NULL` on failure.
+ */
 t_events	*init_events(t_events_args *args)
 {
 	t_events	*e;

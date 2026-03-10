@@ -6,13 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:03:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:21:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 #include "render.h"
 
+/**
+ * @brief Recenter and z-scale a point before matrix transformation.
+ * @param p Source point in map space.
+ * @param cam Camera providing grid-center and z-scale data.
+ * @return Adjusted vector ready for matrix multiplication.
+ */
 static t_vec3d	apply_pre_adjustments(t_point p, t_camera *cam)
 {
 	t_vec3d	effective_center_scaled;
@@ -29,6 +35,12 @@ static t_vec3d	apply_pre_adjustments(t_point p, t_camera *cam)
 	return (v);
 }
 
+/**
+ * @brief Apply the cached camera transform matrix to an adjusted vector.
+ * @param v Adjusted input vector.
+ * @param cam Camera holding the cached transform matrix.
+ * @return Matrix multiplication result with homogeneous divide applied.
+ */
 static t_matrix_result	apply_matrix_transform(t_vec3d v, t_camera *cam)
 {
 	t_matrix4		*m;
@@ -51,6 +63,14 @@ static t_matrix_result	apply_matrix_transform(t_vec3d v, t_camera *cam)
 	return (res);
 }
 
+/**
+ * @brief Apply screen offset and depth reconstruction after matrix projection.
+ * @param res Point structure receiving final screen-space coordinates.
+ * @param mres Intermediate matrix multiplication result.
+ * @param cam Camera providing offset and rotation data.
+ * @param v Adjusted pre-transform vector used for depth reconstruction.
+ * @return Final projected point.
+ */
 static t_point	apply_post_offset(t_point res, t_matrix_result mres,
 		t_camera *cam, t_vec3d v)
 {
@@ -62,6 +82,12 @@ static t_point	apply_post_offset(t_point res, t_matrix_result mres,
 	return (res);
 }
 
+/**
+ * @brief Transform one point from map space into screen space.
+ * @param p Source point to transform.
+ * @param cam Camera providing the cached transform state.
+ * @return Projected point with updated position and preserved color.
+ */
 t_point	apply_transform(t_point p, t_camera *cam)
 {
 	t_vec3d			v;

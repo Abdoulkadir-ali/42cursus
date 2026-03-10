@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/23 21:17:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Draw a horizon-aware line without z-buffer updates.
+ * @param g Graphics state providing the horizon buffer.
+ * @param p Prepared Bresenham parameter block.
+ */
 void	bresenham_raycast_fast(t_graphics *g, t_bresenham_params *p)
 {
 	t_bresenham_ctx		ctx;
@@ -41,6 +46,11 @@ void	bresenham_raycast_fast(t_graphics *g, t_bresenham_params *p)
 	}
 }
 
+/**
+ * @brief Draw a horizon-aware line with z-buffer updates.
+ * @param g Graphics state providing the horizon and z buffers.
+ * @param p Prepared Bresenham parameter block.
+ */
 void	bresenham_raycast_z(t_graphics *g, t_bresenham_params *p)
 {
 	t_bresenham_ctx	ctx;
@@ -70,6 +80,11 @@ void	bresenham_raycast_z(t_graphics *g, t_bresenham_params *p)
 	}
 }
 
+/**
+ * @brief Draw a horizon-aware color-shifted line without z-buffer updates.
+ * @param g Graphics state providing horizon and color-shift settings.
+ * @param p Prepared Bresenham parameter block.
+ */
 void	bresenham_raycast_shift_no_z(t_graphics *g, t_bresenham_params *p)
 {
 	t_bresenham_ctx	ctx;
@@ -86,6 +101,11 @@ void	bresenham_raycast_shift_no_z(t_graphics *g, t_bresenham_params *p)
 	}
 }
 
+/**
+ * @brief Draw a horizon-aware color-shifted line with z-buffer updates.
+ * @param g Graphics state providing horizon, depth, and color-shift settings.
+ * @param p Prepared Bresenham parameter block.
+ */
 void	bresenham_raycast_shift_z(t_graphics *g, t_bresenham_params *p)
 {
 	t_bresenham_ctx	ctx;

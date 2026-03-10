@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 12:47:02 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:52:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Draw one standard grid section inside a worker thread.
+ * @param data Thread payload describing the row range and LOD step.
+ * @return Always `NULL` for pthread compatibility.
+ */
 void	*thread_draw_routine(void *data)
 {
 	t_thread_data	*d;
@@ -21,6 +26,10 @@ void	*thread_draw_routine(void *data)
 	return (NULL);
 }
 
+/**
+ * @brief Join all worker threads used by the grid drawing pass.
+ * @param threads Thread array to join.
+ */
 void	join_threads(pthread_t *threads)
 {
 	int	i;

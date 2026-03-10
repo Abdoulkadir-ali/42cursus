@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:29:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Compute one point in the tessellated destination grid.
+ * @param src Source map providing neighboring points.
+ * @param dst Destination map being filled.
+ * @param pos Destination coordinates to compute.
+ */
 void	compute_tesselated_point(t_map *src, t_map *dst, t_vec2 pos)
 {
 	t_tess_compute_ctx	ctx;

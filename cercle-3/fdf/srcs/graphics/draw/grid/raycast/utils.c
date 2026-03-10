@@ -6,12 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/25 19:12:41 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 19:12:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Fetch one cached point when the requested map indices are valid.
+ * @param g Graphics state providing the active map and cache.
+ * @param x Map-space x index.
+ * @param y Map-space y index.
+ * @param p Output point storage.
+ * @return `1` when a valid point was written, otherwise `0`.
+ */
 int	get_point(t_graphics *g, int x, int y, t_point *p)
 {
 	if (x < 0 || x >= (int)g->map->width || y < 0 || y >= (int)g->map->height)
@@ -22,6 +30,11 @@ int	get_point(t_graphics *g, int x, int y, t_point *p)
 	return (1);
 }
 
+/**
+ * @brief Seed the peak-selection context with candidate sample positions.
+ * @param ctx Peak-selection context to initialize.
+ * @param g Graphics state providing map dimensions.
+ */
 void	init_peak_indicies(t_get_peak_ctx *ctx, t_graphics *g)
 {
 	ctx->w = g->map->width;
@@ -38,6 +51,11 @@ void	init_peak_indicies(t_get_peak_ctx *ctx, t_graphics *g)
 	ctx->yi = 0;
 }
 
+/**
+ * @brief Approximate the highest visible map sample among a 3x3 probe set.
+ * @param g Graphics state providing cached projections.
+ * @return Map indices of the selected peak sample.
+ */
 t_vec2	get_peak_indices(t_graphics *g)
 {
 	t_get_peak_ctx	ctx;
@@ -62,6 +80,14 @@ t_vec2	get_peak_indices(t_graphics *g)
 	return (ctx.peak);
 }
 
+/**
+ * @brief Build a surface-draw context for one raycast traversal step.
+ * @param g Graphics state providing render data.
+ * @param pos Current map-space position.
+ * @param dir Neighbor direction for this sweep.
+ * @param t Thread payload containing strip bounds.
+ * @return Initialized surface-draw context.
+ */
 t_draw_surface_ctx	init_draw_surface_ctx(t_graphics *g, t_vec2 pos, t_vec2 dir,
 		t_thread_data *t)
 {

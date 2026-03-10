@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 20:07:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Draw one sampled grid cell as two triangles.
+ * @param g Graphics state providing the cached projections.
+ * @param x Map-space x index for the cell origin.
+ * @param y Map-space y index for the cell origin.
+ * @param step Grid sampling step.
+ */
 void	draw_triangle_quad(t_graphics *g, int x, int y, int step)
 {
 	t_triangle_quad_ctx	ctx;
@@ -32,6 +39,13 @@ void	draw_triangle_quad(t_graphics *g, int x, int y, int step)
 	draw_quad_triangles(g, (t_quad_triangle){ctx.p1, ctx.p2, ctx.p3, ctx.p4});
 }
 
+/**
+ * @brief Initialize per-row traversal state for one grid row.
+ * @param ctx Row traversal context to populate.
+ * @param g Graphics state providing map dimensions.
+ * @param y Row index being processed.
+ * @param lod_value Active LOD step value.
+ */
 void	init_grid_row_ctx(t_grid_row_ctx *ctx, t_graphics *g, int y,
 		float lod_value)
 {
@@ -43,6 +57,12 @@ void	init_grid_row_ctx(t_grid_row_ctx *ctx, t_graphics *g, int y,
 	ctx->row_base = y * g->map->width;
 }
 
+/**
+ * @brief Process one sampled point within a grid row.
+ * @param g Graphics state providing render mode and cached points.
+ * @param ctx Mutable row traversal context.
+ * @param y Row index being processed.
+ */
 void	process_grid_row_point(t_graphics *g, t_grid_row_ctx *ctx, int y)
 {
 	ctx->idx = ctx->row_base + ctx->x;
@@ -70,6 +90,12 @@ void	process_grid_row_point(t_graphics *g, t_grid_row_ctx *ctx, int y)
 	ctx->x += ctx->step_int;
 }
 
+/**
+ * @brief Draw one sampled grid row using the active render mode.
+ * @param g Graphics state providing map and cache data.
+ * @param y Row index to draw.
+ * @param lod_value Active LOD step value.
+ */
 void	draw_grid_row(t_graphics *g, int y, float lod_value)
 {
 	t_grid_row_ctx	ctx;

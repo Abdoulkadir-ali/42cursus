@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:26:26 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 21:50:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Reset the z-buffer to a large far-depth sentinel.
+ * @param g Graphics state owning the z-buffer.
+ */
 void	clear_z_buffer(t_graphics *g)
 {
 	size_t	i;
@@ -28,6 +32,10 @@ void	clear_z_buffer(t_graphics *g)
 	}
 }
 
+/**
+ * @brief Clear the main image buffer to black.
+ * @param g Graphics state owning the main image.
+ */
 void	clear_image(t_graphics *g)
 {
 	size_t	i;
@@ -42,6 +50,10 @@ void	clear_image(t_graphics *g)
 	}
 }
 
+/**
+ * @brief Clear all frame buffers that are active for the current render mode.
+ * @param g Graphics state owning the frame buffers.
+ */
 void	clear_frame_buffers(t_graphics *g)
 {
 	if (g->window->main_img.img_addr)

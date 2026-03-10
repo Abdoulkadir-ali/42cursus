@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 12:02:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:48:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:24:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Interpolate angles while wrapping across the `[-pi, pi]` boundary.
+ * @param current Current angle.
+ * @param target Target angle.
+ * @param factor Interpolation factor.
+ * @return Interpolated angle.
+ */
 static double	lerp_angle(double current, double target, double factor)
 {
 	double	delta;
@@ -24,6 +31,12 @@ static double	lerp_angle(double current, double target, double factor)
 	return (current + delta * factor);
 }
 
+/**
+ * @brief Apply held rotation flags to the target rotation vector.
+ * @param events Event context owning the key state.
+ * @param target Target rotation to update.
+ * @param speed Rotation step size.
+ */
 static void	handle_rotation_keys(t_events *events, t_vec3d *target,
 						double speed)
 {
@@ -35,6 +48,13 @@ static void	handle_rotation_keys(t_events *events, t_vec3d *target,
 		target->z += speed;
 }
 
+/**
+ * @brief Smoothly interpolate current rotation toward the target rotation.
+ * @param rot Current rotation vector.
+ * @param target Target rotation vector.
+ * @param factor Interpolation factor.
+ * @return Non-zero when any component changed.
+ */
 static int	apply_rotation_lerp(t_vec3d *rot, t_vec3d *target, double factor)
 {
 	int	changed;
@@ -58,6 +78,11 @@ static int	apply_rotation_lerp(t_vec3d *rot, t_vec3d *target, double factor)
 	return (changed);
 }
 
+/**
+ * @brief Process held rotation keys and update the camera rotation matrix.
+ * @param events Event context owning the camera and key state.
+ * @return Non-zero when rotation changed.
+ */
 int	process_rotation(t_events *events)
 {
 	t_vec3d	*rot;

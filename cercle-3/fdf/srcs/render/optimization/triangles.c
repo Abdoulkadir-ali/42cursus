@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 13:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:18:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:21:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Test one fragment against the z-buffer and update it on success.
+ * @param g Graphics context owning the window depth buffer.
+ * @param v Integer screen-space pixel coordinates.
+ * @param z Depth value to compare against the stored depth.
+ * @return `1` when the fragment should be drawn, otherwise `0`.
+ */
 int	z_buffer_test(t_graphics *g, t_vec2 v, float z)
 {
 	int			index;

@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/21 12:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/24 15:27:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:27:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "primitives.h"
 
+/**
+ * @brief Build a 4x4 identity matrix.
+ * @return Matrix with a unit diagonal and zero elsewhere.
+ */
 t_matrix4	matrix_identity(void)
 {
 	t_matrix4	m;
@@ -24,6 +28,12 @@ t_matrix4	matrix_identity(void)
 	return (m);
 }
 
+/**
+ * @brief Multiply two 4x4 matrices.
+ * @param a Left-hand matrix.
+ * @param b Right-hand matrix.
+ * @return Product matrix `a * b`.
+ */
 t_matrix4	matrix_multiply(t_matrix4 a, t_matrix4 b)
 {
 	t_matrix4	res;
@@ -51,6 +61,13 @@ t_matrix4	matrix_multiply(t_matrix4 a, t_matrix4 b)
 	return (res);
 }
 
+/**
+ * @brief Build a translation matrix from three offsets.
+ * @param x Translation along the x axis.
+ * @param y Translation along the y axis.
+ * @param z Translation along the z axis.
+ * @return Translation matrix.
+ */
 t_matrix4	matrix_translation(float x, float y, float z)
 {
 	t_matrix4	m;
@@ -62,6 +79,13 @@ t_matrix4	matrix_translation(float x, float y, float z)
 	return (m);
 }
 
+/**
+ * @brief Build a scaling matrix from three scale factors.
+ * @param x Scale factor for the x axis.
+ * @param y Scale factor for the y axis.
+ * @param z Scale factor for the z axis.
+ * @return Scaling matrix.
+ */
 t_matrix4	matrix_scale(float x, float y, float z)
 {
 	t_matrix4	m;

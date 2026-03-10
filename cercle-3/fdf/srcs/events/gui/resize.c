@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 13:32:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 21:25:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Destroy the current frame buffers before recreating them on resize.
+ * @param win Window structure owning the active buffers.
+ */
 static void	free_buffers(t_window *win)
 {
 	if (win->z_buffer)
@@ -31,6 +35,11 @@ static void	free_buffers(t_window *win)
 	}
 }
 
+/**
+ * @brief Recreate the main and GUI buffers after a window resize.
+ * @param win Window structure to rebuild.
+ * @return `1` on success, otherwise `0`.
+ */
 static int	recreate_buffers(t_window *win)
 {
 	int	bpp;
@@ -49,6 +58,11 @@ static int	recreate_buffers(t_window *win)
 	return (win->gui_img.img_addr != NULL);
 }
 
+/**
+ * @brief Rebuild render buffers and recenter the camera after a resize event.
+ * @param events Event context owning the window and camera state.
+ * @return Always `0` for MLX callback compatibility.
+ */
 int	handle_resize(t_events *events)
 {
 	t_resize_ctx	ctx;

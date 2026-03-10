@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:24:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Populate the first batch of one-shot key press actions.
+ * @param key_maps Key-map structure to update.
+ */
 void	set_key_actions_1(t_key_maps *key_maps)
 {
 	key_maps->key_actions[XK_Escape] = handle_escape;
@@ -33,6 +37,10 @@ void	set_key_actions_1(t_key_maps *key_maps)
 	key_maps->key_actions[XK_M] = handle_manual_mode;
 }
 
+/**
+ * @brief Populate the second batch of flag and toggle key press actions.
+ * @param key_maps Key-map structure to update.
+ */
 void	set_key_actions_2(t_key_maps *key_maps)
 {
 	key_maps->key_actions[XK_x] = handle_press_flag;
@@ -55,6 +63,10 @@ void	set_key_actions_2(t_key_maps *key_maps)
 	key_maps->key_actions[XK_Control_R] = handle_press_flag;
 }
 
+/**
+ * @brief Populate the third batch of held-state key press and release actions.
+ * @param key_maps Key-map structure to update.
+ */
 void	set_key_actions_3(t_key_maps *key_maps)
 {
 	key_maps->key_actions[XK_Shift_L] = handle_press_flag;
@@ -75,6 +87,10 @@ void	set_key_actions_3(t_key_maps *key_maps)
 	key_maps->key_releases[XK_W] = handle_release_flag;
 }
 
+/**
+ * @brief Populate the fourth batch of movement and numeric combo actions.
+ * @param key_maps Key-map structure to update.
+ */
 void	set_key_actions_4(t_key_maps *key_maps)
 {
 	key_maps->key_actions[XK_Page_Up] = handle_tesselation_up;
@@ -91,6 +107,10 @@ void	set_key_actions_4(t_key_maps *key_maps)
 	key_maps->key_actions[XK_Right] = handle_right;
 }
 
+/**
+ * @brief Populate the fifth batch of view, bracket, and map actions.
+ * @param key_maps Key-map structure to update.
+ */
 void	set_key_actions_5(t_key_maps *key_maps)
 {
 	key_maps->key_actions[XK_bracketleft] = handle_bracket;

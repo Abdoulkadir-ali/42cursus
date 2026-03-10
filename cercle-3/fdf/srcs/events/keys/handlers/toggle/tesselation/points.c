@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:43:49 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 19:51:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:24:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Adjust the target tessellation point budget within safe bounds.
+ * @param keycode X11 keycode selecting the direction.
+ * @param g Graphics state owning the render configuration.
+ */
 void	handle_tesselation_points(int keycode, t_graphics *g)
 {
 	if (keycode == XK_bracketleft || keycode == XK_comma)

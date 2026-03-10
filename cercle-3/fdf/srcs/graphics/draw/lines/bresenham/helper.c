@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/23 22:31:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Initialize the mutable Bresenham loop state.
+ * @param ctx Bresenham context to populate.
+ * @param p Immutable parameter block describing the line.
+ */
 void	init_bresenham_ctx(t_bresenham_ctx *ctx, t_bresenham_params *p)
 {
 	ctx->fp_r = (int)(p->r * (1 << FP_SHIFT));
@@ -24,6 +29,11 @@ void	init_bresenham_ctx(t_bresenham_ctx *ctx, t_bresenham_params *p)
 	ctx->current = p->start;
 }
 
+/**
+ * @brief Advance interpolated depth and color values after one step.
+ * @param ctx Bresenham context holding the fixed-point colors.
+ * @param p Mutable parameter block holding the current depth.
+ */
 void	update_bresenham_colors(t_bresenham_ctx *ctx, t_bresenham_params *p)
 {
 	p->zr += p->z_step_val;
@@ -32,6 +42,12 @@ void	update_bresenham_colors(t_bresenham_ctx *ctx, t_bresenham_params *p)
 	ctx->fp_b += ctx->fp_db;
 }
 
+/**
+ * @brief Move the Bresenham cursor one pixel along the x axis.
+ * @param ctx Bresenham context to update.
+ * @param p Mutable parameter block holding pixel and z pointers.
+ * @return Non-zero when the new x position falls outside the image.
+ */
 static int	bresenham_step_x(t_bresenham_ctx *ctx, t_bresenham_params *p)
 {
 	ctx->err -= p->delta.y;
@@ -42,6 +58,12 @@ static int	bresenham_step_x(t_bresenham_ctx *ctx, t_bresenham_params *p)
 	return (ctx->current.x < 0 || ctx->current.x >= (int)p->ctx.width);
 }
 
+/**
+ * @brief Move the Bresenham cursor one pixel along the y axis.
+ * @param ctx Bresenham context to update.
+ * @param p Mutable parameter block holding pixel and z pointers.
+ * @return Non-zero when the new y position falls outside the image.
+ */
 static int	bresenham_step_y(t_bresenham_ctx *ctx, t_bresenham_params *p)
 {
 	ctx->err += p->delta.x;
@@ -52,6 +74,12 @@ static int	bresenham_step_y(t_bresenham_ctx *ctx, t_bresenham_params *p)
 	return (ctx->current.y < 0 || ctx->current.y >= (int)p->ctx.height);
 }
 
+/**
+ * @brief Advance one Bresenham iteration and report boundary exit.
+ * @param ctx Bresenham context to update.
+ * @param p Mutable parameter block holding the line state.
+ * @return Non-zero when the next step leaves the image.
+ */
 int	bresenham_iter(t_bresenham_ctx *ctx, t_bresenham_params *p)
 {
 	ctx->e2 = 2 * ctx->err;

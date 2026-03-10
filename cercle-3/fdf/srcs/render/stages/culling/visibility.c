@@ -6,13 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:18:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:21:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 #include "render.h"
 
+/**
+ * @brief Expand a projected bounding box with one projected point.
+ * @param p Projected point to include.
+ * @param min Current minimum projected bound.
+ * @param max Current maximum projected bound.
+ */
 static void	update_bounds(t_point p, t_vec2 *min, t_vec2 *max)
 {
 	if (p.pos.x < min->x)
@@ -25,6 +31,13 @@ static void	update_bounds(t_point p, t_vec2 *min, t_vec2 *max)
 		max->y = p.pos.y;
 }
 
+/**
+ * @brief Project one 3D map point through the active camera transform.
+ * @param p3d Source 3D point.
+ * @param color Source packed color.
+ * @param g Graphics context providing camera and map state.
+ * @return Projected point ready for screen-space use.
+ */
 t_point	project_helper(t_vec3d p3d, int color, t_graphics *g)
 {
 	t_point	p;
@@ -38,6 +51,12 @@ t_point	project_helper(t_vec3d p3d, int color, t_graphics *g)
 	return (apply_transform(p, g->camera));
 }
 
+/**
+ * @brief Compute the projected screen-space bounds of the map volume.
+ * @param g Graphics context providing map bounds and camera state.
+ * @param min Output minimum projected bound.
+ * @param max Output maximum projected bound.
+ */
 static void	compute_projected_bounds(t_graphics *g, t_vec2 *min, t_vec2 *max)
 {
 	t_vec3d	c[8];
@@ -63,6 +82,11 @@ static void	compute_projected_bounds(t_graphics *g, t_vec2 *min, t_vec2 *max)
 	}
 }
 
+/**
+ * @brief Check whether the active map bounding volume overlaps the viewport.
+ * @param g Graphics context providing the active map, window, and camera.
+ * @return `1` when the map may be visible, otherwise `0`.
+ */
 int	is_map_visible(t_graphics *g)
 {
 	t_vec2	min;

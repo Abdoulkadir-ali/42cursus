@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 21:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:12:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Draw one scanline without z-buffer tests or color shifting.
+ * @param ctx Mutable scanline draw context.
+ */
 void	draw_scanline_fast_flat(t_scanline_draw_ctx *ctx)
 {
 	while (ctx->x <= ctx->end_x)
@@ -23,6 +27,11 @@ void	draw_scanline_fast_flat(t_scanline_draw_ctx *ctx)
 	}
 }
 
+/**
+ * @brief Draw one scanline without z-buffer tests but with color shifting.
+ * @param g Graphics state providing the active color shift.
+ * @param ctx Mutable scanline draw context.
+ */
 void	draw_scanline_fast_shifted(t_graphics *g, t_scanline_draw_ctx *ctx)
 {
 	while (ctx->x <= ctx->end_x)

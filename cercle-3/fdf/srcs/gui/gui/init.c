@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 15:40:28 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 21:13:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:39:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+/**
+ * @brief Allocate and initialize the GUI state object.
+ * @param args Shared dependencies: window, camera, maps, render config, and map.
+ * @return Newly allocated GUI object, or `NULL` on failure.
+ */
 t_gui	*init_gui(t_gui_args args)
 {
 	t_gui	*gui;
@@ -33,6 +38,11 @@ t_gui	*init_gui(t_gui_args args)
 	return (gui);
 }
 
+/**
+ * @brief Allocate the GUI image buffer attached to the window.
+ * @param gui GUI object owning the target window.
+ * @return `1` on success, otherwise `0`.
+ */
 int	init_gui_images(t_gui *gui)
 {
 	int	bpp;

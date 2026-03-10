@@ -6,13 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 14:56:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:09:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "gui.h"
 
+/**
+ * @brief Compute the scale that best fits the active map inside the window.
+ * @param ctx Camera manager holding the active map and window dimensions.
+ * @return Ideal zoom factor clamped to the configured min and max range.
+ */
 static double	calculate_ideal_zoom(t_camera_manager *ctx)
 {
 	double	scale_x;
@@ -38,12 +43,20 @@ static double	calculate_ideal_zoom(t_camera_manager *ctx)
 	return (scale / 5.0);
 }
 
+/**
+ * @brief Place the camera offset at the visual center of the render area.
+ * @param ctx Camera manager providing the current window dimensions.
+ */
 static void	calculate_ideal_position(t_camera_manager *ctx)
 {
 	ctx->camera->offset.x = (ctx->window->width + GUI_PANEL_WIDTH) / 2.0;
 	ctx->camera->offset.y = ctx->window->height / 2.0;
 }
 
+/**
+ * @brief Restore the default isometric-like viewing angles.
+ * @param ctx Camera manager whose camera rotation is reset.
+ */
 static void	set_ideal_angle(t_camera_manager *ctx)
 {
 	ctx->camera->rotation.x = 35.264;
@@ -51,6 +64,10 @@ static void	set_ideal_angle(t_camera_manager *ctx)
 	ctx->camera->rotation.z = 45.0;
 }
 
+/**
+ * @brief Fit the current map into view and reset key framing parameters.
+ * @param ctx Camera manager bound to the active map and window.
+ */
 void	adjust_camera_to_map(t_camera_manager *ctx)
 {
 	double	ideal_scale;
@@ -70,6 +87,10 @@ void	adjust_camera_to_map(t_camera_manager *ctx)
 	ctx->camera->alpha = 90.0;
 }
 
+/**
+ * @brief Recenter and refit the camera on the active map.
+ * @param ctx Camera manager bound to the active map and window.
+ */
 void	center_camera_on_map(t_camera_manager *ctx)
 {
 	double	ideal_scale;

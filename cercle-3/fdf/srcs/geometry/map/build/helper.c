@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 15:11:34 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:17:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Populate the fallback grid with default coordinates and colors.
+ * @param map Grid map to initialize.
+ */
 void	init_grid_points(t_map *map)
 {
 	t_vec2	pos;
@@ -35,6 +39,10 @@ void	init_grid_points(t_map *map)
 	}
 }
 
+/**
+ * @brief Compute the z divisor from the map height range.
+ * @param map Map whose divisor must be updated.
+ */
 void	calculate_z_divisor(t_map *map)
 {
 	float	range;
@@ -46,6 +54,11 @@ void	calculate_z_divisor(t_map *map)
 		map->z_divisor = 1;
 }
 
+/**
+ * @brief Allocate the main point arrays for a map.
+ * @param map Map whose point storage must be allocated.
+ * @return The same map on success, or `NULL` on failure.
+ */
 t_map	*allocate_map_arrays(t_map *map)
 {
 	size_t	total;

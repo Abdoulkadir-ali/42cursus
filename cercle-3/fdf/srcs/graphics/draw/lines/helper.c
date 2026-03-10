@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:27:15 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:30:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Copy the prepared line context into a Bresenham parameter block.
+ * @param dlc Initialized line-draw context.
+ */
 void	fill_bresenham_params(t_draw_line_ctx *dlc)
 {
 	dlc->p.start = dlc->start_pos;
@@ -31,6 +35,13 @@ void	fill_bresenham_params(t_draw_line_ctx *dlc)
 	dlc->p.db = dlc->interp.db;
 }
 
+/**
+ * @brief Resolve image and z-buffer stepping values for line rasterization.
+ * @param g Graphics state providing image dimensions and buffer layout.
+ * @param ctx Pointer context to populate.
+ * @param sx X step sign.
+ * @param sy Y step sign.
+ */
 void	setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy)
 {
 	ctx->bpp = g->window->main_img.img_bpp / 8;
@@ -43,6 +54,13 @@ void	setup_pointers(t_graphics *g, t_ptr_ctx *ctx, int sx, int sy)
 	ctx->z_step_y = sy * ctx->width;
 }
 
+/**
+ * @brief Initialize depth and color interpolation across one line segment.
+ * @param start Start point.
+ * @param end End point.
+ * @param steps Number of raster steps.
+ * @param data Interpolation structure to populate.
+ */
 void	init_interpolation(t_point start, t_point end, int steps,
 		t_interp_data *data)
 {

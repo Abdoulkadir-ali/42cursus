@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:21:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:42:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 // SYSTEM REQUIREMENTS
 # include "libft.h"
-# include <stdlib.h>
 # include <math.h>
 # include <pthread.h>
+# include <stdlib.h>
 
 // PROJECT REQUIREMENTS
 # include "define.h"
@@ -113,13 +113,13 @@ typedef struct s_edge
 	double					db;
 }							t_edge;
 
-typedef struct s_rasterize_ctx
+typedef struct s_rstr_ctx
 {
 	t_edge					e1;
 	t_edge					e2;
 	int						y_start;
 	int						y_end;
-}							t_rasterize_ctx;
+}							t_rstr_ctx;
 
 typedef struct s_rasterize_points
 {
@@ -311,7 +311,6 @@ typedef struct s_fill_cache_ctx
 	size_t					idx;
 	t_point					projected;
 }							t_fill_cache_ctx;
-
 
 typedef struct s_graphics
 {
@@ -507,15 +506,15 @@ void						rasterize_flat_bottom(t_graphics *g, t_point top,
 								t_point b1, t_point b2);
 void						rasterize_flat_top(t_graphics *g, t_point t1,
 								t_point t2, t_point bot);
-void						setup_rasterization_context(t_rasterize_ctx *ctx,
+void						setup_rasterization_context(t_rstr_ctx *ctx,
 								t_rasterize_points points);
 void						setup_rasterization_context_flat_top(
-								t_rasterize_ctx *ctx,
+								t_rstr_ctx *ctx,
 								t_rasterize_points points);
-t_scanline_data				create_scanline_from_edges(t_rasterize_ctx *ctx,
-								int y);
-void						rasterize_span(t_graphics *g, t_rasterize_ctx *ctx);
-void						handle_y_clipping(t_rasterize_ctx *ctx);
+t_scanline_data				create_scanline_from_edges(
+								t_rstr_ctx *ctx, int y);
+void						rasterize_span(t_graphics *g, t_rstr_ctx *ctx);
+void						handle_y_clipping(t_rstr_ctx *ctx);
 
 int							z_buffer_test(t_graphics *g, t_vec2 v, float z);
 void						draw_horizontal_scanline_z(t_graphics *g,

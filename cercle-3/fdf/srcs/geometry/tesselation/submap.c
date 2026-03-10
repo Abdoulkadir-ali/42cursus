@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:36:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:43:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Free the point arrays owned by a temporary submap.
+ * @param sub Submap whose buffers must be released.
+ */
 static void	free_submap_points(t_map *sub)
 {
 	if (sub->points.pos)
@@ -24,6 +28,13 @@ static void	free_submap_points(t_map *sub)
 		free(sub->points.source_color);
 }
 
+/**
+ * @brief Allocate a submap structure and its point arrays.
+ * @param src Source map whose metadata is copied.
+ * @param w Submap width.
+ * @param h Submap height.
+ * @return Allocated submap, or `NULL` on failure.
+ */
 static t_map	*alloc_submap(t_map *src, int w, int h)
 {
 	t_map	*sub;
@@ -50,6 +61,13 @@ static t_map	*alloc_submap(t_map *src, int w, int h)
 	return (sub);
 }
 
+/**
+ * @brief Copy a rectangular region from the source map into a submap.
+ * @param sub Destination submap.
+ * @param src Source map.
+ * @param w Width of the extracted region.
+ * @param min Top-left corner of the region.
+ */
 static void	copy_submap(t_map *sub, t_map *src, int w, t_vec2 min)
 {
 	t_vec2	pos;
@@ -76,6 +94,13 @@ static void	copy_submap(t_map *sub, t_map *src, int w, t_vec2 min)
 	}
 }
 
+/**
+ * @brief Extract a bounded region from a source map.
+ * @param src Source map.
+ * @param min Inclusive top-left coordinates.
+ * @param max Inclusive bottom-right coordinates.
+ * @return Newly allocated submap, or `NULL` when bounds are invalid.
+ */
 t_map	*extract_submap(t_map *src, t_vec2 min, t_vec2 max)
 {
 	t_map	*sub;
@@ -92,7 +117,7 @@ t_map	*extract_submap(t_map *src, t_vec2 min, t_vec2 max)
 		return (NULL);
 	if (min.x < 0 || min.y < 0
 		|| max.x < min.x || max.y < min.y
-		|| max.x >= src->width || max.y >= src->height)
+		|| (size_t)max.x >= src->width || (size_t)max.y >= src->height)
 		return (NULL);
 	w = max.x - min.x + 1;
 	h = max.y - min.y + 1;
@@ -105,6 +130,14 @@ t_map	*extract_submap(t_map *src, t_vec2 min, t_vec2 max)
 	return (sub);
 }
 
+/**
+ * @brief Extract a region and apply multi-level tessellation to it.
+ * @param base Source map.
+ * @param min Inclusive top-left coordinates.
+ * @param max Inclusive bottom-right coordinates.
+ * @param level Number of tessellation passes to apply.
+ * @return Tessellated submap, or `NULL` on failure.
+ */
 t_map	*generate_tesselated_submap(t_map *base, t_vec2 min, t_vec2 max,
 		int level)
 {

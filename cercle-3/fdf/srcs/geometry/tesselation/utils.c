@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 15:35:10 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:26:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Interpolate between two 3D points.
+ * @param p1 First point.
+ * @param p2 Second point.
+ * @param ratio Interpolation factor in the `[0, 1]` range.
+ * @return Interpolated point.
+ */
 t_vec3d	mix_pos(t_vec3d p1, t_vec3d p2, double ratio)
 {
 	t_vec3d	res;
@@ -22,6 +29,11 @@ t_vec3d	mix_pos(t_vec3d p1, t_vec3d p2, double ratio)
 	return (res);
 }
 
+/**
+ * @brief Write one computed point into the destination map.
+ * @param dst Destination map receiving the point.
+ * @param ctx Packed destination coordinates and point data.
+ */
 void	set_point(t_map *dst, t_set_point_ctx ctx)
 {
 	int	idx;
@@ -33,6 +45,11 @@ void	set_point(t_map *dst, t_set_point_ctx ctx)
 	dst->points.source_color[idx] = ctx.source_color;
 }
 
+/**
+ * @brief Prepare the diagonal interpolation context for one cell.
+ * @param ctx Context structure to fill.
+ * @param src Source map providing the surrounding vertices.
+ */
 void	init_diagonal_ctx(t_tess_diagonal_ctx *ctx, t_map *src)
 {
 	ctx->p1 = src->points.raw[ctx->idx];

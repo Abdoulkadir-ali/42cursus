@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:40:57 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:05:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Return the current wall-clock time in milliseconds.
+ * @return Current time in milliseconds.
+ */
 static long	get_time_ms(void)
 {
 	struct timeval	tv;
@@ -20,6 +24,10 @@ static long	get_time_ms(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
+/**
+ * @brief Update the rolling FPS counters stored in the graphics frame data.
+ * @param events Event context owning the graphics frame-data state.
+ */
 void	calculate_fps(t_events *events)
 {
 	long			current_time;

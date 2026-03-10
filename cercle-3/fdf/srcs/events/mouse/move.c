@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 15:14:21 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 15:19:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Rotate the object-style target orientation from a left-drag gesture.
+ * @param x Current mouse x position.
+ * @param y Current mouse y position.
+ * @param events Event context owning the camera and mouse state.
+ */
 static void	handle_object_vec3d(int x, int y, t_events *events)
 {
 	int		dx;
@@ -27,6 +33,12 @@ static void	handle_object_vec3d(int x, int y, t_events *events)
 	events->mouse.last_y = y;
 }
 
+/**
+ * @brief Rotate the camera target orientation from a right-drag gesture.
+ * @param x Current mouse x position.
+ * @param y Current mouse y position.
+ * @param events Event context owning the camera and mouse state.
+ */
 static void	handle_camera_rotation(int x, int y, t_events *events)
 {
 	int		dx;
@@ -42,6 +54,12 @@ static void	handle_camera_rotation(int x, int y, t_events *events)
 	events->mouse.last_y = y;
 }
 
+/**
+ * @brief Adjust color-shift channels from a middle-drag gesture.
+ * @param x Current mouse x position.
+ * @param y Current mouse y position.
+ * @param events Event context owning the camera and mouse state.
+ */
 static void	handle_color_shift(int x, int y, t_events *events)
 {
 	t_vec2	delta;
@@ -58,6 +76,12 @@ static void	handle_color_shift(int x, int y, t_events *events)
 	redraw(events);
 }
 
+/**
+ * @brief Adjust dampening from the distance of a shift-drag gesture.
+ * @param x Current mouse x position.
+ * @param y Current mouse y position.
+ * @param events Event context owning the camera, map, and mouse state.
+ */
 static void	handle_dampening(int x, int y, t_events *events)
 {
 	int		dx;
@@ -80,6 +104,13 @@ static void	handle_dampening(int x, int y, t_events *events)
 	redraw(events);
 }
 
+/**
+ * @brief Handle mouse motion gestures for rotation, color shift, and dampening.
+ * @param x Current mouse x position.
+ * @param y Current mouse y position.
+ * @param events Event context owning the active input state.
+ * @return Always `0` for MLX callback compatibility.
+ */
 int	mouse_move(int x, int y, t_events *events)
 {
 	if (events->keys.shift_left || events->keys.shift_right)

@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 19:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:57:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Process deferred runtime updates during each MLX loop iteration.
+ * @param events Event context holding camera, graphics, and timing state.
+ * @return Always `0` for MLX loop-hook compatibility.
+ */
 int	loop_hook(t_events *events)
 {
 	int	needs_redraw;

@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:12:48 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:18:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 
+/**
+ * @brief Allocate a 2D integer heightmap.
+ * @param height Number of rows.
+ * @param width Number of columns.
+ * @return Allocated heightmap, or `NULL` on failure.
+ */
 int	**allocate_map(int height, int width)
 {
 	int		**map;
@@ -36,6 +42,11 @@ int	**allocate_map(int height, int width)
 	return (map);
 }
 
+/**
+ * @brief Free a 2D integer heightmap.
+ * @param map Heightmap to release.
+ * @param height Number of rows allocated in the map.
+ */
 void	free_heightmap(int **map, int height)
 {
 	t_vec2	pos;

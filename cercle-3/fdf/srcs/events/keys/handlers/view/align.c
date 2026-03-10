@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/22 12:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 23:12:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:24:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Snap the camera target rotation to the first preset view.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the camera state.
+ * @return `1` when applied, otherwise `0`.
+ */
 int	handle_1(int keycode, t_events *events)
 {
 	(void)keycode;
@@ -21,6 +27,12 @@ int	handle_1(int keycode, t_events *events)
 	return (1);
 }
 
+/**
+ * @brief Snap the camera target rotation to the second preset view.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the camera state.
+ * @return `1` when applied, otherwise `0`.
+ */
 int	handle_2(int keycode, t_events *events)
 {
 	(void)keycode;
@@ -30,6 +42,12 @@ int	handle_2(int keycode, t_events *events)
 	return (1);
 }
 
+/**
+ * @brief Snap the camera target rotation to the third preset view.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the camera state.
+ * @return `1` when applied, otherwise `0`.
+ */
 int	handle_3(int keycode, t_events *events)
 {
 	(void)keycode;

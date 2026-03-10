@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 21:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 22:12:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Draw one scanline with z-buffer tests and no color shifting.
+ * @param g Graphics state providing the depth-culling setting.
+ * @param ctx Mutable scanline draw context.
+ */
 void	draw_scanline_z_flat(t_graphics *g, t_scanline_draw_ctx *ctx)
 {
 	while (ctx->x <= ctx->end_x)
@@ -29,6 +34,11 @@ void	draw_scanline_z_flat(t_graphics *g, t_scanline_draw_ctx *ctx)
 	}
 }
 
+/**
+ * @brief Draw one scanline with z-buffer tests and color shifting.
+ * @param g Graphics state providing depth and color-shift settings.
+ * @param ctx Mutable scanline draw context.
+ */
 void	draw_scanline_z_shifted(t_graphics *g, t_scanline_draw_ctx *ctx)
 {
 	while (ctx->x <= ctx->end_x)

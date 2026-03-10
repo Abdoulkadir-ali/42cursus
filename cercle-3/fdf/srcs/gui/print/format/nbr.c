@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 20:27:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:51:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+/**
+ * @brief Reverse a digit range in place after reverse-order number assembly.
+ * @param buffer Character buffer to modify.
+ * @param start First index in the reversal range.
+ * @param end Last index in the reversal range.
+ */
 static void	reverse_digits(char *buffer, int start, int end)
 {
 	char	tmp_char;
@@ -26,6 +32,11 @@ static void	reverse_digits(char *buffer, int start, int end)
 	}
 }
 
+/**
+ * @brief Format a signed integer into a decimal string.
+ * @param num Signed value to convert.
+ * @param buffer Output buffer receiving the formatted string.
+ */
 void	format_number(long long num, char *buffer)
 {
 	long long	val;
@@ -55,6 +66,11 @@ void	format_number(long long num, char *buffer)
 	reverse_digits(buffer, start_reversal, i - 1);
 }
 
+/**
+ * @brief Format an unsigned integer into a decimal string.
+ * @param num Unsigned value to convert.
+ * @param buffer Output buffer receiving the formatted string.
+ */
 void	format_uint(unsigned int num, char *buffer)
 {
 	int	i;

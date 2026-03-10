@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/26 19:53:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Allocate or resize the projection cache for the active map.
+ * @param g Graphics state owning the cache and active map.
+ */
 void	init_cache(t_graphics *g)
 {
 	size_t	size;
@@ -30,6 +34,11 @@ void	init_cache(t_graphics *g)
 	}
 }
 
+/**
+ * @brief Transform one band of rows into cached projected points.
+ * @param arg Thread payload describing the target row range.
+ * @return Always `NULL` for pthread compatibility.
+ */
 static void	*fill_cache_thread(void *arg)
 {
 	t_fill_cache_thread_data	*data;
@@ -48,6 +57,10 @@ static void	*fill_cache_thread(void *arg)
 	return (NULL);
 }
 
+/**
+ * @brief Fill the projection cache in parallel across map rows.
+ * @param g Graphics state owning the active cache and map.
+ */
 void	fill_cache(t_graphics *g)
 {
 	pthread_t					threads[NUM_THREADS];

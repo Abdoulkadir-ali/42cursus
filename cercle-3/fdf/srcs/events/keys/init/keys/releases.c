@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:46:03 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 21:51:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Populate the key release table for stateful keys.
+ * @param key_maps Key-map structure to update.
+ */
 void	set_key_releases(t_key_maps *key_maps)
 {
 	key_maps->key_releases[XK_Up] = handle_release_flag;

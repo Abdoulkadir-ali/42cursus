@@ -12,6 +12,10 @@
 
 #include "render.h"
 
+/**
+ * @brief Clear the camera color shift and restore the neutral style state.
+ * @param camera Camera whose style parameters are reset.
+ */
 void	reset_style(t_camera *camera)
 {
 	if (!camera)

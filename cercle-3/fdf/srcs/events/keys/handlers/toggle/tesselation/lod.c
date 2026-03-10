@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:57:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:30:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Increase LOD and disable tessellation above base density.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the graphics state.
+ * @return `1` when processed, otherwise `0`.
+ */
 int	handle_lod_up(int keycode, t_events *events)
 {
 	float	current;
@@ -36,6 +42,12 @@ int	handle_lod_up(int keycode, t_events *events)
 	return (1);
 }
 
+/**
+ * @brief Decrease the LOD sampling step toward the base density.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the graphics state.
+ * @return `1` when processed, otherwise `0`.
+ */
 int	handle_lod_down(int keycode, t_events *events)
 {
 	float	current;

@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 03:11:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:21:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Release the projection cache and reset its metadata.
+ * @param g Graphics state owning the cache.
+ */
 void	cleanup_cache(t_graphics *g)
 {
 	if (g->cache.points)
@@ -25,6 +29,11 @@ void	cleanup_cache(t_graphics *g)
 	g->cache.cache_valid = 0;
 }
 
+/**
+ * @brief Check whether the cached camera state differs from the live camera.
+ * @param g Graphics state owning the cache and camera.
+ * @return Non-zero when the cache must be refreshed.
+ */
 static int	camera_state_changed(t_graphics *g)
 {
 	return (g->cache.cam_state.position.x != g->camera->offset.x
@@ -37,6 +46,10 @@ static int	camera_state_changed(t_graphics *g)
 		|| g->cache.cam_state.alpha != g->camera->alpha);
 }
 
+/**
+ * @brief Refresh cached point projections when the map or camera changed.
+ * @param g Graphics state owning the cache, map, and camera.
+ */
 void	cache_projections(t_graphics *g)
 {
 	if (!g || !g->map || !g->camera)

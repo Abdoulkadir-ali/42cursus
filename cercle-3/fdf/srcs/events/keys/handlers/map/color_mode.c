@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 00:55:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/25 23:02:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:24:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Toggle the current map style between raw and gradient coloring.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the active map and graphics state.
+ * @return `1` when the toggle is applied, otherwise `0`.
+ */
 int	handle_c(int keycode, t_events *events)
 {
 	t_map	*map;

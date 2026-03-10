@@ -1,17 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   horizontal_interp.c                                :+:      :+:    :+:   */
+/*   horizontal.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:27:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Interpolate a point between horizontal neighbors.
+ * @param src Source map.
+ * @param dst Destination tessellated map.
+ * @param dst_pos Destination coordinates.
+ * @param src_pos Source coordinates at the left endpoint.
+ */
 void	handle_horizontal_interp(t_map *src, t_map *dst, t_vec2 dst_pos,
 		t_vec2 src_pos)
 {

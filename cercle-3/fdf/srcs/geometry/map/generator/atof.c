@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:18:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 
+/**
+ * @brief Parse an optional sign prefix.
+ * @param str Pointer to the current parse cursor.
+ * @return Parsed sign as `1` or `-1`.
+ */
 static int	parse_sign(const char **str)
 {
 	int	sign;
@@ -27,6 +32,11 @@ static int	parse_sign(const char **str)
 	return (sign);
 }
 
+/**
+ * @brief Parse the integer component of a decimal string.
+ * @param str Pointer to the current parse cursor.
+ * @return Parsed integer value as a double.
+ */
 static double	parse_integer(const char **str)
 {
 	double	num;
@@ -40,6 +50,11 @@ static double	parse_integer(const char **str)
 	return (num);
 }
 
+/**
+ * @brief Parse the fractional component of a decimal string.
+ * @param str Pointer to the current parse cursor.
+ * @return Parsed fractional value.
+ */
 static double	parse_fraction(const char **str)
 {
 	double	num;
@@ -60,6 +75,11 @@ static double	parse_fraction(const char **str)
 	return (num / div);
 }
 
+/**
+ * @brief Convert a string to an integer with null safety.
+ * @param str String to parse.
+ * @return Parsed integer value, or `0` for a null string.
+ */
 int	ft_atoi_safe(const char *str)
 {
 	if (!str)
@@ -67,6 +87,11 @@ int	ft_atoi_safe(const char *str)
 	return (ft_atoi(str));
 }
 
+/**
+ * @brief Convert a decimal string into a floating-point value.
+ * @param str String to parse.
+ * @return Parsed floating-point value.
+ */
 float	ft_atof(const char *str)
 {
 	int		sign;

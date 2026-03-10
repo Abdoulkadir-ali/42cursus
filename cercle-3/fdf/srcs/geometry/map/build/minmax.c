@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 15:23:38 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/21 00:26:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Scan one row while updating min and max height state.
+ * @param ctx Running min/max accumulator.
+ * @param map Map being scanned.
+ * @param y Row index to process.
+ */
 static void	process_min_max_row(t_find_min_max_ctx *ctx, t_map *map, int y)
 {
 	ctx->pos.y = y;
@@ -37,6 +43,12 @@ static void	process_min_max_row(t_find_min_max_ctx *ctx, t_map *map, int y)
 	}
 }
 
+/**
+ * @brief Find the minimum and maximum raw z values in a map.
+ * @param map Map to scan.
+ * @param min Output minimum z value.
+ * @param max Output maximum z value.
+ */
 void	find_min_max_z(t_map *map, float *min, float *max)
 {
 	t_find_min_max_ctx	ctx;
@@ -53,6 +65,10 @@ void	find_min_max_z(t_map *map, float *min, float *max)
 	*max = ctx.max_val;
 }
 
+/**
+ * @brief Store the map's raw z range inside `min_max_z`.
+ * @param map Map to update.
+ */
 void	calculate_min_max_z(t_map *map)
 {
 	float	min_z;

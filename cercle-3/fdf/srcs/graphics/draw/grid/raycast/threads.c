@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/25 19:12:36 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 19:12:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Launch the horizon-aware grid traversal across visible strips.
+ * @param g Graphics state providing window size and cached map data.
+ */
 void	draw_grid_raycast_threaded(t_graphics *g)
 {
 	pthread_t		threads[NUM_THREADS];
@@ -35,6 +39,10 @@ void	draw_grid_raycast_threaded(t_graphics *g)
 	join_threads(threads);
 }
 
+/**
+ * @brief Launch the standard grid traversal across row bands.
+ * @param g Graphics state providing map size and active LOD.
+ */
 void	draw_grid_threaded(t_graphics *g)
 {
 	pthread_t		threads[NUM_THREADS];

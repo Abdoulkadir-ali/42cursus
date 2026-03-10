@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2025/12/23 20:58:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Draw a standard line without z-buffer updates.
+ * @param g Graphics state, unused in this variant.
+ * @param p Prepared Bresenham parameter block.
+ */
 void	bresenham_fast(t_graphics *g, t_bresenham_params *p)
 {
 	t_bresenham_ctx		ctx;
@@ -35,6 +40,11 @@ void	bresenham_fast(t_graphics *g, t_bresenham_params *p)
 	}
 }
 
+/**
+ * @brief Draw a standard line with z-buffer updates.
+ * @param g Graphics state providing z-buffer settings.
+ * @param p Prepared Bresenham parameter block.
+ */
 void	bresenham_z(t_graphics *g, t_bresenham_params *p)
 {
 	t_bresenham_ctx		ctx;
@@ -59,6 +69,11 @@ void	bresenham_z(t_graphics *g, t_bresenham_params *p)
 	}
 }
 
+/**
+ * @brief Draw a color-shifted line without z-buffer updates.
+ * @param g Graphics state providing the color shift.
+ * @param p Prepared Bresenham parameter block.
+ */
 void	bresenham_shift_no_z(t_graphics *g, t_bresenham_params *p)
 {
 	t_bresenham_ctx		ctx;
@@ -82,6 +97,11 @@ void	bresenham_shift_no_z(t_graphics *g, t_bresenham_params *p)
 	}
 }
 
+/**
+ * @brief Draw a color-shifted line with z-buffer updates.
+ * @param g Graphics state providing depth and color-shift settings.
+ * @param p Prepared Bresenham parameter block.
+ */
 void	bresenham_shift_z(t_graphics *g, t_bresenham_params *p)
 {
 	t_bresenham_ctx		ctx;

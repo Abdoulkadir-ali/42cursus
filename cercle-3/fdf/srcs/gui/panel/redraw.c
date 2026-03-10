@@ -6,13 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:26:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:51:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 #include "gui.h"
 
+/**
+ * @brief Recreate the GUI image when the window height changes.
+ * @param gui GUI object whose image buffer may need resizing.
+ */
 static void	check_gui_resize(t_gui *gui)
 {
 	if (!gui->window->gui_img.img
@@ -25,6 +29,10 @@ static void	check_gui_resize(t_gui *gui)
 	}
 }
 
+/**
+ * @brief Prepare the GUI image for a fresh panel redraw.
+ * @param events Event context owning the GUI state.
+ */
 static void	prepare_gui(t_events *events)
 {
 	t_gui	*gui;
@@ -35,12 +43,20 @@ static void	prepare_gui(t_events *events)
 	draw_panel_background(gui);
 }
 
+/**
+ * @brief Push the current GUI image into the window.
+ * @param gui GUI object owning the image and window handles.
+ */
 static void	render_gui_image(t_gui *gui)
 {
 	mlx_put_image_to_window(gui->window->mlx_ptr, gui->window->ptr,
 		gui->window->gui_img.img, 0, 0);
 }
 
+/**
+ * @brief Compose all panel sections for the current frame.
+ * @param gui GUI object providing the state to display.
+ */
 static void	draw_gui_layouts(t_gui *gui)
 {
 	t_layout	l;
@@ -59,6 +75,10 @@ static void	draw_gui_layouts(t_gui *gui)
 	draw_transform_stats(gui);
 }
 
+/**
+ * @brief Rebuild the GUI panel for the current frame.
+ * @param events Event context providing the active GUI state.
+ */
 void	redraw_gui(t_events *events)
 {
 	t_gui	*gui;

@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/25 19:12:24 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 19:12:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Scan and draw the upper half of the surface around the peak sample.
+ * @param ctx Raycast traversal context for the current thread.
+ */
 static void	draw_upper_half(t_thread_raycast_ctx *ctx)
 {
 	t_draw_surface_ctx	prim_ctx;
@@ -39,6 +43,10 @@ static void	draw_upper_half(t_thread_raycast_ctx *ctx)
 	}
 }
 
+/**
+ * @brief Scan and draw the lower half of the surface around the peak sample.
+ * @param ctx Raycast traversal context for the current thread.
+ */
 static void	draw_lower_half(t_thread_raycast_ctx *ctx)
 {
 	t_draw_surface_ctx	prim_ctx;
@@ -66,6 +74,11 @@ static void	draw_lower_half(t_thread_raycast_ctx *ctx)
 	}
 }
 
+/**
+ * @brief Run the horizon-aware traversal for one visibility strip.
+ * @param data Thread payload describing the strip bounds.
+ * @return Always `NULL` for pthread compatibility.
+ */
 void	*thread_raycast_routine(void *data)
 {
 	t_thread_raycast_ctx	ctx;

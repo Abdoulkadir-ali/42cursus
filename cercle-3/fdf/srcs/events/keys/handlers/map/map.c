@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 16:28:20 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:02:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:25:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Reset the camera rotation, fit, and style to the default map view.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the camera state.
+ * @return Always `1`.
+ */
 int	handle_r(int keycode, t_events *events)
 {
 	(void)keycode;
@@ -22,6 +28,12 @@ int	handle_r(int keycode, t_events *events)
 	return (1);
 }
 
+/**
+ * @brief Cycle to the next loaded map and rebind runtime pointers to it.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the map manager and runtime subsystems.
+ * @return Always `1`.
+ */
 int	handle_n(int keycode, t_events *events)
 {
 	(void)keycode;
@@ -43,6 +55,12 @@ int	handle_n(int keycode, t_events *events)
 	return (1);
 }
 
+/**
+ * @brief Cycle the GUI theme style.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the GUI state.
+ * @return Always `1`.
+ */
 int	handle_s(int keycode, t_events *events)
 {
 	(void)keycode;
@@ -50,6 +68,12 @@ int	handle_s(int keycode, t_events *events)
 	return (1);
 }
 
+/**
+ * @brief Cycle the render mode snapshot and request a graphics refresh.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the render and graphics state.
+ * @return Always `1`.
+ */
 int	handle_k(int keycode, t_events *events)
 {
 	(void)keycode;

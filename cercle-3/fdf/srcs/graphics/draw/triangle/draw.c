@@ -6,13 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 21:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 20:03:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 #include "render.h"
 
+/**
+ * @brief Draw one filled triangle, splitting it into rasterizable halves.
+ * @param g Graphics state providing render configuration.
+ * @param t Triangle to fill.
+ */
 void	draw_filled_triangle(t_graphics *g, t_triangle t)
 {
 	double	ratio;
@@ -42,6 +47,11 @@ void	draw_filled_triangle(t_graphics *g, t_triangle t)
 	}
 }
 
+/**
+ * @brief Draw one triangle as three wireframe edges.
+ * @param g Graphics state providing line drawing.
+ * @param t Triangle to draw.
+ */
 void	draw_wireframe_triangle(t_graphics *g, t_triangle t)
 {
 	draw_line(g, t.p1, t.p2);
@@ -49,6 +59,11 @@ void	draw_wireframe_triangle(t_graphics *g, t_triangle t)
 	draw_line(g, t.p3, t.p1);
 }
 
+/**
+ * @brief Draw a quad as two triangles in filled or wireframe mode.
+ * @param g Graphics state providing render configuration.
+ * @param quad Quad corners in projected order.
+ */
 void	draw_quad_triangles(t_graphics *g, t_quad_triangle quad)
 {
 	if (g->render_config.filled)
@@ -63,6 +78,13 @@ void	draw_quad_triangles(t_graphics *g, t_quad_triangle quad)
 	}
 }
 
+/**
+ * @brief Draw one triangle using the current filled or wireframe mode.
+ * @param g Graphics state providing render configuration.
+ * @param p1 First projected point.
+ * @param p2 Second projected point.
+ * @param p3 Third projected point.
+ */
 void	draw_triangle(t_graphics *g, t_point p1, t_point p2, t_point p3)
 {
 	if (g->render_config.filled)

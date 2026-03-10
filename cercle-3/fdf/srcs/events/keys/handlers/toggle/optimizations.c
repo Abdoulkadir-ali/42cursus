@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:43:49 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:21:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:24:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Toggle adaptive logic and restore manual defaults when disabled.
+ * @param keycode Unused X11 keycode.
+ * @param events Event context owning the graphics state.
+ * @return `1` when the toggle is applied, otherwise `0`.
+ */
 int	handle_manual_mode(int keycode, t_events *events)
 {
 	int	use_adaptive;

@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:50:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:37:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
+/**
+ * @brief Bootstrap the application and enter the MLX event loop.
+ * @param argc Number of command-line arguments.
+ * @param argv Command-line argument array.
+ * @return `0` on success, otherwise `1` for startup failures.
+ */
 int	main(int argc, char **argv)
 {
 	t_data		data;

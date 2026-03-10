@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:27:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Allocate the destination map for one tessellation pass.
+ * @param src Source map being densified.
+ * @param new_w Output destination width.
+ * @param new_h Output destination height.
+ * @return Allocated destination map, or `NULL` on failure.
+ */
 t_map	*init_tesselated_map(t_map *src, size_t *new_w, size_t *new_h)
 {
 	t_map	*dst;
@@ -30,6 +37,11 @@ t_map	*init_tesselated_map(t_map *src, size_t *new_w, size_t *new_h)
 	return (dst);
 }
 
+/**
+ * @brief Fill all points of the tessellated destination map.
+ * @param dst Destination map being generated.
+ * @param src Source map providing base vertices.
+ */
 void	fill_tesselated_points(t_map *dst, t_map *src)
 {
 	size_t	y;
@@ -50,6 +62,11 @@ void	fill_tesselated_points(t_map *dst, t_map *src)
 	}
 }
 
+/**
+ * @brief Copy cached range metadata into a tessellated map.
+ * @param dst Destination map to finalize.
+ * @param src Source map providing the metadata.
+ */
 void	finalize_tesselated_map(t_map *dst, t_map *src)
 {
 	dst->min_max_z = src->min_max_z;

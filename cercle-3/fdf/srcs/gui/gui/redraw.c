@@ -6,13 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:29:46 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:41:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:48:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 #include "gui.h"
 
+/**
+ * @brief Redraw the 3D scene and the GUI overlay for the current event state.
+ * @param events Event context providing graphics, camera, and GUI state.
+ */
 void	redraw(t_events *events)
 {
 	t_graphics	*g;

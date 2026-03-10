@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:18:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 
+/**
+ * @brief Fill a heightmap by sampling octave noise across the grid.
+ * @param map Heightmap to populate.
+ * @param params Generation parameters.
+ * @param noise Initialized noise state.
+ */
 static void	fill_map(int **map, t_gen_params params, t_noise_state *noise)
 {
 	t_vec2	pos;
@@ -32,6 +38,11 @@ static void	fill_map(int **map, t_gen_params params, t_noise_state *noise)
 	}
 }
 
+/**
+ * @brief Allocate and populate a procedural heightmap.
+ * @param params Generation parameters.
+ * @return Allocated integer heightmap, or `NULL` on failure.
+ */
 int	**generate_heightmap(t_gen_params params)
 {
 	int				**map;

@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:17:31 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:17:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 
+/**
+ * @brief Initialize gradient vectors and the base permutation table.
+ * @param state Noise state to initialize.
+ */
 static void	init_gradients(t_noise_state *state)
 {
 	int	i;
@@ -26,6 +30,11 @@ static void	init_gradients(t_noise_state *state)
 	}
 }
 
+/**
+ * @brief Shuffle the permutation table using the provided seed.
+ * @param state Noise state whose permutation table is updated.
+ * @param seed Seed used for deterministic shuffling.
+ */
 static void	init_permutation(t_noise_state *state, int seed)
 {
 	int						i;
@@ -54,6 +63,11 @@ static void	init_permutation(t_noise_state *state, int seed)
 	}
 }
 
+/**
+ * @brief Allocate and initialize a Perlin noise state.
+ * @param seed Seed used to randomize the permutation table.
+ * @return Allocated noise state, or `NULL` on failure.
+ */
 t_noise_state	*init_noise(int seed)
 {
 	t_noise_state	*state;

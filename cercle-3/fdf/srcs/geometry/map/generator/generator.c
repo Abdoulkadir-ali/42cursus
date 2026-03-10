@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:37:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 
+/**
+ * @brief Copy generated heights into a renderable map structure.
+ * @param map Destination map.
+ * @param heights Source integer heightmap.
+ */
 static void	fill_map_from_heights(t_map *map, int **heights)
 {
 	size_t	i;
@@ -37,6 +42,10 @@ static void	fill_map_from_heights(t_map *map, int **heights)
 	}
 }
 
+/**
+ * @brief Initialize render metadata and style for a generated map.
+ * @param map Generated map to finalize.
+ */
 static void	setup_map_style(t_map *map)
 {
 	map->min_proj_z = map->min_max_z.x;
@@ -49,6 +58,12 @@ static void	setup_map_style(t_map *map)
 	apply_map_style(map);
 }
 
+/**
+ * @brief Allocate a map and populate it from generated heights.
+ * @param params Generation parameters describing dimensions.
+ * @param heights Source integer heightmap.
+ * @return Allocated renderable map, or `NULL` on failure.
+ */
 static t_map	*allocate_and_fill_map(t_gen_params params, int **heights)
 {
 	t_map	*map;
@@ -70,6 +85,11 @@ static t_map	*allocate_and_fill_map(t_gen_params params, int **heights)
 	return (map);
 }
 
+/**
+ * @brief Generate a runtime map from procedural noise parameters.
+ * @param params Generation parameters.
+ * @return Newly allocated map, or `NULL` on failure.
+ */
 t_map	*generate_runtime_map(t_gen_params params)
 {
 	t_map	*map;

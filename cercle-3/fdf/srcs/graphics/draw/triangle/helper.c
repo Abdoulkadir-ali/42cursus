@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:58:16 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 20:03:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Swap two projected points in place.
+ * @param a First point.
+ * @param b Second point.
+ */
 void	swap_points(t_point *a, t_point *b)
 {
 	t_point	t;
@@ -21,6 +26,12 @@ void	swap_points(t_point *a, t_point *b)
 	*b = t;
 }
 
+/**
+ * @brief Initialize one edge walker between a top and bottom point.
+ * @param e Edge structure to populate.
+ * @param top Top point of the edge.
+ * @param bot Bottom point of the edge.
+ */
 void	setup_edge(t_edge *e, t_point top, t_point bot)
 {
 	int		height;
@@ -42,6 +53,10 @@ void	setup_edge(t_edge *e, t_point top, t_point bot)
 	e->db = (bot.color.z - e->b) * inv_h;
 }
 
+/**
+ * @brief Advance one edge walker by one scanline.
+ * @param e Edge structure to update.
+ */
 void	step_edge(t_edge *e)
 {
 	e->x += e->dx;

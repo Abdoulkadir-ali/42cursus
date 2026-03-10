@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 19:27:48 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:51:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:07:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Draw the horizontal neighbor line for one surface primitive.
+ * @param ctx Surface-draw context containing the current point and strip bounds.
+ */
 static void	draw_horizontal_line(t_draw_surface_ctx *ctx)
 {
 	t_clipping_bounds	bounds;
@@ -30,6 +34,10 @@ static void	draw_horizontal_line(t_draw_surface_ctx *ctx)
 	}
 }
 
+/**
+ * @brief Draw the vertical neighbor line for one surface primitive.
+ * @param ctx Surface-draw context containing the current point and strip bounds.
+ */
 static void	draw_vertical_line(t_draw_surface_ctx *ctx)
 {
 	t_clipping_bounds	bounds;
@@ -48,6 +56,10 @@ static void	draw_vertical_line(t_draw_surface_ctx *ctx)
 	}
 }
 
+/**
+ * @brief Emit wireframe lines for the current surface primitive when enabled.
+ * @param ctx Surface-draw context containing the current cached neighbors.
+ */
 static void	draw_lines(t_draw_surface_ctx *ctx)
 {
 	if (ctx->g->render_config.render_mode == RENDER_LINES
@@ -58,6 +70,10 @@ static void	draw_lines(t_draw_surface_ctx *ctx)
 	}
 }
 
+/**
+ * @brief Emit filled triangles for the current surface primitive when enabled.
+ * @param ctx Surface-draw context containing the current cached neighbors.
+ */
 static void	draw_triangles(t_draw_surface_ctx *ctx)
 {
 	if (ctx->g->render_config.render_mode == RENDER_TRIANGLES
@@ -71,6 +87,10 @@ static void	draw_triangles(t_draw_surface_ctx *ctx)
 	}
 }
 
+/**
+ * @brief Draw one raycast traversal primitive from the cached grid.
+ * @param ctx Surface-draw context with position, direction, and strip data.
+ */
 void	draw_surface_primitive(t_draw_surface_ctx *ctx)
 {
 	ctx->margin = 50;

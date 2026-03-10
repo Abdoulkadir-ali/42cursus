@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 21:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 21:45:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Build the scanline drawing context from a scanline descriptor.
+ * @param g Graphics state providing image and z-buffer storage.
+ * @param data Prepared scanline descriptor.
+ * @param ctx Output scanline context.
+ */
 void	init_scanline_ctx(t_graphics *g, t_scanline_data data,
 		t_scanline_ctx *ctx)
 {
@@ -27,6 +33,11 @@ void	init_scanline_ctx(t_graphics *g, t_scanline_data data,
 	ctx->draw_ctx.dz = ctx->dz;
 }
 
+/**
+ * @brief Normalize, clip, and draw one horizontal triangle scanline.
+ * @param g Graphics state providing image bounds and render settings.
+ * @param data Prepared scanline descriptor.
+ */
 void	draw_horizontal_scanline_z(t_graphics *g, t_scanline_data data)
 {
 	t_scanline_ctx	ctx;

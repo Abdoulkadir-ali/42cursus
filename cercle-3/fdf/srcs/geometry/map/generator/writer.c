@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 02:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:16:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "generator.h"
 
+/**
+ * @brief Write one row of height values to a file.
+ * @param fd Destination file descriptor.
+ * @param row Height row to serialize.
+ * @param w Number of values in the row.
+ */
 static void	write_row(int fd, int *row, int w)
 {
 	t_vec2	pos;
@@ -30,6 +36,13 @@ static void	write_row(int fd, int *row, int w)
 	write(fd, "\n", 1);
 }
 
+/**
+ * @brief Save a generated heightmap to a `.fdf`-compatible file.
+ * @param map Heightmap to serialize.
+ * @param w Map width.
+ * @param h Map height.
+ * @param filename Output filename.
+ */
 void	save_map_to_file(int **map, int w, int h, char *filename)
 {
 	int		fd;

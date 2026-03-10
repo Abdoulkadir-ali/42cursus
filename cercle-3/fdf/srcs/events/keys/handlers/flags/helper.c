@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:27:35 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 21:13:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Update arrow-style directional and color-mode flags.
+ * @param keycode X11 keycode being processed.
+ * @param events Event context owning the key state.
+ * @param value Pressed state to assign.
+ */
 static void	set_arrows(int keycode, t_events *events, int value)
 {
 	if (keycode == XK_Up)
@@ -28,6 +34,12 @@ static void	set_arrows(int keycode, t_events *events, int value)
 		events->keys.right = value;
 }
 
+/**
+ * @brief Update modifier-key flags.
+ * @param keycode X11 keycode being processed.
+ * @param events Event context owning the key state.
+ * @param value Pressed state to assign.
+ */
 static void	set_modifiers(int keycode, t_events *events,
 		int value)
 {
@@ -41,6 +53,12 @@ static void	set_modifiers(int keycode, t_events *events,
 		events->keys.shift_right = value;
 }
 
+/**
+ * @brief Update letter-key flags used by movement, rotation, and combos.
+ * @param keycode X11 keycode being processed.
+ * @param events Event context owning the key state.
+ * @param value Pressed state to assign.
+ */
 static void	set_letters(int keycode, t_events *events, int value)
 {
 	if (keycode == XK_l || keycode == XK_L)
@@ -69,6 +87,12 @@ static void	set_letters(int keycode, t_events *events, int value)
 		events->keys.k = value;
 }
 
+/**
+ * @brief Route one keycode to the appropriate state flag setter.
+ * @param keycode X11 keycode being processed.
+ * @param events Event context owning the key state.
+ * @param value Pressed state to assign.
+ */
 void	handle_button(int keycode, t_events *events, int value)
 {
 	set_arrows(keycode, events, value);

@@ -6,12 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:20:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:48:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+/**
+ * @brief Draw one rotated axis line for the axis indicator overlay.
+ * @param gui GUI object providing window and camera state.
+ * @param center Screen-space center of the indicator.
+ * @param axis Canonical axis vector to rotate.
+ * @param color MLX color used for the line.
+ */
 void	draw_axis_line(t_gui *gui, t_vec2 center, t_vec3d axis, int color)
 {
 	t_vec3d	rotated;

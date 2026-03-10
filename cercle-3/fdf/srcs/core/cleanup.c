@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 15:28:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:37:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 
+/**
+ * @brief Release the array of discovered map file paths.
+ * @param events Event context owning the map manager.
+ */
 static void	free_map_files(t_events *events)
 {
 	size_t	i;
@@ -29,6 +33,10 @@ static void	free_map_files(t_events *events)
 	}
 }
 
+/**
+ * @brief Free every loaded map owned by the map manager.
+ * @param events Event context owning the map manager.
+ */
 static void	free_cached_maps(t_events *events)
 {
 	size_t	i;
@@ -46,6 +54,10 @@ static void	free_cached_maps(t_events *events)
 	}
 }
 
+/**
+ * @brief Free the precomputed LOD maps owned by the graphics state.
+ * @param graphics Graphics context owning the LOD maps.
+ */
 static void	free_lod_maps(t_graphics *graphics)
 {
 	int	i;
@@ -59,6 +71,11 @@ static void	free_lod_maps(t_graphics *graphics)
 	}
 }
 
+/**
+ * @brief Destroy MLX images, the window, the display, and the z-buffer.
+ * @param win Window structure owning the created images and z-buffer.
+ * @param mlx MLX connection pointer.
+ */
 static void	destroy_window_and_images(t_window *win, void *mlx)
 {
 	if (win->z_buffer)
@@ -76,6 +93,11 @@ static void	destroy_window_and_images(t_window *win, void *mlx)
 	}
 }
 
+/**
+ * @brief Release application resources and terminate the process.
+ * @param events Event context owning the runtime subsystems.
+ * @return Always `0`, though execution terminates via `exit(0)`.
+ */
 int	cleanup_and_exit(t_events *events)
 {
 	free_cached_maps(events);

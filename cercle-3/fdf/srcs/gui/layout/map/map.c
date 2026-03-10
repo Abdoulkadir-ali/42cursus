@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 19:45:50 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:18:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:48:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+/**
+ * @brief Check whether the current map pointer belongs to the loaded map list.
+ * @param maps Map manager to inspect.
+ * @return `1` if the current map is loaded from the list, otherwise `0`.
+ */
 static int	is_current_map_loaded(t_maps *maps)
 {
 	size_t	i;
@@ -25,6 +30,11 @@ static int	is_current_map_loaded(t_maps *maps)
 	return (0);
 }
 
+/**
+ * @brief Draw the map section describing the active map source.
+ * @param l Layout object controlling panel placement.
+ * @param gui GUI object providing map-manager state.
+ */
 void	draw_map_layout(t_layout *l, t_gui *gui)
 {
 	char	*map_name;

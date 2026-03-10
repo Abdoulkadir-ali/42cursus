@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 11:28:45 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 22:57:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Initialize the default render configuration.
+ * @param c Render configuration structure to seed.
+ */
 void	init_render_config(t_render_config *c)
 {
 	c->render_mode = RENDER_LINES;
@@ -30,6 +34,10 @@ void	init_render_config(t_render_config *c)
 	c->last_tess_max = (t_vec2){-1, -1};
 }
 
+/**
+ * @brief Reset frame timing counters and progress flags.
+ * @param f Frame data structure to initialize.
+ */
 void	init_frame_data(t_frame_data *f)
 {
 	f->last_frame_time = 0;
@@ -39,6 +47,11 @@ void	init_frame_data(t_frame_data *f)
 	f->last_check = 0;
 }
 
+/**
+ * @brief Allocate and initialize the graphics runtime state.
+ * @param args Shared dependencies required by the graphics layer.
+ * @return Newly allocated graphics object, or `NULL` on failure.
+ */
 t_graphics	*init_graphics(t_graphics_args args)
 {
 	t_graphics	*g;

@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 11:44:51 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:07:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:23:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "events.h"
 
+/**
+ * @brief Populate the key press action table.
+ * @param key_maps Key-map structure to update.
+ */
 void	set_key_actions(t_key_maps *key_maps)
 {
 	set_key_actions_1(key_maps);

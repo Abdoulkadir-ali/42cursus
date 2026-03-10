@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 21:15:42 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 21:17:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Draw one raycast-managed pixel without z-buffer updates.
+ * @param g Graphics state providing the color shift.
+ * @param ctx Bresenham state holding the current interpolated color.
+ * @param p Bresenham parameter block containing the target pixel pointer.
+ */
 void	raycast_draw_pixel_no_z(t_graphics *g, t_bresenham_ctx *ctx,
 		t_bresenham_params *p)
 {
@@ -28,6 +34,12 @@ void	raycast_draw_pixel_no_z(t_graphics *g, t_bresenham_ctx *ctx,
 		.color = rgb_to_int(color)});
 }
 
+/**
+ * @brief Draw one raycast-managed pixel with z-buffer updates.
+ * @param g Graphics state providing color shift and depth settings.
+ * @param ctx Bresenham state holding the current interpolated color.
+ * @param p Bresenham parameter block containing pixel and z-buffer pointers.
+ */
 void	raycast_draw_pixel_with_z(t_graphics *g, t_bresenham_ctx *ctx,
 		t_bresenham_params *p)
 {
@@ -44,6 +56,14 @@ void	raycast_draw_pixel_with_z(t_graphics *g, t_bresenham_ctx *ctx,
 		.z_addr = p->z_addr, .zr = (float)p->zr, .color = rgb_to_int(color)});
 }
 
+/**
+ * @brief Update the horizon buffer and draw one visible raycast pixel.
+ * @param g Graphics state owning the horizon buffer.
+ * @param ctx Bresenham state holding the current screen position.
+ * @param p Bresenham parameter block containing strip bounds and pointers.
+ * @param use_z Non-zero to use z-buffer drawing, zero otherwise.
+ * @return Always `0` for call-site convenience.
+ */
 int	raycast_process_pixel(t_graphics *g, t_bresenham_ctx *ctx,
 		t_bresenham_params *p, int use_z)
 {

@@ -6,12 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:29:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/25 23:18:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:43:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Allocate a map structure sized for parsed file contents.
+ * @param width Parsed map width.
+ * @param height Parsed map height.
+ * @return Allocated map, or a fallback test grid on failure.
+ */
 static t_map	*init_map_structure(size_t width, size_t height)
 {
 	t_map	*map;
@@ -29,7 +35,13 @@ static t_map	*init_map_structure(size_t width, size_t height)
 	return (map);
 }
 
-static int	load_map_data(t_map *map, char *filename)
+/**
+ * @brief Parse a map file into an already allocated map.
+ * @param map Destination map structure.
+ * @param filename Path to the map file.
+ * @return `0` on success, otherwise `1`.
+ */
+static int	load_map_data(t_map *map, const char *filename)
 {
 	int	fd;
 
@@ -41,6 +53,10 @@ static int	load_map_data(t_map *map, char *filename)
 	return (0);
 }
 
+/**
+ * @brief Finalize a loaded map for rendering.
+ * @param map Parsed map to normalize and style.
+ */
 static void	finalize_map(t_map *map)
 {
 	size_t	total_size;
@@ -59,7 +75,12 @@ static void	finalize_map(t_map *map)
 	apply_map_style(map);
 }
 
-t_map	*load_map(char *filename)
+/**
+ * @brief Load a map file from disk.
+ * @param filename Path to the `.fdf` file.
+ * @return Loaded map, or a fallback test grid on failure.
+ */
+t_map	*load_map(const char *filename)
 {
 	t_map	*map;
 	int		fd;

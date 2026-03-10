@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 13:46:12 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 19:59:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:06:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Compute the Bresenham backend flags for the current line draw.
+ * @param g Graphics state providing depth and color-shift options.
+ * @return Bitmask selecting z-buffer and color-shift variants.
+ */
 static int	get_bresenham_flags(t_graphics *g)
 {
 	int	flags;
@@ -25,6 +30,13 @@ static int	get_bresenham_flags(t_graphics *g)
 	return (flags);
 }
 
+/**
+ * @brief Draw one line segment clipped to the provided horizontal bounds.
+ * @param g Graphics state providing buffers and render options.
+ * @param start Start point in screen space.
+ * @param end End point in screen space.
+ * @param bounds Inclusive-exclusive horizontal clipping bounds.
+ */
 void	draw_line_clipped(t_graphics *g, t_point start, t_point end,
 		t_clipping_bounds bounds)
 {
@@ -43,6 +55,12 @@ void	draw_line_clipped(t_graphics *g, t_point start, t_point end,
 		bresenham(g, &dlc.p, flags);
 }
 
+/**
+ * @brief Draw one line segment across the full window width.
+ * @param g Graphics state providing buffers and render options.
+ * @param start Start point in screen space.
+ * @param end End point in screen space.
+ */
 void	draw_line(t_graphics *g, t_point start, t_point end)
 {
 	t_clipping_bounds	bounds;

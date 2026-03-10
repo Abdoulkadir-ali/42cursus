@@ -6,13 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:03:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:21:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 #include "render.h"
 
+/**
+ * @brief Build the camera view matrix from rotation and camera distance.
+ * @param cam Camera providing projection mode and alpha values.
+ * @param rot 4x4 rotation matrix built from the cached camera rotation.
+ * @return View matrix combining rotation and camera translation.
+ */
 static t_matrix4	build_view_matrix(t_camera *cam, t_matrix4 rot)
 {
 	float		cam_dist;
@@ -32,6 +38,11 @@ static t_matrix4	build_view_matrix(t_camera *cam, t_matrix4 rot)
 	return (matrix_multiply(translate, rot));
 }
 
+/**
+ * @brief Copy the cached 3x3 camera rotation into a 4x4 matrix.
+ * @param rot Output 4x4 matrix receiving the rotation rows.
+ * @param rm Cached 3x3 camera rotation matrix.
+ */
 static void	set_rotation_matrix(t_matrix4 *rot, t_vec3d *rm)
 {
 	int	i;
@@ -46,6 +57,10 @@ static void	set_rotation_matrix(t_matrix4 *rot, t_vec3d *rm)
 	}
 }
 
+/**
+ * @brief Rebuild the cached camera transform matrix used by projection code.
+ * @param cam Camera receiving the final transform matrix and view distance.
+ */
 void	calculate_transform_matrix(t_camera *cam)
 {
 	t_transform_ctx	ctx;

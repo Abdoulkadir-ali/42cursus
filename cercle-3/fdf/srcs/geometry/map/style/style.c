@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 19:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/24 02:01:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 03:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "geometry.h"
 
+/**
+ * @brief Apply the default height gradient to all map points.
+ * @param map Map whose colors must be refreshed.
+ */
 void	apply_colors(t_map *map)
 {
 	t_vec3	pos;
@@ -34,6 +38,12 @@ void	apply_colors(t_map *map)
 	}
 }
 
+/**
+ * @brief Resolve the display color for one style selection.
+ * @param v Packed style inputs containing z, min, and max values.
+ * @param style Active map style.
+ * @return Color chosen for the requested style.
+ */
 t_vec3	get_map_line_color(t_vec3 v, t_map_style style)
 {
 	if (style == MAP_STYLE_GRADIENT)
@@ -47,6 +57,11 @@ t_vec3	get_map_line_color(t_vec3 v, t_map_style style)
 	return (create_color(255, 255, 255));
 }
 
+/**
+ * @brief Apply the active style to one point in the map.
+ * @param map Map that owns the point.
+ * @param idx Linear index of the point to recolor.
+ */
 void	apply_style_to_point(t_map *map, int idx)
 {
 	t_vec3	v;
@@ -65,6 +80,10 @@ void	apply_style_to_point(t_map *map, int idx)
 	}
 }
 
+/**
+ * @brief Recompute display colors for the entire map.
+ * @param map Map whose style must be applied.
+ */
 void	apply_map_style(t_map *map)
 {
 	t_vec3	pos;

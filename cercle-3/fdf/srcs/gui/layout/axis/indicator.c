@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 18:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2025/12/23 18:19:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 01:48:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
+/**
+ * @brief Draw the live X/Y/Z axis indicator in the window corner.
+ * @param gui GUI object providing camera and window state.
+ */
 void	draw_axis_indicator(t_gui *gui)
 {
 	t_vec2		center;

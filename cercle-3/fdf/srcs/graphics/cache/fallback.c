@@ -6,12 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/09 04:19:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 04:22:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/10 02:31:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "graphics.h"
 
+/**
+ * @brief Create a sentinel point representing invalid projected data.
+ * @return Point initialized with bad coordinates and a black color.
+ */
 static t_point	create_bad_point(void)
 {
 	t_point	bad_point;
@@ -23,6 +27,13 @@ static t_point	create_bad_point(void)
 	return (bad_point);
 }
 
+/**
+ * @brief Compute one projected point directly from the live map data.
+ * @param g Graphics state providing map and camera data.
+ * @param x Map-space x index.
+ * @param y Map-space y index.
+ * @return Newly transformed screen-space point.
+ */
 static t_point	get_valid_proj(t_graphics *g, int x, int y)
 {
 	size_t	idx;
@@ -38,6 +49,13 @@ static t_point	get_valid_proj(t_graphics *g, int x, int y)
 	return (apply_transform(p_in, g->camera));
 }
 
+/**
+ * @brief Return a fallback point, rejecting invalid source map entries.
+ * @param g Graphics state providing map and camera data.
+ * @param x Map-space x index.
+ * @param y Map-space y index.
+ * @return Cached-style point or a bad sentinel when unavailable.
+ */
 static t_point	get_fallback_proj(t_graphics *g, int x, int y)
 {
 	size_t	idx;
@@ -50,6 +68,13 @@ static t_point	get_fallback_proj(t_graphics *g, int x, int y)
 	return (get_valid_proj(g, x, y));
 }
 
+/**
+ * @brief Return a projected point from the cache or compute a fallback.
+ * @param g Graphics state providing cache, map, and camera data.
+ * @param x Map-space x index.
+ * @param y Map-space y index.
+ * @return Cached point when valid, otherwise a fallback projection.
+ */
 t_point	get_cached_proj(t_graphics *g, int x, int y)
 {
 	if (g->cache.points && g->cache.map == g->map && x >= 0 && y >= 0
