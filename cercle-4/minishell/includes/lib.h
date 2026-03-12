@@ -18,11 +18,8 @@
 # include <stdio.h>
 
 // CUSTOM
-# include "state.h"
 # include "libft.h"
 
-int		ft_strmatch(char *s1, char *s2, int (*match)(char *, char *));
-int		str_any(char *s1, char *s2);
 void	ft_puterror(const char *fmt, ...);
 
 #endif

@@ -37,21 +37,20 @@ int	process_line_quoted(char *line, char *stop_str, int fd)
 }
 
 /**
- * @brief Process one unquoted heredoc line with variable expansion.
  * @param line Raw line read from heredoc input.
  * @param stop_str Fully prepared stop delimiter.
  * @param fd Destination descriptor receiving heredoc content.
- * @param ctx Heredoc context carrying shell state and target fd.
+ * @param heredoc Heredoc context carrying shell state and target fd.
  * @return 1 when the delimiter is reached, otherwise 0.
  */
-int	process_line_unquoted(char *line, char *stop_str, int fd, t_heredoc *ctx)
+int	process_line_unquoted(char *line, char *stop_str, int fd, t_heredoc *heredoc)
 {
 	char	*expanded_candidate;
 	char	*trimmed_expanded;
 	size_t	len;
 
-	expanded_candidate = expand_heredoc(line, ctx->state->envp,
-			ctx->state->exit_code);
+	expanded_candidate = expand_heredoc(line, heredoc->state->envp,
+			heredoc->state->exit_code);
 	trimmed_expanded = ft_strtrim(expanded_candidate, " \t");
 	len = ft_strlen(stop_str) + 1;
 	if (ft_strncmp(trimmed_expanded, stop_str, len) == 0)

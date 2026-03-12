@@ -46,7 +46,7 @@ void	del_token(void *content)
  * @param type Token type under inspection.
  * @return 1 for redirection token types, otherwise 0.
  */
-int	is_redirection(t_token_type type)
+bool	is_redirection(t_token_type type)
 {
 	return (type == TOKEN_RED_IN || type == TOKEN_RED_OUT
 		|| type == TOKEN_APPEND || type == TOKEN_HEREDOC

@@ -43,7 +43,7 @@ static char	*make_new_entry(char *key, char *value)
  * @param state Shell state that tracks the active environment pointer.
  * @return This function does not return a value.
  */
-static void	replace_env_at(char ***envp, int idx, char *new_entry,
+static void	replace_env_at(char ***envp, size_t idx, char *new_entry,
 		t_shell_state *state)
 {
 	free((*envp)[idx]);
@@ -62,7 +62,7 @@ static void	replace_env_at(char ***envp, int idx, char *new_entry,
 static int	append_env_entry(char ***envp, char *new_entry,
 		t_shell_state *state)
 {
-	int		count;
+	size_t	count;
 	char	**new_env;
 
 	count = count_env(*envp);
@@ -86,8 +86,8 @@ static int	append_env_entry(char ***envp, char *new_entry,
  */
 int	get_env_index(char *key, t_shell_state *state)
 {
-	int	i;
-	int	len;
+	size_t	i;
+	size_t	len;
 
 	len = ft_strlen(key);
 	i = 0;
@@ -95,7 +95,7 @@ int	get_env_index(char *key, t_shell_state *state)
 	{
 		if (ft_strncmp(state->envp[i], key, len) == 0
 			&& (state->envp[i][len] == '=' || state->envp[i][len] == '\0'))
-			return (i);
+			return ((int)i);
 		i++;
 	}
 	return (-1);
@@ -120,7 +120,7 @@ int	ft_set_env(char *key, char *value, t_shell_state *state)
 		return (1);
 	idx = get_env_index(key, state);
 	if (idx != -1)
-		replace_env_at(&state->envp, idx, new_entry, state);
+		replace_env_at(&state->envp, (size_t)idx, new_entry, state);
 	else
 		append_env_entry(&state->envp, new_entry, state);
 	return (0);

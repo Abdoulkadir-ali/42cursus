@@ -56,15 +56,15 @@ void		build_segment_until_semicolon(t_nodes **segment, t_nodes **seg_tail,
 				t_nodes **it);
 void		consume_semicolon_if_present(t_nodes *it,
 				t_nodes **pneset_assignmentt);
-int			check_if_assignment_candidate(t_nodes *segment, t_token **first_tok,
+bool				check_if_assignment_candidate(t_nodes *segment, t_token **first_tok,
 				char **eq);
-int			expand_and_check_error(t_nodes **segment, t_shell_state *state,
+int					expand_and_check_error(t_nodes **segment, t_shell_state *state,
 				int *new_exit_code);
 void		execute_ast(t_nodes *segment, t_shell_state *state);
 
 /* Utils */
 char		*append_line(char *line, char *new_line, char code);
-char		*get_prompt(int is_initial);
+char		*get_prompt(bool is_initial);
 char		*read_input(char *prompt, t_shell_state *state);
 char		*read_raw_input(char *prompt, t_shell_state *state);
 char		*handle_multiline_input(char *line, t_shell_state *state);

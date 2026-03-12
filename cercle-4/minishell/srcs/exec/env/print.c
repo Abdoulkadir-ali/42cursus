@@ -33,7 +33,10 @@ static void	print_env_entry(char *entry)
 		write(1, "\"\n", 2);
 	}
 	else
-		ft_putendl_fd(entry, 1);
+	{
+		ft_putstr_fd(entry, 1);
+		write(1, "\n", 1);
+	}
 }
 
 /**
@@ -51,7 +54,8 @@ void	print_sorted_env(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		ft_lstadd_back(&list, ft_lstnew(ft_strdup(envp[i])));
+		if (ft_strncmp(envp[i], "_=", 2) != 0 && ft_strcmp(envp[i], "_") != 0)
+			ft_lstadd_back(&list, ft_lstnew(ft_strdup(envp[i])));
 		i++;
 	}
 	ft_lstsort(&list, (int (*)(void *, void *))ft_strcmp);

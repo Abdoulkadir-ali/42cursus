@@ -14,20 +14,18 @@
 
 /**
  * @brief Dispatch dollar handling based on the active expansion output mode.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return 1 when a dollar sequence was handled, otherwise 0.
  */
-int	handle_dollar_split(t_exp_input *in, t_exp_state *st, t_exp_output *out)
+int	handle_dollar_split(t_expansion *exp)
 {
 	t_dollar_peek	peek;
 
-	if (in->str[in->pos] != '$')
+	if (exp->str[exp->pos] != '$')
 		return (0);
-	peek.idx = in->pos;
-	peek.next = in->str[peek.idx + 1];
-	if (out->str)
-		return (expand_to_string(in, st, out, &peek));
-	return (expand_to_tokens(in, st, out, &peek));
+	peek.idx = exp->pos;
+	peek.next = exp->str[peek.idx + 1];
+	if (exp->res_str)
+		return (expand_to_string(exp, &peek));
+	return (expand_to_tokens(exp, &peek));
 }

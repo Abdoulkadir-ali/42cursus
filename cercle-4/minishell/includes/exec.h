@@ -28,19 +28,19 @@
 
 # define CD_MAX_COMPONENTS 1024
 
-typedef struct s_export_ctx
+typedef struct s_export
 {
 	char			*key;
 	char			*new_entry;
 	char			*eq;
-	int				append;
-	int				idx;
-}					t_export_ctx;
+	bool			append;
+	size_t			idx;
+}					t_export;
 
 typedef struct s_quotes_state
 {
-	int				i;
-	int				j;
+	size_t			i;
+	size_t			j;
 	char			quote;
 }					t_quotes_state;
 
@@ -59,20 +59,20 @@ typedef struct s_builtin_def
 /* Public API used by other translation units */
 void				print_sorted_env(char **envp);
 int					process_export_arg(char *arg, t_shell_state *state);
-int					process_existing_export(t_export_ctx *ctx, char ***envp);
-int					process_new_export(t_export_ctx *ctx, char ***envp);
-void				update_existing_env(char **envp, t_export_ctx *ctx);
-void				parse_export_arg(char *arg, t_export_ctx *ctx);
-int					report_invalid_identifier(char *arg, t_export_ctx *ctx);
+int					process_existing_export(t_export *exp, char ***envp);
+int					process_new_export(t_export *exp, char ***envp);
+void				update_existing_env(char **envp, t_export *exp);
+void				parse_export_arg(char *arg, t_export *exp);
+int					report_invalid_identifier(char *arg, t_export *exp);
 
 int					exec_tree(t_ast *ast_node, t_shell_state *state);
 int					exec_simple_command(t_ast *node, t_shell_state *state);
 int					exec_subshell(t_ast *node, t_shell_state *state);
 int					exec_logical(t_ast *node, t_shell_state *state,
-						int run_if_zero);
+						bool run_if_zero);
 int					exec_redirection(t_ast *node, t_shell_state *state);
 int					exec_pipe(t_ast *node, t_shell_state *state);
-int					is_builtin(char *cmd, char **args);
+bool				is_builtin(char *cmd, char **args);
 const t_builtin_def	*get_builtins(void);
 int					exec_builtin(char **args, t_shell_state *state);
 int					scan_heredocs(t_ast *ast_node, t_shell_state *state);
@@ -86,25 +86,23 @@ int					ft_pwd(char **args, t_shell_state *state);
 int					ft_exit(char **args, t_shell_state *state);
 int					ft_set_env(char *key, char *value, t_shell_state *state);
 char				*find_path(char *cmd, t_shell_state *state);
-int					get_env_index(char *key, t_shell_state *state);
-int					count_env(char **envp);
-int					is_valid_ident(char *str);
-int					is_quoted_delim(const char *delim);
+size_t				count_env(char **envp);
+bool				is_valid_ident(char *str);
+bool				is_quoted_delim(const char *delim);
 char				*remove_quotes_heredoc(char *str);
 char				*generate_tmp_filename(int *fd_out);
 char				*handle_heredoc_input(char **args, t_shell_state *state);
-char				*expand_delim(const char *delim, int quoted,
+char				*expand_delim(const char *delim, bool quoted,
 						t_shell_state *state);
 void				read_heredoc_loop(char *delim, int fd, t_shell_state *state,
-						int is_quoted);
-char				*prepare_stop_str(char *delim, t_heredoc *ctx);
+						bool is_quoted);
 char				*heredoc_read_line(void);
 char				*heredoc_read_line_non_tty(void);
 int					process_line_quoted(char *line, char *stop_str, int fd);
 int					process_line_unquoted(char *line, char *stop_str, int fd,
-						t_heredoc *ctx);
-void				read_heredoc_lines(char *stop_str, int quoted,
-						t_heredoc *ctx);
+						t_heredoc *heredoc);
+void				read_heredoc_lines(char *stop_str, bool quoted,
+						t_heredoc *heredoc);
 
 int					ft_cd(char **args, t_shell_state *state);
 char				*get_cd_path(char **args, t_shell_state *state);
@@ -115,10 +113,10 @@ char				*join_paths(const char *a, const char *b);
 int					perform_cd(char *path, t_shell_state *state);
 
 char				*build_base_path(const char *path, t_shell_state *state,
-						int *leading_slashes);
-char				**collect_components(const char *base, int *count);
-char				*build_path_from_stack(char **stack, int count,
-						int leading_slashes);
+						size_t *leading_slashes);
+char				**collect_components(const char *base, size_t *count);
+char				*build_path_from_stack(char **stack, size_t count,
+						size_t leading_slashes);
 char				*normalize_logical(const char *path, t_shell_state *state);
 void				init_builtin_entry(t_builtin_def *entry, const char *name,
 						int (*func)(char **, t_shell_state *));

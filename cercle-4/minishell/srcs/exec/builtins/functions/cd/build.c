@@ -18,9 +18,9 @@
  * @param count Number of valid entries stored in the stack.
  * @return This function does not return a value.
  */
-static void	free_stack(char **stack, int count)
+static void	free_stack(char **stack, size_t count)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (i < count)
@@ -35,10 +35,10 @@ static void	free_stack(char **stack, int count)
  * @param leading_slashes Number of leading slashes to preserve.
  * @return Total string length excluding the trailing null byte.
  */
-static size_t	calc_len(char **stack, int count, int leading_slashes)
+static size_t	calc_len(char **stack, size_t count, size_t leading_slashes)
 {
 	size_t	len;
-	int		i;
+	size_t	i;
 
 	i = 0;
 	len = 0;
@@ -62,10 +62,10 @@ static size_t	calc_len(char **stack, int count, int leading_slashes)
  * @param leading_slashes Number of leading slashes to preserve.
  * @return This function does not return a value.
  */
-static void	fill_path(char *res, char **stack, int count, int leading_slashes)
+static void	fill_path(char *res, char **stack, size_t count, size_t leading_slashes)
 {
 	char	*ptr;
-	int		i;
+	size_t	i;
 	size_t	len;
 
 	ptr = res;
@@ -95,7 +95,7 @@ static void	fill_path(char *res, char **stack, int count, int leading_slashes)
  * @param leading_slashes Number of leading slashes to preserve.
  * @return Newly allocated normalized path, or NULL on allocation failure.
  */
-char	*build_path_from_stack(char **stack, int count, int leading_slashes)
+char	*build_path_from_stack(char **stack, size_t count, size_t leading_slashes)
 {
 	char	*res;
 	size_t	total_len;

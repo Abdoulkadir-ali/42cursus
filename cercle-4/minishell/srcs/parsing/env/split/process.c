@@ -14,27 +14,27 @@
 
 /**
  * @brief Flush the current split word into the output token list.
- * @param out Expansion output buffers and token-list accumulator.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return This function does not return a value.
  */
-static void	flush_token(t_exp_output *out)
+static void	flush_token(t_expansion *exp)
 {
-	if (out->word && *out->word)
+	if (exp->word && *exp->word)
 	{
-		add_token_node(&out->head, &out->tail, out->word, 0);
-		out->word = NULL;
+		add_token_node(&exp->head, &exp->tail, exp->word, false);
+		exp->word = NULL;
 	}
 }
 
 /**
  * @brief Split an expanded value on unquoted whitespace into output tokens.
  * @param val Newly allocated expansion value.
- * @param out Expansion output buffers and token-list accumulator.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return This function does not return a value.
  */
-void	process_val_split(char *val, t_exp_output *out)
+void	process_val_split(char *val, t_expansion *exp)
 {
-	int	k;
+	size_t	k;
 
 	if (!val || !*val)
 		return ;
@@ -42,9 +42,9 @@ void	process_val_split(char *val, t_exp_output *out)
 	while (val[k])
 	{
 		if (ft_isspace((unsigned char)val[k]))
-			flush_token(out);
+			flush_token(exp);
 		else
-			exp_push_char(out, val[k]);
+			exp_push_char(exp, val[k]);
 		k++;
 	}
 }

@@ -14,17 +14,17 @@
 
 /**
  * @brief Build the final KEY=VALUE entry used by export append mode.
- * @param ctx Export parsing context containing the parsed key and suffix.
+ * @param exp Export context containing the parsed key and suffix.
  * @return Newly allocated environment entry.
  */
-char	*create_appended_entry(t_export_ctx *ctx)
+char	*create_appended_entry(t_export *exp)
 {
 	char	*real_entry;
 	char	*tmp;
 
-	real_entry = ft_strjoin(ctx->key, "=");
+	real_entry = ft_strjoin(exp->key, "=");
 	tmp = real_entry;
-	real_entry = ft_strjoin(real_entry, ctx->eq + 1);
+	real_entry = ft_strjoin(real_entry, exp->eq + 1);
 	free(tmp);
 	return (real_entry);
 }
@@ -37,7 +37,7 @@ char	*create_appended_entry(t_export_ctx *ctx)
  */
 void	push_new_env_entry(char ***envp, char *new_entry)
 {
-	int		count;
+	size_t	count;
 	char	**new_env;
 
 	count = count_env(*envp);
@@ -52,34 +52,34 @@ void	push_new_env_entry(char ***envp, char *new_entry)
 
 /**
  * @brief Update an already existing environment variable during export.
- * @param ctx Export parsing context with the resolved index.
+ * @param exp Export context with the resolved index.
  * @param envp Address of the environment array being updated.
  * @return Always returns 0.
  */
-int	process_existing_export(t_export_ctx *ctx, char ***envp)
+int	process_existing_export(t_export *exp, char ***envp)
 {
-	update_existing_env(*envp, ctx);
-	free(ctx->key);
+	update_existing_env(*envp, exp);
+	free(exp->key);
 	return (0);
 }
 
 /**
  * @brief Add a new variable to the environment during export.
- * @param ctx Export parsing context describing the new variable.
+ * @param exp Export context describing the new variable.
  * @param envp Address of the environment array being extended.
  * @return Always returns 0.
  */
-int	process_new_export(t_export_ctx *ctx, char ***envp)
+int	process_new_export(t_export *exp, char ***envp)
 {
 	char	*real_entry;
 
-	if (ctx->append && ctx->eq)
+	if (exp->append && exp->eq)
 	{
-		real_entry = create_appended_entry(ctx);
-		free(ctx->new_entry);
-		ctx->new_entry = real_entry;
+		real_entry = create_appended_entry(exp);
+		free(exp->new_entry);
+		exp->new_entry = real_entry;
 	}
-	push_new_env_entry(envp, ctx->new_entry);
-	free(ctx->key);
+	push_new_env_entry(envp, exp->new_entry);
+	free(exp->key);
 	return (0);
 }

@@ -52,6 +52,8 @@ static char	*read_and_append_line(t_line_struct *ls, t_op_def *ops,
 	new_line = read_raw_input(ls->prompt, state);
 	if (!new_line)
 	{
+		if (!state->interactive_shell && ls->code == '\\')
+			return (ls->line);
 		def = ext_get_op_def(ops, ls->code);
 		if (def && def->counterpart)
 			ft_puterror("unexpected EOF while looking for matching `%c'\n",
@@ -97,6 +99,7 @@ char	*handle_multiline_input(char *line, t_shell_state *state)
 	char			code;
 	t_op_def		*ops;
 	t_line_struct	ls;
+	char			*next_line;
 
 	ops = get_ops();
 	while (1)
@@ -106,9 +109,12 @@ char	*handle_multiline_input(char *line, t_shell_state *state)
 			break ;
 		ls.line = line;
 		ls.code = code;
-		line = read_next_line_and_append(&ls, ops, state);
-		if (!line)
+		next_line = read_next_line_and_append(&ls, ops, state);
+		if (!next_line)
 			return (NULL);
+		if (next_line == line)
+			break ;
+		line = next_line;
 	}
 	return (line);
 }

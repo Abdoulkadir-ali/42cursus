@@ -17,9 +17,9 @@
  * @param str String under inspection.
  * @return 1 when `*` or `?` remains active, otherwise 0.
  */
-int	is_wildcard(const char *str)
+bool	is_wildcard(const char *str)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (str[i])
@@ -30,10 +30,10 @@ int	is_wildcard(const char *str)
 			continue ;
 		}
 		if (str[i] == '*' || str[i] == '?')
-			return (1);
+			return (true);
 		i++;
 	}
-	return (0);
+	return (false);
 }
 
 /**

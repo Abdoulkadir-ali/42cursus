@@ -45,12 +45,12 @@ typedef struct s_flags
 	int				fd;
 }					t_flags;
 
-typedef struct s_printf_ctx
+typedef struct s_printf
 {
 	int				i;
-	int				count;
+	size_t			count;
 	int				fd;
-}					t_printf_ctx;
+}					t_printf;
 
 typedef struct s_list
 {
@@ -162,5 +162,10 @@ int					ft_print_precision_zeros(int num_len, int precision,
 int					ft_printf(const char *format, ...);
 int					ft_printf_fd(int fd, const char *format, ...);
 int					ft_vprintf_fd(int fd, const char *format, va_list args);
+void				ft_puterror_header(const char *header, const char *fmt, ...);
+void				ft_puterror_fmt(const char *fmt, ...);
+void				ft_vputerror_fd(int fd, const char *fmt, va_list args);
+void				ft_vputerror_header_fd(int fd, const char *header,
+						const char *fmt, va_list args);
 
 #endif

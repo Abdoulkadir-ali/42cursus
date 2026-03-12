@@ -19,9 +19,9 @@
  */
 static char	**duplicate_env_base(char **envp)
 {
-	int		env_count;
+	size_t	env_count;
 	char	**heap_env;
-	int		i;
+	size_t	i;
 
 	env_count = 0;
 	while (envp && envp[env_count])
@@ -35,8 +35,8 @@ static char	**duplicate_env_base(char **envp)
 		heap_env[i] = ft_strdup(envp[i]);
 		if (!heap_env[i])
 		{
-			while (--i >= 0)
-				free(heap_env[i]);
+			while (i > 0)
+				free(heap_env[--i]);
 			free(heap_env);
 			return (NULL);
 		}
@@ -53,18 +53,18 @@ static char	**duplicate_env_base(char **envp)
  * @param state Shell state structure initialized by this function.
  * @return 0 on success, 1 on allocation failure.
  */
-int	init_shell(char **envp, char ***heap_env, t_shell_state *state)
+bool	init_shell(char **envp, char ***heap_env, t_shell_state *state)
 {
 	*heap_env = duplicate_env_base(envp);
 	if (!*heap_env)
-		return (1);
+		return (false);
 	add_shlvl_to_env(*heap_env);
 	state->envp = *heap_env;
 	state->interactive_shell = isatty(STDIN_FILENO);
 	state->exit_code = 0;
-	state->syntax_error = 0;
-	state->expansion_error = 0;
-	return (0);
+	state->syntax_error = false;
+	state->expansion_error = false;
+	return (true);
 }
 
 /**
@@ -75,7 +75,7 @@ int	init_shell(char **envp, char ***heap_env, t_shell_state *state)
  */
 char	*ft_get_env(const char *key, char **envp)
 {
-	int		i;
+	size_t		i;
 	size_t	len;
 
 	if (!key || !envp)

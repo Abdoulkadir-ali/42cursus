@@ -113,7 +113,7 @@ the stop string, except when the heredoc was interrupted by `SIGINT`.
 
 ## Delimiter Preparation Path
 
-`prepare_stop_str` in `utils.c` computes the string compared against every
+`prepare_stop_str` in `read.c` computes the string compared against every
 incoming heredoc line.
 
 The rules are:

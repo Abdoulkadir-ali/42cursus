@@ -15,7 +15,7 @@
 /**
  * @brief Check whether a character is valid inside a variable name.
  * @param c Character being inspected after a dollar sign.
- * @return 1 for alphanumeric or underscore, otherwise 0.
+ * @return True for alphanumeric or underscore, otherwise false.
  */
 static int	is_var_char(char c)
 {
@@ -24,16 +24,16 @@ static int	is_var_char(char c)
 
 /**
  * @brief Run one expansion step while scanning a generic string.
- * @param exp Expansion state holding input and output buffers.
+ * @param exp Expansion context holding state and buffers.
  * @return 1 when a handler consumed the current input, otherwise 0.
  */
 static int	process_expand_char(t_expansion *exp)
 {
-	if (handle_backslash_split(&exp->input, &exp->state, &exp->output))
+	if (handle_backslash_split(exp))
 		return (1);
-	if (handle_quote_split(&exp->input, &exp->state, &exp->output))
+	if (handle_quote_split(exp))
 		return (1);
-	if (handle_dollar_split(&exp->input, &exp->state, &exp->output))
+	if (handle_dollar_split(exp))
 		return (1);
 	return (0);
 }
@@ -52,20 +52,20 @@ char	*expand_string(char *str, char **env, int status)
 	if (!str)
 		return (NULL);
 	ft_bzero(&exp, sizeof(t_expansion));
-	exp.input.str = str;
-	exp.input.env = env;
-	exp.input.status = status;
-	exp.output.str = ft_strdup("");
-	if (!exp.output.str)
+	exp.str = str;
+	exp.env = env;
+	exp.status = status;
+	exp.res_str = ft_strdup("");
+	if (!exp.res_str)
 		return (NULL);
-	while (exp.input.str[exp.input.pos])
+	while (exp.str[exp.pos])
 	{
 		if (process_expand_char(&exp))
 			continue ;
-		exp_push_char(&exp.output, exp.input.str[exp.input.pos]);
-		exp.input.pos++;
+		exp_push_char(&exp, exp.str[exp.pos]);
+		exp.pos++;
 	}
-	return (exp.output.str);
+	return (exp.res_str);
 }
 
 /**
@@ -79,7 +79,7 @@ char	*expand_heredoc(char *str, char **env, int status)
 {
 	char	*expanded;
 	char	*tmp;
-	int		pos;
+	size_t	pos;
 
 	pos = 0;
 	expanded = ft_strdup("");

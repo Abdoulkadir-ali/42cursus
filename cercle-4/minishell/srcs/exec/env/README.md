@@ -82,7 +82,7 @@ allocated context fields before returning `1`.
 
 The steps are:
 
-1. Zero-initialize `t_export_ctx`.
+1. Zero-initialize `t_export`.
 2. Parse the operand with `parse_export_arg(arg, &ctx)`.
 3. Validate `ctx.key` with `is_valid_ident`.
 4. If validation fails, return `report_invalid_identifier(arg, &ctx)`.

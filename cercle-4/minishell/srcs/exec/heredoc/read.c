@@ -17,22 +17,25 @@
  * @param delim Raw delimiter string attached to the heredoc.
  * @param fd Destination descriptor receiving the heredoc body.
  * @param state Active shell state passed to expansion helpers.
- * @param is_quoted Non-zero when the delimiter disables line expansion.
+ * @param is_quoted True when the delimiter disables line expansion.
  * @return This function does not return a value.
  */
 void	read_heredoc_loop(char *delim, int fd, t_shell_state *state,
-		int is_quoted)
+		bool is_quoted)
 {
 	char		*stop_str;
-	t_heredoc	ctx;
+	t_heredoc	heredoc;
 
-	ctx.state = state;
-	ctx.fd = fd;
-	stop_str = prepare_stop_str(delim, &ctx);
+	heredoc.state = state;
+	heredoc.fd = fd;
+	if (is_quoted_delim(delim))
+		stop_str = remove_quotes_heredoc(delim);
+	else
+		stop_str = ft_strdup(delim);
 	if (!is_quoted)
 		is_quoted = is_quoted_delim(delim);
 	setup_signals(SIGNAL_HEREDOC);
-	read_heredoc_lines(stop_str, is_quoted, &ctx);
+	read_heredoc_lines(stop_str, is_quoted, &heredoc);
 	setup_signals(SIGNAL_INTERACTIVE);
 	free(stop_str);
 }
@@ -55,26 +58,26 @@ void	handle_heredoc_eof(char *stop_str)
  * @brief Route one heredoc line through quoted or unquoted processing.
  * @param line Raw line read from the user or stdin.
  * @param stop_str Prepared stop string.
- * @param quoted Non-zero when delimiter quoting disables expansion.
- * @param ctx Heredoc context carrying shell state and output fd.
+ * @param quoted True when delimiter quoting disables expansion.
+ * @param heredoc Heredoc context carrying shell state and output fd.
  * @return 1 when reading must stop, otherwise 0.
  */
-int	process_heredoc_line(char *line, char *stop_str, int quoted, t_heredoc *ctx)
+int	process_heredoc_line(char *line, char *stop_str, bool quoted, t_heredoc *heredoc)
 {
 	if (quoted)
-		return (process_line_quoted(line, stop_str, ctx->fd));
+		return (process_line_quoted(line, stop_str, heredoc->fd));
 	else
-		return (process_line_unquoted(line, stop_str, ctx->fd, ctx));
+		return (process_line_unquoted(line, stop_str, heredoc->fd, heredoc));
 }
 
 /**
  * @brief Read heredoc lines until EOF, signal, or delimiter match.
  * @param stop_str Prepared stop string.
- * @param quoted Non-zero when delimiter quoting disables expansion.
- * @param ctx Heredoc context carrying shell state and output fd.
+ * @param quoted True when delimiter quoting disables expansion.
+ * @param heredoc Heredoc context carrying shell state and output fd.
  * @return This function does not return a value.
  */
-void	read_heredoc_lines(char *stop_str, int quoted, t_heredoc *ctx)
+void	read_heredoc_lines(char *stop_str, bool quoted, t_heredoc *heredoc)
 {
 	char	*line;
 
@@ -86,7 +89,7 @@ void	read_heredoc_lines(char *stop_str, int quoted, t_heredoc *ctx)
 			handle_heredoc_eof(stop_str);
 			break ;
 		}
-		if (process_heredoc_line(line, stop_str, quoted, ctx))
+		if (process_heredoc_line(line, stop_str, quoted, heredoc))
 		{
 			free(line);
 			break ;

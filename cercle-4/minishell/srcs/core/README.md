@@ -66,8 +66,10 @@ Handles shell startup, main loop, and signal setup. This subsystem is responsibl
 
 ## 🛠️ Developer Notes
 - The core module is intentionally thin: it owns lifetime and control flow, while real line reading and execution are delegated to the input and exec modules.
-- The final shell status comes from `state->exit_code`, except for the explicit syntax-error fallback to `2`.
+- The final shell status comes from `state->exit_code`, except for the explicit syntax-error fallback to `2` (Bash/POSIX convention).
 - Environment duplication happens once at startup, and `cleanup_envp` releases that owned copy before exit.
 - Readline history is cleared in both `-c` mode and loop mode to keep shutdown behavior consistent.
+- EOF in interactive mode prints "exit" to stderr before leaving, matching Bash behavior.
+- Signal handling and exit codes are implemented to match Bash/POSIX requirements, including special handling for syntax errors and heredoc signals.
 
 For detailed function documentation, see the source files and header definitions in `includes/core.h`.

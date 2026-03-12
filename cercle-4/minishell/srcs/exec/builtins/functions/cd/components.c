@@ -18,7 +18,7 @@
  * @param j Current component count, updated in place.
  * @return This function does not return a value.
  */
-static void	handle_dotdot(char **stack, int *j)
+static void	handle_dotdot(char **stack, size_t *j)
 {
 	if (*j > 0)
 	{
@@ -34,7 +34,7 @@ static void	handle_dotdot(char **stack, int *j)
  * @param max Maximum number of components accepted in the stack.
  * @return 1 when a component is added, 0 when skipped, -1 on overflow.
  */
-static int	add_component(char **stack, int *j, const char *comp, int max)
+static int	add_component(char **stack, size_t *j, const char *comp, size_t max)
 {
 	if (ft_strcmp(comp, ".") == 0)
 		return (0);
@@ -84,7 +84,7 @@ static char	*extract_next_component(const char *base, size_t *pos)
  * @param count Number of stored components, updated in place.
  * @return This function does not return a value.
  */
-static void	process_components(const char *base, char **stack, int *count)
+static void	process_components(const char *base, char **stack, size_t *count)
 {
 	size_t	pos;
 	char	*comp;
@@ -109,7 +109,7 @@ static void	process_components(const char *base, char **stack, int *count)
  * @param count Output number of collected components.
  * @return Newly allocated NULL-terminated component stack.
  */
-char	**collect_components(const char *base, int *count)
+char	**collect_components(const char *base, size_t *count)
 {
 	char	**stack;
 

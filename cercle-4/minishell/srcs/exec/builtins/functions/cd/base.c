@@ -18,9 +18,9 @@
  * @param leading_slashes Output flag for slash preservation rules.
  * @return Newly allocated duplicate of the absolute path.
  */
-static char	*handle_absolute_path(const char *path, int *leading_slashes)
+static char	*handle_absolute_path(const char *path, size_t *leading_slashes)
 {
-	int		count;
+	size_t	count;
 	char	*base;
 
 	count = 0;
@@ -44,7 +44,7 @@ static char	*handle_absolute_path(const char *path, int *leading_slashes)
  * @return Newly allocated joined path, or NULL when PWD is unavailable.
  */
 static char	*handle_relative_with_pwd(const char *path, t_shell_state *state,
-		int *leading_slashes)
+		size_t *leading_slashes)
 {
 	char	*base;
 	char	*pwd;
@@ -68,7 +68,7 @@ static char	*handle_relative_with_pwd(const char *path, t_shell_state *state,
  * @param leading_slashes Output flag for preserved leading slashes.
  * @return Newly allocated joined path, or NULL when getcwd fails.
  */
-static char	*handle_relative_with_cwd(const char *path, int *leading_slashes)
+static char	*handle_relative_with_cwd(const char *path, size_t *leading_slashes)
 {
 	char	*base;
 	char	*cwd_dup;
@@ -98,7 +98,7 @@ static char	*handle_relative_with_cwd(const char *path, int *leading_slashes)
  * @return Newly allocated base path used by logical normalization.
  */
 char	*build_base_path(const char *path, t_shell_state *state,
-		int *leading_slashes)
+		size_t *leading_slashes)
 {
 	char	*base;
 

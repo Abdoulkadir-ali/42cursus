@@ -44,7 +44,7 @@ t_ast	*create_node(t_token_type type, char **args, t_ast *left,
  * @param quoted Quote flag copied into the new token.
  * @return This function does not return a value.
  */
-void	add_token_node(t_nodes **head, t_nodes **tail, char *val, int quoted)
+void	add_token_node(t_nodes **head, t_nodes **tail, char *val, bool quoted)
 {
 	t_token	*tok;
 	t_nodes	*node;

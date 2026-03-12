@@ -14,67 +14,58 @@
 
 /**
  * @brief Record that the current expansion path has passed through quotes.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return This function does not return a value.
  */
-static void	mark_as_quoted(t_exp_state *st, t_exp_output *out)
+static void	mark_as_quoted(t_expansion *exp)
 {
-	st->has_quotes = 1;
-	if (out->str == NULL && out->word == NULL)
-		out->word = ft_strdup("");
+	exp->has_quotes = true;
+	if (exp->res_str == NULL && exp->word == NULL)
+		exp->word = ft_strdup("");
 }
 
 /**
  * @brief Toggle the single-quote state when allowed by the current context.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return 1 when a single quote was consumed, otherwise 0.
  */
-static int	toggle_single_quote(t_exp_input *in, t_exp_state *st,
-		t_exp_output *out)
+static int	toggle_single_quote(t_expansion *exp)
 {
-	if (st->in_d_quote)
+	if (exp->in_d_quote)
 		return (0);
-	st->in_s_quote = !st->in_s_quote;
-	mark_as_quoted(st, out);
-	in->pos++;
+	exp->in_s_quote = !exp->in_s_quote;
+	mark_as_quoted(exp);
+	exp->pos++;
 	return (1);
 }
 
 /**
  * @brief Toggle the double-quote state when allowed by the current context.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return 1 when a double quote was consumed, otherwise 0.
  */
-static int	toggle_double_quote(t_exp_input *in, t_exp_state *st,
-		t_exp_output *out)
+static int	toggle_double_quote(t_expansion *exp)
 {
-	if (st->in_s_quote)
+	if (exp->in_s_quote)
 		return (0);
-	st->in_d_quote = !st->in_d_quote;
-	mark_as_quoted(st, out);
-	in->pos++;
+	exp->in_d_quote = !exp->in_d_quote;
+	mark_as_quoted(exp);
+	exp->pos++;
 	return (1);
 }
 
 /**
  * @brief Process one quote character while scanning an expandable word.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return 1 when a quote character was handled, otherwise 0.
  */
-int	handle_quote_split(t_exp_input *in, t_exp_state *st, t_exp_output *out)
+int	handle_quote_split(t_expansion *exp)
 {
-	const char	c = in->str[in->pos];
+	const char	c = exp->str[exp->pos];
 
 	if (c == '\'')
-		return (toggle_single_quote(in, st, out));
+		return (toggle_single_quote(exp));
 	if (c == '\"')
-		return (toggle_double_quote(in, st, out));
+		return (toggle_double_quote(exp));
 	return (0);
 }

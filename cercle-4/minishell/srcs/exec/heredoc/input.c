@@ -42,7 +42,7 @@ static char	*get_heredoc_delim(char **args, t_shell_state *state, int *quoted)
  * @return Newly allocated temporary filename, or NULL on failure.
  */
 static char	*write_heredoc_to_file(char *delim, t_shell_state *state,
-		int quoted)
+		int quoted, char **args)
 {
 	char	*filename;
 	int		fd;
@@ -52,7 +52,7 @@ static char	*write_heredoc_to_file(char *delim, t_shell_state *state,
 	{
 		perror("heredoc tmp");
 		free(filename);
-		if (!quoted && delim != state->envp[0])
+		if (!quoted && delim != args[0])
 			free(delim);
 		return (NULL);
 	}
@@ -74,7 +74,7 @@ char	*handle_heredoc_input(char **args, t_shell_state *state)
 	char	*filename;
 
 	delim = get_heredoc_delim(args, state, &quoted);
-	filename = write_heredoc_to_file(delim, state, quoted);
+	filename = write_heredoc_to_file(delim, state, quoted, args);
 	if (!filename)
 	{
 		if (!quoted && delim != args[0])

@@ -52,41 +52,41 @@ static int	ft_handle_format(va_list args, t_flags *flags)
 }
 
 static int	ft_process_format(const char *format, va_list args,
-		t_printf_ctx *ctx)
+		t_printf *pf)
 {
 	t_flags	flags;
 
-	ctx->i++;
+	pf->i++;
 	ft_init_flags(&flags);
-	flags.fd = ctx->fd;
-	ft_parse_flags(format, &ctx->i, &flags);
-	ctx->count += ft_handle_format(args, &flags);
-	ctx->i++;
+	flags.fd = pf->fd;
+	ft_parse_flags(format, &pf->i, &flags);
+	pf->count += ft_handle_format(args, &flags);
+	pf->i++;
 	return (0);
 }
 
 int	ft_vprintf_fd(int fd, const char *format, va_list args)
 {
-	t_printf_ctx	ctx;
-	va_list			args_copy;
+	t_printf	pf;
+	va_list		args_copy;
 
 	if (!format)
 		return (-1);
 	va_copy(args_copy, args);
-	ctx.count = 0;
-	ctx.i = 0;
-	ctx.fd = fd;
-	while (format[ctx.i])
+	pf.count = 0;
+	pf.i = 0;
+	pf.fd = fd;
+	while (format[pf.i])
 	{
-		if (format[ctx.i] == '%' && format[ctx.i + 1])
-			ft_process_format(format, args_copy, &ctx);
+		if (format[pf.i] == '%' && format[pf.i + 1])
+			ft_process_format(format, args_copy, &pf);
 		else
 		{
-			ft_putchar_fd(format[ctx.i], ctx.fd);
-			ctx.count++;
-			ctx.i++;
+			ft_putchar_fd(format[pf.i], pf.fd);
+			pf.count++;
+			pf.i++;
 		}
 	}
 	va_end(args_copy);
-	return (ctx.count);
+	return (pf.count);
 }

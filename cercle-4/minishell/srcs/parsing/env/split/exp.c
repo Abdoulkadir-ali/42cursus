@@ -13,84 +13,80 @@
 #include "parsing.h"
 
 /**
- * @brief Check whether a character can appear in a dollar expansion target.
  * @param c Character inspected after `$`.
- * @return 1 for valid target characters, otherwise 0.
+ * @return True for valid target characters, otherwise false.
  */
-int	is_exp_target(char c)
+bool	is_exp_target(char c)
 {
 	return (ft_isalnum(c) || c == '_' || c == '?');
 }
 
 /**
  * @brief Append one character to the active expansion output buffer.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state and buffers.
  * @param c Character to append.
  * @return This function does not return a value.
  */
-void	exp_push_char(t_exp_output *out, char c)
+void	exp_push_char(t_expansion *exp, char c)
 {
 	char	tmp[2];
 
 	tmp[0] = c;
 	tmp[1] = '\0';
-	if (out->str)
-		append_chunk(&out->str, ft_strdup(tmp));
+	if (exp->res_str)
+		append_chunk(&exp->res_str, ft_strdup(tmp));
 	else
-		append_chunk(&out->word, ft_strdup(tmp));
+		append_chunk(&exp->word, ft_strdup(tmp));
 }
 
 /**
  * @brief Append one allocated string chunk to the active output buffer.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state and buffers.
  * @param s Newly allocated chunk string.
  * @return This function does not return a value.
  */
-void	exp_push_str(t_exp_output *out, char *s)
+void	exp_push_str(t_expansion *exp, char *s)
 {
 	if (!s)
 		return ;
-	if (out->str)
-		append_chunk(&out->str, s);
+	if (exp->res_str)
+		append_chunk(&exp->res_str, s);
 	else
-		append_chunk(&out->word, s);
+		append_chunk(&exp->word, s);
 }
 
 /**
  * @brief Perform one resolved dollar expansion in the current output mode.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return This function does not return a value.
  */
-void	perform_expansion(t_exp_input *in, t_exp_state *st, t_exp_output *out)
+void	perform_expansion(t_expansion *exp)
 {
 	char	*val;
 
-	val = handle_dollar((char *)in->str, &in->pos, in->env, in->status);
-	if (out->str)
-		exp_push_str(out, val);
-	else if (st->in_d_quote)
+	val = handle_dollar((char *)exp->str, &exp->pos, exp->env, exp->status);
+	if (exp->res_str)
+		exp_push_str(exp, val);
+	else if (exp->in_d_quote)
 	{
-		exp_push_str(out, val);
-		st->has_quotes = 1;
+		exp_push_str(exp, val);
+		exp->has_quotes = true;
 	}
 	else
 	{
-		process_val_split(val, out);
+		process_val_split(val, exp);
 		free(val);
 	}
 }
 
 /**
  * @brief Keep a dollar sign literal when no valid expansion target follows.
- * @param in Expansion input cursor.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @param idx Position of the literal dollar sign.
  * @return This function does not return a value.
  */
-void	push_literal_dollar(t_exp_input *in, t_exp_output *out, int idx)
+void	push_literal_dollar(t_expansion *exp, size_t idx)
 {
-	exp_push_char(out, in->str[idx]);
-	in->pos++;
+	exp_push_char(exp, exp->str[idx]);
+	exp->pos++;
 }

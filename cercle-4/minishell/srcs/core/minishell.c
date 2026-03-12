@@ -67,7 +67,7 @@ static int	run_interactive_mode(t_shell_state *state)
  */
 static void	cleanup_envp(char **envp)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	if (!envp)
@@ -89,7 +89,7 @@ int	minishell(int ac, char **av, char **envp)
 	t_shell_state	state;
 	int				cmd_exit;
 
-	if (init_shell(envp, &state.envp, &state))
+	if (!init_shell(envp, &state.envp, &state))
 		return (1);
 	cmd_exit = handle_command_line_mode(ac, av, &state);
 	if (cmd_exit != -1)

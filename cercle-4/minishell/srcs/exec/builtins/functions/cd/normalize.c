@@ -17,7 +17,7 @@
  * @param leading_slashes Number of leading slashes that must be preserved.
  * @return Newly allocated root path string.
  */
-static char	*handle_root_path(int leading_slashes)
+static char	*handle_root_path(size_t leading_slashes)
 {
 	if (leading_slashes == 2)
 		return (ft_strdup("//"));
@@ -32,7 +32,7 @@ static char	*handle_root_path(int leading_slashes)
  * @param leading_slashes Number of leading slashes to preserve.
  * @return Newly allocated normalized path string.
  */
-static char	*norm_components(char **stack, int count, int leading_slashes)
+static char	*norm_components(char **stack, size_t count, size_t leading_slashes)
 {
 	char	*res;
 
@@ -54,9 +54,9 @@ static char	*norm_components(char **stack, int count, int leading_slashes)
 char	*normalize_logical(const char *path, t_shell_state *state)
 {
 	char	**stack;
-	int		count;
+	size_t	count;
 	char	*base;
-	int		leading_slashes;
+	size_t	leading_slashes;
 
 	if (!path)
 		return (NULL);

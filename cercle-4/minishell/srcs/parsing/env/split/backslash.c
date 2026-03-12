@@ -14,19 +14,18 @@
 
 /**
  * @brief Handle backslashes that appear inside double quotes.
- * @param in Expansion input cursor.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return 1 when the backslash was consumed here, otherwise 0.
  */
-static int	handle_dq_backslash(t_exp_input *in, t_exp_output *out)
+static int	handle_dq_backslash(t_expansion *exp)
 {
 	char	next;
 
-	next = in->str[in->pos + 1];
+	next = exp->str[exp->pos + 1];
 	if (next != '$' && next != '"' && next != '\\' && next != '\n')
 	{
-		exp_push_char(out, in->str[in->pos]);
-		in->pos++;
+		exp_push_char(exp, exp->str[exp->pos]);
+		exp->pos++;
 		return (1);
 	}
 	return (0);
@@ -34,44 +33,39 @@ static int	handle_dq_backslash(t_exp_input *in, t_exp_output *out)
 
 /**
  * @brief Consume a backslash escape and append the escaped character.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return Always returns 1 after consuming the escape sequence.
  */
-static int	consume_backslash(t_exp_input *in, t_exp_state *st,
-		t_exp_output *out)
+static int	consume_backslash(t_expansion *exp)
 {
 	char	ch;
 
-	in->pos++;
-	if (!in->str[in->pos])
+	exp->pos++;
+	if (!exp->str[exp->pos])
 		return (1);
-	ch = in->str[in->pos];
-	if (!st->in_d_quote && (ch == '*' || ch == '?'))
-		exp_push_char(out, '\001');
-	exp_push_char(out, ch);
-	if (!st->in_d_quote)
-		st->has_quotes = 1;
-	in->pos++;
+	ch = exp->str[exp->pos];
+	if (!exp->in_d_quote && (ch == '*' || ch == '?'))
+		exp_push_char(exp, '\001');
+	exp_push_char(exp, ch);
+	if (!exp->in_d_quote)
+		exp->has_quotes = true;
+	exp->pos++;
 	return (1);
 }
 
 /**
  * @brief Process one backslash according to the current quote context.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @return 1 when a backslash sequence was handled, otherwise 0.
  */
-int	handle_backslash_split(t_exp_input *in, t_exp_state *st, t_exp_output *out)
+int	handle_backslash_split(t_expansion *exp)
 {
-	if (in->str[in->pos] != '\\' || st->in_s_quote)
+	if (exp->str[exp->pos] != '\\' || exp->in_s_quote)
 		return (0);
-	if (st->in_d_quote)
+	if (exp->in_d_quote)
 	{
-		if (handle_dq_backslash(in, out))
+		if (handle_dq_backslash(exp))
 			return (1);
 	}
-	return (consume_backslash(in, st, out));
+	return (consume_backslash(exp));
 }

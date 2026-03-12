@@ -33,11 +33,11 @@ char	*get_env_value(char *var_name, char **envp)
 /**
  * @brief Handle special dollar forms such as `$?` and `$$`.
  * @param str Source expansion string.
- * @param i Input cursor advanced in place.
+ * @param i Input cursor (size_t *) advanced in place.
  * @param status Last shell exit status.
  * @return Newly allocated replacement string, or NULL for normal variables.
  */
-static char	*handle_special_dollar(char *str, int *i, int status)
+static char	*handle_special_dollar(char *str, size_t *i, int status)
 {
 	(*i)++;
 	if (!str[*i])
@@ -58,14 +58,14 @@ static char	*handle_special_dollar(char *str, int *i, int status)
 /**
  * @brief Parse a variable name after `$` and return its resolved value.
  * @param str Source expansion string.
- * @param i Input cursor advanced in place.
+ * @param i Input cursor (size_t *) advanced in place.
  * @param envp Environment array used for lookup.
  * @return Newly allocated value string.
  */
-static char	*handle_var_name(char *str, int *i, char **envp)
+static char	*handle_var_name(char *str, size_t *i, char **envp)
 {
 	char	var_name[256];
-	int		j;
+	size_t	j;
 
 	j = 0;
 	if (ft_isdigit((unsigned char)str[*i]) && str[*i])
@@ -81,12 +81,12 @@ static char	*handle_var_name(char *str, int *i, char **envp)
 /**
  * @brief Expand one dollar-prefixed expression into its resolved value.
  * @param str Source expansion string.
- * @param i Input cursor advanced in place.
+ * @param i Input cursor (size_t *) advanced in place.
  * @param envp Environment array used for lookup.
  * @param status Last shell exit status.
  * @return Newly allocated replacement string.
  */
-char	*handle_dollar(char *str, int *i, char **envp, int status)
+char	*handle_dollar(char *str, size_t *i, char **envp, int status)
 {
 	char	*val;
 

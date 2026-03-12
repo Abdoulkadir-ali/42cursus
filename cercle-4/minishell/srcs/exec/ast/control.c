@@ -65,10 +65,10 @@ int	exec_subshell(t_ast *node, t_shell_state *state)
  * @brief Execute a logical operator node with shell short-circuit rules.
  * @param node AST node containing left and right command branches.
  * @param state Active shell state passed through recursive execution.
- * @param run_if_zero Non-zero for && semantics, zero for || semantics.
+ * @param run_if_zero True for && semantics, false for || semantics.
  * @return Status of the last branch that was evaluated.
  */
-int	exec_logical(t_ast *node, t_shell_state *state, int run_if_zero)
+int	exec_logical(t_ast *node, t_shell_state *state, bool run_if_zero)
 {
 	int	left;
 

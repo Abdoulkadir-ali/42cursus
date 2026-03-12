@@ -31,12 +31,12 @@ static int	ft_unset_handle_option(char *opt)
  * @param state Shell state keeping a pointer to the active environment.
  * @return This function does not return a value.
  */
-static void	ft_unset_remove_at(char ***envp, int idx, t_shell_state *state)
+static void	ft_unset_remove_at(char ***envp, size_t idx, t_shell_state *state)
 {
-	int		count;
+	size_t	count;
 	char	**new_env;
-	int		i;
-	int		j;
+	size_t	i;
+	size_t	j;
 
 	count = count_env(*envp);
 	new_env = ft_calloc(count, sizeof(char *));
@@ -64,9 +64,9 @@ static void	ft_unset_remove_at(char ***envp, int idx, t_shell_state *state)
  */
 int	ft_unset(char **args, t_shell_state *state)
 {
-	int	idx;
-	int	arg_idx;
-	int	ret;
+	int		idx;
+	size_t	arg_idx;
+	int		ret;
 
 	ret = 0;
 	arg_idx = 1;
@@ -81,7 +81,7 @@ int	ft_unset(char **args, t_shell_state *state)
 		}
 		idx = get_env_index(args[arg_idx], state);
 		if (idx != -1)
-			ft_unset_remove_at(&state->envp, idx, state);
+			ft_unset_remove_at(&state->envp, (size_t)idx, state);
 		arg_idx++;
 	}
 	return (ret);

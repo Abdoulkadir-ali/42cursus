@@ -19,13 +19,13 @@
  */
 static int	find_shlvl_index(char **heap_env)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (heap_env[i])
 	{
 		if (ft_strncmp(heap_env[i], "SHLVL=", 6) == 0)
-			return (i);
+			return ((int)i);
 		i++;
 	}
 	return (-1);
@@ -40,9 +40,16 @@ static int	calculate_shlvl(int existing_shlvl)
 {
 	int	shlvl;
 
+	/* BASH POSIX: Negative levels are reset to 0 before incrementing */
+	if (existing_shlvl < 0)
+		return (0);
 	shlvl = existing_shlvl + 1;
-	if (shlvl > 1000)
+	/* BASH POSIX: Values >= 1000 reset to 1 with a warning */
+	if (shlvl >= 1000)
+	{
+		ft_puterror("shell level (%d) too high, resetting to 1\n", shlvl);
 		shlvl = 1;
+	}
 	return (shlvl);
 }
 
@@ -85,11 +92,11 @@ static void	set_shlvl_entry(char **heap_env, int idx, int shlvl)
 	}
 	else
 	{
-		idx = 0;
-		while (heap_env[idx])
-			idx++;
-		heap_env[idx] = entry;
-		heap_env[idx + 1] = NULL;
+		size_t j = 0;
+		while (heap_env[j])
+			j++;
+		heap_env[j] = entry;
+		heap_env[j + 1] = NULL;
 	}
 }
 

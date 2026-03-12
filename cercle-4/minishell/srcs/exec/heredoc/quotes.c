@@ -32,22 +32,22 @@ char	*generate_tmp_filename(int *fd_out)
 /**
  * @brief Check whether a heredoc delimiter contains quote semantics.
  * @param delim Raw delimiter string.
- * @return 1 when the delimiter contains quotes or escapes, else 0.
+ * @return True when the delimiter contains quotes or escapes, else false.
  */
-int	is_quoted_delim(const char *delim)
+bool	is_quoted_delim(const char *delim)
 {
-	int	i;
+	size_t	i;
 
 	if (!delim)
-		return (0);
+		return (false);
 	i = 0;
 	while (delim[i])
 	{
 		if (delim[i] == '\'' || delim[i] == '"' || delim[i] == '\\')
-			return (1);
+			return (true);
 		i++;
 	}
-	return (0);
+	return (false);
 }
 
 /**

@@ -15,87 +15,81 @@
 /**
  * @brief Detect `$'` or `$"` outside quotes, which suppresses expansion.
  * @param peek Lookahead information for the current dollar sign.
- * @param st Expansion quote state.
- * @return 1 when the next character is an unquoted quote, otherwise 0.
+ * @param exp Expansion context holding state, input, and output buffers.
+ * @return True when the next character is an unquoted quote, otherwise false.
  */
-static int	is_unquoted_quote(t_dollar_peek *peek, t_exp_state *st)
+static bool	is_unquoted_quote(t_dollar_peek *peek, t_expansion *exp)
 {
-	int	b1;
-	int	b2;
+	bool	b1;
+	bool	b2;
 
 	b1 = (peek->next == '\'' || peek->next == '"');
-	b2 = (!st->in_s_quote && !st->in_d_quote);
+	b2 = (!exp->in_s_quote && !exp->in_d_quote);
 	if (b1 && b2)
-		return (1);
-	return (0);
+		return (true);
+	return (false);
 }
 
 /**
  * @brief Detect cases where `$` must remain literal in token output mode.
  * @param peek Lookahead information for the current dollar sign.
- * @param st Expansion quote state.
- * @return 1 when the target must not be expanded, otherwise 0.
+ * @param exp Expansion context holding state, input, and output buffers.
+ * @return True when the target must not be expanded, otherwise false.
  */
-static int	is_bad_target(t_dollar_peek *peek, t_exp_state *st)
+static bool	is_bad_target(t_dollar_peek *peek, t_expansion *exp)
 {
-	if (!is_exp_target(peek->next) || st->in_s_quote || (peek->next == '"'
-			&& st->in_d_quote))
-		return (1);
-	return (0);
+	if (!is_exp_target(peek->next) || exp->in_s_quote || (peek->next == '"'
+			&& exp->in_d_quote))
+		return (true);
+	return (false);
 }
 
 /**
  * @brief Expand a dollar expression when writing into a plain string buffer.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @param peek Lookahead information for the current dollar sign.
  * @return Always returns 1 after handling the dollar sequence.
  */
-int	expand_to_string(t_exp_input *in, t_exp_state *st, t_exp_output *out,
-		t_dollar_peek *peek)
+int	expand_to_string(t_expansion *exp, t_dollar_peek *peek)
 {
-	int	should_expand;
+	bool	should_expand;
 
-	if (st->in_s_quote)
-		should_expand = 0;
+	if (exp->in_s_quote)
+		should_expand = false;
 	else
 		should_expand = is_exp_target(peek->next);
 	if (!should_expand)
 	{
-		push_literal_dollar(in, out, peek->idx);
+		push_literal_dollar(exp, peek->idx);
 		return (1);
 	}
-	perform_expansion(in, st, out);
+	perform_expansion(exp);
 	return (1);
 }
 
 /**
  * @brief Expand a dollar expression when building split token output.
- * @param in Expansion input cursor.
- * @param st Expansion quote state.
- * @param out Expansion output buffers.
+ * @param exp Expansion context holding state, input, and output buffers.
  * @param peek Lookahead information for the current dollar sign.
  * @return Always returns 1 after handling the dollar sequence.
  */
-int	expand_to_tokens(t_exp_input *in, t_exp_state *st, t_exp_output *out,
-		t_dollar_peek *peek)
+int	expand_to_tokens(t_expansion *exp, t_dollar_peek *peek)
 {
-	int	is_unquoted_quote_val;
-	int	is_bad_target_val;
+	bool	is_unquoted_quote_val;
+	bool	is_bad_target_val;
 
-	is_unquoted_quote_val = is_unquoted_quote(peek, st);
+	is_unquoted_quote_val = is_unquoted_quote(peek, exp);
 	if (is_unquoted_quote_val)
 	{
-		in->pos++;
+		exp->pos++;
 		return (1);
 	}
-	is_bad_target_val = is_bad_target(peek, st);
+	is_bad_target_val = is_bad_target(peek, exp);
 	if (is_bad_target_val)
 	{
-		push_literal_dollar(in, out, peek->idx);
+		push_literal_dollar(exp, peek->idx);
 		return (1);
 	}
-	perform_expansion(in, st, out);
+	perform_expansion(exp);
 	return (1);
 }

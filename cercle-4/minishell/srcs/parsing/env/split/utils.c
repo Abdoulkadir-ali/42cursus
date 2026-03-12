@@ -17,10 +17,10 @@
  * @param prev Previous token-list node in the expansion stream.
  * @return 1 when the previous token is `TOKEN_HEREDOC`, otherwise 0.
  */
-int	is_prev_heredoc(t_nodes *prev)
+bool	is_prev_heredoc(t_nodes *prev)
 {
 	if (!prev)
-		return (0);
+		return (false);
 	return (((t_token *)prev->content)->type == TOKEN_HEREDOC);
 }
 

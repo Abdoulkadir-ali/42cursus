@@ -19,7 +19,7 @@
  * @param i Index of the trailing backslash to remove.
  * @return Newly allocated concatenated line.
  */
-static char	*append_with_backslash(char *line, char *new_line, int i)
+static char	*append_with_backslash(char *line, char *new_line, size_t i)
 {
 	char	*result;
 
@@ -56,16 +56,18 @@ static char	*append_with_newline(char *line, char *new_line)
  */
 char	*append_line(char *line, char *new_line, char code)
 {
-	int	len;
-	int	i;
+	size_t	len;
+	size_t	i;
 
 	if (!line || !new_line)
 		return (NULL);
 	len = ft_strlen(line);
+	if (len == 0)
+		return (append_with_newline(line, new_line));
 	i = len - 1;
-	while (i >= 0 && ft_isspace(line[i]))
+	while (i > 0 && ft_isspace(line[i]))
 		i--;
-	if (code == '\\' && i >= 0 && line[i] == '\\')
+	if (code == '\\' && line[i] == '\\')
 		return (append_with_backslash(line, new_line, i));
 	else
 		return (append_with_newline(line, new_line));
@@ -73,10 +75,10 @@ char	*append_line(char *line, char *new_line, char code)
 
 /**
  * @brief Return the prompt string used by the reader layer.
- * @param is_initial Non-zero for the main shell prompt, zero for fallback use.
+ * @param is_initial True for the main shell prompt, false for fallback use.
  * @return Prompt string, or NULL when stdin is not interactive.
  */
-char	*get_prompt(int is_initial)
+char	*get_prompt(bool is_initial)
 {
 	if (!isatty(STDIN_FILENO))
 		return (NULL);
