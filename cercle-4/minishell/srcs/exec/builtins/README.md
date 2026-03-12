@@ -21,12 +21,10 @@ Its rules are exact:
 
 The steps are:
 
-1. If `args[0]` is `.`, call `exec_dot_builtin(args)`.
-2. Otherwise fetch the builtin table with `get_builtins()`.
-3. Scan each entry until `args[0]` matches `builtins[i].name`.
-4. Call `builtins[i].func(args, state)` and return its status.
+1. Fetch the builtin table with `get_builtins()`.
+2. Scan each entry until `args[0]` matches `builtins[i].name`.
+3. Call `builtins[i].func(args, state)` and return its status.
 
-`exec_dot_builtin` only handles the validation error path for `.`.
 
 Its behavior is:
 

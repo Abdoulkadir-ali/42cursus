@@ -15,11 +15,10 @@
 /**
  * @brief Resolve the effective heredoc delimiter and quoted flag.
  * @param args Heredoc argument vector containing delimiter metadata.
- * @param state Active shell state used for delimiter expansion.
  * @param quoted Output flag indicating whether the delimiter is quoted.
  * @return Delimiter string to use for heredoc reading.
  */
-static char	*get_heredoc_delim(char **args, t_shell_state *state, int *quoted)
+static char	*get_heredoc_delim(char **args, int *quoted)
 {
 	char	*delim;
 
@@ -28,9 +27,7 @@ static char	*get_heredoc_delim(char **args, t_shell_state *state, int *quoted)
 	if (args[1])
 		*quoted = ft_atoi(args[1]);
 	if (!(*quoted))
-	{
-		return (expand_delim(args[0], *quoted, state));
-	}
+		return (expand_delim(args[0]));
 	return (delim);
 }
 
@@ -73,7 +70,7 @@ char	*handle_heredoc_input(char **args, t_shell_state *state)
 	char	*delim;
 	char	*filename;
 
-	delim = get_heredoc_delim(args, state, &quoted);
+	delim = get_heredoc_delim(args, &quoted);
 	filename = write_heredoc_to_file(delim, state, quoted, args);
 	if (!filename)
 	{

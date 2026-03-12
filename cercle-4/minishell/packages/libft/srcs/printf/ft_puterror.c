@@ -22,8 +22,8 @@ void	ft_vputerror_header_fd(int fd, const char *header, const char *fmt,
 {
 	if (header)
 	{
-		ft_putstr_fd((char *)header, 2);
-		ft_putstr_fd(": ", 2);
+		ft_putstr_fd((char *)header, fd);
+		ft_putstr_fd(": ", fd);
 	}
 	ft_vputerror_fd(fd, fmt, args);
 }

@@ -92,8 +92,7 @@ bool				is_quoted_delim(const char *delim);
 char				*remove_quotes_heredoc(char *str);
 char				*generate_tmp_filename(int *fd_out);
 char				*handle_heredoc_input(char **args, t_shell_state *state);
-char				*expand_delim(const char *delim, bool quoted,
-						t_shell_state *state);
+char				*expand_delim(const char *delim);
 void				read_heredoc_loop(char *delim, int fd, t_shell_state *state,
 						bool is_quoted);
 char				*heredoc_read_line(void);

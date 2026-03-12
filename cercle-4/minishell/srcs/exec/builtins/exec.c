@@ -26,8 +26,6 @@ bool	is_builtin(char *cmd, char **args)
 	builtins = get_builtins();
 	if (!cmd)
 		return (false);
-	if (!ft_strcmp(cmd, "."))
-		return (true);
 	if (!ft_strcmp(cmd, "env") && args && args[1])
 		return (false);
 	i = 0;
@@ -41,23 +39,6 @@ bool	is_builtin(char *cmd, char **args)
 }
 
 /**
- * @brief Implement the minimal error handling for the `.` builtin.
- * @param args Argument vector passed to builtin dispatch.
- * @return Shell status for the dot builtin validation step.
- */
-static int	exec_dot_builtin(char **args)
-{
-	if (!args[1])
-	{
-		ft_puterror(".: filename argument required\n");
-		ft_puterror(".: usage: . filename [arguments]\n");
-		return (2);
-	}
-	return (0);
-}
-
-
-/**
  * @brief Dispatch a builtin command through the registered builtin table.
  * @param args Full argument vector for the builtin command.
  * @param state Active shell state passed to the builtin implementation.
@@ -69,8 +50,6 @@ int	exec_builtin(char **args, t_shell_state *state)
 	const t_builtin_def	*builtins;
 
 	builtins = get_builtins();
-	if (!ft_strcmp(args[0], "."))
-		return (exec_dot_builtin(args));
 	i = 0;
 	while (builtins[i].name)
 	{

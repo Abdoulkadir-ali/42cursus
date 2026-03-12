@@ -12,21 +12,32 @@
 
 #include "exec.h"
 
-/**
- * @brief Create the temporary file used to store heredoc content.
- * @param fd_out Output slot receiving the opened file descriptor.
- * @return Newly allocated temporary filename, or NULL on failure.
- */
 char	*generate_tmp_filename(int *fd_out)
 {
-	char	tmpl[32];
+	char		*filename;
+	char		*pid_str;
+	static int	counter = 0;
+	char		*counter_str;
+	char		*tmp;
 
-	ft_strcpy(tmpl, "/tmp/.minishell_heredoc_XXXXXX");
-	*fd_out = mkstemp(tmpl);
-	if (*fd_out == -1)
-		return (NULL);
-	fchmod(*fd_out, 0644);
-	return (ft_strdup(tmpl));
+	pid_str = ft_itoa(getpid());
+	while (counter < 1000000)
+	{
+		counter_str = ft_itoa(counter++);
+		tmp = ft_strjoin("/tmp/.minishell_heredoc_", pid_str);
+		filename = ft_strjoin(tmp, counter_str);
+		free(tmp);
+		free(counter_str);
+		*fd_out = open(filename, O_RDWR | O_CREAT | O_EXCL, 0600);
+		if (*fd_out != -1)
+		{
+			free(pid_str);
+			return (filename);
+		}
+		free(filename);
+	}
+	free(pid_str);
+	return (NULL);
 }
 
 /**

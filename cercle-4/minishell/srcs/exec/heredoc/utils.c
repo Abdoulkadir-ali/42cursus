@@ -12,23 +12,11 @@
 
 #include "exec.h"
 
-/**
- * @brief Expand a heredoc delimiter when quoting does not forbid it.
- * @param delim Raw delimiter string.
- * @param quoted True when the delimiter must stay literal.
- * @param state Active shell state used for expansion.
- * @return Expanded delimiter string, or the original delimiter pointer.
- */
-char	*expand_delim(const char *delim, bool quoted, t_shell_state *state)
+char	*expand_delim(const char *delim)
 {
-	char	*expanded;
-
-	if (quoted)
-		return ((char *)delim);
-	expanded = expand_heredoc((char *)delim, state->envp, state->exit_code);
-	if (expanded)
-		return (expanded);
-	return ((char *)delim);
+	if (is_quoted_delim(delim))
+		return (remove_quotes_heredoc((char *)delim));
+	return (ft_strdup(delim));
 }
 
 

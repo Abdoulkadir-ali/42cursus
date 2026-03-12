@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 22:32:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/12 20:27:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/12 20:27:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static void	handle_heredoc(int sig)
 static void	setup_signal_mode(void (*handler)(int))
 {
 	struct sigaction	sa;
-
+	
 	ft_bzero(&sa, sizeof(sa));
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;

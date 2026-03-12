@@ -81,9 +81,7 @@ static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
 	value = tok->value;
 	delim = value;
 	if (!tok->quoted)
-	{
-		delim = expand_delim(value, tok->quoted, state);
-	}
+		delim = expand_delim(value);
 	filename = generate_tmp_filename(&fd);
 	if (fd != -1)
 	{
