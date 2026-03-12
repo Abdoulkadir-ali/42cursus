@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:43:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/12 20:25:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,16 @@ static int	find_shlvl_index(char **heap_env)
  * @brief Compute the next shell level value from the inherited one.
  * @param existing_shlvl Parsed numeric value of the current `SHLVL`.
  * @return Next shell level, wrapped to 1 when the value grows too large.
+ * BASH POSIX: Negative levels are reset to 0 before incrementing
+ * BASH POSIX: Values >= 1000 reset to 1 with a warning
  */
 static int	calculate_shlvl(int existing_shlvl)
 {
 	int	shlvl;
 
-	/* BASH POSIX: Negative levels are reset to 0 before incrementing */
 	if (existing_shlvl < 0)
 		return (0);
 	shlvl = existing_shlvl + 1;
-	/* BASH POSIX: Values >= 1000 reset to 1 with a warning */
 	if (shlvl >= 1000)
 	{
 		ft_puterror("shell level (%d) too high, resetting to 1\n", shlvl);
@@ -81,6 +81,7 @@ static char	*make_shlvl_str(int shlvl)
 static void	set_shlvl_entry(char **heap_env, int idx, int shlvl)
 {
 	char	*entry;
+	size_t	j;
 
 	entry = make_shlvl_str(shlvl);
 	if (!entry)
@@ -92,7 +93,7 @@ static void	set_shlvl_entry(char **heap_env, int idx, int shlvl)
 	}
 	else
 	{
-		size_t j = 0;
+		j = 0;
 		while (heap_env[j])
 			j++;
 		heap_env[j] = entry;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 22:32:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:43:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/12 20:27:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ int			g_last_signal = 0;
  * @brief Handle interactive-mode signals while readline owns the terminal.
  * @param sig Signal number delivered to the shell process.
  * @return This function does not return a value.
+ * BASH POSIX: SIGINT in interactive mode must show a new empty line
  */
 static void	handle_interactive(int sig)
 {
 	if (sig == SIGINT)
 	{
-		/* BASH POSIX: SIGINT in interactive mode must show a new empty line */
 		g_last_signal = 130;
 		write(1, "\n", 1);
 		rl_on_new_line();
@@ -50,6 +50,7 @@ static void	handle_heredoc(int sig)
  * @brief Install one signal-handling mode for the shell process.
  * @param handler SIGINT handler used for the requested runtime mode.
  * @return This function does not return a value.
+ * BASH POSIX: SIGQUIT must always be ignored in the main shell process
  */
 static void	setup_signal_mode(void (*handler)(int))
 {
@@ -59,7 +60,6 @@ static void	setup_signal_mode(void (*handler)(int))
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;
 	sigaction(SIGINT, &sa, NULL);
-	/* BASH POSIX: SIGQUIT must always be ignored in the main shell process */
 	sa.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &sa, NULL);
 	rl_event_hook = NULL;

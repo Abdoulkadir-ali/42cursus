@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:43:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/12 20:26:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ bool	init_shell(char **envp, char ***heap_env, t_shell_state *state)
  */
 char	*ft_get_env(const char *key, char **envp)
 {
-	size_t		i;
+	size_t	i;
 	size_t	len;
 
 	if (!key || !envp)
