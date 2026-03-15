@@ -6,25 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 07:39:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
-
-/**
- * @brief Remove the last kept component when `..` is encountered.
- * @param stack Stack of normalized path components.
- * @param j Current component count, updated in place.
- * @return This function does not return a value.
- */
-static void	handle_dotdot(char **stack, size_t *j)
-{
-	if (*j > 0)
-	{
-		free(stack[--(*j)]);
-	}
-}
 
 /**
  * @brief Apply one extracted path component to the normalization stack.
@@ -40,7 +26,8 @@ static int	add_component(char **stack, size_t *j, const char *comp, size_t max)
 		return (0);
 	if (ft_strcmp(comp, "..") == 0)
 	{
-		handle_dotdot(stack, j);
+		if (*j > 0)
+			free(stack[--(*j)]);
 		return (0);
 	}
 	if (*j >= max - 1)

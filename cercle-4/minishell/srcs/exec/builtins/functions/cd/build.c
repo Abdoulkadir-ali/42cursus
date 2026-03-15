@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 08:01:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ static size_t	calc_len(char **stack, size_t count, size_t leading_slashes)
  * @param leading_slashes Number of leading slashes to preserve.
  * @return This function does not return a value.
  */
-static void	fill_path(char *res, char **stack, size_t count, size_t leading_slashes)
+static void	fill_path(char *res, char **stack, size_t count,
+		size_t leading_slashes)
 {
 	char	*ptr;
 	size_t	i;
@@ -95,7 +96,8 @@ static void	fill_path(char *res, char **stack, size_t count, size_t leading_slas
  * @param leading_slashes Number of leading slashes to preserve.
  * @return Newly allocated normalized path, or NULL on allocation failure.
  */
-char	*build_path_from_stack(char **stack, size_t count, size_t leading_slashes)
+char	*build_path_from_stack(char **stack, size_t count,
+		size_t leading_slashes)
 {
 	char	*res;
 	size_t	total_len;

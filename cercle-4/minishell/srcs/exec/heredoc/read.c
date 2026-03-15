@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 01:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:26:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 07:35:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ void	handle_heredoc_eof(char *stop_str)
  * @param heredoc Heredoc context carrying shell state and output fd.
  * @return 1 when reading must stop, otherwise 0.
  */
-int	process_heredoc_line(char *line, char *stop_str, bool quoted, t_heredoc *heredoc)
+static int	process_heredoc_line(char *line, char *stop_str, bool quoted,
+		t_heredoc *heredoc)
 {
 	if (quoted)
 		return (process_line_quoted(line, stop_str, heredoc->fd));

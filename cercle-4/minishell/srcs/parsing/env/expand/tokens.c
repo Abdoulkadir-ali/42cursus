@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:01:48 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/15 04:50:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 07:35:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,6 @@ static void	process_expanded_token(t_token_expansion *exp, t_token *exp_tok,
 {
 	t_nodes	*matches;
 
-	/* Treat expanded tokens as plain words (do not convert them into
-	 * operator tokens). Operator recognition must happen from the
-	 * original tokenizer/syntax stage, not from post-expansion values.
-	 */
 	exp_tok->type = TOKEN_WORD;
 	if (!exp_tok->quoted && is_wildcard(exp_tok->value))
 	{
@@ -132,8 +128,8 @@ static void	handle_word_node(t_token_expansion *exp, t_nodes *curr, char **env,
 int	expand_tokens(t_nodes **tokens, char **env, int status)
 {
 	t_token_expansion	exp;
-	t_nodes			*curr;
-	t_nodes			*next;
+	t_nodes				*curr;
+	t_nodes				*next;
 
 	ft_bzero(&exp, sizeof(exp));
 	curr = *tokens;

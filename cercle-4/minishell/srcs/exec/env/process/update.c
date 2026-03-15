@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 05:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:22:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 08:02:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,12 @@ void	update_existing_env(char **envp, t_export *exp)
 int	process_export_arg(char *arg, t_shell_state *state)
 {
 	t_export	exp;
+	int			idx;
 
 	ft_bzero(&exp, sizeof(exp));
 	parse_export_arg(arg, &exp);
 	if (!is_valid_ident(exp.key))
 		return (report_invalid_identifier(arg, &exp));
-	int	idx;
-
 	idx = get_env_index(exp.key, state);
 	if (idx != -1)
 	{

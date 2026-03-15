@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/15 02:20:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 07:35:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int	process_line_quoted(char *line, char *stop_str, int fd)
 	size_t	len_stop;
 
 	len_stop = ft_strlen(stop_str);
-	if (ft_strlen(line) == len_stop && ft_strncmp(line, stop_str, len_stop) == 0)
+	if (ft_strlen(line) == len_stop && ft_strncmp(line, stop_str,
+			len_stop) == 0)
 		return (1);
 	ft_putendl_fd(line, fd);
 	return (0);
@@ -37,7 +38,8 @@ int	process_line_quoted(char *line, char *stop_str, int fd)
  * @param heredoc Heredoc context carrying shell state and target fd.
  * @return 1 when the delimiter is reached, otherwise 0.
  */
-int	process_line_unquoted(char *line, char *stop_str, int fd, t_heredoc *heredoc)
+int	process_line_unquoted(char *line, char *stop_str, int fd,
+		t_heredoc *heredoc)
 {
 	char	*expanded_candidate;
 	size_t	len_stop;
@@ -45,8 +47,8 @@ int	process_line_unquoted(char *line, char *stop_str, int fd, t_heredoc *heredoc
 	expanded_candidate = expand_heredoc(line, heredoc->state->envp,
 			heredoc->state->exit_code);
 	len_stop = ft_strlen(stop_str);
-	if (ft_strlen(expanded_candidate) == len_stop &&
-		ft_strncmp(expanded_candidate, stop_str, len_stop) == 0)
+	if (ft_strlen(expanded_candidate) == len_stop
+		&& ft_strncmp(expanded_candidate, stop_str, len_stop) == 0)
 	{
 		free(expanded_candidate);
 		return (1);
