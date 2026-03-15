@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:26:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 02:23:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
  * @param quoted Output flag indicating whether the delimiter is quoted.
  * @return Delimiter string to use for heredoc reading.
  */
-static char	*get_heredoc_delim(char **args, int *quoted)
+static char	*get_heredoc_delim(char **args, int *quoted, t_shell_state *state)
 {
 	char	*delim;
 
@@ -27,7 +27,10 @@ static char	*get_heredoc_delim(char **args, int *quoted)
 	if (args[1])
 		*quoted = ft_atoi(args[1]);
 	if (!(*quoted))
-		return (expand_delim(args[0]));
+	{
+		delim = expand_delim(args[0], state);
+		return (delim);
+	}
 	return (delim);
 }
 
@@ -70,7 +73,7 @@ char	*handle_heredoc_input(char **args, t_shell_state *state)
 	char	*delim;
 	char	*filename;
 
-	delim = get_heredoc_delim(args, &quoted);
+	delim = get_heredoc_delim(args, &quoted, state);
 	filename = write_heredoc_to_file(delim, state, quoted, args);
 	if (!filename)
 	{

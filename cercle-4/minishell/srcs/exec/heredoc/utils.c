@@ -6,19 +6,22 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:48:38 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:26:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 01:59:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-char	*expand_delim(const char *delim)
+/**
+	* Unquoted delimiters should undergo variable expansion similar to
+	heredoc content. Use the provided shell state's envp as the source.
+*/
+char	*expand_delim(const char *delim, t_shell_state *state)
 {
 	if (is_quoted_delim(delim))
 		return (remove_quotes_heredoc((char *)delim));
-	return (ft_strdup(delim));
+	return (expand_heredoc((char *)delim, state->envp, state->exit_code));
 }
-
 
 /**
  * @brief Read one heredoc line when stdin is not attached to a tty.

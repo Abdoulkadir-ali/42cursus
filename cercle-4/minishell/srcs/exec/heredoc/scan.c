@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 15:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:26:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 01:53:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	create_tmp_file(int *fd, char **tmp_file)
  * @param quoted Output flag indicating whether expansion is disabled.
  * @return String to write into the temporary input file.
  */
-static char	*get_herestr_word(t_ast *node, int *quoted)
+static char	*get_herestr_word(t_ast *node, t_shell_state *state, int *quoted)
 {
 	char	*word;
 
@@ -46,7 +46,7 @@ static char	*get_herestr_word(t_ast *node, int *quoted)
 	if (node->args[1])
 		*quoted = ft_atoi(node->args[1]);
 	if (!*quoted)
-		return (expand_delim(word));
+		return (expand_delim(word, state));
 	return (word);
 }
 
@@ -57,12 +57,12 @@ static char	*get_herestr_word(t_ast *node, int *quoted)
  * @param fd Temporary file descriptor receiving the data.
  * @return This function does not return a value.
  */
-static void	write_herestr(t_ast *node, int fd)
+static void	write_herestr(t_ast *node, t_shell_state *state, int fd)
 {
 	char	*use_word;
 	int		quoted;
 
-	use_word = get_herestr_word(node, &quoted);
+	use_word = get_herestr_word(node, state, &quoted);
 	if (!use_word)
 		return ;
 	write(fd, use_word, ft_strlen(use_word));
@@ -76,14 +76,14 @@ static void	write_herestr(t_ast *node, int fd)
  * @param node AST node that currently represents a here-string.
  * @return 0 on success, 1 on failure.
  */
-static int	handle_herestr(t_ast *node)
+static int	handle_herestr(t_ast *node, t_shell_state *state)
 {
 	char	*tmp_file;
 	int		fd;
 
 	if (create_tmp_file(&fd, &tmp_file))
 		return (1);
-	write_herestr(node, fd);
+	write_herestr(node, state, fd);
 	close(fd);
 	free(node->args[0]);
 	node->args[0] = tmp_file;
@@ -119,7 +119,7 @@ int	scan_heredocs(t_ast *ast_node, t_shell_state *state)
 		ast_node->type = TOKEN_RED_IN;
 	}
 	else if (ast_node->type == TOKEN_HERESTR)
-		return (handle_herestr(ast_node));
+		return (handle_herestr(ast_node, state));
 	if (scan_heredocs(ast_node->left, state)
 		|| scan_heredocs(ast_node->right, state))
 		return (1);

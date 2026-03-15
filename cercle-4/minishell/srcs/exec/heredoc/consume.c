@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:27:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 02:20:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,12 @@
  */
 int	process_line_quoted(char *line, char *stop_str, int fd)
 {
-	char	*trimmed_line;
-	size_t	len;
+	size_t	len_stop;
 
-	trimmed_line = ft_strtrim(line, " \t");
-	len = ft_strlen(stop_str) + 1;
-	if (ft_strncmp(trimmed_line, stop_str, len) == 0)
-	{
-		free(trimmed_line);
+	len_stop = ft_strlen(stop_str);
+	if (ft_strlen(line) == len_stop && ft_strncmp(line, stop_str, len_stop) == 0)
 		return (1);
-	}
 	ft_putendl_fd(line, fd);
-	free(trimmed_line);
 	return (0);
 }
 
@@ -46,22 +40,19 @@ int	process_line_quoted(char *line, char *stop_str, int fd)
 int	process_line_unquoted(char *line, char *stop_str, int fd, t_heredoc *heredoc)
 {
 	char	*expanded_candidate;
-	char	*trimmed_expanded;
-	size_t	len;
+	size_t	len_stop;
 
 	expanded_candidate = expand_heredoc(line, heredoc->state->envp,
 			heredoc->state->exit_code);
-	trimmed_expanded = ft_strtrim(expanded_candidate, " \t");
-	len = ft_strlen(stop_str) + 1;
-	if (ft_strncmp(trimmed_expanded, stop_str, len) == 0)
+	len_stop = ft_strlen(stop_str);
+	if (ft_strlen(expanded_candidate) == len_stop &&
+		ft_strncmp(expanded_candidate, stop_str, len_stop) == 0)
 	{
 		free(expanded_candidate);
-		free(trimmed_expanded);
 		return (1);
 	}
 	ft_putendl_fd(expanded_candidate, fd);
 	free(expanded_candidate);
-	free(trimmed_expanded);
 	return (0);
 }
 
@@ -81,7 +72,7 @@ static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
 	value = tok->value;
 	delim = value;
 	if (!tok->quoted)
-		delim = expand_delim(value);
+		delim = expand_delim(value, state);
 	filename = generate_tmp_filename(&fd);
 	if (fd != -1)
 	{

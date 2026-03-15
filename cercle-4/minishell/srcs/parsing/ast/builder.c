@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:10:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/03/09 23:59:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/15 00:19:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,7 @@ t_ast	*ast_builder(t_nodes *tokens)
 
 	if (!tokens)
 		return (NULL);
-	split = find_split(tokens, TOKEN_RPAREN, TOKEN_LPAREN, &prev);
-	if (!split)
-		split = find_split(tokens, TOKEN_AND, 0, &prev);
+	split = find_split(tokens, TOKEN_AND, 0, &prev);
 	if (!split)
 		split = find_split(tokens, TOKEN_OR, 0, &prev);
 	if (!split)
