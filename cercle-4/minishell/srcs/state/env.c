@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/16 02:24:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/16 02:26:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ static char	**duplicate_env_base(char **envp)
 /**
  * @brief Initialize shell state and its owned environment copy.
  * @param envp Environment array inherited from the parent process.
- * @param heap_env Output slot receiving the duplicated environment.
  * @param state Shell state structure initialized by this function.
  * @return 0 on success, 1 on allocation failure.
  */
