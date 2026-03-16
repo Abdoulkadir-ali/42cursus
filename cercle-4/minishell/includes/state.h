@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 14:09:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 22:43:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/16 02:24:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct s_shell_state
 extern int	g_last_signal;
 
 void		setup_signals(int mode);
-bool		init_shell(char **envp, char ***heap_env, t_shell_state *state);
+bool		init_shell(char **envp, t_shell_state *state);
 void		add_shlvl_to_env(char **envp);
 char		*ft_get_env(const char *key, char **envp);
 int			get_env_index(char *key, t_shell_state *state);

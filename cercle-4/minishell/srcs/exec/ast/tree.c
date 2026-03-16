@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 23:42:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:15:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/16 02:14:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,3 +43,4 @@ int	exec_tree(t_ast *ast_node, t_shell_state *state)
 	}
 	return (0);
 }
+	

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 13:33:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:36:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/16 02:22:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	minishell(int ac, char **av, char **envp)
 	t_shell_state	state;
 	int				cmd_exit;
 
-	if (!init_shell(envp, &state.envp, &state))
+	if (!init_shell(envp, &state))
 		return (1);
 	cmd_exit = handle_command_line_mode(ac, av, &state);
 	if (cmd_exit != -1)

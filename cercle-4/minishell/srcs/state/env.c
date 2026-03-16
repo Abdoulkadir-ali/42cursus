@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/12 20:26:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/16 02:24:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,12 @@ static char	**duplicate_env_base(char **envp)
  * @param state Shell state structure initialized by this function.
  * @return 0 on success, 1 on allocation failure.
  */
-bool	init_shell(char **envp, char ***heap_env, t_shell_state *state)
+bool	init_shell(char **envp, t_shell_state *state)
 {
-	*heap_env = duplicate_env_base(envp);
-	if (!*heap_env)
+	state->envp = duplicate_env_base(envp);
+	if (!state->envp)
 		return (false);
-	add_shlvl_to_env(*heap_env);
-	state->envp = *heap_env;
+	add_shlvl_to_env(state->envp);
 	state->interactive_shell = isatty(STDIN_FILENO);
 	state->exit_code = 0;
 	state->syntax_error = false;
