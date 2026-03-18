@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tree.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 23:42:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/16 02:25:30 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/18 02:14:13 by hbranco           #+#    #+#             */
+/*   Updated: 2026/03/18 02:18:14 by hbranco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,3 @@ int	exec_tree(t_ast *ast_node, t_shell_state *state)
 	}
 	return (0);
 }
-	
