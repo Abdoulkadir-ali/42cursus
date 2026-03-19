@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:24:46 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/18 02:24:48 by hbranco          ###   ########.fr       */
+/*   Updated: 2026/03/19 05:20:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include "state.h"
 
 # define CD_MAX_COMPONENTS 1024
+# define DEFAULT_PATH "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 typedef struct s_export
 {
@@ -67,10 +68,39 @@ int					report_invalid_identifier(char *arg, t_export *exp);
 
 int					exec_tree(t_ast *ast_node, t_shell_state *state);
 int					exec_simple_command(t_ast *node, t_shell_state *state);
+char				**expand_string_array(char **arr, t_shell_state *state);
+char				**expand_redirection_filename(char *filename,
+						t_shell_state *state);
+void				free_string_array(char **arr);
 int					exec_subshell(t_ast *node, t_shell_state *state);
+int					exec_task(t_ast *node, t_shell_state *state);
 int					exec_logical(t_ast *node, t_shell_state *state,
 						bool run_if_zero);
+/* Internal helpers used across exec submodules */
+int					exec_builtin_with_assigns(t_ast *node,
+						t_shell_state *state);
+int					exec_external_with_lookup(t_ast *node,
+						t_shell_state *state);
+void				apply_assigns_to_state(t_ast *node, t_shell_state *state);
+int					save_and_apply_assigns(t_ast *node, t_shell_state *state,
+						char ***saved_env);
+void				restore_env_and_free(t_shell_state *state,
+						char **saved_env);
+/* internal helpers in exec/assignment.c are file-local; do not export */
+/* Error helpers implemented in srcs/exec/ast/error.c */
+int					report_command_not_found(char *cmd, t_shell_state *state);
+int					report_fork_error(void);
+void				report_quit_core_dump(void);
+
+/* Expansion helpers relocated to srcs/exec/ast/expand.c */
+char				**expand_string_array(char **arr, t_shell_state *state);
+char				**expand_redirection_filename(char *filename,
+						t_shell_state *state);
+void				free_string_array(char **arr);
 int					exec_redirection(t_ast *node, t_shell_state *state);
+int					open_redirection_file(t_ast *node, int *fd);
+int					get_target_fd(t_ast *node);
+int					setup_redirection(int target_fd, int fd, int *save_fd);
 int					exec_pipe(t_ast *node, t_shell_state *state);
 bool				is_builtin(char *cmd, char **args);
 const t_builtin_def	*get_builtins(void);
@@ -110,6 +140,9 @@ char				*resolve_home(t_shell_state *state);
 char				*cdpath_find(const char *name, char *cdpath);
 char				*join_paths(const char *a, const char *b);
 int					perform_cd(char *path, t_shell_state *state);
+void				report_command_not_found_old(void);
+pid_t				fork_protected(void);
+int					pipe_protected(int pipefd[2]);
 
 char				*build_base_path(const char *path, t_shell_state *state,
 						size_t *leading_slashes);

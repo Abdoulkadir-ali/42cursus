@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 14:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:59:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 02:11:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ static t_nodes	*find_match(t_nodes *start)
 	while (scan)
 	{
 		tk = (t_token *)scan->content;
-		if (tk->type == TOKEN_LPAREN)
+		if (cmp_tok_type(tk, TOKEN_LPAREN))
 			depth++;
-		else if (tk->type == TOKEN_RPAREN)
+		else if (cmp_tok_type(tk, TOKEN_RPAREN))
 		{
 			depth--;
 			if (depth == 0)

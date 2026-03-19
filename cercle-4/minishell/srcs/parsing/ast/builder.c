@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:10:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/03/15 00:19:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 02:42:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
  */
 void	free_ast(t_ast *ast_node)
 {
-	int	i;
+	size_t	i;
 
 	if (!ast_node)
 		return ;
@@ -33,6 +33,13 @@ void	free_ast(t_ast *ast_node)
 		while (ast_node->args[i])
 			free(ast_node->args[i++]);
 		free(ast_node->args);
+	}
+	if (ast_node->assigns)
+	{
+		i = 0;
+		while (ast_node->assigns[i])
+			free(ast_node->assigns[i++]);
+		free(ast_node->assigns);
 	}
 	free(ast_node);
 }
@@ -59,9 +66,9 @@ static t_nodes	*find_split(t_nodes *tokens, t_token_type t1, t_token_type t2,
 	while (curr)
 	{
 		t = (t_token *)curr->content;
-		if (t->type == TOKEN_LPAREN)
+		if (cmp_tok_type(t, TOKEN_LPAREN))
 			d++;
-		else if (t->type == TOKEN_RPAREN)
+		else if (cmp_tok_type(t, TOKEN_RPAREN))
 			d--;
 		else if (d == 0 && (t->type == t1 || (t2 && t->type == t2)))
 		{
@@ -113,6 +120,8 @@ t_ast	*ast_builder(t_nodes *tokens)
 		split = find_split(tokens, TOKEN_OR, 0, &prev);
 	if (!split)
 		split = find_split(tokens, TOKEN_PIPE, TOKEN_SEMICOLON, &prev);
+	if (!split)
+		split = find_split(tokens, TOKEN_BACKGROUND, 0, &prev);
 	if (split)
 	{
 		if (prev)
@@ -121,5 +130,7 @@ t_ast	*ast_builder(t_nodes *tokens)
 			tokens = NULL;
 		return (build_op(tokens, split));
 	}
-	return (create_cmd_node(tokens));
+	if (cmp_node_type(tokens, TOKEN_LPAREN))
+		return (handle_subshell(tokens));
+	return (handle_simple_cmd(tokens));
 }

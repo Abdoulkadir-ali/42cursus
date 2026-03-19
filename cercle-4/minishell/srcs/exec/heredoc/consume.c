@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   consume.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:16:33 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/18 02:16:34 by hbranco          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	process_line_quoted(char *line, char *stop_str, int fd)
 }
 
 /**
+ * @brief Process one unquoted heredoc line with full environmental expansion.
  * @param line Raw line read from heredoc input.
  * @param stop_str Fully prepared stop delimiter.
  * @param fd Destination descriptor receiving heredoc content.
@@ -62,7 +63,6 @@ int	process_line_unquoted(char *line, char *stop_str, int fd,
  * @brief Consume one tokenizer word that follows a heredoc operator.
  * @param tok Word token holding the delimiter text.
  * @param state Active shell state used for delimiter expansion.
- * @return This function does not return a value.
  */
 static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
 {
@@ -91,7 +91,6 @@ static void	handle_heredoc_word(t_token *tok, t_shell_state *state)
  * @brief Inspect one token node and consume the heredoc that follows it.
  * @param tokens Current linked-list node in the token stream.
  * @param state Active shell state passed to heredoc readers.
- * @return This function does not return a value.
  */
 static void	process_heredoc(t_nodes *tokens, t_shell_state *state)
 {
@@ -99,12 +98,12 @@ static void	process_heredoc(t_nodes *tokens, t_shell_state *state)
 	t_token	*next_tok;
 
 	tok = (t_token *)tokens->content;
-	if (tok->type == TOKEN_HEREDOC)
+	if (cmp_tok_type(tok, TOKEN_HEREDOC))
 	{
 		if (tokens->next)
 		{
 			next_tok = (t_token *)tokens->next->content;
-			if (next_tok->type == TOKEN_WORD)
+			if (cmp_tok_type(next_tok, TOKEN_WORD))
 				handle_heredoc_word(next_tok, state);
 		}
 	}
@@ -114,7 +113,6 @@ static void	process_heredoc(t_nodes *tokens, t_shell_state *state)
  * @brief Pre-consume every heredoc found in a token list.
  * @param tokens Token stream produced before AST execution.
  * @param state Active shell state passed to heredoc readers.
- * @return This function does not return a value.
  */
 void	consume_heredocs(t_nodes *tokens, t_shell_state *state)
 {

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:02:01 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/10 00:18:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 02:12:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool	is_prev_heredoc(t_nodes *prev)
 {
 	if (!prev)
 		return (false);
-	return (((t_token *)prev->content)->type == TOKEN_HEREDOC);
+	return (cmp_node_type(prev, TOKEN_HEREDOC));
 }
 
 /**

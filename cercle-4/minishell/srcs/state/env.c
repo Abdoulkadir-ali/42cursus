@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:17:03 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/18 02:17:04 by hbranco          ###   ########.fr       */
+/*   Updated: 2026/03/19 02:46:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,16 @@ static char	**duplicate_env_base(char **envp)
 }
 
 /**
+ * @brief Public wrapper returning a duplicated environment array.
+ * @param envp Source environment array.
+ * @return Newly allocated copy of envp, or NULL on allocation failure.
+ */
+char	**duplicate_envp(char **envp)
+{
+	return (duplicate_env_base(envp));
+}
+
+/**
  * @brief Initialize shell state and its owned environment copy.
  * @param envp Environment array inherited from the parent process.
  * @param state Shell state structure initialized by this function.
@@ -58,7 +68,8 @@ bool	init_shell(char **envp, t_shell_state *state)
 	if (!state->envp)
 		return (false);
 	add_shlvl_to_env(state->envp);
-	state->interactive_shell = isatty(STDIN_FILENO);
+	rl_outstream = stderr;
+	state->interactive_shell = isatty(STDIN_FILENO) && isatty(STDERR_FILENO);
 	state->exit_code = 0;
 	state->syntax_error = false;
 	state->expansion_error = false;

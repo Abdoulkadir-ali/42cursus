@@ -6,12 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 17:32:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/15 07:37:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:26:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lib.h"
 
+/**
+ * @brief Print a formatted error message prefixed with the program name.
+ * @param fmt printf-style format string and arguments.
+ * @return This function does not return a value.
+ */
 void	ft_puterror(const char *fmt, ...)
 {
 	va_list	args;

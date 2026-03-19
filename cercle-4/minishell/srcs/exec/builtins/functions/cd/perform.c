@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   perform.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:14:49 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/18 02:14:50 by hbranco          ###   ########.fr       */
+/*   Updated: 2026/03/19 05:09:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ static int	change_directory(char *path, t_shell_state *state)
  */
 static int	handle_cd_error(char *path, char *oldpwd, char *norm_path)
 {
-	ft_puterror("cd: %s: ", path);
-	perror(NULL);
+	ft_puterror("cd: %s: %s\n", path, strerror(errno));
 	free(oldpwd);
 	free(norm_path);
 	return (1);

@@ -17,15 +17,18 @@
  * @param segment Token list representing one semicolon-delimited segment.
  * @return 1 when the first token is an assignment word, otherwise 0.
  */
-static int	is_assignment_segment(t_nodes *segment)
+static char	*is_assignment_segment(t_nodes *segment)
 {
 	t_token	*first_tok;
+	char	*eq;
 
 	first_tok = (t_token *)segment->content;
 	if (!first_tok || first_tok->type != TOKEN_WORD)
-		return (0);
-	return (ft_strchr(first_tok->value, '=') != NULL
-		&& ft_strchr(first_tok->value, '=') != first_tok->value);
+		return (NULL);
+	eq = ft_strchr(first_tok->value, '=');
+	if (eq && eq != first_tok->value)
+		return (eq);
+	return (NULL);
 }
 
 /**
@@ -35,11 +38,9 @@ static int	is_assignment_segment(t_nodes *segment)
  * @param val Output slot receiving the variable value.
  * @return This function does not return a value.
  */
-static void	extract_key_value(t_token *first_tok, char **key, char **val)
+static void	extract_key_value(t_token *first_tok, char *eq, char **key,
+		char **val)
 {
-	char	*eq;
-
-	eq = ft_strchr(first_tok->value, '=');
 	*key = ft_substr(first_tok->value, 0, eq - first_tok->value);
 	*val = ft_strdup(eq + 1);
 }
@@ -70,13 +71,15 @@ int	try_handle_assignment_public(t_nodes *segment, t_shell_state *state)
 	t_token	*first_tok;
 	char	*key;
 	char	*val;
+	char	*eq;
 
-	if (!is_assignment_segment(segment))
+	eq = is_assignment_segment(segment);
+	if (!eq)
 		return (0);
 	first_tok = (t_token *)segment->content;
 	if (!is_valid_ident(first_tok->value) || segment->next)
 		return (0);
-	extract_key_value(first_tok, &key, &val);
+	extract_key_value(first_tok, eq, &key, &val);
 	set_assignment(key, val, state);
 	ft_lstclear(&segment, del_token);
 	return (1);

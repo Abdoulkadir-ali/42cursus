@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:15:13 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:40:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:44:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,27 @@ static char	*append_with_newline(char *line, char *new_line)
  * @param new_line Fresh continuation line.
  * @param code Continuation code that triggered the extra read.
  * @return Newly allocated combined line, or NULL when inputs are missing.
+ */
+char	*find_last_non_space(const char *line)
+{
+	char	*p;
+
+	if (!line)
+		return (NULL);
+	p = (char *)line + ft_strlen(line) - 1;
+	while (p >= line && ft_isspace(*p))
+		p--;
+	if (p < line)
+		return (NULL);
+	return (p);
+}
+
+/**
+ * @brief Append a continuation line to the current input with handling.
+ * @param line Current accumulated input line.
+ * @param new_line Fresh continuation line read from the user.
+ * @param code Continuation code that triggered the extra read (eg '\\').
+ * @return Newly allocated combined line, or NULL on allocation failure.
  */
 char	*append_line(char *line, char *new_line, char code)
 {

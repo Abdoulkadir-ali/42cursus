@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 06:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/10 00:26:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:33:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ int	match_pattern(char *pattern, char *str)
 	return (*pattern == '\0');
 }
 
-	/**
-	 * @brief Reject entries that should never participate in wildcard expansion.
-	 * @param entry Directory entry currently being inspected.
-	 * @param pattern Prepared wildcard pattern used for this expansion.
-	 * @return 1 when the entry must be skipped, otherwise 0.
-	 */
+/**
+ * @brief Reject entries that should never participate in wildcard expansion.
+ * @param entry Directory entry currently being inspected.
+ * @param pattern Prepared wildcard pattern used for this expansion.
+ * @return 1 when the entry must be skipped, otherwise 0.
+ */
 int	should_skip_entry(struct dirent *entry, char *pattern)
 {
 	char	pat_first;

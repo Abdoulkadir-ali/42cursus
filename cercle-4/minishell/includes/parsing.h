@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:25:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:01:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 06:59:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,12 @@
 
 typedef enum e_token_type
 {
+	TOKEN_PREFIX,
 	TOKEN_WORD,
 	TOKEN_PIPE,
 	TOKEN_AND,
 	TOKEN_OR,
+	TOKEN_BACKGROUND,
 	TOKEN_LPAREN,
 	TOKEN_RPAREN,
 	TOKEN_SUBSHELL,
@@ -59,6 +61,7 @@ typedef struct s_ast
 {
 	t_token_type	type;
 	char			**args;
+	char			**assigns;
 	struct s_ast	*left;
 	struct s_ast	*right;
 	bool			is_quoted;
@@ -93,6 +96,14 @@ typedef struct s_token_expansion
 	bool			expansion_error;
 }					t_token_expansion;
 
+typedef struct s_cmd
+{
+	size_t			count;
+	size_t			prefix_count;
+	char			**prefix_arr;
+	char			**args;
+}					t_cmd;
+
 t_ast				*process_redirections(t_ast *cmd_node, t_nodes *tokens);
 int					process_matches_or_literal(t_token_expansion *tok_exp,
 						t_nodes *matches, t_token *exp_tok, t_nodes *exp_curr);
@@ -117,16 +128,23 @@ char				**expand_wildcards(char **args);
 void				free_ast(t_ast *ast_node);
 void				del_token(void *content);
 void				append_node(t_nodes **head, t_nodes **tail, t_nodes *node);
+bool				cmp_node_type(t_nodes *node, t_token_type type);
+bool				cmp_tok_type(t_token *tok, t_token_type type);
+bool				cmp_ast_type(t_ast *node, t_token_type type);
+char				**token_list_to_array(t_nodes *list);
 bool				is_prev_heredoc(t_nodes *prev);
 void				apply_tilde_expansion(t_token *tok, char **envp);
 t_nodes				*create_token_node_from_match(char *match);
-t_ast				*create_cmd_node(t_nodes *tokens);
+t_ast				*handle_simple_cmd(t_nodes *tokens);
 t_ast				*handle_subshell(t_nodes *tokens);
 int					scan_unquoted(const char *s);
 int					scan_quoted(const char *s, char quote);
 bool				is_wildcard(const char *str);
 bool				is_redirection(t_token_type type);
 int					print_syntax_error(char *token);
+int					check_syntax(t_nodes *tokens);
+int					process_rules(t_token *tok, t_token *nxt, int *d);
+int					process_node(t_nodes *curr, int *d);
 int					syntax_handle_lparen(t_token *tok, t_token *nxt,
 						int *depth);
 int					syntax_handle_rparen(t_token *tok, t_token *nxt,
@@ -135,22 +153,18 @@ int					syntax_handle_pipe_and_logic(t_token *tok, t_token *nxt);
 int					syntax_handle_semicolon(t_token *tok, t_token *nxt);
 int					syntax_handle_redirection(t_token *tok, t_token *nxt);
 bool				is_exp_target(char c);
-void				perform_expansion(t_expansion *exp);
-void				push_literal_dollar(t_expansion *exp, size_t idx);
 void				process_val_split(char *val, t_expansion *exp);
+void				exp_push_char(t_expansion *exp, char c);
+void				exp_push_str(t_expansion *exp, char *s);
+void				perform_expansion(t_expansion *exp);
 int					handle_quote_split(t_expansion *exp);
 int					handle_backslash_split(t_expansion *exp);
 int					handle_dollar_split(t_expansion *exp);
-void				exp_push_char(t_expansion *exp, char c);
-void				exp_push_str(t_expansion *exp, char *s);
-int					expand_to_string(t_expansion *exp, t_dollar_peek *peek);
-int					expand_to_tokens(t_expansion *exp, t_dollar_peek *peek);
-int					handle_pipe(char **str, t_token *token);
-int					handle_paren(char **str, t_token *token, int left);
-int					handle_ampersand(char **str, t_token *token);
-int					handle_red_in(char **str, t_token *token);
-int					handle_red_out(char **str, t_token *token);
-int					handle_semicolon(char **str, t_token *token);
+int					is_dollar_start(t_expansion *exp, t_token_type *next);
+int					handle_in_s_quote(t_expansion *exp);
+int					handle_quote_after_dollar(t_expansion *exp);
+int					handle_non_target_or_dquote(t_expansion *exp, t_token_type next);
+int					handle_operator(char **str, t_token *token);
 t_token				*handle_separator(char **str);
 int					match_loop(char **pattern, char **str, char **star,
 						char **str_start);
@@ -166,4 +180,20 @@ t_nodes				*process_directory(DIR *dir, char *pat_copy,
 						int require_dir);
 void				sort_list(t_nodes **list);
 
+void			scan_command_tokens(t_nodes *tokens, t_cmd *cmd,
+						bool *is_quoted);
+char			*get_chunk(char **str, bool *quoted);
+bool			skip_dollar_quote(char **str);
+int				check_three_repeated(const char *s, char c);
+bool			set_token_and_advance(t_token *token, t_token_type type,
+					char **str, size_t len);
+bool			handle_basic_ops(char **str, t_token *token);
+bool			handle_redirs(char **str, t_token *token);
+bool			try_handle_punctuation(char **str, t_token *tok);
+char			*collect_word(char **str, bool *quoted);
+char			*collect_word_loop(char **str, bool *quoted, char *acc);
+char			**collect_prefixes(t_nodes *tokens, size_t count);
+char			**build_args_from_tokens(t_nodes *tokens, size_t count);
+void			free_string_array(char **arr);
+bool			is_assignment_prefix(const char *s);
 #endif

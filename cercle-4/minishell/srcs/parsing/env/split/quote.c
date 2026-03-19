@@ -6,66 +6,41 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 04:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/10 00:18:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:28:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
 /**
- * @brief Record that the current expansion path has passed through quotes.
- * @param exp Expansion context holding state, input, and output buffers.
- * @return This function does not return a value.
+ * @brief Toggle a quote state (single or double) and mark as quoted.
+ * @param exp Expansion context.
+ * @param in_quote Pointer to the boolean quote state to toggle.
+ * @param check_quote The other quote state that must be false.
+ * @return 1 on success, 0 if blocked by the other quote type.
  */
-static void	mark_as_quoted(t_expansion *exp)
+static int	toggle_quote(t_expansion *exp, bool *in_quote, bool check_quote)
 {
+	if (check_quote)
+		return (0);
+	*in_quote = !*in_quote;
 	exp->has_quotes = true;
-	if (exp->res_str == NULL && exp->word == NULL)
+	if (!exp->res_str && !exp->word)
 		exp->word = ft_strdup("");
-}
-
-/**
- * @brief Toggle the single-quote state when allowed by the current context.
- * @param exp Expansion context holding state, input, and output buffers.
- * @return 1 when a single quote was consumed, otherwise 0.
- */
-static int	toggle_single_quote(t_expansion *exp)
-{
-	if (exp->in_d_quote)
-		return (0);
-	exp->in_s_quote = !exp->in_s_quote;
-	mark_as_quoted(exp);
 	exp->pos++;
 	return (1);
 }
 
 /**
- * @brief Toggle the double-quote state when allowed by the current context.
- * @param exp Expansion context holding state, input, and output buffers.
- * @return 1 when a double quote was consumed, otherwise 0.
- */
-static int	toggle_double_quote(t_expansion *exp)
-{
-	if (exp->in_s_quote)
-		return (0);
-	exp->in_d_quote = !exp->in_d_quote;
-	mark_as_quoted(exp);
-	exp->pos++;
-	return (1);
-}
-
-/**
- * @brief Process one quote character while scanning an expandable word.
- * @param exp Expansion context holding state, input, and output buffers.
- * @return 1 when a quote character was handled, otherwise 0.
+ * @brief Entry point to handle quote characters during splitting.
+ * @param exp Expansion context containing the input and state flags.
+ * @return 1 when a quote was processed, 0 otherwise.
  */
 int	handle_quote_split(t_expansion *exp)
 {
-	const char	c = exp->str[exp->pos];
-
-	if (c == '\'')
-		return (toggle_single_quote(exp));
-	if (c == '\"')
-		return (toggle_double_quote(exp));
+	if (exp->str[exp->pos] == '\'')
+		return (toggle_quote(exp, &exp->in_s_quote, exp->in_d_quote));
+	if (exp->str[exp->pos] == '"')
+		return (toggle_quote(exp, &exp->in_d_quote, exp->in_s_quote));
 	return (0);
 }

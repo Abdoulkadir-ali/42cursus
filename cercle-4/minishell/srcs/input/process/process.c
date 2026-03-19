@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 03:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:38:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 05:46:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,20 +61,6 @@ static t_nodes	*extract_segment(t_nodes *cursor, t_nodes **pnext)
 }
 
 /**
- * @brief Expand one segment, abort on expansion errors, then execute it.
- * @param segment Semicolon-delimited token list for one command segment.
- * @param state Active shell state used by expansion and execution.
- * @return 1 when the segment is discarded on expansion failure, else 0.
- */
-static int	process_segment_internal(t_nodes *segment, t_shell_state *state)
-{
-	if (expand_and_check_error(&segment, state, &state->exit_code))
-		return (1);
-	execute_ast(segment, state);
-	return (0);
-}
-
-/**
  * @brief Iterate over all semicolon-separated segments in one token list.
  * @param tokens Token list produced from one input line.
  * @param state Active shell state used during segment handling.
@@ -93,12 +79,8 @@ static void	process_segments(t_nodes *tokens, t_shell_state *state)
 		segment = extract_segment(cursor, &next_cursor);
 		if (segment)
 		{
-			if (try_handle_assignment_public(segment, state)
-				|| process_segment_internal(segment, state))
-			{
-				cursor = next_cursor;
-				continue ;
-			}
+			if (!try_handle_assignment_public(segment, state))
+				execute_ast(segment, state);
 		}
 		cursor = next_cursor;
 	}

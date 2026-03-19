@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 06:16:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/05 23:18:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 02:51:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@
 # include <unistd.h>
 
 // CUSTOM
-# include "state.h"
 # include "exec.h"
 # include "libft.h"
 # include "parsing.h"
+# include "state.h"
 
 typedef struct s_op_def
 {
@@ -54,15 +54,13 @@ void		initialize_segment_builder(t_nodes **segment, t_nodes **seg_tail,
 				t_nodes **it, t_nodes *cursor);
 void		build_segment_until_semicolon(t_nodes **segment, t_nodes **seg_tail,
 				t_nodes **it);
-void		consume_semicolon_if_present(t_nodes *it,
-				t_nodes **pneset_assignmentt);
-bool				check_if_assignment_candidate(t_nodes *segment, t_token **first_tok,
+void		consume_semicolon_if_present(t_nodes *it, t_nodes **pnext);
+bool		check_if_assignment_candidate(t_nodes *segment, t_token **first_tok,
 				char **eq);
-int					expand_and_check_error(t_nodes **segment, t_shell_state *state,
-				int *new_exit_code);
 void		execute_ast(t_nodes *segment, t_shell_state *state);
 
 /* Utils */
+char		*find_last_non_space(const char *line);
 char		*append_line(char *line, char *new_line, char code);
 char		*get_prompt(bool is_initial);
 char		*read_input(char *prompt, t_shell_state *state);
@@ -76,8 +74,7 @@ char		ext_analyze_input(char *line);
 
 /* Extender helpers (srcs/input/reader/extenders/) */
 int			handle_escape(char *line, char *p);
-char		check_quote_state(const char *s);
-int			check_parenthesis_state(const char *s);
+char		ext_scan_pairs_state(const char *s, int *out_depth);
 char		check_trailing_op(char *line, t_op_def *ops);
 
 #endif

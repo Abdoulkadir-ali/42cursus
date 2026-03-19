@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 02:01:48 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/15 07:35:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 02:11:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ int	expand_tokens(t_nodes **tokens, char **env, int status)
 	while (curr)
 	{
 		next = curr->next;
-		if (((t_token *)curr->content)->type == TOKEN_WORD)
+		if (cmp_node_type(curr, TOKEN_WORD))
 			handle_word_node(&exp, curr, env, status);
 		else
 		{

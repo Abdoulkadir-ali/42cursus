@@ -6,16 +6,18 @@
 /*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:16:54 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/18 02:16:55 by hbranco          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:31:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
 /**
-	* Unquoted delimiters should undergo variable expansion similar to
-	heredoc content. Use the provided shell state's envp as the source.
-*/
+ * @brief Expand a delimiter string based on its quoting status.
+ * @param delim Raw delimiter string from the AST node.
+ * @param state Active shell state.
+ * @return Expanded delimiter string (newly allocated if unquoted).
+ */
 char	*expand_delim(const char *delim, t_shell_state *state)
 {
 	if (is_quoted_delim(delim))

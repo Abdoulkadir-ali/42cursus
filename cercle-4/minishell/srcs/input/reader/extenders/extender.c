@@ -6,16 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 07:09:27 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:39:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:25:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
 /**
- * @brief Detect unmatched quote or parenthesis state in one input line.
- * @param s Input line being analyzed for continuation.
- * @return Quote character, `p` for open parenthesis depth, or 0.
+ * @brief Determine whether the given line has unmatched pairs or quotes.
+ * @param s Input string to scan.
+ * @return Non-zero continuation code: quote char when a quote is open,
+ *         'p' when parentheses are unclosed, or 0 when balanced.
  */
 static char	check_pairs_state(char *s)
 {
@@ -24,10 +25,9 @@ static char	check_pairs_state(char *s)
 
 	if (!s)
 		return (0);
-	quote = check_quote_state(s);
+	quote = ext_scan_pairs_state(s, &depth);
 	if (quote != 0)
 		return (quote);
-	depth = check_parenthesis_state(s);
 	if (depth > 0)
 		return ('p');
 	return (0);

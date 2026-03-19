@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 13:33:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/16 02:22:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 03:02:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,25 @@ static int	handle_command_line_mode(int ac, char **av, t_shell_state *state)
 }
 
 /**
- * @brief Run the shell main loop for interactive and stdin-driven input.
- * @param state Active shell state shared across command processing.
- * @return Final shell exit status after the read loop ends.
+ * @brief Read input lines and process them until EOF or a terminating signal.
+ * @param state Active shell state used during command processing.
+ * @return Exit status: `2` when a syntax error occurred,
+	otherwise state's exit_code.
  */
-static int	run_interactive_mode(t_shell_state *state)
+static int	interactive_read_loop(t_shell_state *state)
 {
 	char	*line;
 
-	setup_signals(SIGNAL_INTERACTIVE);
 	while (1)
 	{
 		state->syntax_error = 0;
 		line = get_command_line(state);
+		if (g_last_signal == SIGTERM)
+		{
+			if (line)
+				free(line);
+			break ;
+		}
 		if (!line)
 		{
 			if (state->interactive_shell)
@@ -54,10 +60,29 @@ static int	run_interactive_mode(t_shell_state *state)
 		process_input(line, state);
 		free(line);
 	}
-	rl_clear_history();
 	if (state->syntax_error)
 		return (2);
 	return (state->exit_code);
+}
+
+/**
+ * @brief Run the shell main loop for interactive and stdin-driven input.
+ * @param state Active shell state shared across command processing.
+ * @return Final shell exit status after the read loop ends.
+ */
+static int	run_interactive_mode(t_shell_state *state)
+{
+	int		result;
+
+	if (state->interactive_shell)
+		setup_signals(SIGNAL_INTERACTIVE);
+	else
+		setup_signals(SIGNAL_NON_INTERACTIVE);
+	{
+		result = interactive_read_loop(state);
+		rl_clear_history();
+		return (result);
+	}
 }
 
 /**

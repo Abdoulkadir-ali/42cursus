@@ -6,52 +6,47 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/05 10:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 23:39:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:25:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
 
 /**
- * @brief Check whether the line ends inside a still-open quote context.
- * @param s Input line being scanned.
- * @return Open quote character when unmatched, otherwise 0.
+ * @brief Update the scanning state for quotes and parentheses.
+ * @param c Current character being scanned.
+ * @param quote Pointer to the active quote character (0 when none).
+ * @param depth Pointer to the current parenthesis depth counter.
+ * @return This function updates state in-place and returns no value.
  */
-char	check_quote_state(const char *s)
+static void	update_scan_state(char c, char *quote, int *depth)
 {
-	char	quote;
-
-	quote = 0;
-	while (*s)
+	if (*quote == 0 && (c == '\'' || c == '"'))
+		*quote = c;
+	else if (*quote != 0 && c == *quote)
+		*quote = 0;
+	else if (*quote == 0 && depth)
 	{
-		if (quote != '\'' && *s == '\\')
-		{
-			s++;
-			if (*s)
-				s++;
-			continue ;
-		}
-		if (quote == 0 && (*s == '\'' || *s == '"'))
-			quote = *s;
-		else if (quote != 0 && *s == quote)
-			quote = 0;
-		s++;
+		if (c == '(')
+			(*depth)++;
+		else if (c == ')')
+			(*depth)--;
 	}
-	return (quote);
 }
 
 /**
- * @brief Compute the unmatched parenthesis depth outside quoted text.
- * @param s Input line being scanned.
- * @return Final parenthesis depth after scanning the full input line.
+ * @brief Detect unmatched quote or parenthesis state in one input line.
+ * @param s Input line being analyzed for continuation.
+ * @param out_depth Optional output for parenthesis depth.
+ * @return Quote character when unmatched, otherwise 0.
  */
-int	check_parenthesis_state(const char *s)
+char	ext_scan_pairs_state(const char *s, int *out_depth)
 {
-	int		depth;
 	char	quote;
 
-	depth = 0;
 	quote = 0;
+	if (out_depth)
+		*out_depth = 0;
 	while (*s)
 	{
 		if (quote != '\'' && *s == '\\')
@@ -61,15 +56,8 @@ int	check_parenthesis_state(const char *s)
 				s++;
 			continue ;
 		}
-		if (quote == 0 && (*s == '\'' || *s == '"'))
-			quote = *s;
-		else if (quote == 0 && *s == '(')
-			depth++;
-		else if (quote == 0 && *s == ')')
-			depth--;
-		else if (quote != 0 && *s == quote)
-			quote = 0;
+		update_scan_state(*s, &quote, out_depth);
 		s++;
 	}
-	return (depth);
+	return (quote);
 }

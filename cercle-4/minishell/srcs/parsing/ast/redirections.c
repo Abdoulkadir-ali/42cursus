@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 00:00:00 by antigravity       #+#    #+#             */
-/*   Updated: 2026/03/09 23:59:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/19 02:13:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ static void	push_to_stack(t_nodes **stack, t_nodes *tokens)
 	while (curr)
 	{
 		tok = (t_token *)curr->content;
-		if (!tok->expanded && tok->type != TOKEN_WORD
-			&& tok->type != TOKEN_PIPE)
+		if (!tok->expanded && is_redirection(tok->type))
 		{
 			ft_lstadd_front(stack, ft_lstnew(curr));
 			if (curr->next)
@@ -56,7 +55,8 @@ static char	**build_redir_args(t_token *tok, t_nodes *redir_token_node)
 	{
 		delim_tok = (t_token *)redir_token_node->next->content;
 		args[0] = ft_strdup(delim_tok->value);
-		if (tok->type == TOKEN_HEREDOC || tok->type == TOKEN_HERESTR)
+		if (cmp_tok_type(tok, TOKEN_HEREDOC) || cmp_tok_type(tok,
+				TOKEN_HERESTR))
 			args[1] = ft_itoa(delim_tok->quoted);
 		else
 		{

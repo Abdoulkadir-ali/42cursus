@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:16:43 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/18 02:16:45 by hbranco          ###   ########.fr       */
+/*   Updated: 2026/03/19 07:23:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
+/**
+ * @brief Generate a unique temporary filename 
+ * for a heredoc and open it.
+ * @param fd_out Pointer to an int where the opened
+ * file descriptor will be stored.
+ * @return Allocated filename string on success
+ * (caller must free), or NULL on failure.
+ */
 char	*generate_tmp_filename(int *fd_out)
 {
 	char		*filename;

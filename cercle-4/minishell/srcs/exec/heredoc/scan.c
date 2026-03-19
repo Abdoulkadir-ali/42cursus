@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   scan.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:16:51 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/18 02:16:52 by hbranco          ###   ########.fr       */
+/*   Updated: 2026/03/19 02:11:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	scan_heredocs(t_ast *ast_node, t_shell_state *state)
 
 	if (!ast_node)
 		return (0);
-	if (ast_node->type == TOKEN_HEREDOC)
+	if (cmp_ast_type(ast_node, TOKEN_HEREDOC))
 	{
 		tmp_file = handle_heredoc_input(ast_node->args, state);
 		if (!tmp_file)
@@ -118,7 +118,7 @@ int	scan_heredocs(t_ast *ast_node, t_shell_state *state)
 		ast_node->args[1] = NULL;
 		ast_node->type = TOKEN_RED_IN;
 	}
-	else if (ast_node->type == TOKEN_HERESTR)
+	else if (cmp_ast_type(ast_node, TOKEN_HERESTR))
 		return (handle_herestr(ast_node, state));
 	if (scan_heredocs(ast_node->left, state)
 		|| scan_heredocs(ast_node->right, state))
