@@ -1,83 +1,88 @@
 # Input Reader Pipeline
 
-This directory contains the functions that read one command line from either an
-interactive terminal or standard input, detect whether the line is incomplete,
-request continuation lines when needed, and return one fully assembled command
-string to the core loop. The flow below is function-oriented and follows the
-exact calls in this subtree.
+This subtree reads one logical command line from the user or stdin, detects
+incomplete constructs (unclosed quotes, parentheses, trailing operators or an
+active backslash), and prompts for continuation until the input is complete.
+The README follows the function-level call flow implemented in this folder.
 
 ## Entry Path
 
-`get_command_line` in `reader.c` is the entry point used by the shell main
-loop.
-
-The steps are:
-
-1. Call `get_prompt(1)` to resolve the main shell prompt.
-2. Call `read_input(prompt, state)`.
-3. If `read_input` returns `NULL`, propagate `NULL` to the caller.
-4. Otherwise return the fully assembled command line.
-
-This is the function called by the core runtime before every `process_input`
-step.
+`get_command_line(state)` in `reader.c` is the public entry used by the main
+loop. It obtains the prompt (`get_prompt(1)`), calls `read_input()` and
+returns a fully assembled command line or `NULL` on EOF.
 
 ## Raw Read Path
 
-`read_input` in `reader.c` performs one logical read operation.
+`read_input(prompt, state)` performs the initial physical read via
+`read_raw_input()` and delegates continuation handling to
+`handle_multiline_input()`.
 
-The steps are:
+`read_raw_input()` chooses the source:
+- interactive: `readline(prompt)`
+- non-interactive: `get_next_line(STDIN_FILENO)`
 
-1. Call `read_raw_input(prompt, state)`.
-2. If `read_raw_input` returns `NULL`, propagate EOF immediately.
-3. Otherwise pass the line to `handle_multiline_input(line, state)`.
-4. Return the resulting complete line.
-
-`read_raw_input` selects the actual source of the first line.
-
-Its routing is exact:
-
-- when stdin is a tty, read with `readline(prompt)`
-- otherwise read with `get_next_line(STDIN_FILENO)`
-
-That split is what lets the shell support both interactive prompts and
-non-interactive stdin-driven execution.
+This split allows the shell to work both as an interactive prompt and as a
+non-interactive stdin-driven program.
 
 ## Multiline Continuation Path
 
-`handle_multiline_input` in `multiline.c` keeps reading until the current input
-is syntactically complete for the reader layer.
+`handle_multiline_input(line, state)` loops until `ext_analyze_input()`
+returns `0` (line complete). When a continuation code is returned the loop:
 
-The steps are:
+1. Stores the current buffer in a `t_line_struct` and computes the next
+   continuation prompt via `get_multiline_prompt(code, ops)`.
+2. Calls `read_and_append_line()` to read one physical continuation line and
+   merge it with the accumulated buffer using `append_line()`.
+3. Repeats the analysis on the merged buffer.
 
-1. Fetch the operator definition table through `get_ops()`.
-2. Call `ext_analyze_input(line)`.
-3. If the returned code is `0`, stop and return the current line.
-4. Otherwise store the current line and continuation code in `t_line_struct`.
-5. Call `read_next_line_and_append(&ls, ops, state)`.
-6. Repeat until `ext_analyze_input` reports a complete line or a read fails.
+`read_and_append_line()` handles EOF diagnostics: when EOF occurs it prints
+either a matching-delimiter message or a generic unexpected EOF error,
+sets `state->syntax_error`, frees the accumulated buffer and returns `NULL`.
 
-`read_next_line_and_append` performs one continuation step.
+## Line Merge Path
 
-The steps are:
+`append_line(line, new_line, code)` merges the accumulated input and the
+fresh continuation line. Rules:
+- If the continuation code is `'\\'` and the last non-space char is a
+  backslash, the active backslash is removed and pieces are concatenated
+  (`append_with_backslash`).
+- Otherwise a literal newline is inserted between the pieces
+  (`append_with_newline`).
 
-1. Build the continuation prompt with `get_multiline_prompt(ls->code, ops)`.
-2. Call `read_and_append_line(ls, ops, state)`.
-3. Free the temporary continuation prompt.
-4. Return the combined line.
+`find_last_non_space()` is used to locate the last significant character in
+the current buffer.
 
-`get_multiline_prompt` uses `ext_get_op_def(ops, code)` to look up the label
-associated with the missing construct.
+## Prompt & Operator Helpers
 
-Its rules are:
+`get_prompt(is_initial)` returns the interactive prompt strings when stdin is
+a TTY; `get_ops()` returns the static operator-definition table used by the
+extenders; `ext_get_op_def()` resolves a continuation code into its
+definition (symbol, label, counterpart).
 
-- when a matching operator definition has a label, build `label + "> "`
-- otherwise fall back to `get_prompt(0)`
+## Extender Handoff
 
-`read_and_append_line` then performs the actual continuation read.
+Continuation detection is implemented in the `extenders/` submodule. Call
+flow:
 
-The steps are:
+1. `ext_analyze_input(line)` → checks pairs (`ext_scan_pairs_state`) then
+   trailing operators (`check_trailing_op`).
+2. When continuation is needed, `get_multiline_prompt()` uses the op-table
+   label to build a user-friendly prompt.
 
-1. Read the next physical line through `read_raw_input(ls->prompt, state)`.
+See `srcs/input/reader/extenders/README.md` for the exact continuation rules
+and codes.
+
+## Folder-Level Call Chains
+
+1. `get_command_line` -> `get_prompt` -> `read_input`
+2. `read_input` -> `read_raw_input` -> `handle_multiline_input`
+3. `handle_multiline_input` -> `ext_analyze_input` ->
+   `read_next_line_and_append`
+4. `read_next_line_and_append` -> `get_multiline_prompt` ->
+   `read_and_append_line`
+5. `read_and_append_line` -> `read_raw_input` -> `append_line`
+6. `append_line` -> `append_with_backslash` or `append_with_newline`
+
 2. If EOF occurs:
    - resolve the operator definition with `ext_get_op_def`
    - print either the matching-delimiter error or the generic unexpected EOF

@@ -1,3 +1,39 @@
+# parsing/wildcard
+
+Purpose
+- Wildcard (glob) expansion utilities used by the parsing pipeline to expand
+  token text containing `*` or `?` into ordered filename lists.
+
+Overview
+- The wildcard package composes three responsibilities spread across files:
+  - `expand.c` — public entry point `expand_wildcard()` that opens the
+    current directory, collects matches and returns a sorted list of filenames.
+  - `match/` — low-level match engine (see `match/README.md`) that performs
+    pattern normalization, `*`/`?` matching, dotfile rules and directory-only
+    matches for trailing-slash patterns.
+  - `sort.c` — in-place lexical ordering of collected matches (`sort_list()`).
+
+Behavior details
+- `expand_wildcard(char *pattern)` returns `NULL` when the input contains no
+  active metacharacters or when no matches are found. When matches exist the
+  function returns a `t_nodes *` linked list with `char *` filenames in
+  lexicographical order. The caller owns the returned list and must free the
+  node objects and strings.
+
+- Sorting uses a simple bubble-sort over the `t_nodes` list by swapping the
+  `content` pointers — stable and acceptable for the small result sets the
+  code expects.
+
+Usage
+- Typical expansion flow within the parser/expander:
+  1. Detect active wildcard with `is_wildcard()`.
+  2. Call `expand_wildcard(pattern)` to obtain matches.
+  3. For each returned filename, create tokens or append to the argument list.
+  4. Free the returned `t_nodes *` and contained strings when done.
+
+See also
+- `srcs/parsing/wildcard/match/README.md` — implementation details for
+  pattern matching and collection.
 # Wildcard Expansion Pipeline
 
 This directory contains the functions that detect wildcard patterns, enumerate

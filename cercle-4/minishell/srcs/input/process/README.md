@@ -1,3 +1,50 @@
+# input/process
+
+Purpose
+- Handle tokenized input segments: build semicolon-delimited segments,
+  detect standalone assignments, prepare heredocs, build ASTs and execute
+  segments.
+
+Overview
+- This directory implements the high-level processing pipeline that runs after
+  tokenization and syntax validation. It turns token lists into executable
+  actions, performing these responsibilities:
+  - segmenting token streams by semicolon
+  - detecting and applying simple `KEY=VALUE` assignments
+  - preparing heredocs and executing the resulting AST
+
+Key files
+- `exec.c` — `execute_ast()` builds an AST from a segment, prepares heredocs,
+  runs `exec_tree()` and sets `state->exit_code` according to execution result
+  and signals.
+- `process.c` — `process_input()` is the public entry: tokenizes the raw line,
+  runs syntax checks, iterates semicolon-separated segments and dispatches
+  them for execution or assignment handling.
+- `segment.c` — helpers for identifying assignment-only segments and
+  applying them (`try_handle_assignment_public()`), plus key extraction.
+- `utils.c` — small helpers: `is_whitespace_only()`, `build_segment_until_semicolon()`
+  and `consume_semicolon_if_present()`.
+
+Typical flow
+1. `process_input(line, state)` called by the reader.
+2. Tokenize and run `check_syntax()`; bail out on failure.
+3. Split tokens into semicolon-delimited segments.
+4. For each segment:
+   - If it's a single `KEY=VALUE` assignment, apply it to the shell state.
+   - Otherwise, call `execute_ast()` to build the AST, scan/prepare heredocs
+     and run the execution tree.
+
+Notes for contributors
+- `try_handle_assignment_public()` enforces identifier validity and single-token
+  segments before treating a segment as an assignment.
+- `execute_ast()` sets up signal modes around heredoc scanning and child
+  execution; tests should assert correct `state->exit_code` behavior on
+  heredoc cancellation and signal conditions.
+
+Ownership
+- Many helpers return or manipulate `t_nodes *` lists in-place — callers must
+  free nodes and token contents using the provided `del_token()` helper when
+  consuming or discarding token lists.
 # Input Process Pipeline
 
 This directory contains the functions that transform one raw input line into

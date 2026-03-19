@@ -1,139 +1,116 @@
-# Env Split Pipeline
+# Expansion & Split Submodule
 
-This directory contains the functions that expand one shell word, track quote
-context, split unquoted expansion results into tokens, and preserve escape data
-needed by later wildcard processing. The flow below is function-oriented and
-follows the exact calls in this subtree.
+This subtree implements quote-aware word expansion and field splitting used
+by the parser. It turns one raw word string into a linked list of `t_token`
+nodes according to shell expansion rules: tilde expansion, parameter
+expansion (`$`), quote handling, backslash escapes, field splitting on
+unquoted whitespace, and preservation of quoted/null results.
+
+The documentation below follows the function-oriented, step-by-step style
+used across the repository so callers can follow exact call chains.
 
 ## Entry Path
 
-`expand_and_split` in `split.c` is the public entry point.
+`expand_and_split(char *str, char **env, int status)` in `split.c` is the
+public entry point. It returns a `t_nodes *` list of tokens produced from the
+input string.
 
 The steps are:
 
-1. Initialize a `t_expansion` context with the source string, environment, and
-   last exit status.
-2. Call `run_expansion_loop(&exp)`.
-3. Pass the resulting buffers to `finalize_expansion(&exp.output, &exp.state)`.
-4. Return the token list produced by expansion.
+1. Initialize a `t_expansion` context with the input string, `env`, and
+   `status`.
+2. Run `run_expansion_loop(&exp)` to process characters one-by-one.
+3. Finalize the expansion with `finalize_expansion(&exp)`, which flushes any
+   pending word and returns the token-list head.
 
-## Main Expansion Loop
+On `NULL` input, the function returns `NULL`.
 
-`run_expansion_loop` scans the source string one character at a time.
+## Expansion loop
 
-At each position it tries handlers in this exact order:
+`run_expansion_loop()` is the per-character driver that evaluates the input
+string under the current quote/split state.
 
-1. `handle_quote_split`
-2. `handle_backslash_split`
-3. `handle_dollar_split`
+The loop steps are:
 
-If none of those handlers consume the character:
+1. If `handle_quote_split(exp)` returns true, continue (toggles single/double
+   quote states and records `has_quotes`).
+2. If `handle_backslash_split(exp)` returns true, continue (consumes
+   backslash escapes, with double-quote specific rules).
+3. If `handle_dollar_split(exp)` returns true, continue (performs `$`-
+   driven expansions including `$?`, `$$`, and variable names).
+4. When inside quotes and a glob character is seen (`*` or `?`), the code
+   pushes an internal escape marker (`\001`) to protect it from later
+   globbing.
+5. Append the current character to the active output buffer with
+   `exp_push_char()` and advance the cursor.
 
-- quoted `*` and `?` are protected by pushing the internal `\001` marker first
-- the current character is appended literally through `exp_push_char`
-- quote-state bookkeeping is updated before advancing the cursor
+After the loop, `finalize_expansion()` converts the built buffers into token
+nodes: if `exp.word` exists it is appended as a `TOKEN_WORD` (with the
+`has_quotes` flag), otherwise when quotes were present an empty quoted token
+is produced.
 
-## Finalization Path
+## Dollar / variable handling
 
-`finalize_expansion` converts the accumulated buffers into the final token list.
+`handle_dollar_split()` orchestrates dollar expansions. Key rules:
 
-The rules are:
+- `$?` → expanded to the provided `status` number.
+- `$$` → expanded to the current PID.
+- Numeric or alphanumeric names → resolved via `get_env_value()` which
+  returns `ft_get_env()` values or an empty string when undefined.
+- When expansion occurs in unquoted mode, the replacement is subject to
+  field splitting via `process_val_split()`; when inside double quotes the
+  result is appended as a single chunk and marks `has_quotes`.
 
-- when `out->word` is non-empty, emit one token with `add_token_node`
-- when no word remains but quote handling marked the result as quoted, emit an
-  empty quoted token
-- otherwise return the accumulated head as-is
+`perform_expansion()` (in `exp.c`) drives this flow and integrates result
+handling between `exp->res_str` (accumulating a replacement string) and
+`exp->word` (current token under construction).
 
-## Quote Path
+## Backslash and quote behavior
 
-`handle_quote_split` in `quote.c` manages single and double quote state.
+- `handle_quote_split()` toggles `in_s_quote` / `in_d_quote` and ensures
+  `has_quotes` is recorded; empty quoted words produce an empty token.
+- `handle_backslash_split()` consumes escapes. Outside quotes it treats a
+  backslash as escaping the next character (and marks `has_quotes`). Inside
+  double quotes only `\`, `"`, `$`, and newline are special; other backslashes
+  are preserved literally.
 
-Its routing is exact:
+## Field splitting
 
-1. On `'`, call `toggle_single_quote`.
-2. On `"`, call `toggle_double_quote`.
-3. Otherwise return `0`.
+`process_val_split()` splits expanded values on unquoted whitespace. Its
+behavior:
 
-`toggle_single_quote` only works outside double quotes.
-`toggle_double_quote` only works outside single quotes.
-Both helpers call `mark_as_quoted`, which records that quotes influenced the
-current token and ensures an empty quoted token can still be emitted later.
+1. For each character in the expanded value, if it's whitespace, flush the
+   current `exp->word` into the token list via `flush_token()`.
+2. Otherwise append the character to the active buffer.
 
-## Backslash Path
+This ensures unquoted expansions that contain spaces produce multiple tokens
+while quoted expansions remain a single token.
 
-`handle_backslash_split` in `backslash.c` processes backslashes unless the
-parser is currently inside single quotes.
+## Ancillary helpers
 
-The steps are:
+- `apply_tilde_expansion()` replaces leading `~` with the `HOME` value when
+  the token is not quoted.
+- `strip_glob_escapes()` removes internal escape markers (`\001`) left by
+  backslash handling that were used to protect `*`/`?` during splitting.
+- `create_token_node_from_match()` (used by globbing) converts filesystem
+  match strings into token nodes.
+- `append_chunk()` merges temporary chunk strings into the active result.
 
-1. If inside double quotes, first try `handle_dq_backslash`.
-2. `handle_dq_backslash` only treats `$`, `"`, `\\`, and newline as special.
-3. For every handled backslash path, `consume_backslash` moves past the
-   backslash, appends the escaped character, and preserves quoted wildcard data
-   with the internal `\001` marker when needed.
+## Memory and errors
 
-## Dollar Path
+- The module constructs token nodes via `add_token_node()` and returns a
+  list owned by the caller.
+- Empty-but-quoted results produce an explicit empty token node (not NULL).
+- Functions free partial buffers on error; callers must free returned token
+  lists when appropriate.
 
-`handle_dollar_split` in `dollar/handler.c` dispatches dollar handling.
+## Folder-level call chains
 
-Its routing is exact:
+1. `expand_and_split` -> `run_expansion_loop` -> `handle_quote_split`
+2. `run_expansion_loop` -> `handle_backslash_split` -> `consume_backslash`
+3. `run_expansion_loop` -> `handle_dollar_split` -> `perform_expansion` ->
+   `process_val_split`
 
-1. If the current character is not `$`, return `0`.
-2. Build a `t_dollar_peek` containing the current index and next character.
-3. If `out->str` is active, call `expand_to_string`.
-4. Otherwise call `expand_to_tokens`.
-
-See `dollar/README.md` for the detailed dollar-expansion subpipeline.
-
-## Value Resolution Path
-
-`handle_dollar` in `env.c` resolves the value for one dollar-prefixed target.
-
-The steps are:
-
-1. Call `handle_special_dollar`.
-2. `handle_special_dollar` handles the cases `$`, `$?`, and `$$`.
-3. If no special form matches, call `handle_var_name`.
-4. `handle_var_name` parses either one digit or a standard shell variable name.
-5. It then resolves the final string through `get_env_value`.
-
-`get_env_value` has one special case for `UID`, then falls back to `ft_get_env`
-and returns an empty allocated string when the variable is undefined.
-
-## Split-On-Whitespace Path
-
-When unquoted dollar expansion produces a string in token mode,
-`perform_expansion` may delegate to `process_val_split` in `process.c`.
-
-The steps are:
-
-1. Iterate across the expanded value.
-2. On whitespace, call `flush_token` to close the current token.
-3. On non-whitespace, append characters through `exp_push_char`.
-
-This is what turns unquoted expanded values into multiple shell words.
-
-## Shared Output Helpers
-
-The shared helpers in `exp.c` and `utils.c` support all paths:
-
-- `is_exp_target` validates the character after `$`
-- `exp_push_char` and `exp_push_str` append data to either string or token mode
-- `perform_expansion` runs `handle_dollar` and chooses between direct append
-  and word splitting
-- `push_literal_dollar` keeps `$` unchanged when expansion is not allowed
-- `apply_tilde_expansion` expands leading `~` when quoting allows it
-- `append_chunk` concatenates allocated string pieces
-
-## Folder-Level Call Chains
-
-The main function chains in this subtree are:
-
-1. `expand_and_split` -> `run_expansion_loop` -> `finalize_expansion`
-2. `run_expansion_loop` -> `handle_quote_split` or
-   `handle_backslash_split` or `handle_dollar_split`
-3. `handle_dollar_split` -> `expand_to_string` or `expand_to_tokens`
-4. `expand_to_string` or `expand_to_tokens` -> `perform_expansion` ->
-   `handle_dollar`
-5. `perform_expansion` -> `process_val_split` when token-mode splitting is
-   required
+For exact signatures and edge cases, see the source files in this
+directory: `split.c`, `exp.c`, `dollar.c`, `backslash.c`, `quote.c`, and
+`utils.c`.
