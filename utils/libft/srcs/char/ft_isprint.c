@@ -1,0 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdali <abdali@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/16 20:04:31 by abdali            #+#    #+#             */
+/*   Updated: 2025/10/16 20:30:22 by abdali           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft.h"
+
+/**
+ * @brief Checks for any printable character including space.
+ * @note Public library exported function.
+ */
+bool	ft_isprint(int c)
+{
+	return (c >= 32 && c <= 126);
+}

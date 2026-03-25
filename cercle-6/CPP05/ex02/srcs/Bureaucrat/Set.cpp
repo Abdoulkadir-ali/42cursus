@@ -1,0 +1,44 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Set.cpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/20 07:48:17 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/20 09:54:45 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "Bureaucrat.hpp"
+
+bool Bureaucrat::isValidGrade(int grade) const
+{
+    return (grade >= this->getMinGrade() && grade <= this->getMaxGrade());
+}
+
+void Bureaucrat::setGrade(int new_grade)
+{
+    if (new_grade < this->getMinGrade())
+        throw BHierarchy::GradeTooHighException();
+    if (new_grade > this->getMaxGrade())
+        throw BHierarchy::GradeTooLowException();
+    std::cout << "Bureaucrat " << this->name << " grade has changed from " << this->grade << " to " << new_grade << std::endl;
+    this->grade = new_grade;
+}
+
+void Bureaucrat::demote(void)
+{
+    if (this->grade + 1 > this->getMaxGrade())
+        throw BHierarchy::GradeTooLowException();
+    this->grade++;
+    std::cout << "Bureaucrat " << this->name << " has been demoted. " << this->showCurrentGrade() << std::endl;
+}
+
+void Bureaucrat::promote(void)
+{
+    if (this->grade - 1 < this->getMinGrade())
+        throw BHierarchy::GradeTooHighException();
+    this->grade--;
+    std::cout << "Bureaucrat " << this->name << " has been promoted. " << this->showCurrentGrade() << std::endl;
+}
