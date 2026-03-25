@@ -10,7 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isdigit(int c)
+#include "libft.h"
+
+/**
+ * @brief Checks for a digit (0 through 9).
+ * @note Public library exported function.
+ */
+bool	ft_isdigit(int c)
 {
 	return (c >= '0' && c <= '9');
 }

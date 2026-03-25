@@ -10,7 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isalpha(int c)
+#include "libft.h"
+
+/**
+ * @brief Checks for an alphabetic character.
+ * @note Public library exported function.
+ */
+bool	ft_isalpha(int c)
 {
 	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }

@@ -10,8 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "libft.h"
 
+/**
+ * @brief Compares the first n bytes of the memory areas s1 and s2.
+ * 
+ * @param s1 Target structural variable.
+ * @param s2 Target structural variable.
+ * @param n Target structural variable.
+ * @return int output natively.
+ */
 int	ft_memcmp(void *s1, void *s2, size_t n)
 {
 	size_t			i;

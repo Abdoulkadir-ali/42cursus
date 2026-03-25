@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 11:20:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/20 05:19:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,6 @@ t_vec3	gjk_support_pyramid(const void *data, t_vec3 dir)
 	return (best);
 }
 
-/* Mesh: linear scan over all vertices (hull subset used by caller). */
 t_vec3	gjk_support_mesh(const void *data, t_vec3 dir)
 {
 	const t_mesh	*m;

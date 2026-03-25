@@ -6,81 +6,87 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2026/02/12 20:44:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/25 14:29:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include <ctype.h>
-# include <math.h>
 # include <stdarg.h>
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <limits.h>
+# include <stdio.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 4096
+#  define BUFFER_SIZE 42
 # endif
 
 # ifndef MAX_FDS
 #  define MAX_FDS 1024
 # endif
 
-# include "libft.h"
-# include <stdbool.h>
-# include <unistd.h>
-
 /* Flags structure for bonus handling */
 typedef struct s_flags
 {
-	int				minus;
-	int				zero;
-	int				hash;
-	int				space;
-	int				plus;
+	bool			minus;
+	bool			zero;
+	bool			hash;
+	bool			space;
+	bool			plus;
 	int				width;
 	int				precision;
-	int				has_precision;
+	bool			has_precision;
 	char			type;
 	int				fd;
 }					t_flags;
 
-typedef struct s_printf_ctx
+typedef struct s_printf
 {
 	int				i;
-	int				count;
+	size_t			count;
 	int				fd;
-}					t_printf_ctx;
+}					t_printf;
 
 typedef struct s_list
 {
 	void			*content;
 	struct s_list	*next;
-	size_t			size;
 }					t_nodes;
 
-int					ft_isalpha(int c);
-int					ft_isalnum(int c);
-int					ft_isascii(int c);
-int					ft_isdigit(int c);
-int					ft_isprint(int c);
-int					ft_tolower(int c);
-int					ft_toupper(int c);
-int					ft_isspace(char c);
+typedef struct s_buffer
+{
+	char			*data;
+	size_t			len;
+	size_t			cap;
+}					t_buffer;
+
+typedef struct s_stack
+{
+	void			**items;
+	size_t			size;
+	size_t			cap;
+}					t_stack;
+
+bool				ft_isalpha(int c);
+bool				ft_isalnum(int c);
+bool				ft_isascii(int c);
+bool				ft_isdigit(int c);
+bool				ft_isprint(int c);
+char				ft_tolower(char c);
+char				ft_toupper(char c);
+bool				ft_isspace(char c);
 int					ft_strrchri(char *str, char c);
 int					ft_strchri(char *str, char c);
-
-char				*skip_spaces(char *p);
 
 void				ft_putchar_fd(char c, int fd);
 void				ft_putendl_fd(char *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
 void				ft_putstr_fd(char *s, int fd);
-bool				ft_puterror(char *msg);
 
 size_t				ft_strlen(const char *s);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
@@ -92,6 +98,7 @@ int					ft_atoi(const char *s);
 void				ft_swap(int *a, int *b);
 
 long long			ft_atoll(const char *str);
+long long			ft_safe_atoll(const char *str, bool *error);
 
 void				ft_bzero(void *s, size_t n);
 void				*ft_calloc(size_t nmemb, size_t size);
@@ -105,12 +112,6 @@ void				*ft_memset(void *s, int c, size_t n);
 
 char				*ft_itoa(int n);
 char				**ft_split(char const *s, char c);
-t_nodes				*ft_split_nodes(char const *str, char *sep,
-						size_t (*match)(const void *, const void *));
-size_t				full_match(const void *sv, const void *sepv);
-size_t				any_match(const void *sv, const void *sepv);
-char				*ft_nodes_get(t_nodes *list, size_t n);
-void				*free_split(char **strs);
 char				*ft_strchr(const char *s, int c);
 char				*ft_strrchr(const char *s, int c);
 char				*ft_strdup(const char *src);
@@ -124,20 +125,19 @@ char				*ft_strldup(char *str, size_t l);
 char				*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char				*ft_substr(char const *s, unsigned int start,
 						unsigned int len);
-char				*skip_spaces(char *p);
 
-int					ft_check_base(const char *base);
+bool				ft_check_base(const char *base);
 size_t				ft_nbrlen_base(long long int n, size_t base);
 size_t				ft_unbrlen_base(unsigned long long int n, size_t base);
-int					ft_putnbr_base(long long int n, const char *base, int fd);
-int					ft_putunbr_base(unsigned long long int n, const char *base,
+size_t				ft_putnbr_base(long long int n, const char *base, int fd);
+size_t				ft_putunbr_base(unsigned long long int n, const char *base,
 						int fd);
 char				*ft_itoa_base(long long int n, const char *base);
 long long int		ft_atoi_base(const char *str, const char *base);
 
 t_nodes				*ft_lstnew(void *content);
 void				ft_lstadd_front(t_nodes **lst, t_nodes *new);
-int					ft_lstsize(t_nodes *lst);
+size_t				ft_lstsize(t_nodes *lst);
 t_nodes				*ft_lstlast(t_nodes *lst);
 void				ft_lstadd_back(t_nodes **lst, t_nodes *new);
 void				ft_lstdelone(t_nodes *lst, void (*del)(void *));
@@ -175,10 +175,28 @@ int					ft_print_precision_zeros(int num_len, int precision,
 int					ft_printf(const char *format, ...);
 int					ft_printf_fd(int fd, const char *format, ...);
 int					ft_vprintf_fd(int fd, const char *format, va_list args);
-int					ft_print_error(char *format, ...);
+void				ft_puterror_header(const char *header, const char *fmt,
+						...);
+void				ft_puterror_fmt(const char *fmt, ...);
+void				ft_vputerror_fd(int fd, const char *fmt, va_list args);
+void				ft_vputerror_header_fd(int fd, const char *header,
+						const char *fmt, va_list args);
 
-/* Extended numeric conversions */
-double				ft_strtod(const char *s);
-float				ft_strtof(const char *s);
+/* Buffer helpers: simple dynamic byte buffer for building strings/data */
+t_buffer			*ft_buffer_new(size_t initial);
+void				ft_buffer_free(t_buffer *b);
+int					ft_buffer_reserve(t_buffer *b, size_t additional);
+int					ft_buffer_append(t_buffer *b, const char *s, size_t n);
+int					ft_buffer_append_str(t_buffer *b, const char *s);
+int					ft_buffer_append_char(t_buffer *b, char c);
+char				*ft_buffer_to_string(t_buffer *b);
+
+t_stack				*ft_stack_new(void);
+void				ft_stack_free(t_stack *s, void (*del)(void *));
+int					ft_stack_push(t_stack *s, void *item);
+void				*ft_stack_pop(t_stack *s);
+void				*ft_stack_peek(t_stack *s);
+int					ft_stack_reserve(t_stack *s, size_t additional);
+size_t				ft_stack_size(t_stack *s);
 
 #endif

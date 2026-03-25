@@ -12,7 +12,11 @@
 
 #include "libft.h"
 
-int	ft_isalnum(int c)
+/**
+ * @brief Checks for an alphanumeric character.
+ * @note Public library exported function.
+ */
+bool	ft_isalnum(int c)
 {
 	return (ft_isalpha(c) || ft_isdigit(c));
 }

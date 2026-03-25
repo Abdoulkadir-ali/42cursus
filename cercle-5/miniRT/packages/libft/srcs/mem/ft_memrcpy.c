@@ -10,8 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "libft.h"
 
+/**
+ * @brief Performs raw physical memory block
+ *  operations dynamically, copying in reverse.
+ * @param d Target structural variable.
+ * @param s Target structural variable.
+ * @param n Target structural variable.
+ * @return void * output natively.
+ */
 void	*ft_memrcpy(void *d, const void *s, size_t n)
 {
 	unsigned char	*dest;
