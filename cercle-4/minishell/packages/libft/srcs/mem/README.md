@@ -14,7 +14,7 @@ Highly volatile physical replacement of bare RAM slots using `unsigned char` ite
 **Physical Byte-by-Byte Translation:**
 Rather than manipulating typed data arrays (like `char **`), this domain explicitly converts inputs into hardware level `(unsigned char *)` trackers. 
 `ft_memset` loops exactly `N` times, injecting specific data points directly across the allocated memory grid.
-`ft_memmove` inherently protects against overlapping data corruption (an explicit failure state in basic `memcpy`) by tracing pointers natively from back-to-front when the destination address logically exceeds the source block footprint.
+`ft_memmove` inherently protects against overlapping data corruption (an explicit failure state in basic `ft_memcpy`) by tracing pointers natively from back-to-front when the destination address logically exceeds the source block footprint.
 
 ---
 

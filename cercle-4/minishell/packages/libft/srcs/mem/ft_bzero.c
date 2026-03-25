@@ -10,8 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "libft.h"
 
+/**
+ * @brief Erases the data in the n bytes
+ *  of the memory starting at the location pointed to by s by writing zeros.
+ * 
+ * @param s Target structural variable.
+ * @param n Target structural variable.
+ * @return void (Stateless void execution).
+ */
 void	ft_bzero(void *s, size_t n)
 {
 	unsigned char	*str;

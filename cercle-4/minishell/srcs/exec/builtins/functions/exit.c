@@ -19,24 +19,14 @@
  */
 static long long	parse_exit_argument(const char *arg)
 {
-	int			error;
-	char		*endptr;
+	bool		error;
 	long long	val;
 
-	val = ft_safe_atoll(arg, LLONG_MAX, &error, &endptr);
+	val = ft_safe_atoll(arg, &error);
 	if (error)
 	{
 		ft_puterror("exit: %s: numeric argument required\n", arg);
 		exit(2);
-	}
-	while (*endptr)
-	{
-		if (!(*endptr == ' ' || (*endptr >= 9 && *endptr <= 13)))
-		{
-			ft_puterror("exit: %s: numeric argument required\n", arg);
-			exit(2);
-		}
-		endptr++;
 	}
 	return (val);
 }

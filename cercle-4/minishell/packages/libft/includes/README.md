@@ -34,3 +34,9 @@ This directory exclusively tracks the structural bounds and functional prototype
 
 ## 🗂️ Internal Delegation
 - **`libft.h`**: The sole unified entry point bridging all 8 subpackage capabilities (Lists, Printf, Strings, Mem, etc.) into a singular include command.
+
+## 🧰 Data & Buffer Subsystems
+
+A compact dynamic buffer type `t_buffer` is provided in `libft.h` and implemented under `srcs/data/buffer/`. It offers simple growing append operations (`ft_buffer_append*`), reserve, and convert-to-string helpers useful for building strings or accumulating I/O data.
+
+Additionally, small grouped data primitives (stacks, lists, string helpers) live under `srcs/data/` to keep single-responsibility files and Norminette-friendly layouts.

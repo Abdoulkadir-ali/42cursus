@@ -11,8 +11,15 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdlib.h>
 
+/**
+ * @brief Allocates memory for an array of nmemb elements
+ *  of size bytes each and returns a pointer to the allocated memory.
+ * 
+ * @param nmemb Target structural variable.
+ * @param size Target structural variable.
+ * @return void * output natively.
+ */
 void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*s;

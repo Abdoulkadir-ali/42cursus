@@ -10,7 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_tolower(int c)
+#include "libft.h"
+
+/**
+ * @brief Converts an uppercase letter to lowercase.
+ * @note Public library exported function.
+ */
+char	ft_tolower(char c)
 {
 	if (c >= 'A' && c <= 'Z')
 		return (c - 'A' + 'a');

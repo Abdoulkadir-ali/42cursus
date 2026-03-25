@@ -52,6 +52,9 @@ stateDiagram-v2
 | **`srcs/mem/`** | RAM copying | `void *` shifting. |
 | **`srcs/printf/`** | Formatted Data | Variadic `va_list` parsing. |
 | **`srcs/str/`** | String Mutations | Deep `char **` allocations. |
+| **`srcs/buffer/`** | Dynamic buffer builder | `t_buffer` growing byte buffer |
+
+Additional grouped data primitives live under `srcs/data/` (e.g. `srcs/data/buffer`, `srcs/data/stack`, `srcs/data/lst`) and consolidate small one-responsibility modules for easier Norminette compliance and review.
 
 ---
 

@@ -35,6 +35,8 @@ stateDiagram-v2
 | :--- | :--- | :--- | :--- |
 | **`libft/`** | Standard Library Replacement | Standard types | `libft.a` static binary. |
 
+> **New:** `libft` now exposes a lightweight `srcs/data/` collection (for example `srcs/data/buffer/` and `srcs/data/stack/`) providing `t_buffer`, stack helpers and other in-memory primitives used by the shell.
+
 ---
 
 ## 🧠 Memory Strategy

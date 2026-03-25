@@ -10,7 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_toupper(int c)
+#include "libft.h"
+
+/**
+ * @brief Converts a lowercase letter to uppercase.
+ * @note Public library exported function.
+ */
+char	ft_toupper(char c)
 {
 	if (c >= 'a' && c <= 'z')
 		return (c - 'a' + 'A');

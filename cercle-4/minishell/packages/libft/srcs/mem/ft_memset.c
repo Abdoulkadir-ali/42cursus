@@ -12,12 +12,20 @@
 
 #include "libft.h"
 
+/**
+ * @brief Handles small values of n.
+ * @note Public library exported function.
+ */
 static void	ft_memset_handle_small(char **p, unsigned char byte, size_t *n)
 {
 	while (*n--)
 		*(*p)++ = byte;
 }
 
+/**
+ * @brief Handles alignment of the pointer.
+ * @note Public library exported function.
+ */
 static void	ft_memset_handle_align(char **p, unsigned char byte, size_t *n)
 {
 	size_t	alignment_offset;
@@ -34,6 +42,10 @@ static void	ft_memset_handle_align(char **p, unsigned char byte, size_t *n)
 	}
 }
 
+/**
+ * @brief Handles bulk operations for larger values of n.
+ * @note Public library exported function.
+ */
 static void	ft_memset_bulk(char **p, unsigned char byte, size_t *n)
 {
 	uint64_t	word_val;
@@ -52,6 +64,14 @@ static void	ft_memset_bulk(char **p, unsigned char byte, size_t *n)
 	*n %= sizeof(uint64_t);
 }
 
+/**
+ * @brief Fills the first n bytes of the memory area
+ * pointed to by s with the constant byte c.
+ * @param s Target structural variable.
+ * @param c Target structural variable.
+ * @param n Target structural variable.
+ * @return void * output natively.
+ */
 void	*ft_memset(void *s, int c, size_t n)
 {
 	char			*p;

@@ -10,8 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "libft.h"
 
+/**
+ * @brief Performs raw physical memory block
+ *  operations dynamically, evaluating in reverse.
+ * 
+ * @param s Target structural variable.
+ * @param c Target structural variable.
+ * @param n Target structural variable.
+ * @return void * output natively.
+ */
 void	*ft_memrchr(void *s, int c, size_t n)
 {
 	unsigned char	*str;

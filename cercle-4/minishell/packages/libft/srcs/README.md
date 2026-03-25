@@ -36,6 +36,6 @@ The central repository for all raw C logic contained within `libft`. It structur
 - **`fd/`**: OS-level descriptor manipulation extending into `get_next_line`.
 - **`int/`**: Standard arithmetic translation (`atoi`).
 - **`lst/`**: Complex Linked-List generation and structural iteration.
-- **`mem/`**: Explicit memory-block mutations (`memcpy`, `calloc`).
+- **`mem/`**: Explicit memory-block mutations (`ft_memcpy`, `calloc`).
 - **`printf/`**: Highly specialized variadic formatting wrappers.
 - **`str/`**: Deep character-array manipulations (`split`, `join`, `trim`).

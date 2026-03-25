@@ -10,7 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isprint(int c)
+#include "libft.h"
+
+/**
+ * @brief Checks for any printable character including space.
+ * @note Public library exported function.
+ */
+bool	ft_isprint(int c)
 {
 	return (c >= 32 && c <= 126);
 }

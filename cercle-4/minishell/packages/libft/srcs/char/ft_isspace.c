@@ -10,7 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_isspace(char c)
+#include "libft.h"
+
+/**
+ * @brief Evaluates if input satisfies space condition.
+ * @note Public library exported function.
+ */
+bool	ft_isspace(char c)
 {
 	return (c == ' ' || (c >= 9 && c <= 13));
 }
