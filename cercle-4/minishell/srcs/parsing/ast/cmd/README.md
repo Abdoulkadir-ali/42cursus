@@ -1,102 +1,53 @@
-# Command AST helpers (ast/cmd)
+# 🔬 Command AST Helpers Subpackage (`srcs/parsing/ast/cmd`)
 
-This subtree converts a token segment representing a single simple command
-(one pipeline element) into a finalized `t_ast` command node. It scans the
-token stream, counts and collects assignment prefixes and argument words,
-builds the `argv` array, and attaches redirections.
+![Domain](https://img.shields.io/badge/Domain-Command_Node_Extraction-1f6feb?style=for-the-badge)
+![Strictness](https://img.shields.io/badge/Strictness-Maximum-critical?style=for-the-badge)
 
-The structure and wording below follow the function-oriented, step-by-step
-style used in the reader subsystem documentation so callers can trace the
-exact call chains.
+---
 
-## Entry Path
+## 🎯 Specific Domain
+Responsible exclusively for peeling a linear sequence of tokens representing a *single pipeline segment* into a finalized `t_ast` command node. It counts words, extracts leading variable assignments (prefixes), allocates the exact `argv` array size, and safely manages allocations if the process is interrupted.
 
-`handle_simple_cmd` in `finalize.c` is the high-level entry used by the AST
-builder for simple command segments.
+---
 
-The steps are:
+## ⚙️ Core Mechanic & Algorithms
+**The Simple Command Extraction Algorithm:**
+1. **Scanning (`scanner.c`):** Iterate the token list until `TOKEN_PIPE` or `NULL`. Variables are counted:
+   - Calculate how many words exist (`cmd->count`).
+   - Calculate how many leading variable assignments exist *before* the first word (`cmd->prefix_count`).
+2. **Prefix Collection (`collect.c`):** Allocate `char **assigns`. Duplicate up to `prefix_count` via `ft_strdup`.
+3. **Arg Collection (`collect.c`):** Allocate `char **args` based on `cmd->count`. Copy legitimate words (skipping tokens immediately succeeding redirection operators, as they are filenames).
+4. **Redirection Binding:** Invoke `process_redirections()` to consume `<` / `>` syntax.
+5. **Finalization (`finalize.c`):** Pack arrays into a `t_ast` block, tagging `node->is_quoted` if wildcard protection was declared.
 
-1. Call `scan_command_tokens(tokens, &cmd, &is_quoted)` to populate `cmd`
-   meta (`count`, `prefix_count`) and detect whether the first word is
-   quoted.
-2. If `cmd.prefix_count > 0`, call `collect_prefixes(tokens, cmd.prefix_count)`
-   to duplicate leading assignment prefixes into a new array.
-3. If `cmd.count == 0`, call `process_redirections(NULL, tokens)` to build a
-   redirection-only node and return it.
-4. Call `build_args_from_tokens(tokens, cmd.count)` to allocate and fill the
-   `argv` array.
-5. Create the `t_ast` node with the resulting `args` and optional `assigns`.
-6. Call `process_redirections(node, tokens)` to attach redirection nodes.
-7. Set `node->is_quoted` when appropriate and return the finalized node.
+---
 
-If any allocation fails, the function frees partially-built state and
-returns `NULL`.
+## 📜 POSIX & Shell Compliance
+> [!IMPORTANT]
+> **Prefix Assignment Binding:** In Bash, `VAR=1 echo hello` temporarily injects `VAR` into the environment for `echo`. The scanner actively differentiates between a *prefix* (assigned before the first word) and an *argument* (assigned after the first word). Any `TOKEN_PREFIX` found after a valid `TOKEN_WORD` is purposefully demoted and collected into the command's `argv` array instead of `assigns`.
 
-## Scanning Path
+---
 
-`scan_command_tokens` in `scanner.c` walks the token list until a pipe or
-end, counting words and prefixes.
+## 🚨 Error & Signal Propagation
+| Condition | Immediate Action | Upstream Impact |
+| :--- | :--- | :--- |
+| **`malloc()` failure during `ft_strdup`** | Instantly breaks loop. Runs `free()` on partially filled `args` / `assigns`. | Returns `NULL`. Cascades up to `build_ast`, safely aborting the AST execution pipeline without memory bloat. |
+| **Zero Words Scanned (`cmd.count == 0`)** | Skips `argv` allocation entirely. | Command node acts purely as an environment mutator or flat redirection executor (e.g., `> file.txt`). |
 
-The steps are:
+---
 
-1. Initialize `cmd->count = 0`, `cmd->prefix_count = 0`, `seen_word = 0`.
-2. For each token until `TOKEN_PIPE`:
-   - If token is `TOKEN_WORD`, mark `seen_word = 1`, record `is_quoted` for
-     the first word, and increment `cmd->count`.
-   - Else if token is `TOKEN_PREFIX`, increment `cmd->prefix_count` when
-     `seen_word == 0`, otherwise increment `cmd->count` (prefix after a
-     word becomes an argument).
-   - Else if token is a redirection operator and `curr->next` exists,
-     skip the next node (filename) so it is not counted.
-3. Return with `cmd` filled.
+## ⚠️ Edge Cases & Gotchas
+> [!WARNING]
+> **Redirection Target Ghosting:** The collector algorithms (`build_args_from_tokens`) must explicitly detect `TOKEN_REDIR` and intentionally skip iterating the immediately following token. Failing to do this causes the redirection filename to bleed accidentally into the command's `argv` matrix as an executable parameter.
 
-## Collection Path
+---
 
-The collection helpers in `collect.c` duplicate tokens into heap-allocated
-string arrays.
-
-`collect_prefixes(tokens, count)` steps:
-
-1. Allocate a `char **` array of size `count + 1`.
-2. Walk tokens, copying up to `count` `TOKEN_PREFIX` values with `ft_strdup`.
-3. Skip redirection targets when a redirection operator is encountered.
-4. NULL-terminate and return the array.
-
-`build_args_from_tokens(tokens, count)` steps:
-
-1. Allocate a `char **` array sized for `count + 1`.
-2. Walk tokens until `TOKEN_PIPE`, copying `TOKEN_WORD` and post-word
-   `TOKEN_PREFIX` values into the array.
-3. Skip redirection targets (next token after a redirection operator).
-4. NULL-terminate and return the array.
-
-## Finalization and Redirections
-
-`handle_simple_cmd` calls `process_redirections()` to transform any remaining
-redirection operator / filename pairs into attached redirection nodes on the
-returned `t_ast` node. If the command contained only redirections and no
-words, the returned AST node represents those redirections (no `args`).
-
-Redirection processing rules (summary):
-
-- Operators consume the next token as their filename/target; the collector
-  intentionally skips those so filenames are handled by `process_redirections`.
-- When wildcard/expansion has already been applied, quoted status is
-  propagated to the `t_ast` node via `is_quoted`.
-
-## Memory and errors
-
-- All arrays and nodes returned are heap-allocated; callers or AST cleanup
-  helpers must free them.
-- On allocation failure, helpers free partial state and return `NULL`.
-
-## Folder-level call chains
-
-Main chains used by the AST builder:
-
-1. `handle_simple_cmd` -> `scan_command_tokens` -> `collect_prefixes`
-2. `handle_simple_cmd` -> `scan_command_tokens` -> `build_args_from_tokens`
-3. `handle_simple_cmd` -> `process_redirections`
-
-For exact signatures and detailed error paths, see `scanner.c`,
-`collect.c`, and `finalize.c` in this directory.
+## 🔌 API Signatures
+```c
+/**
+ * @brief Constructs a finalized AST command node from raw contiguous pipeline tokens.
+ * @param tokens Linked list of unparsed pipeline tokens.
+ * @return Fully allocated `t_ast *` command node, or NULL on intense memory pressure.
+ */
+t_ast	*handle_simple_cmd(t_nodes *tokens);
+```

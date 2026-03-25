@@ -1,97 +1,70 @@
-# 🧠 Parsing Module
+# 🧭 Parsing Module (`srcs/parsing`)
 
-# Parsing Module
-
-> Transforms raw user input into structured commands the shell can execute.
-
-The parsing package performs lexical analysis, variable and wildcard expansion,
-AST construction and syntax validation. Submodules are intentionally small and
-focused so the parser remains testable and easy to refactor.
+![Language](https://img.shields.io/badge/Language-C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![Subsystem](https://img.shields.io/badge/Subsystem-Lexical_&_AST_Analysis-1f6feb?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Ultra_Detailed-success?style=for-the-badge)
 
 ---
 
-## Layout
-- `ast/` — AST builder and node utilities.
-- `env/` — environment expansion and splitting (tilde, `$`, quoting rules).
-- `tokenizer/` — tokenization, token helpers and syntax validation.
-- `wildcard/` — glob matching, collection and sorting helpers.
-
-Each directory contains a README with details on responsibilities and call
-flows; see the submodule READMEs for implementation specifics.
+## 🏗️ Architecture TL;DR
+> The Parsing module is the core intelligence of the shell. It receives physical character strings from `input/`, fractures them into recognized POSIX tokens, resolves all macro `$`/glob `*` expansions natively, and compiles a recursive Abstract Syntax Tree (AST) ready for execution. It aggressively guards the execution pipeline against syntactical and logical errors before any system fork occurs.
 
 ---
 
-## ast/
-Purpose
-- Build the `t_ast` tree representing commands, pipelines, redirections and
-	subshells. Exposes helpers to consume token lists and produce executable
-	AST nodes.
-
-Key files
-- `builder.c` — orchestration: walks tokens and constructs nodes.
-- `cmd/` — command-specific builders (prefixes, arguments, redirections).
-- `subshell.c`, `redirections.c`, `utils.c` — node helpers and cleanup.
-
-Flow (high level)
-- Token list → scan/collect → create nodes → validate AST → hand to exec.
-
----
-
-## env/
-Purpose
-- Expand variables and manage word-splitting while respecting quotes and
-	shell semantics. Provides a single expansion pipeline used by parsing and
-	execution.
-
-Key files
-- `expand/` — variable expansion, wildcard escape handling.
-- `split/` — field-splitting after expansion.
-
-Notes
-- Expansion functions return owned `char **` arrays or token lists; callers
-	must follow ownership/freeing conventions.
-
----
-
-## tokenizer/
-Purpose
-- Convert input strings into `t_token` objects, classify token types, and run
-	a lightweight syntax pass to reject invalid sequences before AST creation.
-
-Key files
-- `tokenizer.c` — main lexer and dispatch to handlers.
-- `handlers/` — word/operator handlers creating tokens.
-- `syntax/` — sequence validators and helpful error reporting.
-
-Flow
-- Raw input → tokenize (respecting quotes/escapes) → syntax check → tokens
-	returned for AST building.
+## 🗺️ Data Flow Diagram
+```mermaid
+stateDiagram-v2
+    [*] --> tokenizer: string pointer
+    
+    state tokenizer {
+        lex: get_next_token()
+        syntax: check_syntax()
+        lex --> syntax: Validates Positional Logic
+    }
+    
+    tokenizer --> env: Raw Tokens
+    
+    state env {
+        expand: Variable Resolution ($)
+        split: Field Splitting (" ")
+        wildcard: Glob Matching (*)
+        
+        expand --> split
+        split --> wildcard
+    }
+    
+    env --> ast: Expanded Tokens
+    
+    state ast {
+        cmd: handle_simple_cmd()
+        subshell: handle_subshell()
+        subshell --> subshell: Recursion
+    }
+    
+    ast --> ExecLayer: t_ast *root
+    ExecLayer --> [*]
+```
 
 ---
 
-## wildcard/
-Purpose
-- Match `*`/`?` patterns against the filesystem, collect matches and sort
-	results for insertion into argument lists.
-
-Key files
-- `match/` — low-level pattern matching and directory-entry checks.
-- `expand.c` — public entry `expand_wildcard()`.
-- `sort.c` — in-place ordering of match lists.
-
-Behavior
-- Dotfile rules, trailing-slash directory requirements and caps on stored
-	matches are enforced to match common shell expectations.
+## 🧱 Subsystems Matrix
+| Subsystem | Core Responsibility | Consumes | Produces |
+| :--- | :--- | :--- | :--- |
+| **`tokenizer/`** | Character peeling & Punctuation classification. | `char *line` | Linked list of `t_nodes *tokens`. |
+| **`env/`** | Macro expansion (`$`, `~`) & Field Splitting. | `t_nodes *tokens` | Fully evaluated, space-fragmented new tokens. |
+| **`wildcard/`** | Directory scans and Glob string matching (`*`). | `char *token_value` | Ordered `t_nodes` representing filesystem hits. |
+| **`ast/`** | Pipeline and Subshell compilation. | `t_nodes *tokens` | `t_ast *root` mapped to execution structs. |
+| **`utils/`** | Safely transitioning lists to `char **` arrays. | `t_nodes *` | Raw standard memory bindings. |
 
 ---
 
-## Developer notes
-- Keep parsing helpers small and side-effect free when possible.
-- Use `token_list_to_array()` and `free_string_array()` for safe array
-	conversions and ownership transfer.
-- When refactoring expansion, prefer exposing a minimal API used by `exec` so
-	parsing remains the single source of truth for expansion semantics.
+## 🧠 Global State Strategy
+The Parsing layer treats the shell as **Read-Only** with one strict exception:
+- It borrows `state->envp` strictly for lookup arrays during `$VAR` expansion.
+- If it encounters a failure (like Unbalanced Quotes or Ambiguous Redirects), it mutates `state->syntax_error` or `state->exit_code` implicitly, allowing the `core` engine to intercept the failure and halt execution early.
 
-For implementation details, consult the submodule READMEs and the headers in
-`includes/parsing.h`.
-- `tokenizer/`: Tokenizes input strings, checks syntax, and prepares tokens for parsing.
+---
+
+## 🛡️ Error & Signal Philosophy
+> [!NOTE]
+> **Crash Early, Free Aggressively:** The parser operates under a strict "fail-fast" policy. If `tokenizer` fails, `env` never runs. If `env` fails, `ast` is never built. Each subpackage guarantees a clean memory rollback (`del_token`, `free_ast`) before returning `NULL` back down the chain.

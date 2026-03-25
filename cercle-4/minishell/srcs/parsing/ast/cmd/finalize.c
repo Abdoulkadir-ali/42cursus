@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 01:36:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/19 07:39:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/25 12:29:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ t_ast	*handle_simple_cmd(t_nodes *tokens)
 	cmd.prefix_arr = collect_prefixes_or_null(tokens, &cmd);
 	if (cmd.prefix_count > 0 && !cmd.prefix_arr)
 		return (NULL);
-	if (cmd.count == 0)
+	if (!cmd.prefix_count && !cmd.count)
 		return (handle_empty_cmd(tokens));
 	cmd.args = build_args_or_cleanup(tokens, &cmd, cmd.prefix_arr);
 	if (!cmd.args)

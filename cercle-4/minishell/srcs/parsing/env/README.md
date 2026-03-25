@@ -1,61 +1,78 @@
-# Env expansion package
+# 📦 Env Expansion Subsystem (`srcs/parsing/env`)
 
-This package contains the parsing-layer word expansion components. It
-exposes two complementary entry points:
-
-- `expand_tokens(t_nodes **tokens, char **env, int status)` — expand every
-	`TOKEN_WORD` in a token list (tilde, parameter expansion, splitting,
-	and globbing) and rebuild the token stream.
-- `expand_and_split(char *str, char **env, int status)` — expand a single
-	input word into a token list (used by `expand_tokens`).
-
-The package is split into two focused submodules:
-
-- `expand/` — token-list level expansion, wildcard handling, and match
-	processing. Entry: `expand_tokens()`.
-- `split/` — string-level expansion, dollar/tilde handling, quoting,
-	backslash rules, and field splitting. Entry: `expand_and_split()`.
+![Subsystem](https://img.shields.io/badge/Subsystem-Macro_Expansion-1f6feb?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Ultra_Detailed-success?style=for-the-badge)
 
 ---
 
-## How to use
-
-1. Tokenize the input into a `t_nodes *` token list.
-2. Call `expand_tokens(&tokens, envp, state->exit_code)` to perform full
-	 word expansion on the token list.
-3. If `expand_tokens` returns non-zero, an expansion error occurred (e.g.
-	 ambiguous redirect); the caller should handle the error.
-
-For single-word expansion (e.g. for redirection targets) call
-`expand_and_split()` directly and interpret the returned list accordingly.
+## 🚧 Subsystem Boundary
+> [!NOTE]
+> **Trigger:** Activated by the parser before AST compilation, acting upon a linked list of raw `t_nodes *tokens`.
+> 
+> **Output:** Unconditionally rewrites the entire token stream. Expands `~`, `$VAR`, splits unquoted values into multiple tokens, and evaluates glob patterns `*`.
 
 ---
 
-## Responsibilities
-
-- The `split` submodule implements character-level rules: quotes, backslash
-	escapes, `$` expansions, tilde handling, and splitting on unquoted
-	whitespace.
-- The `expand` submodule takes the list output, applies wildcard expansion
-	via the `parsing/wildcard` API, detects ambiguous redirects, and
-	reconstructs the final token stream.
-
-Ancillary helpers (e.g. `apply_tilde_expansion`, `strip_glob_escapes`)
-are shared between both submodules and live in `utils.c` and related
-helpers.
+## ✅ Responsibilities & ❌ Anti-Responsibilities
+- **Must:** Resolve all valid `$`, `~`, and `*` shell macros.
+- **Must:** Split unquoted expansions into independent `t_nodes` (Field Splitting).
+- **Must:** Strip internal structural quotes (`'` and `"`) after their protective role is over.
+- **Must Not:** Compile the tokens into execution structures (delegated to `ast/`).
+- **Must Not:** Evaluate non-word tokens like `|`, `<`, or `>`.
 
 ---
 
-## Folder-level call chains
+## 🔄 Internal Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant AST as Caller (AST / Process)
+    participant env as env/README.md
+    participant split as split/ Submodule
+    participant expand as expand/ Submodule
 
-1. `expand_tokens` -> `handle_word_node` -> `expand_and_split` ->
-	 `process_expanded_list` -> `process_expanded_token` -> `expand_wildcard`
-2. `expand_and_split` -> `run_expansion_loop` -> (`handle_dollar` /
-	 `handle_backslash` / `handle_quote_split`) -> `process_val_split`
+    AST->>expand: expand_tokens(&tokens)
+    
+    loop Every TOKEN_WORD Node
+        expand->>split: apply_tilde_expansion(~)
+        expand->>split: expand_and_split($VAR, quotes)
+        split-->>expand: list of new expanded tokens
+        
+        expand->>expand: process_expanded_list()
+        
+        alt Contains Unquoted Wildcard '*'
+            expand->>expand: expand_wildcard()
+            expand->>expand: process_matches_or_literal()
+            
+            alt Match targets Redirect Target
+                expand-->>expand: Throw Ambiguous Redirect Error
+            end
+        end
+        expand->>expand: strip_glob_escapes()
+    end
+    
+    expand-->>AST: Overwritten, fully expanded token stream.
+```
 
-For module-level details see the submodule READMEs:
+---
 
-- `srcs/parsing/env/expand/README.md`
-- `srcs/parsing/env/split/README.md`
+## 💾 Memory Contracts (Critical)
+| Function Allocates | Freeing Responsibility | Condition |
+| :--- | :--- | :--- |
+| `expand_and_split()` | `expand_tokens()` | Allocates a fresh sequence of `t_nodes` based on string splitting. Caller iterates, extracts, and incorporates them into the main list, eventually freeing intermediate structs. |
+| `expand_tokens()` | **Original token cleanup** | Iterates the incoming list. It MUST free original unexpanded `t_nodes` natively when substituting them with the newly expanded sequences. |
 
+---
 
+## 🧬 State Mutation Matrix
+| Scenario | Mutated Field | Assigned Value |
+| :--- | :--- | :--- |
+| Variable Expansion | Searches `state->envp` | **None directly**. Pulls values but does not modify the shell environment array. |
+| Expansion Error (Ambiguous Redirect) | `expansion_error` flag internally | `1`. The caller sets `state->exit_code = 1` upstream. |
+
+---
+
+## 🗂️ Files Inventory
+| Subpackage | Primary Function | Role |
+| :--- | :--- | :--- |
+| `expand/` | `expand_tokens()` | Manages the list-level traversal, wildcard pattern matching, and Ambiguous Redirect detection. |
+| `split/` | `expand_and_split()` | The string-level engine. Handles `$`, quotes, `~`, and space-based Field Splitting. |

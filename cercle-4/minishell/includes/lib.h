@@ -13,6 +13,14 @@
 #ifndef LIB_H
 # define LIB_H
 
+/**
+ * @file lib.h
+ * @brief Standard Data Primitives API
+ * 
+ * Exports universally safe string matching tools and formatting tools.
+ * Completely stateless utility functions explicitly avoiding global contexts.
+ */
+
 // PACKAGE
 # include <stdarg.h>
 # include <stdio.h>

@@ -1,35 +1,52 @@
-# Operator Handlers
+# 🔬 Operator Handler Subpackage (`srcs/parsing/tokenizer/handlers/operator`)
 
-This directory implements tokenization of shell operators and punctuation
-(`|`, `||`, `&`, `&&`, `<`, `<<`, `<<<`, `>`, `>>`, `;`, `(`, `)`, etc.). The
-primary entry is `handle_separator()` which recognizes the concrete operator
-form at the current scan cursor and returns a populated `t_token *`.
+![Domain](https://img.shields.io/badge/Domain-Punctuation_Lexing-1f6feb?style=for-the-badge)
+![Strictness](https://img.shields.io/badge/Strictness-Maximum-critical?style=for-the-badge)
 
-## Entry Path
+---
 
-`handle_separator(char **str)` in `operator.c` is the public entry.
+## 🎯 Specific Domain
+Responsible exclusively for evaluating an active `str` pointer resting on a known punctuation byte (`|`, `<`, `>`, `&`, `;`, `(`, `)`) and safely extracting multi-byte operator variants (e.g. `<<`, `>>`, `||`, `&&`). 
 
-The steps are:
+---
 
-1. Allocate a `t_token` and validate memory.
-2. If the current character repeats (e.g. `|` or `&`), check for three or
-   more repetitions (`check_three_repeated`) to detect invalid forms.
-3. Try `handle_basic_ops()` to detect `|`, `||`, `&`, `&&`, and background
-   `&`.
-4. Try `handle_redirs()` to detect `<`, `<<`, `<<<`, `>`, `>>`, and the
-   `>|` form.
-5. Fall back to `try_handle_punctuation()` for `(`, `)`, and `;`.
-6. On success return the token; on failure free resources and return `NULL`.
+## ⚙️ Core Mechanic & Algorithms
+**The Operator Sniffing Algorithm (`handle_separator`):**
+1. Evaluates the leading byte.
+2. If the leading byte indicates a potential multi-character operator (`<`, `>`, `|`, `&`):
+   - Peeks ahead at `*(str + 1)` and `*(str + 2)` to differentiate `>`, `>>`, or `>|`.
+   - Bumps the parent `str` pointer forward by the exact length of the match.
+   - Triggers `set_token_and_advance()` to cleanly allocate the token node.
+3. If it is a generic single-byte terminator (`;`, `(`, `)`):
+   - Immediately allocates the token and shifts right by `1`.
 
-## Helpers
+---
 
-- `check_three_repeated()` prints a syntax error for sequences like `|||` or
-  `&&&`.
-- `set_token_and_advance()` builds the token `value` string and advances the
-  scan cursor.
+## 📜 POSIX & Shell Compliance
+> [!IMPORTANT]
+> **Operator Priorities:** Certain tokens like `>|` (clobber overwrite) constitute a distinct single lexeme in Bash instead of two. The peeking algorithms inherently favor the longest valid operator match before falling back.
 
-## Error behavior
+---
 
-- Invalid repetition, unknown operator forms, or allocation failures cause
-  `handle_separator()` to return `NULL` and the tokenizer to stop with an
-  error.
+## 🚨 Error & Signal Propagation
+| Condition | Immediate Action | Upstream Impact |
+| :--- | :--- | :--- |
+| **Invalid Multi-Char Sequence Found** | Like a single `&` byte (which isn't `&&`). Emits standard syntax crash. | Returns `NULL`. Triggers recursive token flushing. |
+
+---
+
+## ⚠️ Edge Cases & Gotchas
+> [!CAUTION]
+> **Orphaned Ampersands:** Because Bash background jobs aren't strictly handled the same way as pipelining in our specific shell variant, finding a lone `&` must immediately trigger a Syntax Error rather than lexing successfully. 
+
+---
+
+## 🔌 API Signatures
+```c
+/**
+ * @brief Lexes an operator sequence from the active char pointer.
+ * @param str Double-pointer allowing native advancing of the parser head.
+ * @return Safely isolated `t_token *` matching the operator logic.
+ */
+t_token	*handle_separator(char **str);
+```

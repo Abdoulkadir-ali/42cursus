@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbranco <hbranco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:13:58 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/18 02:14:00 by hbranco          ###   ########.fr       */
+/*   Updated: 2026/03/20 06:59:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ static char	*validate_and_return(char *path)
  */
 static char	*try_path(char *dir, char *cmd)
 {
-	char		*temp;
-	char		*full_path;
+	char	*temp;
+	char	*full_path;
 
 	if (!dir || !*dir)
 		dir = ".";
@@ -111,7 +111,7 @@ char	*find_path(char *cmd, t_shell_state *state)
 	}
 	path_env = ft_get_env("PATH", state->envp);
 	if (!path_env)
-		path_env = DEFAULT_PATH;
+		return (NULL);
 	result = find_executable_in_paths(cmd, path_env);
 	return (validate_and_return(result));
 }

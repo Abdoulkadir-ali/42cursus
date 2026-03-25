@@ -4,30 +4,11 @@ _This project has been created as part of the 42 curriculum by abdoali, hbranco.
 
 ## Description
 
-minishell is a small Unix-like command-line shell implemented for the 42
-curriculum. Its goal is to reimplement a subset of the standard shell
-behaviour (parsing, expansion, redirections, pipelines, builtins, heredocs,
-and signal handling) while respecting project constraints and expected
-functionality.
+minishell is a compact Unix-like interactive command-line shell implemented for the 42 curriculum. It reimplements a practical subset of standard shell behavior — tokenization and AST-based parsing, word and variable expansion (including quotes and environment variables), wildcard expansion, command execution via `execve`, pipelines, redirections and heredoc handling, builtin commands, and basic signal handling — all while respecting the project's constraints and expected behaviour for correctness and portability.
 
-## Features (brief)
+## Instructions
 
-- Tokenization and AST-based parsing
-- Variable expansion and wildcard expansion
-- Redirections and heredoc support
-- Builtin commands (cd, echo, exit, env, export, unset, pwd)
-- Pipeline execution and simple job control
-- Signal handling integrated with the interactive prompt and heredoc
-
-## Requirements
-
-- POSIX-compatible OS (Linux / macOS)
-- C compiler (gcc/clang)
-- Make
-
-## Build & Run
-
-From the repository root:
+From the repository root: build the project with `make` (this compiles the sources and links the included `libft`), then run the shell from the root directory with `./minishell`. Exit the shell with `exit` or Ctrl-D.
 
 ```sh
 make
@@ -47,31 +28,10 @@ echo $FOO
 ## Resources
 
 - POSIX Shell specification and related documentation
-- GNU readline manual
+- POSIX Shell specification and related documentation — primary reference for expected shell behaviour
+- GNU readline manual — reference for interactive line editing (if used)
 - Man pages: `execve(2)`, `fork(2)`, `pipe(2)`, `dup2(2)`, `waitpid(2)`, `signal(7)`
 
-## AI usage disclosure
+AI usage disclosure:
 
-AI assistance was used for small non-functional tasks only, such as
-suggesting concise docblocks and improving comment wording. All core code
-logic and implementation decisions were made by the project authors.
-
-## Technical choices
-
-- Language: C (ISO C, POSIX APIs)
-- Build: Makefile
-- Minimal external dependencies (includes local libft)
-
-## Contributors
-
-- abdoali
-- hbranco
-
-## Where to find more information
-
-See the source under `srcs/` and headers in `includes/` for implementation
-details and data structures.
-
-If you want more sections (design notes, tests, developer guide), tell me
-which area to expand.
-
+AI was used only for modest, non-functional assistance: suggesting phrasing for the README and docblocks, improving comment wording, and making small stylistic edits to documentation text. Specifically, AI helped with phrasing and wording in README content and comments; it was not used to write production code, implement parsing/expansion/execution logic, design algorithms, or create tests. All functional code, design choices, and reviews were performed by the project authors (abdoali, hbranco).

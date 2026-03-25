@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 05:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/19 07:21:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/25 12:33:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int	setup_redirection(int target_fd, int fd, int *save_fd)
 	{
 		close(fd);
 		close(*save_fd);
-		ft_puterror("minishell: %d: Bad file descriptor\n", target_fd);
+		ft_puterror("%d: Bad file descriptor\n", target_fd);
 		return (1);
 	}
 	close(fd);

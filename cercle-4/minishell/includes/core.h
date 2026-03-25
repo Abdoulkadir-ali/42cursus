@@ -13,6 +13,14 @@
 #ifndef CORE_H
 # define CORE_H
 
+/**
+ * @file core.h
+ * @brief Top-Level Entry API
+ * 
+ * Central orchestration bridge pulling all primary subsystem APIs together.
+ * Exposes the final binary execution loop allowing REPL transitions.
+ */
+
 // CUSTOM
 # include "exec.h"
 # include "input.h"

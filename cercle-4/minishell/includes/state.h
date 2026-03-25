@@ -13,6 +13,14 @@
 #ifndef STATE_H
 # define STATE_H
 
+/**
+ * @file state.h
+ * @brief Global Shell Context API
+ * 
+ * Centralizes the t_shell_state structure passed through all Minishell functions.
+ * Manages Signal tracking matrices and OS variable manipulation environments.
+ */
+
 # include "lib.h"
 # include "libft.h"
 # include <readline/readline.h>

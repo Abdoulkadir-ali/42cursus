@@ -6,12 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:24:46 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/19 05:20:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/20 06:38:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXEC_H
 # define EXEC_H
+
+/**
+ * @file exec.h
+ * @brief Execution & Build Routine API
+ * 
+ * Maps the functional bounds required to translate AST nodes into physical processes.
+ * Exports Heredoc limits, Export struct modifiers, and physical fork() abstractions.
+ */
 
 // PACKAGE
 # include <errno.h>
@@ -27,7 +35,6 @@
 # include "state.h"
 
 # define CD_MAX_COMPONENTS 1024
-# define DEFAULT_PATH "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 typedef struct s_export
 {

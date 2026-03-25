@@ -1,56 +1,74 @@
-# State: environment and runtime helpers
+# 📦 State & Environment Subsystem (`srcs/state`)
 
-This directory holds small, focused helpers that make the shell's runtime
-environment predictable and safe to use across the core, parsing, and
-execution subsystems.
-
-The responsibilities here are intentionally minimal:
-
-- provide a heap-owned copy of the inherited environment for the shell to
-	modify and query (`env.c`),
-- normalize and manage `SHLVL` on startup (`shlvl.c`), and
-- centralize signal-mode switching for the running shell (see the
-	`signals/` subdirectory for details).
+![Subsystem](https://img.shields.io/badge/Subsystem-State_Management-1f6feb?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Ultra_Detailed-success?style=for-the-badge)
 
 ---
 
-## Files
-
-- `env.c` — duplicate the inherited `envp` into a heap-owned array, expose
-	`init_shell()` and `ft_get_env()` for callers to initialize and read the
-	active environment.
-- `shlvl.c` — compute and install the `SHLVL` entry used by interactive
-	shells; `add_shlvl_to_env()` is called during initialization.
-- `signals/` — subdirectory that implements the signal handlers and the
-	`setup_signals()` API. See `srcs/state/signals/README.md` for details.
+## 🚧 Subsystem Boundary
+> [!NOTE]
+> **Trigger:** Activated once during `core/minishell.c` startup (for environment duplication) and repeatedly by `exec` or `input` when swapping signal modes.
+> 
+> **Output:** Mutates `t_shell_state`, owns the heap-allocated duplicate of `envp`, and manipulates the kernel's process signal disposition.
 
 ---
 
-## Quick overview
-
-- `init_shell(char **envp, char ***out_envp, t_shell_state *state)` duplicates
-	the provided `envp` into a heap-owned array and writes it to `*out_envp`.
-	It also initializes fields inside `state` such as `exit_code` and
-	`interactive_shell`.
-- `ft_get_env(char **envp, const char *key)` performs a simple `KEY=` prefix
-	lookup and returns the value substring or `NULL`.
-- `add_shlvl_to_env(char **heap_env)` locates or appends `SHLVL=` and writes
-	an appropriate numeric value (defaults to `1`, wraps large values per
-	POSIX-style behavior implemented in `calculate_shlvl`).
+## ✅ Responsibilities & ❌ Anti-Responsibilities
+- **Must:** Perform deep copies of the parent process's `envp` array into the heap.
+- **Must:** Normalize and increment the `SHLVL` environment variable during boot.
+- **Must:** Provide centralized APIs for switching signal handlers based on execution context (e.g., Prompt vs Blocking).
+- **Must Not:** Parse input tokens or modify execution workflows.
+- **Must Not:** Free its own `envp` matrix (delegated exclusively back to `core/` at shutdown).
 
 ---
 
-## Developer notes
+## 🔄 Internal Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant Core
+    participant env.c
+    participant shlvl.c
 
-- The environment copy returned by `init_shell` is owned by the shell and
-	may be mutated; callers should treat returned strings from `ft_get_env`
-	as borrowed pointers into that array.
-- `add_shlvl_to_env` intentionally keeps allocation and replacement logic
-	simple: it builds a single `SHLVL=<n>` string and either replaces the
-	existing slot or appends it.
-- Signal-mode switching is implemented in a dedicated subdirectory so signal
-	logic can be kept independent and testable; call `setup_signals()` rather
-	than installing handlers directly.
+    Core->>env.c: init_shell(&state, envp)
+    env.c->>env.c: duplicate_env_base(envp)
+    
+    %% Error handling path
+    alt Allocation fails
+        env.c-->>Core: false
+    end
+    
+    env.c->>shlvl.c: add_shlvl_to_env(state->envp)
+    shlvl.c->>shlvl.c: find_shlvl_index()
+    shlvl.c->>shlvl.c: calculate_shlvl(+1)
+    shlvl.c->>shlvl.c: set_shlvl_entry() (mutate envp slot)
+    
+    env.c->>env.c: Detect interactive_shell (isatty)
+    env.c-->>Core: true (state initialized)
+```
 
-For implementation details, see `env.c`, `shlvl.c`, and
-`srcs/state/signals/README.md`.
+---
+
+## 💾 Memory Contracts (Critical)
+| Function Allocates | Freeing Responsibility | Condition |
+| :--- | :--- | :--- |
+| `duplicate_env_base()` | `core/minishell.c` (`cleanup_envp`) | Allocates the entire 2D `char **` array. If an inner `strdup` fails, it self-cleans and returns `NULL`. |
+| `make_shlvl_str()` | `add_shlvl_to_env()` / `cleanup_envp` | Creates `"SHLVL=X"`. If an old slot exists, `add_shlvl` frees the old string and inserts the new one. At exit, `cleanup_envp` frees it. |
+| `ft_get_env()` | **No Allocation** | Returns a borrowed pointer pointing deep inside an existing `envp` string. Callers MUST NOT free it. |
+
+---
+
+## 🧬 State Mutation Matrix
+| Scenario | Mutated Field | Assigned Value |
+| :--- | :--- | :--- |
+| `init_shell()` invoked successfully | `state->envp` | Heap pointer to deep-copied environment array. |
+| Standard boot via TTY | `state->interactive_shell` | `true` if both `STDIN` and `STDERR` satisfy `isatty()`. |
+| Initializing shell fields | `state->exit_code`, `syntax_error`, `expansion_error` | `0` or `false`. |
+
+---
+
+## 🗂️ Files Inventory
+| File | Primary Function | Role |
+| :--- | :--- | :--- |
+| `env.c` | `init_shell()` | Deep copies environment and instantiates the `t_shell_state` baseline. |
+| `shlvl.c` | `add_shlvl_to_env()` | Enforces POSIX-compliant shell level incrementation logic. |
+| `signals/` | `setup_signals()` | Subpackage handling all `sigaction` modifications and interrupt loops. |

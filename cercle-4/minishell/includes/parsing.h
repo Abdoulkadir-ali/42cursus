@@ -13,6 +13,14 @@
 #ifndef PARSING_H
 # define PARSING_H
 
+/**
+ * @file parsing.h
+ * @brief Grammar & Structural Compilation API
+ * 
+ * Defines the massive transformation engine constructing t_token and t_ast blocks.
+ * Orchestrates Tokenization, Wildcard matching, and Env expansions natively.
+ */
+
 // PACKAGE
 # include <dirent.h>
 # include <stdio.h>

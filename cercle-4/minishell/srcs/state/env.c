@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 02:17:03 by hbranco           #+#    #+#             */
-/*   Updated: 2026/03/19 02:46:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/25 12:41:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,9 @@ bool	init_shell(char **envp, t_shell_state *state)
 		return (false);
 	add_shlvl_to_env(state->envp);
 	rl_outstream = stderr;
-	state->interactive_shell = isatty(STDIN_FILENO) && isatty(STDERR_FILENO);
+	state->interactive_shell = false;
+	if (isatty(STDIN_FILENO) && isatty(STDERR_FILENO))
+		state->interactive_shell = true;
 	state->exit_code = 0;
 	state->syntax_error = false;
 	state->expansion_error = false;

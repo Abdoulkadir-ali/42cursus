@@ -13,6 +13,14 @@
 #ifndef INPUT_H
 # define INPUT_H
 
+/**
+ * @file input.h
+ * @brief I/O Reading Pipeline API
+ * 
+ * Declares the entry points for acquiring contiguous logic blocks from the user.
+ * Exposes Multiline continuation helpers and Reader structures.
+ */
+
 // PACKAGE
 # include <readline/history.h>
 # include <readline/readline.h>

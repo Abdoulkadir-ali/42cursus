@@ -1,97 +1,80 @@
-# Tokenizer Pipeline
+# 📦 Tokenizer Subsystem (`srcs/parsing/tokenizer`)
 
-This subtree converts a raw command line into a validated token stream
-ready for AST construction. The README is function-oriented so you can map
-each step to the actual implementation in `tokenizer.c`, `handlers/`, and
-`syntax/`.
-
-## Global Pipeline
-
-1. `tokenizer(str)` produces a linked list of `t_token` nodes.
-2. The token list is passed to `check_syntax(tokens)` for validation.
-3. On success the validated token list is returned to the parser/builder.
-
-Shared helpers in this subtree (`utils.c`) provide common utilities such as
-`print_syntax_error`, `del_token`, and `is_redirection`.
+![Subsystem](https://img.shields.io/badge/Subsystem-Lexical_Analysis-1f6feb?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Ultra_Detailed-success?style=for-the-badge)
 
 ---
 
-## Tokenization Path
-
-`tokenizer(char *str)` in `tokenizer.c` is the public entry for lexical
-analysis.
-
-The steps are:
-
-1. Call `skip_spaces_and_comments(&str)` to consume whitespace and `#` comments.
-2. Call `get_next_token(&str)` to obtain the next `t_token *`.
-3. Wrap the token into a list node and append it to the accumulator.
-4. Repeat until the input is exhausted or an error occurs.
-
-`get_next_token` routing rules:
-
-- If the current character is an operator/punctuation (`|<>()&;`), call
-   `handle_separator(&str)` (operator handlers live in `handlers/operator`).
-- Otherwise call `handle_word(&str)` (word handlers live in `handlers/word`).
-- After building a word token, `handle_numeric_redirections` merges a
-   leading numeric token with a following redirection operator (e.g. `2>` →
-   `TOKEN_RED_OUT` with value `2>`).
-
-Error behavior:
-
-- If a handler returns `NULL` (syntax error, unclosed quote, allocation
-   failure), `tokenizer()` frees accumulated tokens and returns `NULL`.
+## 🚧 Subsystem Boundary
+> [!NOTE]
+> **Trigger:** Activated by `input/process` receiving a raw, complete logical text string from the reader.
+> 
+> **Output:** Converts the raw character array into a sequentially validated, heap-allocated linked list of `t_nodes *tokens`.
 
 ---
 
-## Syntax Validation Path
-
-`check_syntax(t_nodes *tokens)` in `syntax/syntax.c` validates the token
-sequence.
-
-The steps are:
-
-1. Reject forbidden initial tokens via `check_initial_token` (operators that
-    may not start a command).
-2. Iterate tokens and call `process_node(curr, &depth)` for each node.
-3. Each node delegates to `process_rules()` which routes to specific rule
-    helpers (`cases.c`) depending on token type.
-4. After iteration ensure `depth == 0` to confirm balanced parentheses.
-5. Return `0` on success or `2` on syntax error.
-
-Rule highlights:
-
-- Parentheses (`(` / `)`) adjust depth and reject invalid followers.
-- Pipes and logical operators reject invalid next tokens (another operator,
-   `)`, `;`, `&`).
-- Semicolon and background operators check that the following token is not
-   another operator.
-- Redirections require a following `TOKEN_WORD` or `TOKEN_PREFIX` unless the
-   redirection token was produced by expansion and marked `expanded`.
-
-On error helpers call `print_syntax_error()` which prints a message and the
-syntax pass returns `2`.
+## ✅ Responsibilities & ❌ Anti-Responsibilities
+- **Must:** Skim comments (`#`) and unquoted whitespace securely.
+- **Must:** Distinguish structural operators (`|`, `&&`, `>`, etc.) from literal command words.
+- **Must:** Run a strict **Syntax Validation Pass** on the extracted nodes before handing them back to the caller.
+- **Must Not:** Expand `$VARIABLES` or `*` wildcards (delegated to `parsing/env`).
+- **Must Not:** Handle line-continuation logic (delegated strictly to `input/reader`).
 
 ---
 
-## Handlers and helpers
+## 🔄 Internal Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant Process as Caller (input/process)
+    participant tok as tokenizer.c
+    participant handlers as handlers/
+    participant syntax as syntax/
 
-- `handlers/operator` recognizes `|`, `||`, `&`, `&&`, `<`, `<<`, `<<<`, `>`,
-   `>>`, `>|`, `(`, `)`, and `;` forms and returns a `t_token *` or `NULL`.
-- `handlers/word` builds word tokens by concatenating quoted and
-   unquoted chunks, detects assignment prefixes, and returns `TOKEN_WORD` or
-   `TOKEN_PREFIX` tokens.
-- Utility helpers in `handlers/*/helper.c` provide small routines such as
-   `is_assignment_prefix`, `scan_quoted`, `scan_unquoted`, and `set_token_and_advance`.
+    Process->>tok: tokenizer(char *str)
+    
+    loop Until End of String
+        tok->>tok: skip_spaces_and_comments()
+        tok->>handlers: get_next_token()
+        
+        alt Is Operator Char
+            handlers->>handlers: handle_separator()
+        else Is Word Char
+            handlers->>handlers: handle_word()
+        end
+        handlers-->>tok: t_token * (Node appended)
+    end
+    
+    tok-->>Process: Raw Token List
+    Process->>syntax: check_syntax(tokens)
+    
+    alt Syntax Valid
+        syntax-->>Process: 0 (Success)
+    else Syntax Invalid
+        syntax-->>Process: 2 (Syntax Error Trapped)
+    end
+```
 
 ---
 
-## Folder-Level Call Chains
+## 💾 Memory Contracts (Critical)
+| Function Allocates | Freeing Responsibility | Condition |
+| :--- | :--- | :--- |
+| **`get_next_token()`** | `tokenizer()` / Upstream | Allocates individual `t_token` structs and distinct `char *value` slices. If `get_next_token` internally fails (e.g. unclosed quote), it frees itself and returns `NULL`. |
+| **`tokenizer()`** | `tokenizer()` / Upstream | Wraps `t_token` data inside `t_nodes` linked lists. If an allocation fails mid-loop, it immediately loops backwards freeing all accumulated nodes via `del_token` before returning `NULL`. |
 
-1. `tokenizer` -> `skip_spaces_and_comments` -> `get_next_token`
-2. `get_next_token` -> `handle_separator` or `handle_word` -> `handlers/*`
-3. `tokenizer` -> append token nodes -> return token list
-4. `check_syntax` -> `process_node` -> `process_rules` -> `cases.c` helpers
+---
 
-For implementation details, see `tokenizer.c`, the `handlers/` subfolders,
-and the `syntax/` subfolder.
+## 🧬 State Mutation Matrix
+| Scenario | Mutated Field | Assigned Value |
+| :--- | :--- | :--- |
+| `check_syntax()` Identifies Sequential Error | `state->exit_code` (Handled by upstream wrapper) | `2` |
+| Successful Tokenization | **None** | Pure data transformation; does not touch global state natively. |
+
+---
+
+## 🗂️ Files Inventory
+| Subpackage | Primary Function | Role |
+| :--- | :--- | :--- |
+| `tokenizer.c` | `tokenizer()` | The high-level loop iteratively peeling strings into node blocks. |
+| `handlers/` | `get_next_token()` | Subpackage devoted to classifying characters into discrete token chunks. |
+| `syntax/` | `check_syntax()` | Subpackage enforcing Bash positional token rules (e.g. tracking `| |`). |

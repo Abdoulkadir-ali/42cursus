@@ -1,38 +1,50 @@
-# exec/ast/exec
+# 🔬 AST Node Runners Subpackage (`srcs/exec/ast/exec`)
 
-Purpose
-- Executor for AST nodes: implements runtime behavior for assignments,
-  redirections, simple commands, pipelines, logical operators, background
-  tasks and process waiting/normalization.
+![Domain](https://img.shields.io/badge/Domain-Specific_Node_Drivers-1f6feb?style=for-the-badge)
+![Strictness](https://img.shields.io/badge/Strictness-Maximum-critical?style=for-the-badge)
 
-Overview
-- Files in this directory implement the core execution primitives used by the
-  AST walker (`exec_tree()`):
-  - `assignment.c` — save/duplicate environment, apply temporary assignment
-    prefixes to `state->envp`, and restore the original environment.
-  - `expand.c` — adapter helpers that run the parsing expansion pipeline
-    (`expand_tokens`) and convert token lists into `char **` arrays used by
-    command execution and redirections.
-  - `logical.c` — subshell execution and logical operator handling
-    (`exec_logical` for `&&`/`||` semantics and `exec_subshell`).
-  - `path.c` — `find_path()` and helpers to resolve an executable candidate
-    from `PATH`, with directory rejection and access checks.
-  - `pipe.c` — two-child pipeline implementation: fork left/right, connect
-    with `pipe()`, and return rightmost command status.
-  - `task.c` — background job handling (fork and continue without waiting).
-  - `wait.c` — normalize `waitpid()` statuses into shell exit codes
-    (`handle_wait_status`).
+---
 
-Behavior notes
-- Assignment prefixes are applied by duplicating `state->envp` so builtins and
-  child processes can observe temporary environment changes; the original
-  environment is restored after execution.
-- Expansion helpers in `expand.c` are thin adapters around parsing-level
-  expansion; redirection expansion must produce exactly one filename or the
-  executor reports an ambiguous redirect.
-- Pipelines and subshells are implemented with protected forks and careful
-  signal mode changes to match interactive shell behavior.
+## 🎯 Specific Domain
+Contains the dedicated controllers for every Bash construct. Translates the recursive tree-walk logic into physical OS interactions (Pipes, Waits, Subshells, PATH discovery).
 
-Usage
-- The executor (`exec_tree`) calls these functions when traversing AST nodes.
-  Review individual files for exact error codes and edge-case handling.
+---
+
+## ⚙️ Core Mechanic & Algorithms
+**The Pipeline Setup (`exec_pipe`):**
+1. Receives the AST Node marked `TOKEN_PIPE`.
+2. Triggers an OS `pipe()` creating `fd[0]` and `fd[1]`.
+3. Forks Child Left: Maps `STDOUT` to `fd[1]`, closes `fd[0]`, recurses `exec_tree(node->left)`.
+4. Forks Child Right: Maps `STDIN` to `fd[0]`, closes `fd[1]`, recurses `exec_tree(node->right)`.
+5. Parent strictly waits. Captures exit code uniquely from the *Right* child to propagate back.
+
+**Logical Control (`exec_logical`):**
+1. Recurses the `node->left` subtree fully. 
+2. Evaluates the resulting exit code against the operator.
+3. If `&&` and code `0`, or `||` and code `>0`, it executes `node->right`. Otherwise, it short-circuits.
+
+---
+
+## 📜 POSIX & Shell Compliance
+> [!IMPORTANT]
+> **PATH Resolution Targeting:** Before calling `execve`, the node looks inside `$PATH`. Files inside this folder are matched. `find_path()` will reject matching targets that are physically Directories (throwing `is a directory`) or files stripped of `chmod +x` (throwing `Permission denied`).
+
+---
+
+## 🚨 Error & Signal Propagation
+| Condition | Immediate Action | Upstream Impact |
+| :--- | :--- | :--- |
+| **Child Exits via Core Dump/Signal** | `handle_wait_status()` intercepts `WTERMSIG`. | Adjusts exit status to `128 + Signal_No` natively matching bash behaviors. |
+| **Expansion Yields Zero Arguments** | Evaluator cleanly steps back (`expand.c`). | Returns `0`. Command execution silently aborts logic gracefully. |
+
+---
+
+## ⚠️ Edge Cases & Gotchas
+> [!CAUTION]
+> **Variable Assignments in Shell Context:** Assignments like `VAR=1 echo A` temporarily assign `$VAR` strictly for the lifecycle of that localized execution. `assignment.c` handles this by cloning the *entire* `state->envp` array, appending the variable, executing, and physically unwinding everything back independently.
+
+---
+
+## 🗂️ Internal Delegation
+- **`simple/`**: Drives terminal `TOKEN_WORD` targets deciding between External vs Builtins.
+- **`redirection/`**: Drives `TOKEN_RED_IN` / `TOKEN_RED_OUT` file binds.
