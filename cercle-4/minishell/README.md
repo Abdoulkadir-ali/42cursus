@@ -37,11 +37,10 @@ stateDiagram-v2
     
     state core {
         main_loop: REPL Polling
-        core --> input: Requests text
     }
     
     state input {
-        readline --> tokenizer: Yields char *line
+        readline
     }
     
     state parsing {
@@ -53,7 +52,8 @@ stateDiagram-v2
         env_expand --> ast_build
     }
     
-    input --> parsing
+    core --> input: Requests text
+    input --> parsing: Yields char *line
     parsing --> exec: Yields t_ast *root
     
     state exec {
