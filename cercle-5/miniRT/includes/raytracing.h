@@ -284,6 +284,8 @@ void	push_children(t_bvh_stack *ctx, int node_idx);
 bool	run_traverse_loop(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
 
 t_vec3	clamp_color(t_vec3 color);
+t_vec3	refract_ray(t_vec3 incident, t_vec3 normal, float n1, float n2);
+
 
 /* srcs/raytracing/trace/ */
 

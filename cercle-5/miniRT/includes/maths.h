@@ -184,7 +184,14 @@ static inline t_vec3	vec3_cross(t_vec3 a, t_vec3 b)
 		a.x * b.y - a.y * b.x, 0.0});
 }
 
+static inline t_vec3	vec3_triple_product(t_vec3 a, t_vec3 b, t_vec3 c)
+{
+	return (vec3_sub(vec3_scale(b, vec3_dot(a, c)),
+			vec3_scale(a, vec3_dot(b, c))));
+}
+
 static inline double	vec3_mag_sq(t_vec3 a)
+
 {
 	return (a.x * a.x + a.y * a.y + a.z * a.z);
 }

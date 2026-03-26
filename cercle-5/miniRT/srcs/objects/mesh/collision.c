@@ -187,12 +187,13 @@ bool	detect_sphere_mesh_collision(const struct s_sphere *s, struct s_mesh *m,
 		t_vec3 *out_normal, double *out_penetration)
 {
 	/* Optimization: Use Capsule Collider if available and enabled */
-	if (get_physics_state()->mesh_simplify_collision
+	if (MESH_SIMPLIFY
 		&& m->collider.type == COLLIDER_CAPSULE)
 	{
 		return (detect_sphere_capsule_collision(s, &m->collider, out_normal,
 				out_penetration));
 	}
+
 
 	if (!m || !m->bvh_nodes)
 		return (false);
