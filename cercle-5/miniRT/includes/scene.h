@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:06:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:07:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,14 @@
 # include <stddef.h>
 # include <stdint.h>
 
-/* 1. EXTERNAL DEPENDENCIES */
+/* 1. NEUTRAL DEPENDENCIES */
+# include "debug.h"
 # include "defines.h"
 # include "maths.h"
+
+/* 2. RISKY DEPENDENCIES */
 # include "objects.h"
-# include "physics.h"
+# include "physics_types.h"
 
 # define INIT_SPHERE_CAP 16
 # define INIT_PLANE_CAP 16
@@ -103,7 +106,7 @@ struct				s_scene
 	t_light			*lights;
 	int				light_count;
 	int				light_cap;
-	t_animation		*clips;
+
 	int				clip_count;
 	int				clip_cap;
 	struct s_bvh	*bvh;
@@ -111,8 +114,8 @@ struct				s_scene
 	int				emissive_n;
 
 	/* Physics Context (Stage 9 - No Globals) */
-	t_dbvt			dbvt;
-	t_phys_pool		pool;
+	 t_dbvt			dbvt;
+	 t_phys_pool		*pool;
 	t_static_bvh	*static_bvh;
 };
 
@@ -125,8 +128,6 @@ bool				dynarray_ensure_int_impl(void **arr, int *count_ptr,
 						int *cap_ptr, size_t elem_size);
 # define DYNARRAY_ENSURE_INT(a, b, c, d) \
 	dynarray_ensure_int_impl((void **)(a), (b), (c), (d))
-
-/* 3. FUNCTION PROTOTYPES */
 
 /* srcs/scene/ */
 t_scene				*create_scene(const char *name);

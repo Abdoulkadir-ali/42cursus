@@ -6,20 +6,29 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:38:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 14:44:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GUI_H
 # define GUI_H
 
-/* External dependencies */
+/* EXTERNAL DEPENCIES */
 # include "mlx.h"
 # include <X11/X.h>
 # include <X11/keysym.h>
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>
+
+/* NEUTRAL DEPENCIES */
+# include "debug.h"
+# include "defines.h"
+# include "maths.h"
+# include "physics_body.h"
+
+/* CHILD DEPENCIES */
+# include "scene.h"
 
 /* 2. CONSTANTS */
 # define TILE_SIZE 32
@@ -66,10 +75,6 @@
 # define MAX_INSPECT_TABS 4
 /* 2. MODULE TYPES */
 
-/* 1. EXTERNAL DEPENDENCIES */
-# include "debug.h"
-# include "defines.h"
-# include "maths.h"
 
 typedef enum e_widget_type
 {
@@ -163,8 +168,7 @@ struct					s_camera_controller
 	t_vec2i				last_mouse;
 };
 
-typedef struct s_render_ctx	t_render_ctx;
-struct					s_render_ctx
+typedef struct s_render_ctx
 {
 	t_gui				*gui;
 	int					next_tile_id;
@@ -175,7 +179,7 @@ struct					s_render_ctx
 	double				half_height;
 	double				aspect_ratio;
 	int					step;
-};
+}						t_render_ctx;
 
 /* Sub-structs for t_gui */
 struct					s_window

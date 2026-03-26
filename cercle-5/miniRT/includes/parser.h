@@ -6,22 +6,27 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:35:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 14:48:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
 
-/* External dependencies */
 /* POSIX / system */
-# include "defines.h"
-# include "objects.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <sys/stat.h>
 # include <sys/time.h>
 # include <unistd.h>
+
+/* 1. NEUTRAL DEPENDENCIES */
+# include "debug.h"
+# include "defines.h"
+# include "maths.h"
+
+/* 2. CHILD DEPENDENCIES */
+# include "scene.h"
 
 # define MAX_LEAF_OBJECTS 4
 # define PARSER_BUF_SIZE 65536

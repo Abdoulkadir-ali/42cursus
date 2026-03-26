@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:16:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:38:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 14:47:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 # include "defines.h"
 # include "maths.h"
 # include "scene.h"
-# include "surface.h"
 
 # define MAX_DEPTH 5
 # define COLOR_MAX 255.0
