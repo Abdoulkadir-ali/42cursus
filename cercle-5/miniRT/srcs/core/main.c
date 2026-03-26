@@ -6,94 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 00:23:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 05:15:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
-#include "gui.h"
-#include <locale.h>
+#include "core.h"
 
-/*
-** Cleans up all resources.
-*/
-static void	cleanup(t_scene *scene, t_gui *gui)
-{
-	if (gui)
-		gui_destroy(gui);
-	else if (scene)
-		destroy_scene(scene);
-}
-
-/*
-** Initializes the application components.
-** Loads the scene, builds the BVH, and initializes the GUI.
-*/
-static t_gui	*init_app(const char *path, t_scene **scene, void *mlx)
-{
-	t_gui	*gui;
-
-	*scene = parse_file(path, mlx);
-	if (!*scene)
-	{
-		fprintf(stderr, "Failed to load scene: %s\n", path);
-		return (NULL);
-	}
-	(*scene)->bvh = bvh_create(*scene);
-	if (!(*scene)->bvh)
-	{
-		fprintf(stderr, "Failed to create BVH\n");
-		return (NULL);
-	}
-	gui = gui_init(*scene, mlx);
-	return (gui);
-}
-
-static int	start_gui(t_gui *gui, t_scene *scene, void *mlx)
-{
-	if (!gui)
-	{
-		fprintf(stderr, "Failed to initialize GUI\n");
-		cleanup(scene, NULL);
-		return (1);
-	}
-	gui->win.mlx = mlx;
-	gui_loop(gui);
-	cleanup(scene, gui);
-	return (0);
-}
-
-static int	run_app(const char *path)
-{
-	t_scene	*scene;
-	t_gui	*gui;
-	void	*mlx;
-
-	printf("RUN_APP_START: path='%s'\n", path);
-	fflush(stdout);
-	ft_print_debug("DEBUG: Starting miniRT with map: %s\n", path);
-	mlx = mlx_init();
-	if (!mlx)
-	{
-		fprintf(stderr, "Failed to initialize MLX\n");
-		return (1);
-	}
-	scene = NULL;
-	scene = NULL;
-	gui = init_app(path, &scene, mlx);
-	return (start_gui(gui, scene, mlx));
-}
-
-/*
-** Main entry point.
-** Parses arguments, initializes the application, and runs the GUI loop.
-*/
+/**
+ * @brief Entry point for the miniRT raytracer.
+ * @param ac Argument count.
+ * @param av Argument vector.
+ * @return int Exit status.
+ */
 int	main(int ac, char **av)
 {
 	const char	*path;
 
-	printf("--- MINIRT STARTUP (VER: 2026.02.17.0503) ---\n");
-	fflush(stdout);
+	ft_putendl_fd("--- MINIRT STARTUP (v2026.03.26) ---", STDOUT_FILENO);
 	setlocale(LC_NUMERIC, "C");
 	path = "maps/rt/test2.rt";
 	if (ac > 1)

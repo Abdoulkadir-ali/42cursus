@@ -47,7 +47,7 @@ bool	map_load_entry(t_gui *gui, t_map_entry *entry)
 	gui->scene = entry->scene;
 	gui->map_info.current = entry;
 	if (newly_parsed)
-		scene_snap_take(&entry->snap, gui);
+		scene_snapshot(&entry->snap, gui);
 	return (true);
 }
 

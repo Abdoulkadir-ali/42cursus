@@ -81,6 +81,31 @@ struct s_widget
 	t_widget *next;
 };
 
+typedef struct s_crud_ui
+{
+	t_popup_step	popup;
+	t_mesh_fmt		mesh_fmt;
+	char			path_buf[512];
+	int				path_len;
+	bool			path_error;
+	bool			shift_held;
+	t_vec2i			pos;
+	int				w;
+	int				h;
+}	t_crud_ui;
+
+
+typedef struct s_render_pool
+{
+	pthread_t		threads[128];
+	sem_t			start[128];
+	sem_t			done[128];
+	struct s_render_ctx	*ctx[128];
+	int				n;
+	bool			shutdown;
+	bool			ready;
+}	t_render_pool;
+
 typedef struct s_hover_cache
 {
 	int x;
@@ -89,8 +114,6 @@ typedef struct s_hover_cache
 	bool hit;
 	long last_frame;
 }	t_hover_cache;
-
-extern t_hover_cache	g_hover;
 
 t_widget	*widget_create(t_widget_type type, t_vec2i pos, t_vec2i size,
 		const char *label);
@@ -223,16 +246,6 @@ typedef enum e_mesh_fmt
 	MESH_FMT_GLB,
 }	t_mesh_fmt;
 
-typedef struct s_crud_ui
-{
-	t_popup_step	popup;
-	t_mesh_fmt		mesh_fmt;
-	char			path_buf[512];
-	int				path_len;
-	bool			path_error;
-	bool			shift_held;
-}	t_crud_ui;
-
 struct s_gui
 {
 	t_window win;
@@ -254,6 +267,8 @@ struct s_gui
 	t_slider_state	slider_state;
 	t_map_job		map_job;
 	t_crud_ui		crud;
+	t_hover_cache	hover;
+	t_render_pool	pool;
 };
 
 typedef struct s_key_action

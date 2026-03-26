@@ -52,6 +52,20 @@ void	aabb_expand_point(t_aabb *bbox, t_vec3 p)
 }
 
 /**
+ * Expands an AABB by a uniform epsilon margin on all sides.
+ */
+void	aabb_expand_eps(t_aabb *bbox, double eps)
+{
+	bbox->min.x -= eps;
+	bbox->min.y -= eps;
+	bbox->min.z -= eps;
+	bbox->max.x += eps;
+	bbox->max.y += eps;
+	bbox->max.z += eps;
+}
+
+
+/**
  * Computes the surface area of an Axis-Aligned Bounding Box.
  */
 double	aabb_surface_area(t_aabb bbox)

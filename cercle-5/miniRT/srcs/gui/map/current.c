@@ -38,6 +38,6 @@ void	set_current_entry(t_gui *gui)
 	if (gui->map_info.current)
 	{
 		gui->map_info.current->scene = gui->scene;
-		scene_snap_take(&gui->map_info.current->snap, gui);
+		scene_snapshot(&gui->map_info.current->snap, gui);
 	}
 }

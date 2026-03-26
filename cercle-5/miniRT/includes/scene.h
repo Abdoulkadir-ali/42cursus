@@ -18,6 +18,9 @@
 # include "maths.h"
 # include "objects.h"
 
+# define SCALE_EPSILON 1e-6
+# define HALF_SCALE 0.5
+
 /* 2. MODULE TYPES */
 
 /* Compact ref used for the per-scene emissive lights cache. */
@@ -122,7 +125,7 @@ int					scene_find_material(t_scene *scene, const char *name);
 int					scene_add_named_material(t_scene *scene, const char *name);
 
 /* srcs/scene/texture_load.c */
-bool				load_texture_xpm(t_scene *scene, t_texture *tex,
+bool				load_texture(t_scene *scene, t_texture *tex,
 					const char *path);
 
 bool				scene_add_sphere(t_scene *scene, t_sphere sphere);

@@ -16,8 +16,3 @@ void	camera_move_left(t_camera *camera, double speed)
 {
 	camera_move(camera, camera->transform.right, -speed);
 }
-
-void	camera_move_right(t_camera *camera, double speed)
-{
-	camera_move(camera, camera->transform.right, speed);
-}

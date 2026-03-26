@@ -1,22 +1,94 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   traverse.c                                         :+:      :+:    :+:   */
+/*   occluded.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/26 04:10:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 03:48:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-static void	process_leaf_flat(const t_bvh *bvh, int node_idx,
-			const t_ray *ray, t_hit *hit)
+/**
+ * @brief Distributes early occlusion branching tracking stack bounds.
+ * 
+ * Checks sequential hits for shadow testing efficiently, logging order priorities naturally.
+ * Identifies and maps closer hits preferentially limiting extra search ranges effectively.
+ * 
+ * @param bvh Pointer wrapping node contexts and temporal stack array bounds.
+ * @param node_idx Intersecting target indicating hierarchical level positional values.
+ */
+static void	push_occ_children(t_occ *bvh, int node_idx)
+{
+	int		l;
+	int		r;
+	double	tl;
+	double	tr;
+
+	l = bvh->bvh->nodes[node_idx].left_or_first;
+	r = node_idx + 1;
+	tl = aabb_hit_time_or_neg1(bvh->bvh, l, bvh->ray, bvh->max_t);
+	tr = aabb_hit_time_or_neg1(bvh->bvh, r, bvh->ray, bvh->max_t);
+	if (tl >= 0.0 && tr >= 0.0 && tl <= tr)
+	{
+		bvh->stack[(*bvh->ptr)++] = r;
+		bvh->stack[(*bvh->ptr)++] = l;
+	}
+	else if (tl >= 0.0 && tr >= 0.0)
+	{
+		bvh->stack[(*bvh->ptr)++] = l;
+		bvh->stack[(*bvh->ptr)++] = r;
+	}
+	else if (tl >= 0.0)
+		bvh->stack[(*bvh->ptr)++] = l;
+	else if (tr >= 0.0)
+		bvh->stack[(*bvh->ptr)++] = r;
+}
+
+/**
+ * @brief Evaluates particular geometry mesh references restricting bounding shadow searches.
+ * 
+ * Dispatches specifically formatted animated and traditional static mesh functions
+ * seamlessly invoking occlusion tests skipping intensive normal parsing methods safely.
+ * 
+ * @param ray Immutable line trace mapping intersections internally tracked limits.
+ * @param ref Reference isolating type index formats wrapping target primitives correctly.
+ * @param bvh Main scene hierarchy packing object nodes mapping structure properties.
+ * @param max_t Outer limit validating distant obstruction ranges bounding logic checks.
+ * 
+ * @return True confirms physical geometry occlusion existing securely within bounds.
+ */
+static bool	check_ref_occluded(const t_ray *ray, const t_bvh_ref *ref,
+		const t_bvh *bvh, double max_t)
+{
+	if (ref->type == TYPE_MESH)
+		return (mesh_occluded(ray, &bvh->scene->meshes[ref->index], max_t));
+	if (ref->type == TYPE_ANIM)
+		return (mesh_occluded(ray, &bvh->scene->animated[ref->index].base,
+				max_t));
+	return (occlude_object(ray, bvh->scene, *ref, max_t));
+}
+
+/**
+ * @brief Parses enclosed spatial bounds grouping objects testing generic occlusion checks.
+ * 
+ * Validates array chunks progressively scanning references looping across leaf elements naturally.
+ * Overrides remaining elements gracefully early aborting once unpassable obstruction reveals completely.
+ * 
+ * @param bvh Global reference enclosing active environmental array indices parsing boundaries.
+ * @param node_idx Initial array parameter finding mapping coordinates bounding boxes reliably.
+ * @param ray Positional path tracing line intersections finding geometry obstructions linearly.
+ * @param max_t Cap boundary specifying limitation tracking tests dropping elements aggressively.
+ * 
+ * @return Boolean returning true successfully indicating hit occurrences.
+ */
+static bool	process_leaf_occluded(const t_bvh *bvh, int node_idx,
+		const t_ray *ray, double max_t)
 {
 	const t_bvh_node	*node;
-	t_hit				temp;
 	int					i;
 	int					end;
 
@@ -25,116 +97,67 @@ static void	process_leaf_flat(const t_bvh *bvh, int node_idx,
 	end = i + node->count;
 	while (i < end)
 	{
-		temp.t = MAX_VALUE;
-		temp.ref.type = TYPE_NONE;
-		if (intersect_object(ray, bvh->scene, bvh->refs[i], &temp)
-			&& temp.t < hit->t)
-			*hit = temp;
+		if (check_ref_occluded(ray, &bvh->refs[i], bvh, max_t))
+			return (true);
 		i++;
 	}
+	return (false);
 }
 
-/*
-** Traverse with (node, tmin) pairs in parallel stacks so each AABB is
-** tested exactly once — no re-test when a child is popped.
-** Pushing far child first keeps near child on top (LIFO near-first order).
-*/
-static bool	traverse_bvh(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
+/**
+ * @brief Analyzes hierarchical logic dispatching leaf operations testing block properties globally.
+ * 
+ * Consumes stack records linearly verifying node counts. Successfully isolates bounds allocating tests optimally.
+ * 
+ * @param occ Wrapping structure handling array tracking bounds managing local memory variables dynamically.
+ * 
+ * @return Successful logic yields true restricting traversal steps confirming intersections appropriately.
+ */
+static bool	handle_node_occ(t_occ *occ)
 {
-	int					stack[128];
-	double				stack_tmin[128];
-	int					ptr;
 	int					i;
 	const t_bvh_node	*node;
-	double				tmin;
-	double				tmax;
-	int					left;
-	int					right;
-	double				tl;
-	double				tl_max;
-	double				tr;
-	double				tr_max;
-	bool				hit_l;
-	bool				hit_r;
 
-	/* Test root once before entering the loop. */
-	tmin = 0.0;
-	tmax = MAX_VALUE;
-	if (!aabb_intersect_fast(&bvh->nodes[0].bbox, ray, &tmin, &tmax))
-		return (false);
-	if (tmin < 0.0)
-		tmin = 0.0;
-	if (tmin > hit->t)
-		return (false);
-	ptr = 0;
-	stack[ptr] = 0;
-	stack_tmin[ptr] = tmin;
-	ptr++;
-	while (ptr > 0)
+	i = occ->stack[--(*occ->ptr)];
+	node = &occ->bvh->nodes[i];
+	if (node->count > 0)
+		return (process_leaf_occluded(occ->bvh, i, occ->ray, occ->max_t));
+	if (*occ->ptr < 126)
 	{
-		ptr--;
-		i = stack[ptr];
-		tmin = stack_tmin[ptr];
-		/* Prune: a closer hit was found since this node was pushed. */
-		if (tmin > hit->t)
-			continue ;
-		node = &bvh->nodes[i];
-		if (node->count > 0)
-			process_leaf_flat(bvh, i, ray, hit);
-		else if (ptr < 124)
-		{
-			left = node->left_or_first;
-			right = i + 1;
-			tl = 0.0;
-			tr = 0.0;
-			hit_l = aabb_intersect_fast(&bvh->nodes[left].bbox,
-					ray, &tl, &tl_max);
-			hit_r = aabb_intersect_fast(&bvh->nodes[right].bbox,
-					ray, &tr, &tr_max);
-			if (tl < 0.0)
-				tl = 0.0;
-			if (tr < 0.0)
-				tr = 0.0;
-			if (hit_l && tl > hit->t)
-				hit_l = false;
-			if (hit_r && tr > hit->t)
-				hit_r = false;
-			/* Push far child first so near child is on top (last-in = first-out). */
-			if (hit_l && hit_r)
-			{
-				if (tl <= tr)
-				{
-					stack[ptr] = right; stack_tmin[ptr] = tr; ptr++;
-					stack[ptr] = left;  stack_tmin[ptr] = tl; ptr++;
-				}
-				else
-				{
-					stack[ptr] = left;  stack_tmin[ptr] = tl; ptr++;
-					stack[ptr] = right; stack_tmin[ptr] = tr; ptr++;
-				}
-			}
-			else if (hit_l)
-			{
-				stack[ptr] = left;
-				stack_tmin[ptr] = tl;
-				ptr++;
-			}
-			else if (hit_r)
-			{
-				stack[ptr] = right;
-				stack_tmin[ptr] = tr;
-				ptr++;
-			}
-		}
+		push_occ_children(occ, i);
 	}
-	return (hit->ref.type != TYPE_NONE);
+	return (false);
 }
 
-bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
+/**
+ * @brief Topmost continuous mechanism orchestrating occlusion loops traversing unrolled tree buffers intuitively.
+ * 
+ * Integrates array variables simulating hierarchical iteration recursively maintaining compact local registers safely.
+ * Operates explicitly resolving shadow rays skipping standard memory records mapping optimal times cleanly.
+ * 
+ * @param bvh Object carrying virtual boundary structure arrays testing global elements intuitively.
+ * @param ray Constant variable guiding paths checking geometric components returning precise limits securely.
+ * @param max_t Capping limits bounding testing logic appropriately handling unrolled steps effectively.
+ * 
+ * @return Conclusive true validates explicit obstructions resolving checks confirming geometries reliably.
+ */
+bool	bvh_traverse_loop(const t_bvh *bvh, const t_ray *ray, double max_t)
 {
-	if (!bvh || bvh->num_nodes == 0)
-		return (false);
-	hit->t = MAX_VALUE;
-	hit->ref.type = TYPE_NONE;
-	return (traverse_bvh(bvh, ray, hit));
+	int			stack[128];
+	int			ptr;
+	t_occ	occ;
+
+	occ.stack = stack;
+	occ.ptr = &ptr;
+	occ.bvh = bvh;
+	occ.ray = ray;
+	occ.max_t = max_t;
+	ptr = 0;
+	stack[ptr++] = 0;
+	while (ptr > 0)
+	{
+		if (handle_node_occ(&occ))
+			return (true);
+	}
+	return (false);
 }

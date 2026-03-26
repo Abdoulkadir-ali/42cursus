@@ -133,7 +133,7 @@ static void	poll_map_job(t_gui *gui)
 		return ;
 	gui->map_info.current = job->entry;
 	gui->scene = job->entry->scene;
-	scene_snap_take(&job->entry->snap, gui);
+	scene_snapshot(&job->entry->snap, gui);
 	gui->cam_ctrl.camera = &gui->scene->camera;
 	reset_camera_view(gui);
 	clear_selection(gui);

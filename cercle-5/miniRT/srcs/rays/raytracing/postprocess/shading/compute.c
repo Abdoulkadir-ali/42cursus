@@ -12,11 +12,11 @@
 
 #include "raytracing.h"
 
-#define MAX_DEPTH 5
-
-static void	setup_shading(t_shading_ctx *ctx, t_hit *hit, t_scene *scene,
+static void	setup_shading(t_shading *ctx, t_hit *hit, t_scene *scene,
 		const t_bvh *bvh)
 {
+	float	r;
+
 	ctx->hit = hit;
 	ctx->scene = scene;
 	ctx->bvh = bvh;
@@ -24,105 +24,101 @@ static void	setup_shading(t_shading_ctx *ctx, t_hit *hit, t_scene *scene,
 	ctx->albedo = sample_texture(&ctx->mat.albedo_map, hit->u, hit->v);
 	if (ctx->mat.roughness_map.type == TEX_BITMAP)
 		ctx->mat.roughness = sample_texture(&ctx->mat.roughness_map,
-				hit->u, hit->v).x / 255.0;
+				hit->u, hit->v).x / COLOR_MAX;
 	if (ctx->mat.metallic_map.type == TEX_BITMAP)
 		ctx->mat.metallic = sample_texture(&ctx->mat.metallic_map,
-				hit->u, hit->v).x / 255.0;
-	/* Map PBR fields into Blinn-Phong parameters used by calc_light */
-	{
-		float	r;
-		r = 1.0f - (float)ctx->mat.roughness;
-		ctx->mat.shininess = (double)(r * r * r * r) * 200.0 + 2.0;
-	}
-	ctx->mat.specular  = ctx->mat.specular * (1.0 - ctx->mat.metallic * 0.5)
-		+ ctx->mat.metallic * 0.9;
+				hit->u, hit->v).x / COLOR_MAX;
+	r = 1.0f - (float)ctx->mat.roughness;
+	ctx->mat.shininess = (double)(r * r * r * r) * SHININESS_SCALE
+		+ SHININESS_OFFSET;
+	ctx->mat.specular = ctx->mat.specular * (1.0 - ctx->mat.metallic
+			* METALLIC_REDUCT) + ctx->mat.metallic * METALLIC_BOOST;
 	apply_bump(ctx);
 }
 
-static t_vec3	compute_refraction(t_shading_ctx *ctx, const t_ray *ray,
+static t_vec3	compute_refraction(t_shading *ctx, const t_ray *ray,
 		double *kr, double next_w)
 {
-	t_vec3	refracted_dir;
-	t_ray	refracted_ray;
-	t_vec3	refracted_color;
-
-	/* refract_index stores degrees (0-180); convert to IOR ratio (1.0-3.0) */
+	t_vec3	ref_dir;
+	t_ray	ref_ray;
 	double	ior;
 
-	ior = 1.0 + (ctx->mat.refract_index / 180.0) * 2.0;
-	refracted_dir = vec3_refract(ray->direction, ctx->hit->normal, ior);
-	if (vec3_mag_sq(refracted_dir) < 1e-6)
+	ior = 1.0 + (ctx->mat.refract_index / REFRACT_MAX_DEG) * REFRACT_IOR_SCALE;
+	ref_dir = vec3_refract(ray->direction, ctx->hit->normal, ior);
+	if (vec3_mag_sq(ref_dir) < MAG_EPSILON)
 	{
 		*kr = 1.0;
 		return (vec3(0, 0, 0));
 	}
-	ray_init(&refracted_ray, ctx->hit->point, refracted_dir);
-	refracted_ray.depth = ray->depth + 1;
-	refracted_ray.weight = next_w;
-	refracted_ray.origin = vec3_sub(ctx->hit->point,
-			vec3_scale(ctx->hit->normal, 1e-4));
-	if (vec3_dot(refracted_dir, ctx->hit->normal) > 0)
-		refracted_ray.origin = vec3_add(ctx->hit->point,
-				vec3_scale(ctx->hit->normal, 1e-4));
-	refracted_color = trace_ray(ctx->bvh, &refracted_ray, ctx->scene);
-	return (refracted_color);
+	ray_init(&ref_ray, ctx->hit->point, ref_dir);
+	ref_ray.depth = ray->depth + 1;
+	ref_ray.weight = next_w;
+	if (vec3_dot(ref_dir, ctx->hit->normal) > 0)
+		ref_ray.origin = vec3_add(ctx->hit->point,
+				vec3_scale(ctx->hit->normal, SHADOW_BIAS));
+	else
+		ref_ray.origin = vec3_sub(ctx->hit->point,
+				vec3_scale(ctx->hit->normal, SHADOW_BIAS));
+	return (trace_ray(ctx->bvh, &ref_ray, ctx->scene));
 }
 
-static t_vec3	compute_reflection(t_shading_ctx *ctx, const t_ray *ray, double next_w)
+static t_vec3	compute_reflection(t_shading *ctx, const t_ray *ray, double nw)
 {
-	t_vec3	reflected_dir;
-	t_ray	reflected_ray;
-	t_vec3	offset_normal;
+	t_vec3	ref_dir;
+	t_ray	ref_ray;
+	t_vec3	n;
 
-	reflected_dir = vec3_reflect(ray->direction, ctx->hit->normal);
-	offset_normal = ctx->hit->normal;
+	ref_dir = vec3_reflect(ray->direction, ctx->hit->normal);
+	n = ctx->hit->normal;
 	if (vec3_dot(ray->direction, ctx->hit->normal) > 0.0)
-		offset_normal = vec3_scale(ctx->hit->normal, -1.0);
-	ray_init(&reflected_ray, vec3_add(ctx->hit->point,
-			vec3_scale(offset_normal, 1e-4)), reflected_dir);
-	reflected_ray.depth = ray->depth + 1;
-	reflected_ray.weight = next_w;
-	return (trace_ray(ctx->bvh, &reflected_ray, ctx->scene));
+		n = vec3_scale(ctx->hit->normal, -1.0);
+	ray_init(&ref_ray, vec3_add(ctx->hit->point, vec3_scale(n, SHADOW_BIAS)),
+		ref_dir);
+	ref_ray.depth = ray->depth + 1;
+	ref_ray.weight = nw;
+	return (trace_ray(ctx->bvh, &ref_ray, ctx->scene));
 }
 
-t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
-		const t_ray *ray)
+static void	apply_bounces(t_shading *ctx, t_vec3 *tot, double kr)
 {
-	t_shading_ctx	ctx;
-	t_vec3			total;
-	double			kr;
-	int				i;
+	double	nw;
 
-	ctx.ray = ray;
-	setup_shading(&ctx, hit, scene, bvh);
-	total = pixel_color(ctx.albedo, scene->ambient.rgb,
-			scene->ambient.brightness);
-	i = 0;
-	if (ray->depth < 2)
+	if (ctx->mat.transparency > 0.0)
 	{
-		while (i < scene->light_count)
-			total = vec3_add(total, calc_light(&ctx, scene->lights[i++]));
-	}
-	if (ray->depth == 0)
-		add_emissive_lighting(&ctx, scene, &total);
-	total = vec3_add(total, ctx.mat.emission);
-	if (ray->depth >= MAX_DEPTH)
-		return (clamp_color(total));
-	kr = ctx.mat.reflectivity;
-	if (ctx.mat.transparency > 0.0)
-	{
-		double next_w = ray->weight * ctx.mat.transparency;
-		if (next_w > 0.02)
-			total = vec3_add(vec3_scale(total, 1.0 - ctx.mat.transparency),
-				vec3_scale(compute_refraction(&ctx, ray, &kr, next_w),
-					ctx.mat.transparency));
+		nw = ctx->ray->weight * ctx->mat.transparency;
+		if (nw > WEIGHT_MIN)
+			*tot = vec3_add(vec3_scale(*tot, 1.0 - ctx->mat.transparency),
+					vec3_scale(compute_refraction(ctx, ctx->ray, &kr, nw),
+						ctx->mat.transparency));
 	}
 	if (kr > 0.0)
 	{
-		double next_w = ray->weight * kr;
-		if (next_w > 0.02)
-			total = vec3_add(vec3_scale(total, 1.0 - kr),
-				vec3_scale(compute_reflection(&ctx, ray, next_w), kr));
+		nw = ctx->ray->weight * kr;
+		if (nw > WEIGHT_MIN)
+			*tot = vec3_add(vec3_scale(*tot, 1.0 - kr),
+					vec3_scale(compute_reflection(ctx, ctx->ray, nw), kr));
 	}
+}
+
+t_vec3	compute_color(t_hit *hit, t_scene *sc, const t_bvh *bvh,
+		const t_ray *r)
+{
+	t_shading	ctx;
+	t_vec3		total;
+	int			i;
+
+	ctx.ray = r;
+	setup_shading(&ctx, hit, sc, bvh);
+	total = pixel_color(ctx.albedo, sc->ambient.rgb, sc->ambient.brightness);
+	i = -1;
+	if (r->depth < 2)
+		while (++i < sc->light_count)
+			total = vec3_add(total, calc_light(&ctx, sc->lights[i]));
+	if (r->depth == 0)
+		add_emissive_lighting(&ctx, sc, &total);
+	total = vec3_add(total, ctx.mat.emission);
+	if (r->depth >= MAX_DEPTH)
+		return (clamp_color(total));
+	apply_bounces(&ctx, &total, ctx.mat.reflectivity);
 	return (clamp_color(total));
 }

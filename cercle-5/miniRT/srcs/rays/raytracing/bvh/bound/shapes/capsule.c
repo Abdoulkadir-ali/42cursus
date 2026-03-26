@@ -1,5 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   capsule.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/25 16:48:15 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/25 16:48:16 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "raytracing.h"
-#include "objects.h"
 
 t_aabb	capsule_aabb(t_capsule *cap)
 {
@@ -14,11 +25,7 @@ t_aabb	capsule_aabb(t_capsule *cap)
 	aabb = aabb_create_empty();
 	aabb_expand_point(&aabb, p0);
 	aabb_expand_point(&aabb, p1);
-	aabb.min.x -= cap->radius;
-	aabb.min.y -= cap->radius;
-	aabb.min.z -= cap->radius;
-	aabb.max.x += cap->radius;
-	aabb.max.y += cap->radius;
-	aabb.max.z += cap->radius;
+	aabb_expand_eps(&aabb, cap->radius);
 	return (aabb);
 }
+

@@ -1,7 +1,16 @@
-#include "raytracing.h"
-#include "objects.h"
-#include <math.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   intersect.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/25 16:48:15 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/25 16:48:16 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "raytracing.h"
 /*
 ** Precompute and cache the 5 pyramid vertices into py->c[] and py->apex.
 ** Called once at BVH build time (before any render threads start), so the

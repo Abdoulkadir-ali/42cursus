@@ -522,7 +522,7 @@ typedef struct s_occ_ctx
 	int					top;
 	int					node_idx;
 	double				dist;
-}						t_occ_ctx;
+}						t_occ;
 
 typedef struct s_leaf_ctx
 {
@@ -898,9 +898,9 @@ bool					leaf_occluded(t_mesh *mesh, t_mbvh_node *node,
 void					test_occ_children(t_mesh *mesh, int node_idx,
 							const t_ray *ray, t_occ_child *c);
 int						pick_occ_children(t_mesh *mesh, int node_idx,
-							const t_ray *ray, t_occ_ctx *ctx);
+							const t_ray *ray, t_occ *ctx);
 int						process_occ_node(t_mesh *mesh, int node_idx,
-							const t_ray *ray, t_occ_ctx *ctx);
+							const t_ray *ray, t_occ *ctx);
 bool					traverse_occlude(t_mesh *mesh, const t_ray *ray,
 							double dist);
 void					update_mesh_hit(t_mesh_hit_ctx *ctx);

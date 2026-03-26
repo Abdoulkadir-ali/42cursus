@@ -31,6 +31,7 @@
 # include <sys/time.h>
 # include <unistd.h>
 # include <zlib.h>
+#include <locale.h>
 
 /* package */
 # include "libft.h"
@@ -141,5 +142,11 @@ typedef struct s_mesh_build_item	t_mesh_build_item;
 typedef struct s_parser				t_parser;
 typedef struct s_obj_ctx			t_obj_ctx;
 typedef struct s_parse_obj			t_parse_obj;
+
+/* 3. FUNCTION PROTOTYPES */
+int		run_app(const char *path);
+t_gui	*init_app(const char *path, t_scene **scene, void *mlx);
+int		start_app(t_gui *gui, t_scene *scene, void *mlx);
+void	core_cleanup(t_scene *scene, t_gui *gui);
 
 #endif

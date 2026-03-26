@@ -12,22 +12,7 @@
 
 #include "gui.h"
 
-/*
-** Rotates the camera yaw (horizontal rotation).
-*/
-void	camera_rotate_yaw(t_gui *gui, double delta_yaw)
-{
-	gui->cam_ctrl.target_rot.yaw += delta_yaw;
-	while (gui->cam_ctrl.target_rot.yaw > M_PI)
-		gui->cam_ctrl.target_rot.yaw -= 2 * M_PI;
-	while (gui->cam_ctrl.target_rot.yaw < -M_PI)
-		gui->cam_ctrl.target_rot.yaw += 2 * M_PI;
-}
-
-/*
-** Rotates the camera pitch (vertical rotation).
-** Clamps pitch to avoid gimbal lock/flipping.
-*/
+/* Clamps pitch to avoid gimbal lock/flipping. */
 void	camera_rotate_pitch(t_gui *gui, double delta_pitch)
 {
 	gui->cam_ctrl.target_rot.pitch += delta_pitch;
@@ -35,4 +20,14 @@ void	camera_rotate_pitch(t_gui *gui, double delta_pitch)
 		gui->cam_ctrl.target_rot.pitch = M_PI / 2;
 	if (gui->cam_ctrl.target_rot.pitch < -M_PI / 2)
 		gui->cam_ctrl.target_rot.pitch = -M_PI / 2;
+}
+
+/* Rotates the camera yaw (horizontal rotation). */
+void	camera_rotate_yaw(t_gui *gui, double delta_yaw)
+{
+	gui->cam_ctrl.target_rot.yaw += delta_yaw;
+	while (gui->cam_ctrl.target_rot.yaw > M_PI)
+		gui->cam_ctrl.target_rot.yaw -= 2 * M_PI;
+	while (gui->cam_ctrl.target_rot.yaw < -M_PI)
+		gui->cam_ctrl.target_rot.yaw += 2 * M_PI;
 }
