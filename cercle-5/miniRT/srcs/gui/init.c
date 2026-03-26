@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 /**
  * @brief Performs graceful cleanup of GUI and Scene resources.
@@ -27,49 +27,50 @@ static void	cleanup_app(t_scene *scene, t_gui *gui)
 
 /**
  * @brief Loads the scene, computes the BVH, and initializes GUI data.
- * @param path Path to the .rt scene file.
+ * @param gui Pointer to the stack-allocated GUI structure.
  * @param scene Output pointer for the loaded scene.
+ * @param path Path to the .rt scene file.
  * @param mlx Pointer to the MLX instance.
- * @return t_gui* Pointer to the initialized GUI, or NULL on failure.
+ * @return bool True on success, false on failure.
  */
-static t_gui	*init_app(const char *path, t_scene **scene, void *mlx)
+static bool	init_app(t_gui *gui, t_scene **scene, const char *path, void *mlx)
 {
-	t_gui	*gui;
-
 	*scene = parse_file(path, mlx);
 	if (!*scene)
 	{
 		ft_putstr_fd("Error: Failed to load scene: ", STDERR_FILENO);
 		ft_putendl_fd((char *)path, STDERR_FILENO);
-		return (NULL);
+		return (false);
 	}
 	(*scene)->bvh = bvh_create(*scene);
 	if (!(*scene)->bvh)
 	{
 		ft_putendl_fd("Error: Failed to create BVH", STDERR_FILENO);
-		return (NULL);
+		return (false);
 	}
-	gui = gui_init(*scene, mlx);
-	return (gui);
+	return (gui_init(gui, *scene, mlx));
 }
 
 /**
  * @brief Starts the GUI engine and blocks until completion.
- * @param gui Pointer to the initialized GUI.
- * @param scene Pointer to the scene.
  * @param mlx Pointer to the MLX instance.
+ * @param path Path to the .rt scene file.
  * @return int Exit status (0 for success, 1 for failure).
  */
-int	start_app(t_gui *gui, t_scene *scene, void *mlx)
+int	start_app(void *mlx, const char *path)
 {
-	if (!gui)
+	t_gui	gui;
+	t_scene	*scene;
+
+	scene = NULL;
+	if (!init_app(&gui, &scene, path, mlx))
 	{
 		ft_putendl_fd("Error: Failed to initialize GUI", STDERR_FILENO);
-		cleanup_app(scene, NULL);
+		cleanup_app(scene, &gui);
 		return (1);
 	}
-	gui->win.mlx = mlx;
-	gui_loop(gui);
-	cleanup_app(scene, gui);
+	gui.win.mlx = mlx;
+	gui_loop(&gui);
+	cleanup_app(scene, &gui);
 	return (0);
 }

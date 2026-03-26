@@ -12,7 +12,7 @@
 
 #include "raytracing.h"
 
-t_aabb	tri_shape_aabb(t_tri_shape *tr)
+t_aabb	tri_aabb(t_tri_shape *tr)
 {
 	t_aabb	bbox;
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static t_key_action *get_keymap(void)
 {
@@ -44,12 +44,12 @@ static t_key_action *get_keymap(void)
 static bool	handle_special_key(int keycode, t_gui *gui)
 {
     if (keycode == XK_Shift_L || keycode == XK_Shift_R)
-        gui->crud.shift_held = true;
+        gui->crud->shift_held = true;
     if (popup_handle_key(gui, keycode))
         return (true);
-    if (keycode == XK_Escape && gui->crud.popup != POPUP_NONE)
+    if (keycode == XK_Escape && gui->crud->popup != POPUP_NONE)
     {
-        gui->crud.popup = POPUP_NONE;
+        gui->crud->popup = POPUP_NONE;
         gui->render.dirty = true;
         return (true);
     }

@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	slider_end_drag(t_gui *gui)
 {
-    gui->slider_state.dragging = false;
-    gui->slider_state.target = NULL;
+    gui->slider_state->dragging = false;
+    gui->slider_state->target = NULL;
 }

@@ -106,7 +106,7 @@ static void	parse_glb_material(t_scene *scene, t_json_value *json, char *bin,
 	else
 	{
 		color = json_get(pbr, "baseColorFactor");
-		if (color && color->type == JSON_ARRAY && color->u.array.count >= 3)
+		if (color && color->type == JSON_ARRAY && color->array.count >= 3)
 		{
 			albedo.x = json_as_number(json_at(color, 0)) * 255.0;
 			albedo.y = json_as_number(json_at(color, 1)) * 255.0;
@@ -192,7 +192,7 @@ int	*glb_load_materials(t_scene *scene, t_json_value *json, char *bin)
 	glb_log("GLB: No 'materials' array found in JSON root\n");
 		return (NULL);
 	}
-	count = (int)materials->u.array.count;
+	count = (int)materials->array.count;
 	glb_log("GLB: Found %d potential materials to process\n", count);
 	ids = malloc(sizeof(int) * count);
 	if (!ids)

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static void	init_rect(t_rect *rc, t_vec3 pos)
 {
@@ -39,8 +39,6 @@ void	editor_add_rect(t_gui *gui)
 {
 	t_rect	rc;
 	t_vec3	pos;
-	t_vec3	right;
-	t_vec3	up;
 
 	if (!gui->scene)
 		return ;

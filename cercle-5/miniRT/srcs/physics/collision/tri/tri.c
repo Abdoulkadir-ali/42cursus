@@ -6,20 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:08:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 13:32:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 int	query_tri(t_scene *s, int idx, t_contact *c, int count, int max)
 {
-	t_tri_shape	*tr = &s->tris[idx];
+	t_tri_shape	*tr;
 	t_aabb		ta;
 	int			p;
 
-	if (tr->phys.is_static) return (count);
-	ta = tri_shape_aabb(tr);
+	tr = &s->tris[idx];
+	if (tr->phys.is_static)
+		return (count);
+	ta = tri_aabb(tr);
 	p = 0;
 	while (p < s->plane_count && count < max)
 	{

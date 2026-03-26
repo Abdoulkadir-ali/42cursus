@@ -42,7 +42,7 @@ static size_t	add_extra_to_list(t_scene *sc, t_build_item *it, int n)
 	i = -1;
 	while (++i < sc->tri_count)
 		it[n++] = (t_build_item){(t_bvh_ref){TYPE_TRI, i},
-			tri_shape_aabb(&sc->tris[i]), sc->tris[i].transform.pos};
+			tri_aabb(&sc->tris[i]), sc->tris[i].transform.pos};
 	i = -1;
 	while (++i < sc->rect_count)
 		it[n++] = (t_build_item){(t_bvh_ref){TYPE_RECT, i},

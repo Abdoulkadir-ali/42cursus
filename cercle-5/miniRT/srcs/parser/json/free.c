@@ -17,13 +17,13 @@ static void	json_free_array(t_json_value *val)
 	size_t	i;
 
 	i = 0;
-	while (i < val->u.array.count)
+	while (i < val->array.count)
 	{
-		json_free(val->u.array.elements[i]);
+		json_free(val->array.elements[i]);
 		i++;
 	}
-	if (val->u.array.elements)
-		free(val->u.array.elements);
+	if (val->array.elements)
+		free(val->array.elements);
 }
 
 static void	json_free_object(t_json_value *val)
@@ -33,11 +33,11 @@ static void	json_free_object(t_json_value *val)
 	t_json_hash_entry	*next;
 
 	i = 0;
-	if (val->u.object.hashmap)
+	if (val->object.hashmap)
 	{
-		while (i < val->u.object.hash_size)
+		while (i < val->object.hash_size)
 		{
-			entry = val->u.object.hashmap[i++];
+			entry = val->object.hashmap[i++];
 			while (entry)
 			{
 				next = entry->next;
@@ -47,7 +47,7 @@ static void	json_free_object(t_json_value *val)
 				entry = next;
 			}
 		}
-		free(val->u.object.hashmap);
+		free(val->object.hashmap);
 	}
 }
 
@@ -56,7 +56,7 @@ void	json_free(t_json_value *val)
 	if (!val)
 		return ;
 	if (val->type == JSON_STRING)
-		free(val->u.string);
+		free(val->string);
 	else if (val->type == JSON_ARRAY)
 		json_free_array(val);
 	else if (val->type == JSON_OBJECT)

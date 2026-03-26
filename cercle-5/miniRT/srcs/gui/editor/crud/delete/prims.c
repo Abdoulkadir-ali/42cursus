@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	delete_sel_prims(t_scene *sc, t_selection *sel)
 {

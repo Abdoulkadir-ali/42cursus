@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /*
 ** Frees every map cache entry: its snap buffers, its scene (including BVH),
 ** and the path string.  Called from gui_destroy so all scene ownership is
@@ -25,7 +25,11 @@ void	map_manager_destroy(t_gui *gui)
 	while (entry)
 	{
 		next = entry->next;
-		scene_snap_free(&entry->snap);
+		if (entry->snap)
+		{
+			scene_snap_free(entry->snap);
+			free(entry->snap);
+		}
 		if (entry->scene)
 			destroy_scene(entry->scene);
 		free(entry->path);

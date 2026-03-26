@@ -12,7 +12,7 @@
 
 #include "surface.h"
 
-t_material	*create_material(t_material_params params)
+t_material	*create_material(t_material_args params)
 {
 	t_material	*mat;
 

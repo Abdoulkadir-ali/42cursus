@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 extern void	*pool_worker(void *arg);
 

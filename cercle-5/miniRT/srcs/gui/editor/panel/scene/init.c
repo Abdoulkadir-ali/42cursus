@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 /**
  * @brief Zeroes and sets default configurations for the Editor UI.
@@ -18,14 +18,14 @@
  */
 void	editor_init(t_gui *gui)
 {
-	gui->scene_panel.visible = true;
-	gui->scene_panel.width = SCENE_PANEL_W;
-	gui->scene_panel.scroll = 0;
-	gui->scene_panel.hovered_row = -1;
-	gui->inspector.visible = false;
-	gui->inspector.width = INSPECTOR_W;
-	gui->inspector.tab = TAB_TRANSFORM;
-	gui->selection.active = false;
-	gui->selection.type = TYPE_NONE;
-	gui->selection.index = -1;
+	gui->scene_panel->visible = true;
+	gui->scene_panel->width = SCENE_PANEL_W;
+	gui->scene_panel->scroll = 0;
+	gui->scene_panel->hovered_row = -1;
+	gui->inspector->visible = false;
+	gui->inspector->width = INSPECTOR_W;
+	gui->inspector->tab = TAB_TRANSFORM;
+	gui->selection->active = false;
+	gui->selection->type = TYPE_NONE;
+	gui->selection->index = -1;
 }

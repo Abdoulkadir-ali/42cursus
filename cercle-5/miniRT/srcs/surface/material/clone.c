@@ -22,7 +22,7 @@
 int	scene_clone_material(t_scene *sc, int src_id)
 {
 	if (src_id < 0 || src_id >= sc->mat_count)
-		return (scene_add_fresh_material(sc, (t_vec3){255.0, 255.0, 255.0}));
+		return (scene_add_fresh_material(sc, (t_vec3){255.0, 255.0, 255.0, 0.0}));
 	if (!DYNARRAY_ENSURE_INT(&sc->materials, &sc->mat_count,
 			&sc->mat_cap, sizeof(t_material)))
 		return (-1);

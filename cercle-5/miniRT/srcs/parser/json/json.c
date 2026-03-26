@@ -25,10 +25,10 @@ t_json_value	*json_get(t_json_value *val, const char *key)
 	size_t				idx;
 	t_json_hash_entry	*entry;
 
-	if (!val || val->type != JSON_OBJECT || !val->u.object.hashmap)
+	if (!val || val->type != JSON_OBJECT || !val->object.hashmap)
 		return (NULL);
-	idx = json_hash_key(key, val->u.object.hash_size);
-	entry = val->u.object.hashmap[idx];
+	idx = json_hash_key(key, val->object.hash_size);
+	entry = val->object.hashmap[idx];
 	while (entry)
 	{
 		if (ft_strcmp(entry->key, key) == 0)
@@ -40,9 +40,9 @@ t_json_value	*json_get(t_json_value *val, const char *key)
 
 t_json_value	*json_at(t_json_value *val, size_t index)
 {
-	if (!val || val->type != JSON_ARRAY || index >= val->u.array.count)
+	if (!val || val->type != JSON_ARRAY || index >= val->array.count)
 		return (NULL);
-	return (val->u.array.elements[index]);
+	return (val->array.elements[index]);
 }
 
 int	json_get_int(t_json_value *obj, const char *key)
@@ -52,5 +52,5 @@ int	json_get_int(t_json_value *obj, const char *key)
 	val = json_get(obj, key);
 	if (!val || val->type != JSON_NUMBER)
 		return (-1);
-	return ((int)val->u.number);
+	return ((int)val->number);
 }

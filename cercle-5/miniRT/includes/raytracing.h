@@ -23,7 +23,7 @@
 # include "debug.h"
 # include "defines.h"
 # include "maths.h"
-# include "objects.h"
+# include "scene.h"
 # include "surface.h"
 
 # define MAX_DEPTH 5
@@ -127,16 +127,16 @@ struct						s_split_info
 	double					cost;
 };
 
-typedef struct s_check_params
+typedef struct s_check_args
 {
 	const t_ray				*ray;
 	t_cylinder				*cy;
 	double					t;
 	double					*tm;
 	t_hit					*hit;
-}							t_check_params;
+}							t_check_args;
 
-typedef struct s_cap_params
+typedef struct s_cap_args
 {
 	const t_ray				*ray;
 	t_cylinder				*cy;
@@ -144,7 +144,7 @@ typedef struct s_cap_params
 	t_hit					*hit;
 	t_vec3					center;
 	double					normal_sign;
-}							t_cap_params;
+}							t_cap_args;
 
 typedef struct s_box_ctx
 {
@@ -195,7 +195,7 @@ struct						s_occ
 	double					max_t;
 };
 
-struct						s_push_vars
+struct						s_push
 {
 	int						left;
 	int						right;
@@ -267,14 +267,7 @@ void						aabb_expand_eps(t_aabb *bbox, double eps);
 double						aabb_surface_area(t_aabb bbox);
 bool						aabb_intersect_fast(const t_aabb *aabb,
 								const t_ray *ray, double *tmin, double *tmax);
-t_aabb						sphere_aabb(t_sphere *sp);
-t_aabb						tri_shape_aabb(t_tri_shape *tr);
-t_aabb						rect_aabb(t_rect *rc);
-t_aabb						pyramid_aabb(t_pyramid *py);
-t_aabb						box_aabb(t_box *bx);
-t_aabb						capsule_aabb(t_capsule *cap);
 t_aabb						plane_aabb(t_plane *pl);
-t_aabb						cylinder_aabb(t_cylinder *cy);
 t_aabb						cone_aabb(t_cone *co);
 
 /* srcs/raytracing/bvh/traverse/ */

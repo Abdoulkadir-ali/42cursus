@@ -6,16 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:08:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 13:33:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 int	query_box(t_scene *s, int idx, t_contact *c, int count, int max)
 {
-	t_box *bx = &s->boxes[idx]; t_aabb ba; int p = 0;
-	if (bx->phys.is_static) return (count);
+	t_box	*bx;
+	t_aabb	ba;
+	int		p;
+
+	bx = &s->boxes[idx];
+	p = 0;
+	if (bx->phys.is_static)
+		return (count);
 	ba = box_aabb(bx);
 	while (p < s->plane_count && count < max)
 	{

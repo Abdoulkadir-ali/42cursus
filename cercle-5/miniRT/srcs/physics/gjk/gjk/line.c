@@ -12,30 +12,13 @@
 
 #include "physics.h"
 
-/**
- * @brief Handles GJK case for a 2-point simplex (line).
- * Searches for a new direction that moves toward the origin.
- */
-bool	simplex_line(t_simplex *s, t_vec3 *dir)
-{
-	t_vec3	ab;
-	t_vec3	ao;
-
-	compute_ab_ao(s, &ab, &ao);
-	if (vec3_dot(ab, ao) > 0.0)
-		handle_positive_simplex_line(ab, ao, dir);
-	else
-		reduce_simplex_to_point(s, ao, dir);
-	return (false);
-}
-
-static void	compute_ab_ao(t_simplex *s, t_vec3 *ab, t_vec3 *ao)
+void	compute_ab_ao(t_simplex *s, t_vec3 *ab, t_vec3 *ao)
 {
 	*ab = vec3_sub(s->pts[0], s->pts[1]);
 	*ao = vec3_scale(s->pts[1], -1.0);
 }
 
-static bool	handle_positive_simplex_line(t_vec3 ab, t_vec3 ao, t_vec3 *dir)
+bool	handle_positive_simplex_line(t_vec3 ab, t_vec3 ao, t_vec3 *dir)
 {
 	t_vec3	axis;
 
@@ -51,11 +34,28 @@ static bool	handle_positive_simplex_line(t_vec3 ab, t_vec3 ao, t_vec3 *dir)
 	return (true);
 }
 
-static void	reduce_simplex_to_point(t_simplex *s, t_vec3 ao, t_vec3 *dir)
+void	reduce_simplex_to_point(t_simplex *s, t_vec3 ao, t_vec3 *dir)
 {
 	s->pts[0] = s->pts[1];
 	s->a_pts[0] = s->a_pts[1];
 	s->b_pts[0] = s->b_pts[1];
 	s->n = 1;
 	*dir = ao;
+}
+
+/**
+ * @brief Handles GJK case for a 2-point simplex (line).
+ * Searches for a new direction that moves toward the origin.
+ */
+bool	simplex_line(t_simplex *s, t_vec3 *dir)
+{
+	t_vec3	ab;
+	t_vec3	ao;
+
+	compute_ab_ao(s, &ab, &ao);
+	if (vec3_dot(ab, ao) > 0.0)
+		handle_positive_simplex_line(ab, ao, dir);
+	else
+		reduce_simplex_to_point(s, ao, dir);
+	return (false);
 }

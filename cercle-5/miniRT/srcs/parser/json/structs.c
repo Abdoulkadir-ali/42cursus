@@ -23,7 +23,7 @@ static int	parse_object_member(t_json_value *val, const char **s)
 	json_skip_ws(s);
 	if (**s == ':')
 		(*s)++;
-	json_hash_insert(&val->u.object, key, json_parse_inner_value(s));
+	json_hash_insert(&val->object, key, json_parse_inner_value(s));
 	json_skip_ws(s);
 	if (**s == ',')
 		(*s)++;
@@ -57,18 +57,18 @@ static void	parse_array_elem(t_json_value *val, const char **s)
 	elem = json_parse_inner_value(s);
 	if (elem)
 	{
-		if (val->u.array.count >= val->u.array.cap)
+		if (val->array.count >= val->array.cap)
 		{
-			if (val->u.array.cap == 0)
+			if (val->array.cap == 0)
 				new_cap = 8;
 			else
-				new_cap = val->u.array.cap * 2;
-			val->u.array.elements = json_realloc(val->u.array.elements,
-					sizeof(t_json_value *) * val->u.array.cap,
+				new_cap = val->array.cap * 2;
+			val->array.elements = json_realloc(val->array.elements,
+					sizeof(t_json_value *) * val->array.cap,
 					sizeof(t_json_value *) * new_cap);
-			val->u.array.cap = new_cap;
+			val->array.cap = new_cap;
 		}
-		val->u.array.elements[val->u.array.count++] = elem;
+		val->array.elements[val->array.count++] = elem;
 	}
 	json_skip_ws(s);
 	if (**s == ',')

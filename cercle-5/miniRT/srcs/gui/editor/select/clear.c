@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	clear_selection(t_gui *gui)
 {
-    gui->selection.active = false;
-    gui->selection.index = -1;
-    gui->selection.type = TYPE_NONE;
-    gui->inspector.visible = false;
+    gui->selection->active = false;
+    gui->selection->index = -1;
+    gui->selection->type = TYPE_NONE;
+    gui->inspector->visible = false;
 }

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static void	reset_cam_ctrl(t_gui *gui)
 {
@@ -36,7 +36,7 @@ void	scene_reset(t_gui *gui)
 
 	if (!gui->map_info.current)
 		return ;
-	s = &gui->map_info.current->snap;
+	s = gui->map_info.current->snap;
 	sc = gui->scene;
 	reset_sphere(sc, s);
 	reset_plane(sc, s);

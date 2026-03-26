@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
+
 static void	handle_mouse_rotation(t_gui *gui, int dx, int dy)
 {
 	gui->cam_ctrl.target_rot.yaw -= -dx * MOUSE_SENSITIVITY;
@@ -29,25 +30,41 @@ static void	handle_mouse_zoom_drag(t_gui *gui, int dy)
 	gui->render.dirty = true;
 }
 
-static int	mlx_mouse_motion(int x, int y, t_gui *gui)
+static void	update_inline_drag(t_gui *gui, int mouse_x)
 {
-	return (mouse_motion(vec2i(x, y), gui));
+	double	frac;
+	int		rx;
+	int		tx;
+	int		tw;
+
+	if (!gui->slider_state->dragging || !gui->slider_state->value_ptr)
+		return ;
+	tx = gui->slider_state->track_x;
+	tw = gui->slider_state->track_w;
+	rx = mouse_x - tx;
+	if (rx < 0)
+		rx = 0;
+	if (rx > tw)
+		rx = tw;
+	frac = (double)rx / (double)tw;
+	*gui->slider_state->value_ptr = gui->slider_state->dmin + frac
+		* (gui->slider_state->dmax - gui->slider_state->dmin);
+	if (gui->slider_state->on_change)
+		gui->slider_state->on_change(gui);
+	gui->render.dirty = true;
 }
 
-int (*mouse_motion_hook(void))(int, int, t_gui *)
+int	mouse_motion(int x, int y, t_gui *gui)
 {
-	return (mlx_mouse_motion);
-}
-
-int	mouse_motion(t_vec2i mouse, t_gui *gui)
-{
+	t_vec2i	mouse;
 	t_vec2i	delta;
 
 	if (!gui)
 		return (0);
+	mouse = vec2i(x, y);
 	gui->input.mouse_x = mouse.x;
 	gui->input.mouse_y = mouse.y;
-	if (gui->slider_state.dragging)
+	if (gui->slider_state->dragging)
 	{
 		update_inline_drag(gui, mouse.x);
 		gui->cam_ctrl.last_mouse = mouse;

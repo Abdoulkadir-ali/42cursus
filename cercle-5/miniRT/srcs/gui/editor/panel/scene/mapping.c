@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 int	count_scene_rows(t_scene *sc)
 {
 	return (sc->light_count + sc->sphere_count + sc->plane_count
@@ -62,7 +62,7 @@ const char	*row_type_prefix(t_type type)
 {
 	const char *lbl[] = { "[??]", "[LT]", "[SP]", "[PL]", "[CY]", "[CO]",
 		"[TR]", "[RC]", "[PY]", "[BX]", "[CA]", "[ME]"};
-	int			ty_map[] = { TYPE_NONE, TYPE_LIGHT, TYPE_SPHERE, TYPE_PLANE,
+	t_type			ty_map[] = { TYPE_NONE, TYPE_LIGHT, TYPE_SPHERE, TYPE_PLANE,
 		TYPE_CYLINDER, TYPE_CONE, TYPE_TRI, TYPE_RECT, TYPE_PYRAMID,
 		TYPE_BOX, TYPE_CAPSULE, TYPE_MESH};
 	int			i;
@@ -86,8 +86,8 @@ void	draw_one_row(t_gui *gui, int y_px, t_type ty, int idx)
 	int		col;
 
 	col = COL_TEXT;
-	if (gui->selection.active && gui->selection.type == ty
-		&& gui->selection.index == idx)
+	if (gui->selection->active && gui->selection->type == ty
+		&& gui->selection->index == idx)
 		col = COL_SELECTED;
 	if (ty == TYPE_MESH && idx >= 0 && idx < gui->scene->group_count
 		&& gui->scene->groups[idx].name)

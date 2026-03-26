@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	select_object(t_gui *gui, t_type type, int index)
 {
@@ -18,9 +18,9 @@ void	select_object(t_gui *gui, t_type type, int index)
     t_mesh_group	*g;
     int			si;
 
-    gui->selection.type = type;
-    gui->selection.index = index;
-    gui->selection.active = true;
+    gui->selection->type = type;
+    gui->selection->index = index;
+    gui->selection->active = true;
     /* For mesh groups compute the union bbox directly; for everything else
     ** keep using aabb_from_ref (which still operates on flat mesh indices). */
     if (type == TYPE_MESH && index >= 0 && index < gui->scene->group_count)
@@ -34,7 +34,7 @@ void	select_object(t_gui *gui, t_type type, int index)
                     &gui->scene->meshes[g->start + si].bbox);
             si++;
         }
-        gui->selection.bbox = union_bbox;
+        gui->selection->bbox = union_bbox;
     }
     else
     {
@@ -42,14 +42,14 @@ void	select_object(t_gui *gui, t_type type, int index)
 
         ref.type = (uint8_t)type;
         ref.index = index;
-        gui->selection.bbox = aabb_from_ref(gui->scene, ref);
+        gui->selection->bbox = aabb_from_ref(gui->scene, ref);
     }
-    gui->inspector.visible = true;
+    gui->inspector->visible = true;
     if (type == TYPE_MESH)
-        gui->inspector.tab = TAB_INFO;
+        gui->inspector->tab = TAB_INFO;
     else if (type == TYPE_LIGHT)
-        gui->inspector.tab = TAB_LIGHT;
+        gui->inspector->tab = TAB_LIGHT;
     else
-        gui->inspector.tab = TAB_TRANSFORM;
+        gui->inspector->tab = TAB_TRANSFORM;
     ft_print_debug("[editor] selected %d idx=%d\n", (int)type, index);
 }

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 /**
  * @brief Handles plane vs. convex shape collision using support mapping.

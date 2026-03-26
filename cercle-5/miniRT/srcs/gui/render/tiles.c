@@ -14,7 +14,7 @@
 
 static void	render_tile(t_render_ctx *ctx, int id)
 {
-	t_tile_vars	v;
+	t_tile	v;
 
 	v.tx = (id % ctx->tiles_x) * TILE_SIZE;
 	v.ty = (id / ctx->tiles_x) * TILE_SIZE;

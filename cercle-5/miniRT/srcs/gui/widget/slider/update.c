@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	slider_update_drag(t_gui *gui, int mouse_x)
 {
@@ -19,13 +19,13 @@ void	slider_update_drag(t_gui *gui, int mouse_x)
     double delta;
     double newval;
 
-    if (!gui->slider_state.dragging || !gui->slider_state.target)
+    if (!gui->slider_state->dragging || !gui->slider_state->target)
         return ;
-    w = gui->slider_state.target;
+    w = gui->slider_state->target;
     range = w->dmax - w->dmin;
-    delta = (double)(mouse_x - gui->slider_state.drag_start_x)
+    delta = (double)(mouse_x - gui->slider_state->drag_start_x)
         * range / (double)w->size.x;
-    newval = gui->slider_state.drag_start_val + delta;
+    newval = gui->slider_state->drag_start_val + delta;
     if (newval < w->dmin)
         newval = w->dmin;
     if (newval > w->dmax)

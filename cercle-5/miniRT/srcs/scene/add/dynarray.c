@@ -40,7 +40,7 @@ bool	dynarray_ensure(void **array, size_t count, size_t *cap,
 	return (true);
 }
 
-bool	DYNARRAY_ENSURE_INT(void **arr, int *count_ptr, int *cap_ptr,
+bool	dynarray_ensure_int_impl(void **arr, int *count_ptr, int *cap_ptr,
 		size_t elem_size)
 {
 	size_t cnt = (size_t)(*count_ptr);

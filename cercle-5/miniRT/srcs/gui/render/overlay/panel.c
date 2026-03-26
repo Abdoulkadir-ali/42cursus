@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static void	draw_panel_pixel(t_gui *gui, t_panel panel, int i, int j)
 {

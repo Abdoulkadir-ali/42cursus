@@ -12,7 +12,7 @@
 
 #include "objects.h"
 
-void	fbx_build_flat(t_mesh *m, t_fbx_flat_params *p)
+void	fbx_build_flat(t_mesh *m, t_fbx_flat_args *p)
 {
 	t_fbx_build	b;
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /**
  * @brief Draws the background panel for the scene hierarchy.
  * @param gui Pointer to the GUI.
@@ -21,9 +21,9 @@ void	draw_scene_panel_bg(t_gui *gui)
 	int		w;
 	int		h;
 
-	if (!gui->scene_panel.visible)
+	if (!gui->scene_panel->visible)
 		return ;
-	w = gui->scene_panel.width;
+	w = gui->scene_panel->width;
 	h = gui->win.disp_h;
 	panel = (t_panel){.x = 0, .y = 0, .w = w, .h = h, .bg = COL_BG,
 		.brd = COL_BORDER, .pos = vec2i(0, 0), .size = vec2i(w, h)};
@@ -40,7 +40,7 @@ static void	draw_scene_rows(t_gui *gui)
 
 	total = count_scene_rows(gui->scene);
 	row = 0;
-	y_px = (CRUD_PANEL_H + SCENE_PANEL_PAD_Y) - gui->scene_panel.scroll;
+	y_px = (CRUD_PANEL_H + SCENE_PANEL_PAD_Y) - gui->scene_panel->scroll;
 	while (row < total && y_px < gui->win.disp_h - SCENE_PANEL_PAD_Y)
 	{
 		if (y_px >= (CRUD_PANEL_H + 4))
@@ -62,7 +62,7 @@ void	draw_scene_panel_text(t_gui *gui)
 	char	buf[48];
 	int		total;
 
-	if (!gui->scene_panel.visible)
+	if (!gui->scene_panel->visible)
 		return ;
 	total = gui->scene ? count_scene_rows(gui->scene) : 0;
 	snprintf(buf, sizeof(buf), "OBJECTS  %d", total);

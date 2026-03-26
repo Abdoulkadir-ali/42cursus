@@ -37,9 +37,9 @@ static size_t	load_bricks(t_json_value *arr, t_sub_shape *bricks, size_t max)
 	if (!arr || arr->type != JSON_ARRAY)
 		return (0);
 	i = 0;
-	while (i < arr->u.array.count && i < max)
+	while (i < arr->array.count && i < max)
 	{
-		bricks[i] = parse_brick(arr->u.array.elements[i]);
+		bricks[i] = parse_brick(arr->array.elements[i]);
 		i++;
 	}
 	return (i);

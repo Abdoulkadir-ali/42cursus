@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 extern void	phys_init_pool(t_scene *scene);
 

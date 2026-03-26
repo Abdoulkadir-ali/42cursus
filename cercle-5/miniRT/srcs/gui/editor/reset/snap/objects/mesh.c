@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static void	loop_meshes(t_scene_snap *s, t_scene *sc)
 {

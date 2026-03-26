@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "parser.h"
 #include "debug.h"
 
 void	print_parser(t_parser *p)

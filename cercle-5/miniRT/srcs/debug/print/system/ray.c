@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "raytracing.h"
 #include "debug.h"
 
 void	print_ray(t_ray *r)

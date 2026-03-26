@@ -38,7 +38,7 @@ static int	ft_print_hex_prefix(t_flags *flags, unsigned long n)
  * @brief Calculates the number of digits and total length for a hex number.
  * @note Public library exported function.
  */
-static void	ft_calc_hex_params(unsigned long n, t_flags *flags, int *num_len,
+static void	ft_calc_hex_args(unsigned long n, t_flags *flags, int *num_len,
 		int *total_len)
 {
 	*num_len = ft_count_hex_digits(n);
@@ -65,7 +65,7 @@ int	ft_print_hex_with_flags(unsigned long n, t_flags *flags)
 	base = "0123456789abcdef";
 	if (flags->type == 'X')
 		base = "0123456789ABCDEF";
-	ft_calc_hex_params(n, flags, &num_len, &total_len);
+	ft_calc_hex_args(n, flags, &num_len, &total_len);
 	count = 0;
 	if (!flags->minus && flags->width > total_len)
 		count += ft_print_width(flags->width - total_len, flags->zero, 0,

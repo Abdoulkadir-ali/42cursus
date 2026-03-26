@@ -38,8 +38,8 @@ void	material_apply_preset(t_material *m, t_vec3 color)
 		apply_transparent_preset(m, 1.33, 0.8, 0.2);
 	else if (vec3_compare(color, colors->yellow))
 	{
-		m->emission = (t_vec3){255.0, 255.0, 150.0};
-		m->albedo_map.color_a = (t_vec3){255.0, 255.0, 150.0};
+		m->emission = (t_vec3){255.0, 255.0, 150.0, 0.0};
+		m->albedo_map.color_a = (t_vec3){255.0, 255.0, 150.0, 0.0};
 		m->specular = 0.0;
 		m->shininess = 1.0;
 	}

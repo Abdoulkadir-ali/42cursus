@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	slider_begin_drag(t_gui *gui, t_widget *w, int mouse_x)
 {
-    gui->slider_state.dragging = true;
-    gui->slider_state.target = w;
-    gui->slider_state.drag_start_x = mouse_x;
-    gui->slider_state.drag_start_val = w->dvalue;
+    gui->slider_state->dragging = true;
+    gui->slider_state->target = w;
+    gui->slider_state->drag_start_x = mouse_x;
+    gui->slider_state->drag_start_val = w->dvalue;
 }

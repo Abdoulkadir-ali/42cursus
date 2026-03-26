@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 bool	light_panel_handle_click(t_gui *gui, t_vec2i mouse)
 {
 	t_light		*lt;
@@ -20,10 +20,10 @@ bool	light_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	int			y;
 	int			x;
 
-	if (!gui->scene || gui->selection.index >= gui->scene->light_count)
+	if (!gui->scene || gui->selection->index >= gui->scene->light_count)
 		return (false);
-	lt = &gui->scene->lights[gui->selection.index];
-	x = gui->win.disp_w - gui->inspector.width;
+	lt = &gui->scene->lights[gui->selection->index];
+	x = gui->win.disp_w - gui->inspector->width;
 	build_light_sliders(lt, sl, &count);
 	y = 116;
 	i = 0;
@@ -48,7 +48,7 @@ bool	ambient_panel_handle_click(t_gui *gui, t_vec2i mouse)
 
     if (!gui->scene)
         return (false);
-    x = gui->win.disp_w - gui->inspector.width;
+    x = gui->win.disp_w - gui->inspector->width;
     sl[0] = (t_islider){"Intensity", SL_AMB_MIN, SL_AMB_MAX,
         &gui->scene->ambient.brightness};
     sl[1] = (t_islider){"Color R", SL_COL_MIN, SL_COL_MAX,

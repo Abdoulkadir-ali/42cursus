@@ -20,11 +20,12 @@
 
 /* 1. EXTERNAL DEPENDENCIES */
 # include "defines.h"
+# include "maths.h"
+# include "profiler.h"
 # include "debug.h"
 # include "physics.h"
-# include "raytracing.h"
 # include "surface.h"
-# include "parser.h"
+/* 2. LEAF STRUCTURES */
 
 # define GLB_MAGIC 0x46546C67
 # define CHUNK_JSON 0x4E4F534A
@@ -669,7 +670,7 @@ struct					s_fbx_data
 	uint32_t			uc;
 };
 
-typedef struct s_fbx_flat_params
+typedef struct s_fbx_flat_args
 {
 	int					*raw;
 	int					raw_c;
@@ -678,7 +679,7 @@ typedef struct s_fbx_flat_params
 	t_vec2				*u;
 	int					uc;
 	int					vc;
-}						t_fbx_flat_params;
+}						t_fbx_flat_args;
 
 struct					s_fbx_build
 {
@@ -816,6 +817,8 @@ void					glb_load_animations(t_scene *scene, t_json_value *json,
 /* Parsing Helpers */
 bool					validate_file(const char *path);
 
+# include "parser.h"
+
 /* .rt Parser (srcs/objects/rt/parsing/) */
 t_parse_obj				parse_ambient(t_parser *p);
 t_parse_obj				parse_camera(t_parser *p);
@@ -849,9 +852,9 @@ bool					parse_glb(const char *path, t_scene *scene);
 bool					parse_fbx_ascii(const char *path, t_scene *scene);
 bool					parse_fbx_binary(const char *path, t_scene *scene);
 bool					fbx_bin_build_mesh(t_fbx_bin_ctx *ctx);
-void					fbx_build_flat(t_mesh *m, t_fbx_flat_params *p);
+void					fbx_build_flat(t_mesh *m, t_fbx_flat_args *p);
 bool					fbx_setup_build(t_fbx_build *b, t_mesh *m,
-							t_fbx_flat_params *p);
+							t_fbx_flat_args *p);
 void					fbx_build_tris(t_fbx_build *b);
 void					fbx_free_build(t_fbx_build *b);
 char					*fbx_next(char *p);
@@ -981,5 +984,44 @@ bool					bvh_find_split(t_bvh_find_ctx *f);
 /* srcs/objects/glb/anim_system.c */
 void					glb_update_mesh_anim(t_mesh *mesh, t_scene *scene,
 							double dt);
+
+/* srcs/objects/mesh/collision */
+t_vec3					closest_point_on_triangle(t_vec3 p, t_vec3 v0, t_vec3 v1,
+							t_vec3 v2);
+bool					detect_sphere_mesh_collision(const struct s_sphere *s,
+							struct s_mesh *m, t_vec3 *out_normal,
+							double *out_penetration);
+
+typedef struct s_mesh_query
+{
+	const struct s_sphere	*s;
+	struct s_mesh			*m;
+	t_vec3					*out_n;
+	double					*out_p;
+	t_aabb					sa;
+	double					min_d;
+	bool					hit;
+}							t_mesh_query;
+
+typedef struct s_capsule_var
+{
+	t_vec3					ab;
+	t_vec3					as;
+	t_vec3					cl;
+	t_vec3					d;
+	double					t;
+	double					dsq;
+	double					rs;
+	double					dist;
+}							t_capsule_var;
+
+typedef struct s_tri_var
+{
+	t_vec3					cl;
+	t_vec3					d;
+	double					dsq;
+	double					rad;
+	double					dist;
+}							t_tri_var;
 
 #endif

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "objects.h"
 #include "debug.h"
 
 void	print_light(t_light *l)

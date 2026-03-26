@@ -49,7 +49,7 @@ t_aabb	aabb_from_ref(t_scene *scene, t_bvh_ref ref)
 	if (ref.type == TYPE_CONE)
 		return (cone_aabb(&scene->cones[ref.index]));
 	if (ref.type == TYPE_TRI)
-		return (tri_shape_aabb(&scene->tris[ref.index]));
+		return (tri_aabb(&scene->tris[ref.index]));
 	if (ref.type == TYPE_RECT)
 		return (rect_aabb(&scene->rects[ref.index]));
 	if (ref.type == TYPE_PYRAMID)

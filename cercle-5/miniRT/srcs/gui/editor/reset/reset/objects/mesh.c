@@ -11,7 +11,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	reset_mesh(t_scene *sc, t_scene_snap *s)
 {

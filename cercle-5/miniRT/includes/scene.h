@@ -121,8 +121,10 @@ bool				dynarray_ensure(void **array, size_t count, size_t *cap,
 						size_t elem_size);
 
 /* Helper for int-based counts (implemented in srcs/scene/dynarray_helper.c) */
-bool				DYNARRAY_ENSURE_INT(void **arr, int *count_ptr,
+bool				dynarray_ensure_int_impl(void **arr, int *count_ptr,
 						int *cap_ptr, size_t elem_size);
+# define DYNARRAY_ENSURE_INT(a, b, c, d) \
+	dynarray_ensure_int_impl((void **)(a), (b), (c), (d))
 
 /* 3. FUNCTION PROTOTYPES */
 

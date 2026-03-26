@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
+#include "scene.h"
 
 /**
  * @brief Global AABB broadphase for non-accelerated body pairs.
@@ -26,18 +28,20 @@ int	broadphase(t_scene *s, t_body_pair *out, int max)
 
 	n = collect_bodies(s, bodies, MAX_BODY_PAIRS);
 	count = 0;
-	i = -1;
-	while (++i < n && count < max)
+	i = 0;
+	while (i < n && count < max)
 	{
-		j = i;
-		while (++j < n && count < max)
+		j = i + 1;
+		while (j < n && count < max)
 		{
 			if (aabb_overlap_broad(bodies[i]->global_aabb, bodies[j]->global_aabb))
 			{
 				out[count].a = bodies[i];
 				out[count++].b = bodies[j];
 			}
+			j++;
 		}
+		i++;
 	}
 	return (count);
 }

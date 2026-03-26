@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /**
  * @brief Coordinates hit test for popup elements.
  */
@@ -31,10 +31,10 @@ void	draw_modal_bg(t_gui *gui)
 		.bg = COL_POPUP_DIM, .brd = COL_POPUP_DIM,
 		.pos = vec2i(0, 0), .size = vec2i(gui->win.disp_w, gui->win.disp_h)};
 	draw_panel(gui, p[0]);
-	p[1] = (t_panel){.x = gui->crud.pos.x, .y = gui->crud.pos.y,
-		.w = gui->crud.w, .h = gui->crud.h,
+	p[1] = (t_panel){.x = gui->crud->pos.x, .y = gui->crud->pos.y,
+		.w = gui->crud->w, .h = gui->crud->h,
 		.bg = COL_POPUP_BG, .brd = COL_ACCENT,
-		.pos = gui->crud.pos, .size = vec2i(gui->crud.w, gui->crud.h)};
+		.pos = gui->crud->pos, .size = vec2i(gui->crud->w, gui->crud->h)};
 	draw_panel(gui, p[1]);
 }
 

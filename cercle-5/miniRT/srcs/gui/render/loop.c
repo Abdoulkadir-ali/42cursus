@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static long long	get_time_ms(void)
 {
@@ -132,7 +132,7 @@ static void	poll_map_job(t_gui *gui)
 		return ;
 	gui->map_info.current = job->entry;
 	gui->scene = job->entry->scene;
-	scene_snapshot(&job->entry->snap, gui);
+	scene_snapshot(job->entry->snap, gui);
 	gui->cam_ctrl.camera = &gui->scene->camera;
 	reset_camera_view(gui);
 	clear_selection(gui);
@@ -163,10 +163,10 @@ void	gui_loop(t_gui *gui)
 {
 	mlx_hook(gui->win.win, KeyPress, KeyPressMask, key_press, gui);
 	mlx_hook(gui->win.win, KeyRelease, KeyReleaseMask, key_release, gui);
-	mlx_hook(gui->win.win, ButtonPress, ButtonPressMask, mouse_click_hook(), gui);
-	mlx_hook(gui->win.win, ButtonRelease, ButtonReleaseMask, mouse_release_hook(),
+	mlx_hook(gui->win.win, ButtonPress, ButtonPressMask, mouse_click, gui);
+	mlx_hook(gui->win.win, ButtonRelease, ButtonReleaseMask, mouse_release,
 		gui);
-	mlx_hook(gui->win.win, MotionNotify, PointerMotionMask, mouse_motion_hook(), gui);
+	mlx_hook(gui->win.win, MotionNotify, PointerMotionMask, mouse_motion, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
 	mlx_loop_hook(gui->win.mlx, (int (*)())render_loop, gui);
 	mlx_loop(gui->win.mlx);

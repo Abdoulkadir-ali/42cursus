@@ -87,7 +87,7 @@ struct s_material {
 	double		reflectivity;
 };
 
-typedef struct s_material_params
+typedef struct s_material_args
 {
 	t_vec3		albedo;
 	double		metallic;
@@ -96,7 +96,7 @@ typedef struct s_material_params
 	double		refract_index;
 	double		transparency;
 	double		reflectivity;
-}					t_material_params;
+}					t_material_args;
 
 struct s_bilinear {
 	double	ux;
@@ -108,7 +108,7 @@ struct s_bilinear {
 };
 
 /* 3. FUNCTION PROTOTYPES */
-t_material		*create_material(t_material_params params);
+t_material		*create_material(t_material_args params);
 
 int					scene_add_material(t_scene *scene, t_vec3 color);
 int					scene_add_fresh_material(t_scene *scene, t_vec3 color);

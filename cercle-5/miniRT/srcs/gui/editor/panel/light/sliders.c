@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 void	build_light_sliders(t_light *lt, t_islider *sl, int *count)
 {
 	int	i;

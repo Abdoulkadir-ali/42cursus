@@ -10,7 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
+
+/*
+** Main initialization function for the GUI subsystem.
+** Allocates memory and initializes MLX, window, camera, and map switcher.
+*/
+extern void	*render_tile_worker(void *arg);
 
 
 /*
@@ -64,20 +70,12 @@ static void	init_camera(t_gui *gui)
 	gui->widgets = NULL;
 }
 
-/*
-** Main initialization function for the GUI subsystem.
-** Allocates memory and initializes MLX, window, camera, and map switcher.
-*/
-extern void	*render_tile_worker(void *arg);
-
-t_gui	*gui_init(t_scene *scene, void *mlx)
+bool	gui_init(t_gui *gui, t_scene *scene, void *mlx)
 {
-	t_gui	*gui;
 	int		i;
 
-	gui = malloc(sizeof(t_gui));
 	if (!gui)
-		return (NULL);
+		return (false);
 	ft_memset(gui, 0, sizeof(t_gui));
 	gui->scene = scene;
 	gui->win.width = RENDER_W;
@@ -85,7 +83,6 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	gui->win.mlx = mlx;
 	/* Initialize new GUI state */
 	gui->physics_enabled = true;
-	/* physics timing defaults */
 	gui->phys_accumulator = 0.0;
 	gui->phys_fixed_dt = 1.0 / 60.0;
 	gui->phys_max_steps = 5;
@@ -99,16 +96,27 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	gui->render.threads = malloc(sizeof(pthread_t)
 			* (size_t)gui->render.num_cores);
 	if (!gui->render.threads)
-	{
-		free(gui);
-		return (NULL);
-	}
+		return (false);
 	if (!init_window(gui))
 	{
 		free(gui->render.threads);
-		free(gui);
-		return (NULL);
+		return (false);
 	}
+	gui->selection = malloc(sizeof(t_selection));
+	gui->inspector = malloc(sizeof(t_inspector));
+	gui->scene_panel = malloc(sizeof(t_scene_panel));
+	gui->slider_state = malloc(sizeof(t_slider_state));
+	gui->crud = malloc(sizeof(t_crud_ui));
+	gui->hover = malloc(sizeof(t_hover_cache));
+	if (!gui->selection || !gui->inspector || !gui->scene_panel
+		|| !gui->slider_state || !gui->crud || !gui->hover)
+		return (false);
+	ft_memset(gui->selection, 0, sizeof(t_selection));
+	ft_memset(gui->inspector, 0, sizeof(t_inspector));
+	ft_memset(gui->scene_panel, 0, sizeof(t_scene_panel));
+	ft_memset(gui->slider_state, 0, sizeof(t_slider_state));
+	ft_memset(gui->crud, 0, sizeof(t_crud_ui));
+	ft_memset(gui->hover, 0, sizeof(t_hover_cache));
 	init_camera(gui);
 	gui_map_switcher_init(gui);
 	widget_init_default(gui);
@@ -128,7 +136,7 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	gui->pool.ready = true;
 	mlx_hook(gui->win.win, 22, 1L << 17, gui_window_resize, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
-	return (gui);
+	return (true);
 }
 
 /*
@@ -161,5 +169,10 @@ void	gui_destroy(t_gui *gui)
 		sem_destroy(&gui->pool.done[j]);
 		j++;
 	}
-	free(gui);
+	free(gui->selection);
+	free(gui->inspector);
+	free(gui->scene_panel);
+	free(gui->slider_state);
+	free(gui->crud);
+	free(gui->hover);
 }

@@ -96,9 +96,10 @@ typedef struct s_panel				t_panel;
 typedef struct s_render_pool		t_render_pool;
 typedef struct s_render_state		t_render_state;
 typedef struct s_render_thread_arg	t_render_thread_arg;
-typedef struct s_tile_vars			t_tile_vars;
+typedef struct s_tile			    t_tile;
 typedef struct s_widget				t_widget;
 typedef struct s_window				t_window;
+typedef struct s_render_pool		t_render_pool;
 
 /* **** from includes/maths.h ***** */
 typedef struct s_mat3				t_mat3;
@@ -177,7 +178,7 @@ typedef struct s_bvh_tmp_node		t_bvh_tmp_node;
 typedef struct s_entry_point		t_entry_point;
 typedef struct s_lcalc				t_lcalc;
 typedef struct s_occ				t_occ;
-typedef struct s_push_vars			t_push_vars;
+typedef struct s_push			    t_push;
 typedef struct s_shading			t_shading;
 typedef struct s_split_info			t_split_info;
 

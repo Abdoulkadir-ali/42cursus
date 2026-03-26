@@ -20,7 +20,7 @@ static t_json_value	*json_parse_string_val(const char **s)
 	if (!v)
 		return (NULL);
 	v->type = JSON_STRING;
-	v->u.string = json_parse_inner_string(s);
+	v->string = json_parse_inner_string(s);
 	return (v);
 }
 
@@ -32,7 +32,7 @@ static t_json_value	*json_parse_bool_val(const char **s, bool b, int len)
 	if (!v)
 		return (NULL);
 	v->type = JSON_BOOL;
-	v->u.boolean = b;
+	v->boolean = b;
 	*s += len;
 	return (v);
 }

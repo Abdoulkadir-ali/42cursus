@@ -6,19 +6,22 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:08:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 13:33:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 int	query_cylinder(t_scene *s, int idx, t_contact *c, int count, int max)
 {
-	t_cylinder	*cy = &s->cylinders[idx];
+	t_cylinder	*cy;
 	t_aabb		ca;
 	t_gjk_shape	sa;
 
-	if (cy->phys.is_static) return (count);
+	cy = &s->cylinders[idx];
+	if (cy->phys.is_static)
+		return (count);
 	ca = cylinder_aabb(cy);
 	sa = (t_gjk_shape){cy, gjk_support_cylinder, cy->phys.center};
 	count = cyl_plane_contacts(s, cy, &sa, c, count, max);

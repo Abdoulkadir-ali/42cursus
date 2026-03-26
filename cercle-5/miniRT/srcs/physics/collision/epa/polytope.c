@@ -23,11 +23,11 @@ t_epa_face	make_face(t_epa_poly *p, int i0, int i1, int i2)
 	v[0] = p->pts[i0];
 	v[1] = p->pts[i1];
 	v[2] = p->pts[i2];
-	f.normal = vec3_unit(vec3_cross(vec3_sub(v[1], v[0]), vec3_sub(v[2], v[0])));
+	f.normal = vec3_norm(vec3_cross(vec3_sub(v[1], v[0]), vec3_sub(v[2], v[0])));
 	f.dist = vec3_dot(f.normal, v[0]);
 	if (f.dist < 0)
 	{
-		f.normal = vec3_mul(f.normal, -1);
+		f.normal = vec3_scale(f.normal, -1);
 		f.dist = -f.dist;
 	}
 	return (f);

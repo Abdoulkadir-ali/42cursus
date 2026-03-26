@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 /**
  * @brief Retrieves the physics body of the currently selected scene object.
@@ -23,22 +23,22 @@ t_physics_body	*get_selected_physics(t_gui *gui)
 	int		idx;
 
 	sc = gui->scene;
-	idx = gui->selection.index;
-	if (gui->selection.type == TYPE_SPHERE)
+	idx = gui->selection->index;
+	if (gui->selection->type == TYPE_SPHERE)
 		return (&sc->spheres[idx].phys);
-	if (gui->selection.type == TYPE_TRI)
+	if (gui->selection->type == TYPE_TRI)
 		return (&sc->tris[idx].phys);
-	if (gui->selection.type == TYPE_CYLINDER)
+	if (gui->selection->type == TYPE_CYLINDER)
 		return (&sc->cylinders[idx].phys);
-	if (gui->selection.type == TYPE_RECT)
+	if (gui->selection->type == TYPE_RECT)
 		return (&sc->rects[idx].phys);
-	if (gui->selection.type == TYPE_PYRAMID)
+	if (gui->selection->type == TYPE_PYRAMID)
 		return (&sc->pyramids[idx].phys);
-	if (gui->selection.type == TYPE_BOX)
+	if (gui->selection->type == TYPE_BOX)
 		return (&sc->boxes[idx].phys);
-	if (gui->selection.type == TYPE_CAPSULE)
+	if (gui->selection->type == TYPE_CAPSULE)
 		return (&sc->capsules[idx].phys);
-	if (gui->selection.type == TYPE_MESH)
+	if (gui->selection->type == TYPE_MESH)
 		return (&sc->groups[idx].phys);
 	return (NULL);
 }

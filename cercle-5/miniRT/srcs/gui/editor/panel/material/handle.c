@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 static void	sync_group_materials(t_gui *gui)
 {
 	t_selection		*sel;
@@ -19,7 +19,7 @@ static void	sync_group_materials(t_gui *gui)
 	int				si;
 	int				mat_id;
 
-	sel = &gui->selection;
+	sel = gui->selection;
 	if (!sel->active || sel->type != TYPE_MESH)
 		return ;
 	g = &gui->scene->groups[sel->index];
@@ -46,7 +46,7 @@ bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	mat = get_selected_material(gui);
 	if (!mat)
 		return (false);
-	x = gui->win.disp_w - gui->inspector.width;
+	x = gui->win.disp_w - gui->inspector->width;
 	build_mat_sliders(mat, sl, &count);
 	y = 104;
 	i = 0;

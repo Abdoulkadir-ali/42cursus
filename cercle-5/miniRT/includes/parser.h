@@ -15,10 +15,8 @@
 
 /* External dependencies */
 /* POSIX / system */
-# include "debug.h"
 # include "defines.h"
 # include "objects.h"
-# include "scene.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <sys/stat.h>

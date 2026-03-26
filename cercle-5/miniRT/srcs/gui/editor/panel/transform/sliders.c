@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static void	build_complex_tr(t_transform *tr, t_type type, t_islider *sl, int *i)
 {

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 /**
  * @brief Public entry point. Rebuilds the DBVT from scratch each frame.

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	rebuild_bvh(t_gui *gui)
 {
@@ -43,9 +43,9 @@ void	select_object(t_gui *gui, t_type type, int index)
 	t_mesh_group	*g;
 	int				si;
 
-	gui->selection.type = type;
-	gui->selection.index = index;
-	gui->selection.active = true;
+	gui->selection->type = type;
+	gui->selection->index = index;
+	gui->selection->active = true;
 	/* For mesh groups compute the union bbox directly; for everything else
 	** keep using aabb_from_ref (which still operates on flat mesh indices). */
 	if (type == TYPE_MESH && index >= 0 && index < gui->scene->group_count)
@@ -59,7 +59,7 @@ void	select_object(t_gui *gui, t_type type, int index)
 					&gui->scene->meshes[g->start + si].bbox);
 			si++;
 		}
-		gui->selection.bbox = union_bbox;
+		gui->selection->bbox = union_bbox;
 	}
 	else
 	{
@@ -67,24 +67,24 @@ void	select_object(t_gui *gui, t_type type, int index)
 
 		ref.type = (uint8_t)type;
 		ref.index = index;
-		gui->selection.bbox = aabb_from_ref(gui->scene, ref);
+		gui->selection->bbox = aabb_from_ref(gui->scene, ref);
 	}
-	gui->inspector.visible = true;
+	gui->inspector->visible = true;
 	if (type == TYPE_MESH)
-		gui->inspector.tab = TAB_INFO;
+		gui->inspector->tab = TAB_INFO;
 	else if (type == TYPE_LIGHT)
-		gui->inspector.tab = TAB_LIGHT;
+		gui->inspector->tab = TAB_LIGHT;
 	else
-		gui->inspector.tab = TAB_TRANSFORM;
+		gui->inspector->tab = TAB_TRANSFORM;
 	ft_print_debug("[editor] selected %d idx=%d\n", (int)type, index);
 }
 
 void	clear_selection(t_gui *gui)
 {
-	gui->selection.active = false;
-	gui->selection.index = -1;
-	gui->selection.type = TYPE_NONE;
-	gui->inspector.visible = false;
+	gui->selection->active = false;
+	gui->selection->index = -1;
+	gui->selection->type = TYPE_NONE;
+	gui->inspector->visible = false;
 }
 
 static int	mat_id_of_selection(t_gui *gui)
@@ -92,7 +92,7 @@ static int	mat_id_of_selection(t_gui *gui)
 	t_selection	*sel;
 	t_scene		*sc;
 
-	sel = &gui->selection;
+	sel = gui->selection;
 	sc = gui->scene;
 	if (sel->type == TYPE_SPHERE)
 		return (sc->spheres[sel->index].mat_id);
@@ -123,7 +123,7 @@ t_material	*get_selected_material(t_gui *gui)
 	t_selection	*sel;
 	int			mat_id;
 
-	sel = &gui->selection;
+	sel = gui->selection;
 	if (!sel->active || !gui->scene)
 		return (NULL);
 	mat_id = mat_id_of_selection(gui);

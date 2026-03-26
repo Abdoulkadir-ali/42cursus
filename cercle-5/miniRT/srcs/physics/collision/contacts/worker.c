@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 /**
  * @brief Logic for a single physical collision job processed by a worker.
@@ -29,7 +30,7 @@ void	run_contact_job(t_gen_job *j)
 	sa.support = leaf->support;
 	sa.center = leaf->body->center;
 	j->count = query_static_bvh(j->scene, j->scene->static_bvh->root,
-			&sa, leaf->body, &leaf->body->transform, j->out, j->count, j->max_c);
+			&sa, leaf->body, leaf->transform, j->out, j->count, j->max_c);
 }
 
 /**

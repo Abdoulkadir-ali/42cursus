@@ -10,22 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 static void	dispatch_click(t_gui *gui, t_vec2i mouse)
 {
 	t_physics_body	*phys;
 
-	if (gui->inspector.tab == TAB_MATERIAL)
+	if (gui->inspector->tab == TAB_MATERIAL)
 		material_panel_handle_click(gui, mouse);
-	else if (gui->inspector.tab == TAB_TRANSFORM)
+	else if (gui->inspector->tab == TAB_TRANSFORM)
 		transform_panel_handle_click(gui, mouse);
-	else if (gui->inspector.tab == TAB_PHYSICS)
+	else if (gui->inspector->tab == TAB_PHYSICS)
 	{
 		phys = get_selected_physics(gui);
 		if (phys)
 			physics_panel_handle_click(gui, mouse, phys);
 	}
-	else if (gui->inspector.tab == TAB_LIGHT)
+	else if (gui->inspector->tab == TAB_LIGHT)
 		light_panel_handle_click(gui, mouse);
 }
 
@@ -42,17 +42,17 @@ bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 	int				n;
 	int				x;
 
-	if (!gui->inspector.visible || !gui->selection.active)
+	if (!gui->inspector->visible || !gui->selection->active)
 		return (false);
-	x = gui->win.disp_w - gui->inspector.width;
+	x = gui->win.disp_w - gui->inspector->width;
 	if (mouse.x < x || mouse.x >= gui->win.disp_w)
 		return (false);
 	if (mouse.y >= INSPECTOR_TAB_MIN_Y && mouse.y <= INSPECTOR_TAB_MAX_Y)
 	{
-		n = get_tabs(gui->selection.type, tabs, lbls);
+		n = get_tabs(gui->selection->type, tabs, lbls);
 		n = (mouse.x - x) / (INSPECTOR_W / n);
-		if (n >= 0 && n < get_tabs(gui->selection.type, tabs, lbls))
-			gui->inspector.tab = tabs[n];
+		if (n >= 0 && n < get_tabs(gui->selection->type, tabs, lbls))
+			gui->inspector->tab = tabs[n];
 		return (true);
 	}
 	dispatch_click(gui, mouse);

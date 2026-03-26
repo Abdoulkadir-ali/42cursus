@@ -11,19 +11,10 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "objects.h"
+#include "objects.h"
 
-t_aabb	aabb_union(t_aabb a, t_aabb b)
-{
-	t_aabb	r;
 
-	r.min.x = fmin(a.min.x, b.min.x);
-	r.min.y = fmin(a.min.y, b.min.y);
-	r.min.z = fmin(a.min.z, b.min.z);
-	r.max.x = fmax(a.max.x, b.max.x);
-	r.max.y = fmax(a.max.y, b.max.y);
-	r.max.z = fmax(a.max.z, b.max.z);
-	return (r);
-}
 
 void	compute_com(t_physics_body *b)
 {
@@ -52,8 +43,8 @@ void	compute_inertia(t_physics_body *b)
 	memset(&b->inv_inertia, 0, sizeof(t_mat3));
 	if (b->mass < 1e-6) return ;
 	ms = b->mass / (double)b->sub_count;
-	i = -1;
-	while (++i < (int)b->sub_count)
+	i = 0;
+	while (i < b->sub_count)
 	{
 		r = vec3_sub(b->sub_shapes[i].offset, b->com);
 		b->inv_inertia.m[0][0] += ms * (r.y * r.y + r.z * r.z);
@@ -62,6 +53,7 @@ void	compute_inertia(t_physics_body *b)
 		b->inv_inertia.m[0][1] -= ms * (r.x * r.y);
 		b->inv_inertia.m[0][2] -= ms * (r.x * r.z);
 		b->inv_inertia.m[1][2] -= ms * (r.y * r.z);
+		i++;
 	}
 	b->inv_inertia.m[1][0] = b->inv_inertia.m[0][1];
 	b->inv_inertia.m[2][0] = b->inv_inertia.m[0][2];

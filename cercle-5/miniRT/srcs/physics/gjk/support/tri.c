@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 /**
  * @brief GJK support point for a triangle. Uses pre-built world-space verts.

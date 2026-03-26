@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
-static void	set_tab_base(t_inspect_tab tabs[4], const char *labels[4])
+static void	set_tab_base(t_inspect_tab *tabs, const char **labels)
 {
 	tabs[0] = TAB_TRANSFORM;
 	labels[0] = "Transform";

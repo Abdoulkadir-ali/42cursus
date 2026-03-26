@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 void	draw_physics_panel(t_gui *gui, t_physics_body *phys, int x)
 {
     t_islider	 sl[3];

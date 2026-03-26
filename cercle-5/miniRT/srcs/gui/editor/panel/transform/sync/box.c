@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /**
  * @brief Synchronizes box half-extents with its current scale transform.
  * @param gui Pointer to the GUI context.
@@ -19,8 +19,8 @@ void	box_scale_sync(t_gui *gui)
 {
 	t_box	*bx;
 
-	if (!gui->selection.active || gui->selection.type != TYPE_BOX)
+	if (!gui->selection->active || gui->selection->type != TYPE_BOX)
 		return ;
-	bx = &gui->scene->boxes[gui->selection.index];
+	bx = &gui->scene->boxes[gui->selection->index];
 	bx->half_extents = bx->transform.scale;
 }

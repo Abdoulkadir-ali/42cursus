@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "mlx.h"
 #include "surface.h"
 #include "scene.h"
 #include "stb.h"

@@ -16,12 +16,12 @@ double	json_as_number(t_json_value *val)
 {
 	if (!val || val->type != JSON_NUMBER)
 		return (0.0);
-	return (val->u.number);
+	return (val->number);
 }
 
 const char	*json_as_string(t_json_value *val)
 {
 	if (!val || val->type != JSON_STRING)
 		return (NULL);
-	return (val->u.string);
+	return (val->string);
 }

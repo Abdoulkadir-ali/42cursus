@@ -6,36 +6,41 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 17:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 13:32:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 /**
  * @brief Linear Sweep CCD for Sphere vs. Plane.
  * Finds the earliest time t inside [0, 1] that the sphere hits the plane.
  * Prevents tunneling at high velocities.
  */
-double	ccd_sweep_sphere_vs_plane(t_vec3 pos, t_vec3 vel, double r, 
-			t_vec3 pl_pos, t_vec3 pl_norm, double dt)
+double	ccd_sweep_sphere_vs_plane(t_vec3 pos, t_vec3 vel, double r,
+		t_vec3 pl_pos, t_vec3 pl_norm, double dt)
 {
 	double	d_start;
 	double	v_dot_n;
 	double	t;
 
 	d_start = vec3_dot(vec3_sub(pos, pl_pos), pl_norm);
-	if (d_start < r) return (0.0); /* Already penetrating */
+	if (d_start < r)
+		return (0.0); /* Already penetrating */
 	v_dot_n = vec3_dot(vel, pl_norm);
-	if (v_dot_n >= 0.0) return (1.0); /* Moving away */
+	if (v_dot_n >= 0.0)
+		return (1.0); /* Moving away */
 	t = (r - d_start) / (v_dot_n * dt + 1e-9);
-	if (t < 0.0 || t > 1.0) return (1.0);
+	if (t < 0.0 || t > 1.0)
+		return (1.0);
 	return (t);
 }
 
 /**
  * @brief CCD Solver pass. Checks predicted motion against environment.
- * If a hit is detected at t < 1, the body's position is clamped to the hit point.
+ * If a hit is detected at t < 1,
+	the body's position is clamped to the hit point.
  */
 void	phys_resolve_ccd(t_scene *s, t_physics_body *b, double dt)
 {
@@ -51,9 +56,10 @@ void	phys_resolve_ccd(t_scene *s, t_physics_body *b, double dt)
 	while (++i < s->rect_count)
 	{
 		n = vec3_norm(s->rects[i].transform.up);
-		t = ccd_sweep_sphere_vs_plane(b->center, b->velocity, 0.5, 
+		t = ccd_sweep_sphere_vs_plane(b->center, b->velocity, 0.5,
 				s->rects[i].transform.pos, n, dt);
-		if (t < min_t) min_t = t;
+		if (t < min_t)
+			min_t = t;
 	}
 	if (min_t < 1.0)
 	{

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 bool	physics_panel_handle_click(t_gui *gui, t_vec2i mouse,
     t_physics_body *phys)
 {
@@ -21,7 +21,7 @@ bool	physics_panel_handle_click(t_gui *gui, t_vec2i mouse,
 
     if (!phys)
         return (false);
-    x = gui->win.disp_w - gui->inspector.width;
+    x = gui->win.disp_w - gui->inspector->width;
     y = 140;
     sl[0] = (t_islider){"Mass (kg)", SL_MASS_MIN, SL_MASS_MAX, &phys->mass};
     sl[1] = (t_islider){"Elasticity", SL_ELAST_MIN, SL_ELAST_MAX,

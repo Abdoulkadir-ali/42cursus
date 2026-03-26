@@ -115,16 +115,16 @@ static void	process_glb_meshes(t_scene *scene, t_json_value *json, char *bin,
 	nodes = json_get(json, "nodes");
 	node_count = 0;
 	if (nodes && nodes->type == JSON_ARRAY)
-		node_count = (int)nodes->u.array.count;
+		node_count = (int)nodes->array.count;
 	i = -1;
-	while (++i < (int)meshes->u.array.count)
+	while (++i < (int)meshes->array.count)
 	{
 		mesh_json = json_at(meshes, i);
 		prims = json_get(mesh_json, "primitives");
 		if (!prims || prims->type != JSON_ARRAY)
 			continue ;
 		j = -1;
-		while (++j < (int)prims->u.array.count)
+		while (++j < (int)prims->array.count)
 		{
 			prim_json = json_at(prims, j);
 			mat_idx = json_get_int(prim_json, "material");

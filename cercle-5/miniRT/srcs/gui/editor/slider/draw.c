@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /**
  * @brief Renders the slider track, filled progress, and interactive knob.
  * @param gui Pointer to the GUI context.

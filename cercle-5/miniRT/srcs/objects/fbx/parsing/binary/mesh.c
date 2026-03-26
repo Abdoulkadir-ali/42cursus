@@ -34,7 +34,7 @@ static void	fbx_bin_set_normals(t_fbx_bin_ctx *ctx)
 	ctx->data.vn = rn;
 }
 
-static void	fbx_bin_fill_params(t_fbx_flat_params *p, t_fbx_data *d)
+static void	fbx_bin_fill_args(t_fbx_flat_args *p, t_fbx_data *d)
 {
 	p->raw = d->ri;
 	p->raw_c = (int)d->rc;
@@ -57,12 +57,12 @@ static void	fbx_bin_release_arrays(t_fbx_bin_ctx *ctx)
 
 bool	fbx_bin_build_mesh(t_fbx_bin_ctx *ctx)
 {
-	t_fbx_flat_params	p;
+	t_fbx_flat_args	p;
 
 	if (!fbx_bin_set_vertices(ctx))
 		return (false);
 	fbx_bin_set_normals(ctx);
-	fbx_bin_fill_params(&p, &ctx->data);
+	fbx_bin_fill_args(&p, &ctx->data);
 	ft_print_debug("DEBUG: calling fbx_build_flat\n");
 	fbx_build_flat(&ctx->mesh.base, &p);
 	ft_print_debug("DEBUG: fbx_build_flat finished\n");

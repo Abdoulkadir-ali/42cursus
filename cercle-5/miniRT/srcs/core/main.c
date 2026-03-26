@@ -19,8 +19,6 @@
  */
 static int	run_app(const char *path)
 {
-	t_scene	*scene;
-	t_gui	*gui;
 	void	*mlx;
 
 	ft_print_debug("DEBUG: Initializing MLX for: %s\n", path);
@@ -30,9 +28,7 @@ static int	run_app(const char *path)
 		ft_putendl_fd("Error: Failed to initialize MLX", STDERR_FILENO);
 		return (1);
 	}
-	scene = NULL;
-	gui = init_app(path, &scene, mlx);
-	return (start_app(gui, scene, mlx));
+	return (start_app(mlx, path));
 }
 
 /**

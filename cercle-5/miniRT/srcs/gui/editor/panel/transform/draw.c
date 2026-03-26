@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 void	draw_transform_panel(t_gui *gui, int x)
 {
     t_transform	*tr;
@@ -26,11 +26,11 @@ void	draw_transform_panel(t_gui *gui, int x)
             x + 8, 90, COL_TEXT, "No transform");
         return ;
     }
-    if (gui->selection.type == TYPE_SPHERE)
+    if (gui->selection->type == TYPE_SPHERE)
         tr->scale.y = tr->scale.z = tr->scale.x;
     mlx_string_put(gui->win.mlx, gui->win.win,
         x + 8, 88, COL_HOVER, "TRANSFORM");
-    build_tr_sliders(tr, gui->selection.type, sl, &count);
+    build_tr_sliders(tr, gui->selection->type, sl, &count);
     y = 104;
     i = 0;
 	while (i < count)

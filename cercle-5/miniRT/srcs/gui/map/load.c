@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /*
 ** Activates a map entry, parsing and caching it on first access.
 ** If the entry already holds a scene, the cached scene is reused without
@@ -45,7 +45,11 @@ bool	map_load_entry(t_gui *gui, t_map_entry *entry)
 	gui->scene = entry->scene;
 	gui->map_info.current = entry;
 	if (newly_parsed)
-		scene_snapshot(&entry->snap, gui);
+	{
+		entry->snap = malloc(sizeof(t_scene_snap));
+		if (entry->snap)
+			scene_snapshot(entry->snap, gui);
+	}
 	return (true);
 }
 

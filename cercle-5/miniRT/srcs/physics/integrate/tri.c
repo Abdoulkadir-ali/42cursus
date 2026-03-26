@@ -11,17 +11,20 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 static void	init_tri_inertia(t_tri_shape *tr)
 {
+	t_vec3	inv_i;
 	double	a2;
 	double	b2;
 
 	a2 = vec3_mag_sq(vec3_sub(tr->v[1], tr->v[0])) + 1e-9;
 	b2 = vec3_mag_sq(vec3_sub(tr->v[2], tr->v[0])) + 1e-9;
-	tr->phys.inv_inertia.x = 18.0 / b2;
-	tr->phys.inv_inertia.y = 18.0 / (a2 + b2);
-	tr->phys.inv_inertia.z = 18.0 / a2;
+	inv_i.x = 18.0 / b2;
+	inv_i.y = 18.0 / (a2 + b2);
+	inv_i.z = 18.0 / a2;
+	tr->phys.inv_inertia = mat3_diag(inv_i);
 }
 
 static void	update_tri_verts(t_tri_shape *tr, t_vec3 delta, double dt)

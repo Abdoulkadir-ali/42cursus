@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 13:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:05:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 13:33:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,7 @@ static t_aabb	aabb_merge(t_aabb a, t_aabb b)
 	return (r);
 }
 
-static double	aabb_sa(t_aabb a)
-{
-	t_vec3	d;
 
-	d = vec3_sub(a.max, a.min);
-	return (2.0 * (d.x * d.y + d.y * d.z + d.z * d.x));
-}
 
 static int	alloc_node(t_dbvt *t, t_aabb aabb, int leaf, int left, int right)
 {
@@ -60,9 +54,12 @@ static int	split_axis(t_dbvt *t, int begin, int end)
 	while (mid < end)
 		bound = aabb_merge(bound, t->leaves[mid++].fat_aabb);
 	d = vec3_sub(bound.max, bound.min);
-	if (d.x >= d.y && d.x >= d.z) axis = 0;
-	else if (d.y >= d.z) axis = 1;
-	else axis = 2;
+	if (d.x >= d.y && d.x >= d.z)
+		axis = 0;
+	else if (d.y >= d.z)
+		axis = 1;
+	else
+		axis = 2;
 	mid = (begin + end) / 2;
 	(void)axis;
 	return (mid);

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 /**
  * @brief Validates the input path and triggers the appropriate mesh loader.
@@ -18,17 +18,17 @@
  */
 void	popup_load_mesh(t_gui *gui)
 {
-	if (gui->crud.path_len == 0 || access(gui->crud.path_buf, R_OK) != 0)
+	if (gui->crud->path_len == 0 || access(gui->crud->path_buf, R_OK) != 0)
 	{
-		gui->crud.path_error = true;
+		gui->crud->path_error = true;
 		gui->render.dirty = true;
 		return ;
 	}
-	if (gui->crud.mesh_fmt == MESH_FMT_OBJ)
-		editor_add_obj(gui, gui->crud.path_buf);
+	if (gui->crud->mesh_fmt == MESH_FMT_OBJ)
+		editor_add_obj(gui, gui->crud->path_buf);
 	else
-		editor_add_glb(gui, gui->crud.path_buf);
-	gui->crud.popup = POPUP_NONE;
-	gui->crud.path_error = false;
+		editor_add_glb(gui, gui->crud->path_buf);
+	gui->crud->popup = POPUP_NONE;
+	gui->crud->path_error = false;
 	gui->render.dirty = true;
 }

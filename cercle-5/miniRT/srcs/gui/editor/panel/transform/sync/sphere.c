@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /**
  * @brief Synchronizes sphere uniform scale and inverse transform.
  * @param gui Pointer to the GUI context.
@@ -20,9 +20,9 @@ void	sphere_scale_sync(t_gui *gui)
 	t_sphere	*sp;
 	t_transform	tr;
 
-	if (!gui->selection.active || gui->selection.type != TYPE_SPHERE)
+	if (!gui->selection->active || gui->selection->type != TYPE_SPHERE)
 		return ;
-	sp = &gui->scene->spheres[gui->selection.index];
+	sp = &gui->scene->spheres[gui->selection->index];
 	sp->transform.scale.y = sp->transform.scale.x;
 	sp->transform.scale.z = sp->transform.scale.x;
 	sp->radius_sq = sp->transform.scale.x * sp->transform.scale.x;

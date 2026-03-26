@@ -15,7 +15,7 @@
 /*
 ** Sets up the quadratic equation for cylinder body intersection.
 */
-static bool	check_body_t(t_check_params params)
+static bool	check_body_t(t_check_args params)
 {
 	t_vec3			p;
 	double			h;
@@ -68,7 +68,7 @@ bool	check_body(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit)
 {
 	t_quadratic			q;
 	t_quadratic_roots	roots;
-	t_check_params		params;
+	t_check_args		params;
 
 	q = setup_cylinder_quadratic(ray, cy);
 	if (!solve_quadratic(q, &roots))

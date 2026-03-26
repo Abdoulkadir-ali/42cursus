@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-static void	build_light_sliders(t_light *lt, t_islider *sl, int *count)
+#include "editor.h"
+void	build_light_sliders(t_light *lt, t_islider *sl, int *count)
 {
 	int	i;
 
@@ -35,9 +35,9 @@ void	draw_light_panel(t_gui *gui, int x)
 	int			i;
 	int			y;
 
-	if (!gui->scene || gui->selection.index >= gui->scene->light_count)
+	if (!gui->scene || gui->selection->index >= gui->scene->light_count)
 		return ;
-	lt = &gui->scene->lights[gui->selection.index];
+	lt = &gui->scene->lights[gui->selection->index];
 	mlx_string_put(gui->win.mlx, gui->win.win, x + 8, 88, COL_HOVER, "LIGHT");
 	mlx_string_put(gui->win.mlx, gui->win.win, x + 8, 100, COL_TEXT,
 		lt->type == LIGHT_SPOT ? "Type: Spot" : "Type: Point");

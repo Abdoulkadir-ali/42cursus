@@ -25,7 +25,7 @@ static int	pack_color(t_vec3 color)
 	return (r | g | b);
 }
 
-static void	fill_block(t_render_ctx *ctx, t_fill_params *params)
+static void	fill_block(t_render_ctx *ctx, t_fill_args *params)
 {
 	int		dx;
 	int		dy;
@@ -50,7 +50,7 @@ void	process_pixel(t_render_ctx *ctx, t_vec2i pos, char *pixel_addr)
 	t_ray			ray;
 	t_vec3			color;
 	int				c_int;
-	t_fill_params	params;
+	t_fill_args	params;
 
 	make_camera_ray(ctx, pos.x, pos.y, &ray);
 	color = trace_ray(ctx->gui->scene->bvh, &ray, ctx->gui->scene);

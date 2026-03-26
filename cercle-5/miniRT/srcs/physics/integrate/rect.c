@@ -11,23 +11,26 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 static void	init_rect_inertia(t_rect *rc)
 {
+	t_vec3	inv_i;
 	t_vec3	e0;
 	t_vec3	e1;
 	double	w2;
 	double	h2;
 
-	if (vec3_mag_sq(rc->phys.inv_inertia) > 1e-9)
+	if (rc->phys.inv_inertia.m[0][0] > 1e-9)
 		return ;
 	e0 = vec3_sub(rc->v[1], rc->v[0]);
 	e1 = vec3_sub(rc->v[3], rc->v[0]);
 	w2 = vec3_mag_sq(e0) + 1e-9;
 	h2 = vec3_mag_sq(e1) + 1e-9;
-	rc->phys.inv_inertia.x = 12.0 / h2;
-	rc->phys.inv_inertia.y = 12.0 / (w2 + h2);
-	rc->phys.inv_inertia.z = 12.0 / w2;
+	inv_i.x = 12.0 / h2;
+	inv_i.y = 12.0 / (w2 + h2);
+	inv_i.z = 12.0 / w2;
+	rc->phys.inv_inertia = mat3_diag(inv_i);
 }
 
 static void	update_rect_verts(t_rect *rc, t_vec3 delta, double dt)

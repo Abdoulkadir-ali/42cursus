@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "objects.h"
+#include "objects.h"
 
 extern t_support_fn	get_support(t_phys_type type);
 
@@ -32,7 +34,7 @@ int	narrow_dispatch_body_pair(t_body_pair *p, t_contact *c, int count)
 	sb.center = lb->body->center;
 	return (count + gjk_make_contact(&sa, &sb,
 			p->a, p->b,
-			la->shape, lb->shape, &c[count]));
+			(t_transform *)la->shape, (t_transform *)lb->shape, &c[count]));
 }
 
 /**
@@ -51,5 +53,5 @@ int	narrow_dispatch_shape_pair(t_shape_pair *p, t_contact *c, int count)
 	sb.center = vec3_add(p->bb->center, p->sb->offset);
 	return (count + gjk_make_contact(&sa, &sb,
 			p->ba, p->bb,
-			p->sa, p->sb, &c[count]));
+			(t_transform *)p->sa, (t_transform *)p->sb, &c[count]));
 }

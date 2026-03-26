@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 /**
  * @brief Checks if two Axis-Aligned Bounding Boxes (AABB) overlap.

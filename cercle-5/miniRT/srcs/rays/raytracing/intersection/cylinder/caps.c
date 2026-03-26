@@ -15,7 +15,7 @@
 /*
 ** Fills the hit record for a cylinder cap intersection.
 */
-static void	fill_cap_hit(t_cap_params params, double t, t_vec3 p)
+static void	fill_cap_hit(t_cap_args params, double t, t_vec3 p)
 {
 	t_entry_point	pt;
 
@@ -32,7 +32,7 @@ static void	fill_cap_hit(t_cap_params params, double t, t_vec3 p)
 /*
 ** Checks intersection with a cylinder cap.
 */
-static bool	check_cap(t_cap_params params)
+static bool	check_cap(t_cap_args params)
 {
 	double	t;
 	t_vec3	p;
@@ -63,7 +63,7 @@ static bool	check_cap(t_cap_params params)
 bool	check_bottom_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 		t_hit *hit)
 {
-	return (check_cap((t_cap_params){ray, cy, tm, hit, cy->transform.pos,
+	return (check_cap((t_cap_args){ray, cy, tm, hit, cy->transform.pos,
 			-1.0}));
 }
 
@@ -76,5 +76,5 @@ bool	check_top_cap(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit)
 
 	top = vec3_add(cy->transform.pos, vec3_scale(cy->transform.forward,
 				cy->transform.scale.y));
-	return (check_cap((t_cap_params){ray, cy, tm, hit, top, 1.0}));
+	return (check_cap((t_cap_args){ray, cy, tm, hit, top, 1.0}));
 }

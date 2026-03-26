@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
+
 void	build_mat_sliders(t_material *mat, t_islider *sl, int *count)
 {
 	int	i;

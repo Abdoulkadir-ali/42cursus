@@ -109,7 +109,7 @@ void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin,
 
 	t_json_value *joints = json_get(skin, "joints");
 	if (!joints) return;
-	int count = joints->u.array.count;
+	int count = joints->array.count;
 	
 	glb_log("GLB: Building skeleton with %d bones + %d extra (IBM acc: %d)...\n", 
 		count, extra_count, (int)json_get_int(skin, "inverseBindMatrices"));
@@ -179,7 +179,7 @@ void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin,
 		
 		if (children)
 		{
-			for (size_t c = 0; c < children->u.array.count; c++)
+			for (size_t c = 0; c < children->array.count; c++)
 			{
 				int child_node = (int)json_as_number(json_at(children, c));
 				if (child_node < 65536)
@@ -258,12 +258,12 @@ int	glb_count_extra_anim_nodes(t_json_value *json)
 	nodes_arr = json_get(json, "nodes");
 	if (!nodes_arr)
 		return (0);
-	nc = (int)nodes_arr->u.array.count;
+	nc = (int)nodes_arr->array.count;
 	is_joint = ft_calloc(65536, sizeof(int));
 	if (!is_joint)
 		return (0);
 	i = 0;
-	while (i < (int)joints->u.array.count)
+	while (i < (int)joints->array.count)
 	{
 		node_idx = (int)json_as_number(json_at(joints, i));
 		if (node_idx >= 0 && node_idx < 65536)
@@ -355,7 +355,7 @@ void	glb_fill_extra_anim_nodes(t_mesh *mesh, t_json_value *json)
 	nodes_arr = json_get(json, "nodes");
 	if (!nodes_arr)
 		return ;
-	nc = (int)nodes_arr->u.array.count;
+	nc = (int)nodes_arr->array.count;
 	is_joint = ft_calloc(65536, sizeof(int));
 	parent_map = malloc(sizeof(int) * 65536);
 	if (!is_joint || !parent_map)
@@ -368,7 +368,7 @@ void	glb_fill_extra_anim_nodes(t_mesh *mesh, t_json_value *json)
 	while (i < 65536)
 		parent_map[i++] = -1;
 	i = 0;
-	while (i < (int)joints->u.array.count)
+	while (i < (int)joints->array.count)
 	{
 		node_idx = (int)json_as_number(json_at(joints, i));
 		if (node_idx >= 0 && node_idx < 65536)
@@ -384,7 +384,7 @@ void	glb_fill_extra_anim_nodes(t_mesh *mesh, t_json_value *json)
 		if (children)
 		{
 			k = 0;
-			while (k < (int)children->u.array.count)
+			while (k < (int)children->array.count)
 			{
 				child_idx = (int)json_as_number(json_at(children, k));
 				if (child_idx >= 0 && child_idx < 65536)

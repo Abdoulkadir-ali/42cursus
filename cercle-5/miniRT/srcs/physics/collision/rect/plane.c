@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:07:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 13:33:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 int	rect_vs_plane(t_rect *rc, t_plane *pl, t_contact *c, int max_c)
 {
@@ -31,10 +32,13 @@ int	rect_vs_plane(t_rect *rc, t_plane *pl, t_contact *c, int max_c)
 		{
 			c[count].normal = vec3_scale(n, -1.0);
 			c[count].penetration = -dist;
-			c[count].a = &rc->phys; c[count].b = NULL;
-			c[count].ta = &rc->transform; c[count].tb = &pl->transform;
+			c[count].a = &rc->phys;
+			c[count].b = NULL;
+			c[count].ta = &rc->transform;
+			c[count].tb = &pl->transform;
 			c[count].contact_point = rc->v[i];
-			c[count].ra = vec3_sub(rc->v[i], rc->phys.center); c[count].rb = vec3(0, 0, 0);
+			c[count].ra = vec3_sub(rc->v[i], rc->phys.center);
+			c[count].rb = vec3(0, 0, 0);
 			c[count].restitution = fmin(rc->phys.elasticity, 0.5);
 			c[count].friction = sqrt(rc->phys.friction * 0.5);
 			count++;

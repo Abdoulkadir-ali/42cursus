@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
+#include "objects.h"
 
 /**
  * @brief GJK support point for a complex mesh. Iterates through all vertices.

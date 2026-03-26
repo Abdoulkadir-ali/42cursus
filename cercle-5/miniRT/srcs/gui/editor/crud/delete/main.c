@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	editor_delete_selected(t_gui *gui)
 {
@@ -18,9 +18,9 @@ void	editor_delete_selected(t_gui *gui)
 	t_scene		*sc;
 	int			i;
 
-	if (!gui->scene || !gui->selection.active)
+	if (!gui->scene || !gui->selection->active)
 		return ;
-	sel = &gui->selection;
+	sel = gui->selection;
 	sc = gui->scene;
 	i = sel->index;
 	if (handle_delete_light(sc, sel, i))

@@ -30,7 +30,7 @@ int	scene_add_named_material(t_scene *sc, const char *name)
 	ft_memset(m, 0, sizeof(t_material));
 	m->name = ft_strdup(name);
 	m->albedo_map.type = TEX_SOLID;
-	m->albedo_map.color_a = (t_vec3){255.0, 255.0, 255.0};
+	m->albedo_map.color_a = (t_vec3){255.0, 255.0, 255.0, 0.0};
 	m->albedo_map.scale = 1.0;
 	m->specular = 0.1;
 	m->shininess = 16.0;

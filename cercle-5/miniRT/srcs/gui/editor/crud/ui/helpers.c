@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 t_transform	make_obj_transform(t_vec3 pos, t_vec3 fwd, t_vec3 scl)
 {
 	t_transform	tr;

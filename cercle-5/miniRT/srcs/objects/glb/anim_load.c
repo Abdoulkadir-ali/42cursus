@@ -96,7 +96,7 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 	chans = json_get(anim_json, "channels");
 	if (!chans)
 		return ;
-	anim->channel_count = chans->u.array.count;
+	anim->channel_count = chans->array.count;
 	anim->channels = malloc(sizeof(t_anim_channel) * anim->channel_count);
 	for (int i = 0; i < anim->channel_count; i++)
 	{
@@ -156,7 +156,7 @@ void	glb_load_animations(t_scene *scene, t_json_value *json, char *bin)
 	anims = json_get(json, "animations");
 	if (!anims || anims->type != JSON_ARRAY)
 		return ;
-	count = anims->u.array.count;
+	count = anims->array.count;
 	ensure_clip_capacity(scene, count);
 	/* Load each animation */
 	for (int i = 0; i < count; i++)
@@ -168,7 +168,7 @@ void	glb_load_animations(t_scene *scene, t_json_value *json, char *bin)
 		clip->max_time = 0.0;
 		/* Load Samplers */
 		samplers = json_get(anim_json, "samplers");
-		clip->sampler_count = samplers->u.array.count;
+		clip->sampler_count = samplers->array.count;
 		clip->samplers = malloc(sizeof(t_anim_sampler) * clip->sampler_count);
 		for (int s = 0; s < clip->sampler_count; s++)
 		{

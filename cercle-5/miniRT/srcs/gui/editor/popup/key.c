@@ -10,30 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 static void	handle_input_key(t_gui *gui, int keycode)
 {
 	char	ch;
 
 	if (keycode == XK_BackSpace)
 	{
-		if (gui->crud.path_len > 0)
-			gui->crud.path_buf[--gui->crud.path_len] = '\0';
+		if (gui->crud->path_len > 0)
+			gui->crud->path_buf[--gui->crud->path_len] = '\0';
 	}
 	else if (keycode >= 32 && keycode <= 126
-		&& gui->crud.path_len < (int)(sizeof(gui->crud.path_buf) - 1))
+		&& gui->crud->path_len < (int)(sizeof(gui->crud->path_buf) - 1))
 	{
-		if (gui->crud.shift_held)
+		if (gui->crud->shift_held)
 			ch = popup_shift_char(keycode);
 		else
 			ch = (char)keycode;
 		if (ch)
 		{
-			gui->crud.path_buf[gui->crud.path_len++] = ch;
-			gui->crud.path_buf[gui->crud.path_len] = '\0';
+			gui->crud->path_buf[gui->crud->path_len++] = ch;
+			gui->crud->path_buf[gui->crud->path_len] = '\0';
 		}
 	}
-	gui->crud.path_error = false;
+	gui->crud->path_error = false;
 	gui->render.dirty = true;
 }
 
@@ -45,11 +45,11 @@ static void	handle_input_key(t_gui *gui, int keycode)
  */
 bool	popup_handle_key(t_gui *gui, int keycode)
 {
-	if (gui->crud.popup != POPUP_MESH_PATH)
+	if (gui->crud->popup != POPUP_MESH_PATH)
 		return (false);
 	if (keycode == XK_Escape)
 	{
-		gui->crud.popup = POPUP_NONE;
+		gui->crud->popup = POPUP_NONE;
 		gui->render.dirty = true;
 		return (true);
 	}

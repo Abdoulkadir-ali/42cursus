@@ -63,11 +63,11 @@ void	get_contact_points(t_epa_poly *p, t_epa_face *f, t_vec3 *ca, t_vec3 *cb)
 	v[0] = p->pts[f->idx[0]];
 	v[1] = p->pts[f->idx[1]];
 	v[2] = p->pts[f->idx[2]];
-	ba = bary(v, vec3_mul(f->normal, f->dist));
-	*ca = vec3_add(vec3_mul(p->a_pts[f->idx[0]], ba.x),
-			vec3_add(vec3_mul(p->a_pts[f->idx[1]], ba.y),
-				vec3_mul(p->a_pts[f->idx[2]], ba.z)));
-	*cb = vec3_add(vec3_mul(p->b_pts[f->idx[0]], ba.x),
-			vec3_add(vec3_mul(p->b_pts[f->idx[1]], ba.y),
-				vec3_mul(p->b_pts[f->idx[2]], ba.z)));
+	ba = bary(v, vec3_scale(f->normal, f->dist));
+	*ca = vec3_add(vec3_scale(p->a_pts[f->idx[0]], ba.x),
+			vec3_add(vec3_scale(p->a_pts[f->idx[1]], ba.y),
+				vec3_scale(p->a_pts[f->idx[2]], ba.z)));
+	*cb = vec3_add(vec3_scale(p->b_pts[f->idx[0]], ba.x),
+			vec3_add(vec3_scale(p->b_pts[f->idx[1]], ba.y),
+				vec3_scale(p->b_pts[f->idx[2]], ba.z)));
 }

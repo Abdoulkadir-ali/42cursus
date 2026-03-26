@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 bool	handle_delete_light(t_scene *sc, t_selection *sel, int i)
 {

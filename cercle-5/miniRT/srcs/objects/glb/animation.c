@@ -50,7 +50,7 @@ void glb_inspect_animations(t_json_value *json)
 		return;
 	}
 
-	size_t count = anims->u.array.count;
+	size_t count = anims->array.count;
 	glb_log_anim("GLB: Found %zu animations.\n", count);
 
 	for (size_t i = 0; i < count; i++)
@@ -62,8 +62,8 @@ void glb_inspect_animations(t_json_value *json)
 		t_json_value *channels = json_get(anim, "channels");
 		if (channels && channels->type == JSON_ARRAY)
 		{
-			glb_log_anim("  Channels: %zu\n", channels->u.array.count);
-			for (size_t j = 0; j < channels->u.array.count; j++)
+			glb_log_anim("  Channels: %zu\n", channels->array.count);
+			for (size_t j = 0; j < channels->array.count; j++)
 			{
 				inspect_channel(json_at(channels, j), j);
 			}
@@ -72,7 +72,7 @@ void glb_inspect_animations(t_json_value *json)
 		t_json_value *samplers = json_get(anim, "samplers");
 		if (samplers && samplers->type == JSON_ARRAY)
 		{
-			glb_log_anim("  Samplers: %zu\n", samplers->u.array.count);
+			glb_log_anim("  Samplers: %zu\n", samplers->array.count);
 		}
 	}
 }
@@ -86,7 +86,7 @@ void glb_inspect_skins(t_json_value *json)
 		return;
 	}
 
-	size_t count = skins->u.array.count;
+	size_t count = skins->array.count;
 	glb_log_anim("GLB: Found %zu skins.\n", count);
 
 	for (size_t i = 0; i < count; i++)
@@ -101,11 +101,11 @@ void glb_inspect_skins(t_json_value *json)
 		
 		if (joints && joints->type == JSON_ARRAY)
 		{
-			glb_log_anim("  Joints (%zu): [", joints->u.array.count);
-			for (size_t j = 0; j < joints->u.array.count; j++)
+			glb_log_anim("  Joints (%zu): [", joints->array.count);
+			for (size_t j = 0; j < joints->array.count; j++)
 			{
 				glb_log_anim("%d%s", (int)json_as_number(json_at(joints, j)),
-					j < joints->u.array.count - 1 ? ", " : "");
+					j < joints->array.count - 1 ? ", " : "");
 			}
 			glb_log_anim("]\n");
 		}
@@ -121,7 +121,7 @@ void glb_inspect_nodes(t_json_value *json)
 		return;
 	}
 
-	size_t count = nodes->u.array.count;
+	size_t count = nodes->array.count;
 	glb_log_anim("GLB: Found %zu nodes.\n", count);
 
 	for (size_t i = 0; i < count; i++)
@@ -132,10 +132,10 @@ void glb_inspect_nodes(t_json_value *json)
 		if (children && children->type == JSON_ARRAY)
 		{
 			glb_log_anim("Children [");
-			for (size_t j = 0; j < children->u.array.count; j++)
+			for (size_t j = 0; j < children->array.count; j++)
 			{
 				glb_log_anim("%d%s", (int)json_as_number(json_at(children, j)),
-					j < children->u.array.count - 1 ? ", " : "");
+					j < children->array.count - 1 ? ", " : "");
 			}
 			glb_log_anim("], ");
 		}

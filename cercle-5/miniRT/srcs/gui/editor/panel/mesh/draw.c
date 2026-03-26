@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 static void	draw_info_row(t_gui *gui, t_vec2i pos, const char *label,
         const char *val)
 {
@@ -27,9 +27,9 @@ void	draw_mesh_info_panel(t_gui *gui, int x)
     char		buf[64];
     int			y;
 
-    if (!gui->scene || gui->selection.index >= gui->scene->group_count)
+    if (!gui->scene || gui->selection->index >= gui->scene->group_count)
         return ;
-    g = &gui->scene->groups[gui->selection.index];
+    g = &gui->scene->groups[gui->selection->index];
     mesh = &gui->scene->meshes[g->start];
     mlx_string_put(gui->win.mlx, gui->win.win, x + 8, 88, COL_HOVER,
         "MESH INFO");

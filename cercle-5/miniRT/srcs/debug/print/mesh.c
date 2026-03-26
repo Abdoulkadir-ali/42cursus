@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "raytracing.h"
 #include "debug.h"
 
 void	debug_print_mesh_hit(const t_ray *ray, int tri_idx, double t)

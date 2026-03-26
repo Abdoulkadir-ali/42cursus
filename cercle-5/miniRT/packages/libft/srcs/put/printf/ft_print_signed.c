@@ -16,7 +16,7 @@
  * @brief Calculates the number of digits and total length for a number.
  * @note Public library exported function.
  */
-void	ft_calc_number_params(long n, t_flags *flags, int *num_len,
+void	ft_calc_number_args(long n, t_flags *flags, int *num_len,
 		int *total_len)
 {
 	long	tmp;
@@ -96,7 +96,7 @@ int	ft_print_number_with_flags(long n, t_flags *flags)
 	int		total_len;
 	long	tmp;
 
-	ft_calc_number_params(n, flags, &num_len, &total_len);
+	ft_calc_number_args(n, flags, &num_len, &total_len);
 	tmp = n;
 	if (n < 0)
 		tmp = -n;

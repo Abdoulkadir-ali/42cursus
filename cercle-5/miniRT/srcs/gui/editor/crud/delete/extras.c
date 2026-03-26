@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	delete_sel_extras(t_scene *sc, t_selection *sel)
 {

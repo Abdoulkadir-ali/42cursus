@@ -39,7 +39,7 @@ static bool	ascii_parse_mesh(t_fbx_ascii_ctx *ctx)
 static bool	ascii_build_mesh(t_fbx_ascii_ctx *ctx, t_scene *scene,
 		const char *path)
 {
-	t_fbx_flat_params	p;
+	t_fbx_flat_args	p;
 
 	p.raw = ctx->ri;
 	p.raw_c = ctx->rc;

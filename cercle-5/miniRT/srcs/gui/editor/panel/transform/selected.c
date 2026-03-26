@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 t_transform	*get_selected_transform(t_gui *gui)
 {
     t_selection	*sel;
     t_scene		*sc;
 
-    sel = &gui->selection;
+    sel = gui->selection;
     sc = gui->scene;
     if (!sel->active || !sc)
         return (NULL);

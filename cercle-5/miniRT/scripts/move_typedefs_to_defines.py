@@ -80,7 +80,7 @@ def scan_file(path: Path):
         # Exclude based on common context/arg/val/param patterns (case-insensitive)
         low_tag = tag.lower()
         low_alias = alias.lower()
-        EXCLUDE_SUBSTRS = ("_crx", "_ctx", "_args", "_val", "_param", "_params")
+        EXCLUDE_SUBSTRS = ("_crx", "_ctx", "_args", "_val", "_param", "_args")
         if any(sub in low_tag for sub in EXCLUDE_SUBSTRS) or any(sub in low_alias for sub in EXCLUDE_SUBSTRS):
             continue
         results.append(key)

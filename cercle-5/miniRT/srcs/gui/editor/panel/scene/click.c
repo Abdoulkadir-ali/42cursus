@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /**
  * @brief Handles click events in the scene hierarchy panel.
  * @param gui Pointer to the GUI context.
@@ -23,13 +23,13 @@ bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	t_type	ty;
 	int		idx;
 
-	if (!gui->scene_panel.visible || !gui->scene)
+	if (!gui->scene_panel->visible || !gui->scene)
 		return (false);
-	if (mouse.x < 0 || mouse.x >= gui->scene_panel.width)
+	if (mouse.x < 0 || mouse.x >= gui->scene_panel->width)
 		return (false);
 	if (mouse.y >= 0 && mouse.y < CRUD_PANEL_H)
 		return (crud_handle_click(gui, mouse));
-	row = (mouse.y - CRUD_PANEL_H + gui->scene_panel.scroll) / ROW_H;
+	row = (mouse.y - CRUD_PANEL_H + gui->scene_panel->scroll) / ROW_H;
 	if (row < 0 || row >= count_scene_rows(gui->scene))
 		return (false);
 	row_to_object(gui, row, &ty, &idx);

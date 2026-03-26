@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 static void	init_capsule_inertia(t_capsule *cap)
 {

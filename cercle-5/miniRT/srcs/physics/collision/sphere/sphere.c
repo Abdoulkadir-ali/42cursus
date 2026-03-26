@@ -6,14 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 10:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:08:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 13:33:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "objects.h"
 #include "physics.h"
+#include "scene.h"
 
 /**
- * @brief Primary entry point for sphere collision generation. 
+ * @brief Primary entry point for sphere collision generation.
  * Dispatches to BVH Broadphase, GJK Narrowphase, and Analytic Plane tests.
  */
 int	query_sphere(t_scene *s, int idx, t_contact *c, int count, int max)

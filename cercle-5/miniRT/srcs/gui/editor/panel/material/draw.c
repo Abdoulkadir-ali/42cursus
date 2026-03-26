@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 void	draw_material_panel_text(t_gui *gui, int x)
 {
 	t_material	*mat;

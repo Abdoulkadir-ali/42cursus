@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 /**
  * @brief Recalculates the popup's centered position and total height based on 
  * its current state. Updates the values directly in gui->crud structures.
@@ -19,7 +19,7 @@ void	update_popup_rect(t_gui *gui)
 {
 	t_crud_ui	*c;
 
-	c = &gui->crud;
+	c = gui->crud;
 	c->w = POPUP_W;
 	if (c->popup == POPUP_SHAPE)
 		c->h = POPUP_PAD * 2 + POPUP_TITLE_H + 4 * (POPUP_ITEM_H + 8) + 40;

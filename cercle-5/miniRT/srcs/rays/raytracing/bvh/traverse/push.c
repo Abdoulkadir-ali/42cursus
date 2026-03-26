@@ -27,7 +27,7 @@
  * 
  * @return No explicit return. Output configures metrics globally via reference tracking.
  */
-static void	compute_push_hits(t_push_vars *v, t_bvh_stack *bvh,
+static void	compute_push_hits(t_push *v, t_bvh_stack *bvh,
  			    int node_idx)
 {
 	v->left = bvh->bvh->nodes[node_idx].left_or_first;
@@ -59,7 +59,7 @@ static void	compute_push_hits(t_push_vars *v, t_bvh_stack *bvh,
  * 
  * @return No return type. Evaluates internal stack variables entirely.
  */
-static void	push_children_both(t_bvh_stack *bvh, t_push_vars *v)
+static void	push_children_both(t_bvh_stack *bvh, t_push *v)
 {
 	if (v->tl <= v->tr)
 	{
@@ -91,7 +91,7 @@ static void	push_children_both(t_bvh_stack *bvh, t_push_vars *v)
  */
 void	push_children(t_bvh_stack *bvh, int node_idx)
 {
-	t_push_vars v;
+	t_push v;
 
 	compute_push_hits(&v, bvh, node_idx);
 	if (v.hit_l && v.hit_r)

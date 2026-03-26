@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-static void	draw_vec3_label(t_gui *gui, const t_vec3_label_arg *a)
+#include "editor.h"
+void	draw_vec3_label(t_gui *gui, const t_vec3_label_arg *a)
 {
     char	buf[80];
 
@@ -22,7 +22,7 @@ static void	draw_vec3_label(t_gui *gui, const t_vec3_label_arg *a)
         buf);
 }
 
-static void	draw_bool_label(t_gui *gui, const t_bool_label_arg *a)
+void	draw_bool_label(t_gui *gui, const t_bool_label_arg *a)
 {
     char	buf[32];
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static void	post_process_meshes(t_gui *gui, int mesh_start)
 {
@@ -35,7 +35,6 @@ void	editor_add_glb(t_gui *gui, const char *path)
 {
 	int	mesh_start;
 	int	i;
-	int	new_id;
 	int	gid;
 
 	if (!gui->scene)

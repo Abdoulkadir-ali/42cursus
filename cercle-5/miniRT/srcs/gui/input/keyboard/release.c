@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 static t_key_action *get_keymap(void)
 {
@@ -49,7 +49,7 @@ int	key_release(int keycode, t_gui *gui)
     if (!gui->cam_ctrl.camera)
         return (0);
     if (keycode == XK_Shift_L || keycode == XK_Shift_R)
-        gui->crud.shift_held = false;
+        gui->crud->shift_held = false;
     keymap = get_keymap();
     i = 0;
     while (keymap[i].key != 0)

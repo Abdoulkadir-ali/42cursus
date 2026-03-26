@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	draw_inspector_bg(t_gui *gui)
 {
@@ -19,9 +19,9 @@ void	draw_inspector_bg(t_gui *gui)
 	int		w;
 	int		h;
 
-	if (!gui->inspector.visible || !gui->selection.active)
+	if (!gui->inspector->visible || !gui->selection->active)
 		return ;
-	w = gui->inspector.width;
+	w = gui->inspector->width;
 	h = gui->win.disp_h;
 	x = gui->win.disp_w - w;
 	panel = (t_panel){.x = x, .y = 0, .w = w, .h = h, .bg = COL_BG,

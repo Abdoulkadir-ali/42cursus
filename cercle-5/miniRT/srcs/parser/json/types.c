@@ -42,7 +42,7 @@ t_json_value	*json_parse_inner_number(const char **s)
 	if (!val)
 		return (NULL);
 	val->type = JSON_NUMBER;
-	val->u.number = strtod(*s, &end);
+	val->number = strtod(*s, &end);
 	*s = end;
 	return (val);
 }

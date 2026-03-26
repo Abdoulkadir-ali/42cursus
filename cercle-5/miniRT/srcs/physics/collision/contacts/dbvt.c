@@ -11,10 +11,13 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 static int	process_pair(t_scene *s, t_body_pair *p, t_contact *contacts, int c, int max_c)
 {
 	t_shape_pair	sp[MAX_BODY_PAIRS];
+
+	(void)s;
 	int				ns;
 	int				i;
 

@@ -6,21 +6,24 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:08:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 13:33:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 int	query_pyramid(t_scene *s, int idx, t_contact *c, int count, int max)
 {
-	t_pyramid	*py = &s->pyramids[idx];
+	t_pyramid	*py;
 	t_aabb		pyaabb;
 	t_gjk_shape	sa;
 	t_gjk_shape	sb;
 	int			p;
 
-	if (py->phys.is_static) return (count);
+	py = &s->pyramids[idx];
+	if (py->phys.is_static)
+		return (count);
 	pyaabb = pyramid_aabb(py);
 	sa = (t_gjk_shape){py, gjk_support_pyramid, py->phys.center};
 	p = -1;
@@ -30,8 +33,10 @@ int	query_pyramid(t_scene *s, int idx, t_contact *c, int count, int max)
 	while (++p < s->pyramid_count && count < max)
 		if (aabb_overlap(pyaabb, pyramid_aabb(&s->pyramids[p])))
 		{
-			sb = (t_gjk_shape){&s->pyramids[p], gjk_support_pyramid, s->pyramids[p].phys.center};
-			count += gjk_make_contact(&sa, &sb, &py->phys, &s->pyramids[p].phys, &py->transform, &s->pyramids[p].transform, &c[count]);
+			sb = (t_gjk_shape){&s->pyramids[p], gjk_support_pyramid,
+				s->pyramids[p].phys.center};
+			count += gjk_make_contact(&sa, &sb, &py->phys, &s->pyramids[p].phys,
+					&py->transform, &s->pyramids[p].transform, &c[count]);
 		}
 	return (count);
 }

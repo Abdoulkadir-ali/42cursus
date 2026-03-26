@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "objects.h"
 #include "debug.h"
 
 void	print_sphere(t_sphere *s)

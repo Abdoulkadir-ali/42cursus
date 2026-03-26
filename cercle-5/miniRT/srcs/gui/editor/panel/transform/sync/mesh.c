@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 static void	apply_vtx_tr(t_mesh *m, t_mat4 sr, t_mat4 r, t_vec3 piv_pos[2])
 {
 	int		vi;
@@ -44,9 +44,9 @@ void	mesh_transform_sync(t_gui *gui)
 	t_vec3			piv_pos[2];
 	int				si;
 
-	if (!gui->selection.active || gui->selection.type != TYPE_MESH)
+	if (!gui->selection->active || gui->selection->type != TYPE_MESH)
 		return ;
-	g = &gui->scene->groups[gui->selection.index];
+	g = &gui->scene->groups[gui->selection->index];
 	if (!gui->scene->meshes[g->start].edit_snap_verts)
 		return ;
 	sr[0] = mat4_scaling(g->transform.scale);

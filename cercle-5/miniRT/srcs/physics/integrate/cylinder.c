@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "scene.h"
 
 static void	init_cylinder_inertia(t_cylinder *cy)
 {
