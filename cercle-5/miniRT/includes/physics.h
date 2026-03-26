@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:07:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:10:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 # define PHYSICS_H
 
 /* EXTER?AL DEPENDENCIES */
-# include <pthread.h>
-# include <semaphore.h>
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>

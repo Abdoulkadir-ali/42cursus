@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 14:48:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:12:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 /* 2. CHILD DEPENDENCIES */
 # include "scene.h"
+# include "raytracing.h"
 
 # define MAX_LEAF_OBJECTS 4
 # define PARSER_BUF_SIZE 65536
