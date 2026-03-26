@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "raytracing.h"
 
 /**
  * Main parser for FDF files. Converts heightmap to mesh.

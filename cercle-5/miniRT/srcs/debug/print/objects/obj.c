@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "debug.h"
-#include "objects.h"
 
 void	print_obj_ctx(t_obj_ctx *c)
 {

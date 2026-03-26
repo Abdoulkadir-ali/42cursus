@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "physics.h"
 
 static long long	get_time_ms(void)
 {

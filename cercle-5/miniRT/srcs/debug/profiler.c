@@ -6,15 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:37:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:19:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifdef PROFILE_MESH
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <time.h>
+#include "debug.h"
 
 volatile long	g_mesh_calls = 0;
 volatile long	g_mesh_aabb_tests = 0;

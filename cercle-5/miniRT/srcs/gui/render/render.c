@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "profiler.h"
 
 static void	setup_camera_transform(t_gui *gui, t_render_ctx *ctx)
 {

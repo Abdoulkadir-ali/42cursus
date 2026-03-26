@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "profiler.h"
 
 bool	mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist)
 {

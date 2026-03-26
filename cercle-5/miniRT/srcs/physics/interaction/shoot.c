@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push.c                                             :+:      :+:    :+:   */
+/*   shoot.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 03:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 03:36:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:09:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "raytracing.h"
-#include "scene.h"
 
 void	physics_shoot_ray(t_scene *scene, t_ray ray, double impulse)
 {

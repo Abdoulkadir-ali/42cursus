@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "debug.h"
-#include "scene.h"
 
 void	print_scene(t_scene *s)
 {

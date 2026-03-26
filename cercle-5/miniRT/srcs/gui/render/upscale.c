@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include <string.h>
 
 /*
 ** Nearest-neighbor upscale from render image to display image.

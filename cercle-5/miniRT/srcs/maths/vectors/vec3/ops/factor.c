@@ -1,36 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   update.c                                           :+:      :+:    :+:   */
+/*   mul.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 11:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:04:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:00:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "physics.h"
+#include "maths.h"
 
-extern t_aabb	aabb_union(t_aabb a, t_aabb b);
-
-/**
- * @brief Computes global_aabb from current sub-shape world positions.
- * Updates the body boundary each frame to reflect child movement.
- */
-void	update_compound(t_physics_body *b)
+t_vec3	vec3_mul(t_vec3 a, t_vec3 b)
 {
-	size_t	i;
-	t_aabb	acc;
+	return ((t_vec3){a.x * b.x, a.y * b.y, a.z * b.z, 0.0});
+}
 
-	if (!b->is_compound || b->sub_count == 0)
-		return ;
-	acc = b->sub_shapes[0].local_aabb;
-	i = 1;
-	while (i < b->sub_count)
-	{
-		acc = aabb_union(acc, b->sub_shapes[i].local_aabb);
-		i++;
-	}
-	b->global_aabb = acc;
+t_vec3	vec3_scale(t_vec3 a, double s)
+{
+	return ((t_vec3){a.x * s, a.y * s, a.z * s, 0.0});
+}
+
+t_vec3	vec3_lerp(t_vec3 a, t_vec3 b, double t)
+{
+	return (vec3_add(a, vec3_scale(vec3_sub(b, a), t)));
+}
+
+t_vec3	vec3_norm(t_vec3 a)
+{
+	double	mag;
+
+	mag = vec3_mag(a);
+	if (mag < 1e-12)
+		return ((t_vec3){0, 0, 0, 0});
+	return (vec3_scale(a, 1.0 / mag));
+}
+
+double	vec3_mag(t_vec3 a)
+{
+	return (sqrt(vec3_mag_sq(a)));
 }

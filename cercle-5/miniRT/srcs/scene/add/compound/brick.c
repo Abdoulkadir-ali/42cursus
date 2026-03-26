@@ -6,14 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:07:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "parser.h"
 #include "physics.h"
-#include "objects.h"
 
 static t_vec3	json_vec3(t_json_value *obj, const char *k)
 {

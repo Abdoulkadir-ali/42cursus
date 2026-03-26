@@ -6,13 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:07:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "physics.h"
-#include "objects.h"
 
 /**
  * @brief Mètre Ruban: Calculates the exact local AABB of a mesh.

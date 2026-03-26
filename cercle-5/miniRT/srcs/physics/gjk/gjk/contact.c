@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:07:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "objects.h"
 
 /**
  * @brief Unified narrow phase: GJK -> EPA.

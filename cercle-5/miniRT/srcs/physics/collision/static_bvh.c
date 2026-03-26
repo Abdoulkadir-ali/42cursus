@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 16:30:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:08:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include <stdlib.h>
 
 static t_aabb	get_obj_aabb(t_scene *s, int idx, int type)
 {

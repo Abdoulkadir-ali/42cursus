@@ -6,15 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 08:18:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:15:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "parser.h"
-#include "scene.h"
-#include <stdio.h>
-#include <string.h>
 
 static void	load_sampler_data(t_json_value *json, char *bin, t_anim_sampler *s,
 		t_json_value *sampler_json)

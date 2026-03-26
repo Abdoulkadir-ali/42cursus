@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:08:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
-#include "objects.h"
 
 int	query_capsule(t_scene *s, int idx, t_contact *c, int count, int max)
 {

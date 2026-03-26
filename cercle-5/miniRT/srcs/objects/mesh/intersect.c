@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "profiler.h"
 
 bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit)
 {

@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:05:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:07:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
-#include "objects.h"
-#include "scene.h"
 
 /**
  * @brief Global integration loop. 

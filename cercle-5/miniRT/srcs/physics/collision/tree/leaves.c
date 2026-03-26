@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:08:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
-#include "objects.h"
 
 static t_aabb	fatten(t_aabb a)
 {

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include <unistd.h>
+
 
 /*
 ** Initializes MLX window and image.

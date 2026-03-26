@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "profiler.h"
+
 
 int	process_node(t_mesh *mesh, int node_idx, const t_ray *ray,
 		t_trace_ctx *ctx)

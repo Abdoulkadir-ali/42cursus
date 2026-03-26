@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh.c                                             :+:      :+:    :+:   */
+/*   add.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 07:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:07:32 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/26 10:56:59 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 11:01:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "physics.h"
+#include "maths.h"
 
-/**
- * @brief GJK support point for a complex mesh. Iterates through all vertices.
- */
-t_vec3	gjk_support_mesh(const void *data, t_vec3 dir)
+t_vec3	vec3_add(t_vec3 a, t_vec3 b)
 {
-	const t_mesh	*m;
+	return ((t_vec3){a.x + b.x, a.y + b.y, a.z + b.z, 0.0});
+}
 
-	m = (const t_mesh *)data;
-	if (!m->vertices || m->vertex_count == 0)
-		return (vec3(0, 0, 0));
-	return (gjk_support_list(m->vertices, m->vertex_count, dir));
+t_vec3	vec3_sub(t_vec3 a, t_vec3 b)
+{
+	return ((t_vec3){a.x - b.x, a.y - b.y, a.z - b.z, 0.0});
 }

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+
 /*
 ** Parses an already-open fd as an RT scene stream.
 ** The caller owns the fd and is responsible for closing it.

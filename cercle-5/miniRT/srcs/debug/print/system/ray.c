@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "debug.h"
-#include "raytracing.h"
 
 void	print_ray(t_ray *r)
 {

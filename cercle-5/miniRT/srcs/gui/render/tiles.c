@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "profiler.h"
-#include <semaphore.h>
 
 static void	render_tile(t_render_ctx *ctx, int id)
 {

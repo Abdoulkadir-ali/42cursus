@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "debug.h"
-#include "objects.h"
 
 void	print_light(t_light *l)
 {

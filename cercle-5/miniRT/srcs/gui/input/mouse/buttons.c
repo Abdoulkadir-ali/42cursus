@@ -11,9 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "gui.h"
-#include "physics.h"
-#include "raytracing.h"
+
 
 static void	shoot_force(t_gui *gui, t_vec2i mouse)
 {

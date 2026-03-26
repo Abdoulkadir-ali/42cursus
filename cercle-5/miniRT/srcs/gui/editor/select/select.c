@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 19:10:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/25 16:40:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:20:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "raytracing.h"
 
 void	select_object(t_gui *gui, t_type type, int index)
 {

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:36:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:09:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,6 +337,6 @@ int						gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
 double					clamp_d(double v, double lo, double hi);
 
 /* Gravity helper */
-t_vec3					gravity_vec(void)(void);
+t_vec3					gravity_vec(void);
 
 #endif

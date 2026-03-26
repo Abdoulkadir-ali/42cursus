@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 10:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:16:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "scene.h"
 
 static bool	process_scene_config(t_scene *scene, t_parse_obj *obj, bool *h)
 {

@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 05:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:20:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "gui.h"
-#include <unistd.h>
 
 /**
  * @brief Validates the input path and triggers the appropriate mesh loader.

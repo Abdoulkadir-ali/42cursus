@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "debug.h"
-#include "raytracing.h"
 
 void	print_bvh_node(const t_bvh *b, int idx, int depth)
 {

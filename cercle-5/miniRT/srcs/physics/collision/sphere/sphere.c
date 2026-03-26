@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 10:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:08:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
-#include "objects.h"
 
 /**
  * @brief Primary entry point for sphere collision generation. 

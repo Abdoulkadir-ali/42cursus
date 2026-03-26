@@ -6,14 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:55:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:09:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "objects.h"
-#include "scene.h"
-#include "debug.h"
+
 
 /*
 ** Prints position and velocity of all dynamic spheres.

@@ -6,14 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 03:58:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:14:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "scene.h"
-
-#define CACHE_CAP 64
 
 typedef struct s_mesh_snap
 {

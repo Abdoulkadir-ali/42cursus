@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 19:10:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/25 16:39:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:20:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "raytracing.h"
 
 void	rebuild_bvh(t_gui *gui)
 {

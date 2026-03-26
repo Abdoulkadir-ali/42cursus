@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "parser.h"
-#include <stdio.h>
-#include <stdarg.h>
 
 static void	glb_log_anim(const char *fmt, ...)
 {

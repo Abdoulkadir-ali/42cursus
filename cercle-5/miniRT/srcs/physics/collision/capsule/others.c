@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   capsule_others.c                                   :+:      :+:    :+:   */
+/*   others.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:55:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:08:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
-#include "objects.h"
 
 int	cap_vs_others(t_scene *s, int idx, t_capsule *cap, t_aabb caabb, t_contact *c, int count, int max)
 {

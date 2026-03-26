@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:34:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:14:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,18 @@
 # include <stdint.h>
 
 /* 1. EXTERNAL DEPENDENCIES */
-# include "debug.h"
 # include "defines.h"
-# include "parser.h"
+# include "debug.h"
 # include "physics.h"
 # include "raytracing.h"
 # include "surface.h"
+# include "parser.h"
 
 # define GLB_MAGIC 0x46546C67
 # define CHUNK_JSON 0x4E4F534A
 # define CHUNK_BIN 0x004E4942
 # define BVH_BINS 16
+#define CACHE_CAP 64
 
 /* ------------------------------------------------------------------------- */
 /*                             LEAF STRUCTURES                               */

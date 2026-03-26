@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh.c                                             :+:      :+:    :+:   */
+/*   min.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 07:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:07:32 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/26 10:59:54 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 11:00:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "physics.h"
+#include "maths.h"
 
-/**
- * @brief GJK support point for a complex mesh. Iterates through all vertices.
- */
-t_vec3	gjk_support_mesh(const void *data, t_vec3 dir)
+t_vec3	vec3_min(t_vec3 a, t_vec3 b)
 {
-	const t_mesh	*m;
+	return ((t_vec3){fmin(a.x, b.x), fmin(a.y, b.y), fmin(a.z, b.z), fmin(a.w,
+			b.w)});
+}
 
-	m = (const t_mesh *)data;
-	if (!m->vertices || m->vertex_count == 0)
-		return (vec3(0, 0, 0));
-	return (gjk_support_list(m->vertices, m->vertex_count, dir));
+t_vec3	vec3_max(t_vec3 a, t_vec3 b)
+{
+	return ((t_vec3){fmax(a.x, b.x), fmax(a.y, b.y), fmax(a.z, b.z), fmax(a.w,
+			b.w)});
 }

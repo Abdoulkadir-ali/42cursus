@@ -1,18 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sphere_bvh.c                                       :+:      :+:    :+:   */
+/*   bvh.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:09:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
-#include "physics.h"
-#include "scene.h"
-#include "objects.h"
 #include "raytracing.h"
 
 static int	check_leaf_ref(t_scene *s, t_sphere *sp, int idx, t_bvh_ref ref, t_contact *c)

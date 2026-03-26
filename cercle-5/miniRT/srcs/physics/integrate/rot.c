@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push.c                                             :+:      :+:    :+:   */
+/*   rot.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 03:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 03:36:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:09:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include <math.h>
 
 /**
  * @brief Rodrigues rotation: rotate vector v by angular_velocity vector w over

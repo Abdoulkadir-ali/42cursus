@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "objects.h"
-#include <stdio.h>
-#include <stdarg.h>
 
 static void	glb_log(const char *fmt, ...)
 {

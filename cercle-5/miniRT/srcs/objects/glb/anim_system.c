@@ -11,10 +11,6 @@
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "scene.h"
-#include "maths.h"
-#include <math.h>
-#include <string.h>
 
 /* --- Math Helpers --- */
 

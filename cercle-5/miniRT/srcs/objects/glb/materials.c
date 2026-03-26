@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "scene.h"
-#include <stdio.h>
 
 static void	glb_log(const char *fmt, ...)
 {

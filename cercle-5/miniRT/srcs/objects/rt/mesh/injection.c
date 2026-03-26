@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh_injection.c                                   :+:      :+:    :+:   */
+/*   injection.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/12 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 20:50:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/26 11:02:34 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 11:02:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ static bool	is_color_default(t_vec3 c)
 
 static void	clone_instance_materials(t_scene *sc, int start_mesh)
 {
-	t_mesh	*mesh;
-	int		new_id;
-	int		i;
+	t_mesh *mesh;
+	int new_id;
+	int i;
 
 	i = start_mesh;
 	while (i < sc->mesh_count)
@@ -53,12 +53,12 @@ static void	clone_instance_materials(t_scene *sc, int start_mesh)
 	}
 }
 
-static void	apply_anim_material(t_scene *sc, t_parse_obj *obj,
-		int mat_id, bool force, int start)
+static void	apply_anim_material(t_scene *sc, t_parse_obj *obj, int mat_id,
+		bool force, int start)
 {
-	t_skinned_mesh	*anim;
-	t_vec3			em;
-	int				i;
+	t_skinned_mesh *anim;
+	t_vec3 em;
+	int i;
 
 	em = obj->data.mesh_info.emission;
 	i = start;
@@ -76,12 +76,12 @@ static void	apply_anim_material(t_scene *sc, t_parse_obj *obj,
 	}
 }
 
-static void	apply_mesh_material(t_scene *sc, t_parse_obj *obj,
-		int mat_id, bool force, int start)
+static void	apply_mesh_material(t_scene *sc, t_parse_obj *obj, int mat_id,
+		bool force, int start)
 {
-	t_mesh	*mesh;
-	t_vec3	em;
-	int		i;
+	t_mesh *mesh;
+	t_vec3 em;
+	int i;
 
 	em = obj->data.mesh_info.emission;
 	i = start;
@@ -99,11 +99,11 @@ static void	apply_mesh_material(t_scene *sc, t_parse_obj *obj,
 	}
 }
 
-static void	apply_material(t_parse_obj *obj, t_scene *scene,
-		int start_mesh, int start_anim)
+static void	apply_material(t_parse_obj *obj, t_scene *scene, int start_mesh,
+		int start_anim)
 {
-	int		mat_id;
-	bool	force;
+	int mat_id;
+	bool force;
 
 	force = !is_color_default(obj->data.mesh_info.color);
 	mat_id = -1;
@@ -119,10 +119,11 @@ static void	apply_material(t_parse_obj *obj, t_scene *scene,
 		apply_mesh_material(scene, obj, mat_id, force, start_mesh);
 }
 
-bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
+bool	handle_mesh_injection(t_parse_obj *obj, const char *ext,
+		t_scene *scene)
 {
-	int		start_anim;
-	int		start_mesh;
+	int start_anim;
+	int start_mesh;
 
 	start_anim = scene->anim_count;
 	start_mesh = scene->mesh_count;
@@ -132,8 +133,8 @@ bool	handle_mesh_injection(t_parse_obj *obj, const char *ext, t_scene *scene)
 			return (false);
 		/* cache restore resets group_id to -1 — assign a fresh one */
 		{
-			int	gid;
-			int	mi;
+			int gid;
+			int mi;
 
 			gid = scene->mesh_group_count++;
 			mi = start_mesh;

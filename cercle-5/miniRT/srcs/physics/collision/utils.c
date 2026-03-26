@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 11:07:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
 
 /**
  * @brief Checks if two Axis-Aligned Bounding Boxes (AABB) overlap.

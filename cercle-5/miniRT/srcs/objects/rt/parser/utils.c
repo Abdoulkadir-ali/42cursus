@@ -5,14 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 20:50:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/26 11:16:21 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 11:16:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
-#include "scene.h"
-#include <unistd.h>
+
 
 static bool	is_mesh_ext(const char *ext)
 {
@@ -30,26 +29,25 @@ static bool	is_mesh_ext(const char *ext)
 */
 static void	refresh_editor_snaps(t_scene *scene, int start_idx)
 {
-	t_mesh			*m;
-	t_mesh_group	*g;
-	t_aabb			bbox;
-	int				i;
-	int				gi;
+	t_mesh *m;
+	t_mesh_group *g;
+	t_aabb bbox;
+	int i;
+	int gi;
 
 	i = start_idx - 1;
 	while (++i < scene->mesh_count)
 	{
 		m = &scene->meshes[i];
 		if (m->edit_snap_verts)
-			ft_memcpy(m->edit_snap_verts, m->vertices,
-				sizeof(t_vec3) * m->vertex_count);
+			ft_memcpy(m->edit_snap_verts, m->vertices, sizeof(t_vec3)
+				* m->vertex_count);
 		if (m->normals && m->edit_snap_norms)
-			ft_memcpy(m->edit_snap_norms, m->normals,
-				sizeof(t_vec3) * m->vertex_count);
-		m->edit_snap_pivot = vec3(
-			(m->bbox.min.x + m->bbox.max.x) * 0.5,
-			(m->bbox.min.y + m->bbox.max.y) * 0.5,
-			(m->bbox.min.z + m->bbox.max.z) * 0.5);
+			ft_memcpy(m->edit_snap_norms, m->normals, sizeof(t_vec3)
+				* m->vertex_count);
+		m->edit_snap_pivot = vec3((m->bbox.min.x + m->bbox.max.x) * 0.5,
+				(m->bbox.min.y + m->bbox.max.y) * 0.5, (m->bbox.min.z
+					+ m->bbox.max.z) * 0.5);
 	}
 	/* Re-compute the group pivot from the now-lifted submesh bboxes */
 	gi = 0;
@@ -65,10 +63,8 @@ static void	refresh_editor_snaps(t_scene *scene, int start_idx)
 		i = g->start + 1;
 		while (i < g->start + g->sub_count && i < scene->mesh_count)
 			bbox = aabb_union(&bbox, &scene->meshes[i++].bbox);
-		g->pivot = vec3(
-			(bbox.min.x + bbox.max.x) * 0.5,
-			(bbox.min.y + bbox.max.y) * 0.5,
-			(bbox.min.z + bbox.max.z) * 0.5);
+		g->pivot = vec3((bbox.min.x + bbox.max.x) * 0.5, (bbox.min.y
+					+ bbox.max.y) * 0.5, (bbox.min.z + bbox.max.z) * 0.5);
 		gi++;
 	}
 }
@@ -80,13 +76,13 @@ static void	refresh_editor_snaps(t_scene *scene, int start_idx)
 */
 static void	align_and_frame_meshes(t_scene *scene, int start_idx)
 {
-	t_vec3	min_pt;
-	t_vec3	max_pt;
-	t_vec3	center;
-	t_vec3	fwd;
-	double	size;
-	int		i;
-	double	offset_y;
+	t_vec3 min_pt;
+	t_vec3 max_pt;
+	t_vec3 center;
+	t_vec3 fwd;
+	double size;
+	int i;
+	double offset_y;
 
 	if (start_idx >= scene->mesh_count)
 		return ;
@@ -135,22 +131,24 @@ static void	align_and_frame_meshes(t_scene *scene, int start_idx)
 ** is applied afterwards by align_and_frame_meshes.
 */
 static bool	parse_as_default_rt(const char *ext, const char *path,
-				t_scene *scene)
+		t_scene *scene)
 {
-	char	buf[2048];
-	int		fds[2];
-	int		n;
-	bool	ok;
+	char buf[2048];
+	int fds[2];
+	int n;
+	bool ok;
 
-	n = snprintf(buf, sizeof(buf),
-		"A 0.3 255,255,255\n"
-		"C 0,0,1 0,0,-1 70\n"
-		"L -30,200,30 0.8 255,255,255\n"
-		"L -15,40,10 0.8 100,50,30\n"
-		"L 0,60,-20 0.8 100,50,30\n"
-		"pl 0,0,0 0,1,0 150,150,150\n"
-		"%s %s 0,0,0 0,0,0 1.0\n",
-		ext, path);
+	n = snprintf(buf,
+					sizeof(buf),
+					"A 0.3 255,255,255\n"
+					"C 0,0,1 0,0,-1 70\n"
+					"L -30,200,30 0.8 255,255,255\n"
+					"L -15,40,10 0.8 100,50,30\n"
+					"L 0,60,-20 0.8 100,50,30\n"
+					"pl 0,0,0 0,1,0 150,150,150\n"
+					"%s %s 0,0,0 0,0,0 1.0\n",
+					ext,
+					path);
 	if (n <= 0 || (size_t)n >= sizeof(buf))
 	{
 		fprintf(stderr, "Error: default RT string too long for %s\n", path);
@@ -175,8 +173,8 @@ static bool	parse_as_default_rt(const char *ext, const char *path,
 
 static bool	parse_by_ext(const char *ext, const char *path, t_scene *scene)
 {
-	int	start_idx;
-	bool	ok;
+	int start_idx;
+	bool ok;
 
 	if (ft_strcmp(ext, "rt") == 0)
 		return (parse_rt(path, scene));
@@ -194,7 +192,7 @@ static bool	parse_by_ext(const char *ext, const char *path, t_scene *scene)
 
 static t_scene	*init_scene(const char *path, void *mlx)
 {
-	t_scene	*scene;
+	t_scene *scene;
 
 	scene = create_scene(path);
 	if (!scene)
@@ -208,9 +206,9 @@ static t_scene	*init_scene(const char *path, void *mlx)
 
 t_scene	*parse_file(const char *path, void *mlx)
 {
-	t_scene		*scene;
-	const char	*ext;
-	bool		success;
+	t_scene *scene;
+	const char *ext;
+	bool success;
 
 	printf("PARSING_FILE: %s\n", path);
 	fflush(stdout);
