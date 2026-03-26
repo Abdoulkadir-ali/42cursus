@@ -28,8 +28,9 @@ static void	apply_impulse(t_contact *ct, t_vec3 imp, double inv_a, double inv_b)
 
 /**
  * @brief Handles main collision response impulses.
+ * Returns the computed impulse scalar j for compound torque transfer.
  */
-void	solve_one_velocity(t_contact *ct, double inv_a, double inv_b)
+double	solve_one_velocity(t_contact *ct, double inv_a, double inv_b)
 {
 	t_vec3	rv;
 	double	vn;
@@ -44,11 +45,13 @@ void	solve_one_velocity(t_contact *ct, double inv_a, double inv_b)
 		denom = (inv_a + inv_b + ang_term(ct->a, ct->ra, ct->normal, inv_a)
 				+ ang_term(ct->b, ct->rb, ct->normal, inv_b));
 		if (denom < 1e-9)
-			return ;
+			return (0.0);
 		e = (vn < -RESTITUTION_SLOP) ? ct->restitution : 0.0;
 		j = -(1.0 + e) * vn / denom;
 		apply_impulse(ct, vec3_scale(ct->normal, j), inv_a, inv_b);
 		rv = vec3_sub(point_vel(ct->b, ct->rb), point_vel(ct->a, ct->ra));
 		apply_friction(ct, inv_a, inv_b, rv);
+		return (j);
 	}
+	return (0.0);
 }

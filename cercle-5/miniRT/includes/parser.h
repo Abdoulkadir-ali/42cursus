@@ -116,3 +116,7 @@ t_json_value	*json_parse_inner_array(const char **s);
 t_json_value	*json_parse_inner_number(const char **s);
 t_json_value	*json_parse_inner_value(const char **s);
 #endif
+
+/* Compound body parser (srcs/scene/add/compound/) */
+struct s_sub_shape	parse_brick(t_json_value *obj);
+struct s_physics_body	parse_compound_body(t_json_value *obj);

@@ -143,6 +143,8 @@ bool				scene_add_group(t_scene *scene, t_mesh_group g);
 bool				scene_add_group_for_subs(t_scene *scene, const char *path,
 					int start_mesh);
 bool				scene_add_light(t_scene *scene, t_light light);
+bool				scene_apply_compound(t_scene *scene,
+					struct s_json_value *shape_obj);
 
 /* srcs/objects/rt/parsing/ (Global Selector) */
 t_scene				*parse_file(const char *path, void *mlx);

@@ -61,22 +61,109 @@ typedef struct s_phys_pool
 # define TIME_SCALE 1.0
 # define MESH_SIMPLIFY 1
 
+/* Compound body limits */
+# define MAX_SUB_SHAPES 32
+# define MAX_BODY_PAIRS 512
+
+/* Dynamic AABB Tree (DBVT) Broadphase */
+# define DBVT_MAX_NODES 512
+# define DBVT_MAX_LEAVES 256
+# define DBVT_FAT_MARGIN 0.1
+# define DBVT_NULL -1
+
+/* Shape type discriminators for compound colliders */
+typedef enum e_phys_type
+{
+	TYPE_PHYS_SPHERE,
+	TYPE_PHYS_BOX,
+	TYPE_PHYS_CAPSULE,
+	TYPE_PHYS_CYLINDER,
+	TYPE_PHYS_RECT,
+	TYPE_PHYS_TRI,
+	TYPE_PHYS_PYRAMID
+}	t_phys_type;
+
+/* One Lego brick: a convex sub-shape belonging to a compound body */
+typedef struct s_sub_shape
+{
+	void		*shape;      /* ptr to t_sphere, t_box, etc. */
+	t_aabb		local_aabb;  /* AABB in body space (pre-computed) */
+	t_vec3		offset;      /* position relative to body CoM */
+	t_phys_type	type;
+}	t_sub_shape;
+
+/* 3-tier pipeline intermediate results */
+typedef struct s_body_pair
+{
+	struct s_physics_body	*a;
+	struct s_physics_body	*b;
+}	t_body_pair;
+
+typedef struct s_shape_pair
+{
+	t_sub_shape			*sa;
+	t_sub_shape			*sb;
+	struct s_physics_body	*ba;
+	struct s_physics_body	*bb;
+}	t_shape_pair;
+
+/* One dynamic body in the DBVT (leaf) */
+typedef struct s_dbvt_leaf
+{
+	t_aabb			fat_aabb;   /* AABB expanded by DBVT_FAT_MARGIN */
+	t_physics_body	*body;
+	void			*shape;     /* ptr to original t_sphere / t_box / etc. */
+	t_support_fn	support;    /* GJK support function for this shape */
+	t_phys_type		type;
+}	t_dbvt_leaf;
+
+/* Internal tree node — holds merged AABB of subtree */
+typedef struct s_dbvt_node
+{
+	t_aabb	aabb;
+	int		left;   /* index into nodes[], DBVT_NULL = none */
+	int		right;
+	int		leaf;   /* index into leaves[], DBVT_NULL = internal node */
+}	t_dbvt_node;
+
+/* The full tree — static pool, rebuilt every frame */
+typedef struct s_dbvt
+{
+	t_dbvt_node	nodes[DBVT_MAX_NODES];
+	t_dbvt_leaf	leaves[DBVT_MAX_LEAVES];
+	int			node_count;
+	int			leaf_count;
+	int			root;       /* index of root node */
+}	t_dbvt;
+
+
 /* Forward declarations to avoid circular includes. Concrete types
  * are included in implementation files when needed. */
 
 /* Physics types - separation of concerns: per-object body and global state */
 typedef struct s_physics_body
 {
-	t_vec3  velocity;
-	t_vec3	angular_velocity;
-	t_vec3	torque;
-	bool    is_static;
-	double  mass;
-	double  elasticity; /* 0..1 bounce factor */
-	double  friction;   /* 0..1 friction coefficient */
-	t_vec3  inv_inertia; /* per-axis m/I (body space diagonal) — set by integrate */
-	t_vec3  center;      /* world-space center of mass — updated each frame     */
-}               t_physics_body;
+	/* Motion state */
+	t_vec3		velocity;
+	t_vec3		angular_velocity;
+	t_vec3		torque;
+	/* Inertia */
+	double		mass;
+	t_vec3		inv_inertia;
+	/* Material */
+	double		elasticity;
+	double		friction;
+	/* Flags */
+	bool		is_static;
+	bool		is_compound;
+	/* Single-body CoM (legacy path) */
+	t_vec3		center;
+	/* Compound Backpack */
+	t_sub_shape	sub_shapes[MAX_SUB_SHAPES];
+	size_t		sub_count;
+	t_aabb		global_aabb;
+	t_vec3		com;
+}				t_physics_body;
 
 /* Physics update loop */
 void	update_physics(t_scene *scene, double dt);
@@ -161,6 +248,17 @@ typedef struct s_gjk_shape
 t_vec3			rot_by_ang(t_vec3 v, t_vec3 w, double dt);
 t_physics_body	*get_body_ref(t_scene *scene, t_hit_ref ref);
 
+/* Compound Body */
+void	init_compound(t_physics_body *b, t_sub_shape *bricks, size_t n);
+void	update_compound(t_physics_body *b);
+
+/* Broadphase / Midphase */
+int	broadphase(t_scene *s, t_body_pair *out, int max);
+int	midphase(t_body_pair *pairs, int n, t_shape_pair *out, int max);
+
+/* Solver Torque */
+void	apply_torque(t_contact *c, t_physics_body *body, double impulse);
+
 /* Collision Queries */
 int	query_sphere(t_scene *s, int idx, t_contact *c, int count, int max);
 int	traverse_bvh_contacts(t_scene *s, int idx, t_sphere *sp, t_aabb saabb,
@@ -204,6 +302,15 @@ int	cyl_plane_contacts(t_scene *s, t_cylinder *cy, t_gjk_shape *sa,
 
 int	gjk_vs_all_planes(t_gjk_shape *sa, t_physics_body *ba, t_transform *ta,
 		t_scene *s, t_contact *c, int count, int max);
+
+/* DBVT Broadphase */
+void	collect_leaves(struct s_scene *s, t_dbvt *t);
+int		dbvt_build_range(t_dbvt *t, int begin, int end);
+int		dbvt_query_pairs(t_dbvt *t, t_body_pair *out, int max);
+void	build_dbvt(struct s_scene *s, t_dbvt *t);
+int		narrow_dispatch(t_dbvt_leaf *a, t_dbvt_leaf *b,
+			t_contact *c, int count);
+
 
 /* Shape Integration */
 
@@ -322,7 +429,7 @@ void	apply_solver_torque(t_physics_body *body, t_vec3 r, t_vec3 imp,
 			double inv_m, double sign);
 
 /* Velocity Solver */
-void	solve_one_velocity(t_contact *ct, double inv_a, double inv_b);
+double	solve_one_velocity(t_contact *ct, double inv_a, double inv_b);
 void	apply_friction(t_contact *ct, double inv_a, double inv_b, t_vec3 rel_v);
 
 /* Position Solver */
