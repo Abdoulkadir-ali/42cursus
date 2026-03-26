@@ -6,9 +6,9 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 08:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
 #include "objects.h"
@@ -52,7 +52,7 @@ void	integrate_tri(t_tri_shape *tr, double dt)
 		tr->phys.mass = 1.0;
 	init_tri_inertia(tr);
 	tr->phys.velocity = vec3_add(tr->phys.velocity,
-			vec3_scale(GRAVITY_VEC, dt));
+			vec3_scale(gravity_vec(), dt));
 	tr->phys.velocity = vec3_scale(tr->phys.velocity,
 			clamp_d(1.0 - GLOBAL_DAMPING * dt, 0, 1));
 	tr->phys.angular_velocity = vec3_scale(tr->phys.angular_velocity,

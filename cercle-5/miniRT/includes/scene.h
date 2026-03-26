@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:19:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:26:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,16 +120,9 @@ struct				s_scene
 bool				dynarray_ensure(void **array, size_t count, size_t *cap,
 						size_t elem_size);
 
-/* Helper for int-based counts */
-static inline bool DYNARRAY_ENSURE_INT(void **arr, int *count_ptr, int *cap_ptr,
-									   size_t elem_size)
-{
-	size_t _cnt = (size_t)(*count_ptr);
-	size_t _cap = (size_t)(*cap_ptr);
-	bool _ret = dynarray_ensure((void **)arr, _cnt, &_cap, elem_size);
-	*cap_ptr = (int)_cap;
-	return _ret;
-}
+/* Helper for int-based counts (implemented in srcs/scene/dynarray_helper.c) */
+bool				DYNARRAY_ENSURE_INT(void **arr, int *count_ptr,
+						int *cap_ptr, size_t elem_size);
 
 /* 3. FUNCTION PROTOTYPES */
 

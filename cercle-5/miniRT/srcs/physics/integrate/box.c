@@ -6,9 +6,9 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 08:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
 #include "objects.h"
@@ -40,7 +40,7 @@ void	integrate_box(t_box *bx, double dt)
 	if (bx->phys.inv_inertia.m[0][0] < 1e-9)
 		init_box_inertia(bx);
 	bx->phys.velocity = vec3_add(bx->phys.velocity,
-			vec3_scale(GRAVITY_VEC, dt));
+			vec3_scale(gravity_vec(), dt));
 	bx->phys.velocity = vec3_scale(bx->phys.velocity,
 			clamp_d(1.0 - GLOBAL_DAMPING * dt, 0, 1));
 	bx->phys.angular_velocity = vec3_scale(bx->phys.angular_velocity,

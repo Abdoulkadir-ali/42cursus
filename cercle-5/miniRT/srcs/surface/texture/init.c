@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 04:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:29:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * @param data Pointer to the pixel data.
  */
 void	init_texture_props(t_texture *tex, int w, int h, char *data)
-{
+{	
 	tex->img = NULL;
 	tex->width = w;
 	tex->height = h;
@@ -30,5 +30,5 @@ void	init_texture_props(t_texture *tex, int w, int h, char *data)
 	tex->addr = data;
 	tex->type = TEX_BITMAP;
 	tex->scale = TEX_DEFAULT_SCALE;
-	tex->color_a = COLOR_WHITE;
+	tex->color_a = get_colors()->white;
 }

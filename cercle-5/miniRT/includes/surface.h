@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:27:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,30 @@
 # include "debug.h"
 # include "maths.h"
 
-
 # define BITS_PER_BYTE 8
-# define COLOR_MAGENTA (t_vec3){255.0, 0.0, 255.0}
-# define COLOR_CYAN (t_vec3){0.0, 255.0, 255.0}
-# define COLOR_BLUE (t_vec3){0.0, 0.0, 255.0}
-# define COLOR_LAVENDER (t_vec3){200.0, 160.0, 255.0}
-# define COLOR_YELLOW (t_vec3){255.0, 255.0, 0.0}
+
+/* Color constants moved into a runtime-initialized struct to satisfy
+ * style rules (no non-constant preprocessor values). Use `g_colors.*`.
+ */
+typedef struct s_colors
+{
+	t_vec3  pink;
+	t_vec3  magenta;
+	t_vec3  cyan;
+	t_vec3  blue;
+	t_vec3  lavender;
+	t_vec3  yellow;
+	t_vec3  white;
+	t_vec3  black;
+	t_vec3  green;
+}               t_colors;
+
+const t_colors         *get_colors(void);
 
 # define TEX_DEFAULT_SCALE 1.0
 # define TEX_DEFAULT_BPP 32
 # define TEX_CH_RGBA 4
 # define TEX_CENTER_OFFSET 0.5
-# define COLOR_WHITE (t_vec3){255.0, 255.0, 255.0}
-# define COLOR_BLACK (t_vec3){0.0, 0.0, 0.0}
 
 /* 2. MODULE TYPES */
 typedef enum e_tex_type

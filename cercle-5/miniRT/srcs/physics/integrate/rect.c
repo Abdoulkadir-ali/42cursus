@@ -6,9 +6,9 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 08:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
 #include "objects.h"
@@ -58,7 +58,7 @@ void	integrate_rect(t_rect *rc, double dt)
 		rc->phys.mass = 1.0;
 	init_rect_inertia(rc);
 	rc->phys.velocity = vec3_add(rc->phys.velocity,
-			vec3_scale(GRAVITY_VEC, dt));
+			vec3_scale(gravity_vec(), dt));
 	rc->phys.velocity = vec3_scale(rc->phys.velocity,
 			clamp_d(1.0 - GLOBAL_DAMPING * dt, 0, 1));
 	rc->phys.angular_velocity = vec3_scale(rc->phys.angular_velocity,

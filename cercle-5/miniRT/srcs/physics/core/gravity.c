@@ -15,9 +15,9 @@
 /*
  * Return the project gravity as a t_vec3.
  * Keeps a single authoritative scalar `GRAVITY` in headers and presents
- * a `GRAVITY_VEC` convenience macro that expands to this function call.
+ * a `gravity_vec()` convenience macro that expands to this function call.
  */
-t_vec3	gravity_vec(void)
+t_vec3	gravity_vec()(void)
 {
     return ((t_vec3){0.0, GRAVITY, 0.0, 0.0});
 }

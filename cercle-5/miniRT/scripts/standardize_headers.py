@@ -55,24 +55,30 @@ def split_header(content):
         header_comment = m.group(1)
         rest = content[m.end():]
 
-    # find header guard
-    guard_start = re.search(r'^\s*#\s*ifndef\b.*$', rest, re.MULTILINE)
-    if not guard_start:
+    # find header guard of the canonical form:
+    #   #ifndef NAME
+    #   #define NAME
+    guard_match = re.search(r'^\s*#\s*ifndef\s+([A-Za-z_][A-Za-z0-9_]*)\b', rest, re.MULTILINE)
+    if not guard_match:
         # no guard: operate on whole file
         return header_comment, None, rest, None
-    define_line = re.search(r'^\s*#\s*define\b.*$', rest[guard_start.end():], re.MULTILINE)
-    if not define_line:
+    guard_name = guard_match.group(1)
+    # look for a matching #define for the same guard name after the ifndef
+    define_match = re.search(r'^\s*#\s*define\s+' + re.escape(guard_name) + r'\b', rest[guard_match.end():], re.MULTILINE)
+    if not define_match:
+        # fallback: if no matching define, don't treat as guarded file
         return header_comment, None, rest, None
-    define_pos = guard_start.end() + define_line.start()
-    # find last #endif
+    # compute absolute positions
+    define_abs_end = guard_match.end() + define_match.end()
+    # find the last #endif in the file
     endif_match = None
     for m in re.finditer(r'^\s*#\s*endif\b.*$', rest, re.MULTILINE):
         endif_match = m
     if not endif_match:
         return header_comment, None, rest, None
 
-    pre = rest[:define_pos + (rest[define_pos:].find('\n') + 1)]
-    inner = rest[pre.__len__():endif_match.start()]
+    pre = rest[:define_abs_end]
+    inner = rest[len(pre):endif_match.start()]
     post = rest[endif_match.start():]
     return header_comment, pre, inner, post
 
@@ -108,6 +114,12 @@ def collect_blocks(inner):
                 module_includes.append(inc)
             i += 1
             continue
+        # Preserve raw preprocessor directives other than plain defines/includes
+        if line.lstrip().startswith('#') and not INC_RE.match(line) and not DEFINE_RE.match(line):
+            others.append(line)
+            i += 1
+            continue
+
         if DEFINE_RE.match(line):
             # collect macro block (handle backslash continuation)
             buf = line
@@ -235,20 +247,15 @@ def process_file(path, apply=False):
     new_content = header_comment + pre + new_inner + post
     if normalize_whitespace(new_content) == normalize_whitespace(orig):
         return False, None
-
     if apply:
-        bak = path + '.bak'
-        if not os.path.exists(bak):
-            shutil.copy2(path, bak)
         write_file_atomic(path, new_content)
-        return True, bak
-    else:
-        return True, new_content
+        return True, None
+    return True, new_content
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--apply', action='store_true', help='Apply changes (creates .bak)')
+    ap.add_argument('--apply', action='store_true', help='Apply changes (no backups created)')
     ap.add_argument('--dir', default=INCLUDES_DIR, help='Headers directory')
     args = ap.parse_args()
 
@@ -267,8 +274,8 @@ def main():
 
     if args.apply:
         print('Applied changes to:')
-        for p, bak in changed:
-            print(' -', p, '(backup at', bak + ')')
+        for p, _ in changed:
+            print(' -', p)
     else:
         print('Proposed changes for:')
         for p, new in changed:
@@ -281,3 +288,4 @@ def main():
 
 if __name__ == '__main__':
     raise SystemExit(main())
+

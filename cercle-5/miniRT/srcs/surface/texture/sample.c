@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 05:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:28:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,18 @@
  */
 t_vec3	sample_texture(t_texture *tex, double u, double v)
 {
+	const t_colors *colors;
+	
+	colors = get_colors();
 	if (!tex)
-		return (COLOR_BLACK);
+		return (colors->black);
 	if (tex->type == TEX_SOLID)
 		return (tex->color_a);
 	if (tex->type == TEX_CHECKER)
 		return (sample_checker(tex, u, v));
 	if (tex->type == TEX_BITMAP && tex->addr)
 		return (sample_bitmap(tex, u, v));
-	return (COLOR_MAGENTA);
+	return (colors->magenta);
 }
 
 /**

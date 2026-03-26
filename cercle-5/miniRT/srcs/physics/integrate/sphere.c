@@ -6,9 +6,9 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 08:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
-/* *****************:********************************************************* */
+/* ************************************************************************** */
 
 #include "physics.h"
 #include "objects.h"
@@ -57,7 +57,7 @@ void	integrate_sphere(t_sphere *sp, double dt)
 		sp->phys.inv_inertia = mat3_diag(vec3(ii, ii, ii));
 	}
 	sp->phys.velocity = vec3_add(sp->phys.velocity,
-			vec3_scale(GRAVITY_VEC, dt));
+			vec3_scale(gravity_vec(), dt));
 	sp->phys.velocity = vec3_scale(sp->phys.velocity,
 			pow(1.0 - GLOBAL_DAMPING, dt));
 	sp->phys.angular_velocity = vec3_scale(sp->phys.angular_velocity,

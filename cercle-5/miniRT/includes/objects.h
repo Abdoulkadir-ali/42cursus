@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:34:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 # include <stdint.h>
 
 /* 1. EXTERNAL DEPENDENCIES */
-# include "defines.h"
-# include "raytracing.h"
-# include "physics.h"
-# include "surface.h"
 # include "debug.h"
+# include "defines.h"
 # include "parser.h"
+# include "physics.h"
+# include "raytracing.h"
+# include "surface.h"
 
 # define GLB_MAGIC 0x46546C67
 # define CHUNK_JSON 0x4E4F534A
@@ -36,6 +36,14 @@
 /* ------------------------------------------------------------------------- */
 
 /* Enums */
+
+typedef enum e_interpolation
+{
+	INTERP_LINEAR,
+	INTERP_STEP,
+	INTERP_CUBIC
+}						t_interpolation;
+
 typedef enum e_type
 {
 	TYPE_NONE = 0,
@@ -61,6 +69,14 @@ typedef enum e_light_type
 	LIGHT_SPOT,
 	LIGHT_EMISSIVE
 }						t_light_type;
+
+typedef enum e_anim_path
+{
+	PATH_TRANSLATION,
+	PATH_ROTATION,
+	PATH_SCALE,
+	PATH_WEIGHTS
+}						t_anim_path;
 
 struct					s_emissive_ref
 {
@@ -282,13 +298,6 @@ struct					s_mesh
 	t_vec3				edit_snap_pivot;
 };
 
-typedef enum e_interpolation
-{
-	INTERP_LINEAR,
-	INTERP_STEP,
-	INTERP_CUBIC
-}						t_interpolation;
-
 struct					s_anim_sampler
 {
 	float				*inputs;
@@ -296,14 +305,6 @@ struct					s_anim_sampler
 	int					count;
 	t_interpolation		method;
 };
-
-typedef enum e_anim_path
-{
-	PATH_TRANSLATION,
-	PATH_ROTATION,
-	PATH_SCALE,
-	PATH_WEIGHTS
-}						t_anim_path;
 
 struct					s_anim_channel
 {
@@ -330,11 +331,6 @@ struct					s_mesh_init
 	bool				has_uvs;
 	bool				has_normals;
 };
-
-void					mesh_apply_transform(t_mesh *mesh,
-							t_transform transform);
-bool					mesh_init(t_mesh *mesh, t_mesh_init init);
-void					mesh_free(t_mesh *mesh);
 
 struct					s_glb_header
 {
@@ -386,12 +382,6 @@ struct					s_skinned_mesh
 	int					vertex_count;
 };
 
-/*
-** Group container: one entry per loaded model file.
-** Owns a contiguous range [start, start+sub_count) in scene->meshes[].
-** All editor-level state (transform sliders, pivot, physics) lives here;
-** individual submeshes are pure geometry + per-primitive rendering data.
-*/
 struct					s_mesh_group
 {
 	char				*name;
@@ -426,7 +416,7 @@ struct					s_heightmap
 
 struct					s_mesh_build_item
 {
-	int index; // Triangle index
+	int					index;
 	t_aabb				bbox;
 	t_vec3				centroid;
 };
@@ -842,6 +832,10 @@ t_parse_obj				parse_capsule(t_parser *p);
 t_parse_obj				parse_mesh_entry(t_parser *p, t_type type);
 
 void					update_object_material(void *obj_data, t_type type);
+void					mesh_apply_transform(t_mesh *mesh,
+							t_transform transform);
+bool					mesh_init(t_mesh *mesh, t_mesh_init init);
+void					mesh_free(t_mesh *mesh);
 
 /* File Specific Parsers */
 bool					parse_rt(const char *path, t_scene *scene);

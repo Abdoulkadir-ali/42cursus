@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:45:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:38:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 
 # define RENDER_W 2560
 # define RENDER_H 1440
-#
+
 /* Auto-refresh configuration:
  * - Set `GUI_AUTOREFRESH_PHYSICS` to 1 to force a render every frame while
  *   physics simulation is enabled. Set to 0 to use standard "dirty only"
@@ -193,6 +193,140 @@ typedef enum e_mesh_fmt
 typedef void			(*t_widget_callback)(t_widget *widget,
 				struct s_gui *gui);
 
+struct					s_selection
+{
+	t_type				type;
+	int					index;
+	bool				active;
+	t_aabb				bbox;
+};
+
+typedef enum e_inspect_tab
+{
+	TAB_TRANSFORM,
+	TAB_MATERIAL,
+	TAB_OBJECT,
+	TAB_LIGHT,
+	TAB_PHYSICS,
+	TAB_INFO
+}						t_inspect_tab;
+
+struct					s_inspector
+{
+	bool				visible;
+	t_inspect_tab		tab;
+	int					x;
+	int					width;
+};
+
+struct					s_scene_panel
+{
+	bool				visible;
+	int					width;
+	int					scroll;
+	int					hovered_row;
+};
+
+struct					s_btn_rect
+{
+	t_vec2i				pos;
+	t_vec2i				size;
+};
+
+struct					s_islider
+{
+	const char			*label;
+	double				min;
+	double				max;
+	double				*ptr;
+};
+
+struct					s_slider_arg
+{
+	t_vec2i				pos;
+	t_islider			sl;
+	void				(*on_change)(struct s_gui *gui);
+};
+
+struct					s_vec3_label_arg
+{
+	int					x;
+	int					y;
+	const char			*label;
+	t_vec3				v;
+};
+
+struct					s_bool_label_arg
+{
+	int					x;
+	int					y;
+	const char			*label;
+	bool				val;
+};
+
+struct					s_slider_state
+{
+	bool				dragging;
+	int					drag_start_x;
+	double				drag_start_val;
+	double				*value_ptr;
+	double				dmin;
+	double				dmax;
+	int					track_x;
+	int					track_w;
+	void				(*on_change)(struct s_gui *gui);
+	struct s_widget		*target;
+};
+
+struct					s_mesh_snap
+{
+	t_transform			transform;
+	int					mat_id;
+	t_physics_body		phys;
+};
+
+struct					s_group_snap
+{
+	t_transform			transform;
+	t_vec3				pivot;
+	t_physics_body		phys;
+};
+
+struct					s_scene_snap
+{
+	t_sphere			*spheres;
+	int					sphere_count;
+	t_plane				*planes;
+	int					plane_count;
+	t_cylinder			*cylinders;
+	int					cylinder_count;
+	t_cone				*cones;
+	int					cone_count;
+	t_light				*lights;
+	int					light_count;
+	t_material			*materials;
+	int					mat_count;
+	t_mesh_snap			*meshes;
+	int					mesh_count;
+	int					mesh_group_count;
+	t_group_snap		*groups;
+	int					group_count;
+	t_box				*boxes;
+	int					box_count;
+	t_capsule			*capsules;
+	int					capsule_count;
+	t_rect				*rects;
+	int					rect_count;
+	t_pyramid			*pyramids;
+	int					pyramid_count;
+	t_tri_shape			*tris;
+	int					tri_count;
+	t_ambient			ambient;
+	t_camera			camera;
+	int					ambient_color;
+	double				ambient_intensity;
+};
+
 struct					s_widget
 {
 	t_widget_type		type;
@@ -250,21 +384,6 @@ struct					s_hover_cache
 	bool				hit;
 	long				last_frame;
 };
-
-t_widget				*widget_create(t_widget_type type, t_vec2i pos,
-							t_vec2i size, const char *label);
-void					widget_add(struct s_gui *gui, t_widget *widget);
-void					widget_draw_all(struct s_gui *gui);
-void					widget_handle_mouse(struct s_gui *gui, int button,
-							t_vec2i mouse);
-void					widget_handle_key(struct s_gui *gui, int keycode);
-void					widget_init_default(t_gui *gui);
-
-void					widget_draw_checkbox(struct s_gui *gui, t_widget *w);
-void					widget_draw_slider(struct s_gui *gui, t_widget *w);
-
-/* Editor state types (depends on t_widget being defined above) */
-# include "editor.h"
 
 /* 3. MODULE TYPES */
 struct					s_camera_controller
@@ -435,16 +554,23 @@ struct					s_tile_vars
 	char				*pixel_ptr;
 };
 
+t_widget				*widget_create(t_widget_type type, t_vec2i pos,
+							t_vec2i size, const char *label);
+void					widget_add(struct s_gui *gui, t_widget *widget);
+void					widget_draw_all(struct s_gui *gui);
+void					widget_handle_mouse(struct s_gui *gui, int button,
+							t_vec2i mouse);
+void					widget_handle_key(struct s_gui *gui, int keycode);
+void					widget_init_default(t_gui *gui);
+
+void					widget_draw_checkbox(struct s_gui *gui, t_widget *w);
+void					widget_draw_slider(struct s_gui *gui, t_widget *w);
+
 /* 4. FUNCTION PROTOTYPES */
 
-/* srcs/gui/init.c */
 t_gui					*gui_init(t_scene *scene, void *mlx);
 void					gui_destroy(t_gui *gui);
-
-/* srcs/gui/loop.c */
 void					gui_loop(t_gui *gui);
-
-/* srcs/gui/render.c */
 void					gui_render(t_gui *gui);
 unsigned int			color_blend(unsigned int dst, int src, float alpha);
 int						panel_color(t_panel panel, int i, int j);
@@ -481,8 +607,6 @@ int (*mouse_click_hook(void))(int, int, int, t_gui *);
 int (*mouse_release_hook(void))(int, int, int, t_gui *);
 int (*mouse_motion_hook(void))(int, int, t_gui *);
 void					gui_update_input(t_gui *gui);
-
-/* srcs/gui/camera/ */
 void					camera_move(t_camera *camera, t_vec3 direction,
 							double speed);
 void					camera_move_forward(t_camera *camera, double speed);
@@ -536,140 +660,6 @@ void					clamp_fov(double *fov);
 /* Software bitmap font — draws text directly into disp_img */
 void					gui_draw_string(t_gui *gui, const char *str, int x,
 							int y, unsigned int color);
-
-struct					s_selection
-{
-	t_type				type;
-	int					index;
-	bool				active;
-	t_aabb				bbox;
-};
-
-typedef enum e_inspect_tab
-{
-	TAB_TRANSFORM,
-	TAB_MATERIAL,
-	TAB_OBJECT,
-	TAB_LIGHT,
-	TAB_PHYSICS,
-	TAB_INFO
-}						t_inspect_tab;
-
-struct					s_inspector
-{
-	bool				visible;
-	t_inspect_tab		tab;
-	int					x;
-	int					width;
-};
-
-struct					s_scene_panel
-{
-	bool				visible;
-	int					width;
-	int					scroll;
-	int					hovered_row;
-};
-
-struct					s_btn_rect
-{
-	t_vec2i				pos;
-	t_vec2i				size;
-};
-
-struct					s_islider
-{
-	const char			*label;
-	double				min;
-	double				max;
-	double				*ptr;
-};
-
-struct					s_slider_arg
-{
-	t_vec2i				pos;
-	t_islider			sl;
-	void				(*on_change)(struct s_gui *gui);
-};
-
-struct					s_vec3_label_arg
-{
-	int					x;
-	int					y;
-	const char			*label;
-	t_vec3				v;
-};
-
-struct					s_bool_label_arg
-{
-	int					x;
-	int					y;
-	const char			*label;
-	bool				val;
-};
-
-struct					s_slider_state
-{
-	bool				dragging;
-	int					drag_start_x;
-	double				drag_start_val;
-	double				*value_ptr;
-	double				dmin;
-	double				dmax;
-	int					track_x;
-	int					track_w;
-	void				(*on_change)(struct s_gui *gui);
-	struct s_widget		*target;
-};
-
-struct					s_mesh_snap
-{
-	t_transform			transform;
-	int					mat_id;
-	t_physics_body		phys;
-};
-
-struct					s_group_snap
-{
-	t_transform			transform;
-	t_vec3				pivot;
-	t_physics_body		phys;
-};
-
-struct					s_scene_snap
-{
-	t_sphere			*spheres;
-	int					sphere_count;
-	t_plane				*planes;
-	int					plane_count;
-	t_cylinder			*cylinders;
-	int					cylinder_count;
-	t_cone				*cones;
-	int					cone_count;
-	t_light				*lights;
-	int					light_count;
-	t_material			*materials;
-	int					mat_count;
-	t_mesh_snap			*meshes;
-	int					mesh_count;
-	int					mesh_group_count;
-	t_group_snap		*groups;
-	int					group_count;
-	t_box				*boxes;
-	int					box_count;
-	t_capsule			*capsules;
-	int					capsule_count;
-	t_rect				*rects;
-	int					rect_count;
-	t_pyramid			*pyramids;
-	int					pyramid_count;
-	t_tri_shape			*tris;
-	int					tri_count;
-	t_ambient			ambient;
-	t_camera			camera;
-	int					ambient_color;
-	double				ambient_intensity;
-};
 
 /* 3. FUNCTION PROTOTYPES */
 
@@ -856,17 +846,4 @@ const char				*row_type_prefix(t_type type);
 void					draw_one_row(struct s_gui *gui, int y_px, t_type ty,
 							int idx);
 
-#endif
-
-/*
-** Override mlx_string_put to draw into disp_img instead of the X11 window.
-** This eliminates the GUI flash caused by drawing text after put_image_to_window.
-** Requires 'gui' (t_gui *) to be in scope at every call site.
-*/
-#ifdef mlx_string_put
-# undef mlx_string_put
-#endif
-#define mlx_string_put(mlx_ref, win_ref, x, y, color, str) ((void)(mlx_ref),
-	(void)(win_ref), gui_draw_string((gui), (str), (x), (y),
-		(unsigned int)(color)))
 #endif

@@ -12,10 +12,24 @@
 
 #include "maths.h"
 
-#ifndef VEC3_HOT_INLINE
+t_vec3	vec3_add(t_vec3 a, t_vec3 b)
+{
+	return ((t_vec3){a.x + b.x, a.y + b.y, a.z + b.z, 0.0});
+}
+
+t_vec3	vec3_sub(t_vec3 a, t_vec3 b)
+{
+	return ((t_vec3){a.x - b.x, a.y - b.y, a.z - b.z, 0.0});
+}
+
+t_vec3	vec3_mul(t_vec3 a, t_vec3 b)
+{
+	return ((t_vec3){a.x * b.x, a.y * b.y, a.z * b.z, 0.0});
+}
+
 t_vec3	vec3_scale(t_vec3 a, double s)
 {
-	return ((t_vec3){a.x * s, a.y * s, a.z * s, a.w * s});
+	return ((t_vec3){a.x * s, a.y * s, a.z * s, 0.0});
 }
 
 double	vec3_dot(t_vec3 a, t_vec3 b)
@@ -38,7 +52,10 @@ double	vec3_mag(t_vec3 a)
 {
 	return (sqrt(vec3_mag_sq(a)));
 }
-#endif
+t_vec3	vec3_triple_product(t_vec3 a, t_vec3 b, t_vec3 c)
+{
+	return (vec3_sub(vec3_scale(b, vec3_dot(a, c)), vec3_scale(a, vec3_dot(b, c))));
+}
 
 t_vec3	vec3_reflect(t_vec3 I, t_vec3 N)
 {

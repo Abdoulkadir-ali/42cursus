@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:17:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:36:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@
 /* Global Static Physics Params */
 # define GRAVITY_CONSTANT -9.81
 # define GRAVITY -9.81
-# define GRAVITY_VEC gravity_vec()
 # define GLOBAL_DAMPING 0.12
 # define TIME_SCALE 1.0
 # define MESH_SIMPLIFY 1
@@ -338,6 +337,6 @@ int						gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
 double					clamp_d(double v, double lo, double hi);
 
 /* Gravity helper */
-t_vec3					gravity_vec(void);
+t_vec3					gravity_vec(void)(void);
 
 #endif

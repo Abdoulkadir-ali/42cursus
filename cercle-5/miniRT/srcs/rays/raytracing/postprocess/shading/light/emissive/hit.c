@@ -1,16 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   applyemissive.c                                    :+:      :+:    :+:   */
+/*   hit.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:38:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
+
+static double	light_att(double d_sq)
+{
+    return (1.0 / (1.0 + ATTENUATION_K * (d_sq)));
+}
 
 void	apply_emissive_hit(t_shading *ctx, t_vec3 *total, t_material *m, t_vec3 lrad)
 {
@@ -37,7 +42,7 @@ void	apply_emissive_hit(t_shading *ctx, t_vec3 *total, t_material *m, t_vec3 lra
 	else
 		c[3] = powf((float)c[3], (float)ctx->mat.shininess);
 	*total = vec3_add(*total, vec3_add(pixel_color(ctx->albedo, m->emission,
-					c[2] * c[1] * LIGHT_ATT(c[0] * c[0])), vec3_scale(
+					c[2] * c[1] * light_att(c[0] * c[0])), vec3_scale(
 					m->emission, c[2] * ctx->mat.specular
-					* LIGHT_ATT(c[0] * c[0]) * c[3])));
+					* light_att(c[0] * c[0]) * c[3])));
 }

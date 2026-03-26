@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 05:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:30:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static bool	load_xpm(t_scene *scene, t_texture *tex, const char *path)
 	tex->addr = mlx_get_data_addr(img, &tex->bpp, &tex->len, &tex->endian);
 	tex->type = TEX_BITMAP;
 	tex->scale = TEX_DEFAULT_SCALE;
-	tex->color_a = COLOR_WHITE;
+	tex->color_a = get_colors()->white;
 	return (true);
 }
 

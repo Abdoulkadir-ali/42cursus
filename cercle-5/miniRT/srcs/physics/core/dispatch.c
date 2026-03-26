@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	phys_dispatch_object(t_physics_body *b, t_transform *t, double dt)
 		return ;
 	if (b->is_compound)
 	{
-		b->velocity = vec3_add(b->velocity, vec3_scale(GRAVITY_VEC, dt));
+		b->velocity = vec3_add(b->velocity, vec3_scale(gravity_vec(), dt));
 		b->velocity = vec3_scale(b->velocity, pow(1.0 - GLOBAL_DAMPING, dt));
 		t->pos = vec3_add(t->pos, vec3_scale(b->velocity, dt));
 		b->center = t->pos;

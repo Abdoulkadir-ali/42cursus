@@ -5,19 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:38:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:38:12 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/26 10:22:17 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 10:22:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 
+
 /* Ensure capacity for one more element. */
 bool	dynarray_ensure(void **array, size_t count, size_t *cap,
 		size_t elem_size)
 {
-	void	*new_ptr;
-	size_t	new_cap;
+	void *new_ptr;
+	size_t new_cap;
 
 	if (count < *cap)
 		return (true);
@@ -37,4 +38,14 @@ bool	dynarray_ensure(void **array, size_t count, size_t *cap,
 	*array = new_ptr;
 	*cap = new_cap;
 	return (true);
+}
+
+bool	DYNARRAY_ENSURE_INT(void **arr, int *count_ptr, int *cap_ptr,
+		size_t elem_size)
+{
+	size_t cnt = (size_t)(*count_ptr);
+	size_t cap = (size_t)(*cap_ptr);
+	bool ok = dynarray_ensure((void **)arr, cnt, &cap, elem_size);
+	*cap_ptr = (int)cap;
+	return (ok);
 }

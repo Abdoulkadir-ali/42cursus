@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 17:40:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:37:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,44 @@ void	prof_print_frame(void)
 		printf("Avg frame: %.1f ms (%.1f FPS)\n", avg, 1000.0 / avg);
 		fflush(stdout);
 	}
+}
+
+void	prof_inc(t_prof_id id)
+{
+	switch (id)
+	{
+	case PROF_MESH_CALLS:
+		tl_g_mesh_calls++;
+		break;
+	case PROF_MESH_AABB_TESTS:
+		tl_g_mesh_aabb_tests++;
+		break;
+	case PROF_MESH_TRI_TESTS:
+		tl_g_mesh_tri_tests++;
+		break;
+	case PROF_MESH_OCC_CALLS:
+		tl_g_mesh_occ_calls++;
+		break;
+	default:
+		break;
+	}
+}
+
+void	prof_flush(void)
+{
+	__sync_fetch_and_add(&g_mesh_calls, tl_g_mesh_calls);
+	__sync_fetch_and_add(&g_mesh_aabb_tests, tl_g_mesh_aabb_tests);
+	__sync_fetch_and_add(&g_mesh_tri_tests, tl_g_mesh_tri_tests);
+	__sync_fetch_and_add(&g_mesh_occ_calls, tl_g_mesh_occ_calls);
+	tl_g_mesh_calls = 0; tl_g_mesh_aabb_tests = 0;
+	tl_g_mesh_tri_tests = 0; tl_g_mesh_occ_calls = 0;
+}
+
+void	prof_reset(void)
+{
+	g_mesh_calls = 0; g_mesh_aabb_tests = 0;
+	g_mesh_tri_tests = 0; g_mesh_occ_calls = 0;
+	clock_gettime(CLOCK_MONOTONIC, &g_prof_start);
 }
 
 #endif

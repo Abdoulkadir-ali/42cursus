@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:16:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:19:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:38:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,6 @@
 # define NDOTL_MIN 0.02
 # define NDOTH_MIN 0.01
 # define HALF_SCALE 0.5
-# ifndef __cplusplus
-static inline double LIGHT_ATT(double d_sq)
-{
-	return (1.0 / (1.0 + ATTENUATION_K * (d_sq)));
-}
-# else
-static inline double LIGHT_ATT(double d_sq) { return (1.0 / (1.0 + ATTENUATION_K * (d_sq))); }
-# endif
 
 struct						s_bvh_ref
 {
@@ -376,6 +368,4 @@ bool						check_top_cap(const t_ray *ray, t_cylinder *cy,
 								double *tm, t_hit *hit);
 bool						check_body(const t_ray *ray, t_cylinder *cy,
 								double *tm, t_hit *hit);
-
-
 #endif
