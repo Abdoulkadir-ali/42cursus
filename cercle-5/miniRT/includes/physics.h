@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:50:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:55:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,29 @@
 # define SLOP 0.01
 # define RESTITUTION_SLOP 0.2
 # define PHYS_NUM_TYPES 7
+/* Dynamic AABB Tree (DBVT) Broadphase */
+# define DBVT_MAX_NODES 512
+# define DBVT_MAX_LEAVES 256
+# define DBVT_FAT_MARGIN 0.1
+# define DBVT_NULL -1
+/* Global Static Physics Params */
+# define GRAVITY_VEC ((t_vec3){0, -9.81, 0, 0})
+# define GLOBAL_DAMPING 0.12
+# define TIME_SCALE 1.0
+# define MESH_SIMPLIFY 1
+/* Compound body limits */
+# define MAX_SUB_SHAPES 32
+# define MAX_BODY_PAIRS 512
+/* EPA */
+# define EPA_MAX_ITER 30
+# define EPA_MAX_FACES 64
+# define EPA_MAX_VERTS 32
+# define EPA_TOL 1e-5
+
 
 /* Forward declarations */
-struct s_scene;
-struct s_sphere;
-struct s_mesh;
-struct s_physics_body;
-
-/* ── BASE TYPES ── */
-
 typedef t_vec3 (*t_support_fn)(const void *shape, t_vec3 dir);
 
-/* Shape type discriminators for compound colliders */
 typedef enum e_phys_type
 {
 	TYPE_PHYS_SPHERE,
@@ -54,9 +65,17 @@ typedef enum e_phys_type
 	TYPE_PHYS_PYRAMID
 }	t_phys_type;
 
-/* Compound body limits */
-# define MAX_SUB_SHAPES 32
-# define MAX_BODY_PAIRS 512
+/* Generic collider — kept for mesh capsule-simplification path */
+typedef enum e_collider_type
+{
+	COLLIDER_SPHERE,
+	COLLIDER_BOX,
+	COLLIDER_PLANE,
+	COLLIDER_CAPSULE
+}               t_collider_type;
+
+
+
 
 /* One Lego brick: a convex sub-shape belonging to a compound body */
 struct s_sub_shape {
@@ -86,8 +105,6 @@ struct s_physics_body {
 	t_vec3		com;
 };
 
-/* ── ACCELERATION STRUCTURES ── */
-
 /* Static BVH for Environment (Stage 12) */
 struct s_static_node {
 	t_aabb	aabb;
@@ -103,11 +120,6 @@ struct s_static_bvh {
 	int				root;
 };
 
-/* Dynamic AABB Tree (DBVT) Broadphase */
-# define DBVT_MAX_NODES 512
-# define DBVT_MAX_LEAVES 256
-# define DBVT_FAT_MARGIN 0.1
-# define DBVT_NULL -1
 
 /* One dynamic body in the DBVT (leaf) */
 struct s_dbvt_leaf {
@@ -177,20 +189,7 @@ struct s_shape_pair {
 	t_physics_body			*bb;
 };
 
-/* Global Static Physics Params */
-# define GRAVITY_VEC ((t_vec3){0, -9.81, 0, 0})
-# define GLOBAL_DAMPING 0.12
-# define TIME_SCALE 1.0
-# define MESH_SIMPLIFY 1
 
-/* Generic collider — kept for mesh capsule-simplification path */
-typedef enum e_collider_type
-{
-	COLLIDER_SPHERE,
-	COLLIDER_BOX,
-	COLLIDER_PLANE,
-	COLLIDER_CAPSULE
-}               t_collider_type;
 
 struct s_collider {
 	t_collider_type    type;
@@ -202,9 +201,9 @@ struct s_collider {
 			t_vec3 a;
 			t_vec3 b;
 			double radius;
-		};
+		} capsule;
 	} data;
-}               t_collider;
+};
 
 /* Internal Contact Structure */
 struct s_contact {
@@ -230,10 +229,6 @@ struct s_simplex {
 	int		n;
 };
 
-# define EPA_MAX_ITER 30
-# define EPA_MAX_FACES 64
-# define EPA_MAX_VERTS 32
-# define EPA_TOL 1e-5
 
 struct s_epa_face {
 	int		idx[3];

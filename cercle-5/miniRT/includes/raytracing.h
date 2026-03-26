@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:16:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:54:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 # include "maths.h"
 # include "objects.h"
 # include "surface.h"
+
+/* Forward declarations to avoid include cycles */
+struct s_scene;
 
 # define MAX_DEPTH 5
 # define COLOR_MAX 255.0
@@ -335,6 +338,7 @@ bool	check_top_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 bool	check_body(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit);
 
 /* 4. IMPLEMENTATION IMPORTS */
-# include "scene.h"
+/* Note: do not include scene.h here to avoid circular includes; use
+ * forward-declarations instead. */
 
 #endif
