@@ -8,16 +8,31 @@
 	+#+        */
 /*                                                +#+#+#+#+#+  
 	+#+           */
-/*   Created: 2026/02/09 20:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/10 12:48:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/26 17:32:44 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 17:32:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/* STD lib */
+#include <float.h>
+#include <limits.h>
+#include <math.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+/* Standard C library */
+#include "libft.h"
 
 #ifndef DEBUG_H
 # define DEBUG_H
 
 /* External dependencies */
-# include "defines.h"
 
 # ifndef DEBUG
 #  define DEBUG 1
@@ -69,233 +84,12 @@ void	debug_print_triangle_test(int tri_idx, const t_vec3 *v);
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   defines.h                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:21:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:23:28 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef DEFINES_H
-# define DEFINES_H
-
-/* Standard C library */
-# include "libft.h"
-
-/* STD lib */
-# include <limits.h>
-# include <stdarg.h>
-# include <stdbool.h>
-# include <stddef.h>
-# include <stdint.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <unistd.h>
-
-# define EPSILON 1e-6
-
-/* Optional features */
-# ifndef MESH_SIMPLIFY
-#  define MESH_SIMPLIFY 0
-# endif
-
-/* AABB helpers will be declared after type typedefs */
-
-/* **** from includes/core.h ***** */
-typedef struct s_aabb				t_aabb;
-typedef struct s_ambient			t_ambient;
-typedef struct s_bone				t_bone;
-typedef struct s_bone_weight		t_bone_weight;
-typedef struct s_box				t_box;
-typedef struct s_bvh				t_bvh;
-typedef struct s_bvh_node			t_bvh_node;
-typedef struct s_bvh_ref			t_bvh_ref;
-typedef struct s_camera				t_camera;
-typedef struct s_camera_controller	t_camera_controller;
-typedef struct s_capsule			t_capsule;
-typedef struct s_cone				t_cone;
-typedef struct s_cylinder			t_cylinder;
-typedef struct s_emissive_ref		t_emissive_ref;
-typedef struct s_gui				t_gui;
-typedef struct s_heightmap			t_heightmap;
-typedef struct s_hit				t_hit;
-typedef struct s_light				t_light;
-typedef struct s_map				t_map;
-typedef struct s_mat4				t_mat4;
-typedef struct s_material			t_material;
-typedef struct s_mesh				t_mesh;
-typedef struct s_mesh_build_item	t_mesh_build_item;
-typedef struct s_mesh_info			t_mesh_info;
-typedef struct s_parse_obj			t_parse_obj;
-typedef struct s_parser				t_parser;
-typedef struct s_plane				t_plane;
-typedef struct s_pyramid			t_pyramid;
-typedef struct s_ray				t_ray;
-typedef struct s_rect				t_rect;
-typedef struct s_rotator			t_rotator;
-typedef struct s_scene				t_scene;
-typedef struct s_skinned_mesh		t_skinned_mesh;
-typedef struct s_sphere				t_sphere;
-typedef struct s_texture			t_texture;
-typedef struct s_transform			t_transform;
-typedef struct s_tri_shape			t_tri_shape;
-
-/* AABB helpers will be declared after type typedefs */
-typedef struct s_triangle			t_triangle;
-typedef struct s_vec2				t_vec2;
-typedef struct s_vec3				t_vec3;
-typedef struct s_vertex				t_vertex;
-
-/* **** from includes/editor.h ***** */
-typedef struct s_bool_label_arg		t_bool_label_arg;
-typedef struct s_btn_rect			t_btn_rect;
-typedef struct s_group_snap			t_group_snap;
-typedef struct s_inspector			t_inspector;
-typedef struct s_islider			t_islider;
-typedef struct s_mesh_snap			t_mesh_snap;
-typedef struct s_scene_panel		t_scene_panel;
-typedef struct s_scene_snap			t_scene_snap;
-typedef struct s_selection			t_selection;
-typedef struct s_slider_arg			t_slider_arg;
-typedef struct s_slider_state		t_slider_state;
-typedef struct s_vec3_label_arg		t_vec3_label_arg;
-
-/* **** from includes/gui.h ***** */
-typedef struct s_crud_ui			t_crud_ui;
-typedef struct s_hover_cache		t_hover_cache;
-typedef struct s_key_action			t_key_action;
-typedef struct s_map_entry			t_map_entry;
-typedef struct s_map_job			t_map_job;
-typedef struct s_panel				t_panel;
-typedef struct s_render_pool		t_render_pool;
-typedef struct s_render_state		t_render_state;
-typedef struct s_render_thread_arg	t_render_thread_arg;
-typedef struct s_tile				t_tile;
-typedef struct s_widget				t_widget;
-typedef struct s_window				t_window;
-typedef struct s_render_pool		t_render_pool;
-
-/* **** from includes/maths.h ***** */
-typedef struct s_mat3				t_mat3;
-typedef struct s_quadratic			t_quadratic;
-typedef struct s_quadratic_roots	t_quadratic_roots;
-typedef struct s_vec2i				t_vec2i;
-typedef struct s_vec3i				t_vec3i;
-
-/* **** from includes/objects.h ***** */
-
-typedef struct s_accessor			t_accessor;
-typedef struct s_anim_channel		t_anim_channel;
-typedef struct s_anim_sampler		t_anim_sampler;
-typedef struct s_animation			t_animation;
-typedef struct s_bin				t_bin;
-typedef struct s_bone				t_bone;
-typedef struct s_bone_weight		t_bone_weight;
-typedef struct s_buffer_view		t_buffer_view;
-typedef struct s_bvh_sah			t_bvh_sah;
-typedef struct s_bvh_split			t_bvh_split;
-typedef struct s_chunk_header		t_chunk_header;
-typedef struct s_fbx_array			t_fbx_array;
-typedef struct s_fbx_array_req		t_fbx_array_req;
-typedef struct s_fbx_bin_node		t_fbx_bin_node;
-typedef struct s_fbx_buf			t_fbx_buf;
-typedef struct s_fbx_build			t_fbx_build;
-typedef struct s_fbx_data			t_fbx_data;
-typedef struct s_fdf_dim			t_fdf_dim;
-typedef struct s_glb_header			t_glb_header;
-typedef struct s_hit_calc			t_hit_calc;
-typedef struct s_mbvh_node			t_mbvh_node;
-typedef struct s_mesh_group			t_mesh_group;
-typedef struct s_mesh_init			t_mesh_init;
-typedef struct s_obj_face			t_obj_face;
-typedef struct s_occ_child			t_occ_child;
-typedef struct s_parser				t_parser;
-typedef struct s_obj_ctx			t_obj_ctx;
-typedef struct s_transform_q		t_transform_q;
-typedef struct s_tri_hit			t_tri_hit;
-typedef struct s_tri_precomp		t_tri_precomp;
-
-/* **** from includes/parser.h ***** */
-typedef struct s_json_value			t_json_value;
-typedef struct s_json_array			t_json_array;
-typedef struct s_json_hash_entry	t_json_hash_entry;
-typedef struct s_json_member		t_json_member;
-typedef struct s_json_object		t_json_object;
-typedef struct s_parser				t_parser;
-
-/* **** from includes/physics.h ***** */
-typedef struct s_collider			t_collider;
-typedef struct s_body_pair			t_body_pair;
-typedef struct s_contact			t_contact;
-typedef struct s_dbvt				t_dbvt;
-typedef struct s_dbvt_leaf			t_dbvt_leaf;
-typedef struct s_dbvt_node			t_dbvt_node;
-typedef struct s_edge				t_edge;
-typedef struct s_epa_face			t_epa_face;
-typedef struct s_epa_poly			t_epa_poly;
-typedef struct s_epa_res			t_epa_res;
-typedef struct s_gen_job			t_gen_job;
-typedef struct s_gjk_shape			t_gjk_shape;
-typedef struct s_phys_pool			t_phys_pool;
-typedef struct s_physics_body		t_physics_body;
-typedef struct s_shape_pair			t_shape_pair;
-typedef struct s_simplex			t_simplex;
-typedef struct s_static_bvh			t_static_bvh;
-typedef struct s_static_node		t_static_node;
-typedef struct s_sub_shape			t_sub_shape;
-typedef struct s_worker_arg			t_worker_arg;
-typedef struct s_phys_pool			t_phys_pool;
-
-/* **** from includes/raytracing.h ***** */
-typedef struct s_build_item			t_build_item;
-typedef struct s_bvh_stack			t_bvh_stack;
-typedef struct s_bvh_tmp_node		t_bvh_tmp_node;
-typedef struct s_entry_point		t_entry_point;
-typedef struct s_lcalc				t_lcalc;
-typedef struct s_occ				t_occ;
-typedef struct s_push				t_push;
-typedef struct s_shading			t_shading;
-typedef struct s_split_info			t_split_info;
-
-/* **** from includes/surface.h ***** */
-typedef struct s_bilinear			t_bilinear;
-typedef struct s_material			t_material;
-typedef struct s_scene				t_scene;
-typedef struct s_texture			t_texture;
-
-/* AABB helpers (shared across raytracing and physics) */
-t_aabb		aabb_create_empty(void);
-t_aabb		aabb_union(const t_aabb *a, const t_aabb *b);
-void		aabb_expand_point(t_aabb *a, t_vec3 p);
-void		aabb_expand_eps(t_aabb *a, double eps);
-double		aabb_surface_area(t_aabb a);
-t_aabb		aabb_transform(t_aabb bbox, t_transform t);
-bool		aabb_overlap(t_aabb a, t_aabb b);
-
-/* Per-shape world-space AABB producers */
-t_aabb		sphere_aabb(t_sphere *sp);
-t_aabb		plane_aabb(t_plane *pl);
-t_aabb		cylinder_aabb(t_cylinder *cy);
-t_aabb		cone_aabb(t_cone *co);
-t_aabb		tri_aabb(t_tri_shape *tr);
-t_aabb		rect_aabb(t_rect *rc);
-t_aabb		pyramid_aabb(t_pyramid *py);
-t_aabb		box_aabb(t_box *bx);
-t_aabb		capsule_aabb(t_capsule *cp);
-
-#endif /* DEFINES_H */
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
 /*   editor.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 11:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 14:45:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:33:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,9 +98,9 @@ t_aabb		capsule_aabb(t_capsule *cp);
 
 /* NEUTRAL DEPENCIES */
 # include "debug.h"
-# include "defines.h"
 # include "gui.h"
 # include "maths.h"
+# include "physics.h"
 
 /* --- Editor Colors --- */
 # define COL_SELECTED 0x20D870U
@@ -697,7 +491,7 @@ void				draw_bool_label(struct s_gui *gui,
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:23:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:34:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -714,9 +508,8 @@ void				draw_bool_label(struct s_gui *gui,
 
 /* NEUTRAL DEPENCIES */
 # include "debug.h"
-# include "defines.h"
 # include "maths.h"
-# include "physics_types.h"
+# include "physics.h"
 
 /* CHILD DEPENCIES */
 # include "scene.h"
@@ -765,7 +558,6 @@ void				draw_bool_label(struct s_gui *gui,
 
 # define MAX_INSPECT_TABS 4
 /* 2. MODULE TYPES */
-
 
 typedef enum e_widget_type
 {
@@ -1190,43 +982,54 @@ int	main(int ac, char **av);
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:34:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:31:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MATHS_H
 # define MATHS_H
 
-# include "debug.h"
-# include "defines.h"
+/* STD lib */
 # include <float.h>
+# include <limits.h>
 # include <math.h>
+# include <stdarg.h>
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdint.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
 
-struct			s_vec2
+/* Standard C library */
+# include "libft.h"
+
+typedef struct s_vec2
 {
 	double		x;
 	double		y;
-};
+}				t_vec2;
 
-struct			s_vec3
+typedef struct s_vec3
 {
 	double		x;
 	double		y;
 	double		z;
 	double		w;
-};
+}				t_vec3;
 
-struct			s_mat4
+typedef struct s_mat4
 {
 	double		m[4][4];
-};
+}				t_mat4;
 
-struct			s_mat3
+typedef struct s_mat3
 {
 	double		m[3][3];
-};
+}				t_mat3;
 
-struct			s_ray
+typedef struct s_ray
 {
 	t_vec3		origin;
 	t_vec3		direction;
@@ -1234,22 +1037,22 @@ struct			s_ray
 	int			sign[3];
 	int			depth;
 	double		weight;
-};
+}				t_ray;
 
-struct			s_aabb
+typedef struct s_aabb
 {
 	t_vec3		min;
 	t_vec3		max;
-};
+}				t_aabb;
 
-struct			s_rotator
+typedef struct s_rotator
 {
 	double		pitch;
 	double		yaw;
 	double		roll;
-};
+}				t_rotator;
 
-struct			s_transform
+typedef struct s_transform
 {
 	t_vec3		pos;
 	t_rotator	rotation;
@@ -1257,26 +1060,34 @@ struct			s_transform
 	t_vec3		forward;
 	t_vec3		right;
 	t_vec3		up;
-};
+}				t_transform;
 
-struct			s_quadratic
+typedef struct s_quadratic
 {
 	double		a;
 	double		b;
 	double		c;
-};
+}				t_quadratic;
 
-struct			s_quadratic_roots
+typedef struct s_quadratic_roots
 {
 	double		t1;
 	double		t2;
-};
+}				t_quadratic_roots;
 
-struct			s_vec2i
+typedef struct s_vec2i
 {
 	int			x;
 	int			y;
-};
+}				t_vec2i;
+
+typedef struct s_vec3i
+{
+	int			x;
+	int			y;
+	int			z;
+	int			w;
+}				t_vec3i;
 
 t_vec2i			vec2i(int x, int y);
 t_vec2i			vec2i_add(t_vec2i a, t_vec2i b);
@@ -1287,14 +1098,6 @@ int				vec2i_dot(t_vec2i a, t_vec2i b);
 int				vec2i_mag_sq(t_vec2i a);
 int				vec2i_mag(t_vec2i a);
 t_vec2i			vec2i_norm(t_vec2i a);
-
-struct			s_vec3i
-{
-	int			x;
-	int			y;
-	int			z;
-	int			w;
-};
 
 t_vec3i			vec3i(int x, int y, int z);
 t_vec3i			vec3i_add(t_vec3i a, t_vec3i b);
@@ -1375,7 +1178,7 @@ bool			solve_quadratic(t_quadratic q, t_quadratic_roots *roots);
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 14:45:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:58:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1389,11 +1192,13 @@ bool			solve_quadratic(t_quadratic q, t_quadratic_roots *roots);
 
 /* 1. NEUTRAL DEPENDENCIES */
 # include "debug.h"
-# include "defines.h"
 # include "maths.h"
-# include "physics_types.h"
+# include "parser.h"
 # include "profiler.h"
 # include "surface.h"
+
+/* Forward-declare raytracing hit record to avoid pulling raytracing.h here */
+typedef struct s_hit		t_hit;
 
 /* 2. LEAF STRUCTURES */
 # define GLB_MAGIC 0x46546C67
@@ -1449,69 +1254,65 @@ typedef enum e_anim_path
 	PATH_WEIGHTS
 }							t_anim_path;
 
-struct						s_emissive_ref
+typedef struct s_emissive_ref
 {
 	t_type					type;
 	int						index;
-};
+}							t_emissive_ref;
 
-struct						s_sphere
+typedef struct s_sphere
 {
 	t_transform				transform;
 	double					radius_sq;
 	int						mat_id;
 	t_vec3					temp_color;
-	t_physics_body			phys;
+	/* physics: handled by the physics system */
 	bool					is_deformed;
 	t_mat4					inv_transform;
-};
+}							t_sphere;
 
-struct						s_plane
+typedef struct s_plane
 {
 	t_transform				transform;
 	int						mat_id;
 	t_vec3					temp_color;
-};
+}							t_plane;
 
-struct						s_cylinder
-{
-	t_transform				transform;
-	t_physics_body			phys;
-	int						mat_id;
-	t_vec3					temp_color;
-};
-
-struct						s_cone
+typedef struct s_cylinder
 {
 	t_transform				transform;
 	int						mat_id;
 	t_vec3					temp_color;
-};
+}							t_cylinder;
 
-struct						s_tri_shape
+typedef struct s_cone
 {
 	t_transform				transform;
-	t_physics_body			phys;
+	int						mat_id;
+	t_vec3					temp_color;
+}							t_cone;
+
+typedef struct s_tri_shape
+{
+	t_transform				transform;
 	t_vec3					v[3];
 	t_vec3					normal;
 	int						mat_id;
 	t_vec3					temp_color;
-};
+}							t_tri_shape;
 
-struct						s_rect
+typedef struct s_rect
 {
 	t_transform				transform;
-	t_physics_body			phys;
 	t_vec3					v[4];
 	t_vec3					normal;
 	int						mat_id;
 	t_vec3					temp_color;
-};
+}							t_rect;
 
-struct						s_pyramid
+typedef struct s_pyramid
 {
 	t_transform				transform;
-	t_physics_body			phys;
 	t_vec3					up;
 	double					base_size;
 	double					height;
@@ -1519,81 +1320,79 @@ struct						s_pyramid
 	t_vec3					temp_color;
 	t_vec3					c[4];
 	t_vec3					apex;
-};
+}							t_pyramid;
 
-struct						s_box
+typedef struct s_box
 {
 	t_transform				transform;
-	t_physics_body			phys;
 	t_vec3					half_extents;
 	int						mat_id;
 	t_vec3					temp_color;
-};
+}							t_box;
 
-struct						s_capsule
+typedef struct s_capsule
 {
 	t_transform				transform;
-	t_physics_body			phys;
 	t_vec3					axis;
 	double					radius;
 	double					half_height;
 	int						mat_id;
 	t_vec3					temp_color;
-};
+}							t_capsule;
 
-struct						s_light
+typedef struct s_light
 {
 	t_light_type			type;
 	t_transform				transform;
 	double					cutoff;
 	double					brightness;
 	t_vec3					rgb;
-};
+}							t_light;
 
-struct						s_camera
+typedef struct s_camera
 {
 	t_transform				transform;
 	double					fov;
-};
+}							t_camera;
 
-struct						s_ambient
+typedef struct s_ambient
 {
 	double					brightness;
 	t_vec3					rgb;
-};
+}							t_ambient;
 
-struct						s_vertex
+typedef struct s_vertex
 {
 	t_vec3					pos;
 	t_vec3					normal;
 	t_vec2					uv;
-};
+}							t_vertex;
 
-struct						s_triangle
+typedef struct s_triangle
 {
 	int						indices[3];
-};
+}							t_triangle;
 
-struct						s_bin
+typedef struct s_bin
 {
 	t_aabb					bounds;
 	int						count;
-};
+}							t_bin;
 
-struct						s_tri_precomp
+typedef struct s_tri_precomp
 {
 	t_vec3					v0;
 	t_vec3					e1;
 	t_vec3					e2;
-};
+}							t_tri_precomp;
 
-struct						s_mbvh_node
+typedef struct s_mbvh_node
 {
 	t_aabb					bbox;
 	int						left_or_first;
 	int						count;
 	int						axis;
-};
+}							t_mbvh_node;
 
 typedef struct s_mbvh_ctx
 {
@@ -1602,20 +1401,20 @@ typedef struct s_mbvh_ctx
 	int						node_count;
 }							t_mbvh_ctx;
 
-struct						s_bone_weight
+typedef struct s_bone_weight
 {
 	int						bone_ids[4];
 	double					weights[4];
-};
+}							t_bone_weight;
 
-struct						s_transform_q
+typedef struct s_transform_q
 {
 	t_vec3					pos;
 	t_vec3					rot;
 	t_vec3					scale;
-};
+}							t_transform_q;
 
-struct						s_bone
+typedef struct s_bone
 {
 	char					*name;
 	int						node_idx;
@@ -1630,9 +1429,9 @@ struct						s_bone
 	double					radius;
 	double					height;
 	t_vec3					local_offset;
-};
+}							t_bone;
 
-struct						s_mesh
+typedef struct s_mesh
 {
 	char					*name;
 	t_vec3					*vertices;
@@ -1657,34 +1456,32 @@ struct						s_mesh
 	t_mat4					scene_mat;
 	t_mat4					scene_rot_mat;
 	bool					has_scene_transform;
-	t_physics_body			phys;
 	int						current_anim;
 	int						anim_base;
 	int						anim_clip_count;
 	double					anim_time;
-	t_collider				collider;
 	int						group_id;
 	t_vec3					*edit_snap_verts;
 	t_vec3					*edit_snap_norms;
 	t_vec3					edit_snap_pivot;
-};
+}							t_mesh;
 
-struct						s_anim_sampler
+typedef struct s_anim_sampler
 {
 	float					*inputs;
 	float					*outputs;
 	int						count;
 	t_interpolation			method;
-};
+}							t_anim_sampler;
 
-struct						s_anim_channel
+typedef struct s_anim_channel
 {
 	int						node_idx;
 	t_anim_path				path;
 	int						sampler_idx;
-};
+}							t_anim_channel;
 
-struct						s_animation
+typedef struct s_animation
 {
 	char					*name;
 	t_anim_channel			*channels;
@@ -1693,56 +1490,56 @@ struct						s_animation
 	int						sampler_count;
 	double					max_time;
 	double					current_time;
-};
+}							t_animation;
 
-struct						s_mesh_init
+typedef struct s_mesh_init
 {
 	int						v_count;
 	int						i_count;
 	bool					has_uvs;
 	bool					has_normals;
-};
+}							t_mesh_init;
 
-struct						s_glb_header
+typedef struct s_glb_header
 {
 	uint32_t				magic;
 	uint32_t				version;
 	uint32_t				length;
-};
+}							t_glb_header;
 
-struct						s_chunk_header
+typedef struct s_chunk_header
 {
 	uint32_t				length;
 	uint32_t				type;
-};
+}							t_chunk_header;
 
-struct						s_accessor
+typedef struct s_accessor
 {
 	int						buffer_view;
 	int						byte_offset;
 	int						component_type;
 	int						count;
 	char					type[16];
-};
+}							t_accessor;
 
-struct						s_buffer_view
+typedef struct s_buffer_view
 {
 	int						buffer;
 	int						byte_offset;
 	int						byte_length;
 	int						byte_stride;
-};
+}							t_buffer_view;
 
-struct						s_fbx_bin_node
+typedef struct s_fbx_bin_node
 {
 	uint64_t				end_offset;
 	uint64_t				num_properties;
 	uint64_t				property_list_len;
 	uint8_t					name_len;
 	char					name[1024];
-};
+}							t_fbx_bin_node;
 
-struct						s_skinned_mesh
+typedef struct s_skinned_mesh
 {
 	t_mesh					base;
 	t_vec3					*base_vertices;
@@ -1751,48 +1548,45 @@ struct						s_skinned_mesh
 	t_bone_weight			*weights;
 	int						bone_count;
 	int						vertex_count;
-};
+}							t_skinned_mesh;
 
-struct						s_mesh_group
+typedef struct s_mesh_group
 {
 	char					*name;
 	char					*path;
 	int						start;
 	int						sub_count;
 	t_transform				transform;
-	t_vec3					pivot;
-	t_physics_body			phys;
-	t_collider				collider;
 	int						anim_base;
 	int						anim_clip_count;
-};
+}							t_mesh_group;
 
 /* Parsing and Build Types */
 
-struct						s_mesh_info
+typedef struct s_mesh_info
 {
 	char					*path;
 	t_transform				transform;
 	t_vec3					color;
 	t_vec3					emission;
-};
+}							t_mesh_info;
 
-struct						s_heightmap
+typedef struct s_heightmap
 {
 	double					**map;
 	int						width;
 	int						height;
 	t_vec3					rgb;
-};
+}							t_heightmap;
 
-struct						s_mesh_build_item
+typedef struct s_mesh_build_item
 {
 	int						index;
 	t_aabb					bbox;
 	t_vec3					centroid;
-};
+}							t_mesh_build_item;
 
-struct						s_parse_obj
+typedef struct s_parse_obj
 {
 	t_type					type;
 	union					u_data
@@ -1813,7 +1607,7 @@ struct						s_parse_obj
 		t_box				box;
 		t_capsule			capsule;
 	} data;
-};
+}							t_parse_obj;
 
 typedef struct s_obj_ctx
 {
@@ -1841,13 +1635,13 @@ typedef struct s_obj_ctx
 	t_aabb					bbox;
 }							t_obj_ctx;
 
-struct						s_obj_face
+typedef struct s_obj_face
 {
 	int						vi[32];
 	int						vti[32];
 	int						vni[32];
 	int						count;
-};
+}							t_obj_face;
 
 typedef struct s_mesh_hit_ctx
 {
@@ -1858,15 +1652,14 @@ typedef struct s_mesh_hit_ctx
 	double					t;
 	int						tri;
 }							t_mesh_hit_ctx;
-
-struct						s_hit_calc
+typedef struct s_hit_calc
 {
 	t_mesh_hit_ctx			*in;
 	int						*idx;
 	t_vec3					v[3];
-};
+}							t_hit_calc;
 
-struct						s_tri_hit
+typedef struct s_tri_hit
 {
 	t_vec3					e1;
 	t_vec3					e2;
@@ -1877,7 +1670,7 @@ struct						s_tri_hit
 	double					inv_det;
 	double					u;
 	double					v;
-};
+}							t_tri_hit;
 
 typedef struct s_fdf_row_ctx
 {
@@ -1906,11 +1699,11 @@ typedef struct s_rt_ctx
 	bool					status;
 }							t_rt_ctx;
 
-struct						s_fdf_dim
+typedef struct s_fdf_dim
 {
 	int						w;
 	int						h;
-};
+}							t_fdf_dim;
 
 typedef struct s_trace_ctx
 {
@@ -1950,7 +1743,7 @@ typedef struct s_child_ctx
 	bool					hit_r;
 }							t_child_ctx;
 
-struct						s_occ_child
+typedef struct s_occ_child
 {
 	int						left_idx;
 	int						right_idx;
@@ -1960,15 +1753,15 @@ struct						s_occ_child
 	double					tr_max;
 	bool					hit_l;
 	bool					hit_r;
-};
+}							t_occ_child;
 
-struct						s_bvh_split
+typedef struct s_bvh_split
 {
 	int						axis;
 	double					pos;
-};
+}							t_bvh_split;
 
-struct						s_bvh_sah
+typedef struct s_bvh_sah
 {
 	t_aabb					centroid_bounds;
 	t_aabb					right_box;
@@ -1984,7 +1777,7 @@ struct						s_bvh_sah
 	int						right_count;
 	int						best_axis;
 	int						i;
-};
+}							t_bvh_sah;
 
 typedef struct s_bvh_bins_ctx
 {
@@ -2027,7 +1820,7 @@ typedef struct s_bvh_try_ctx
 	int						*mid;
 }							t_bvh_try_ctx;
 
-struct						s_fbx_data
+typedef struct s_fbx_data
 {
 	t_vec3					*v;
 	uint32_t				vc;
@@ -2037,7 +1830,7 @@ struct						s_fbx_data
 	uint32_t				nc;
 	t_vec2					*vu;
 	uint32_t				uc;
-};
+}							t_fbx_data;
 
 typedef struct s_fbx_flat_args
 {
@@ -2050,7 +1843,7 @@ typedef struct s_fbx_flat_args
 	int						vc;
 }							t_fbx_flat_args;
 
-struct						s_fbx_build
+typedef struct s_fbx_build
 {
 	t_mesh					*m;
 	int						*raw;
@@ -2070,7 +1863,7 @@ struct						s_fbx_build
 	int						ps;
 	int						use_v_n;
 	int						use_v_u;
-};
+}							t_fbx_build;
 
 typedef struct s_fbx_parse_ctx
 {
@@ -2079,23 +1872,23 @@ typedef struct s_fbx_parse_ctx
 	t_fbx_data				*d;
 }							t_fbx_parse_ctx;
 
-struct						s_fbx_array_req
+typedef struct s_fbx_array_req
 {
 	const char				*label;
 	void					**dst;
 	uint32_t				*count;
 	size_t					elem_sz;
 	uint32_t				div;
-};
+}							t_fbx_array_req;
 
-struct						s_fbx_array
+typedef struct s_fbx_array
 {
 	uint32_t				arr_len;
 	uint32_t				encoding;
 	uint32_t				comp_len;
 	size_t					actual_sz;
 	char					type;
-};
+}							t_fbx_array;
 
 typedef struct s_fbx_bin_ctx
 {
@@ -2105,12 +1898,12 @@ typedef struct s_fbx_bin_ctx
 	t_fbx_data				data;
 }							t_fbx_bin_ctx;
 
-struct						s_fbx_buf
+typedef struct s_fbx_buf
 {
 	char					*buf;
 	size_t					cap;
 	size_t					len;
-};
+}							t_fbx_buf;
 
 typedef struct s_fbx_ascii_ctx
 {
@@ -2129,6 +1922,38 @@ typedef struct s_fbx_ascii_ctx
 	int						mat_id;
 	const char				*path;
 }							t_fbx_ascii_ctx;
+
+typedef struct s_mesh_query
+{
+	const struct s_sphere	*s;
+	struct s_mesh			*m;
+	t_vec3					*out_n;
+	double					*out_p;
+	t_aabb					sa;
+	double					min_d;
+	bool					hit;
+}							t_mesh_query;
+
+typedef struct s_capsule_var
+{
+	t_vec3					ab;
+	t_vec3					as;
+	t_vec3					cl;
+	t_vec3					d;
+	double					t;
+	double					dsq;
+	double					rs;
+	double					dist;
+}							t_capsule_var;
+
+typedef struct s_tri_var
+{
+	t_vec3					cl;
+	t_vec3					d;
+	double					dsq;
+	double					rad;
+	double					dist;
+}							t_tri_var;
 
 t_parse_obj					dispatch_scan(t_parser *p, char *id);
 t_parse_obj					parse_mesh_entry(t_parser *p, t_type type);
@@ -2192,8 +2017,6 @@ void						glb_load_animations(t_scene *scene,
 
 /* Parsing Helpers */
 bool						validate_file(const char *path);
-
-# include "parser.h"
 
 /* .rt Parser (srcs/objects/rt/parsing/) */
 t_parse_obj					parse_ambient(t_parser *p);
@@ -2372,38 +2195,6 @@ bool						detect_sphere_mesh_collision(const struct s_sphere *s,
 								struct s_mesh *m, t_vec3 *out_normal,
 								double *out_penetration);
 
-typedef struct s_mesh_query
-{
-	const struct s_sphere	*s;
-	struct s_mesh			*m;
-	t_vec3					*out_n;
-	double					*out_p;
-	t_aabb					sa;
-	double					min_d;
-	bool					hit;
-}							t_mesh_query;
-
-typedef struct s_capsule_var
-{
-	t_vec3					ab;
-	t_vec3					as;
-	t_vec3					cl;
-	t_vec3					d;
-	double					t;
-	double					dsq;
-	double					rs;
-	double					dist;
-}							t_capsule_var;
-
-typedef struct s_tri_var
-{
-	t_vec3					cl;
-	t_vec3					d;
-	double					dsq;
-	double					rad;
-	double					dist;
-}							t_tri_var;
-
 #endif
 /* ************************************************************************** */
 /*                                                                            */
@@ -2413,7 +2204,7 @@ typedef struct s_tri_var
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:12:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:52:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -2421,6 +2212,7 @@ typedef struct s_tri_var
 # define PARSER_H
 
 /* POSIX / system */
+# include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <sys/stat.h>
@@ -2429,17 +2221,19 @@ typedef struct s_tri_var
 
 /* 1. NEUTRAL DEPENDENCIES */
 # include "debug.h"
-# include "defines.h"
-# include "maths.h"
-
-/* 2. CHILD DEPENDENCIES */
-# include "scene.h"
-# include "raytracing.h"
 
 # define MAX_LEAF_OBJECTS 4
 # define PARSER_BUF_SIZE 65536
 
 /* JSON Parser (Robust) */
+
+/* JSON / parser forward types */
+typedef struct s_json_value			t_json_value;
+typedef struct s_json_member		t_json_member;
+typedef struct s_json_hash_entry	t_json_hash_entry;
+typedef struct s_json_array			t_json_array;
+typedef struct s_json_object		t_json_object;
+
 typedef enum e_json_type
 {
 	JSON_NULL,
@@ -2448,100 +2242,101 @@ typedef enum e_json_type
 	JSON_STRING,
 	JSON_ARRAY,
 	JSON_OBJECT
-}								t_json_type;
+}									t_json_type;
 
-struct							s_parser
+typedef struct s_parser
 {
-	int							fd;
-	char						buffer[PARSER_BUF_SIZE + 1];
-	size_t						cursor;
-	size_t						bytes_read;
-	bool						eof;
-};
+	int								fd;
+	char							buffer[PARSER_BUF_SIZE + 1];
+	size_t							cursor;
+	size_t							bytes_read;
+	bool							eof;
+}									t_parser;
 
-struct							s_json_member
+typedef struct s_json_member
 {
-	char						*key;
-	t_json_value				*value;
-};
+	char							*key;
+	t_json_value					*value;
+}									t_json_member;
 
-struct							s_json_hash_entry
+typedef struct s_json_hash_entry
 {
-	char						*key;
-	t_json_value				*value;
-	struct s_json_hash_entry	*next;
-};
+	char							*key;
+	t_json_value					*value;
+	struct s_json_hash_entry		*next;
+}									t_json_hash_entry;
 
-struct							s_json_object
+typedef struct s_json_object
 {
-	t_json_member				**members;
-	t_json_hash_entry			**hashmap;
-	size_t						count;
-	size_t						hash_size;
-};
+	t_json_member					**members;
+	t_json_hash_entry				**hashmap;
+	size_t							count;
+	size_t							hash_size;
+}									t_json_object;
 
-struct							s_json_array
+typedef struct s_json_array
 {
-	t_json_value				**elements;
-	size_t						count;
-	size_t						cap;
-};
+	t_json_value					**elements;
+	size_t							count;
+	size_t							cap;
+}									t_json_array;
 
-struct							s_json_value
+typedef struct s_json_value
 {
-	t_json_type					type;
+	t_json_type						type;
 	union
 	{
-		bool					boolean;
-		double					number;
-		char					*string;
-		t_json_array			array;
-		t_json_object			object;
+		bool						boolean;
+		double						number;
+		char						*string;
+		t_json_array				array;
+		t_json_object				object;
 	};
-};
+}									t_json_value;
 
-char							*path_get_dir(const char *filepath);
+char								*path_get_dir(const char *filepath);
 
-t_json_value					*json_parse(const char *json_str);
-void							json_free(t_json_value *value);
+t_json_value						*json_parse(const char *json_str);
+void								json_free(t_json_value *value);
 
 /* JSON Query Helpers */
-t_json_value					*json_get(t_json_value *value, const char *key);
-t_json_value					*json_at(t_json_value *value, size_t index);
-const char						*json_as_string(t_json_value *value);
-double							json_as_number(t_json_value *value);
-bool							json_as_bool(t_json_value *value);
-int								json_get_int(t_json_value *obj,
-									const char *key);
+t_json_value						*json_get(t_json_value *value,
+										const char *key);
+t_json_value						*json_at(t_json_value *value, size_t index);
+const char							*json_as_string(t_json_value *value);
+double								json_as_number(t_json_value *value);
+bool								json_as_bool(t_json_value *value);
+int									json_get_int(t_json_value *obj,
+										const char *key);
 
-void							json_skip_ws(const char **s);
-size_t							json_hash_key(const char *key, size_t size);
-void							*json_realloc(void *ptr, size_t old_size,
-									size_t new_size);
-void							json_hash_insert(t_json_object *obj, char *key,
-									t_json_value *val);
-char							*json_parse_inner_string(const char **s);
-t_json_value					*json_parse_inner_object(const char **s);
-t_json_value					*json_parse_inner_array(const char **s);
-t_json_value					*json_parse_inner_number(const char **s);
-t_json_value					*json_parse_inner_value(const char **s);
+void								json_skip_ws(const char **s);
+size_t								json_hash_key(const char *key, size_t size);
+void								*json_realloc(void *ptr, size_t old_size,
+										size_t new_size);
+void								json_hash_insert(t_json_object *obj,
+										char *key, t_json_value *val);
+char								*json_parse_inner_string(const char **s);
+t_json_value						*json_parse_inner_object(const char **s);
+t_json_value						*json_parse_inner_array(const char **s);
+t_json_value						*json_parse_inner_number(const char **s);
+t_json_value						*json_parse_inner_value(const char **s);
 
 /* Core functions */
-void							parser_init(t_parser *p, int fd);
-char							parser_peek(t_parser *p);
-void							parser_advance(t_parser *p);
-void							parser_skip_spaces(t_parser *p);
-bool							parser_match(t_parser *p, char expected);
-bool							parser_get_line(t_parser *p, char *buf,
-									size_t max_len);
+void								parser_init(t_parser *p, int fd);
+char								parser_peek(t_parser *p);
+void								parser_advance(t_parser *p);
+void								parser_skip_spaces(t_parser *p);
+bool								parser_match(t_parser *p, char expected);
+bool								parser_get_line(t_parser *p, char *buf,
+										size_t max_len);
 
 /* Extractors */
-int								parse_int(t_parser *p);
-double							parse_double(t_parser *p);
-bool							parse_vec3(t_parser *p, t_vec3 *out);
+int									parse_int(t_parser *p);
+double								parse_double(t_parser *p);
+bool								parse_vec3(t_parser *p, t_vec3 *out);
 
-struct s_sub_shape				parse_brick(t_json_value *obj);
-struct s_physics_body			parse_compound_body(t_json_value *obj);
+struct s_sub_shape					parse_brick(t_json_value *obj);
+struct s_physics_body				parse_compound_body(t_json_value *obj);
 
 #endif/* ************************************************************************** */
 /*                                                                            */
@@ -2551,14 +2346,16 @@ struct s_physics_body			parse_compound_body(t_json_value *obj);
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:37:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:50:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHYSICS_H
 # define PHYSICS_H
 
-/* EXTER?AL DEPENDENCIES */
+/* EXTERNAL DEPENDENCIES */
+# include <pthread.h>
+# include <semaphore.h>
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>
@@ -2566,9 +2363,267 @@ struct s_physics_body			parse_compound_body(t_json_value *obj);
 
 /* NEUTRAL DEPENCIES */
 # include "debug.h"
-# include "defines.h"
 # include "maths.h"
-# include "physics_types.h"
+
+/* ----------------------------- physics types ----------------------------- */
+# ifndef MAX_SUB_SHAPES
+#  define MAX_SUB_SHAPES 32
+# endif
+# ifndef EPA_MAX_VERTS
+#  define EPA_MAX_VERTS 32
+# endif
+# ifndef EPA_MAX_FACES
+#  define EPA_MAX_FACES 64
+# endif
+# ifndef MAX_BODY_PAIRS
+#  define MAX_BODY_PAIRS 512
+# endif
+# ifndef EPA_MAX_ITER
+#  define EPA_MAX_ITER 30
+# endif
+# ifndef EPA_TOL
+#  define EPA_TOL 1e-5
+# endif
+# ifndef GLOBAL_DAMPING
+#  define GLOBAL_DAMPING 0.12
+# endif
+# ifndef DBVT_MAX_NODES
+#  define DBVT_MAX_NODES 512
+# endif
+# ifndef DBVT_MAX_LEAVES
+#  define DBVT_MAX_LEAVES 256
+# endif
+
+typedef enum e_phys_type
+{
+	TYPE_PHYS_SPHERE,
+	TYPE_PHYS_BOX,
+	TYPE_PHYS_CAPSULE,
+	TYPE_PHYS_CYLINDER,
+	TYPE_PHYS_RECT,
+	TYPE_PHYS_TRI,
+	TYPE_PHYS_PYRAMID,
+	TYPE_PHYS_MESH
+}							t_phys_type;
+
+typedef enum e_collider_type
+{
+	COLLIDER_SPHERE,
+	COLLIDER_BOX,
+	COLLIDER_PLANE,
+	COLLIDER_CAPSULE
+}							t_collider_type;
+
+typedef t_vec3				(*t_support_fn)(const void *shape, t_vec3 dir);
+
+struct						s_sub_shape
+{
+	void					*shape;
+	t_aabb					local_aabb;
+	t_vec3					offset;
+	t_mat4					transform;
+	double					radius;
+	t_phys_type				type;
+};
+
+struct						s_physics_body
+{
+	t_vec3					velocity;
+	t_vec3					angular_velocity;
+	t_vec3					torque;
+	double					mass;
+	t_mat3					inv_inertia;
+	double					elasticity;
+	double					friction;
+	bool					is_static;
+	bool					is_compound;
+	t_vec3					center;
+	void					*owner;
+	t_transform				*transform;
+	t_sub_shape				sub_shapes[MAX_SUB_SHAPES];
+	size_t					sub_count;
+	t_aabb					global_aabb;
+	t_vec3					com;
+};
+
+struct						s_collider
+{
+	t_collider_type			type;
+	union
+	{
+		double				radius;
+		t_vec3				half_extents;
+		t_vec3				normal;
+		struct
+		{
+			t_vec3			a;
+			t_vec3			b;
+			double			radius;
+		} capsule;
+	} data;
+};
+
+struct						s_static_node
+{
+	t_aabb					aabb;
+	int						left;
+	int						right;
+	int						obj_idx;
+	int						obj_type;
+};
+
+struct						s_static_bvh
+{
+	t_static_node			*nodes;
+	int						count;
+	int						root;
+};
+
+struct						s_dbvt_node
+{
+	t_aabb					aabb;
+	int						left;
+	int						right;
+	int						leaf;
+};
+
+struct						s_dbvt_leaf
+{
+	t_aabb					fat_aabb;
+	t_physics_body			*body;
+	t_transform				*transform;
+	void					*shape;
+	t_support_fn			support;
+	t_phys_type				type;
+};
+
+struct						s_dbvt
+{
+	t_dbvt_node				nodes[DBVT_MAX_NODES];
+	t_dbvt_leaf				leaves[DBVT_MAX_LEAVES];
+	int						node_count;
+	int						leaf_count;
+	int						root;
+};
+
+struct						s_contact
+{
+	t_physics_body			*a;
+	t_transform				*ta;
+	t_physics_body			*b;
+	t_transform				*tb;
+	t_vec3					normal;
+	double					penetration;
+	double					restitution;
+	double					friction;
+	t_vec3					contact_point;
+	t_vec3					ra;
+	t_vec3					rb;
+};
+
+struct						s_gen_job
+{
+	t_scene					*scene;
+	struct s_contact		*out;
+	int						max_c;
+	int						count;
+	int						type;
+	void					*arg;
+};
+
+struct						s_worker_arg
+{
+	t_scene					*scene;
+	int						index;
+};
+
+struct						s_phys_pool
+{
+	pthread_t				threads[PHYS_NUM_TYPES];
+	struct s_gen_job		jobs[PHYS_NUM_TYPES];
+	sem_t					start[PHYS_NUM_TYPES];
+	sem_t					done[PHYS_NUM_TYPES];
+	struct s_worker_arg		args[PHYS_NUM_TYPES];
+	int						shutdown;
+	int						initialized;
+};
+
+struct						s_physics
+{
+	struct s_scene			*scene;
+	struct s_phys_pool		*pool;
+	t_vec3					gravity;
+	double					damping;
+	double					fixed_dt;
+	int						solver_iters;
+};
+
+typedef struct s_physics	t_physics;
+
+struct						s_body_pair
+{
+	t_physics_body			*a;
+	t_physics_body			*b;
+	void					*la;
+	void					*lb;
+};
+
+struct						s_shape_pair
+{
+	t_sub_shape				*sa;
+	t_sub_shape				*sb;
+	t_physics_body			*ba;
+	t_physics_body			*bb;
+};
+
+struct						s_simplex
+{
+	t_vec3					pts[4];
+	t_vec3					a_pts[4];
+	t_vec3					b_pts[4];
+	int						n;
+};
+
+struct						s_epa_face
+{
+	int						idx[3];
+	t_vec3					normal;
+	double					dist;
+};
+
+struct						s_epa_poly
+{
+	t_vec3					pts[EPA_MAX_VERTS];
+	t_vec3					a_pts[EPA_MAX_VERTS];
+	t_vec3					b_pts[EPA_MAX_VERTS];
+	int						n_verts;
+	t_epa_face				faces[EPA_MAX_FACES];
+	int						n_faces;
+};
+
+struct						s_edge
+{
+	int						a;
+	int						b;
+};
+
+struct						s_epa_res
+{
+	t_vec3					normal;
+	double					depth;
+	t_vec3					contact_a;
+	t_vec3					contact_b;
+	void					*f;
+};
+
+struct						s_gjk_shape
+{
+	const void				*data;
+	t_support_fn			support;
+	t_vec3					center;
+};
+
+/* --------------------------- end physics types --------------------------- */
 
 /* Constants */
 # define MAX_CONTACTS 1024
@@ -2583,656 +2638,216 @@ struct s_physics_body			parse_compound_body(t_json_value *obj);
 
 /* ── FUNCTION PROTOTYPES ── */
 
+/* GUI-facing physics settings (small, safe to include) */
+typedef struct s_physics_settings
+{
+	t_vec3					gravity;
+	double					damping;
+	double					fixed_dt;
+	int						solver_iters;
+}							t_physics_settings;
+
+/* Minimal facade for GUI: simulate the scene without importing internals */
+void						simulate_physics(struct s_scene *scene, double dt);
+void						update_physics_settings(t_physics *phys,
+								const t_physics_settings *s);
+void						get_physics_settings(const t_physics *phys,
+								t_physics_settings *out);
+
 /* Update loops */
-void			update_physics(struct s_scene *scene, double dt);
-void			integrate_bodies(struct s_scene *scene, double dt);
-int			generate_contacts(struct s_scene *scene, t_contact *contacts,
-					int max_c);
-void			phys_init_pool(struct s_scene *scene);
-void			phys_destroy_pool(struct s_scene *scene);
+void						update_physics(struct s_scene *scene, double dt);
+void						integrate_bodies(struct s_scene *scene, double dt);
+int							generate_contacts(struct s_scene *scene,
+								t_contact *contacts, int max_c);
+void						phys_init_pool(struct s_scene *scene);
+void						phys_destroy_pool(struct s_scene *scene);
 
 /* New physics engine interface (preferred): create, destroy and simulate */
-t_physics	*phys_create(struct s_scene *scene);
-void		phys_destroy(t_physics *phys);
-void		simulate_physics(t_physics *phys, double dt);
+t_physics					*phys_create(struct s_scene *scene);
+void						phys_destroy(t_physics *phys);
+void						simulate_physics(t_physics *phys, double dt);
 
 /* AABB Calculations (Lego & Mesh) */
-void			compute_mesh_aabb(struct s_mesh *mesh, t_aabb *out);
-void			compute_primitive_aabb(t_sub_shape *s);
-bool			aabb_overlap(t_aabb a, t_aabb b);
-bool			aabb_overlap_broad(t_aabb a, t_aabb b);
-bool			aabb_overlap_local(t_aabb a, t_aabb b);
-void			phys_init_pool(struct s_scene *scene);
-void			phys_destroy_pool(struct s_scene *scene);
+void						compute_mesh_aabb(struct s_mesh *mesh, t_aabb *out);
+void						compute_primitive_aabb(t_sub_shape *s);
+bool						aabb_overlap(t_aabb a, t_aabb b);
+bool						aabb_overlap_broad(t_aabb a, t_aabb b);
+bool						aabb_overlap_local(t_aabb a, t_aabb b);
+void						phys_init_pool(struct s_scene *scene);
+void						phys_destroy_pool(struct s_scene *scene);
 
 /* Interaction */
-void			physics_shoot_ray(struct s_scene *scene, t_ray ray,
-					double impulse);
-t_physics_body	*get_body_ref(struct s_scene *scene, t_bvh_ref ref);
-int				query_sphere(struct s_scene *s, int idx, t_contact *c,
-					int count, int max);
-int				sphere_plane_contacts(struct s_scene *s, t_sphere *sp,
-					t_gjk_shape *sa_gjk, t_contact *c, int count, int max);
-int				sphere_others_contacts(struct s_scene *s, int idx, t_sphere *sp,
-					t_aabb sa, t_gjk_shape *sa_gjk, t_contact *c, int count,
-					int max);
-int				traverse_bvh_contacts(struct s_scene *s, int idx, t_sphere *sp,
-					t_aabb saabb, t_contact *c, int count, int max);
-bool			detect_sphere_mesh_collision(const t_sphere *sp,
-					struct s_mesh *m, t_vec3 *n, double *p);
+void						physics_shoot_ray(struct s_scene *scene, t_ray ray,
+								double impulse);
+t_physics_body				*get_body_ref(struct s_scene *scene, t_bvh_ref ref);
+int							query_sphere(struct s_scene *s, int idx,
+								t_contact *c, int count, int max);
+int							sphere_plane_contacts(struct s_scene *s,
+								t_sphere *sp, t_gjk_shape *sa_gjk, t_contact *c,
+								int count, int max);
+int							sphere_others_contacts(struct s_scene *s, int idx,
+								t_sphere *sp, t_aabb sa, t_gjk_shape *sa_gjk,
+								t_contact *c, int count, int max);
+int							traverse_bvh_contacts(struct s_scene *s, int idx,
+								t_sphere *sp, t_aabb saabb, t_contact *c,
+								int count, int max);
+bool						detect_sphere_mesh_collision(const t_sphere *sp,
+								struct s_mesh *m, t_vec3 *n, double *p);
 
 /* Compound Body */
-void			init_compound(t_physics_body *b, t_sub_shape *bricks, size_t n);
-void			update_compound(t_physics_body *b);
-void			compute_com(t_physics_body *b);
-void			compute_inertia(t_physics_body *b);
+void						init_compound(t_physics_body *b,
+								t_sub_shape *bricks, size_t n);
+void						update_compound(t_physics_body *b);
+void						compute_com(t_physics_body *b);
+void						compute_inertia(t_physics_body *b);
 
 /* Broadphase / Midphase */
-int				broadphase(struct s_scene *s, t_body_pair *out, int max);
-size_t			collect_bodies(struct s_scene *s, t_physics_body **out,
-					size_t max);
-int				query_static_bvh(struct s_scene *s, int node_idx,
-					t_gjk_shape *sa, t_physics_body *ba, t_transform *ta,
-					t_contact *c, int count, int max);
-int				midphase(t_body_pair *pairs, int n, t_shape_pair *out, int max);
+int							broadphase(struct s_scene *s, t_body_pair *out,
+								int max);
+size_t						collect_bodies(struct s_scene *s,
+								t_physics_body **out, size_t max);
+int							query_static_bvh(struct s_scene *s, int node_idx,
+								t_gjk_shape *sa, t_physics_body *ba,
+								t_transform *ta, t_contact *c, int count,
+								int max);
+int							midphase(t_body_pair *pairs, int n,
+								t_shape_pair *out, int max);
 
 /* Solver */
-void			solve_velocities(t_contact *contacts, int count);
-void			solve_positions(t_contact *contacts, int count);
-void			apply_torque(t_contact *c, t_physics_body *body,
-					double impulse);
+void						solve_velocities(t_contact *contacts, int count);
+void						solve_positions(t_contact *contacts, int count);
+void						apply_torque(t_contact *c, t_physics_body *body,
+								double impulse);
 
-void			compute_ab_ao(t_simplex *s, t_vec3 *ab, t_vec3 *ao);
-bool			handle_positive_simplex_line(t_vec3 ab, t_vec3 ao, t_vec3 *dir);
-void			reduce_simplex_to_point(t_simplex *s, t_vec3 ao, t_vec3 *dir);
+void						compute_ab_ao(t_simplex *s, t_vec3 *ab, t_vec3 *ao);
+bool						handle_positive_simplex_line(t_vec3 ab, t_vec3 ao,
+								t_vec3 *dir);
+void						reduce_simplex_to_point(t_simplex *s, t_vec3 ao,
+								t_vec3 *dir);
 
 /* Support functions */
-t_vec3			gjk_support_sphere(const void *data, t_vec3 dir);
-t_vec3			gjk_support_box(const void *data, t_vec3 dir);
-t_vec3			gjk_support_capsule(const void *data, t_vec3 dir);
-t_vec3			gjk_support_cylinder(const void *data, t_vec3 dir);
-t_vec3			gjk_support_rect(const void *data, t_vec3 dir);
-t_vec3			gjk_support_tri(const void *data, t_vec3 dir);
-t_vec3			gjk_support_pyramid(const void *data, t_vec3 dir);
-t_vec3			gjk_support_mesh(const void *data, t_vec3 dir);
+t_vec3						gjk_support_sphere(const void *data, t_vec3 dir);
+t_vec3						gjk_support_box(const void *data, t_vec3 dir);
+t_vec3						gjk_support_capsule(const void *data, t_vec3 dir);
+t_vec3						gjk_support_cylinder(const void *data, t_vec3 dir);
+t_vec3						gjk_support_rect(const void *data, t_vec3 dir);
+t_vec3						gjk_support_tri(const void *data, t_vec3 dir);
+t_vec3						gjk_support_pyramid(const void *data, t_vec3 dir);
+t_vec3						gjk_support_mesh(const void *data, t_vec3 dir);
 
 /* GJK / EPA */
-bool			gjk_intersect(t_gjk_shape *a, t_gjk_shape *b, t_simplex *out);
-bool			gjk_epa(t_gjk_shape *a, t_gjk_shape *b, t_simplex *s,
-					t_epa_res *res);
-t_vec3			gjk_support_list(const t_vec3 *v, int count, t_vec3 dir);
-t_vec3			bary(const t_vec3 tri[3], t_vec3 p);
-t_epa_face		make_face(t_epa_poly *p, int i0, int i1, int i2);
-int				closest_face(t_epa_poly *p);
-void			collect_silhouette(t_epa_poly *p, t_vec3 support, t_edge *edges,
-					int *n);
-void			init_polytope(t_epa_poly *p, t_simplex *s);
-void			get_contact_points(t_epa_poly *p, t_epa_face *f, t_vec3 *pa,
-					t_vec3 *pb);
-t_vec3			rot_by_ang(t_vec3 a, t_vec3 rot, double dt);
-void			integrate_sphere(t_sphere *sp, double dt);
-void			integrate_box(t_box *bx, double dt);
-void			integrate_capsule(t_capsule *cap, double dt);
-void			integrate_cylinder(t_cylinder *cy, double dt);
-void			integrate_rect(t_rect *rc, double dt);
-void			integrate_tri(t_tri_shape *tr, double dt);
-void			integrate_pyramid(t_pyramid *py, double dt);
-void			phys_dispatch_object(t_physics_body *b, t_transform *t,
-					double dt);
-void			phys_resolve_ccd(struct s_scene *s, t_physics_body *b,
-					double dt);
-void			phys_debug_spheres(struct s_scene *s);
+bool						gjk_intersect(t_gjk_shape *a, t_gjk_shape *b,
+								t_simplex *out);
+bool						gjk_epa(t_gjk_shape *a, t_gjk_shape *b,
+								t_simplex *s, t_epa_res *res);
+t_vec3						gjk_support_list(const t_vec3 *v, int count,
+								t_vec3 dir);
+t_vec3						bary(const t_vec3 tri[3], t_vec3 p);
+t_epa_face					make_face(t_epa_poly *p, int i0, int i1, int i2);
+int							closest_face(t_epa_poly *p);
+void						collect_silhouette(t_epa_poly *p, t_vec3 support,
+								t_edge *edges, int *n);
+void						init_polytope(t_epa_poly *p, t_simplex *s);
+void						get_contact_points(t_epa_poly *p, t_epa_face *f,
+								t_vec3 *pa, t_vec3 *pb);
+t_vec3						rot_by_ang(t_vec3 a, t_vec3 rot, double dt);
+void						integrate_sphere(t_sphere *sp, double dt);
+void						integrate_box(t_box *bx, double dt);
+void						integrate_capsule(t_capsule *cap, double dt);
+void						integrate_cylinder(t_cylinder *cy, double dt);
+void						integrate_rect(t_rect *rc, double dt);
+void						integrate_tri(t_tri_shape *tr, double dt);
+void						integrate_pyramid(t_pyramid *py, double dt);
+void						phys_dispatch_object(t_physics_body *b,
+								t_transform *t, double dt);
+void						phys_resolve_ccd(struct s_scene *s,
+								t_physics_body *b, double dt);
+void						phys_debug_spheres(struct s_scene *s);
 /* Raytracing BVH functions are declared in raytracing.h; keep physics
 ** headers free of conflicting bvh_* declarations. */
-void			apply_solver_torque(t_physics_body *b, t_vec3 r, t_vec3 imp,
-					double inv_m, double s);
-t_vec3			point_vel(t_physics_body *b, t_vec3 r);
-double			ang_term(t_physics_body *b, t_vec3 r, t_vec3 n, double inv_m);
-void			apply_friction(t_contact *ct, double inv_a, double inv_b,
-					t_vec3 rv);
-t_vec3			md_support(t_gjk_shape *a, t_gjk_shape *b, t_vec3 dir,
-					t_vec3 *pa, t_vec3 *pb);
-int				pyramid_vs_plane(t_pyramid *py, t_plane *pl, t_contact *c,
-					int max_c);
-int				gjk_vs_plane(t_gjk_shape *sa, t_physics_body *ba,
-					t_transform *ta, t_plane *pl, t_contact *c);
-int				gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
-					t_physics_body *ba, t_physics_body *bb, t_transform *ta,
-					t_transform *tb, t_contact *c);
-double			clamp_d(double v, double lo, double hi);
-int				gjk_vs_all_planes(t_gjk_shape *sa, t_physics_body *ba,
-					t_transform *ta, struct s_scene *s, t_contact *c, int count,
-					int max);
+void						apply_solver_torque(t_physics_body *b, t_vec3 r,
+								t_vec3 imp, double inv_m, double s);
+t_vec3						point_vel(t_physics_body *b, t_vec3 r);
+double						ang_term(t_physics_body *b, t_vec3 r, t_vec3 n,
+								double inv_m);
+void						apply_friction(t_contact *ct, double inv_a,
+								double inv_b, t_vec3 rv);
+t_vec3						md_support(t_gjk_shape *a, t_gjk_shape *b,
+								t_vec3 dir, t_vec3 *pa, t_vec3 *pb);
+int							pyramid_vs_plane(t_pyramid *py, t_plane *pl,
+								t_contact *c, int max_c);
+int							gjk_vs_plane(t_gjk_shape *sa, t_physics_body *ba,
+								t_transform *ta, t_plane *pl, t_contact *c);
+int							gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
+								t_physics_body *ba, t_physics_body *bb,
+								t_transform *ta, t_transform *tb, t_contact *c);
+double						clamp_d(double v, double lo, double hi);
+int							gjk_vs_all_planes(t_gjk_shape *sa,
+								t_physics_body *ba, t_transform *ta,
+								struct s_scene *s, t_contact *c, int count,
+								int max);
 
 /* Intersection Dispatch */
-int				narrow_dispatch_body_pair(t_body_pair *p, t_contact *contacts,
-					int count);
-int				narrow_dispatch_shape_pair(t_shape_pair *p, t_contact *contacts,
-					int count);
+int							narrow_dispatch_body_pair(t_body_pair *p,
+								t_contact *contacts, int count);
+int							narrow_dispatch_shape_pair(t_shape_pair *p,
+								t_contact *contacts, int count);
 
 /* Primitive AABBs */
-t_aabb			sphere_aabb(t_sphere *sp);
-t_aabb			box_aabb(t_box *bx);
-t_aabb			capsule_aabb(t_capsule *cp);
-t_aabb			cylinder_aabb(t_cylinder *cy);
-t_aabb			rect_aabb(t_rect *rc);
-t_aabb			tri_aabb(t_tri_shape *tr);
-t_aabb			pyramid_aabb(t_pyramid *py);
+t_aabb						sphere_aabb(t_sphere *sp);
+t_aabb						box_aabb(t_box *bx);
+t_aabb						capsule_aabb(t_capsule *cp);
+t_aabb						cylinder_aabb(t_cylinder *cy);
+t_aabb						rect_aabb(t_rect *rc);
+t_aabb						tri_aabb(t_tri_shape *tr);
+t_aabb						pyramid_aabb(t_pyramid *py);
 
 /* Tree-based Broadphase */
-void			collect_leaves(struct s_scene *s, t_dbvt *t);
-int				dbvt_build_range(t_dbvt *t, int first, int count);
-void			build_dbvt(struct s_scene *s, t_dbvt *t);
-int				dbvt_query_pairs(t_dbvt *t, t_body_pair *out, int max);
+void						collect_leaves(struct s_scene *s, t_dbvt *t);
+int							dbvt_build_range(t_dbvt *t, int first, int count);
+void						build_dbvt(struct s_scene *s, t_dbvt *t);
+int							dbvt_query_pairs(t_dbvt *t, t_body_pair *out,
+								int max);
 
 /* Primitive-Specific */
-int				rect_vs_plane(t_rect *rc, t_plane *pl, t_contact *c, int max_c);
-int				rect_vs_others(t_scene *s, int idx, t_rect *rc, t_aabb raabb,
-					t_contact *c, int count, int max);
-int				gjk_vs_rect(t_gjk_shape *sa, t_physics_body *ba,
-					t_transform *ta, t_rect *rc, t_contact *c);
-int				gjk_vs_tri(t_gjk_shape *sa, t_physics_body *ba, t_transform *ta,
-					t_tri_shape *tr, t_contact *c);
-int				gjk_vs_pyramid(t_gjk_shape *sa, t_physics_body *ba,
-					t_transform *ta, t_pyramid *py, t_contact *c);
-int				box_vs_plane(t_box *bx, t_plane *pl, t_contact *c, int max_c);
-int				box_vs_others(t_scene *s, int idx, t_box *bx, t_aabb ba,
-					t_contact *c, int count, int max);
-int				capsule_plane_contacts(t_scene *s, t_capsule *cap,
-					t_gjk_shape *sa, t_contact *c, int count, int max);
-int				cap_vs_others(t_scene *s, int idx, t_capsule *cap, t_aabb ca,
-					t_contact *c, int count, int max);
-int				tri_vs_plane(t_tri_shape *tr, t_plane *pl, t_contact *c,
-					int max_c);
-int				tri_vs_others(t_scene *s, int idx, t_tri_shape *tr, t_aabb ta,
-					t_contact *c, int count, int max);
-int				cyl_plane_contacts(t_scene *s, t_cylinder *cy, t_gjk_shape *sa,
-					t_contact *c, int count, int max);
-int				cyl_vs_others(t_scene *s, int idx, t_cylinder *cy, t_aabb ca,
-					t_contact *c, int count, int max);
-bool			simplex_line(t_simplex *s, t_vec3 *dir);
-bool			simplex_triangle(t_simplex *s, t_vec3 *dir);
-bool			simplex_tetrahedron(t_simplex *s, t_vec3 *dir);
-void			update_simplex3(t_simplex *s, int a, int b, int c);
+int							rect_vs_plane(t_rect *rc, t_plane *pl, t_contact *c,
+								int max_c);
+int							rect_vs_others(t_scene *s, int idx, t_rect *rc,
+								t_aabb raabb, t_contact *c, int count, int max);
+int							gjk_vs_rect(t_gjk_shape *sa, t_physics_body *ba,
+								t_transform *ta, t_rect *rc, t_contact *c);
+int							gjk_vs_tri(t_gjk_shape *sa, t_physics_body *ba,
+								t_transform *ta, t_tri_shape *tr, t_contact *c);
+int							gjk_vs_pyramid(t_gjk_shape *sa, t_physics_body *ba,
+								t_transform *ta, t_pyramid *py, t_contact *c);
+int							box_vs_plane(t_box *bx, t_plane *pl, t_contact *c,
+								int max_c);
+int							box_vs_others(t_scene *s, int idx, t_box *bx,
+								t_aabb ba, t_contact *c, int count, int max);
+int							capsule_plane_contacts(t_scene *s, t_capsule *cap,
+								t_gjk_shape *sa, t_contact *c, int count,
+								int max);
+int							cap_vs_others(t_scene *s, int idx, t_capsule *cap,
+								t_aabb ca, t_contact *c, int count, int max);
+int							tri_vs_plane(t_tri_shape *tr, t_plane *pl,
+								t_contact *c, int max_c);
+int							tri_vs_others(t_scene *s, int idx, t_tri_shape *tr,
+								t_aabb ta, t_contact *c, int count, int max);
+int							cyl_plane_contacts(t_scene *s, t_cylinder *cy,
+								t_gjk_shape *sa, t_contact *c, int count,
+								int max);
+int							cyl_vs_others(t_scene *s, int idx, t_cylinder *cy,
+								t_aabb ca, t_contact *c, int count, int max);
+bool						simplex_line(t_simplex *s, t_vec3 *dir);
+bool						simplex_triangle(t_simplex *s, t_vec3 *dir);
+bool						simplex_tetrahedron(t_simplex *s, t_vec3 *dir);
+void						update_simplex3(t_simplex *s, int a, int b, int c);
 
 /* Gravity helper */
-t_vec3			gravity_vec(void);
+t_vec3						gravity_vec(void);
 
 #endif
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   physics_types.h                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 14:35:47 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:46:15 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef PHYSICS_TYPES_H
-# define PHYSICS_TYPES_H
-
-/* Opaque phys pool type: defined in physics implementation to avoid
-	dragging threading headers and scene definitions into every user. */
-/* Ensure we have thread primitives available for pool definitions */
-# include <pthread.h>
-# include <semaphore.h>
-
-/* Minimal dependencies for data-only types */
-# include "defines.h"
-# include "maths.h"
-
-/* Constants used by the types */
-# ifndef MAX_SUB_SHAPES
-#  define MAX_SUB_SHAPES 32
-# endif
-# ifndef EPA_MAX_VERTS
-#  define EPA_MAX_VERTS 32
-# endif
-# ifndef EPA_MAX_FACES
-#  define EPA_MAX_FACES 64
-# endif
-/* Broadphase / EPA runtime constants */
-# ifndef MAX_BODY_PAIRS
-#  define MAX_BODY_PAIRS 512
-# endif
-# ifndef EPA_MAX_ITER
-#  define EPA_MAX_ITER 30
-# endif
-# ifndef EPA_TOL
-#  define EPA_TOL 1e-5
-# endif
-/* Global damping applied during integration steps */
-# ifndef GLOBAL_DAMPING
-#  define GLOBAL_DAMPING 0.12
-# endif
-/* DBVT and EPA sizing constants */
-# ifndef DBVT_MAX_NODES
-#  define DBVT_MAX_NODES 512
-# endif
-# ifndef DBVT_MAX_LEAVES
-#  define DBVT_MAX_LEAVES 256
-# endif
-
-/* Allow PHYS_NUM_TYPES to be overridden elsewhere */
-# ifndef PHYS_NUM_TYPES
-#  define PHYS_NUM_TYPES 7
-# endif
-
-typedef enum e_phys_type
-{
-	TYPE_PHYS_SPHERE,
-	TYPE_PHYS_BOX,
-	TYPE_PHYS_CAPSULE,
-	TYPE_PHYS_CYLINDER,
-	TYPE_PHYS_RECT,
-	TYPE_PHYS_TRI,
-	TYPE_PHYS_PYRAMID,
-	TYPE_PHYS_MESH
-}						t_phys_type;
-
-typedef enum e_collider_type
-{
-	COLLIDER_SPHERE,
-	COLLIDER_BOX,
-	COLLIDER_PLANE,
-	COLLIDER_CAPSULE
-}						t_collider_type;
-
-typedef t_vec3			(*t_support_fn)(const void *shape, t_vec3 dir);
-
-/* One Lego brick: a convex sub-shape belonging to a compound body */
-struct					s_sub_shape
-{
-	void				*shape;
-	t_aabb				local_aabb;
-	t_vec3				offset;
-	t_mat4				transform;
-	double				radius;
-	t_phys_type			type;
-};
-
-/* Physics types - per-object body and global state (data only) */
-struct					s_physics_body
-{
-	t_vec3				velocity;
-	t_vec3				angular_velocity;
-	t_vec3				torque;
-	double				mass;
-	t_mat3				inv_inertia;
-	double				elasticity;
-	double				friction;
-	bool				is_static;
-	bool				is_compound;
-	t_vec3				center;
-	void				*owner;
-	t_transform			*transform;
-	t_sub_shape			sub_shapes[MAX_SUB_SHAPES];
-	size_t				sub_count;
-	t_aabb				global_aabb;
-	t_vec3				com;
-};
-
-/* Generic collider description (data-only) */
-struct					s_collider
-{
-	t_collider_type		type;
-	union
-	{
-		double			radius;
-		t_vec3			half_extents;
-		t_vec3			normal;
-		struct
-		{
-			t_vec3		a;
-			t_vec3		b;
-			double		radius;
-		} capsule;
-	} data;
-};
-
-/* Static BVH for Environment (small data-only node) */
-struct					s_static_node
-{
-	t_aabb				aabb;
-	int					left;
-	int					right;
-	int					obj_idx;
-	int					obj_type;
-};
-
-struct					s_static_bvh
-{
-	t_static_node		*nodes;
-	int					count;
-	int					root;
-};
-
-/* DBVT (dynamic BVH) node/leaf structures (data-only) */
-struct					s_dbvt_node
-{
-	t_aabb				aabb;
-	int					left;
-	int					right;
-	int					leaf;
-};
-
-struct					s_dbvt_leaf
-{
-	t_aabb				fat_aabb;
-	t_physics_body		*body;
-	t_transform			*transform;
-	void				*shape;
-	t_support_fn		support;
-	t_phys_type			type;
-};
-
-struct					s_dbvt
-{
-	t_dbvt_node			nodes[DBVT_MAX_NODES];
-	t_dbvt_leaf			leaves[DBVT_MAX_LEAVES];
-	int					node_count;
-	int					leaf_count;
-	int					root;
-};
-
-/* Internal Contact Structure (needed by job API) */
-struct					s_contact
-{
-	t_physics_body		*a;
-	t_transform			*ta;
-	t_physics_body		*b;
-	t_transform			*tb;
-	t_vec3				normal;
-	double				penetration;
-	double				restitution;
-	double				friction;
-	t_vec3				contact_point;
-	t_vec3				ra;
-	t_vec3				rb;
-};
-
-/* Thread pool job/worker types */
-struct					s_gen_job
-{
-	t_scene				*scene;
-	struct s_contact	*out;
-	int               max_c;
-	int               count;
-	int               type;
-	void              *arg;
-};
-
-
-struct					s_worker_arg
-{
-	t_scene				*scene;
-	int               index;
-};
-
-struct					s_phys_pool
-{
-	pthread_t			threads[PHYS_NUM_TYPES];
-	struct s_gen_job	jobs[PHYS_NUM_TYPES];
-	sem_t				start[PHYS_NUM_TYPES];
-	sem_t				done[PHYS_NUM_TYPES];
-	struct s_worker_arg	args[PHYS_NUM_TYPES];
-	int					shutdown;
-	int					initialized;
-};
-
-/* Top-level physics engine object: binds a scene to the physics runtime */
-struct s_physics
-{
-    struct s_scene    *scene;
-    struct s_phys_pool *pool;
-    double             damping;
-    int                solver_iters;
-};
-
-typedef struct s_physics t_physics;
-};
-
-/* Pipeline helper types */
-struct					s_body_pair
-{
-	t_physics_body		*a;
-	t_physics_body		*b;
-	void				*la;
-	void				*lb;
-};
-
-struct					s_shape_pair
-{
-	t_sub_shape			*sa;
-	t_sub_shape			*sb;
-	t_physics_body		*ba;
-	t_physics_body		*bb;
-};
-
-/* Simplex / EPA types */
-struct					s_simplex
-{
-	t_vec3				pts[4];
-	t_vec3				a_pts[4];
-	t_vec3				b_pts[4];
-	int					n;
-};
-
-struct					s_epa_face
-{
-	int					idx[3];
-	t_vec3				normal;
-	double				dist;
-};
-
-struct					s_epa_poly
-{
-	t_vec3				pts[EPA_MAX_VERTS];
-	t_vec3				a_pts[EPA_MAX_VERTS];
-	t_vec3				b_pts[EPA_MAX_VERTS];
-	int					n_verts;
-	t_epa_face			faces[EPA_MAX_FACES];
-	int					n_faces;
-};
-
-struct					s_edge
-{
-	int					a;
-	int					b;
-};
-
-struct					s_epa_res
-{
-	t_vec3				normal;
-	double				depth;
-	t_vec3				contact_a;
-	t_vec3				contact_b;
-	void				*f;
-};
-
-struct					s_gjk_shape
-{
-	const void			*data;
-	t_support_fn		support;
-	t_vec3				center;
-};
-
-#endif
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   poc_physic.h                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 15:45:04 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:45:05 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef PHYSICS_H
-# define PHYSICS_H
-
-/* Dépendances système pour le multi-threading */
-# include <pthread.h>
-# include <semaphore.h>
-# include <stdbool.h>
-
-/* Dépendances internes */
-# include "defines.h"
-# include "maths.h"
-# include "scene.h"
-
-/* --- Configuration du Moteur --- */
-# define PHYS_MAX_BODIES 2048
-# define PHYS_NUM_THREADS 7
-# define MAX_SUB_SHAPES 32
-# define DBVT_MAX_NODES 4096
-# define DBVT_MAX_LEAVES 2048
-
-/* --- Types & Enums --- */
-
-typedef enum e_phys_type
-{
-	TYPE_PHYS_SPHERE,
-	TYPE_PHYS_BOX,
-	TYPE_PHYS_CAPSULE,
-	TYPE_PHYS_CYLINDER,
-	TYPE_PHYS_RECT,
-	TYPE_PHYS_TRI,
-	TYPE_PHYS_PYRAMID,
-	TYPE_PHYS_MESH
-}	t_phys_type;
-
-/* Fonction de support pour l'algorithme GJK */
-typedef t_vec3	(*t_support_fn)(const void *shape, t_vec3 dir);
-
-/* --- LE COMPOSANT : Corps Physique --- */
-
-typedef struct s_physics_body
-{
-	/* Lien vers l'objet de la scène (Découplage) */
-	t_transform		*transform;  /* Pointeur vers le transform réel dans la scène */
-	void			*shape_data; /* Donnée brute (ex: t_sphere*) pour le GJK */
-	t_phys_type		type;
-	void			*user_data;  /* Pour retrouver l'objet parent si besoin */
-
-	/* Propriétés Dynamiques */
-	t_vec3			velocity;
-	t_vec3			angular_velocity;
-	t_vec3			torque;
-	double			mass;
-	double			inv_mass;
-	t_mat3			inv_inertia;
-	
-	/* Matériau Physique */
-	double			elasticity;
-	double			friction;
-	bool			is_static;
-	bool			is_active;
-
-	/* Géométrie de collision (Compound shapes) */
-	struct s_sub_shape
-	{
-		void		*shape;
-		t_aabb		local_aabb;
-		t_vec3		offset;
-		t_mat4		transform;
-		double		radius;
-		t_phys_type	type;
-	}				sub_shapes[MAX_SUB_SHAPES];
-	size_t			sub_count;
-	t_aabb			global_aabb;
-}	t_physics_body;
-
-/* --- LE SYSTÈME : Contexte du Moteur --- */
-
-typedef struct s_contact
-{
-	t_physics_body	*a;
-	t_physics_body	*b;
-	t_vec3			normal;
-	double			penetration;
-	t_vec3			contact_point;
-}	t_contact;
-
-/* Threading */
-typedef struct s_phys_job
-{
-	t_scene			*scene;
-	t_contact		*out_contacts;
-	int				max_contacts;
-	int				found_count;
-	int				thread_id;
-}	t_phys_job;
-
-typedef struct s_physics
-{
-	/* Pool de corps : Alloué de manière contiguë pour le cache L1/L2 */
-	t_physics_body	bodies[PHYS_MAX_BODIES];
-	int				body_count;
-
-	/* Configuration de la simulation */
-	t_vec3			gravity;
-	double			fixed_dt;
-	int				solver_iterations;
-
-	/* Thread Pool */
-	pthread_t		threads[PHYS_NUM_THREADS];
-	t_phys_job		jobs[PHYS_NUM_THREADS];
-	sem_t			sem_start[PHYS_NUM_THREADS];
-	sem_t			sem_done[PHYS_NUM_THREADS];
-	int				shutdown;
-
-	/* Broadphase : Dynamic AABB Tree */
-	struct s_dbvt
-	{
-		struct s_dbvt_node { t_aabb aabb; int left, right, leaf; } nodes[DBVT_MAX_NODES];
-		struct s_dbvt_leaf { t_aabb fat; t_physics_body *body; } leaves[DBVT_MAX_LEAVES];
-		int node_count;
-		int leaf_count;
-		int root;
-	}				tree;
-
-	/* Environnement Statique (BVH) */
-	t_static_bvh	*static_env;
-}	t_physics;
-
-/* ------------------------------------------------------------------------- */
-/* API DU MOTEUR                                                             */
-/* ------------------------------------------------------------------------- */
-
-/* Initialisation & Cycle de vie */
-t_physics	*phys_create(void);
-void		phys_destroy(t_physics *phys);
-
-/**
- * BAKING : Parcourt la scène et génère les t_physics_body correspondants.
- * C'est ici que le lien transform -> transform est établi.
- */
-void		phys_bake_scene(t_physics *phys, t_scene *scene);
-
-/**
- * SIMULATION : La fonction principale appelée par la GUI à chaque frame.
- */
-void		phys_step(t_physics *phys, t_scene *scene, double dt);
-
-/* Pipeline Interne */
-void		phys_integrate(t_physics *phys, double dt);
-int			phys_detect_collisions(t_physics *phys, t_contact *out, int max);
-void		phys_solve(t_physics *phys, t_contact *contacts, int count);
-
-/* Support GJK */
-t_vec3		phys_support(t_physics_body *body, t_vec3 dir);
-
-/* Interactions */
-void		phys_apply_impulse(t_physics_body *body, t_vec3 impulse, t_vec3 point);
-void		phys_shoot_force(t_physics *phys, t_ray ray, double power);
-
-#endif/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   profiler.h                                         :+:      :+:    :+:   */
@@ -3240,7 +2855,7 @@ void		phys_shoot_force(t_physics *phys, t_ray ray, double power);
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:37:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:33:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -3266,7 +2881,7 @@ typedef enum e_prof_id
 	PROF_MESH_AABB_TESTS,
 	PROF_MESH_TRI_TESTS,
 	PROF_MESH_OCC_CALLS,
-}               t_prof_id;
+}		t_prof_id;
 
 /* Mapping from old global identifiers to profiler IDs so existing
  * `PROF_INC(g_mesh_calls)` call sites continue to work. */
@@ -3276,10 +2891,10 @@ typedef enum e_prof_id
 #  define PROF_ID_g_mesh_occ_calls PROF_MESH_OCC_CALLS
 
 /* Runtime API implemented in srcs/debug/profiler.c */
-void    prof_inc(t_prof_id id);
-void    prof_flush(void);
-void    prof_reset(void);
-void    prof_print_frame(void);
+void	prof_inc(t_prof_id id);
+void	prof_flush(void);
+void	prof_reset(void);
+void	prof_print_frame(void);
 
 /* Convenience macros preserving original names */
 #  define PROF_INC(x) prof_inc(PROF_ID_##x)
@@ -3304,7 +2919,7 @@ void    prof_print_frame(void);
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:16:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 14:47:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:33:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -3319,7 +2934,6 @@ void    prof_print_frame(void);
 
 /* 1. EXTERNAL DEPENDENCIES */
 # include "debug.h"
-# include "defines.h"
 # include "maths.h"
 # include "scene.h"
 
@@ -3658,6 +3272,26 @@ bool						check_top_cap(const t_ray *ray, t_cylinder *cy,
 								double *tm, t_hit *hit);
 bool						check_body(const t_ray *ray, t_cylinder *cy,
 								double *tm, t_hit *hit);
+
+/* AABB helpers (shared across raytracing and physics) */
+t_aabb						aabb_create_empty(void);
+t_aabb						aabb_union(const t_aabb *a, const t_aabb *b);
+void						aabb_expand_point(t_aabb *a, t_vec3 p);
+void						aabb_expand_eps(t_aabb *a, double eps);
+double						aabb_surface_area(t_aabb a);
+t_aabb						aabb_transform(t_aabb bbox, t_transform t);
+bool						aabb_overlap(t_aabb a, t_aabb b);
+
+/* Per-shape world-space AABB producers */
+t_aabb						sphere_aabb(t_sphere *sp);
+t_aabb						plane_aabb(t_plane *pl);
+t_aabb						cylinder_aabb(t_cylinder *cy);
+t_aabb						cone_aabb(t_cone *co);
+t_aabb						tri_aabb(t_tri_shape *tr);
+t_aabb						rect_aabb(t_rect *rc);
+t_aabb						pyramid_aabb(t_pyramid *py);
+t_aabb						box_aabb(t_box *bx);
+t_aabb						capsule_aabb(t_capsule *cp);
 #endif
 /* ************************************************************************** */
 /*                                                                            */
@@ -3667,7 +3301,7 @@ bool						check_body(const t_ray *ray, t_cylinder *cy,
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:13:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:53:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -3681,12 +3315,10 @@ bool						check_body(const t_ray *ray, t_cylinder *cy,
 
 /* 1. NEUTRAL DEPENDENCIES */
 # include "debug.h"
-# include "defines.h"
 # include "maths.h"
 
-/* 2. RISKY DEPENDENCIES */
+/* 2. CHILD DEPENDENCIES */
 # include "objects.h"
-# include "physics_types.h"
 
 # define INIT_SPHERE_CAP 16
 # define INIT_PLANE_CAP 16
@@ -3706,128 +3338,122 @@ bool						check_body(const t_ray *ray, t_cylinder *cy,
 # define SCALE_EPSILON 1e-6
 # define HALF_SCALE 0.5
 
-struct				s_scene
-{
-	char			*name;
-	void			*mlx;
+typedef struct s_scene{
+	char							*name;
+	void							*mlx;
 
-	t_sphere		*spheres;
-	int				sphere_count;
-	int				sphere_cap;
+	t_sphere						*spheres;
+	int								sphere_count;
+	int								sphere_cap;
 
-	t_plane			*planes;
-	int				plane_count;
-	int				plane_cap;
+	t_plane							*planes;
+	int								plane_count;
+	int								plane_cap;
 
-	t_cylinder		*cylinders;
-	int				cylinder_count;
-	int				cylinder_cap;
+	t_cylinder						*cylinders;
+	int								cylinder_count;
+	int								cylinder_cap;
 
-	t_cone			*cones;
-	int				cone_count;
-	int				cone_cap;
+	t_cone							*cones;
+	int								cone_count;
+	int								cone_cap;
 
-	t_tri_shape		*tris;
-	int				tri_count;
-	int				tri_cap;
+	t_tri_shape						*tris;
+	int								tri_count;
+	int								tri_cap;
 
-	t_rect			*rects;
-	int				rect_count;
-	int				rect_cap;
+	t_rect							*rects;
+	int								rect_count;
+	int								rect_cap;
 
-	t_pyramid		*pyramids;
-	int				pyramid_count;
-	int				pyramid_cap;
+	t_pyramid						*pyramids;
+	int								pyramid_count;
+	int								pyramid_cap;
 
-	t_box			*boxes;
-	int				box_count;
-	int				box_cap;
+	t_box							*boxes;
+	int								box_count;
+	int								box_cap;
 
-	t_capsule		*capsules;
-	int				capsule_count;
-	int				capsule_cap;
+	t_capsule						*capsules;
+	int								capsule_count;
+	int								capsule_cap;
 
-	t_mesh			*meshes;
-	int				mesh_count;
-	int				mesh_cap;
-	int				mesh_group_count;
-	t_mesh_group	*groups;
-	int				group_count;
-	int				group_cap;
+	t_mesh							*meshes;
+	int								mesh_count;
+	int								mesh_cap;
+	int								mesh_group_count;
+	t_mesh_group					*groups;
+	int								group_count;
+	int								group_cap;
 
-	t_skinned_mesh	*animated;
-	int				anim_count;
-	int				anim_cap;
+	t_skinned_mesh					*animated;
+	int								anim_count;
+	int								anim_cap;
 
-	t_material		*materials;
-	int				mat_count;
-	int				mat_cap;
-	t_ambient		ambient;
-	t_camera		camera;
-	t_light			*lights;
-	int				light_count;
-	int				light_cap;
+	t_material						*materials;
+	int								mat_count;
+	int								mat_cap;
+	t_ambient						ambient;
+	t_camera						camera;
+	t_light							*lights;
+	int								light_count;
+	int								light_cap;
 
-	t_animation		*clips;
-	int				clip_count;
-	int				clip_cap;
-	struct s_bvh	*bvh;
-	t_emissive_ref	*emissive_cache;
-	int				emissive_n;
+	t_animation						*clips;
+	int								clip_count;
+	int								clip_cap;
+	struct s_bvh					*bvh;
+	t_emissive_ref					*emissive_cache;
+	int								emissive_n;
+} t_scene;
 
-	/* Physics Context (Stage 9 - No Globals) */
-	 t_dbvt			dbvt;
-	 t_phys_pool		*pool;
-	t_static_bvh	*static_bvh;
-};
 
 /* dynarray helper moved from utils */
-bool				dynarray_ensure(void **array, size_t count, size_t *cap,
-						size_t elem_size);
+bool								dynarray_ensure(void **array, size_t count,
+										size_t *cap, size_t elem_size);
 
 /* Helper for int-based counts (implemented in srcs/scene/dynarray_helper.c) */
-bool				dynarray_ensure_int_impl(void **arr, int *count_ptr,
-						int *cap_ptr, size_t elem_size);
-# define DYNARRAY_ENSURE_INT(a, b, c, d) \
-	dynarray_ensure_int_impl((void **)(a), (b), (c), (d))
+bool								dynarray_ensure_int_impl(void **arr,
+										int *count_ptr, int *cap_ptr,
+										size_t elem_size);
+# define DYNARRAY_ENSURE_INT(a, b, c, d) dynarray_ensure_int_impl((void **)(a),
+	(b), (c), (d))
 
 /* srcs/scene/ */
-t_scene				*create_scene(const char *name);
-void				destroy_scene(t_scene *scene);
+t_scene								*create_scene(const char *name);
+	void destroy_scene(t_scene *scene);
 
-/* srcs/scene/add.c (Specialized Adders) */
-int					scene_add_material(t_scene *scene, t_vec3 color);
-int					scene_add_fresh_material(t_scene *scene, t_vec3 color);
-int					scene_clone_material(t_scene *scene, int src_id);
-int					scene_add_checker_material(t_scene *scene, t_vec3 a,
-						t_vec3 b, double scale);
-int					scene_find_material(t_scene *scene, const char *name);
-int					scene_add_named_material(t_scene *scene, const char *name);
+	/* srcs/scene/add.c (Specialized Adders) */
+	int scene_add_material(t_scene *scene, t_vec3 color);
+	int scene_add_fresh_material(t_scene *scene, t_vec3 color);
+	int scene_clone_material(t_scene *scene, int src_id);
+	int scene_add_checker_material(t_scene *scene, t_vec3 a, t_vec3 b,
+		double scale);
+	int scene_find_material(t_scene *scene, const char *name);
+	int scene_add_named_material(t_scene *scene, const char *name);
 
-/* srcs/scene/texture_load.c */
-bool				load_texture(t_scene *scene, t_texture *tex,
-						const char *path);
+	/* srcs/scene/texture_load.c */
+	bool load_texture(t_scene *scene, t_texture *tex, const char *path);
 
-bool				scene_add_sphere(t_scene *scene, t_sphere sphere);
-bool				scene_add_plane(t_scene *scene, t_plane plane);
-bool				scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
-bool				scene_add_cone(t_scene *scene, t_cone cone);
-bool				scene_add_tri(t_scene *scene, t_tri_shape tri);
-bool				scene_add_rect(t_scene *scene, t_rect rect);
-bool				scene_add_pyramid(t_scene *scene, t_pyramid py);
-bool				scene_add_box(t_scene *scene, t_box box);
-bool				scene_add_capsule(t_scene *scene, t_capsule cap);
-bool				scene_add_mesh(t_scene *scene, t_mesh mesh);
-bool				scene_add_animated(t_scene *scene, t_skinned_mesh animated);
-bool				scene_add_group(t_scene *scene, t_mesh_group g);
-bool				scene_add_group_for_subs(t_scene *scene, const char *path,
-						int start_mesh);
-bool				scene_add_light(t_scene *scene, t_light light);
-bool				scene_apply_compound(t_scene *scene,
-						struct s_json_value *shape_obj);
+	bool scene_add_sphere(t_scene *scene, t_sphere sphere);
+	bool scene_add_plane(t_scene *scene, t_plane plane);
+	bool scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
+	bool scene_add_cone(t_scene *scene, t_cone cone);
+	bool scene_add_tri(t_scene *scene, t_tri_shape tri);
+	bool scene_add_rect(t_scene *scene, t_rect rect);
+	bool scene_add_pyramid(t_scene *scene, t_pyramid py);
+	bool scene_add_box(t_scene *scene, t_box box);
+	bool scene_add_capsule(t_scene *scene, t_capsule cap);
+	bool scene_add_mesh(t_scene *scene, t_mesh mesh);
+	bool scene_add_animated(t_scene *scene, t_skinned_mesh animated);
+	bool scene_add_group(t_scene *scene, t_mesh_group g);
+	bool scene_add_group_for_subs(t_scene *scene, const char *path,
+		int start_mesh);
+	bool scene_add_light(t_scene *scene, t_light light);
+	bool scene_apply_compound(t_scene *scene, struct s_json_value *shape_obj);
 
-/* srcs/objects/rt/parsing/ (Global Selector) */
-t_scene				*parse_file(const char *path, void *mlx);
+	/* srcs/objects/rt/parsing/ (Global Selector) */
+	t_scene *parse_file(const char *path, void *mlx);
 
 #endif
 /* ************************************************************************** */
@@ -3877,7 +3503,7 @@ t_scene				*parse_file(const char *path, void *mlx);
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 14:39:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 17:32:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -3891,7 +3517,7 @@ t_scene				*parse_file(const char *path, void *mlx);
 
 /* 1. EXTERNAL DEPENDENCIES */
 # include "debug.h"
-# include "defines.h"
+
 # include "maths.h"
 
 # define BITS_PER_BYTE 8

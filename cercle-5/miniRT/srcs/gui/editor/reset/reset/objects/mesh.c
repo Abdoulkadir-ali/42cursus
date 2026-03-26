@@ -23,6 +23,8 @@ void	reset_mesh(t_scene *sc, t_scene_snap *s)
 		sc->meshes[i].transform = s->meshes[i].transform;
 		sc->meshes[i].mat_id = s->meshes[i].mat_id;
 		sc->meshes[i].phys = s->meshes[i].phys;
+		sc->meshes[i].current_anim = s->meshes[i].current_anim;
+		sc->meshes[i].anim_time = s->meshes[i].anim_time;
 	}
 	while (i < sc->mesh_count)
 		mesh_free(&sc->meshes[i++]);

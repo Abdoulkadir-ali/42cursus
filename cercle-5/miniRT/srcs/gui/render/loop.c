@@ -12,6 +12,7 @@
 
 #include "editor.h"
 #include "physics.h"
+#include "animations.h"
 
 static long long	get_time_ms(void)
 {
@@ -39,24 +40,12 @@ static double	update_delta(t_gui *gui)
 	return (delta);
 }
 
-static void	update_animations(t_gui *gui, double delta)
+static void	gui_update_animations(t_gui *gui, double delta)
 {
-	int		i;
-	t_mesh	*mesh;
-
 	if (!gui->scene || gui->scene->clip_count <= 0)
 		return ;
-	i = 0;
-	while (i < gui->scene->mesh_count)
-	{
-		mesh = &gui->scene->meshes[i];
-		if (mesh->skeleton)
-		{
-			glb_update_mesh_anim(mesh, gui->scene, delta);
-			gui->render.dirty = true;
-		}
-		i++;
-	}
+	update_animations(gui->scene, delta);
+	gui->render.dirty = true;
 }
 
 static void	update_physics_step(t_gui *gui, double delta)
@@ -66,15 +55,15 @@ static void	update_physics_step(t_gui *gui, double delta)
 
 	if (!gui->scene || !gui->physics_enabled)
 		return ;
+	gui->scene->simulate_physics = true;
 	fixed_dt = (gui->phys_fixed_dt > 0.0) ? gui->phys_fixed_dt : (1.0 / 60.0);
-	/* Clamp delta to prevent runaway accumulation after stalls */
 	if (delta > fixed_dt * 3.0)
 		delta = fixed_dt * 3.0;
 	gui->phys_accumulator += delta;
 	steps = 0;
 	while (gui->phys_accumulator >= fixed_dt && steps < 3)
 	{
-		update_physics(gui->scene, fixed_dt);
+		simulate_physics(gui->scene, fixed_dt);
 		gui->phys_accumulator -= fixed_dt;
 		steps++;
 	}
@@ -148,12 +137,14 @@ static int	render_loop(void *param)
 	gui = (t_gui *)param;
 	poll_map_job(gui);
 	delta = update_delta(gui);
-	update_animations(gui, delta);
+	gui_update_animations(gui, delta);
 	update_physics_step(gui, delta);
 	update_autorefresh(gui);
 	update_ambient(gui);
 	gui_update_input(gui);
 	render_if_dirty(gui);
+	if (gui->scene)
+		gui->scene->simulate_physics = false;
 	return (0);
 }
 

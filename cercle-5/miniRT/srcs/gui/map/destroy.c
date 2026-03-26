@@ -31,7 +31,12 @@ void	map_manager_destroy(t_gui *gui)
 			free(entry->snap);
 		}
 		if (entry->scene)
+		{
+			if (entry->scene->bvh)
+				bvh_destroy(entry->scene->bvh);
+			phys_destroy_pool(entry->scene);
 			destroy_scene(entry->scene);
+		}
 		free(entry->path);
 		free(entry);
 		entry = next;

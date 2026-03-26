@@ -22,7 +22,12 @@ static void	cleanup_app(t_scene *scene, t_gui *gui)
 	if (gui)
 		gui_destroy(gui);
 	else if (scene)
+	{
+		if (scene->bvh)
+			bvh_destroy(scene->bvh);
+		phys_destroy_pool(scene);
 		destroy_scene(scene);
+	}
 }
 
 /**

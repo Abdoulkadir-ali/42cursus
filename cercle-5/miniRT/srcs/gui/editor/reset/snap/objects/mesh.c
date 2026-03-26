@@ -22,6 +22,8 @@ static void	loop_meshes(t_scene_snap *s, t_scene *sc)
 		s->meshes[i].transform = sc->meshes[i].transform;
 		s->meshes[i].mat_id = sc->meshes[i].mat_id;
 		s->meshes[i].phys = sc->meshes[i].phys;
+		s->meshes[i].current_anim = sc->meshes[i].current_anim;
+		s->meshes[i].anim_time = sc->meshes[i].anim_time;
 	}
 }
 
