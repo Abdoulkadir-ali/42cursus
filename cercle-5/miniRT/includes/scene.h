@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:07:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 16:25:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 
 /* 2. RISKY DEPENDENCIES */
 # include "objects.h"
-# include "physics_types.h"
 
 # define INIT_SPHERE_CAP 16
 # define INIT_PLANE_CAP 16
@@ -107,16 +106,14 @@ struct				s_scene
 	int				light_count;
 	int				light_cap;
 
+	t_animation		*clips;
 	int				clip_count;
 	int				clip_cap;
 	struct s_bvh	*bvh;
 	t_emissive_ref	*emissive_cache;
 	int				emissive_n;
 
-	/* Physics Context (Stage 9 - No Globals) */
-	 t_dbvt			dbvt;
-	 t_phys_pool		*pool;
-	t_static_bvh	*static_bvh;
+	/* Physics Context: moved to physics system (no physics internals in scene) */
 };
 
 /* dynarray helper moved from utils */

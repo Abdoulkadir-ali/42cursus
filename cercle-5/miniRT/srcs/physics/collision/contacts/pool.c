@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:30:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	phys_init_pool(t_scene *scene)
 	int			i;
 	t_phys_pool	*pool;
 
-	pool = &scene->pool;
+	pool = scene->pool;
 	i = -1;
 	while (++i < PHYS_NUM_TYPES)
 	{
@@ -38,7 +38,7 @@ void	phys_destroy_pool(t_scene *scene)
 	int			i;
 	t_phys_pool	*pool;
 
-	pool = &scene->pool;
+	pool = scene->pool;
 	if (!pool->initialized)
 		return ;
 	pool->shutdown = 1;

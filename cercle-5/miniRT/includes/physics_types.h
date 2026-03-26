@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:35:47 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:07:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:46:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,20 @@
 # endif
 # ifndef EPA_MAX_FACES
 #  define EPA_MAX_FACES 64
+# endif
+/* Broadphase / EPA runtime constants */
+# ifndef MAX_BODY_PAIRS
+#  define MAX_BODY_PAIRS 512
+# endif
+# ifndef EPA_MAX_ITER
+#  define EPA_MAX_ITER 30
+# endif
+# ifndef EPA_TOL
+#  define EPA_TOL 1e-5
+# endif
+/* Global damping applied during integration steps */
+# ifndef GLOBAL_DAMPING
+#  define GLOBAL_DAMPING 0.12
 # endif
 /* DBVT and EPA sizing constants */
 # ifndef DBVT_MAX_NODES
@@ -92,6 +106,8 @@ struct					s_physics_body
 	bool				is_static;
 	bool				is_compound;
 	t_vec3				center;
+	void				*owner;
+	t_transform			*transform;
 	t_sub_shape			sub_shapes[MAX_SUB_SHAPES];
 	size_t				sub_count;
 	t_aabb				global_aabb;
@@ -182,16 +198,17 @@ struct					s_gen_job
 {
 	t_scene				*scene;
 	struct s_contact	*out;
-	int					max_c;
-	int					count;
-	int					type;
-	void				*arg;
+	int               max_c;
+	int               count;
+	int               type;
+	void              *arg;
 };
+
 
 struct					s_worker_arg
 {
 	t_scene				*scene;
-	int					index;
+	int               index;
 };
 
 struct					s_phys_pool
@@ -203,6 +220,18 @@ struct					s_phys_pool
 	struct s_worker_arg	args[PHYS_NUM_TYPES];
 	int					shutdown;
 	int					initialized;
+};
+
+/* Top-level physics engine object: binds a scene to the physics runtime */
+struct s_physics
+{
+    struct s_scene    *scene;
+    struct s_phys_pool *pool;
+    double             damping;
+    int                solver_iters;
+};
+
+typedef struct s_physics t_physics;
 };
 
 /* Pipeline helper types */

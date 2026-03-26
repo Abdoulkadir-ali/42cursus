@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 10:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:23:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "raytracing.h"
+#include "physics.h"
 
 /**
  * @brief Frees the assets (meshes and animated meshes) in the scene.

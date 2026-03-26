@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:21:42 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:12:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 16:28:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@
 # include <unistd.h>
 
 # define EPSILON 1e-6
+
+/* Optional features */
+# ifndef MESH_SIMPLIFY
+#  define MESH_SIMPLIFY 0
+# endif
+
+/* AABB helpers will be declared after type typedefs */
 
 /* **** from includes/core.h ***** */
 typedef struct s_aabb				t_aabb;
@@ -67,6 +74,8 @@ typedef struct s_sphere				t_sphere;
 typedef struct s_texture			t_texture;
 typedef struct s_transform			t_transform;
 typedef struct s_tri_shape			t_tri_shape;
+
+/* AABB helpers will be declared after type typedefs */
 typedef struct s_triangle			t_triangle;
 typedef struct s_vec2				t_vec2;
 typedef struct s_vec3				t_vec3;
@@ -188,5 +197,25 @@ typedef struct s_bilinear			t_bilinear;
 typedef struct s_material			t_material;
 typedef struct s_scene				t_scene;
 typedef struct s_texture			t_texture;
+
+/* AABB helpers (shared across raytracing and physics) */
+t_aabb		aabb_create_empty(void);
+t_aabb		aabb_union(const t_aabb *a, const t_aabb *b);
+void		aabb_expand_point(t_aabb *a, t_vec3 p);
+void		aabb_expand_eps(t_aabb *a, double eps);
+double		aabb_surface_area(t_aabb a);
+t_aabb		aabb_transform(t_aabb bbox, t_transform t);
+bool		aabb_overlap(t_aabb a, t_aabb b);
+
+/* Per-shape world-space AABB producers */
+t_aabb		sphere_aabb(t_sphere *sp);
+t_aabb		plane_aabb(t_plane *pl);
+t_aabb		cylinder_aabb(t_cylinder *cy);
+t_aabb		cone_aabb(t_cone *co);
+t_aabb		tri_aabb(t_tri_shape *tr);
+t_aabb		rect_aabb(t_rect *rc);
+t_aabb		pyramid_aabb(t_pyramid *py);
+t_aabb		box_aabb(t_box *bx);
+t_aabb		capsule_aabb(t_capsule *cp);
 
 #endif /* DEFINES_H */

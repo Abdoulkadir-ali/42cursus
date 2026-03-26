@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 15:10:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 16:19:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,33 @@
 
 /* ── FUNCTION PROTOTYPES ── */
 
+/* GUI-facing physics settings (small, safe to include) */
+typedef struct s_physics_settings
+{
+	t_vec3  gravity;
+	double  damping;
+	double  fixed_dt;
+	int     solver_iters;
+}               t_physics_settings;
+
+/* Minimal facade for GUI: simulate the scene without importing internals */
+void    simulate_physics(struct s_scene *scene, double dt);
+void    update_physics_settings(t_physics *phys, const t_physics_settings *s);
+void    get_physics_settings(const t_physics *phys, t_physics_settings *out);
+
+
 /* Update loops */
 void			update_physics(struct s_scene *scene, double dt);
 void			integrate_bodies(struct s_scene *scene, double dt);
-int				generate_contacts(struct s_scene *scene, t_contact *contacts,
+int			generate_contacts(struct s_scene *scene, t_contact *contacts,
 					int max_c);
 void			phys_init_pool(struct s_scene *scene);
 void			phys_destroy_pool(struct s_scene *scene);
+
+/* New physics engine interface (preferred): create, destroy and simulate */
+t_physics	*phys_create(struct s_scene *scene);
+void		phys_destroy(t_physics *phys);
+void		simulate_physics(t_physics *phys, double dt);
 
 /* AABB Calculations (Lego & Mesh) */
 void			compute_mesh_aabb(struct s_mesh *mesh, t_aabb *out);
@@ -74,6 +94,8 @@ bool			detect_sphere_mesh_collision(const t_sphere *sp,
 /* Compound Body */
 void			init_compound(t_physics_body *b, t_sub_shape *bricks, size_t n);
 void			update_compound(t_physics_body *b);
+void			compute_com(t_physics_body *b);
+void			compute_inertia(t_physics_body *b);
 
 /* Broadphase / Midphase */
 int				broadphase(struct s_scene *s, t_body_pair *out, int max);
@@ -130,8 +152,8 @@ void			phys_dispatch_object(t_physics_body *b, t_transform *t,
 void			phys_resolve_ccd(struct s_scene *s, t_physics_body *b,
 					double dt);
 void			phys_debug_spheres(struct s_scene *s);
-t_static_bvh	*bvh_create(struct s_scene *s);
-void			bvh_destroy(t_static_bvh *bvh);
+/* Raytracing BVH functions are declared in raytracing.h; keep physics
+** headers free of conflicting bvh_* declarations. */
 void			apply_solver_torque(t_physics_body *b, t_vec3 r, t_vec3 imp,
 					double inv_m, double s);
 t_vec3			point_vel(t_physics_body *b, t_vec3 r);

@@ -6,15 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 11:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:15:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "objects.h"
-#include "objects.h"
-
-
 
 void	compute_com(t_physics_body *b)
 {

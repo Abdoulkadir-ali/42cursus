@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 13:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:28:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:23:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "physics.h"
 
 static bool	test_tri(const struct s_sphere *s, t_vec3 v[3], t_mesh_query *q)
 {

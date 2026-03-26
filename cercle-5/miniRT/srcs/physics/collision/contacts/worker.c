@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:30:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	*pool_worker(void *arg)
 	int				idx;
 
 	wa = (t_worker_arg *)arg;
-	pool = &wa->scene->pool;
+	pool = wa->scene->pool;
 	idx = wa->index;
 	while (1)
 	{

@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "physics.h"
+
+
 void	glb_init_bone_colliders(t_mesh *mesh);
 
 static t_mat4 quat_to_mat4(double x, double y, double z, double w)

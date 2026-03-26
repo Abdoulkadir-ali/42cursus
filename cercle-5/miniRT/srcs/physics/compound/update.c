@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 11:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:04:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:26:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-
-extern t_aabb	aabb_union(t_aabb a, t_aabb b);
 
 /**
  * @brief Computes global_aabb from current sub-shape world positions.
@@ -29,7 +27,7 @@ void	update_compound(t_physics_body *b)
 	i = 1;
 	while (i < b->sub_count)
 	{
-		acc = aabb_union(acc, b->sub_shapes[i].local_aabb);
+		acc = aabb_union(&acc, &b->sub_shapes[i].local_aabb);
 		i++;
 	}
 	b->global_aabb = acc;

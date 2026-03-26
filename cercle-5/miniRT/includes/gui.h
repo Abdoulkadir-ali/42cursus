@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 14:44:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:59:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include "debug.h"
 # include "defines.h"
 # include "maths.h"
-# include "physics_body.h"
+# include "physics_types.h"
 
 /* CHILD DEPENCIES */
 # include "scene.h"

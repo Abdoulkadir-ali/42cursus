@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 12:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 12:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 15:26:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "physics.h"
 
 void	shoot_force(t_gui *gui, t_vec2i mouse)
 {
