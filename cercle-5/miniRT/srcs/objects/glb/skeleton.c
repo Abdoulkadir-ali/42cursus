@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+void	glb_init_bone_colliders(t_mesh *mesh);
+
 static t_mat4 quat_to_mat4(double x, double y, double z, double w)
 {
 	t_mat4 m = mat4_identity();
@@ -229,7 +231,7 @@ void	glb_init_bone_colliders(t_mesh *mesh)
 				mesh->phys.sub_shapes[b->sub_idx].type = TYPE_PHYS_CAPSULE;
 				mesh->phys.sub_shapes[b->sub_idx].radius = 0.1; /* Default */
 				/* Offset is midpoint of bone segment */
-				mesh->phys.sub_shapes[b->sub_idx].offset = vec3_mul(b->trs.pos, 0.5);
+				mesh->phys.sub_shapes[b->sub_idx].offset = vec3_scale(b->trs.pos, 0.5);
 			}
 		}
 		i++;

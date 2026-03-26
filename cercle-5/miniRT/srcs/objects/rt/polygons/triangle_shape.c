@@ -21,7 +21,7 @@ t_parse_obj	parse_tri_shape(t_parser *p)
 	e1 = vec3_sub(res.data.tri_shape.v[1], res.data.tri_shape.v[0]);
 	e2 = vec3_sub(res.data.tri_shape.v[2], res.data.tri_shape.v[0]);
 	res.data.tri_shape.normal = vec3_norm(vec3_cross(e1, e2));
-	res.data.tri_shape.xform.pos = vec3_scale(
+	res.data.tri_shape.transform.pos = vec3_scale(
 			vec3_add(vec3_add(res.data.tri_shape.v[0],
 					res.data.tri_shape.v[1]), res.data.tri_shape.v[2]),
 			1.0 / 3.0);

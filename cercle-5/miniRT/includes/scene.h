@@ -17,19 +17,15 @@
 # include "core.h"
 # include "maths.h"
 # include "objects.h"
+# include "physics.h"
+
+struct s_json_value;
 
 # define SCALE_EPSILON 1e-6
 # define HALF_SCALE 0.5
 
 /* 2. MODULE TYPES */
 
-/* Compact ref used for the per-scene emissive lights cache. */
-struct s_emissive_ref
-{
-	t_type			type;
-	int				index;
-};
-typedef struct s_emissive_ref	t_emissive_ref;
 
 struct				s_scene
 {

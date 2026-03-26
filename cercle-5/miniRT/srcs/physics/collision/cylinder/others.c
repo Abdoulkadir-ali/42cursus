@@ -37,7 +37,7 @@ int	cyl_vs_others(t_scene *s, int idx, t_cylinder *cy, t_aabb cyaabb, t_contact 
 		if (aabb_overlap(cyaabb, tri_shape_aabb(&s->tris[p])))
 		{
 			sb = (t_gjk_shape){&s->tris[p], gjk_support_tri, s->tris[p].phys.center};
-			count += gjk_make_contact(&sa, &sb, &cy->phys, &s->tris[p].phys, &cy->transform, &s->tris[p].xform, &c[count]);
+			count += gjk_make_contact(&sa, &sb, &cy->phys, &s->tris[p].phys, &cy->transform, &s->tris[p].transform, &c[count]);
 		}
 	p = -1;
 	while (++p < s->pyramid_count && count < max)

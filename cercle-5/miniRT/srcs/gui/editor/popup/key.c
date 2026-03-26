@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "gui.h"
 #include "editor.h"
 
 static void	handle_input_key(t_gui *gui, int keycode)

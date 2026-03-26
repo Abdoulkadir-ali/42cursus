@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/25 16:34:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:06:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EDITOR_H
 # define EDITOR_H
 
-# include "core.h"
+# include "gui.h"
 # include "maths.h"
 # include "objects.h"
 # include "surface.h"
@@ -26,10 +26,6 @@
 # define COL_ROW_SEL    0x2A3040U
 # define COL_SLIDER_BG  0x1A1A20U
 # define COL_SLIDER_FG  0xE0A820U
-# define COL_BORDER     0x2A2A38U
-# define COL_TEXT       0xE0E0E0U
-# define COL_HOVER      0xF0F0F0U
-
 /* --- Editor Layout Constants --- */
 # define INSPECTOR_W    280
 # define SCENE_PANEL_W  220
@@ -61,8 +57,6 @@
 # define COL_POPUP_BTN_CANCEL 0x2A1A1AU
 # define COL_POPUP_ERR  0xFF4444U
 # define COL_POPUP_ERR_TEXT 0xFF6666U
-
-
 # define SCENE_PANEL_PAD_X 12
 # define SCENE_PANEL_PAD_Y 8
 # define SCENE_PANEL_HDR_X 8

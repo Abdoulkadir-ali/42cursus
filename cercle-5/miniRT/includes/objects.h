@@ -59,7 +59,7 @@ struct					s_cone
 
 struct					s_tri_shape
 {
-	t_transform			xform;
+	t_transform			transform;
 	t_physics_body		phys;
 	t_vec3				v[3];
 	t_vec3				normal;
@@ -524,7 +524,7 @@ typedef struct s_occ_ctx
 	int					top;
 	int					node_idx;
 	double				dist;
-}						t_occ;
+}						t_occ_ctx;
 
 typedef struct s_leaf_ctx
 {
@@ -900,9 +900,9 @@ bool					leaf_occluded(t_mesh *mesh, t_mbvh_node *node,
 void					test_occ_children(t_mesh *mesh, int node_idx,
 							const t_ray *ray, t_occ_child *c);
 int						pick_occ_children(t_mesh *mesh, int node_idx,
-							const t_ray *ray, t_occ *ctx);
+							const t_ray *ray, t_occ_ctx *ctx);
 int						process_occ_node(t_mesh *mesh, int node_idx,
-							const t_ray *ray, t_occ *ctx);
+							const t_ray *ray, t_occ_ctx *ctx);
 bool					traverse_occlude(t_mesh *mesh, const t_ray *ray,
 							double dist);
 void					update_mesh_hit(t_mesh_hit_ctx *ctx);

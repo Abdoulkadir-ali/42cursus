@@ -24,14 +24,14 @@
  * 
  * @return Does not return explicitly. Alters hit outputs natively.
  */
-static void	process_node(t_bvh_stack *bvh, t_hit *hit, int i)
+static void	traverse_node(t_bvh_stack *s, t_hit *hit, int i)
 {
-	if (bvh->bvh->nodes[i].count > 0)
-		process_leaf_flat(bvh->bvh, i, bvh->ray, hit);
-	else if (bvh->ptr < 124)
+	if (s->bvh->nodes[i].count > 0)
+		process_leaf_flat(s->bvh, i, s->ray, hit);
+	else if (s->ptr < 124)
 	{
-		bvh->hit_t = hit->t;
-		push_children(bvh, i);
+		s->hit_t = hit->t;
+		push_children(s, i);
 	}
 }
 
@@ -52,20 +52,20 @@ bool	run_traverse_loop(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 {
 	int				st[128];
 	double			st_tmin[128];
-	t_bvh_stack	bvh;
+	t_bvh_stack	s;
 
-	bvh.stack = st;
-	bvh.stack_tmin = st_tmin;
-	bvh.ptr = 1;
-	bvh.bvh = bvh;
-	bvh.ray = ray;
-	bvh.stack[0] = 0;
-	bvh.stack_tmin[0] = 0.0;
-	while (bvh.ptr > 0)
+	s.stack = st;
+	s.stack_tmin = st_tmin;
+	s.ptr = 1;
+	s.bvh = bvh;
+	s.ray = ray;
+	s.stack[0] = 0;
+	s.stack_tmin[0] = 0.0;
+	while (s.ptr > 0)
 	{
-		bvh.ptr--;
-		if (bvh.stack_tmin[bvh.ptr] <= hit->t)
-			process_node(&bvh, hit, bvh.stack[bvh.ptr]);
+		s.ptr--;
+		if (s.stack_tmin[s.ptr] <= hit->t)
+			traverse_node(&s, hit, s.stack[s.ptr]);
 	}
 	return (hit->ref.type != TYPE_NONE);
 }

@@ -25,7 +25,7 @@ int	tri_vs_plane(t_tri_shape *tr, t_plane *pl, t_contact *c, int max_c)
 		if (dist < 0.0)
 		{
 			c[count].normal = vec3_scale(n, -1.0); c[count].penetration = -dist;
-			c[count].a = &tr->phys; c[count].b = NULL; c[count].ta = &tr->xform; c[count].tb = &pl->transform;
+			c[count].a = &tr->phys; c[count].b = NULL; c[count].ta = &tr->transform; c[count].tb = &pl->transform;
 			c[count].contact_point = tr->v[i]; c[count].ra = vec3_sub(tr->v[i], tr->phys.center); c[count].rb = vec3(0,0,0);
 			c[count].restitution = fmin(tr->phys.elasticity, 0.5); c[count].friction = sqrt(tr->phys.friction * 0.5);
 			count++;

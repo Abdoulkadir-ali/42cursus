@@ -26,7 +26,7 @@ static t_physics_body	parse_phys(t_json_value *obj)
 	b.is_compound = true;
 	if (b.mass < 1e-9)
 		b.mass = 1.0;
-	b.inv_inertia = vec3(1.0 / b.mass, 1.0 / b.mass, 1.0 / b.mass);
+	b.inv_inertia = mat3_diag(vec3(1.0 / b.mass, 1.0 / b.mass, 1.0 / b.mass));
 	return (b);
 }
 

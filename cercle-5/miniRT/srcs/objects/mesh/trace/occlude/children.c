@@ -24,7 +24,7 @@ void	test_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 }
 
 int	pick_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
-		t_occ *ctx)
+		t_occ_ctx *ctx)
 {
 	t_occ_child	c;
 

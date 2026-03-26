@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 10:05:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* *****************:********************************************************* */
 
@@ -14,40 +14,10 @@
 #include "objects.h"
 #include "scene.h"
 
-static void	sync_compound(t_physics_body *b)
-{
-	if (b->is_compound)
-		update_compound(b);
-}
-
-static void	integrate_part2(t_scene *scene, double dt)
-{
-	int	i;
-
-	i = 0;
-	while (i < scene->capsule_count)
-	{
-		integrate_capsule(&scene->capsules[i], dt);
-		sync_compound(&scene->capsules[i++].phys);
-	}
-	i = 0;
-	while (i < scene->tri_count)
-	{
-		integrate_tri(&scene->tris[i], dt);
-		sync_compound(&scene->tris[i++].phys);
-	}
-	i = 0;
-	while (i < scene->cylinder_count)
-	{
-		integrate_cylinder(&scene->cylinders[i], dt);
-		sync_compound(&scene->cylinders[i++].phys);
-	}
-}
-
 /**
- * @brief Global integration loop.
- * Updates all physical entities in the scene by one time step dt.
- * Compound bodies also re-sync their global_aabb after integration.
+ * @brief Global integration loop. 
+ * Orchestrates objects through the Chef de Gare (dispatcher).
+ * Compound bodies use the AAA path; primitives use Legacy integrators.
  */
 void	integrate_bodies(t_scene *scene, double dt)
 {
@@ -55,30 +25,36 @@ void	integrate_bodies(t_scene *scene, double dt)
 
 	if (!scene)
 		return ;
-	i = 0;
-	while (i < scene->sphere_count)
+	i = -1;
+	while (++i < scene->sphere_count)
 	{
-		integrate_sphere(&scene->spheres[i], dt);
-		sync_compound(&scene->spheres[i++].phys);
+		if (scene->spheres[i].phys.is_compound)
+			phys_dispatch_object(&scene->spheres[i].phys, &scene->spheres[i].transform, dt);
+		else
+			integrate_sphere(&scene->spheres[i], dt);
 	}
-	i = 0;
-	while (i < scene->rect_count)
+	i = -1;
+	while (++i < scene->box_count)
 	{
-		integrate_rect(&scene->rects[i], dt);
-		sync_compound(&scene->rects[i++].phys);
+		if (scene->boxes[i].phys.is_compound)
+			phys_dispatch_object(&scene->boxes[i].phys, &scene->boxes[i].transform, dt);
+		else
+			integrate_box(&scene->boxes[i], dt);
 	}
-	i = 0;
-	while (i < scene->pyramid_count)
+	i = -1;
+	while (++i < scene->capsule_count)
 	{
-		integrate_pyramid(&scene->pyramids[i], dt);
-		sync_compound(&scene->pyramids[i++].phys);
+		if (scene->capsules[i].phys.is_compound)
+			phys_dispatch_object(&scene->capsules[i].phys, &scene->capsules[i].transform, dt);
+		else
+			integrate_capsule(&scene->capsules[i], dt);
 	}
-	i = 0;
-	while (i < scene->box_count)
+	i = -1;
+	while (++i < scene->cylinder_count)
 	{
-		integrate_box(&scene->boxes[i], dt);
-		sync_compound(&scene->boxes[i++].phys);
+		if (scene->cylinders[i].phys.is_compound)
+			phys_dispatch_object(&scene->cylinders[i].phys, &scene->cylinders[i].transform, dt);
+		else
+			integrate_cylinder(&scene->cylinders[i], dt);
 	}
-	integrate_part2(scene, dt);
 }
-

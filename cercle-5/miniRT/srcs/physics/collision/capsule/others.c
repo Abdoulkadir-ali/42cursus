@@ -44,7 +44,7 @@ int	cap_vs_others(t_scene *s, int idx, t_capsule *cap, t_aabb caabb, t_contact *
 		if (aabb_overlap(caabb, tri_shape_aabb(&s->tris[p])))
 		{
 			sb = (t_gjk_shape){&s->tris[p], gjk_support_tri, s->tris[p].phys.center};
-			count += gjk_make_contact(&sa, &sb, &cap->phys, &s->tris[p].phys, &cap->transform, &s->tris[p].xform, &c[count]);
+			count += gjk_make_contact(&sa, &sb, &cap->phys, &s->tris[p].phys, &cap->transform, &s->tris[p].transform, &c[count]);
 		}
 	p = -1;
 	while (++p < s->pyramid_count && count < max)

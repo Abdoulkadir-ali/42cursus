@@ -39,7 +39,7 @@ t_transform	*get_selected_transform(t_gui *gui)
     if (sel->type == TYPE_CAPSULE)
         return (&sc->capsules[sel->index].transform);
     if (sel->type == TYPE_TRI)
-        return (&sc->tris[sel->index].xform);
+        return (&sc->tris[sel->index].transform);
     if (sel->type == TYPE_MESH)
         return (&sc->groups[sel->index].transform);
     return (NULL);

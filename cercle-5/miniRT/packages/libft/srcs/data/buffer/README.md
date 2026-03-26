@@ -21,7 +21,7 @@ Design favors predictable memory patterns and minimal heap churn for shell-criti
 
 ## 📜 POSIX & Shell Compliance
 > [!IMPORTANT]
-> The dynamic buffer is nul-terminated after all append operations to safely interoperate with legacy C string functions. Callers that stream the buffer to file descriptors should handle `write(2)` return values.
+> The dynamic buffer is nul-terminated after all append operations to safely interoperate with standard C string functions. Callers that stream the buffer to file descriptors should handle `write(2)` return values.
 
 ---
 

@@ -41,11 +41,18 @@ static t_phys_type	type_from_str(const char *s)
 t_sub_shape	parse_brick(t_json_value *obj)
 {
 	t_sub_shape	b;
+	t_json_value *v_min;
 
 	ft_memset(&b, 0, sizeof(t_sub_shape));
 	b.type = type_from_str(json_as_string(json_get(obj, "type")));
 	b.offset = json_vec3(obj, "offset");
-	b.local_aabb.min = json_vec3(obj, "aabb_min");
-	b.local_aabb.max = json_vec3(obj, "aabb_max");
+	v_min = json_get(obj, "aabb_min");
+	if (v_min)
+	{
+		b.local_aabb.min = json_vec3(obj, "aabb_min");
+		b.local_aabb.max = json_vec3(obj, "aabb_max");
+	}
+	else
+		compute_primitive_aabb(&b);
 	return (b);
 }

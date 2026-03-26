@@ -21,6 +21,7 @@
 # include <float.h>
 # include <math.h>
 # include <pthread.h>
+# include <semaphore.h>
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>
@@ -142,6 +143,12 @@ typedef struct s_mesh_build_item	t_mesh_build_item;
 typedef struct s_parser				t_parser;
 typedef struct s_obj_ctx			t_obj_ctx;
 typedef struct s_parse_obj			t_parse_obj;
+
+typedef struct s_emissive_ref
+{
+	t_type			type;
+	int				index;
+}									t_emissive_ref;
 
 /* 3. FUNCTION PROTOTYPES */
 int		run_app(const char *path);

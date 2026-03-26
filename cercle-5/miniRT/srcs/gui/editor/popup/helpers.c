@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
+#include "editor.h"
 
 /**
  * @brief Coordinates hit test for popup elements.

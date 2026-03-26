@@ -22,7 +22,7 @@ char	*path_get_dir(const char *filepath);
 /* dynarray.c */
 bool	dynarray_ensure(void **array, size_t count, size_t *cap, size_t elem_size);
 
-/* Helper for int-based counts (legacy support) */
+/* Helper for int-based counts */
 # define DYNARRAY_ENSURE_INT(arr, count_ptr, cap_ptr, elem_size) \
 	({ \
 		size_t _cnt = *(count_ptr); \

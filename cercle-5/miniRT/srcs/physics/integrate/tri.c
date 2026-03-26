@@ -32,8 +32,8 @@ static void	update_tri_verts(t_tri_shape *tr, t_vec3 delta, double dt)
 	tr->normal = rot_by_ang(tr->normal, tr->phys.angular_velocity, dt);
 	i = -1;
 	while (++i < 3)
-		tr->v[i] = vec3_add(vec3_add(tr->xform.pos,
-					rot_by_ang(vec3_sub(tr->v[i], tr->xform.pos),
+		tr->v[i] = vec3_add(vec3_add(tr->transform.pos,
+					rot_by_ang(vec3_sub(tr->v[i], tr->transform.pos),
 						tr->phys.angular_velocity, dt)), delta);
 }
 
@@ -59,10 +59,10 @@ void	integrate_tri(t_tri_shape *tr, double dt)
 			clamp_d(1.0 - GLOBAL_DAMPING * 0.5 * dt, 0, 1));
 	delta = vec3_scale(tr->phys.velocity, dt);
 	rot = vec3_scale(tr->phys.angular_velocity, dt * (180.0 / M_PI));
-	tr->xform.rotation.pitch += rot.x;
-	tr->xform.rotation.yaw += rot.y;
-	tr->xform.rotation.roll += rot.z;
+	tr->transform.rotation.pitch += rot.x;
+	tr->transform.rotation.yaw += rot.y;
+	tr->transform.rotation.roll += rot.z;
 	update_tri_verts(tr, delta, dt);
-	tr->xform.pos = vec3_add(tr->xform.pos, delta);
-	tr->phys.center = tr->xform.pos;
+	tr->transform.pos = vec3_add(tr->transform.pos, delta);
+	tr->phys.center = tr->transform.pos;
 }

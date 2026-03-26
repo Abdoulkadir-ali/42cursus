@@ -23,7 +23,7 @@ All functions prefer in-place writes and avoid extra allocations except when exp
 
 ## 📜 POSIX & Shell Compliance
 > [!IMPORTANT]
-> The append helpers keep the buffer nul-terminated to interoperate with legacy C string APIs used by shell components. Callers must still respect file-descriptor semantics when writing buffer contents to IO.
+> The append helpers keep the buffer nul-terminated to interoperate with standard C string APIs used by shell components. Callers must still respect file-descriptor semantics when writing buffer contents to IO.
 
 ---
 

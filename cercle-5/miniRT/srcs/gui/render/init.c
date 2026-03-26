@@ -68,9 +68,12 @@ static void	init_camera(t_gui *gui)
 ** Main initialization function for the GUI subsystem.
 ** Allocates memory and initializes MLX, window, camera, and map switcher.
 */
+extern void	*render_tile_worker(void *arg);
+
 t_gui	*gui_init(t_scene *scene, void *mlx)
 {
 	t_gui	*gui;
+	int		i;
 
 	gui = malloc(sizeof(t_gui));
 	if (!gui)
@@ -110,6 +113,19 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	gui_map_switcher_init(gui);
 	widget_init_default(gui);
 	editor_init(gui);
+	i = 0;
+	while (i < gui->render.num_cores)
+	{
+		gui->pool.args[i].idx = i;
+		gui->pool.args[i].gui = gui;
+		sem_init(&gui->pool.start[i], 0, 0);
+		sem_init(&gui->pool.done[i], 0, 0);
+		pthread_create(&gui->pool.threads[i], NULL, render_tile_worker,
+			&gui->pool.args[i]);
+		i++;
+	}
+	gui->pool.n = gui->render.num_cores;
+	gui->pool.ready = true;
 	mlx_hook(gui->win.win, 22, 1L << 17, gui_window_resize, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
 	return (gui);
@@ -135,5 +151,15 @@ void	gui_destroy(t_gui *gui)
 		free(gui->win.mlx);
 	if (gui->render.threads)
 		free(gui->render.threads);
+	int j = 0;
+	gui->pool.shutdown = true;
+	while (j < gui->pool.n)
+	{
+		sem_post(&gui->pool.start[j]);
+		pthread_join(gui->pool.threads[j], NULL);
+		sem_destroy(&gui->pool.start[j]);
+		sem_destroy(&gui->pool.done[j]);
+		j++;
+	}
 	free(gui);
 }

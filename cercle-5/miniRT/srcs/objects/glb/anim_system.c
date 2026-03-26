@@ -219,9 +219,6 @@ static void glb_skin_mesh(t_mesh *mesh)
 	}
 }
 
-	}
-}
-
 /**
  * @brief Synchronizes bone-aligned capsules with the current skeletal pose.
  * Updates the 'bricks' (sub_shapes) of the mesh's compound physics body.

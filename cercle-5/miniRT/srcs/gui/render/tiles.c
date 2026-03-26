@@ -14,21 +14,6 @@
 #include "profiler.h"
 #include <semaphore.h>
 
-#define RENDER_POOL_MAX 128
-
-typedef struct s_render_pool
-{
-	pthread_t		threads[RENDER_POOL_MAX];
-	sem_t			start[RENDER_POOL_MAX];
-	sem_t			done[RENDER_POOL_MAX];
-	t_render_ctx	*ctx[RENDER_POOL_MAX];
-	int				n;
-	bool			shutdown;
-}	t_render_pool;
-
-static t_render_pool	g_pool;
-static bool				g_pool_ready = false;
-
 static void	render_tile(t_render_ctx *ctx, int id)
 {
 	t_tile_vars	v;
@@ -56,19 +41,21 @@ static void	render_tile(t_render_ctx *ctx, int id)
 	}
 }
 
-static void	*render_tile_worker(void *arg)
+void	*render_tile_worker(void *arg)
 {
-	int				idx;
-	t_render_ctx	*ctx;
-	int				id;
+	t_render_thread_arg	*wa;
+	t_render_ctx		*ctx;
+	int					id;
+	int					idx;
 
-	idx = (int)(intptr_t)arg;
+	wa = (t_render_thread_arg *)arg;
+	idx = wa->idx;
 	while (1)
 	{
-		sem_wait(&g_pool.start[idx]);
-		if (g_pool.shutdown)
+		sem_wait(&wa->gui->pool.start[idx]);
+		if (wa->gui->pool.shutdown)
 			break ;
-		ctx = g_pool.ctx[idx];
+		ctx = wa->gui->pool.ctx[idx];
 		while (1)
 		{
 			id = __sync_fetch_and_add(&ctx->next_tile_id, 1);
@@ -77,28 +64,9 @@ static void	*render_tile_worker(void *arg)
 			render_tile(ctx, id);
 		}
 		PROF_FLUSH();
-		sem_post(&g_pool.done[idx]);
+		sem_post(&wa->gui->pool.done[idx]);
 	}
 	return (NULL);
-}
-
-static void	init_render_pool(int n)
-{
-	int	i;
-
-	g_pool.n = n;
-	g_pool.shutdown = false;
-	i = 0;
-	while (i < n)
-	{
-		sem_init(&g_pool.start[i], 0, 0);
-		sem_init(&g_pool.done[i], 0, 0);
-		g_pool.ctx[i] = NULL;
-		pthread_create(&g_pool.threads[i], NULL, render_tile_worker,
-			(void *)(intptr_t)i);
-		i++;
-	}
-	g_pool_ready = true;
 }
 
 void	render_tiles(t_render_ctx *ctx)
@@ -107,21 +75,19 @@ void	render_tiles(t_render_ctx *ctx)
 	int	i;
 
 	num_cores = ctx->gui->render.num_cores;
-	if (num_cores < 1)
+	if (num_cores < 1 || !ctx->gui->pool.ready)
 		return ;
-	if (!g_pool_ready)
-		init_render_pool(num_cores);
 	i = 0;
 	while (i < num_cores)
 	{
-		g_pool.ctx[i] = ctx;
-		sem_post(&g_pool.start[i]);
+		ctx->gui->pool.ctx[i] = ctx;
+		sem_post(&ctx->gui->pool.start[i]);
 		i++;
 	}
 	i = 0;
 	while (i < num_cores)
 	{
-		sem_wait(&g_pool.done[i]);
+		sem_wait(&ctx->gui->pool.done[i]);
 		i++;
 	}
 }

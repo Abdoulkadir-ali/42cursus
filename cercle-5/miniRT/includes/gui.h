@@ -24,7 +24,7 @@
 #
 /* Auto-refresh configuration:
  * - Set `GUI_AUTOREFRESH_PHYSICS` to 1 to force a render every frame while
- *   physics simulation is enabled. Set to 0 to keep the legacy "dirty only"
+ *   physics simulation is enabled. Set to 0 to use standard "dirty only"
  *   behavior.
  * - `GUI_AUTOREFRESH_SCALE` controls the downscale factor used during
  *   auto-refresh to keep rendering fast while simulating physics.
@@ -40,14 +40,24 @@
 # define COL_BG 0x0A0A12
 # define COL_ACCENT 0xE0A820
 # define COL_FPS 0x20E060
-# define COL_TEXT 0xD0D0D8
-# define COL_HOVER 0x20C8D0
-# define COL_BORDER 0x333340
+# ifndef COL_TEXT
+#  define COL_TEXT 0xD0D0D8
+# endif
+# ifndef COL_HOVER
+#  define COL_HOVER 0x20C8D0
+# endif
+# ifndef COL_BORDER
+#  define COL_BORDER 0x333340
+# endif
 
 /* 1. EXTERNAL DEPENDENCIES */
 # include "core.h"
 # include "debug.h"
 # include "maths.h"
+# include "physics.h"
+# include "objects.h"
+# include "surface.h"
+# include "scene.h"
 
 typedef enum e_widget_type
 {
@@ -58,6 +68,20 @@ typedef enum e_widget_type
 	WIDGET_COLOR_PICKER,
 	WIDGET_PANEL
 } t_widget_type;
+
+typedef enum e_popup_step
+{
+	POPUP_NONE = 0,
+	POPUP_SHAPE,
+	POPUP_MESH_FMT,
+	POPUP_MESH_PATH,
+}	t_popup_step;
+
+typedef enum e_mesh_fmt
+{
+	MESH_FMT_OBJ,
+	MESH_FMT_GLB,
+}	t_mesh_fmt;
 
 typedef struct s_widget t_widget;
 
@@ -95,15 +119,22 @@ typedef struct s_crud_ui
 }	t_crud_ui;
 
 
+typedef struct s_render_thread_arg
+{
+	int				idx;
+	struct s_gui	*gui;
+}	t_render_thread_arg;
+
 typedef struct s_render_pool
 {
-	pthread_t		threads[128];
-	sem_t			start[128];
-	sem_t			done[128];
+	pthread_t			threads[128];
+	sem_t				start[128];
+	sem_t				done[128];
 	struct s_render_ctx	*ctx[128];
-	int				n;
-	bool			shutdown;
-	bool			ready;
+	t_render_thread_arg	args[128];
+	int					n;
+	bool				shutdown;
+	bool				ready;
 }	t_render_pool;
 
 typedef struct s_hover_cache
@@ -232,19 +263,7 @@ typedef struct s_map_job
 	bool			active;
 }	t_map_job;
 
-typedef enum e_popup_step
-{
-	POPUP_NONE = 0,
-	POPUP_SHAPE,
-	POPUP_MESH_FMT,
-	POPUP_MESH_PATH,
-}	t_popup_step;
 
-typedef enum e_mesh_fmt
-{
-	MESH_FMT_OBJ,
-	MESH_FMT_GLB,
-}	t_mesh_fmt;
 
 struct s_gui
 {
@@ -399,9 +418,7 @@ void	fullres_toggle(t_gui *gui);
 void	fill_map_list(t_gui *gui);
 void	set_current_entry(t_gui *gui);
 
-/* 5. IMPLEMENTATION IMPORTS */
-# include "raytracing.h"
-# include "scene.h"
+
 
 /* Window Management */
 int	gui_window_resize(int width, int height, t_gui *gui);

@@ -13,7 +13,7 @@
 #include "objects.h"
 
 int	process_occ_node(t_mesh *mesh, int node_idx, const t_ray *ray,
-		t_occ *ctx)
+		t_occ_ctx *ctx)
 {
 	t_mbvh_node	*node;
 
@@ -34,7 +34,7 @@ int	process_occ_node(t_mesh *mesh, int node_idx, const t_ray *ray,
 
 bool	traverse_occlude(t_mesh *mesh, const t_ray *ray, double dist)
 {
-	t_occ	ctx;
+	t_occ_ctx	ctx;
 	int			node_idx;
 
 	ctx.top = 0;

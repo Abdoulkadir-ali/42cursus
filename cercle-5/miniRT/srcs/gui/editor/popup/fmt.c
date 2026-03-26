@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "gui.h"
 #include "editor.h"
 
 void	draw_popup_mesh_fmt(t_gui *gui)

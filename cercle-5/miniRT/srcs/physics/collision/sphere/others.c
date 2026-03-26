@@ -63,7 +63,7 @@ int	sphere_others_contacts(t_scene *s, int idx, t_sphere *sp, t_aabb sa, t_gjk_s
 	i = -1;
 	while (++i < s->tri_count && count < max) if (aabb_overlap(sa, tri_shape_aabb(&s->tris[i]))) {
 		sb = (t_gjk_shape){&s->tris[i], gjk_support_tri, s->tris[i].phys.center};
-		count += gjk_make_contact(sa_gjk, &sb, &sp->phys, &s->tris[i].phys, &sp->transform, &s->tris[i].xform, &c[count]);
+		count += gjk_make_contact(sa_gjk, &sb, &sp->phys, &s->tris[i].phys, &sp->transform, &s->tris[i].transform, &c[count]);
 	}
 	i = -1;
 	while (++i < s->pyramid_count && count < max) if (aabb_overlap(sa, pyramid_aabb(&s->pyramids[i]))) {

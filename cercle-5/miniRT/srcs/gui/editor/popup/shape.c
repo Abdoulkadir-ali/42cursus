@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "gui.h"
 #include "editor.h"
 
 static void	dispatch_shape(t_gui *gui, int i)
