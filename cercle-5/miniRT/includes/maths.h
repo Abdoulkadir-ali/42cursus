@@ -38,6 +38,11 @@ struct								s_mat4
 	double							m[4][4];
 };
 
+typedef struct s_mat3
+{
+	double							m[3][3];
+}									t_mat3;
+
 struct								s_ray
 {
 	t_vec3							origin;
@@ -213,6 +218,13 @@ t_mat4								mat4_rotation(t_rotator r);
 t_mat4								mat4_transform(t_transform t);
 t_mat4								mat4_inverse_transform(t_transform t);
 t_vec3								mat4_mul_pos(t_mat4 m, t_vec3 v);
+
+/* mat3 */
+t_vec3								mat3_mul_vec3(t_mat3 m, t_vec3 v);
+t_mat3								mat3_mul(t_mat3 a, t_mat3 b);
+t_mat3								mat3_transpose(t_mat3 m);
+t_mat3								mat3_inv(t_mat3 m);
+t_mat3								mat3_diag(t_vec3 v);
 
 t_vec3								vec3_reflect(t_vec3 I, t_vec3 N);
 t_vec3								vec3_refract(t_vec3 I, t_vec3 N,

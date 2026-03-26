@@ -59,11 +59,11 @@ typedef struct s_texture
 
 typedef struct s_material
 {
-	char		*name; /* Added for MTL parsing. */
-	t_texture	albedo_map; /* Replaces t_vec3 albedo. */
-	t_texture	bump_map; /* Optional bump texture. */
-	t_texture	roughness_map; /* Added for PBR. */
-	t_texture	metallic_map; /* Added for PBR. */
+	char		*name;
+	t_texture	albedo_map;
+	t_texture	bump_map;
+	t_texture	roughness_map;
+	t_texture	metallic_map;
 	double		specular;
 	double		shininess;
 	double		metallic;

@@ -20,8 +20,6 @@
 # include <pthread.h>
 # include <string.h>
 
-static t_phys_pool	g_pool;
-
 /* Constants */
 # define MAX_CONTACTS 1024
 # define SOLVER_ITERATIONS 8
@@ -43,15 +41,21 @@ typedef struct s_gen_job
 }	t_gen_job;
 
 
+typedef struct s_worker_arg
+{
+	struct s_scene	*scene;
+	int				index;
+}	t_worker_arg;
+
 typedef struct s_phys_pool
 {
-	pthread_t	threads[PHYS_NUM_TYPES];
-	t_gen_job	jobs[PHYS_NUM_TYPES];
-	int			indices[PHYS_NUM_TYPES];
-	sem_t		start[PHYS_NUM_TYPES];
-	sem_t		done[PHYS_NUM_TYPES];
-	int			shutdown;
-	int			initialized;
+	pthread_t		threads[PHYS_NUM_TYPES];
+	t_gen_job		jobs[PHYS_NUM_TYPES];
+	sem_t			start[PHYS_NUM_TYPES];
+	sem_t			done[PHYS_NUM_TYPES];
+	t_worker_arg	args[PHYS_NUM_TYPES];
+	int				shutdown;
+	int				initialized;
 }	t_phys_pool;
 
 
@@ -64,6 +68,23 @@ typedef struct s_phys_pool
 /* Compound body limits */
 # define MAX_SUB_SHAPES 32
 # define MAX_BODY_PAIRS 512
+
+/* Static BVH for Environment (Stage 12) */
+typedef struct s_static_node
+{
+	t_aabb	aabb;
+	int		left;
+	int		right;
+	int		obj_idx;
+	int		obj_type;
+}	t_static_node;
+
+typedef struct s_static_bvh
+{
+	t_static_node	*nodes;
+	int				count;
+	int				root;
+}	t_static_bvh;
 
 /* Dynamic AABB Tree (DBVT) Broadphase */
 # define DBVT_MAX_NODES 512
@@ -86,9 +107,9 @@ typedef enum e_phys_type
 /* One Lego brick: a convex sub-shape belonging to a compound body */
 typedef struct s_sub_shape
 {
-	void		*shape;      /* ptr to t_sphere, t_box, etc. */
-	t_aabb		local_aabb;  /* AABB in body space (pre-computed) */
-	t_vec3		offset;      /* position relative to body CoM */
+	void		*shape;
+	t_aabb		local_aabb;
+	t_vec3		offset;
 	t_phys_type	type;
 }	t_sub_shape;
 
@@ -97,6 +118,8 @@ typedef struct s_body_pair
 {
 	struct s_physics_body	*a;
 	struct s_physics_body	*b;
+	void					*la;
+	void					*lb;
 }	t_body_pair;
 
 typedef struct s_shape_pair
@@ -110,10 +133,10 @@ typedef struct s_shape_pair
 /* One dynamic body in the DBVT (leaf) */
 typedef struct s_dbvt_leaf
 {
-	t_aabb			fat_aabb;   /* AABB expanded by DBVT_FAT_MARGIN */
+	t_aabb			fat_aabb;
 	t_physics_body	*body;
-	void			*shape;     /* ptr to original t_sphere / t_box / etc. */
-	t_support_fn	support;    /* GJK support function for this shape */
+	void			*shape;
+	t_support_fn	support;
 	t_phys_type		type;
 }	t_dbvt_leaf;
 
@@ -121,9 +144,9 @@ typedef struct s_dbvt_leaf
 typedef struct s_dbvt_node
 {
 	t_aabb	aabb;
-	int		left;   /* index into nodes[], DBVT_NULL = none */
+	int		left;
 	int		right;
-	int		leaf;   /* index into leaves[], DBVT_NULL = internal node */
+	int		leaf;
 }	t_dbvt_node;
 
 /* The full tree — static pool, rebuilt every frame */
@@ -133,7 +156,7 @@ typedef struct s_dbvt
 	t_dbvt_leaf	leaves[DBVT_MAX_LEAVES];
 	int			node_count;
 	int			leaf_count;
-	int			root;       /* index of root node */
+	int			root;
 }	t_dbvt;
 
 
@@ -143,22 +166,16 @@ typedef struct s_dbvt
 /* Physics types - separation of concerns: per-object body and global state */
 typedef struct s_physics_body
 {
-	/* Motion state */
 	t_vec3		velocity;
 	t_vec3		angular_velocity;
 	t_vec3		torque;
-	/* Inertia */
 	double		mass;
-	t_vec3		inv_inertia;
-	/* Material */
+	t_mat3		inv_inertia;
 	double		elasticity;
 	double		friction;
-	/* Flags */
 	bool		is_static;
 	bool		is_compound;
-	/* Single-body CoM (legacy path) */
 	t_vec3		center;
-	/* Compound Backpack */
 	t_sub_shape	sub_shapes[MAX_SUB_SHAPES];
 	size_t		sub_count;
 	t_aabb		global_aabb;
@@ -172,7 +189,6 @@ void	update_physics(t_scene *scene, double dt);
 void	phys_debug_spheres(t_scene *scene);
 
 /* Sphere-mesh collision (mesh/collision.c) */
-
 bool    detect_sphere_mesh_collision(const struct s_sphere *s, struct s_mesh *m,
 				t_vec3 *out_normal, double *out_penetration);
 
@@ -212,13 +228,13 @@ typedef struct s_contact
     t_transform     *ta;
     t_physics_body  *b;
     t_transform     *tb;
-    t_vec3          normal;     /* From A to B */
+    t_vec3          normal;
     double          penetration;
     double          restitution;
     double          friction;
-    t_vec3          contact_point; /* World space */
-    t_vec3          ra; /* Vector from Center A to Contact Point */
-    t_vec3          rb; /* Vector from Center B to Contact Point */
+    t_vec3          contact_point;
+    t_vec3          ra;
+    t_vec3          rb;
 }               t_contact;
 
 /* Integration */

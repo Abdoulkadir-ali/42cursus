@@ -219,6 +219,45 @@ static void glb_skin_mesh(t_mesh *mesh)
 	}
 }
 
+	}
+}
+
+/**
+ * @brief Synchronizes bone-aligned capsules with the current skeletal pose.
+ * Updates the 'bricks' (sub_shapes) of the mesh's compound physics body.
+ * Bone global_transform is in GLB-local space.
+ */
+static void	glb_sync_bone_colliders(t_mesh *mesh)
+{
+	int		i;
+	t_bone	*b;
+	t_mat4	m;
+
+	if (!mesh->skeleton || !mesh->phys.is_compound)
+		return ;
+	i = 0;
+	while (i < mesh->bone_count)
+	{
+		b = &mesh->skeleton[i];
+		if (b->has_collider && b->sub_idx >= 0
+			&& b->sub_idx < (int)mesh->phys.sub_count)
+		{
+			m = b->global_transform;
+			/* Update offset (translation) and transform (rotation) */
+			mesh->phys.sub_shapes[b->sub_idx].offset = vec3(m.m[3][0],
+					m.m[3][1], m.m[3][2]);
+			mesh->phys.sub_shapes[b->sub_idx].transform = m;
+			/* Reset translation in rotation matrix to keep it pure */
+			mesh->phys.sub_shapes[b->sub_idx].transform.m[3][0] = 0;
+			mesh->phys.sub_shapes[b->sub_idx].transform.m[3][1] = 0;
+			mesh->phys.sub_shapes[b->sub_idx].transform.m[3][2] = 0;
+		}
+		i++;
+	}
+	/* Re-sync the global AABB for the whole compound body */
+	update_compound(&mesh->phys);
+}
+
 /* Main Animation Update Function. Force-Updated */
 void glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 {
@@ -280,6 +319,10 @@ void glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 	/* Perform CPU Skinning, rebuild BVH, and reapply the .rt scene transform. */
 	glb_skin_mesh(mesh);
 	mesh_build_bvh(mesh);
+	
+	/* Sync physics colliders with the new bone transforms (Stage 8) */
+	glb_sync_bone_colliders(mesh);
+
 	/* Reapply the .rt scene transform (rotation/translation/scale) baked at load time.
 	** glb_skin_mesh always writes from base_vertices (GLB space), so the scene
 	** transform must be reapplied on top every frame. */

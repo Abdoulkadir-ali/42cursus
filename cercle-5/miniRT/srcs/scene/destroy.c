@@ -76,6 +76,7 @@ void	destroy_scene(t_scene *scene)
 	free(scene->name);
 	destroy_assets(scene);
 	destroy_geometry(scene);
+	phys_destroy_pool(scene);
 	free(scene->materials);
 	free(scene->lights);
 	free(scene->emissive_cache);

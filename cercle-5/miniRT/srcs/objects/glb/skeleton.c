@@ -195,6 +195,47 @@ void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin,
 	}
 	free(node_map);
 	glb_log("GLB: Skeleton built successfully with %d bones.\n", count);
+	
+	/* Initialize Bone Physics (Stage 8) */
+	glb_init_bone_colliders(mesh);
+}
+
+/**
+ * @brief Auto-generates capsule colliders for skeletal segments.
+ * For every bone with a valid parent, it creates a physics brick connecting them.
+ */
+void	glb_init_bone_colliders(t_mesh *mesh)
+{
+	int		i;
+	t_bone	*b;
+	double	dist;
+
+	if (!mesh->skeleton || mesh->bone_count == 0)
+		return ;
+	mesh->phys.is_compound = true;
+	mesh->phys.sub_count = 0;
+	i = 0;
+	while (i < mesh->bone_count && mesh->phys.sub_count < 32)
+	{
+		b = &mesh->skeleton[i];
+		/* Use parent-child segments as capsules */
+		if (b->parent != -1)
+		{
+			dist = vec3_mag(b->trs.pos);
+			if (dist > 0.05) /* Skip tiny bones (fingers etc) */
+			{
+				b->has_collider = true;
+				b->sub_idx = mesh->phys.sub_count++;
+				mesh->phys.sub_shapes[b->sub_idx].type = TYPE_PHYS_CAPSULE;
+				mesh->phys.sub_shapes[b->sub_idx].radius = 0.1; /* Default */
+				/* Offset is midpoint of bone segment */
+				mesh->phys.sub_shapes[b->sub_idx].offset = vec3_mul(b->trs.pos, 0.5);
+			}
+		}
+		i++;
+	}
+	/* Tier 2 & 3 initialization */
+	update_compound(&mesh->phys);
 }
 
 /* Count non-joint GLTF nodes that reference a mesh — these need extra bone

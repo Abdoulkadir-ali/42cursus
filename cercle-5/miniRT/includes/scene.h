@@ -75,9 +75,8 @@ struct				s_scene
 	t_mesh			*meshes;
 	int				mesh_count;
 	int				mesh_cap;
-	int				mesh_group_count;	/* next group_id to assign (legacy) */
-
-	t_mesh_group	*groups;          /* one entry per loaded model file */
+	int				mesh_group_count;
+	t_mesh_group	*groups;
 	int				group_count;
 	int				group_cap;
 
@@ -88,25 +87,22 @@ struct				s_scene
 	t_material		*materials;
 	int				mat_count;
 	int				mat_cap;
-
-	/* Global Resources */
 	t_ambient		ambient;
 	t_camera		camera;
 	t_light			*lights;
 	int				light_count;
 	int				light_cap;
-
-	/* Animation Clips */
 	t_animation		*clips;
 	int				clip_count;
 	int				clip_cap;
-
-	/* The Accelerator */
 	struct s_bvh	*bvh;
-
-	/* Emissive-object cache: built at BVH create time, O(E) iteration */
 	t_emissive_ref	*emissive_cache;
 	int				emissive_n;
+
+	/* Physics Context (Stage 9 - No Globals) */
+	t_dbvt			dbvt;
+	t_phys_pool		pool;
+	t_static_bvh	*static_bvh;
 };
 
 /* 3. FUNCTION PROTOTYPES */

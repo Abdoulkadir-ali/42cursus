@@ -17,12 +17,14 @@ static void	init_capsule_inertia(t_capsule *cap)
 {
 	double	r2;
 	double	h2;
+	t_vec3	inv_i;
 
 	r2 = cap->radius * cap->radius + 1e-9;
 	h2 = 4.0 * cap->half_height * cap->half_height;
-	cap->phys.inv_inertia.x = 12.0 / (3.0 * r2 + h2);
-	cap->phys.inv_inertia.y = 2.0 / r2;
-	cap->phys.inv_inertia.z = 12.0 / (3.0 * r2 + h2);
+	inv_i.x = 12.0 / (3.0 * r2 + h2);
+	inv_i.y = 2.0 / r2;
+	inv_i.z = 12.0 / (3.0 * r2 + h2);
+	cap->phys.inv_inertia = mat3_diag(inv_i);
 }
 
 /**
@@ -37,7 +39,7 @@ void	integrate_capsule(t_capsule *cap, double dt)
 		return ;
 	if (cap->phys.mass < 1e-6)
 		cap->phys.mass = 1.0;
-	if (vec3_mag_sq(cap->phys.inv_inertia) < 1e-9)
+	if (cap->phys.inv_inertia.m[0][0] < 1e-9)
 		init_capsule_inertia(cap);
 	cap->phys.velocity = vec3_add(cap->phys.velocity,
 			vec3_scale(GRAVITY_VEC, dt));

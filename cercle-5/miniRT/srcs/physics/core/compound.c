@@ -47,6 +47,33 @@ static void	compute_com(t_physics_body *b)
  * @brief Computes global_aabb from current sub-shape world positions.
  * Call each frame after position integration.
  */
+static void	compute_inertia(t_physics_body *b)
+{
+	size_t	i;
+	t_vec3	r;
+	double	m_sub;
+
+	memset(&b->inv_inertia, 0, sizeof(t_mat3));
+	if (b->mass < 1e-6) return ;
+	m_sub = b->mass / (double)b->sub_count;
+	i = 0;
+	while (i < b->sub_count)
+	{
+		r = vec3_sub(b->sub_shapes[i].offset, b->com);
+		b->inv_inertia.m[0][0] += m_sub * (r.y * r.y + r.z * r.z);
+		b->inv_inertia.m[1][1] += m_sub * (r.x * r.x + r.z * r.z);
+		b->inv_inertia.m[2][2] += m_sub * (r.x * r.x + r.y * r.y);
+		b->inv_inertia.m[0][1] -= m_sub * (r.x * r.y);
+		b->inv_inertia.m[0][2] -= m_sub * (r.x * r.z);
+		b->inv_inertia.m[1][2] -= m_sub * (r.y * r.z);
+		i++;
+	}
+	b->inv_inertia.m[1][0] = b->inv_inertia.m[0][1];
+	b->inv_inertia.m[2][0] = b->inv_inertia.m[0][2];
+	b->inv_inertia.m[2][1] = b->inv_inertia.m[1][2];
+	b->inv_inertia = mat3_inv(b->inv_inertia);
+}
+
 void	update_compound(t_physics_body *b)
 {
 	size_t	i;
@@ -64,10 +91,6 @@ void	update_compound(t_physics_body *b)
 	b->global_aabb = acc;
 }
 
-/**
- * @brief Initializes a compound body from an array of Lego bricks.
- * Computes CoM and global_aabb. Caps sub_count at MAX_SUB_SHAPES.
- */
 void	init_compound(t_physics_body *b, t_sub_shape *bricks, size_t n)
 {
 	size_t	i;
@@ -85,5 +108,6 @@ void	init_compound(t_physics_body *b, t_sub_shape *bricks, size_t n)
 	b->sub_count = n;
 	b->is_compound = true;
 	compute_com(b);
+	compute_inertia(b);
 	update_compound(b);
 }

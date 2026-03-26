@@ -30,5 +30,5 @@ void	apply_torque(t_contact *c, t_physics_body *body, double impulse)
 	j_vec = vec3_scale(c->normal, impulse);
 	tau = vec3_cross(r, j_vec);
 	body->angular_velocity = vec3_add(body->angular_velocity,
-			vec3_mul(tau, body->inv_inertia));
+			mat3_mul_vec3(body->inv_inertia, tau));
 }

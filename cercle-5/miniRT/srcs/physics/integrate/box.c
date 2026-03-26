@@ -16,11 +16,13 @@
 static void	init_box_inertia(t_box *bx)
 {
 	t_vec3	e;
+	t_vec3	inv_i;
 
 	e = bx->half_extents;
-	bx->phys.inv_inertia.x = 3.0 / (e.y * e.y + e.z * e.z + 1e-9);
-	bx->phys.inv_inertia.y = 3.0 / (e.x * e.x + e.z * e.z + 1e-9);
-	bx->phys.inv_inertia.z = 3.0 / (e.x * e.x + e.y * e.y + 1e-9);
+	inv_i.x = 3.0 / (e.y * e.y + e.z * e.z + 1e-9);
+	inv_i.y = 3.0 / (e.x * e.x + e.z * e.z + 1e-9);
+	inv_i.z = 3.0 / (e.x * e.x + e.y * e.y + 1e-9);
+	bx->phys.inv_inertia = mat3_diag(inv_i);
 }
 
 /**
@@ -35,7 +37,7 @@ void	integrate_box(t_box *bx, double dt)
 		return ;
 	if (bx->phys.mass < 1e-6)
 		bx->phys.mass = 1.0;
-	if (vec3_mag_sq(bx->phys.inv_inertia) < 1e-9)
+	if (bx->phys.inv_inertia.m[0][0] < 1e-9)
 		init_box_inertia(bx);
 	bx->phys.velocity = vec3_add(bx->phys.velocity,
 			vec3_scale(GRAVITY_VEC, dt));

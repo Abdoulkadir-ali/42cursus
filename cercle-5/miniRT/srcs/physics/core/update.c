@@ -33,6 +33,12 @@ void update_physics(t_scene *scene, double dt)
     if (!scene)
         return ;
     integrate_bodies(scene, dt);
+    /* CDC Pass: Prevent tunneling for high-speed objects */
+    i = -1;
+    while (++i < scene->sphere_count) phys_resolve_ccd(scene, &scene->spheres[i].phys, dt);
+    i = -1;
+    while (++i < scene->box_count) phys_resolve_ccd(scene, &scene->boxes[i].phys, dt);
+
     phys_debug_spheres(scene);
     if (scene->bvh)
         bvh_destroy(scene->bvh);

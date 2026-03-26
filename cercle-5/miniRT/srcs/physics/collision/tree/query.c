@@ -29,6 +29,8 @@ static int	test_leaf_pair(t_dbvt *t, int ia, int ib, t_body_pair *out, int count
 	if (a->body == b->body) return (count);
 	out[count].a = a->body;
 	out[count].b = b->body;
+	out[count].la = a;
+	out[count].lb = b;
 	return (count + 1);
 }
 

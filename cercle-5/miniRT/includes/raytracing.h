@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   intersect.c                                        :+:      :+:    :+:   */
+/*   raytracing.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/25 16:48:15 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/25 16:48:16 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/26 07:16:58 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 07:16:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef RAYTRACING_H
 # define RAYTRACING_H
 
@@ -87,7 +88,7 @@ typedef struct s_entry_point
 struct s_hit
 {
 	double t;
-	t_bvh_ref ref; /* Uses forward declared type from types.h */
+	t_bvh_ref ref;
 	t_vec3 point;
 	t_vec3 normal;
 	t_vec3 tangent;
@@ -142,33 +143,33 @@ typedef struct s_cap_params
 
 typedef struct s_box_ctx
 {
-	t_vec3	ax[3];
-	double	p[3];
-	double	d_ax[3];
-	double	h[3];
-	double	t_min;
-	double	t_max;
-	int		face;
-}	t_box_ctx;
+	t_vec3 ax[3];
+	double p[3];
+	double d_ax[3];
+	double h[3];
+	double t_min;
+	double t_max;
+	int face;
+} t_box_ctx;
 
 typedef struct s_rect_ctx
 {
-	t_vec3	v[2][3];
-	double	t[2];
-	t_vec2	uv[2];
-	bool	h[2];
-}	t_rect_ctx;
+	t_vec3 v[2][3];
+	double t[2];
+	t_vec2 uv[2];
+	bool h[2];
+} t_rect_ctx;
 
 typedef struct s_cap_ctx
 {
-	t_vec3	p0;
-	t_vec3	p1;
-	double	t_cyl;
-	double	t_s0;
-	double	t_s1;
-	int		b_type;
-	double	best;
-}	t_cap_ctx;
+	t_vec3 p0;
+	t_vec3 p1;
+	double t_cyl;
+	double t_s0;
+	double t_s1;
+	int b_type;
+	double best;
+} t_cap_ctx;
 
 typedef struct s_bvh_stack
 {
@@ -182,37 +183,40 @@ typedef struct s_bvh_stack
 
 typedef struct s_occ
 {
-	int     *stack;
-	int     *ptr;
+	int *stack;
+	int *ptr;
 	const t_bvh *bvh;
 	const t_ray *ray;
-	double  max_t;
-}   t_occ;
+	double max_t;
+} t_occ;
 
 typedef struct s_push_vars
 {
-	int     left;
-	int     right;
-	double  tl;
-	double  tr;
-	double  tl_max;
-	double  tr_max;
-	bool    hit_l;
-	bool    hit_r;
-}   t_push_vars;
+	int left;
+	int right;
+	double tl;
+	double tr;
+	double tl_max;
+	double tr_max;
+	bool hit_l;
+	bool hit_r;
+} t_push_vars;
 
 typedef struct s_lcalc
 {
-	t_vec3	ld_norm;
-	double	dist;
-	double	ndotl;
-}	t_lcalc;
+	t_vec3 ld_norm;
+	double dist;
+	double ndotl;
+} t_lcalc;
 
 /* srcs/raytracing/postprocess/shading/ */
 void	add_emissive_lighting(t_shading *ctx, t_scene *scene, t_vec3 *total);
-void	apply_emissive_hit(t_shading *ctx, t_vec3 *total, t_material *m, t_vec3 lrad);
-void	emissive_primary(t_shading *ctx, t_scene *sc, t_vec3 *tot, t_emissive_ref r);
-void	emissive_complex(t_shading *ctx, t_scene *sc, t_vec3 *tot, t_emissive_ref r);
+void	apply_emissive_hit(t_shading *ctx, t_vec3 *total, t_material *m,
+		t_vec3 lrad);
+void	emissive_primary(t_shading *ctx, t_scene *sc, t_vec3 *tot,
+		t_emissive_ref r);
+void	emissive_complex(t_shading *ctx, t_scene *sc, t_vec3 *tot,
+		t_emissive_ref r);
 
 /* srcs/raytracing/postprocess/shading/material/ */
 int	get_sphere_mat(t_shading *ctx);
@@ -272,9 +276,9 @@ bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 
 /* occlusion helpers split into files */
 bool	occlude_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
-				 double max_t);
-double	aabb_hit_time_or_neg1(const t_bvh *bvh, int idx,
-		 const t_ray *ray, double max_t);
+		double max_t);
+double	aabb_hit_time_or_neg1(const t_bvh *bvh, int idx, const t_ray *ray,
+		double max_t);
 bool	bvh_traverse_loop(const t_bvh *bvh, const t_ray *ray, double max_t);
 
 /* internal traverse helpers */
@@ -285,7 +289,6 @@ bool	run_traverse_loop(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
 
 t_vec3	clamp_color(t_vec3 color);
 t_vec3	refract_ray(t_vec3 incident, t_vec3 normal, float n1, float n2);
-
 
 /* srcs/raytracing/trace/ */
 

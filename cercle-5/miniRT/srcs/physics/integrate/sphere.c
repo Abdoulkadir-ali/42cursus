@@ -51,9 +51,11 @@ void	integrate_sphere(t_sphere *sp, double dt)
 		return ;
 	if (sp->phys.mass < 1e-6)
 		sp->phys.mass = 1.0;
-	if (vec3_mag_sq(sp->phys.inv_inertia) < 1e-9)
-		sp->phys.inv_inertia = vec3(2.5 / (sp->radius_sq + 1e-9),
-				2.5 / (sp->radius_sq + 1e-9), 2.5 / (sp->radius_sq + 1e-9));
+	if (sp->phys.inv_inertia.m[0][0] < 1e-9)
+	{
+		double ii = 2.5 / (sp->radius_sq + 1e-9);
+		sp->phys.inv_inertia = mat3_diag(vec3(ii, ii, ii));
+	}
 	sp->phys.velocity = vec3_add(sp->phys.velocity,
 			vec3_scale(GRAVITY_VEC, dt));
 	sp->phys.velocity = vec3_scale(sp->phys.velocity,

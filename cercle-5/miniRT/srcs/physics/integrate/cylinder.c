@@ -17,12 +17,14 @@ static void	init_cylinder_inertia(t_cylinder *cy)
 {
 	double	r2;
 	double	h2;
+	t_vec3	inv_i;
 
 	r2 = cy->transform.scale.x * cy->transform.scale.x + 1e-9;
 	h2 = 4.0 * cy->transform.scale.y * cy->transform.scale.y;
-	cy->phys.inv_inertia.x = 12.0 / (3.0 * r2 + h2);
-	cy->phys.inv_inertia.y = 2.0 / r2;
-	cy->phys.inv_inertia.z = 12.0 / (3.0 * r2 + h2);
+	inv_i.x = 12.0 / (3.0 * r2 + h2);
+	inv_i.y = 2.0 / r2;
+	inv_i.z = 12.0 / (3.0 * r2 + h2);
+	cy->phys.inv_inertia = mat3_diag(inv_i);
 }
 
 /**
@@ -37,7 +39,7 @@ void	integrate_cylinder(t_cylinder *cy, double dt)
 		return ;
 	if (cy->phys.mass < 1e-6)
 		cy->phys.mass = 1.0;
-	if (vec3_mag_sq(cy->phys.inv_inertia) < 1e-9)
+	if (cy->phys.inv_inertia.m[0][0] < 1e-9)
 		init_cylinder_inertia(cy);
 	cy->phys.velocity = vec3_add(cy->phys.velocity,
 			vec3_scale(GRAVITY_VEC, dt));

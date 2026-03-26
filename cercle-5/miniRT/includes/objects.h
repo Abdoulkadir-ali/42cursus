@@ -180,7 +180,7 @@ typedef struct s_bone_weight
 typedef struct s_transform_q
 {
 	t_vec3				pos;
-	t_vec3				rot; /* Quaternion */
+	t_vec3				rot;
 	t_vec3				scale;
 }						t_transform_q;
 
@@ -189,9 +189,16 @@ typedef struct s_bone
 	char				*name;
 	int					node_idx;
 	int					parent;
-	t_mat4				local_transform;	t_mat4				global_transform;	t_mat4				bind_pose;
+	t_mat4				local_transform;
+	t_mat4				global_transform;
+	t_mat4				bind_pose;
 	t_mat4				inv_bind_pose;
 	t_transform_q		trs;
+	bool				has_collider;
+	int					sub_idx;
+	double				radius;
+	double				height;
+	t_vec3				local_offset;
 }						t_bone;
 
 struct					s_mesh
@@ -216,19 +223,16 @@ struct					s_mesh
 	t_vec3				*base_vertices;
 	t_vec3				*base_normals;
 	int					node_idx;
-	/* Scene-level transform (baked from .rt file, reapplied each frame after skinning) */
 	t_mat4				scene_mat;
 	t_mat4				scene_rot_mat;
 	bool				has_scene_transform;
-	/* Physics */
 	t_physics_body		phys;
 	int					current_anim;
-	int					anim_base;       /* index of first clip in scene->clips[] */
-	int					anim_clip_count; /* number of clips belonging to this mesh */
+	int					anim_base;
+	int					anim_clip_count;
 	double				anim_time;
 	t_collider				collider;
-	int						group_id;	 /* -1 = standalone; ≥0 = mesh group (all GLB submeshes share one) */
-	/* Editor: post-bake snapshot for live transform editing */
+	int						group_id;
 	t_vec3					*edit_snap_verts;
 	t_vec3					*edit_snap_norms;
 	t_vec3					edit_snap_pivot;};
@@ -329,12 +333,10 @@ typedef struct s_fbx_bin_node
 struct					s_skinned_mesh
 {
 	t_mesh				base;
-	/* INHERITANCE: Re-use all mesh intersection code! */
-	t_vec3 *base_vertices; /* Original un-posed vertices */
-	t_bone *skeleton;      /* The hierarchy of bones */
+	t_vec3 *base_vertices;
+	t_bone *skeleton;
 	t_mat4				*bone_matrices;
-	/* The current pose transformations (Global Space) */
-	t_bone_weight *weights; /* Per-vertex weights */
+	t_bone_weight *weights;
 	int					bone_count;
 	int					vertex_count;
 };
@@ -347,12 +349,12 @@ struct					s_skinned_mesh
 */
 typedef struct s_mesh_group
 {
-	char			*name;          /* display name — GLB basename, owned heap */
-	char			*path;          /* source file path, owned heap */
-	int				start;         /* first submesh index in scene->meshes[] */
-	int				sub_count;     /* number of consecutive submeshes */
-	t_transform		transform;     /* editor-controlled delta (identity after bake) */
-	t_vec3			pivot;         /* union-bbox centre of all subs for SR+T */
+	char			*name;
+	char			*path;
+	int				start;
+	int				sub_count;
+	t_transform		transform;
+	t_vec3			pivot;
 	t_physics_body	phys;
 	t_collider		collider;
 	int				anim_base;
