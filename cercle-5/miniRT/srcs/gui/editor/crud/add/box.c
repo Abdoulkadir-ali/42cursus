@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:48:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/25 15:59:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
+#include "gui.h"
 
 void	editor_add_box(t_gui *gui)
 {

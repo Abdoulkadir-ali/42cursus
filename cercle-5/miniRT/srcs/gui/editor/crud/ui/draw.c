@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/25 15:56:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
-
 static void	draw_crud_btn(t_gui *gui, t_panel btn, const char *lbl)
 {
 	draw_panel(gui, btn);

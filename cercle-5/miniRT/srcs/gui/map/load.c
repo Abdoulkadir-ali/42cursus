@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "editor.h"
-
 /*
 ** Activates a map entry, parsing and caching it on first access.
 ** If the entry already holds a scene, the cached scene is reused without

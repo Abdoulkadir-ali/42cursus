@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 18:50:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/25 16:46:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
-
 void	update_inline_drag(t_gui *gui, int mouse_x)
 {
 	double	frac;

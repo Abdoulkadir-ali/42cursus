@@ -6,31 +6,75 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 15:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef OBJECTS_H
 # define OBJECTS_H
 
-/* 1. EXTERNAL DEPENDENCIES */
-# include "core.h"
-# include "surface.h"
-# include "physics.h"
+/* External dependencies */
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdint.h>
 
-typedef struct s_json_value	t_json_value;
+/* 1. EXTERNAL DEPENDENCIES */
+# include "defines.h"
+# include "raytracing.h"
+# include "physics.h"
+# include "surface.h"
+# include "debug.h"
+# include "parser.h"
+
+# define GLB_MAGIC 0x46546C67
+# define CHUNK_JSON 0x4E4F534A
+# define CHUNK_BIN 0x004E4942
+# define BVH_BINS 16
 
 /* ------------------------------------------------------------------------- */
 /*                             LEAF STRUCTURES                               */
 /* ------------------------------------------------------------------------- */
 
-struct				s_sphere
+/* Enums */
+typedef enum e_type
 {
-	t_transform		transform;
-	double			radius_sq;
-	int				mat_id;
-	t_vec3			temp_color;
-	t_physics_body      phys;
+	TYPE_NONE = 0,
+	TYPE_AMBIENT,
+	TYPE_CAMERA,
+	TYPE_LIGHT,
+	TYPE_SPHERE,
+	TYPE_PLANE,
+	TYPE_MESH,
+	TYPE_ANIM,
+	TYPE_CYLINDER,
+	TYPE_CONE,
+	TYPE_TRI,
+	TYPE_RECT,
+	TYPE_PYRAMID,
+	TYPE_BOX,
+	TYPE_CAPSULE
+}						t_type;
+
+typedef enum e_light_type
+{
+	LIGHT_POINT,
+	LIGHT_SPOT,
+	LIGHT_EMISSIVE
+}						t_light_type;
+
+struct					s_emissive_ref
+{
+	t_type				type;
+	int					index;
+};
+
+struct					s_sphere
+{
+	t_transform			transform;
+	double				radius_sq;
+	int					mat_id;
+	t_vec3				temp_color;
+	t_physics_body		phys;
 	bool				is_deformed;
 	t_mat4				inv_transform;
 };
@@ -143,26 +187,26 @@ struct					s_triangle
 	int					indices[3];
 };
 
-typedef struct s_bin
+struct					s_bin
 {
 	t_aabb				bounds;
 	int					count;
-}						t_bin;
+};
 
-typedef struct s_tri_precomp
+struct					s_tri_precomp
 {
 	t_vec3				v0;
 	t_vec3				e1;
 	t_vec3				e2;
-}						t_tri_precomp;
+};
 
-typedef struct s_mbvh_node
+struct					s_mbvh_node
 {
 	t_aabb				bbox;
 	int					left_or_first;
 	int					count;
 	int					axis;
-}						t_mbvh_node;
+};
 
 typedef struct s_mbvh_ctx
 {
@@ -171,20 +215,20 @@ typedef struct s_mbvh_ctx
 	int					node_count;
 }						t_mbvh_ctx;
 
-typedef struct s_bone_weight
+struct					s_bone_weight
 {
 	int					bone_ids[4];
 	double				weights[4];
-}						t_bone_weight;
+};
 
-typedef struct s_transform_q
+struct					s_transform_q
 {
 	t_vec3				pos;
 	t_vec3				rot;
 	t_vec3				scale;
-}						t_transform_q;
+};
 
-typedef struct s_bone
+struct					s_bone
 {
 	char				*name;
 	int					node_idx;
@@ -199,7 +243,7 @@ typedef struct s_bone
 	double				radius;
 	double				height;
 	t_vec3				local_offset;
-}						t_bone;
+};
 
 struct					s_mesh
 {
@@ -231,11 +275,12 @@ struct					s_mesh
 	int					anim_base;
 	int					anim_clip_count;
 	double				anim_time;
-	t_collider				collider;
-	int						group_id;
-	t_vec3					*edit_snap_verts;
-	t_vec3					*edit_snap_norms;
-	t_vec3					edit_snap_pivot;};
+	t_collider			collider;
+	int					group_id;
+	t_vec3				*edit_snap_verts;
+	t_vec3				*edit_snap_norms;
+	t_vec3				edit_snap_pivot;
+};
 
 typedef enum e_interpolation
 {
@@ -244,13 +289,13 @@ typedef enum e_interpolation
 	INTERP_CUBIC
 }						t_interpolation;
 
-typedef struct s_anim_sampler
+struct					s_anim_sampler
 {
 	float				*inputs;
 	float				*outputs;
 	int					count;
 	t_interpolation		method;
-}						t_anim_sampler;
+};
 
 typedef enum e_anim_path
 {
@@ -260,14 +305,14 @@ typedef enum e_anim_path
 	PATH_WEIGHTS
 }						t_anim_path;
 
-typedef struct s_anim_channel
+struct					s_anim_channel
 {
 	int					node_idx;
 	t_anim_path			path;
 	int					sampler_idx;
-}						t_anim_channel;
+};
 
-typedef struct s_animation
+struct					s_animation
 {
 	char				*name;
 	t_anim_channel		*channels;
@@ -276,67 +321,67 @@ typedef struct s_animation
 	int					sampler_count;
 	double				max_time;
 	double				current_time;
-}						t_animation;
+};
 
-typedef struct s_mesh_init
+struct					s_mesh_init
 {
 	int					v_count;
 	int					i_count;
 	bool				has_uvs;
 	bool				has_normals;
-}						t_mesh_init;
+};
 
 void					mesh_apply_transform(t_mesh *mesh,
 							t_transform transform);
 bool					mesh_init(t_mesh *mesh, t_mesh_init init);
 void					mesh_free(t_mesh *mesh);
 
-typedef struct s_glb_header
+struct					s_glb_header
 {
 	uint32_t			magic;
 	uint32_t			version;
 	uint32_t			length;
-}						t_glb_header;
+};
 
-typedef struct s_chunk_header
+struct					s_chunk_header
 {
 	uint32_t			length;
 	uint32_t			type;
-}						t_chunk_header;
+};
 
-typedef struct s_accessor
+struct					s_accessor
 {
 	int					buffer_view;
 	int					byte_offset;
 	int					component_type;
 	int					count;
 	char				type[16];
-}						t_accessor;
+};
 
-typedef struct s_buffer_view
+struct					s_buffer_view
 {
 	int					buffer;
 	int					byte_offset;
 	int					byte_length;
 	int					byte_stride;
-}						t_buffer_view;
+};
 
-typedef struct s_fbx_bin_node
+struct					s_fbx_bin_node
 {
 	uint64_t			end_offset;
 	uint64_t			num_properties;
 	uint64_t			property_list_len;
 	uint8_t				name_len;
 	char				name[1024];
-}						t_fbx_bin_node;
+};
 
 struct					s_skinned_mesh
 {
 	t_mesh				base;
-	t_vec3 *base_vertices;
-	t_bone *skeleton;
+	t_vec3				*base_vertices;
+	t_bone				*skeleton;
 	t_mat4				*bone_matrices;
-	t_bone_weight *weights;
+	t_bone_weight		*weights;
 	int					bone_count;
 	int					vertex_count;
 };
@@ -347,19 +392,19 @@ struct					s_skinned_mesh
 ** All editor-level state (transform sliders, pivot, physics) lives here;
 ** individual submeshes are pure geometry + per-primitive rendering data.
 */
-typedef struct s_mesh_group
+struct					s_mesh_group
 {
-	char			*name;
-	char			*path;
-	int				start;
-	int				sub_count;
-	t_transform		transform;
-	t_vec3			pivot;
-	t_physics_body	phys;
-	t_collider		collider;
-	int				anim_base;
-	int				anim_clip_count;
-}					t_mesh_group;
+	char				*name;
+	char				*path;
+	int					start;
+	int					sub_count;
+	t_transform			transform;
+	t_vec3				pivot;
+	t_physics_body		phys;
+	t_collider			collider;
+	int					anim_base;
+	int					anim_clip_count;
+};
 
 /* Parsing and Build Types */
 
@@ -435,13 +480,13 @@ typedef struct s_obj_ctx
 	t_aabb				bbox;
 }						t_obj_ctx;
 
-typedef struct s_obj_face
+struct					s_obj_face
 {
 	int					vi[32];
 	int					vti[32];
 	int					vni[32];
 	int					count;
-}						t_obj_face;
+};
 
 typedef struct s_mesh_hit_ctx
 {
@@ -453,14 +498,14 @@ typedef struct s_mesh_hit_ctx
 	int					tri;
 }						t_mesh_hit_ctx;
 
-typedef struct s_hit_calc
+struct					s_hit_calc
 {
 	t_mesh_hit_ctx		*in;
 	int					*idx;
 	t_vec3				v[3];
-}						t_hit_calc;
+};
 
-typedef struct s_tri_hit
+struct					s_tri_hit
 {
 	t_vec3				e1;
 	t_vec3				e2;
@@ -471,7 +516,7 @@ typedef struct s_tri_hit
 	double				inv_det;
 	double				u;
 	double				v;
-}						t_tri_hit;
+};
 
 typedef struct s_fdf_row_ctx
 {
@@ -491,8 +536,6 @@ typedef struct s_extract_ctx
 	int					type_size;
 }						t_extract_ctx;
 
-typedef struct s_parser	t_parser;
-
 typedef struct s_rt_ctx
 {
 	t_parser			*parser;
@@ -502,11 +545,11 @@ typedef struct s_rt_ctx
 	bool				status;
 }						t_rt_ctx;
 
-typedef struct s_fdf_dim
+struct					s_fdf_dim
 {
 	int					w;
 	int					h;
-}						t_fdf_dim;
+};
 
 typedef struct s_trace_ctx
 {
@@ -546,7 +589,7 @@ typedef struct s_child_ctx
 	bool				hit_r;
 }						t_child_ctx;
 
-typedef struct s_occ_child
+struct					s_occ_child
 {
 	int					left_idx;
 	int					right_idx;
@@ -556,15 +599,15 @@ typedef struct s_occ_child
 	double				tr_max;
 	bool				hit_l;
 	bool				hit_r;
-}						t_occ_child;
+};
 
-typedef struct s_bvh_split
+struct					s_bvh_split
 {
 	int					axis;
 	double				pos;
-}						t_bvh_split;
+};
 
-typedef struct s_bvh_sah
+struct					s_bvh_sah
 {
 	t_aabb				centroid_bounds;
 	t_aabb				right_box;
@@ -580,7 +623,7 @@ typedef struct s_bvh_sah
 	int					right_count;
 	int					best_axis;
 	int					i;
-}						t_bvh_sah;
+};
 
 typedef struct s_bvh_bins_ctx
 {
@@ -623,7 +666,7 @@ typedef struct s_bvh_try_ctx
 	int					*mid;
 }						t_bvh_try_ctx;
 
-typedef struct s_fbx_data
+struct					s_fbx_data
 {
 	t_vec3				*v;
 	uint32_t			vc;
@@ -633,7 +676,7 @@ typedef struct s_fbx_data
 	uint32_t			nc;
 	t_vec2				*vu;
 	uint32_t			uc;
-}						t_fbx_data;
+};
 
 typedef struct s_fbx_flat_params
 {
@@ -646,7 +689,7 @@ typedef struct s_fbx_flat_params
 	int					vc;
 }						t_fbx_flat_params;
 
-typedef struct s_fbx_build
+struct					s_fbx_build
 {
 	t_mesh				*m;
 	int					*raw;
@@ -666,7 +709,7 @@ typedef struct s_fbx_build
 	int					ps;
 	int					use_v_n;
 	int					use_v_u;
-}						t_fbx_build;
+};
 
 typedef struct s_fbx_parse_ctx
 {
@@ -675,23 +718,23 @@ typedef struct s_fbx_parse_ctx
 	t_fbx_data			*d;
 }						t_fbx_parse_ctx;
 
-typedef struct s_fbx_array_req
+struct					s_fbx_array_req
 {
 	const char			*label;
 	void				**dst;
 	uint32_t			*count;
 	size_t				elem_sz;
 	uint32_t			div;
-}						t_fbx_array_req;
+};
 
-typedef struct s_fbx_array
+struct					s_fbx_array
 {
 	uint32_t			arr_len;
 	uint32_t			encoding;
 	uint32_t			comp_len;
 	size_t				actual_sz;
 	char				type;
-}						t_fbx_array;
+};
 
 typedef struct s_fbx_bin_ctx
 {
@@ -701,12 +744,12 @@ typedef struct s_fbx_bin_ctx
 	t_fbx_data			data;
 }						t_fbx_bin_ctx;
 
-typedef struct s_fbx_buf
+struct					s_fbx_buf
 {
 	char				*buf;
 	size_t				cap;
 	size_t				len;
-}						t_fbx_buf;
+};
 
 typedef struct s_fbx_ascii_ctx
 {
@@ -732,7 +775,7 @@ bool					handle_mesh_injection(t_parse_obj *obj, const char *ext,
 							t_scene *scene);
 bool					mesh_cache_has(const char *path);
 bool					mesh_cache_save(const char *path, t_scene *scene,
-						int start_mesh);
+							int start_mesh);
 bool					mesh_cache_restore(const char *path, t_scene *scene);
 bool					process_object(t_scene *scene, t_parse_obj obj);
 const char				*rt_get_extension(const char *path);
@@ -762,12 +805,12 @@ void					glb_parse_accessor(t_json_value *json, int index,
 void					glb_parse_buffer_view(t_json_value *json, int index,
 							t_buffer_view *bv);
 void					glb_extract_data(t_extract_ctx ctx);
-void					glb_handle_indices_short(t_mesh *mesh, t_json_value *json,
-							char *bin, int idx);
-void					glb_fill_attributes(t_mesh *mesh, t_json_value *json, char *bin,
-							int ids[6]);
-bool					glb_load_primitive(t_mesh *mesh, t_json_value *json, char *bin,
-							int mesh_idx, int prim_idx, int mat_id);
+void					glb_handle_indices_short(t_mesh *mesh,
+							t_json_value *json, char *bin, int idx);
+void					glb_fill_attributes(t_mesh *mesh, t_json_value *json,
+							char *bin, int ids[6]);
+bool					glb_load_primitive(t_mesh *mesh, t_json_value *json,
+							char *bin, int mesh_idx, int prim_idx, int mat_id);
 int						*glb_load_materials(t_scene *scene, t_json_value *json,
 							char *bin);
 bool					glb_read_buffers(int fd, char *buf[2]);
@@ -943,11 +986,5 @@ bool					bvh_find_split(t_bvh_find_ctx *f);
 /* srcs/objects/glb/anim_system.c */
 void					glb_update_mesh_anim(t_mesh *mesh, t_scene *scene,
 							double dt);
-
-/* 4. IMPLEMENTATION IMPORTS */
-# include "debug.h"
-# include "parser.h"
-# include "raytracing.h"
-# include "utils.h"
 
 #endif

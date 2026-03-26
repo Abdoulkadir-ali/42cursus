@@ -6,12 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 05:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 06:25:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "editor.h"
+#include "gui.h"
 #include <stdio.h>
 
 static void	draw_path_field(t_gui *gui, int ox, int oy)

@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 05:05:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
+#include "gui.h"
 
 static void	set_tab_base(t_inspect_tab tabs[4], const char *labels[4])
 {

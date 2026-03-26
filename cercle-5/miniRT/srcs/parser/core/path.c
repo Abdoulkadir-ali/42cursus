@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "libft.h"
-#include <stddef.h>
+#include "parser.h"
 
 /* Extract directory part from a filepath. */
 char	*path_get_dir(const char *filepath)

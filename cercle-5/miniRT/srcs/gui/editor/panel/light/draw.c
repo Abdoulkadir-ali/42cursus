@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:40:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/25 16:24:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
-
 static void	build_light_sliders(t_light *lt, t_islider *sl, int *count)
 {
 	int	i;

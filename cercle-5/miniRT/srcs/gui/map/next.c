@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "editor.h"
+#include "gui.h"
 #include <math.h>
 
 void	reset_camera_view(t_gui *gui)

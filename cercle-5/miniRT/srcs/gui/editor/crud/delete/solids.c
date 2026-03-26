@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/25 16:15:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
+#include "gui.h"
 
 void	delete_sel_solids(t_scene *sc, t_selection *sel)
 {

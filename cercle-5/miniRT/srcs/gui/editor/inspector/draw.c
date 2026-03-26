@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 05:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
-
 static void	draw_tabs(t_gui *gui, int x)
 {
 	t_inspect_tab	tabs[MAX_INSPECT_TABS];

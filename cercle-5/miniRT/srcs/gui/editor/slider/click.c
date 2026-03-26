@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 18:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 05:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
-
 /**
  * @brief Checks and initiates a slider drag if the click was on the track area.
  * @param gui Pointer to the GUI context.

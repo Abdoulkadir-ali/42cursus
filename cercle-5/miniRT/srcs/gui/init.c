@@ -6,14 +6,24 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 05:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:44:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "core.h"
-#include "scene.h"
-#include "raytracing.h"
 #include "gui.h"
+
+/**
+ * @brief Performs graceful cleanup of GUI and Scene resources.
+ * @param scene Pointer to the scene.
+ * @param gui Pointer to the GUI context.
+ */
+static void	cleanup_app(t_scene *scene, t_gui *gui)
+{
+	if (gui)
+		gui_destroy(gui);
+	else if (scene)
+		destroy_scene(scene);
+}
 
 /**
  * @brief Loads the scene, computes the BVH, and initializes GUI data.
@@ -22,7 +32,7 @@
  * @param mlx Pointer to the MLX instance.
  * @return t_gui* Pointer to the initialized GUI, or NULL on failure.
  */
-t_gui	*init_app(const char *path, t_scene **scene, void *mlx)
+static t_gui	*init_app(const char *path, t_scene **scene, void *mlx)
 {
 	t_gui	*gui;
 
@@ -41,4 +51,25 @@ t_gui	*init_app(const char *path, t_scene **scene, void *mlx)
 	}
 	gui = gui_init(*scene, mlx);
 	return (gui);
+}
+
+/**
+ * @brief Starts the GUI engine and blocks until completion.
+ * @param gui Pointer to the initialized GUI.
+ * @param scene Pointer to the scene.
+ * @param mlx Pointer to the MLX instance.
+ * @return int Exit status (0 for success, 1 for failure).
+ */
+int	start_app(t_gui *gui, t_scene *scene, void *mlx)
+{
+	if (!gui)
+	{
+		ft_putendl_fd("Error: Failed to initialize GUI", STDERR_FILENO);
+		cleanup_app(scene, NULL);
+		return (1);
+	}
+	gui->win.mlx = mlx;
+	gui_loop(gui);
+	cleanup_app(scene, gui);
+	return (0);
 }

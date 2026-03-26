@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "editor.h"
-
 static void	handle_mouse_rotation(t_gui *gui, int dx, int dy)
 {
 	gui->cam_ctrl.target_rot.yaw -= -dx * MOUSE_SENSITIVITY;

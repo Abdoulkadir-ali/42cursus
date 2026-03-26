@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:46:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/25 16:07:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
+#include "gui.h"
 
 static void	init_rect(t_rect *rc, t_vec3 pos)
 {

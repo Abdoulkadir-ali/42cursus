@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:14:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/25 16:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
+#include "gui.h"
 
 void	delete_sel_extras(t_scene *sc, t_selection *sel)
 {

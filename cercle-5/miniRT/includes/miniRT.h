@@ -1,20 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pyramid.c                                          :+:      :+:    :+:   */
+/*   miniRT.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 05:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#ifndef CORE_H
+# define CORE_H
 
-void	reset_pyramid(t_scene *sc, t_scene_snap *s)
-{
-	sc->pyramid_count = s->pyramid_count;
-	ft_memcpy(sc->pyramids, s->pyramids,
-		s->pyramid_count * sizeof(t_pyramid));
-}
+# /* External dependencies */
+# include "defines.h"
+# include "gui.h"
+# include "scene.h"
+
+/* 3. FUNCTION PROTOTYPES */
+int		run_app(const char *path);
+t_gui	*init_app(const char *path, t_scene **scene, void *mlx);
+int		start_app(t_gui *gui, t_scene *scene, void *mlx);
+void	core_cleanup(t_scene *scene, t_gui *gui);
+
+#endif

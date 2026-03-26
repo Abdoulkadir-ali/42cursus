@@ -6,13 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 17:40:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:29:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PROFILER_H
 # define PROFILER_H
 
+/* External dependencies */
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdint.h>
 # include <time.h>
 
 # ifdef PROFILE_MESH

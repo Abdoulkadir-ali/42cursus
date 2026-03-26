@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "editor.h"
+#include "gui.h"
 #include "physics.h"
 #include "raytracing.h"
 

@@ -1,31 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mat4.c                                             :+:      :+:    :+:   */
+/*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 11:45:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:41:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "core.h"
+/* External dependencies */
+/* POSIX / system */
+# include <unistd.h>
+# include <fcntl.h>
+# include <dirent.h>
+# include <sys/stat.h>
+# include <sys/time.h>
+
+
+# include "defines.h"
 # include "debug.h"
 # include "objects.h"
 # include "scene.h"
 
-typedef struct s_parser
-{
+
+# define MAX_LEAF_OBJECTS 4
+# define PARSER_BUF_SIZE 65536
+
+
+struct s_parser {
 	int		fd;
 	char	buffer[PARSER_BUF_SIZE + 1];
 	size_t	cursor;
 	size_t	bytes_read;
 	bool	eof;
-}	t_parser;
+};
+
+char	*path_get_dir(const char *filepath);
 
 /* Core functions */
 void	parser_init(t_parser *p, int fd);
@@ -51,35 +66,29 @@ typedef enum e_json_type
 	JSON_OBJECT
 }	t_json_type;
 
-typedef struct s_json_value t_json_value;
-
-typedef struct s_json_member
-{
+struct s_json_member {
 	char			*key;
 	t_json_value	*value;
-}	t_json_member;
+};
 
-typedef struct s_json_hash_entry
-{
+struct s_json_hash_entry {
 	char						*key;
 	t_json_value				*value;
 	struct s_json_hash_entry	*next;
-}	t_json_hash_entry;
+};
 
-typedef struct s_json_object
-{
+struct s_json_object {
 	t_json_member		**members;
 	t_json_hash_entry	**hashmap;
 	size_t				count;
 	size_t				hash_size;
-}	t_json_object;
+};
 
-typedef struct s_json_array
-{
+struct s_json_array {
 	t_json_value	**elements;
 	size_t			count;
 	size_t			cap;
-}	t_json_array;
+};
 
 struct s_json_value
 {

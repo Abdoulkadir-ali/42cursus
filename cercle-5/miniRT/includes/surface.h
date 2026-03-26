@@ -6,18 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 17:34:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SURFACE_H
 # define SURFACE_H
 
+/* External dependencies */
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdint.h>
+
 /* 1. EXTERNAL DEPENDENCIES */
-# include "core.h"
+# include "defines.h"
 # include "debug.h"
 # include "maths.h"
-typedef struct s_scene	t_scene;
+
 
 # define BITS_PER_BYTE 8
 # define COLOR_MAGENTA (t_vec3){255.0, 0.0, 255.0}
@@ -42,8 +47,7 @@ typedef enum e_tex_type
 	TEX_BUMP
 }				t_tex_type;
 
-typedef struct s_texture
-{
+struct s_texture {
 	t_tex_type	type;
 	t_vec3		color_a;
 	t_vec3		color_b;
@@ -55,10 +59,9 @@ typedef struct s_texture
 	int			bpp;
 	int			len;
 	int			endian;
-}				t_texture;
+};
 
-typedef struct s_material
-{
+struct s_material {
 	char		*name;
 	t_texture	albedo_map;
 	t_texture	bump_map;
@@ -72,7 +75,7 @@ typedef struct s_material
 	double		refract_index;
 	double		transparency;
 	double		reflectivity;
-}				t_material;
+};
 
 typedef struct s_material_params
 {
@@ -85,15 +88,14 @@ typedef struct s_material_params
 	double		reflectivity;
 }					t_material_params;
 
-typedef struct s_bilinear
-{
+struct s_bilinear {
 	double	ux;
 	double	uy;
 	int		xi;
 	int		yi;
 	double	wx;
 	double	wy;
-}				t_bilinear;
+};
 
 /* 3. FUNCTION PROTOTYPES */
 t_material		*create_material(t_material_params params);

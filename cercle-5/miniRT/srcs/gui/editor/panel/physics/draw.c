@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:40:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/25 16:34:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
-
 void	draw_physics_panel(t_gui *gui, t_physics_body *phys, int x)
 {
     t_islider	 sl[3];

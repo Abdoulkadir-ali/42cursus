@@ -6,25 +6,43 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 20:31:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCENE_H
 # define SCENE_H
 
+/* External dependencies */
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdint.h>
+
 /* 1. EXTERNAL DEPENDENCIES */
-# include "core.h"
+# include "defines.h"
 # include "maths.h"
 # include "objects.h"
 # include "physics.h"
 
-struct s_json_value;
+
+
+# define INIT_SPHERE_CAP 16
+# define INIT_PLANE_CAP 16
+# define INIT_MESH_CAP 8
+# define INIT_ANIM_CAP 4
+# define INIT_GROUP_CAP 32
+# define INIT_MAT_CAP 32
+# define INIT_LIGHT_CAP 8
+# define INIT_CYL_CAP 16
+# define INIT_TRI_CAP 64
+# define INIT_RECT_CAP 32
+# define INIT_PYRAMID_CAP 32
+# define INIT_BOX_CAP 32
+# define INIT_CAPSULE_CAP 32
+# define MAX_VALUE 1e30
 
 # define SCALE_EPSILON 1e-6
 # define HALF_SCALE 0.5
-
-/* 2. MODULE TYPES */
 
 
 struct				s_scene
@@ -100,6 +118,19 @@ struct				s_scene
 	t_phys_pool		pool;
 	t_static_bvh	*static_bvh;
 };
+
+/* dynarray helper moved from utils */
+bool	dynarray_ensure(void **array, size_t count, size_t *cap, size_t elem_size);
+
+/* Helper for int-based counts */
+# define DYNARRAY_ENSURE_INT(arr, count_ptr, cap_ptr, elem_size) \
+	({ \
+		size_t _cnt = *(count_ptr); \
+		size_t _cap = *(cap_ptr); \
+		bool _ret = dynarray_ensure((void **)(arr), _cnt, &_cap, (elem_size)); \
+		*(cap_ptr) = (int)_cap; \
+		_ret; \
+	})
 
 /* 3. FUNCTION PROTOTYPES */
 

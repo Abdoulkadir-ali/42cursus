@@ -6,18 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 20:15:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MATHS_H
 # define MATHS_H
 
-# include "core.h"
+# include <math.h>
+# include <float.h>
+# include "defines.h"
 # include "debug.h"
-
-typedef struct s_quadratic			t_quadratic;
-typedef struct s_quadratic_roots	t_quadratic_roots;
 
 struct								s_vec2
 {
@@ -38,10 +37,9 @@ struct								s_mat4
 	double							m[4][4];
 };
 
-typedef struct s_mat3
-{
+struct s_mat3 {
 	double							m[3][3];
-}									t_mat3;
+};
 
 struct								s_ray
 {
@@ -89,11 +87,10 @@ struct								s_quadratic_roots
 	double							t2;
 };
 
-typedef struct s_vec2i
-{
+struct s_vec2i {
 	int								x;
 	int								y;
-}									t_vec2i;
+};
 
 t_vec2i								vec2i(int x, int y);
 t_vec2i								vec2i_add(t_vec2i a, t_vec2i b);
@@ -105,13 +102,12 @@ int									vec2i_mag_sq(t_vec2i a);
 int									vec2i_mag(t_vec2i a);
 t_vec2i								vec2i_norm(t_vec2i a);
 
-typedef struct s_vec3i
-{
+struct s_vec3i {
 	int								x;
 	int								y;
 	int								z;
 	int								w;
-}									t_vec3i;
+};
 
 t_vec3i								vec3i(int x, int y, int z);
 t_vec3i								vec3i_add(t_vec3i a, t_vec3i b);

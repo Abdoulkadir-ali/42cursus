@@ -6,15 +6,21 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:16:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:16:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 09:41:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RAYTRACING_H
 # define RAYTRACING_H
 
+# include <stdbool.h>
+# include <stddef.h>
+# include <stdint.h>
+# include <math.h>
+# include <pthread.h>
+
 /* 1. EXTERNAL DEPENDENCIES */
-# include "core.h"
+# include "defines.h"
 # include "debug.h"
 # include "maths.h"
 # include "objects.h"
@@ -58,14 +64,13 @@ struct s_bvh_node
 	int count;
 };
 
-typedef struct s_bvh_tmp_node
-{
+struct s_bvh_tmp_node {
 	t_aabb bbox;
 	struct s_bvh_tmp_node *left;
 	struct s_bvh_tmp_node *right;
 	t_bvh_ref *refs;
 	size_t num_refs;
-} t_bvh_tmp_node;
+};
 
 struct s_bvh
 {
@@ -76,14 +81,13 @@ struct s_bvh
 	int num_refs;
 };
 
-typedef struct s_entry_point
-{
+struct s_entry_point {
 	t_vec3 p;
 	t_vec3 center;
 	double radius;
 	double height;
 	double h;
-} t_entry_point;
+};
 
 struct s_hit
 {
@@ -97,8 +101,7 @@ struct s_hit
 	double v;
 };
 
-typedef struct s_shading
-{
+struct s_shading {
 	t_hit *hit;
 	t_scene *scene;
 	const t_bvh *bvh;
@@ -106,21 +109,19 @@ typedef struct s_shading
 	t_material mat;
 	t_vec3 albedo;
 	t_vec3 aux_v;
-} t_shading;
+};
 
-typedef struct s_build_item
-{
+struct s_build_item {
 	t_bvh_ref ref;
 	t_aabb bbox;
 	t_vec3 centroid;
-} t_build_item;
+};
 
-typedef struct s_split_info
-{
+struct s_split_info {
 	int axis;
 	size_t split;
 	double cost;
-} t_split_info;
+};
 
 typedef struct s_check_params
 {
@@ -171,27 +172,24 @@ typedef struct s_cap_ctx
 	double best;
 } t_cap_ctx;
 
-typedef struct s_bvh_stack
-{
+struct s_bvh_stack {
 	int *stack;
 	double *stack_tmin;
 	size_t ptr;
 	const t_bvh *bvh;
 	const t_ray *ray;
 	double hit_t;
-} t_bvh_stack;
+};
 
-typedef struct s_occ
-{
+struct s_occ {
 	int *stack;
 	int *ptr;
 	const t_bvh *bvh;
 	const t_ray *ray;
 	double max_t;
-} t_occ;
+};
 
-typedef struct s_push_vars
-{
+struct s_push_vars {
 	int left;
 	int right;
 	double tl;
@@ -200,14 +198,13 @@ typedef struct s_push_vars
 	double tr_max;
 	bool hit_l;
 	bool hit_r;
-} t_push_vars;
+};
 
-typedef struct s_lcalc
-{
+struct s_lcalc {
 	t_vec3 ld_norm;
 	double dist;
 	double ndotl;
-} t_lcalc;
+};
 
 /* srcs/raytracing/postprocess/shading/ */
 void	add_emissive_lighting(t_shading *ctx, t_scene *scene, t_vec3 *total);

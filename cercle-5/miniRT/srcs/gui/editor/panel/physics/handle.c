@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:40:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/25 16:34:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
-
 bool	physics_panel_handle_click(t_gui *gui, t_vec2i mouse,
     t_physics_body *phys)
 {

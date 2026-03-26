@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/25 16:06:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
 #include "gui.h"
-
 t_transform	make_obj_transform(t_vec3 pos, t_vec3 fwd, t_vec3 scl)
 {
 	t_transform	tr;

@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 05:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 05:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "editor.h"
-
 void	draw_popup_mesh_fmt(t_gui *gui)
 {
 	int	bw;

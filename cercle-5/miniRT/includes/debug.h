@@ -13,7 +13,8 @@
 #ifndef DEBUG_H
 # define DEBUG_H
 
-# include "core.h"
+/* External dependencies */
+# include "defines.h"
 
 # ifndef DEBUG
 #  define DEBUG 1

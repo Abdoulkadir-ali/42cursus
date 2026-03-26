@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include "editor.h"
-
 /*
 ** Finds the map entry matching the currently loaded scene's name and stores
 ** the scene pointer in that entry (transferring ownership to the cache).
