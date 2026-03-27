@@ -45,11 +45,18 @@ typedef enum e_json_type
 typedef struct s_parser
 {
 	int								fd;
-	char							buffer[PARSER_BUF_SIZE + 1];
+	char							*buffer;
 	size_t							cursor;
 	size_t							bytes_read;
+	size_t							buffer_sz;
 	bool							eof;
+	bool							is_owned;
+	const char						*path;
 }									t_parser;
+
+void								parser_init_str(t_parser *p, char *s, 
+										size_t sz);
+void								parser_free(t_parser *p);
 
 typedef struct s_json_member
 {

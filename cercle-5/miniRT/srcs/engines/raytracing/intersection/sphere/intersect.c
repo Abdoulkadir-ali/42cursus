@@ -6,25 +6,30 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 02:40:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-static t_quadratic	setup_sphere_quadratic(const t_ray *ray, t_sphere *sp)
+/**
+ * @brief DOD-compliant ray-sphere intersection logic for SoA storage.
+ * Directly accesses parallel arrays for positions and radii.
+ */
+static void	setup_quadratic(const t_ray *r, t_primitive_array *p, int i, t_quadratic *q)
 {
-	t_vec3		oc;
-	t_quadratic	q;
+	t_vec3	oc;
 
-	oc = vec3_sub(ray->origin, sp->transform.pos);
-	q.a = vec3_dot(ray->direction, ray->direction);
-	q.b = 2.0 * vec3_dot(oc, ray->direction);
-	q.c = vec3_dot(oc, oc) - sp->radius_sq;
-	return (q);
+	oc = vec3_sub(r->origin, p->positions[i]);
+	q->a = vec3_dot(r->direction, r->direction);
+	q->b = 2.0 * vec3_dot(oc, r->direction);
+	q->c = vec3_dot(oc, oc) - (p->radii[i] * p->radii[i]);
 }
 
-static bool	select_sphere_t(t_quadratic_roots roots, double *t)
+/**
+ * @brief Selects the closest hit-t from quadratic roots.
+ */
+static bool	select_t(t_quadratic_roots roots, double *t)
 {
 	if (roots.t1 > EPSILON)
 		*t = roots.t1;
@@ -33,58 +38,36 @@ static bool	select_sphere_t(t_quadratic_roots roots, double *t)
 	return (*t > EPSILON);
 }
 
-static void	deformed_normal(t_hit *hit, t_mat4 inv, t_vec3 n_local)
+/**
+ * @brief Calculates hit details for the intersected sphere.
+ */
+static void	set_hit_data(const t_ray *r, t_primitive_array *p, int i, t_hit *h)
 {
-	t_vec3	n_world;
+	t_vec3	local_n;
 
-	n_world.x = inv.m[0][0] * n_local.x + inv.m[1][0] * n_local.y
-		+ inv.m[2][0] * n_local.z;
-	n_world.y = inv.m[0][1] * n_local.x + inv.m[1][1] * n_local.y
-		+ inv.m[2][1] * n_local.z;
-	n_world.z = inv.m[0][2] * n_local.x + inv.m[1][2] * n_local.y
-		+ inv.m[2][2] * n_local.z;
-	n_world.w = 0;
-	hit->normal = vec3_norm(n_world);
-	get_sphere_uv(n_local, &hit->u, &hit->v);
-	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
+	h->point = vec3_add(r->origin, vec3_scale(r->direction, h->t));
+	local_n = vec3_norm(vec3_sub(h->point, p->positions[i]));
+	h->normal = local_n;
+	get_sphere_uv(local_n, &h->u, &h->v);
+	vec3_orthonormal_basis(h->normal, &h->tangent, &h->bitangent);
+	h->mat_idx = p->mat_ids[i];
+	h->type = PRIM_SPHERE;
 }
 
-static bool	solve_deformed(const t_ray *ray, t_sphere *sp, t_hit *hit)
-{
-	t_mat4				inv;
-	t_ray				local_ray;
-	t_sphere			temp_sp;
-	t_quadratic			q;
-	t_quadratic_roots	roots;
-
-	inv = sp->inv_transform;
-	local_ray.origin = mat4_mul_pos(inv, ray->origin);
-	local_ray.direction = mat4_mul_vec3(inv, ray->direction);
-	temp_sp = *sp;
-	temp_sp.transform.pos = vec3(0, 0, 0);
-	q = setup_sphere_quadratic(&local_ray, &temp_sp);
-	if (!solve_quadratic(q, &roots))
-		return (false);
-	if (!select_sphere_t(roots, &hit->t))
-		return (false);
-	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
-	deformed_normal(hit, inv, vec3_norm(vec3_add(local_ray.origin,
-				vec3_scale(local_ray.direction, hit->t))));
-	return (true);
-}
-
-bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit)
+/**
+ * @brief High-performance ray-sphere intersection for 100% DOD.
+ */
+bool	intersect_sphere(const t_ray *ray, t_primitive_array *prims, 
+		int idx, t_hit *hit)
 {
 	t_quadratic			q;
 	t_quadratic_roots	roots;
 
-	if (sp->is_deformed)
-		return (solve_deformed(ray, sp, hit));
-	q = setup_sphere_quadratic(ray, sp);
+	setup_quadratic(ray, prims, idx, &q);
 	if (!solve_quadratic(q, &roots))
 		return (false);
-	if (!select_sphere_t(roots, &hit->t))
+	if (!select_t(roots, &hit->t))
 		return (false);
-	set_sphere_hit_data(ray, sp, hit);
+	set_hit_data(ray, prims, idx, hit);
 	return (true);
 }

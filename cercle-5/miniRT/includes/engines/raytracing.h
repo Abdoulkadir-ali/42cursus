@@ -55,7 +55,7 @@ typedef struct s_rt_material
 	int			normal_map_idx;  /* -1 if none */
 }				t_rt_material;
 
-typedef struct s_bvh_node
+typedef struct __attribute__((packed)) s_bvh_node
 {
 	t_aabb					bbox;
 	int						left_or_first;
@@ -136,18 +136,17 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
 bool	is_in_shadow(const t_bvh *bvh, t_vec3 p, t_vec3 ldir_norm, double dist);
 t_vec3	sample_texture_pool(t_shading *sha, int idx, double u, double v);
 
-/* --- INTERSECTION --- */
-bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit);
-bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit);
-bool	intersect_cylinder(const t_ray *ray, t_cylinder *cy, t_hit *hit);
-bool	intersect_cone(const t_ray *ray, t_cone *co, t_hit *hit);
-bool	intersect_tri_shape(const t_ray *ray, t_tri_shape *tr, t_hit *hit);
-bool	intersect_rect(const t_ray *ray, t_rect *rc, t_hit *hit);
-bool	intersect_pyramid(const t_ray *ray, t_pyramid *py, t_hit *hit);
-void	pyramid_cache_verts(t_pyramid *py);
-bool	intersect_box(const t_ray *ray, t_box *bx, t_hit *hit);
-bool	intersect_capsule(const t_ray *ray, t_capsule *cap, t_hit *hit);
-bool	intersect_triangle_fast(const t_ray *ray, t_vec3 v[3], double *t, t_vec2 *uv);
+/* --- INTERSECTION (100% DOD) --- */
+bool	intersect_sphere(const t_ray *ray, t_primitive_array *p, int i, t_hit *h);
+bool	intersect_plane(const t_ray *ray, t_primitive_array *p, int i, t_hit *h);
+bool	intersect_cylinder(const t_ray *ray, t_primitive_array *p, int i, t_hit *h);
+bool	intersect_cone(const t_ray *ray, t_primitive_array *p, int i, t_hit *h);
+bool	intersect_tri_soa(const t_ray *ray, t_tri_array *t, int i, t_hit *h);
+bool	intersect_rect(const t_ray *ray, t_primitive_array *p, int i, t_hit *h);
+bool	intersect_pyramid(const t_ray *ray, t_primitive_array *p, int i, t_hit *h);
+bool	intersect_box(const t_ray *ray, t_primitive_array *p, int i, t_hit *h);
+bool	intersect_capsule(const t_ray *ray, t_primitive_array *p, int i, t_hit *h);
+bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref, t_hit *hit);
 
 /* --- SHADING --- */
 t_vec3	calc_light(t_shading *sha, t_light light);

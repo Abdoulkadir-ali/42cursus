@@ -16,21 +16,17 @@ static void	setup_shading(t_shading *ctx, t_hit *hit, t_rt_engine *rt)
 {
 	ctx->hit = hit;
 	ctx->scene = rt->scene;
-	ctx->bvh = rt->bvh;
 	ctx->rt_materials = rt->rt_materials;
-	ctx->texture_pool = rt->texture_pool;
-	ctx->texture_dims = rt->texture_dims;
 	
-	/* Pull the optimized Material index */
-	int mat_idx = get_sphere_mat(ctx); /* This logic should be unified later */
-	ctx->mat = &rt->rt_materials[mat_idx];
+	/* DOD: Use the pre-baked material index from the hit record */
+	ctx->mat = &rt->rt_materials[hit->mat_idx];
 	
-	/* DOD: Pull Albedo directly from the pool */
+	/* DOD: Pull Albedo directly from the baked texture pool */
 	if (ctx->mat->albedo_tex_idx >= 0)
-		ctx->albedo = sample_texture_pool(ctx, ctx->mat->albedo_tex_idx, hit->u, hit->v);
+		ctx->albedo = sample_texture_pool(ctx, ctx->mat->albedo_tex_idx,
+				hit->u, hit->v);
 	else
 		ctx->albedo = ctx->mat->color;
-		
 	apply_bump(ctx);
 }
 
