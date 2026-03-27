@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 void	intersect_init_ctx(t_trace_ctx *ctx, t_hit *hit)
 {

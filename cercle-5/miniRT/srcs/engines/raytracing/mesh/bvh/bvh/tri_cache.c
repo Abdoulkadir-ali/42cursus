@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 06:48:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:26:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 void	mesh_build_tri_cache(t_mesh *mesh)
 {

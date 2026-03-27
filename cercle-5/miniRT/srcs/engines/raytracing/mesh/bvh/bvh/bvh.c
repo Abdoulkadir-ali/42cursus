@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "debug.h"
-#include "objects.h"
+#include "raytracing.h"
 
 static int	bvh_make_leaf(t_mbvh_node *node, int first, int count, int node_idx)
 {

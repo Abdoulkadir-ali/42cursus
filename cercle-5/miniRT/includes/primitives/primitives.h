@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 09:10:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:01:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:08:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 #define PRIMITIVES_H
 
 #include "scene.h"
-#include "../constants.h"
+
 
 #endif

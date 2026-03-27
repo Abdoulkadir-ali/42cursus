@@ -6,14 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 16:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:32:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:28:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
-
-
 
 static int	static_bvh_build(t_static_bvh *bvh, t_scene *s, t_static_node *objs,
 		int n)

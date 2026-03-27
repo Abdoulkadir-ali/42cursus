@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 void	test_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		t_child_ctx *c)

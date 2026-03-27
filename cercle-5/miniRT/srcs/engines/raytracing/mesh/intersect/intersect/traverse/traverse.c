@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 
 int	process_node(t_mesh *mesh, int node_idx, const t_ray *ray,

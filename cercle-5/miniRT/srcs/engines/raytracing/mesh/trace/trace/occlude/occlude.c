@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 bool	mesh_occluded(const t_ray *ray, t_mesh *mesh, double dist)
 {

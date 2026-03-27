@@ -6,12 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:28:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
-#include "parser.h"
 #include "physics.h"
 
 /*

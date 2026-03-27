@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 10:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:32:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
 
 int	tri_vs_others(t_scene *s, int idx, t_tri_shape *tr, t_aabb taabb,
 		t_contact *c, int count, int max)

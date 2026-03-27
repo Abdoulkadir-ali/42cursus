@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:01:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:08:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ typedef enum e_prof_id
 
 /* Mapping from old global identifiers to profiler IDs so existing
  * `PROF_INC(g_mesh_calls)` call sites continue to work. */
+# define PROF_ID_g_mesh_calls PROF_MESH_CALLS
+# define PROF_ID_g_mesh_aabb_tests PROF_MESH_AABB_TESTS
+# define PROF_ID_g_mesh_tri_tests PROF_MESH_TRI_TESTS
+# define PROF_ID_g_mesh_occ_calls PROF_MESH_OCC_CALLS
+
 
 /* Runtime API implemented in srcs/debug/profiler.c */
 void	prof_inc(t_prof_id id);
@@ -54,4 +59,3 @@ void	prof_print_frame(void);
 #  define PROF_PRINT()
 
 # endif
-#endif

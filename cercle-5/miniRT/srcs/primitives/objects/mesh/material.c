@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 21:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 21:30:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:11:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "surface.h"
 
 int	raw_model_add_material(t_raw_model *model, const char *name)
 {

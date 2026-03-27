@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 10:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:33:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
 #include "physics.h"
-#include "scene.h"
 
 static int	sphere_vs_capsule(t_sphere *sp, t_capsule *cap, t_contact *c)
 {

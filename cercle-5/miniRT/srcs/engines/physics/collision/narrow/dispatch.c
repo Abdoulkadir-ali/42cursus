@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 13:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "objects.h"
-#include "objects.h"
 
 extern t_support_fn	get_support(t_phys_type type);
 

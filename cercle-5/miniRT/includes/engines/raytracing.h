@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:16:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 08:47:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:23:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ typedef struct s_hit
 	double					v;
 }							t_hit;
 
-/* Mesh / hit helpers moved from includes/objects.h to centralize
-   raytracing-specific logic and decouple objects. */
 typedef struct s_mesh_hit_ctx
 {
 	t_hit					*hit;

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 static double	bvh_item_centroid(t_mesh_build_item *items, int idx, int axis)
 {

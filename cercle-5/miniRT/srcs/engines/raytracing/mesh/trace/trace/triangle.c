@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 static bool	tri_compute_bary(const t_ray *ray, t_vec3 v[3], t_tri_hit *hit)
 {

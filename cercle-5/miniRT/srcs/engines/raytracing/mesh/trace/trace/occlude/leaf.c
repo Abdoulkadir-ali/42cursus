@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 bool	leaf_occluded(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 		double dist)

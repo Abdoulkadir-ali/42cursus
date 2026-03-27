@@ -1,4 +1,4 @@
-#include "../constants.h"
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -96,7 +96,14 @@ typedef struct s_scene
 t_scene		*create_scene(const char *name);
 void		destroy_scene(t_scene *scene);
 
-/* Material logic moved to surface.h - use includes/primitives/surface.h */
+
+int				scene_add_material(t_scene *scene, t_vec3 color);
+int				scene_add_fresh_material(t_scene *scene, t_vec3 color);
+int				scene_clone_material(t_scene *scene, int src_id);
+int				scene_find_material(t_scene *scene, const char *name);
+int				scene_add_named_material(t_scene *scene, const char *name);
+int				scene_add_checker_material(t_scene *scene, t_vec3 color_a,
+					t_vec3 color_b, double scale);
 
 bool		scene_add_ambient(t_scene *scene, double brightness, t_vec3 rgb);
 bool		scene_add_camera(t_scene *scene, t_camera camera);

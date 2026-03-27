@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 bool	intersect_finish_hit(t_trace_ctx *ctx, t_mesh *mesh, t_hit *hit,
 		const t_ray *ray)

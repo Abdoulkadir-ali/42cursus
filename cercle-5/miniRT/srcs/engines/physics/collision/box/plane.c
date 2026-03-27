@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:34:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
 
 int	box_vs_plane(t_box *bx, t_plane *pl, t_contact *c, int max_c)
 {

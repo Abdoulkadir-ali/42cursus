@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 void	bvh_update_node_bounds(t_mbvh_node *node, t_mbvh_ctx *ctx, int first,
 		int count)

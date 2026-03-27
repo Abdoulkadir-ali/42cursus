@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 11:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:45:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
-#include "scene.h"
 
 /**
  * @brief Global AABB broadphase for non-accelerated body pairs.

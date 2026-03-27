@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
 
 static void	integrate_and_ccd(t_scene *scene, double dt)
 {

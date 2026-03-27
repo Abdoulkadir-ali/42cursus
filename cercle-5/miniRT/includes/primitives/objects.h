@@ -1,4 +1,3 @@
-#include "../constants.h"
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -7,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 09:29:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:23:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -765,11 +764,13 @@ typedef struct s_fbx_ascii_ctx
 
 typedef struct s_mesh_build_item
 {
-	t_aabb					bounds;
-	int						first_tri;
-	int						count;
-	int						parent;
-	int						axis;
+	t_aabb					bbox;
+	t_vec3					centroid;
+	int					index;
+	int					first_tri;
+	int					count;
+	int					parent;
+	int					axis;
 } t_mesh_build_item;
 
 typedef struct s_mbvh_ctx

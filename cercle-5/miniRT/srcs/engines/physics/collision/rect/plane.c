@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:33:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
 
 int	rect_vs_plane(t_rect *rc, t_plane *pl, t_contact *c, int max_c)
 {

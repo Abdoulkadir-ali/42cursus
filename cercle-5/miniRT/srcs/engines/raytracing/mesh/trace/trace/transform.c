@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 static void	apply_mesh_transform(t_mesh *mesh, t_mat4 m, t_mat4 rot)
 {

@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:33:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
 
 int	query_rect(t_scene *s, int idx, t_contact *c, int count, int max)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 void	test_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		t_occ_child *c)

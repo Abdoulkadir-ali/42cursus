@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:33:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
 
 static int	check_leaf_ref(t_scene *s, t_sphere *sp, int idx, t_bvh_ref ref,
 		t_contact *c)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:01:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:08:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 /* POSIX / system */
 # include "libft.h"
 # include "debug.h"
+# include "constants.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <sys/stat.h>

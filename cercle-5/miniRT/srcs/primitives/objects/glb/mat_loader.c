@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 09:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:11:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
+#include "surface.h"
 
 static void	extract_glb_texture(t_json_value *json, char *bin,
 		t_raw_material *mat, t_json_value *pbr)

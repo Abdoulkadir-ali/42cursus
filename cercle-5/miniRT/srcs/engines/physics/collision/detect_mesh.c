@@ -1,7 +1,6 @@
 /* migrated from srcs/objects/mesh/collision/detect.c */
 
 #include "physics.h"
-#include "objects.h"
 
 static bool test_tri(const struct s_sphere *s, t_vec3 v[3], t_mesh_query *q)
 {

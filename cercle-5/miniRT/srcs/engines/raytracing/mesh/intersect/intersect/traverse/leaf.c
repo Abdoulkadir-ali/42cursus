@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "raytracing.h"
 
 void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 		t_trace_ctx *ctx)

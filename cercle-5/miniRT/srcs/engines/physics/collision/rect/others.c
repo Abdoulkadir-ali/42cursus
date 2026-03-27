@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:33:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
 
 int	rect_vs_others(t_scene *s, int idx, t_rect *rc, t_aabb raabb, t_contact *c,
 		int count, int max)
