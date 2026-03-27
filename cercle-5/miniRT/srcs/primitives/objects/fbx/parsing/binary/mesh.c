@@ -69,6 +69,5 @@ bool	fbx_bin_build_mesh(t_fbx_bin_ctx *ctx)
 	fbx_bin_release_arrays(ctx);
 	if (ctx->mesh.base.tri_count == 0)
 		return (false);
-	mesh_build_bvh(&ctx->mesh.base);
 	return (true);
 }

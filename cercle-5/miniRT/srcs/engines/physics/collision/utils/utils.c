@@ -6,26 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:07:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 09:10:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "scene.h"
-
-/**
- * @brief Checks if two Axis-Aligned Bounding Boxes (AABB) overlap.
- */
-bool	aabb_overlap(t_aabb a, t_aabb b)
-{
-	if (a.max.x < b.min.x || a.min.x > b.max.x)
-		return (false);
-	if (a.max.y < b.min.y || a.min.y > b.max.y)
-		return (false);
-	if (a.max.z < b.min.z || a.min.z > b.max.z)
-		return (false);
-	return (true);
-}
 
 /**
  * @brief Utility for checking if a GJK shape is colliding with any of the

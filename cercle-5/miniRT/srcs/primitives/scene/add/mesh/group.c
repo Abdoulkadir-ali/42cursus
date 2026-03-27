@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 15:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 09:35:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,6 @@ static void	set_group_bounds(t_scene *sc, t_mesh_group *g)
 	g->pivot = vec3((bbox.min.x + bbox.max.x) * HALF_SCALE,
 			(bbox.min.y + bbox.max.y) * HALF_SCALE,
 			(bbox.min.z + bbox.max.z) * HALF_SCALE);
-	g->phys = sc->meshes[g->start].phys;
-	g->collider = sc->meshes[g->start].collider;
 	g->transform.scale = vec3(1, 1, 1);
 }
 

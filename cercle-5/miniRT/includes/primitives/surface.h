@@ -6,24 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 17:32:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 10:02:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SURFACE_H
-# define SURFACE_H
-
-/* External dependencies */
-# include <stdbool.h>
-# include <stddef.h>
-# include <stdint.h>
+#define SURFACE_H
 
 /* 1. EXTERNAL DEPENDENCIES */
-# include "debug.h"
+# include "helpers.h"
 
-# include "maths.h"
-
-# define BITS_PER_BYTE 8
 
 /* Color constants moved into a runtime-initialized struct to satisfy
  * style rules (no non-constant preprocessor values). Use `g_colors.*`.
@@ -43,10 +35,6 @@ typedef struct s_colors
 
 const t_colors	*get_colors(void);
 
-# define TEX_DEFAULT_SCALE 1.0
-# define TEX_DEFAULT_BPP 32
-# define TEX_CH_RGBA 4
-# define TEX_CENTER_OFFSET 0.5
 
 /* 2. MODULE TYPES */
 typedef enum e_tex_type
@@ -57,7 +45,7 @@ typedef enum e_tex_type
 	TEX_BUMP
 }				t_tex_type;
 
-struct			s_texture
+typedef struct s_texture
 {
 	t_tex_type	type;
 	t_vec3		color_a;
@@ -70,9 +58,9 @@ struct			s_texture
 	int			bpp;
 	int			len;
 	int			endian;
-};
+}				t_texture;
 
-struct			s_material
+typedef struct s_material
 {
 	char		*name;
 	t_texture	albedo_map;
@@ -87,7 +75,7 @@ struct			s_material
 	double		refract_index;
 	double		transparency;
 	double		reflectivity;
-};
+}				t_material;
 
 typedef struct s_material_args
 {
@@ -100,7 +88,7 @@ typedef struct s_material_args
 	double		reflectivity;
 }				t_material_args;
 
-struct			s_bilinear
+typedef struct			s_bilinear
 {
 	double		ux;
 	double		uy;
@@ -108,7 +96,7 @@ struct			s_bilinear
 	int			yi;
 	double		wx;
 	double		wy;
-};
+ } t_bilinear;
 
 /* 3. FUNCTION PROTOTYPES */
 t_material		*create_material(t_material_args params);
@@ -124,6 +112,7 @@ int				scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 void			convert_rgba_to_bgra(unsigned char *data, int size);
 void			init_texture_props(t_texture *tex, int w, int h, char *data);
 bool			load_texture(t_scene *scene, t_texture *tex, const char *path);
+bool				load_texture_with_mlx(void *mlx, t_texture *tex, const char *path);
 bool			load_texture_from_memory(t_texture *tex, unsigned char *buffer,
 					int size);
 t_vec3			sample_texture(t_texture *tex, double u, double v);

@@ -16,30 +16,30 @@
 #include "stb.h"
 
 /**
- * @brief Loads an XPM texture from disk via MLX.
- * @param scene Pointer to the scene.
+ * @brief Loads an XPM texture using an MLX context pointer.
+ * @param mlx MLX context pointer (may be NULL).
  * @param tex Pointer to the texture.
  * @param path File path.
  * @return true on success, false on failure.
  */
-static bool	load_xpm(t_scene *scene, t_texture *tex, const char *path)
+bool	load_texture_with_mlx(void *mlx, t_texture *tex, const char *path)
 {
-	void	*img;
-	int		w[2];
+ 	void	*img;
+ 	int		w[2];
 
-	if (!scene || !scene->mlx)
-		return (false);
-	img = mlx_xpm_file_to_image(scene->mlx, (char *)path, &w[0], &w[1]);
-	if (!img)
-		return (false);
-	tex->img = img;
-	tex->width = w[0];
-	tex->height = w[1];
-	tex->addr = mlx_get_data_addr(img, &tex->bpp, &tex->len, &tex->endian);
-	tex->type = TEX_BITMAP;
-	tex->scale = TEX_DEFAULT_SCALE;
-	tex->color_a = get_colors()->white;
-	return (true);
+ 	if (!mlx)
+ 		return (false);
+ 	img = mlx_xpm_file_to_image(mlx, (char *)path, &w[0], &w[1]);
+ 	if (!img)
+ 		return (false);
+ 	tex->img = img;
+ 	tex->width = w[0];
+ 	tex->height = w[1];
+ 	tex->addr = mlx_get_data_addr(img, &tex->bpp, &tex->len, &tex->endian);
+ 	tex->type = TEX_BITMAP;
+ 	tex->scale = TEX_DEFAULT_SCALE;
+ 	tex->color_a = get_colors()->white;
+ 	return (true);
 }
 
 /**
@@ -51,7 +51,12 @@ static bool	load_xpm(t_scene *scene, t_texture *tex, const char *path)
  */
 bool	load_texture(t_scene *scene, t_texture *tex, const char *path)
 {
-	if (load_xpm(scene, tex, path))
+ 	void *mlx;
+
+	mlx = NULL;
+	if (scene)
+		mlx = scene->mlx;
+	if (load_texture_with_mlx(mlx, tex, path))
 		return (true);
 	if (load_stbi(tex, path))
 		return (true);

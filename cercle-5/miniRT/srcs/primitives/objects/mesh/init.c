@@ -44,11 +44,16 @@ static bool	alloc_index_data(t_mesh *mesh, t_mesh_init init)
 	return (true);
 }
 
+static void	mesh_base_init(t_mesh *mesh)
+{
+ 	ft_memset(mesh, 0, sizeof(t_mesh));
+ 	mesh->transform.scale = vec3(1, 1, 1);
+ 	mesh->group_id = -1;
+}
+
 bool	mesh_init(t_mesh *mesh, t_mesh_init init)
 {
-	ft_memset(mesh, 0, sizeof(t_mesh));
-	mesh->transform.scale = vec3(1, 1, 1);
-	mesh->group_id = -1;
+	mesh_base_init(mesh);
 	mesh->vertex_count = init.v_count;
 	mesh->tri_count = init.i_count / 3;
 	if (!alloc_vertex_data(mesh, init))
@@ -57,6 +62,15 @@ bool	mesh_init(t_mesh *mesh, t_mesh_init init)
 		return (mesh_free(mesh), false);
 	return (true);
 }
+
+void	init_mesh(t_mesh *mesh, const char *path)
+{
+	mesh_base_init(mesh);
+	if (path)
+		mesh->name = ft_strdup(path);
+	mesh->bbox = aabb_create_empty();
+}
+
 
 /**
  * Frees all dynamic memory associated with a mesh.

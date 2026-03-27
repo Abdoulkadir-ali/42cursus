@@ -72,8 +72,8 @@ static void	fill_attribute_vec2(t_json_value *json, char *bin, t_vec2 *dst,
 		it needs normalization */
 	if (acc.component_type != 5126)
 	{
-		glb_log_attr("GLB: WARNING! UVs are NOT floats (type
-			%d). Normalization needed!\n", acc.component_type);
+		glb_log_attr("GLB: WARNING! UVs are NOT floats (type %d). "
+			"Normalization needed!\n", acc.component_type);
 		// Implementing basic specific conversion for typical non-float UVs
 		if (acc.component_type == 5126)
 		{ /* float, do nothing special */

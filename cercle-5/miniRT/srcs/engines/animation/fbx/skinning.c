@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "animations.h"
 
 /**
  * Performs Linear Blend Skinning (LBS).

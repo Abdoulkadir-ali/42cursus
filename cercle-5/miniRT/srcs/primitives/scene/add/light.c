@@ -23,3 +23,9 @@ bool	scene_add_light(t_scene *scene, t_light light)
 	scene->lights[scene->light_count++] = light;
 	return (true);
 }
+bool	scene_add_ambient(t_scene *scene, double brightness, t_vec3 rgb)
+{
+	scene->ambient.brightness = brightness;
+	scene->ambient.rgb = rgb;
+	return (true);
+}

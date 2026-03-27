@@ -1,3 +1,4 @@
+#include "../constants.h"
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -6,12 +7,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 18:16:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 09:29:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef OBJECTS_H
-# define OBJECTS_H
+#define OBJECTS_H
 
 /* External dependencies */
 # include <stdbool.h>
@@ -19,18 +20,12 @@
 # include <stdint.h>
 
 /* 1. NEUTRAL DEPENDENCIES */
-# include "debug.h"
-# include "maths.h"
+# include "helpers.h"
+# include "helpers/maths.h"
 # include "parser.h"
-# include "profiler.h"
 # include "surface.h"
 
 /* 2. LEAF STRUCTURES */
-# define GLB_MAGIC 0x46546C67
-# define CHUNK_JSON 0x4E4F534A
-# define CHUNK_BIN 0x004E4942
-# define BVH_BINS 16
-# define CACHE_CAP 64
 
 /* ------------------------------------------------------------------------- */
 /*                             LEAF STRUCTURES                               */
@@ -89,8 +84,13 @@ typedef struct s_sphere
 {
 	t_transform				transform;
 	double					radius;
+	double					radius_sq;
 	int						mat_id;
 	t_vec3					temp_color;
+
+	/* Cached inverse transform for deformed spheres (physics) */
+	t_mat4				inv_transform;
+	bool				is_deformed;
 }							t_sphere;
 
 typedef struct s_plane
@@ -131,9 +131,16 @@ typedef struct s_rect
 typedef struct s_pyramid
 {
 	t_transform				transform;
-	t_vec3					v[5];
-	int						mat_id;
-	t_vec3					temp_color;
+	t_vec3				v[5];
+	t_vec3				up;
+	double				base_size;
+	double				height;
+	int					mat_id;
+	t_vec3				temp_color;
+
+	/* Cached vertices for fast intersection */
+	t_vec3				c[4];
+	t_vec3				apex;
 }							t_pyramid;
 
 typedef struct s_box
@@ -141,13 +148,10 @@ typedef struct s_box
 	t_transform				transform;
 	t_vec3					min;
 	t_vec3					max;
+	t_vec3					half_extents;
 	int						mat_id;
 	t_vec3					temp_color;
-	t_physics_body			phys;
 }							t_box;
-
-
-/* Mesh-hit helper types moved to includes/raytracing.h */
 
 typedef struct s_tri_shape
 {
@@ -157,8 +161,6 @@ typedef struct s_tri_shape
 	int						mat_id;
 	t_vec3					temp_color;
 }							t_tri_shape;
-
-/* Mesh-hit related helper structs moved to includes/raytracing.h */
 
 typedef struct s_capsule
 {
@@ -190,6 +192,26 @@ typedef struct s_ambient
 	double					brightness;
 	t_vec3					rgb;
 }							t_ambient;
+
+typedef struct s_parse_obj
+{
+	t_type					type;
+	union					u_data
+	{
+		t_sphere			sphere;
+		t_plane				plane;
+		t_cylinder			cylinder;
+		t_cone				cone;
+		t_light				light;
+		t_camera			camera;
+		t_ambient			ambient;
+		t_tri_shape			tri_shape;
+		t_rect				rect;
+		t_pyramid			pyramid;
+		t_box				box;
+		t_capsule			capsule;
+	} data;
+}							t_parse_obj;
 
 typedef struct s_vertex
 {
@@ -223,13 +245,6 @@ typedef struct s_mbvh_node
 	int						count;
 	int						axis;
 }							t_mbvh_node;
-
-typedef struct s_mbvh_ctx
-{
-	t_mesh_build_item		*items;
-	t_mbvh_node				*nodes;
-	int						node_count;
-}							t_mbvh_ctx;
 
 typedef struct s_bone_weight
 {
@@ -387,11 +402,10 @@ typedef struct s_mesh_group
 	int						start;
 	int						sub_count;
 	t_transform				transform;
+	t_vec3					pivot;
 	int						anim_base;
 	int						anim_clip_count;
 }							t_mesh_group;
-
-/* Parsing and Build Types */
 
 typedef struct s_mesh_info
 {
@@ -401,6 +415,35 @@ typedef struct s_mesh_info
 	t_vec3					emission;
 }							t_mesh_info;
 
+typedef struct s_raw_material
+{
+	char					name[64];
+	t_vec3					color;
+	double					specular;
+	double					shininess;
+	double					transparency;
+	double					refract_index;
+	double					metallic;
+	double					roughness;
+	t_vec3					emission;
+	char					albedo_map_path[256];
+	unsigned char			*tex_data;
+	size_t					tex_len;
+	bool					has_tex;
+}							t_raw_material;
+
+typedef struct s_raw_model
+{
+	t_mesh					*meshes;
+	int						mesh_count;
+	t_animation				*anims;
+	int						anim_count;
+	t_raw_material			*materials;
+	int						mat_count;
+	int						*mesh_mat_indices;
+}							t_raw_model;
+
+
 typedef struct s_heightmap
 {
 	double					**map;
@@ -408,62 +451,6 @@ typedef struct s_heightmap
 	int						height;
 	t_vec3					rgb;
 }							t_heightmap;
-
-typedef struct s_mesh_build_item
-{
-	int						index;
-	t_aabb					bbox;
-	t_vec3					centroid;
-}							t_mesh_build_item;
-
-typedef struct s_parse_obj
-{
-	t_type					type;
-	union					u_data
-	{
-		t_sphere			sphere;
-		t_plane				plane;
-		t_cylinder			cylinder;
-		t_cone				cone;
-		t_mesh				mesh;
-		t_light				light;
-		t_camera			camera;
-		t_ambient			ambient;
-		t_skinned_mesh		animated;
-		t_mesh_info			mesh_info;
-		t_tri_shape			tri_shape;
-		t_rect				rect;
-		t_pyramid			pyramid;
-		t_box				box;
-		t_capsule			capsule;
-	} data;
-}							t_parse_obj;
-
-typedef struct s_obj_ctx
-{
-	t_vec3					*temp_v;
-	size_t					v_count;
-	size_t					v_cap;
-	t_vec2					*temp_vt;
-
-	size_t					vt_count;
-	size_t					vt_cap;
-	t_vec3					*temp_vn;
-	size_t					vn_count;
-	size_t					vn_cap;
-
-	t_vec3					*out_v;
-	t_vec3					*out_vn;
-	t_vec2					*out_vt;
-	int						*out_i;
-	size_t					out_v_count;
-	size_t					out_v_cap;
-	size_t					out_i_count;
-	size_t					out_i_cap;
-	int						current_mat_id;
-	int						first_mtl_id;
-	t_aabb					bbox;
-}							t_obj_ctx;
 
 typedef struct s_obj_face
 {
@@ -473,105 +460,13 @@ typedef struct s_obj_face
 	int						count;
 }							t_obj_face;
 
-typedef struct s_mesh_hit_ctx
-{
-	t_hit					*hit;
-	t_mesh					*mesh;
-	const t_ray				*ray;
-	t_vec2					bary;
-	double					t;
-	int						tri;
-}							t_mesh_hit_ctx;
-typedef struct s_hit_calc
-{
-	t_mesh_hit_ctx			*in;
-	int						*idx;
-	t_vec3					v[3];
-}							t_hit_calc;
-
-typedef struct s_tri_hit
-{
-	t_vec3					e1;
-	t_vec3					e2;
-	t_vec3					pvec;
-	t_vec3					tvec;
-	t_vec3					qvec;
-	double					det;
-	double					inv_det;
-	double					u;
-	double					v;
-}							t_tri_hit;
-
-typedef struct s_fdf_row_ctx
-{
-	t_mesh					*mesh;
-	int						dims[2];
-	int						row;
-}							t_fdf_row_ctx;
-
-typedef struct s_extract_ctx
-{
-	char					*bin;
-	t_accessor				*acc;
-	t_buffer_view			*bv;
-	void					*entry;
-	int						stride;
-	int						count;
-	int						type_size;
-}							t_extract_ctx;
-
-typedef struct s_rt_ctx
-{
-	t_parser				*parser;
-	int						fd;
-	char					id[16];
-	t_parse_obj				obj;
-	bool					status;
-}							t_rt_ctx;
-
 typedef struct s_fdf_dim
 {
 	int						w;
 	int						h;
 }							t_fdf_dim;
 
-typedef struct s_trace_ctx
-{
-	int						stack[64];
-	int						top;
-	int						node_idx;
-	int						best_tri;
-	double					best_t;
-	t_vec2					best_uv;
-}							t_trace_ctx;
 
-typedef struct s_occ_ctx
-{
-	int						stack[64];
-	int						top;
-	int						node_idx;
-	double					dist;
-}							t_occ_ctx;
-
-typedef struct s_leaf_ctx
-{
-	int						tri;
-	double					t;
-	t_vec2					uv;
-	t_vec3					v[3];
-}							t_leaf_ctx;
-
-typedef struct s_child_ctx
-{
-	int						left_idx;
-	int						right_idx;
-	double					tl_min;
-	double					tl_max;
-	double					tr_min;
-	double					tr_max;
-	bool					hit_l;
-	bool					hit_r;
-}							t_child_ctx;
 
 typedef struct s_occ_child
 {
@@ -584,6 +479,38 @@ typedef struct s_occ_child
 	bool					hit_l;
 	bool					hit_r;
 }							t_occ_child;
+
+typedef struct s_bvh_ref
+{
+	uint8_t					type;
+	int						index;
+}							t_bvh_ref;
+
+typedef struct s_bvh_node
+{
+	t_aabb					bbox;
+	int						left_or_first;
+	int						count;
+}							t_bvh_node;
+
+typedef struct s_bvh
+{
+	t_scene					*scene;
+	t_bvh_node				*nodes;
+	t_bvh_ref				*refs;
+	int						num_nodes;
+	int						num_refs;
+}							t_bvh;
+
+
+typedef struct s_bvh_tmp_node
+{
+	t_aabb					bbox;
+	struct s_bvh_tmp_node	*left;
+	struct s_bvh_tmp_node	*right;
+	t_bvh_ref				*refs;
+	size_t					num_refs;
+}							t_bvh_tmp_node;
 
 typedef struct s_bvh_split
 {
@@ -608,47 +535,6 @@ typedef struct s_bvh_sah
 	int						best_axis;
 	int						i;
 }							t_bvh_sah;
-
-typedef struct s_bvh_bins_ctx
-{
-	t_mbvh_ctx				*ctx;
-	int						first;
-	int						count;
-	int						axis;
-	double					min_val;
-	double					scale;
-	t_bin					*bins;
-}							t_bvh_bins_ctx;
-
-typedef struct s_bvh_eval_ctx
-{
-	t_mbvh_ctx				*ctx;
-	t_mbvh_node				*node;
-	int						first;
-	int						count;
-	int						axis;
-	t_bvh_sah				*s;
-}							t_bvh_eval_ctx;
-
-typedef struct s_bvh_find_ctx
-{
-	t_mbvh_ctx				*ctx;
-	t_mbvh_node				*node;
-	int						first;
-	int						count;
-	t_bvh_sah				s;
-	t_bvh_split				*out;
-}							t_bvh_find_ctx;
-
-typedef struct s_bvh_try_ctx
-{
-	t_mbvh_ctx				*ctx;
-	t_mbvh_node				*node;
-	int						first;
-	int						count;
-	t_bvh_split				*split;
-	int						*mid;
-}							t_bvh_try_ctx;
 
 typedef struct s_fbx_data
 {
@@ -695,13 +581,6 @@ typedef struct s_fbx_build
 	int						use_v_u;
 }							t_fbx_build;
 
-typedef struct s_fbx_parse_ctx
-{
-	int						fd;
-	bool					is_64;
-	t_fbx_data				*d;
-}							t_fbx_parse_ctx;
-
 typedef struct s_fbx_array_req
 {
 	const char				*label;
@@ -720,13 +599,7 @@ typedef struct s_fbx_array
 	char					type;
 }							t_fbx_array;
 
-typedef struct s_fbx_bin_ctx
-{
-	int						fd;
-	uint32_t				version;
-	t_skinned_mesh			mesh;
-	t_fbx_data				data;
-}							t_fbx_bin_ctx;
+
 
 typedef struct s_fbx_buf
 {
@@ -735,23 +608,6 @@ typedef struct s_fbx_buf
 	size_t					len;
 }							t_fbx_buf;
 
-typedef struct s_fbx_ascii_ctx
-{
-	t_skinned_mesh			mesh;
-	t_vec3					*rn;
-	t_vec2					*ru;
-	int						*ri;
-	int						rc;
-	int						vc;
-	int						nc;
-	int						uc;
-	char					*buf;
-	char					*p;
-	char					*end;
-	size_t					buf_size;
-	int						mat_id;
-	const char				*path;
-}							t_fbx_ascii_ctx;
 
 typedef struct s_mesh_query
 {
@@ -785,31 +641,188 @@ typedef struct s_tri_var
 	double					dist;
 }							t_tri_var;
 
-t_parse_obj					dispatch_scan(t_parser *p, char *id);
-t_parse_obj					parse_mesh_entry(t_parser *p, t_type type);
-bool						handle_mesh_injection(t_parse_obj *obj,
-								const char *ext, t_scene *scene);
-bool						mesh_cache_has(const char *path);
-bool						mesh_cache_save(const char *path, t_scene *scene,
-								int start_mesh);
-bool						mesh_cache_restore(const char *path,
-								t_scene *scene);
-bool						process_object(t_scene *scene, t_parse_obj obj);
-const char					*rt_get_extension(const char *path);
-bool						rt_init_parser(t_rt_ctx *ctx, const char *path);
-bool						rt_parse_loop(t_scene *scene, t_rt_ctx *ctx);
-bool						rt_parse_entry(t_scene *scene, t_rt_ctx *ctx);
-bool						rt_parse_token(t_parser *p, char *buf,
-								size_t max_len);
-void						rt_parse_scale(t_parser *p, t_parse_obj *obj);
-t_parse_obj					rt_mesh_fail(t_parse_obj obj);
-bool						rt_parse_mesh_position(t_parser *p,
-								t_parse_obj *obj);
-bool						rt_parse_mesh_rotation(t_parser *p,
-								t_parse_obj *obj);
-void						rt_parse_mesh_color(t_parser *p, t_parse_obj *obj);
-void						rt_parse_mesh_emission(t_parser *p,
-								t_parse_obj *obj);
+
+
+/** CTX **/
+typedef struct s_obj_ctx
+{
+	t_vec3					*temp_v;
+	size_t					v_count;
+	size_t					v_cap;
+	t_vec2					*temp_vt;
+
+	size_t					vt_count;
+	size_t					vt_cap;
+	t_vec3					*temp_vn;
+	size_t					vn_count;
+	size_t					vn_cap;
+
+	t_vec3					*out_v;
+	t_vec3					*out_vn;
+	t_vec2					*out_vt;
+	int						*out_i;
+	size_t					out_v_count;
+	size_t					out_v_cap;
+	size_t					out_i_count;
+	size_t					out_i_cap;
+	int						current_mat_id;
+	int						first_mtl_id;
+	t_aabb					bbox;
+}							t_obj_ctx;
+
+typedef struct s_fdf_row_ctx
+{
+	t_mesh					*mesh;
+	int						dims[2];
+	int						row;
+}							t_fdf_row_ctx;
+
+typedef struct s_extract_ctx
+{
+	char					*bin;
+	t_accessor				*acc;
+	t_buffer_view			*bv;
+	void					*entry;
+	int						stride;
+	int						count;
+	int						type_size;
+}							t_extract_ctx;
+
+
+
+typedef struct s_trace_ctx
+{
+	int						stack[64];
+	int						top;
+	int						node_idx;
+	int						best_tri;
+	double					best_t;
+	t_vec2					best_uv;
+}							t_trace_ctx;
+
+typedef struct s_occ_ctx
+{
+	int						stack[64];
+	int						top;
+	int						node_idx;
+	double					dist;
+}							t_occ_ctx;
+
+typedef struct s_leaf_ctx
+{
+	int						tri;
+	double					t;
+	t_vec2					uv;
+	t_vec3					v[3];
+}							t_leaf_ctx;
+
+typedef struct s_child_ctx
+{
+	int						left_idx;
+	int						right_idx;
+	double					tl_min;
+	double					tl_max;
+	double					tr_min;
+	double					tr_max;
+	bool					hit_l;
+	bool					hit_r;
+}							t_child_ctx;
+
+typedef struct s_fbx_parse_ctx
+{
+	int						fd;
+	bool					is_64;
+	t_fbx_data				*d;
+}							t_fbx_parse_ctx;
+
+typedef struct s_fbx_bin_ctx
+{
+	int						fd;
+	uint32_t				version;
+	t_skinned_mesh			mesh;
+	t_fbx_data				data;
+}							t_fbx_bin_ctx;
+
+
+typedef struct s_fbx_ascii_ctx
+{
+	t_skinned_mesh			mesh;
+	t_vec3					*rn;
+	t_vec2					*ru;
+	int						*ri;
+	int						rc;
+	int						vc;
+	int						nc;
+	int						uc;
+	char					*buf;
+	char					*p;
+	char					*end;
+	size_t					buf_size;
+	int						mat_id;
+	const char				*path;
+}							t_fbx_ascii_ctx;
+
+
+typedef struct s_mesh_build_item
+{
+	t_aabb					bounds;
+	int						first_tri;
+	int						count;
+	int						parent;
+	int						axis;
+} t_mesh_build_item;
+
+typedef struct s_mbvh_ctx
+{
+	t_mesh_build_item		*items;
+	t_mbvh_node				*nodes;
+	int						node_count;
+}							t_mbvh_ctx;
+
+
+typedef struct s_bvh_bins_ctx
+{
+	t_mbvh_ctx				*ctx;
+	int						first;
+	int						count;
+	int						axis;
+	double					min_val;
+	double					scale;
+	t_bin					*bins;
+}							t_bvh_bins_ctx;
+
+typedef struct s_bvh_eval_ctx
+{
+	t_mbvh_ctx				*ctx;
+	t_mbvh_node				*node;
+	int						first;
+	int						count;
+	int						axis;
+	t_bvh_sah				*s;
+}							t_bvh_eval_ctx;
+
+typedef struct s_bvh_find_ctx
+{
+	t_mbvh_ctx				*ctx;
+	t_mbvh_node				*node;
+	int						first;
+	int						count;
+	t_bvh_sah				s;
+	t_bvh_split				*out;
+}							t_bvh_find_ctx;
+
+typedef struct s_bvh_try_ctx
+{
+	t_mbvh_ctx				*ctx;
+	t_mbvh_node				*node;
+	int						first;
+	int						count;
+	t_bvh_split				*split;
+	int						*mid;
+}							t_bvh_try_ctx;
+
+
+
 
 /* 3. PARSING */
 bool						fdf_get_dimensions(const char *path, int *w,
@@ -834,52 +847,22 @@ void						glb_fill_attributes(t_mesh *mesh,
 bool						glb_load_primitive(t_mesh *mesh, t_json_value *json,
 								char *bin, int mesh_idx, int prim_idx,
 								int mat_id);
-int							*glb_load_materials(t_scene *scene,
-								t_json_value *json, char *bin);
 bool						glb_read_buffers(int fd, char *buf[2]);
-void						glb_load_skeleton(t_mesh *mesh, t_json_value *json,
-								char *bin, int extra_count);
-int							glb_count_extra_anim_nodes(t_json_value *json);
-void						glb_fill_extra_anim_nodes(t_mesh *mesh,
-								t_json_value *json);
-void						glb_load_animations(t_scene *scene,
-								t_json_value *json, char *bin);
 
 /* Parsing Helpers */
-bool						validate_file(const char *path);
+
 
 /* .rt Parser (srcs/objects/rt/parsing/) */
-t_parse_obj					parse_ambient(t_parser *p);
-t_parse_obj					parse_camera(t_parser *p);
-t_parse_obj					parse_light(t_parser *p);
-t_parse_obj					parse_spot_light(t_parser *p);
-t_parse_obj					parse_sphere(t_parser *p);
-t_parse_obj					parse_plane(t_parser *p);
-t_parse_obj					parse_cylinder(t_parser *p);
-t_parse_obj					parse_cone(t_parser *p);
-t_parse_obj					parse_tri_shape(t_parser *p);
-t_parse_obj					parse_rect(t_parser *p);
-t_parse_obj					parse_pyramid(t_parser *p);
-t_parse_obj					parse_box(t_parser *p);
-t_parse_obj					parse_capsule(t_parser *p);
-t_parse_obj					parse_mesh_entry(t_parser *p, t_type type);
+
 
 void						update_object_material(void *obj_data, t_type type);
 void						mesh_apply_transform(t_mesh *mesh,
 								t_transform transform);
 bool						mesh_init(t_mesh *mesh, t_mesh_init init);
+void						init_mesh(t_mesh *mesh, const char *path);
 void						mesh_free(t_mesh *mesh);
 
 /* File Specific Parsers */
-bool						parse_rt(const char *path, t_scene *scene);
-bool						parse_rt_fd(int fd, t_scene *scene);
-bool						parse_obj(const char *path, t_scene *scene);
-bool						parse_mtl(t_scene *scene, const char *path);
-bool						parse_fdf(const char *path, t_scene *scene);
-bool						parse_fbx(const char *path, t_scene *scene);
-bool						parse_glb(const char *path, t_scene *scene);
-bool						parse_fbx_ascii(const char *path, t_scene *scene);
-bool						parse_fbx_binary(const char *path, t_scene *scene);
 bool						fbx_bin_build_mesh(t_fbx_bin_ctx *ctx);
 void						fbx_build_flat(t_mesh *m, t_fbx_flat_args *p);
 bool						fbx_setup_build(t_fbx_build *b, t_mesh *m,
@@ -896,8 +879,6 @@ void						*parse_array(char **p, int *count, size_t sz,
 void						f_vec3(char **p, void *dst);
 void						f_vec2(char **p, void *dst);
 void						f_int(char **p, void *dst);
-int							parse_texture(char *p, char *end, t_scene *scene,
-								const char *fbx_path);
 void						ascii_load_normals(t_fbx_ascii_ctx *ctx);
 void						ascii_load_uvs(t_fbx_ascii_ctx *ctx);
 ssize_t						safe_read(int fd, void *buf, size_t count);
@@ -915,16 +896,12 @@ t_vec3						*repack_doubles_to_vec3(double *raw,
 
 bool						obj_read_id(t_parser *p, char *id, size_t max_len);
 void						obj_skip_line(t_parser *p);
+char						*fbx_ascii_parse_texture_path(char *p, char *end,
+								const char *fbx_p);
 void						obj_parse_v(t_obj_ctx *ctx, t_parser *p);
 void						obj_parse_vt(t_obj_ctx *ctx, t_parser *p);
 void						obj_parse_vn(t_obj_ctx *ctx, t_parser *p);
 void						obj_parse_f(t_obj_ctx *ctx, t_parser *p);
-void						obj_parse_mtllib(t_obj_ctx *ctx, t_parser *p,
-								t_scene *scene, const char *obj_path);
-void						obj_parse_usemtl(t_obj_ctx *ctx, t_parser *p,
-								t_scene *scene);
-bool						obj_build_mesh(t_scene *scene, t_obj_ctx *ctx,
-								const char *path);
 int							obj_fix_index(int idx, int count);
 void						obj_set_out_vertex(t_obj_ctx *ctx, int vi, int vti,
 								int vni);
@@ -938,18 +915,12 @@ void						obj_add_vert(t_obj_ctx *ctx, int vi, int vti,
 								int vni);
 void						obj_free_ctx(t_obj_ctx *ctx);
 void						obj_generate_normals(t_obj_ctx *ctx);
-void						obj_init_mesh(t_mesh *mesh, t_obj_ctx *ctx,
-								const char *path);
+bool						obj_finalize_mesh_raw(t_obj_ctx *ctx, t_raw_model *model, const char *path);
+void						obj_init_mesh(t_mesh *mesh, t_obj_ctx *ctx, const char *path);
+void						obj_parse_mtllib_raw(t_obj_ctx *ctx, struct s_parser *p, t_raw_model *model, const char *obj_path);
+void						obj_parse_usemtl_raw(t_obj_ctx *ctx, struct s_parser *p, t_raw_model *model);
 void						obj_set_mat_id(t_mesh *mesh, t_obj_ctx *ctx);
 bool						mtl_open(const char *path, int *fd);
-void						mtl_parse_lines(t_scene *scene, t_parser *parser,
-								int *cur_mat, const char *path);
-void						mtl_parse_line(t_scene *scene, char *line,
-								int *cur_mat, const char *mtl_path);
-void						mtl_handle_newmtl(t_scene *scene, char *p,
-								int *cur_mat);
-void						mtl_handle_map_kd(t_scene *scene, char *p,
-								int cur_mat, const char *mtl_path);
 char						*mtl_resolve_path(const char *mtl_path,
 								const char *tex_filename);
 void						mtl_trim_line_end(char *p);
@@ -959,38 +930,6 @@ bool						mtl_is_tag(char *p, const char *tag);
 /* Build logic */
 void						mesh_build_bvh(t_mesh *mesh);
 void						mesh_build_tri_cache(t_mesh *mesh);
-bool						intersect_triangle(const t_ray *ray, t_vec3 v[3],
-								double *t, t_vec2 *uv);
-bool						intersect_triangle_fast(const t_ray *ray,
-								t_vec3 v[3], double *t, t_vec2 *uv);
-bool						intersect_tri_precomp(const t_ray *ray,
-								const t_tri_precomp *tc, double *t, t_vec2 *uv);
-/* intersect_mesh moved to raytracing.h (uses t_hit) */
-bool						mesh_occluded(const t_ray *ray, t_mesh *mesh,
-								double dist);
-bool						leaf_occluded(t_mesh *mesh, t_mbvh_node *node,
-								const t_ray *ray, double dist);
-void						test_occ_children(t_mesh *mesh, int node_idx,
-								const t_ray *ray, t_occ_child *c);
-int							pick_occ_children(t_mesh *mesh, int node_idx,
-								const t_ray *ray, t_occ_ctx *ctx);
-int							process_occ_node(t_mesh *mesh, int node_idx,
-								const t_ray *ray, t_occ_ctx *ctx);
-bool						traverse_occlude(t_mesh *mesh, const t_ray *ray,
-								double dist);
-/* mesh-hit helpers moved to raytracing.h */
-void						process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node,
-								const t_ray *ray, t_trace_ctx *ctx);
-void						test_children(t_mesh *mesh, int node_idx,
-								const t_ray *ray, t_child_ctx *c);
-int							select_child(t_child_ctx *c, t_trace_ctx *ctx);
-int							pick_children(t_mesh *mesh, int node_idx,
-								const t_ray *ray, t_trace_ctx *ctx);
-int							process_node(t_mesh *mesh, int node_idx,
-								const t_ray *ray, t_trace_ctx *ctx);
-void						intersect_traverse_mesh(t_mesh *mesh,
-								const t_ray *ray, t_trace_ctx *ctx);
-/* intersect_finish_hit moved to raytracing.h */
 
 void						bvh_get_triangle_info(t_mesh *mesh, int tri_idx,
 								t_mesh_build_item *out);
@@ -1011,10 +950,6 @@ void						bvh_sweep_right(t_bvh_sah *s, int axis);
 void						bvh_eval_axis(t_bvh_eval_ctx *e);
 bool						bvh_find_split(t_bvh_find_ctx *f);
 
-/* srcs/objects/glb/anim_system.c */
-void						glb_update_mesh_anim(t_mesh *mesh, t_scene *scene,
-								double dt);
-
 /* srcs/objects/mesh/collision */
 t_vec3						closest_point_on_triangle(t_vec3 p, t_vec3 v0,
 								t_vec3 v1, t_vec3 v2);
@@ -1022,4 +957,62 @@ bool						detect_sphere_mesh_collision(const struct s_sphere *s,
 								struct s_mesh *m, t_vec3 *out_normal,
 								double *out_penetration);
 
+/* LOADERS */
+bool						load_mesh_file(const char *path, t_raw_model *out);
+bool						fbx_load(const char *path, t_raw_model *out);
+bool						fbx_load_binary(const char *path, t_raw_model *out);
+bool						fbx_load_ascii(const char *path, t_raw_model *out);
+bool						obj_load(const char *path, t_raw_model *out);
+bool						fdf_load(const char *path, t_raw_model *out);
+bool						glb_load(const char *path, t_raw_model *out);
+t_raw_material				*glb_extract_materials(struct s_json_value *json,
+								char *bin, int *out_count);
+t_animation					*glb_extract_animations(struct s_json_value *json,
+								char *bin, int *out_count);
+bool						mtl_load(const char *path, t_raw_model *out);
+void						mtl_parse_lines_raw(t_raw_model *model,
+								struct s_parser *parser, int *cur_mat_idx,
+								const char *path);
+void						mtl_parse_line_raw(t_raw_model *model,
+								char *line, int *cur_mat_idx,
+								const char *mtl_path);
+bool						mtl_open(const char *path, int *fd);
+void						model_apply_transform(t_raw_model *model, t_transform transform);
+void						model_apply_material_override(t_raw_model *model, t_vec3 color, t_vec3 emission);
+int							raw_model_add_material(t_raw_model *model, const char *name);
+void						raw_material_set_texture(t_raw_material *mat, const char *path);
+
+/* AABB Core Management */
+t_aabb						aabb_create_empty(void);
+t_aabb						aabb_union(const t_aabb *a, const t_aabb *b);
+void						aabb_expand_point(t_aabb *a, t_vec3 p);
+void						aabb_expand_eps(t_aabb *a, double eps);
+double						aabb_surface_area(t_aabb a);
+t_aabb						aabb_transform(t_aabb bbox, t_transform t);
+bool						aabb_overlap(t_aabb a, t_aabb b);
+
+/* Per-shape world-space AABB producers */
+t_aabb						sphere_aabb(t_sphere *sp);
+t_aabb						plane_aabb(t_plane *pl);
+t_aabb						cylinder_aabb(t_cylinder *cy);
+t_aabb						cone_aabb(t_cone *co);
+t_aabb						tri_aabb(t_tri_shape *tr);
+t_aabb						rect_aabb(t_rect *rc);
+t_aabb						pyramid_aabb(t_pyramid *py);
+t_aabb						box_aabb(t_box *bx);
+t_aabb						capsule_aabb(t_capsule *cp);
+
+/* Decoupled Parsing (Rule 1) */
+t_parse_obj					rt_parse_ambient_obj(struct s_parser *p);
+t_parse_obj					rt_parse_camera_obj(struct s_parser *p);
+t_parse_obj					rt_parse_light_obj(struct s_parser *p);
+t_parse_obj					rt_parse_sphere_obj(struct s_parser *p);
+t_parse_obj					rt_parse_plane_obj(struct s_parser *p);
+t_parse_obj					rt_parse_cylinder_obj(struct s_parser *p);
+t_parse_obj					rt_parse_cone_obj(struct s_parser *p);
+t_parse_obj					rt_parse_tri_shape_obj(struct s_parser *p);
+t_parse_obj					rt_parse_rect_obj(struct s_parser *p);
+t_parse_obj					rt_parse_pyramid_obj(struct s_parser *p);
+t_parse_obj					rt_parse_box_obj(struct s_parser *p);
+t_parse_obj					rt_parse_capsule_obj(struct s_parser *p);
 #endif

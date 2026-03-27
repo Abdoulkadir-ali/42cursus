@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 15:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 13:40:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,6 @@
 
 bool	scene_add_sphere(t_scene *scene, t_sphere sphere)
 {
-	int	mat_id;
-
-	mat_id = scene_add_material(scene, sphere.temp_color);
-	if (mat_id < 0)
-		return (false);
-	sphere.mat_id = mat_id;
 	if (!DYNARRAY_ENSURE_INT(&scene->spheres, &scene->sphere_count,
 			&scene->sphere_cap, sizeof(t_sphere)))
 		return (false);

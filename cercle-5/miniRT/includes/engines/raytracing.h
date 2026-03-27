@@ -6,12 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:16:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 18:08:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 08:47:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RAYTRACING_H
-# define RAYTRACING_H
+#define RAYTRACING_H
 
 # include <math.h>
 # include <pthread.h>
@@ -20,64 +20,7 @@
 # include <stdint.h>
 
 /* 1. EXTERNAL DEPENDENCIES */
-# include "debug.h"
-# include "maths.h"
-# include "scene.h"
-
-# define MAX_DEPTH 5
-# define COLOR_MAX 255.0
-# define COLOR_MIN 0.0
-# define SHININESS_SCALE 200.0
-# define SHININESS_OFFSET 2.0
-# define METALLIC_REDUCT 0.5
-# define METALLIC_BOOST 0.9
-# define REFRACT_MAX_DEG 180.0
-# define REFRACT_IOR_SCALE 2.0
-# define MAG_EPSILON 1e-6
-# define SHADOW_BIAS 1e-4
-# define WEIGHT_MIN 0.02
-# define SAFE_RCP_MIN 1e-20
-# define TRACE_MAX_DIST 1e30
-
-# define ATTENUATION_K 0.05
-# define MAX_EMISSIVE_DIST_SQ 2500.0
-# define EMISSIVE_SURF_OFF 0.01
-# define EMISSIVE_BR_SCALE 3.0
-# define EPSILON_MUL 10.0
-# define NDOTL_MIN 0.02
-# define NDOTH_MIN 0.01
-# define HALF_SCALE 0.5
-
-typedef struct s_bvh_ref
-{
-	uint8_t					type;
-	int						index;
-}							t_bvh_ref;
-
-typedef struct s_bvh_node
-{
-	t_aabb					bbox;
-	int						left_or_first;
-	int						count;
-}							t_bvh_node;
-
-typedef struct s_bvh_tmp_node
-{
-	t_aabb					bbox;
-	struct s_bvh_tmp_node	*left;
-	struct s_bvh_tmp_node	*right;
-	t_bvh_ref				*refs;
-	size_t					num_refs;
-}							t_bvh_tmp_node;
-
-typedef struct s_bvh
-{
-	t_scene					*scene;
-	t_bvh_node				*nodes;
-	t_bvh_ref				*refs;
-	int						num_nodes;
-	int						num_refs;
-}							t_bvh;
+# include "primitives.h"
 
 typedef struct s_entry_point
 {
@@ -250,6 +193,9 @@ void						intersect_init_ctx(t_trace_ctx *ctx, t_hit *hit);
 bool						intersect_finish_hit(t_trace_ctx *ctx, t_mesh *mesh,
 								t_hit *hit, const t_ray *ray);
 
+/* AABB fast intersect helper (implemented in bvh/bound/intersect.c) */
+bool				aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray, double *tmin, double *tmax);
+
 /* srcs/raytracing/postprocess/shading/ */
 void						add_emissive_lighting(t_shading *ctx,
 								t_scene *scene, t_vec3 *total);
@@ -292,19 +238,6 @@ size_t						collect_objects(t_scene *scene,
 int							compare_x(const void *a, const void *b);
 int							compare_y(const void *a, const void *b);
 int							compare_z(const void *a, const void *b);
-
-/* srcs/raytracing/bvh/bound/ */
-t_aabb						aabb_from_ref(t_scene *s, t_bvh_ref ref);
-t_aabb						aabb_union(const t_aabb *a, const t_aabb *b);
-t_aabb						aabb_create_empty(void);
-t_aabb						aabb_transform(t_aabb local, t_transform t);
-void						aabb_expand_point(t_aabb *bbox, t_vec3 p);
-void						aabb_expand_eps(t_aabb *bbox, double eps);
-double						aabb_surface_area(t_aabb bbox);
-bool						aabb_intersect_fast(const t_aabb *aabb,
-								const t_ray *ray, double *tmin, double *tmax);
-t_aabb						plane_aabb(t_plane *pl);
-t_aabb						cone_aabb(t_cone *co);
 
 /* srcs/raytracing/bvh/traverse/ */
 bool						bvh_intersect(const t_bvh *bvh, const t_ray *ray,
@@ -375,8 +308,6 @@ bool						intersect_mesh(const t_ray *ray, t_mesh *mesh,
 bool						intersect_triangle(const t_ray *ray, t_vec3 v[3],
 								double *t, t_vec2 *uv);
 void						mesh_build_bvh(t_mesh *mesh);
-bool						mesh_occluded(const t_ray *ray, t_mesh *mesh,
-								double dist);
 
 /* Intersection helpers */
 void						get_sphere_uv(t_vec3 normal, double *u, double *v);
@@ -398,23 +329,44 @@ bool						check_top_cap(const t_ray *ray, t_cylinder *cy,
 bool						check_body(const t_ray *ray, t_cylinder *cy,
 								double *tm, t_hit *hit);
 
-/* AABB helpers (shared across raytracing and physics) */
-t_aabb						aabb_create_empty(void);
-t_aabb						aabb_union(const t_aabb *a, const t_aabb *b);
-void						aabb_expand_point(t_aabb *a, t_vec3 p);
-void						aabb_expand_eps(t_aabb *a, double eps);
-double						aabb_surface_area(t_aabb a);
-t_aabb						aabb_transform(t_aabb bbox, t_transform t);
-bool						aabb_overlap(t_aabb a, t_aabb b);
-
-/* Per-shape world-space AABB producers */
-t_aabb						sphere_aabb(t_sphere *sp);
-t_aabb						plane_aabb(t_plane *pl);
-t_aabb						cylinder_aabb(t_cylinder *cy);
-t_aabb						cone_aabb(t_cone *co);
-t_aabb						tri_aabb(t_tri_shape *tr);
-t_aabb						rect_aabb(t_rect *rc);
-t_aabb						pyramid_aabb(t_pyramid *py);
-t_aabb						box_aabb(t_box *bx);
 t_aabb						capsule_aabb(t_capsule *cp);
+
+
+
+
+
+
+/* intersect_mesh moved to raytracing.h (uses t_hit) */
+bool						intersect_triangle(const t_ray *ray, t_vec3 v[3],
+								double *t, t_vec2 *uv);
+bool						intersect_triangle_fast(const t_ray *ray,
+								t_vec3 v[3], double *t, t_vec2 *uv);
+bool						intersect_tri_precomp(const t_ray *ray,
+								const t_tri_precomp *tc, double *t, t_vec2 *uv);
+bool						mesh_occluded(const t_ray *ray, t_mesh *mesh,
+								double dist);
+bool						leaf_occluded(t_mesh *mesh, t_mbvh_node *node,
+								const t_ray *ray, double dist);
+void						test_occ_children(t_mesh *mesh, int node_idx,
+								const t_ray *ray, t_occ_child *c);
+int							pick_occ_children(t_mesh *mesh, int node_idx,
+								const t_ray *ray, t_occ_ctx *ctx);
+int							process_occ_node(t_mesh *mesh, int node_idx,
+								const t_ray *ray, t_occ_ctx *ctx);
+bool						traverse_occlude(t_mesh *mesh, const t_ray *ray,
+								double dist);
+/* mesh-hit helpers moved to raytracing.h */
+void						process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node,
+								const t_ray *ray, t_trace_ctx *ctx);
+void						test_children(t_mesh *mesh, int node_idx,
+								const t_ray *ray, t_child_ctx *c);
+int							select_child(t_child_ctx *c, t_trace_ctx *ctx);
+int							pick_children(t_mesh *mesh, int node_idx,
+								const t_ray *ray, t_trace_ctx *ctx);
+int							process_node(t_mesh *mesh, int node_idx,
+								const t_ray *ray, t_trace_ctx *ctx);
+void						intersect_traverse_mesh(t_mesh *mesh,
+								const t_ray *ray, t_trace_ctx *ctx);
+/* intersect_finish_hit moved to raytracing.h */
 #endif
+

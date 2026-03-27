@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 20:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,14 @@
 
 bool	fdf_init_mesh(t_mesh *mesh, int v_count, int i_count, const char *p)
 {
-	ft_memset(mesh, 0, sizeof(t_mesh));
-	mesh->vertices = ft_calloc(v_count, sizeof(t_vec3));
-	mesh->normals = ft_calloc(v_count, sizeof(t_vec3));
-	mesh->uvs = ft_calloc(v_count, sizeof(t_vec2));
-	mesh->indices = ft_calloc(i_count, sizeof(int));
-	if (!mesh->vertices || !mesh->normals || !mesh->uvs || !mesh->indices)
-	{
-		mesh_free(mesh);
+	t_mesh_init	init;
+
+	init.v_count = v_count;
+	init.i_count = i_count;
+	init.has_normals = true;
+	init.has_uvs = true;
+	if (!mesh_init(mesh, init))
 		return (false);
-	}
 	mesh->name = ft_strdup(p);
-	mesh->tri_count = i_count / 3;
 	return (true);
 }

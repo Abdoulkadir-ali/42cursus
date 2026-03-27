@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 15:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 21:20:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,6 @@ bool	scene_add_mesh(t_scene *scene, t_mesh mesh)
 	if (vec3_mag_sq(mesh.transform.scale) < SCALE_EPSILON)
 		mesh.transform.scale = vec3(1, 1, 1);
 	scene->meshes[scene->mesh_count++] = mesh;
+	mesh_build_bvh(&scene->meshes[scene->mesh_count - 1]);
 	return (true);
 }

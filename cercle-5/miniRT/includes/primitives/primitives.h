@@ -1,8 +1,19 @@
-#ifndef PRIMITIVES_H
-# define PRIMITIVES_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   primitives.h                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/27 09:10:49 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/27 10:01:44 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-# include "objects.h"
-# include "surface.h"
-# include "scene.h"
+#ifndef PRIMITIVES_H
+#define PRIMITIVES_H
+
+#include "scene.h"
+#include "../constants.h"
 
 #endif

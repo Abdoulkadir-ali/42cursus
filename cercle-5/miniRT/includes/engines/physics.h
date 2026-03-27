@@ -6,52 +6,38 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 17:50:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 08:47:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHYSICS_H
-# define PHYSICS_H
+#define PHYSICS_H
 
 /* EXTERNAL DEPENDENCIES */
 # include <pthread.h>
 # include <semaphore.h>
-# include <stdbool.h>
-# include <stddef.h>
-# include <stdint.h>
-# include <string.h>
 
 /* NEUTRAL DEPENCIES */
-# include "debug.h"
-# include "maths.h"
+# include "primitives.h"
 
 /* ----------------------------- physics types ----------------------------- */
 # ifndef MAX_SUB_SHAPES
-#  define MAX_SUB_SHAPES 32
 # endif
 # ifndef EPA_MAX_VERTS
-#  define EPA_MAX_VERTS 32
 # endif
 # ifndef EPA_MAX_FACES
-#  define EPA_MAX_FACES 64
 # endif
 # ifndef MAX_BODY_PAIRS
-#  define MAX_BODY_PAIRS 512
 # endif
 # ifndef EPA_MAX_ITER
-#  define EPA_MAX_ITER 30
 # endif
 # ifndef EPA_TOL
-#  define EPA_TOL 1e-5
 # endif
 # ifndef GLOBAL_DAMPING
-#  define GLOBAL_DAMPING 0.12
 # endif
 # ifndef DBVT_MAX_NODES
-#  define DBVT_MAX_NODES 512
 # endif
 # ifndef DBVT_MAX_LEAVES
-#  define DBVT_MAX_LEAVES 256
 # endif
 
 typedef enum e_phys_type
@@ -76,7 +62,7 @@ typedef enum e_collider_type
 
 typedef t_vec3				(*t_support_fn)(const void *shape, t_vec3 dir);
 
-struct						s_sub_shape
+typedef struct s_sub_shape
 {
 	void					*shape;
 	t_aabb					local_aabb;
@@ -84,9 +70,9 @@ struct						s_sub_shape
 	t_mat4					transform;
 	double					radius;
 	t_phys_type				type;
-};
+}							t_sub_shape;
 
-struct						s_physics_body
+typedef struct s_physics_body
 {
 	t_vec3					velocity;
 	t_vec3					angular_velocity;
@@ -104,9 +90,9 @@ struct						s_physics_body
 	size_t					sub_count;
 	t_aabb					global_aabb;
 	t_vec3					com;
-};
+}							t_physics_body;
 
-struct						s_collider
+typedef struct						s_collider
 {
 	t_collider_type			type;
 	union
@@ -121,33 +107,33 @@ struct						s_collider
 			double			radius;
 		} capsule;
 	} data;
-};
+} t_collider;
 
-struct						s_static_node
+typedef struct						s_static_node
 {
 	t_aabb					aabb;
 	int						left;
 	int						right;
 	int						obj_idx;
 	int						obj_type;
-};
+} t_static_node;
 
-struct						s_static_bvh
+typedef struct						s_static_bvh
 {
 	t_static_node			*nodes;
 	int						count;
 	int						root;
-};
+} t_static_bvh;
 
-struct						s_dbvt_node
+typedef struct						s_dbvt_node
 {
 	t_aabb					aabb;
 	int						left;
 	int						right;
 	int						leaf;
-};
+} t_dbvt_node;
 
-struct						s_dbvt_leaf
+typedef struct						s_dbvt_leaf
 {
 	t_aabb					fat_aabb;
 	t_physics_body			*body;
@@ -155,18 +141,18 @@ struct						s_dbvt_leaf
 	void					*shape;
 	t_support_fn			support;
 	t_phys_type				type;
-};
+} t_dbvt_leaf;
 
-struct						s_dbvt
+typedef struct						s_dbvt
 {
 	t_dbvt_node				nodes[DBVT_MAX_NODES];
 	t_dbvt_leaf				leaves[DBVT_MAX_LEAVES];
 	int						node_count;
 	int						leaf_count;
 	int						root;
-};
+} t_dbvt;
 
-struct						s_contact
+typedef struct						s_contact
 {
 	t_physics_body			*a;
 	t_transform				*ta;
@@ -179,9 +165,9 @@ struct						s_contact
 	t_vec3					contact_point;
 	t_vec3					ra;
 	t_vec3					rb;
-};
+} t_contact;
 
-struct						s_gen_job
+typedef struct						s_gen_job
 {
 	t_scene					*scene;
 	struct s_contact		*out;
@@ -189,15 +175,15 @@ struct						s_gen_job
 	int						count;
 	int						type;
 	void					*arg;
-};
+} t_gen_job;
 
-struct						s_worker_arg
+typedef struct						s_worker_arg
 {
 	t_scene					*scene;
 	int						index;
-};
+} t_worker_arg;
 
-struct						s_phys_pool
+typedef struct				s_phys_pool
 {
 	pthread_t				threads[PHYS_NUM_TYPES];
 	struct s_gen_job		jobs[PHYS_NUM_TYPES];
@@ -206,9 +192,9 @@ struct						s_phys_pool
 	struct s_worker_arg		args[PHYS_NUM_TYPES];
 	int						shutdown;
 	int						initialized;
-};
+} t_phys_pool;
 
-struct						s_physics
+typedef struct						s_physics
 {
 	struct s_scene			*scene;
 	struct s_phys_pool		*pool;
@@ -218,42 +204,40 @@ struct						s_physics
 	int						solver_iters;
 	bool					needs_bake;
 	uint32_t				baked_version;
-};
+} t_physics;
 
-typedef struct s_physics	t_physics;
-
-struct						s_body_pair
+typedef struct						s_body_pair
 {
 	t_physics_body			*a;
 	t_physics_body			*b;
 	void					*la;
 	void					*lb;
-};
+} t_body_pair;
 
-struct						s_shape_pair
+typedef struct						s_shape_pair
 {
 	t_sub_shape				*sa;
 	t_sub_shape				*sb;
 	t_physics_body			*ba;
 	t_physics_body			*bb;
-};
+} t_shape_pair;
 
-struct						s_simplex
+typedef struct						s_simplex
 {
 	t_vec3					pts[4];
 	t_vec3					a_pts[4];
 	t_vec3					b_pts[4];
 	int						n;
-};
+} t_simplex;
 
-struct						s_epa_face
+typedef struct						s_epa_face
 {
 	int						idx[3];
 	t_vec3					normal;
 	double					dist;
-};
+} t_epa_face;
 
-struct						s_epa_poly
+typedef struct						s_epa_poly
 {
 	t_vec3					pts[EPA_MAX_VERTS];
 	t_vec3					a_pts[EPA_MAX_VERTS];
@@ -261,42 +245,34 @@ struct						s_epa_poly
 	int						n_verts;
 	t_epa_face				faces[EPA_MAX_FACES];
 	int						n_faces;
-};
+} t_epa_poly;
 
-struct						s_edge
+typedef struct						s_edge
 {
 	int						a;
 	int						b;
-};
+} t_edge;
 
-struct						s_epa_res
+typedef struct						s_epa_res
 {
 	t_vec3					normal;
 	double					depth;
 	t_vec3					contact_a;
 	t_vec3					contact_b;
 	void					*f;
-};
+} t_epa_res;
 
-struct						s_gjk_shape
+typedef struct						s_gjk_shape
 {
 	const void				*data;
 	t_support_fn			support;
 	t_vec3					center;
-};
+} t_gjk_shape;
 
 /* --------------------------- end physics types --------------------------- */
 
 /* Constants */
-# define MAX_CONTACTS 1024
-# define SOLVER_ITERATIONS 8
-# define BAUMGARTE 0.2
-# define SLOP 0.01
-# define RESTITUTION_SLOP 0.2
-# define PHYS_NUM_TYPES 7
 /* Dynamic AABB Tree (DBVT) Broadphase */
-# define DBVT_FAT_MARGIN 0.1
-# define DBVT_NULL -1
 
 /* ── FUNCTION PROTOTYPES ── */
 
@@ -329,16 +305,7 @@ t_physics					*phys_create(struct s_scene *scene);
 void						phys_destroy(t_physics *phys);
 void						phys_simulate(t_physics *phys, double dt);
 
-/* AABB Calculations (Lego & Mesh) */
-void						compute_mesh_aabb(struct s_mesh *mesh, t_aabb *out);
-void						compute_primitive_aabb(t_sub_shape *s);
-bool						aabb_overlap(t_aabb a, t_aabb b);
-bool						aabb_overlap_broad(t_aabb a, t_aabb b);
-bool						aabb_overlap_local(t_aabb a, t_aabb b);
-void						phys_init_pool(struct s_scene *scene);
-void						phys_destroy_pool(struct s_scene *scene);
-
-/* Interaction */
+/* Intersection Dispatch */
 void						physics_shoot_ray(struct s_scene *scene, t_ray ray,
 								double impulse);
 t_physics_body				*get_body_ref(struct s_scene *scene, t_bvh_ref ref);
@@ -448,21 +415,6 @@ int							gjk_vs_all_planes(t_gjk_shape *sa,
 								t_physics_body *ba, t_transform *ta,
 								struct s_scene *s, t_contact *c, int count,
 								int max);
-
-/* Intersection Dispatch */
-int							narrow_dispatch_body_pair(t_body_pair *p,
-								t_contact *contacts, int count);
-int							narrow_dispatch_shape_pair(t_shape_pair *p,
-								t_contact *contacts, int count);
-
-/* Primitive AABBs */
-t_aabb						sphere_aabb(t_sphere *sp);
-t_aabb						box_aabb(t_box *bx);
-t_aabb						capsule_aabb(t_capsule *cp);
-t_aabb						cylinder_aabb(t_cylinder *cy);
-t_aabb						rect_aabb(t_rect *rc);
-t_aabb						tri_aabb(t_tri_shape *tr);
-t_aabb						pyramid_aabb(t_pyramid *py);
 
 /* Tree-based Broadphase */
 void						collect_leaves(struct s_scene *s, t_dbvt *t);

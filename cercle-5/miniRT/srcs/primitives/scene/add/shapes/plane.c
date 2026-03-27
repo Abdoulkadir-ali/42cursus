@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 15:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 13:45:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,6 @@
 
 bool	scene_add_plane(t_scene *scene, t_plane plane)
 {
-	int	mat_id;
-
-	mat_id = scene_add_material(scene, plane.temp_color);
-	if (mat_id < 0)
-		return (false);
-	plane.mat_id = mat_id;
 	if (!DYNARRAY_ENSURE_INT(&scene->planes, &scene->plane_count,
 			&scene->plane_cap, sizeof(t_plane)))
 		return (false);
