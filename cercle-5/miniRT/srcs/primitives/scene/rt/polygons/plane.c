@@ -14,14 +14,19 @@
 
 bool	parse_plane(t_scene *scene, t_parser *p)
 {
-	t_parse_obj	parsed;
+	t_plane	plane;
+	t_vec3	color;
 
-	parsed = rt_parse_plane_obj(p);
-	if (parsed.type != TYPE_PLANE)
+	ft_memset(&plane, 0, sizeof(t_plane));
+	if (!parse_vec3(p, &plane.transform.pos))
 		return (false);
-	parsed.data.plane.mat_id = scene_add_material(scene,
-			parsed.data.plane.temp_color);
-	if (parsed.data.plane.mat_id < 0)
+	if (!parse_vec3(p, &plane.normal))
 		return (false);
-	return (scene_add_plane(scene, parsed.data.plane));
+	if (!parse_vec3(p, &color))
+		return (false);
+	plane.normal = vec3_norm(plane.normal);
+	plane.mat_id = scene_add_material(scene, color);
+	if (plane.mat_id < 0)
+		return (false);
+	return (scene_add_plane(scene, plane));
 }

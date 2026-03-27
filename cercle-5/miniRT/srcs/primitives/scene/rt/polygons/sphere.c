@@ -18,15 +18,20 @@
  */
 bool	parse_sphere(t_scene *scene, t_parser *p)
 {
-	t_parse_obj	parsed;
+	t_sphere	sphere;
+	t_vec3		color;
+	double		diameter;
 
-	parsed = rt_parse_sphere_obj(p);
-	if (parsed.type != TYPE_SPHERE)
+	ft_memset(&sphere, 0, sizeof(t_sphere));
+	if (!parse_vec3(p, &sphere.transform.pos))
 		return (false);
-	/* Finalize: Scene manages materials */
-	parsed.data.sphere.mat_id = scene_add_material(scene, 
-			parsed.data.sphere.temp_color);
-	if (parsed.data.sphere.mat_id < 0)
+	diameter = parse_double(p);
+	if (!parse_vec3(p, &color))
 		return (false);
-	return (scene_add_sphere(scene, parsed.data.sphere));
+	sphere.radius = diameter / 2.0;
+	sphere.radius_sq = sphere.radius * sphere.radius;
+	sphere.mat_id = scene_add_material(scene, color);
+	if (sphere.mat_id < 0)
+		return (false);
+	return (scene_add_sphere(scene, sphere));
 }

@@ -21,7 +21,9 @@ bool	intersect_tri_shape(const t_ray *ray, t_tri_shape *tr, t_hit *hit)
 		return (false);
 	hit->t = t;
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
-	hit->normal = tr->normal;
+	hit->normal = vec3_cross(vec3_sub(tr->v[1], tr->v[0]),
+			vec3_sub(tr->v[2], tr->v[0]));
+	hit->normal = vec3_normalize(hit->normal);
 	if (vec3_dot(ray->direction, hit->normal) > 0)
 		hit->normal = vec3_scale(hit->normal, -1.0);
 	hit->u = uv.x;

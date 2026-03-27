@@ -46,30 +46,36 @@ static bool	set_group_names(t_mesh_group *g, const char *path)
 static void	set_group_bounds(t_scene *sc, t_mesh_group *g)
 {
 	t_aabb	bbox;
-	int		si;
+	int		ti;
 
-	g->sub_count = sc->mesh_count - g->start;
-	g->anim_base = sc->meshes[g->start].anim_base;
-	g->anim_clip_count = sc->meshes[g->start].anim_clip_count;
-	bbox = sc->meshes[g->start].bbox;
-	si = g->start + 1;
-	while (si < sc->mesh_count)
-		bbox = aabb_union(&bbox, &sc->meshes[si++].bbox);
-	g->pivot = vec3((bbox.min.x + bbox.max.x) * HALF_SCALE,
-			(bbox.min.y + bbox.max.y) * HALF_SCALE,
-			(bbox.min.z + bbox.max.z) * HALF_SCALE);
+	g->tri_count = sc->tri_count - g->tri_start;
+	if (g->tri_count <= 0)
+		return ;
+	bbox = aabb_create_empty();
+	ti = g->tri_start;
+	while (ti < sc->tri_count)
+	{
+		aabb_expand_point(&bbox, sc->triangles[ti].v[0]);
+		aabb_expand_point(&bbox, sc->triangles[ti].v[1]);
+		aabb_expand_point(&bbox, sc->triangles[ti].v[2]);
+		ti++;
+	}
+	g->bbox = bbox;
+	g->pivot = vec3((bbox.min.x + bbox.max.x) * 0.5,
+			(bbox.min.y + bbox.max.y) * 0.5,
+			(bbox.min.z + bbox.max.z) * 0.5);
 	g->transform.scale = vec3(1, 1, 1);
 }
 
 bool	scene_add_group_for_subs(t_scene *scene, const char *path,
-		int start_mesh)
+		int start_tri)
 {
 	t_mesh_group	g;
 
-	if (scene->mesh_count <= start_mesh)
+	if (scene->tri_count <= start_tri)
 		return (false);
 	ft_memset(&g, 0, sizeof(g));
-	g.start = start_mesh;
+	g.tri_start = start_tri;
 	if (!set_group_names(&g, path))
 		return (false);
 	set_group_bounds(scene, &g);

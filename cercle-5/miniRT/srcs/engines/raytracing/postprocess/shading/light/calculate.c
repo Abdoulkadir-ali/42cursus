@@ -49,8 +49,8 @@ t_vec3	calc_light(t_shading *ctx, t_light light)
 	if (s < NDOTH_MIN)
 		s = 0.0;
 	else
-		s = pow(s, ctx->mat.shininess);
+		s = pow(s, ctx->mat->shininess);
 	return (vec3_add(pixel_color(ctx->albedo, light.rgb, light.brightness
 				* c.ndotl), vec3_scale(light.rgb, light.brightness
-				* ctx->mat.specular * s)));
+				* ctx->mat->specular * s)));
 }

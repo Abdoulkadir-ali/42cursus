@@ -48,19 +48,16 @@ static int	load_raw_materials(t_scene *scene, t_raw_model model, int **out_mat_i
 bool	scene_add_raw_model(t_scene *scene, t_raw_model model)
 {
 	int	*mat_ids;
-	int	mesh_base;
 	int	anim_base;
-	int	gid;
 	int	i;
 
-	mesh_base = scene->mesh_count;
 	anim_base = scene->anim_count;
 	if (load_raw_materials(scene, model, &mat_ids) < 0)
 		return (false);
 	i = -1;
 	while (++i < model.mesh_count)
 	{
-		if (model.mesh_mat_indices && i < model.mesh_count)
+		if (model.mesh_mat_indices)
 		{
 			int mat_idx = model.mesh_mat_indices[i];
 			if (mat_idx >= 0 && mat_idx < model.mat_count)
@@ -68,23 +65,12 @@ bool	scene_add_raw_model(t_scene *scene, t_raw_model model)
 		}
 		scene_add_mesh(scene, model.meshes[i]);
 	}
-	gid = -1;
-	if (model.mesh_count > 0)
-		gid = scene_add_group_for_subs(scene, model.meshes[0].name, mesh_base);
-
+	
 	/* 3. Add animations */
 	i = -1;
 	while (++i < model.anim_count)
 		scene_add_animation(scene, model.anims[i]);
 	
-	/* Post-processing: Apply group and animation info to meshes */
-	int anim_clip_count = scene->anim_count - anim_base;
-	for (int mi = mesh_base; mi < scene->mesh_count; mi++)
-	{
-		scene->meshes[mi].anim_base = anim_base;
-		scene->meshes[mi].anim_clip_count = anim_clip_count;
-		scene->meshes[mi].group_id = gid;
-	}
 	free(mat_ids);
 	return (true);
 }

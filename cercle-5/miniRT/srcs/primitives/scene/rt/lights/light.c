@@ -14,23 +14,30 @@
 
 bool	parse_light(t_scene *scene, t_parser *p)
 {
-	t_parse_obj	parsed;
+	t_light	light;
 
-	parsed = rt_parse_light_obj(p);
-	if (parsed.type != TYPE_LIGHT)
+	ft_memset(&light, 0, sizeof(t_light));
+	light.type = LIGHT_POINT;
+	if (!parse_vec3(p, &light.transform.pos))
 		return (false);
-	return (scene_add_light(scene, parsed.data.light));
+	light.brightness = parse_double(p);
+	light.rgb = vec3(255, 255, 255);
+	parser_skip_spaces(p);
+	if (parser_peek(p) && parser_peek(p) != '\n')
+		parse_vec3(p, &light.rgb);
+	return (scene_add_light(scene, light));
 }
 
 bool	parse_ambient(t_scene *scene, t_parser *p)
 {
-	t_parse_obj	parsed;
+	t_ambient	ambient;
 
-	parsed = rt_parse_ambient_obj(p);
-	if (parsed.type != TYPE_AMBIENT)
+	ft_memset(&ambient, 0, sizeof(t_ambient));
+	if (!parse_double_checked(p, &ambient.brightness))
 		return (false);
-	return (scene_add_ambient(scene, parsed.data.ambient.brightness,
-			parsed.data.ambient.rgb));
+	if (!parse_vec3(p, &ambient.rgb))
+		return (false);
+	return (scene_add_ambient(scene, ambient.brightness, ambient.rgb));
 }
 
 bool	parse_spot_light(t_scene *scene, t_parser *p)

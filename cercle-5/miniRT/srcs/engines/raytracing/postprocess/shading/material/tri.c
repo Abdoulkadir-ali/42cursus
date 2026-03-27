@@ -18,6 +18,6 @@ int	get_tri_mat(t_shading *ctx)
 
 	h = ctx->hit;
 	if (h->ref.index >= 0 && h->ref.index < ctx->scene->tri_count)
-		return (ctx->scene->tris[h->ref.index].mat_id);
+		return (ctx->scene->triangles[h->ref.index].mat_id);
 	return (0);
 }

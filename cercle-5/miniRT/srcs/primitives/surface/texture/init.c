@@ -19,7 +19,7 @@
  * @param h Height in pixels.
  * @param data Pointer to the pixel data.
  */
-void	init_texture_props(t_texture *tex, int w, int h, char *data)
+void	init_texture_props(t_texture *tex, int w, int h, unsigned char *data)
 {	
 	tex->img = NULL;
 	tex->width = w;

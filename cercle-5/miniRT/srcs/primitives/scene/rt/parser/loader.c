@@ -29,7 +29,6 @@ t_scene	*parse_file(const char *path, void *mlx)
 {
 	t_scene *scene;
 	const char *ext;
-	t_raw_model model;
 
 	if (!validate_file(path))
 		return (NULL);
@@ -48,12 +47,7 @@ t_scene	*parse_file(const char *path, void *mlx)
 	}
 	else
 	{
-		if (!load_mesh_file(path, &model))
-		{
-			destroy_scene(scene);
-			return (NULL);
-		}
-		if (!scene_add_raw_model(scene, model))
+		if (!load_mesh_file(scene, path))
 		{
 			destroy_scene(scene);
 			return (NULL);

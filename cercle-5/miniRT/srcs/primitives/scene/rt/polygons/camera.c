@@ -14,10 +14,18 @@
 
 bool	parse_camera(t_scene *scene, t_parser *p)
 {
-	t_parse_obj	parsed;
+	t_camera	cam;
+	t_vec3		forward;
 
-	parsed = rt_parse_camera_obj(p);
-	if (parsed.type != TYPE_CAMERA)
+	ft_memset(&cam, 0, sizeof(t_camera));
+	if (!parse_vec3(p, &cam.transform.pos))
 		return (false);
-	return (scene_add_camera(scene, parsed.data.camera));
+	if (!parse_vec3(p, &forward))
+		return (false);
+	cam.fov = parse_double(p);
+	if (vec3_mag_sq(forward) == 0.0)
+		cam.transform.forward = vec3(0, 0, -1);
+	else
+		cam.transform.forward = vec3_norm(forward);
+	return (scene_add_camera(scene, cam));
 }

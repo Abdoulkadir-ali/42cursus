@@ -18,11 +18,10 @@
  */
 bool	handle_mesh_injection_internal(t_scene *scene, t_mesh_info *info, t_type type)
 {
-	int			start_mesh;
-	t_raw_model	model;
+	int			start_tri;
 
 	(void)type;
-	start_mesh = scene->mesh_count;
+	start_tri = scene->tri_count;
 	if (mesh_cache_has(info->path))
 	{
 		if (!mesh_cache_restore(info->path, scene))
@@ -30,17 +29,13 @@ bool	handle_mesh_injection_internal(t_scene *scene, t_mesh_info *info, t_type ty
 	}
 	else
 	{
-		/* Object layer handles the transformed creation */
-		if (!load_injected_mesh(info->path, &model, info->transform,
+		if (!load_injected_mesh(scene, info->path, info->transform,
 				info->color, info->emission))
 			return (false);
-		/* Scene layer handles only addition of the pre-processed model */
-		if (!scene_add_raw_model(scene, model))
-			return (false);
-		mesh_cache_save(info->path, scene, start_mesh);
+		mesh_cache_save(info->path, scene, start_tri);
 	}
-	if (scene->mesh_count > start_mesh)
-		scene_add_group_for_subs(scene, info->path, start_mesh);
+	if (scene->tri_count > start_tri)
+		scene_add_group_for_subs(scene, info->path, start_tri);
 	free(info->path);
 	return (true);
 }

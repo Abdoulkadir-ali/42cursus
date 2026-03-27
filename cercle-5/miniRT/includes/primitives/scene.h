@@ -14,14 +14,11 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-# include "objects.h"
-
-
+# include "loader.h"
 
 typedef struct s_scene
 {
 	char							*name;
-	void							*mlx;
 
 	t_sphere						*spheres;
 	int								sphere_count;
@@ -39,7 +36,7 @@ typedef struct s_scene
 	int								cone_count;
 	int								cone_cap;
 
-	t_tri_shape						*tris;
+	t_tri_shape						*triangles;
 	int								tri_count;
 	int								tri_cap;
 
@@ -59,9 +56,6 @@ typedef struct s_scene
 	int								capsule_count;
 	int								capsule_cap;
 
-	t_mesh							*meshes;
-	int								mesh_count;
-	int								mesh_cap;
 	t_mesh_group					*groups;
 	int								group_count;
 	int								group_cap;
@@ -82,11 +76,10 @@ typedef struct s_scene
 	t_animation						*clips;
 	int								clip_count;
 	int								clip_cap;
-	struct s_bvh					*bvh;
-	t_emissive_ref					*emissive_cache;
-	int								emissive_n;
-	bool							simulate_physics;
 	uint32_t						version;
+	void							*mlx;
+	t_emissive_ref					*emissive_cache;
+	bool							simulate_physics;
 }	t_scene;
 
 /* ------------------------------------------------------------------------- */

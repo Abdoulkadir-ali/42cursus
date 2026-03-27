@@ -16,7 +16,6 @@ static size_t	total_objects(t_scene *sc)
 {
 	return ((size_t)sc->sphere_count + sc->plane_count
 		+ sc->cylinder_count + sc->cone_count
-		+ sc->mesh_count + sc->anim_count
 		+ sc->tri_count + sc->rect_count
 		+ sc->pyramid_count + sc->box_count
 		+ sc->capsule_count);
@@ -55,11 +54,11 @@ static bool	flatten_and_alloc(t_bvh *bvh, t_bvh_tmp_node *root, size_t k)
 }
 
 /**
- * @brief Top-level API to build the entire BVH tree for the scene.
+ * @brief Top-level API to build the entire global BVH tree for the scene.
  * @param scene Pointer to the scene content.
  * @return Returns the primary BVH pointer or NULL on error.
  */
-t_bvh	*bvh_create(t_scene *scene)
+t_bvh	*bvh_build_global(t_scene *scene)
 {
 	t_bvh			*bvh;
 	t_bvh_tmp_node	*root;

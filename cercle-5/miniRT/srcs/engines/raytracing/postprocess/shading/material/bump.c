@@ -21,12 +21,12 @@ void	apply_bump(t_shading *ctx)
 	t_vec3	m_n;
 	t_vec3	n;
 
-	if (ctx->mat.bump_map.type == TEX_SOLID || !ctx->mat.bump_map.addr)
+	if (ctx->mat->normal_map_idx < 0)
 		return ;
-	s = sample_texture(&ctx->mat.bump_map, ctx->hit->u, ctx->hit->v);
-	m_n.x = (s.x / COLOR_MAX) * 2.0 - 1.0;
-	m_n.y = (s.y / COLOR_MAX) * 2.0 - 1.0;
-	m_n.z = (s.z / COLOR_MAX) * 2.0 - 1.0;
+	s = sample_texture_pool(ctx, ctx->mat->normal_map_idx, ctx->hit->u, ctx->hit->v);
+	m_n.x = s.x * 2.0 - 1.0;
+	m_n.y = s.y * 2.0 - 1.0;
+	m_n.z = s.z * 2.0 - 1.0;
 	m_n.w = 0.0;
 	n.x = ctx->hit->tangent.x * m_n.x + ctx->hit->bitangent.x * m_n.y
 		+ ctx->hit->normal.x * m_n.z;

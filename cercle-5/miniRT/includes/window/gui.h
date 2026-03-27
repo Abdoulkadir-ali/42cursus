@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:02:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 15:01:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,6 @@ struct					s_render_pool
 };
 
 /* 3. MODULE TYPES */
-
-/* 3. MODULE TYPES */
 struct					s_camera_controller
 {
 	t_camera			*camera;
@@ -135,6 +133,7 @@ struct					s_camera_controller
 	t_vec3				target_pos;
 	t_rotator			target_rot;
 	double				target_fov;
+	double				current_fov;     /* For smooth interpolation */
 	double				move_speed;
 	double				lerp_factor;
 	bool				moving_forward;

@@ -21,7 +21,7 @@
  */
 t_vec3	texel_at(t_texture *tex, int x, int y)
 {
-	char			*px;
+	unsigned char	*px;
 	unsigned int	cl;
 
 	x = x % tex->width;

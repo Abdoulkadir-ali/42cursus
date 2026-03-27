@@ -35,7 +35,7 @@ bool	load_texture_with_mlx(void *mlx, t_texture *tex, const char *path)
  	tex->img = img;
  	tex->width = w[0];
  	tex->height = w[1];
- 	tex->addr = mlx_get_data_addr(img, &tex->bpp, &tex->len, &tex->endian);
+ 	tex->addr = (unsigned char *)mlx_get_data_addr(img, &tex->bpp, &tex->len, &tex->endian);
  	tex->type = TEX_BITMAP;
  	tex->scale = TEX_DEFAULT_SCALE;
  	tex->color_a = get_colors()->white;

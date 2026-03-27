@@ -15,6 +15,22 @@
 
 # include "primitives.h"
 
+typedef struct s_mesh_anim_state
+{
+	int						current_anim;
+	double					current_time;
+	t_mat4					*bone_matrices;
+	int						bone_count;
+}							t_mesh_anim_state;
+
+typedef struct s_anim_state
+{
+	t_scene					*scene;
+	t_mesh_anim_state		*mesh_states;
+	int						mesh_count;
+}							t_anim_state;
+
+
 /* ── Engine Functions ── */
 
 /**

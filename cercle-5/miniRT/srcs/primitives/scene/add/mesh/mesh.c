@@ -14,12 +14,27 @@
 
 bool	scene_add_mesh(t_scene *scene, t_mesh mesh)
 {
-	if (!DYNARRAY_ENSURE_INT(&scene->meshes, &scene->mesh_count,
-			&scene->mesh_cap, sizeof(t_mesh)))
-		return (false);
+	t_mat4		m;
+	t_tri_shape	tri;
+	int			i;
+
 	if (vec3_mag_sq(mesh.transform.scale) < SCALE_EPSILON)
 		mesh.transform.scale = vec3(1, 1, 1);
-	scene->meshes[scene->mesh_count++] = mesh;
-	mesh_build_bvh(&scene->meshes[scene->mesh_count - 1]);
+	m = mat4_transform(mesh.transform);
+	ft_memset(&tri, 0, sizeof(t_tri_shape));
+	tri.mat_id = mesh.mat_id;
+	i = 0;
+	while (i < mesh.tri_count)
+	{
+		if (!DYNARRAY_ENSURE_INT((void **)&scene->triangles, &scene->tri_count,
+				&scene->tri_cap, sizeof(t_tri_shape)))
+			return (false);
+		tri.v[0] = mat4_mul_pos(m, mesh.vertices[mesh.indices[i * 3 + 0]]);
+		tri.v[1] = mat4_mul_pos(m, mesh.vertices[mesh.indices[i * 3 + 1]]);
+		tri.v[2] = mat4_mul_pos(m, mesh.vertices[mesh.indices[i * 3 + 2]]);
+		scene->triangles[scene->tri_count++] = tri;
+		i++;
+	}
+	mesh_free(&mesh);
 	return (true);
 }

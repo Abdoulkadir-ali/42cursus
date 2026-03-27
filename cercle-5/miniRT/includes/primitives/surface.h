@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:02:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 13:35:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,13 @@ typedef enum e_tex_type
 
 typedef struct s_texture
 {
-	t_tex_type	type;
-	t_vec3		color_a;
-	t_vec3		color_b;
-	double		scale;
-	void		*img;
-	char		*addr;
-	int			width;
-	int			height;
-	int			bpp;
-	int			len;
-	int			endian;
+	t_tex_type		type;
+	t_vec3			color_a;
+	t_vec3			color_b;
+	double			scale;
+	int				width;
+	int				height;
+	char			*path;       /* Track resource identity only */
 }				t_texture;
 
 typedef struct s_material
@@ -106,9 +102,8 @@ t_material		*create_material(t_material_args params);
  */
 
 void			convert_rgba_to_bgra(unsigned char *data, int size);
-void			init_texture_props(t_texture *tex, int w, int h, char *data);
+void			init_texture_props(t_texture *tex, int w, int h, unsigned char *data);
 bool			load_texture(t_scene *scene, t_texture *tex, const char *path);
-bool				load_texture_with_mlx(void *mlx, t_texture *tex, const char *path);
 bool			load_texture_from_memory(t_texture *tex, unsigned char *buffer,
 					int size);
 t_vec3			sample_texture(t_texture *tex, double u, double v);

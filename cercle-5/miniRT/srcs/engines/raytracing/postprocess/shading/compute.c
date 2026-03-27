@@ -12,27 +12,25 @@
 
 #include "raytracing.h"
 
-static void	setup_shading(t_shading *ctx, t_hit *hit, t_scene *scene,
-		const t_bvh *bvh)
+static void	setup_shading(t_shading *ctx, t_hit *hit, t_rt_engine *rt)
 {
-	float	r;
-
 	ctx->hit = hit;
-	ctx->scene = scene;
-	ctx->bvh = bvh;
-	get_material(ctx);
-	ctx->albedo = sample_texture(&ctx->mat.albedo_map, hit->u, hit->v);
-	if (ctx->mat.roughness_map.type == TEX_BITMAP)
-		ctx->mat.roughness = sample_texture(&ctx->mat.roughness_map,
-				hit->u, hit->v).x / COLOR_MAX;
-	if (ctx->mat.metallic_map.type == TEX_BITMAP)
-		ctx->mat.metallic = sample_texture(&ctx->mat.metallic_map,
-				hit->u, hit->v).x / COLOR_MAX;
-	r = 1.0f - (float)ctx->mat.roughness;
-	ctx->mat.shininess = (double)(r * r * r * r) * SHININESS_SCALE
-		+ SHININESS_OFFSET;
-	ctx->mat.specular = ctx->mat.specular * (1.0 - ctx->mat.metallic
-			* METALLIC_REDUCT) + ctx->mat.metallic * METALLIC_BOOST;
+	ctx->scene = rt->scene;
+	ctx->bvh = rt->bvh;
+	ctx->rt_materials = rt->rt_materials;
+	ctx->texture_pool = rt->texture_pool;
+	ctx->texture_dims = rt->texture_dims;
+	
+	/* Pull the optimized Material index */
+	int mat_idx = get_sphere_mat(ctx); /* This logic should be unified later */
+	ctx->mat = &rt->rt_materials[mat_idx];
+	
+	/* DOD: Pull Albedo directly from the pool */
+	if (ctx->mat->albedo_tex_idx >= 0)
+		ctx->albedo = sample_texture_pool(ctx, ctx->mat->albedo_tex_idx, hit->u, hit->v);
+	else
+		ctx->albedo = ctx->mat->color;
+		
 	apply_bump(ctx);
 }
 
@@ -43,7 +41,7 @@ static t_vec3	compute_refraction(t_shading *ctx, const t_ray *ray,
 	t_ray	ref_ray;
 	double	ior;
 
-	ior = 1.0 + (ctx->mat.refract_index / REFRACT_MAX_DEG) * REFRACT_IOR_SCALE;
+	ior = 1.0 + (ctx->mat->refract_index / REFRACT_MAX_DEG) * REFRACT_IOR_SCALE;
 	ref_dir = vec3_refract(ray->direction, ctx->hit->normal, ior);
 	if (vec3_mag_sq(ref_dir) < MAG_EPSILON)
 	{
@@ -83,13 +81,13 @@ static void	apply_bounces(t_shading *ctx, t_vec3 *tot, double kr)
 {
 	double	nw;
 
-	if (ctx->mat.transparency > 0.0)
+	if (ctx->mat->transparency > 0.0)
 	{
-		nw = ctx->ray->weight * ctx->mat.transparency;
+		nw = ctx->ray->weight * ctx->mat->transparency;
 		if (nw > WEIGHT_MIN)
-			*tot = vec3_add(vec3_scale(*tot, 1.0 - ctx->mat.transparency),
+			*tot = vec3_add(vec3_scale(*tot, 1.0 - ctx->mat->transparency),
 					vec3_scale(compute_refraction(ctx, ctx->ray, &kr, nw),
-						ctx->mat.transparency));
+						ctx->mat->transparency));
 	}
 	if (kr > 0.0)
 	{
@@ -100,7 +98,7 @@ static void	apply_bounces(t_shading *ctx, t_vec3 *tot, double kr)
 	}
 }
 
-t_vec3	compute_color(t_hit *hit, t_scene *sc, const t_bvh *bvh,
+t_vec3	compute_color(t_hit *hit, t_rt_engine *rt,
 		const t_ray *r)
 {
 	t_shading	ctx;
@@ -108,17 +106,18 @@ t_vec3	compute_color(t_hit *hit, t_scene *sc, const t_bvh *bvh,
 	int			i;
 
 	ctx.ray = r;
-	setup_shading(&ctx, hit, sc, bvh);
-	total = pixel_color(ctx.albedo, sc->ambient.rgb, sc->ambient.brightness);
+	setup_shading(&ctx, hit, rt);
+	total = pixel_color(ctx.albedo, rt->scene->ambient.rgb, rt->scene->ambient.brightness);
 	i = -1;
 	if (r->depth < 2)
-		while (++i < sc->light_count)
-			total = vec3_add(total, calc_light(&ctx, sc->lights[i]));
+		while (++i < rt->scene->light_count)
+			total = vec3_add(total, calc_light(&ctx, rt->scene->lights[i]));
+
 	if (r->depth == 0)
 		add_emissive_lighting(&ctx, sc, &total);
-	total = vec3_add(total, ctx.mat.emission);
+	total = vec3_add(total, ctx.mat->emission);
 	if (r->depth >= MAX_DEPTH)
 		return (clamp_color(total));
-	apply_bounces(&ctx, &total, ctx.mat.reflectivity);
+	apply_bounces(&ctx, &total, ctx.mat->reflectivity);
 	return (clamp_color(total));
 }

@@ -53,6 +53,15 @@ void	get_material(t_shading *ctx)
 	mat_id = dispatch_mat1(ctx, type);
 	if (mat_id == -1)
 		mat_id = dispatch_mat2(ctx, type);
+	if (ctx->rt_materials)
+	{
+		ctx->mat.albedo_map.color_a = ctx->rt_materials[mat_id].color;
+		ctx->mat.specular = ctx->rt_materials[mat_id].specular;
+		ctx->mat.roughness = ctx->rt_materials[mat_id].roughness;
+		ctx->mat.metallic = ctx->rt_materials[mat_id].metallic;
+		ctx->mat.emission = ctx->rt_materials[mat_id].emission;
+		return ;
+	}
 	if (mat_id < 0 || mat_id >= ctx->scene->mat_count)
 		mat_id = 0;
 	ctx->mat = ctx->scene->materials[mat_id];
