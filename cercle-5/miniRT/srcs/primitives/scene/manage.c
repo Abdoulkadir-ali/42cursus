@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ambient.c                                          :+:      :+:    :+:   */
+/*   manage.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 16:21:35 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 22:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 22:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "loader.h"
+#include "scene.h"
 
-bool	parse_ambient(t_scene *scene, t_parser *p)
+/**
+ * @brief Invalidates the scene to trigger a render update.
+ * Increments the global version which forces the engine to re-bake 
+ * materials and rebuild the BVH on the next frame.
+ */
+void	scene_invalidate(t_scene *scene)
 {
-	double	brightness;
-	t_vec3	rgb;
-
-	if (!parse_double_checked(p, &brightness))
-		return (false);
-	if (!parse_vec3(p, &rgb))
-		return (false);
-	scene->ambient.brightness = brightness;
-	scene->ambient.rgb = rgb;
-	return (true);
+	if (!scene)
+		return ;
+	scene->version++;
 }

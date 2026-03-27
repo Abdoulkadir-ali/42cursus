@@ -12,15 +12,6 @@
 
 #include "scene.h"
 
-static bool	scene_add_light(t_scene *scene, t_light light)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->lights, &scene->light_count,
-			&scene->light_cap, sizeof(t_light)))
-		return (false);
-	scene->lights[scene->light_count++] = light;
-	return (true);
-}
-
 bool	parse_light(t_scene *scene, t_parser *p)
 {
 	t_light	light;

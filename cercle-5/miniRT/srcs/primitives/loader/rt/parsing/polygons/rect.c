@@ -10,34 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
-
-static bool	scene_add_rect(t_scene *scene, t_rect rect)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->rects, &scene->rect_count,
-			&scene->rect_cap, sizeof(t_rect)))
-		return (false);
-	if (vec3_mag_sq(rect.transform.scale) < SCALE_EPSILON)
-		rect.transform.scale = vec3(1, 1, 1);
-	scene->rects[scene->rect_count++] = rect;
-	return (true);
-}
+#include "loader.h"
 
 bool	parse_rect(t_scene *scene, t_parser *p)
 {
-	t_rect	rect;
-	t_vec3	color;
+	t_prim_params	params;
+	t_vec3			v[4];
+	t_vec3			color;
 
-	ft_memset(&rect, 0, sizeof(t_rect));
-	if (!parse_vec3(p, &rect.v[0]) || !parse_vec3(p, &rect.v[1])
-		|| !parse_vec3(p, &rect.v[2]) || !parse_vec3(p, &rect.v[3])
+	ft_memset(&params, 0, sizeof(t_prim_params));
+	if (!parse_vec3(p, &v[0]) || !parse_vec3(p, &v[1])
+		|| !parse_vec3(p, &v[2]) || !parse_vec3(p, &v[3])
 		|| !parse_vec3(p, &color))
 		return (false);
-	rect.transform.pos = vec3_scale(vec3_add(vec3_add(rect.v[0], rect.v[1]),
-				vec3_add(rect.v[2], rect.v[3])), 0.25);
-	rect.mat_id = scene_add_material(scene, color);
-	if (rect.mat_id < 0)
-		return (false);
-	return (scene_add_rect(scene, rect));
+	params.pos = vec3_scale(vec3_add(vec3_add(v[0], v[1]),
+				vec3_add(v[2], v[3])), 0.25);
+	params.axis = vec3_norm(vec3_cross(vec3_sub(v[1], v[0]), 
+				vec3_sub(v[2], v[0])));
+	params.extents.x = (float)vec3_mag(vec3_sub(v[1], v[0]));
+	params.extents.y = (float)vec3_mag(vec3_sub(v[2], v[0]));
+	params.tangent = vec3_norm(vec3_sub(v[1], v[0]));
+	params.mat_id = scene_add_material(scene, color);
+	return (scene_add_primitive(scene, params, PRIM_RECT));
 }
 

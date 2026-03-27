@@ -10,34 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
-
-static bool	scene_add_pyramid(t_scene *scene, t_pyramid pyramid)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->pyramids, &scene->pyramid_count,
-			&scene->pyramid_cap, sizeof(t_pyramid)))
-		return (false);
-	if (vec3_mag_sq(pyramid.transform.scale) < SCALE_EPSILON)
-		pyramid.transform.scale = vec3(1, 1, 1);
-	scene->pyramids[scene->pyramid_count++] = pyramid;
-	return (true);
-}
+#include "loader.h"
 
 bool	parse_pyramid(t_scene *scene, t_parser *p)
 {
-	t_pyramid	py;
-	t_vec3		color;
+	t_prim_params	params;
+	t_vec3			color;
 
-	ft_memset(&py, 0, sizeof(t_pyramid));
-	if (!parse_vec3(p, &py.transform.pos) || !parse_vec3(p, &py.up))
+	ft_memset(&params, 0, sizeof(t_prim_params));
+	if (!parse_vec3(p, &params.pos) || !parse_vec3(p, &params.axis))
 		return (false);
-	py.base_size = parse_double(p);
-	py.height = parse_double(p);
+	params.extents.x = (float)parse_double(p);
+	params.height = (float)parse_double(p);
 	if (!parse_vec3(p, &color))
 		return (false);
-	py.up = vec3_norm(py.up);
-	py.mat_id = scene_add_material(scene, color);
-	if (py.mat_id < 0)
-		return (false);
-	return (scene_add_pyramid(scene, py));
+	params.axis = vec3_norm(params.axis);
+	params.mat_id = scene_add_material(scene, color);
+	return (scene_add_primitive(scene, params, PRIM_PYRAMID));
 }

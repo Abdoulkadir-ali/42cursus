@@ -15,6 +15,10 @@
 
 # include "objects.h"
 
+typedef struct s_animation		t_animation;
+typedef struct s_skinned_mesh		t_skinned_mesh;
+typedef struct s_emissive_ref		t_emissive_ref;
+
 typedef struct s_scene
 {
 	char							*name;
@@ -45,6 +49,7 @@ typedef struct s_scene
 	size_t							clip_cap;
 	uint32_t						version;
 	void							*mlx;
+	void							*physics;    /* Opaque pointer to t_physics engine */
 	t_emissive_ref					*emissive_cache;
 	bool							simulate_physics;
 }	t_scene;
@@ -55,7 +60,12 @@ typedef struct s_scene
 
 t_scene		*create_scene(const char *name);
 void		destroy_scene(t_scene *scene);
-bool		scene_add_primitive(t_scene *scene, t_primitive_array p_data, int type);
+bool		scene_add_primitive(t_scene *scene, t_prim_params params, 
+					t_prim_type type);
 bool		scene_add_mesh(t_scene *scene, t_mesh mesh);
+int			scene_add_material(t_scene *scene, t_vec3 color);
+bool		scene_add_light(t_scene *scene, t_light light);
+bool		scene_add_tri(t_scene *scene, t_vec3 v[3], int mat_id);
+void		scene_invalidate(t_scene *scene);
 
 #endif

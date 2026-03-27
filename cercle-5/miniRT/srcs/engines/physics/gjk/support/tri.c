@@ -6,19 +6,24 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 20:40:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
 /**
- * @brief GJK support point for a triangle. Uses pre-built world-space verts.
+ * @brief DOD-compliant GJK support point for a standalone triangle.
+ * Fetches vertices directly from the scene's triangle SoA (tri_soa).
  */
-t_vec3	gjk_support_tri(const void *data, t_vec3 dir)
+t_vec3	gjk_support_tri(const t_gjk_shape *s, t_vec3 dir)
 {
-	const t_tri_shape	*tr;
+	t_tri_array	*t;
+	t_vec3		v[3];
 
-	tr = (const t_tri_shape *)data;
-	return (gjk_support_list(tr->v, 3, dir));
+	t = &s->scene->tri_soa;
+	v[0] = vec3(t->vx0[s->idx], t->vy0[s->idx], t->vz0[s->idx]);
+	v[1] = vec3(t->vx1[s->idx], t->vy1[s->idx], t->vz1[s->idx]);
+	v[2] = vec3(t->vx2[s->idx], t->vy2[s->idx], t->vz2[s->idx]);
+	return (gjk_support_list(v, 3, dir));
 }

@@ -6,53 +6,53 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 19:45:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
 /**
- * @brief Global integration loop. 
- * Orchestrates objects through the Chef de Gare (dispatcher).
- * Compound bodies use the AAA path; primitives use Legacy integrators.
+ * @brief Unified DOD motion update for a single primitive.
+ */
+void	integrate_prim(t_scene *scene, int i, double dt)
+{
+	t_primitive_array	*p;
+	t_transform			t;
+
+	p = &scene->primitives;
+	t.pos.x = (double)p->px[i];
+	t.pos.y = (double)p->py[i];
+	t.pos.z = (double)p->pz[i];
+	t.rotation.pitch = (double)p->ax[i];
+	t.rotation.yaw = (double)p->ay[i];
+	t.rotation.roll = (double)p->az[i];
+	phys_dispatch_object(p->physics[i], &t, dt);
+	p->px[i] = (float)t.pos.x;
+	p->py[i] = (float)t.pos.y;
+	p->pz[i] = (float)t.pos.z;
+	p->ax[i] = (float)t.rotation.pitch;
+	p->ay[i] = (float)t.rotation.yaw;
+	p->az[i] = (float)t.rotation.roll;
+}
+
+/**
+ * @brief Unified DOD integration loop for all scene primitives.
+ * Directly updates component arrays in the SoA.
  */
 void	integrate_bodies(t_scene *scene, double dt)
 {
-	int	i;
+	t_primitive_array	*p;
+	size_t				i;
 
-	if (!scene)
+	if (scene == NULL)
 		return ;
-	i = -1;
-	while (++i < scene->sphere_count)
+	p = &scene->primitives;
+	i = 0;
+	while (i < p->count)
 	{
-		if (scene->spheres[i].phys.is_compound)
-			phys_dispatch_object(&scene->spheres[i].phys, &scene->spheres[i].transform, dt);
-		else
-			integrate_sphere(&scene->spheres[i], dt);
-	}
-	i = -1;
-	while (++i < scene->box_count)
-	{
-		if (scene->boxes[i].phys.is_compound)
-			phys_dispatch_object(&scene->boxes[i].phys, &scene->boxes[i].transform, dt);
-		else
-			integrate_box(&scene->boxes[i], dt);
-	}
-	i = -1;
-	while (++i < scene->capsule_count)
-	{
-		if (scene->capsules[i].phys.is_compound)
-			phys_dispatch_object(&scene->capsules[i].phys, &scene->capsules[i].transform, dt);
-		else
-			integrate_capsule(&scene->capsules[i], dt);
-	}
-	i = -1;
-	while (++i < scene->cylinder_count)
-	{
-		if (scene->cylinders[i].phys.is_compound)
-			phys_dispatch_object(&scene->cylinders[i].phys, &scene->cylinders[i].transform, dt);
-		else
-			integrate_cylinder(&scene->cylinders[i], dt);
+		if (p->physics[i] != NULL && !p->physics[i]->is_static)
+			integrate_prim(scene, (int)i, dt);
+		i++;
 	}
 }

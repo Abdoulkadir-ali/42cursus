@@ -19,7 +19,7 @@
 t_vec3	md_support(t_gjk_shape *a, t_gjk_shape *b, t_vec3 dir,
 		t_vec3 *pa, t_vec3 *pb)
 {
-	*pa = a->support(a->data, dir);
-	*pb = b->support(b->data, vec3_scale(dir, -1.0));
+	*pa = a->support(a, dir);
+	*pb = b->support(b, vec3_scale(dir, -1.0));
 	return (vec3_sub(*pa, *pb));
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 02:45:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 19:26:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,36 @@
 
 # include <stdint.h>
 # include <stddef.h>
-# include "math_mini.h"
-# include "material.h"
+# include "maths.h"
+# include "surface.h"
+
+typedef struct s_ambient
+{
+	double		brightness;
+	t_vec3		rgb;
+}	t_ambient;
+
+typedef struct s_camera
+{
+	t_transform	transform;
+	double		fov;
+	double		aspect;
+}	t_camera;
+
+typedef enum e_light_type
+{
+	LIGHT_POINT,
+	LIGHT_SPOT
+}	t_light_type;
+
+typedef struct s_light
+{
+	t_light_type	type;
+	t_transform		transform;
+	double			brightness;
+	t_vec3			rgb;
+	double			cutoff;
+}	t_light;
 
 typedef enum e_prim_type
 {
@@ -28,49 +56,73 @@ typedef enum e_prim_type
 	PRIM_TRIANGLE,
 	PRIM_RECT,
 	PRIM_BOX,
-	PRIM_CAPSULE
+	PRIM_CAPSULE,
+	PRIM_PYRAMID
 }	t_prim_type;
+ 
+typedef struct s_prim_params
+{
+	t_vec3		pos;
+	t_vec3		axis;
+	t_vec3		tangent;
+	float		radius;
+	float		height;
+	t_vec3		extents;
+	int			mat_id;
+}	t_prim_params;
 
 /**
  * @brief Unified Primitive Array in SoA (Structure of Arrays) layout.
- * Optimized for massive scenes with size_t capacities.
+ * Optimized with float precision for maximum SIMD throughput.
  */
 typedef struct s_primitive_array
 {
-	uint8_t		*types;      /* 1 byte per primitive */
-	t_vec3		*positions;  /* World-space positions */
-	t_vec3		*axes;       /* Shared axis/normals */
-	float		*radii;      /* For spheres, cylinders, cones, capsules */
-	float		*heights;    /* For cylinders, cones, pyramids */
-	uint16_t	*mat_ids;    /* Memory-efficient material mapping */
-	size_t		count;
-	size_t		capacity;
+	uint8_t		*types;      /* 1 byte per primitive: e_prim_type */
+	float		*px;         /* Position component X */
+	float		*py;         /* Position component Y */
+	float		*pz;         /* Position component Z */
+	float		*ax;         /* Normal/Axis component X (primary axis) */
+	float		*ay;         /* Normal/Axis component Y (primary axis) */
+	float		*az;         /* Normal/Axis component Z (primary axis) */
+	float		*tx;         /* Tangent component X (local basis orientation) */
+	float		*ty;         /* Tangent component Y (local basis orientation) */
+	float		*tz;         /* Tangent component Z (local basis orientation) */
+	float		*radii;      /* Sphere/Cyl/Capsule radii */
+	float		*heights;    /* Cyl/Capsule/Pyramid full heights */
+	float		*ex;         /* Extent X: half-width for Box/Rect/Pyramid */
+	float		*ey;         /* Extent Y: half-height for Box/Rect */
+	float		*ez;         /* Extent Z: half-depth for Box/Rect/Pyramid */
+	uint16_t	*mat_ids;    /* Material pool indices */
+	struct s_physics_body **physics; /* Pointers to physics controllers */
+	size_t		count;       /* Active primitive count */
+	size_t		capacity;    /* Allocated capacity */
 }	t_primitive_array;
 
 /**
  * @brief Structure of Arrays (SoA) for Triangles.
- * Now includes pre-computed tangents for branchless bump mapping.
+ * Uses float precision and parallel components for AVX/SSE batch processing.
+ * Includes pre-computed world-space normals and tangents.
  */
 typedef struct s_tri_array
 {
-	double		*vx[3];
-	double		*vy[3];
-	double		*vz[3];
-	double		*ex[2];
-	double		*ey[2];
-	double		*ez[2];
-	double		*nx;    /* Pre-computed face normals */
-	double		*ny;
-	double		*nz;
-	double		*tx;    /* Pre-computed world-space tangents */
-	double		*ty;
-	double		*tz;
+	float		*vx[3];
+	float		*vy[3];
+	float		*vz[3];
+	float		*ex[2];
+	float		*ey[2];
+	float		*ez[2];
+	float		*nx;    /* Face normal components */
+	float		*ny;
+	float		*nz;
+	float		*tx;    /* Surface tangent components */
+	float		*ty;
+	float		*tz;
 	uint16_t	*mat_ids;
 	size_t		count;
 	size_t		cap;
 }	t_tri_array;
 
-/* Mesh data kept for intermediate processing before SoA flattening */
+/* Intermediate mesh structure used during loading phase */
 typedef struct s_mesh
 {
 	t_vec3		*vertices;

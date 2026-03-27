@@ -34,6 +34,12 @@ static void	sync_group_materials(t_gui *gui)
 	}
 }
 
+static void	material_sync_invalidate(t_gui *gui)
+{
+	sync_group_materials(gui);
+	scene_invalidate(gui->scene);
+}
+
 bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 {
 	t_material	*mat;
@@ -49,14 +55,13 @@ bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	x = gui->win.disp_w - gui->inspector->width;
 	build_mat_sliders(mat, sl, &count);
 	y = 104;
-	i = 0;
-	while (i < count)
+	i = -1;
+	while (++i < count)
 	{
 		if (try_islider_click(gui, mouse, (t_slider_arg){vec2i(x + 8, y),
-				sl[i], sync_group_materials}))
+				sl[i], material_sync_invalidate}))
 			return (true);
 		y += 30;
-		i++;
 	}
 	return (false);
 }

@@ -17,17 +17,15 @@
  */
 bool	parse_sphere(t_scene *scene, t_parser *p)
 {
-	t_primitive_array	data;
-	t_vec3				color;
-	float				diameter;
+	t_prim_params	params;
+	t_vec3			color;
 
-	ft_memset(&data, 0, sizeof(t_primitive_array));
-	if (!parse_vec3(p, &data.positions[0]))
+	ft_memset(&params, 0, sizeof(t_prim_params));
+	if (!parse_vec3(p, &params.pos))
 		return (false);
-	diameter = (float)parse_double(p);
+	params.radius = (float)parse_double(p) / 2.0f;
 	if (!parse_vec3(p, &color))
 		return (false);
-	data.radii[0] = diameter / 2.0f;
-	data.mat_ids[0] = (uint16_t)scene_add_material(scene, color);
-	return (scene_add_primitive(scene, data, PRIM_SPHERE));
+	params.mat_id = scene_add_material(scene, color);
+	return (scene_add_primitive(scene, params, PRIM_SPHERE));
 }

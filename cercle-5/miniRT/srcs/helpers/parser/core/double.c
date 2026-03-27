@@ -100,3 +100,12 @@ double	parse_double(t_parser *p)
 	result *= parse_exponent_part(p);
 	return (result * sign);
 }
+
+bool	parse_double_checked(t_parser *p, double *out)
+{
+	parser_skip_spaces(p);
+	if (!ft_isdigit(parser_peek(p)) && parser_peek(p) != '-' && parser_peek(p) != '+')
+		return (false);
+	*out = parse_double(p);
+	return (true);
+}

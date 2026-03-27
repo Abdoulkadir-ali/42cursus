@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
+#include "loader.h"
 
 static bool	dispatch_basic(t_scene *scene, t_parser *p, char *id)
 {

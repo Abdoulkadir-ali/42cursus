@@ -10,32 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
-
-static bool	scene_add_box(t_scene *scene, t_box box)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->boxes, &scene->box_count,
-			&scene->box_cap, sizeof(t_box)))
-		return (false);
-	if (vec3_mag_sq(box.transform.scale) < SCALE_EPSILON)
-		box.transform.scale = vec3(1, 1, 1);
-	scene->boxes[scene->box_count++] = box;
-	return (true);
-}
+#include "loader.h"
 
 bool	parse_box(t_scene *scene, t_parser *p)
 {
-	t_box	box;
-	t_vec3	color;
+	t_prim_params	params;
+	t_vec3			color;
 
-	ft_memset(&box, 0, sizeof(t_box));
-	if (!parse_vec3(p, &box.transform.pos))
+	ft_memset(&params, 0, sizeof(t_prim_params));
+	if (!parse_vec3(p, &params.pos))
 		return (false);
-	if (!parse_vec3(p, &box.half_extents))
+	if (!parse_vec3(p, &params.extents))
 		return (false);
 	if (!parse_vec3(p, &color))
 		return (false);
-	box.mat_id = scene_add_material(scene, color);
-	return (scene_add_box(scene, box));
+	params.mat_id = scene_add_material(scene, color);
+	return (scene_add_primitive(scene, params, PRIM_BOX));
 }
 

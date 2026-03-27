@@ -38,11 +38,8 @@ void	select_object(t_gui *gui, t_type type, int index)
     }
     else
     {
-        t_bvh_ref	ref;
-
-        ref.type = (uint8_t)type;
-        ref.index = index;
-        gui->selection->bbox = aabb_from_ref(gui->scene, ref);
+        gui->selection->bbox = get_primitive_aabb_soa(&gui->scene->primitives,
+                index);
     }
     gui->inspector->visible = true;
     if (type == TYPE_MESH)

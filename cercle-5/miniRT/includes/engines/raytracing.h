@@ -55,12 +55,13 @@ typedef struct s_rt_material
 	int			normal_map_idx;  /* -1 if none */
 }				t_rt_material;
 
-typedef struct __attribute__((packed)) s_bvh_node
+typedef struct s_bvh_node
 {
-	t_aabb					bbox;
-	int						left_or_first;
-	int						count;
-}							t_bvh_node;
+	float		min[3];
+	float		max[3];
+	int			left_or_first;
+	int			count;
+}	__attribute__((aligned(32))) t_bvh_node;
 
 typedef struct s_bvh
 {
@@ -150,6 +151,7 @@ bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref, t_hit *hi
 
 /* --- SHADING --- */
 t_vec3	calc_light(t_shading *sha, t_light light);
+void	add_emissive_lighting(t_shading *sha, t_scene *sc, t_vec3 *total);
 void	apply_bump(t_shading *sha);
 t_vec3	pixel_color(t_vec3 obj, t_vec3 light, double intensity);
 t_vec3	clamp_color(t_vec3 color);

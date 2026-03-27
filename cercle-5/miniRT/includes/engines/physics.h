@@ -64,7 +64,7 @@ typedef t_vec3			(*t_support_fn)(const void *shape, t_vec3 dir);
 
 typedef struct s_sub_shape
 {
-	void				*shape;
+	int					shape_idx;
 	t_aabb				local_aabb;
 	t_vec3				offset;
 	t_mat4				transform;
@@ -84,7 +84,7 @@ typedef struct s_physics_body
 	bool				is_static;
 	bool				is_compound;
 	t_vec3				center;
-	void				*owner;
+	int					owner_idx;
 	t_transform			*transform;
 	t_sub_shape			sub_shapes[MAX_SUB_SHAPES];
 	size_t				sub_count;
@@ -138,7 +138,7 @@ typedef struct s_dbvt_leaf
 	t_aabb				fat_aabb;
 	t_physics_body		*body;
 	t_transform			*transform;
-	void				*shape;
+	int					shape_idx;
 	t_support_fn		support;
 	t_phys_type			type;
 }						t_dbvt_leaf;
@@ -262,12 +262,16 @@ typedef struct s_epa_res
 	void				*f;
 }						t_epa_res;
 
-typedef struct s_gjk_shape
+typedef struct s_gjk_shape	t_gjk_shape;
+typedef t_vec3				(*t_support_fn)(const t_gjk_shape *s, t_vec3 dir);
+
+struct s_gjk_shape
 {
-	const void			*data;
+	struct s_scene		*scene;
+	int					idx;
 	t_support_fn		support;
 	t_vec3				center;
-}						t_gjk_shape;
+};
 
 /* --------------------------- end physics types --------------------------- */
 
@@ -309,18 +313,18 @@ void					phys_simulate(t_physics *phys, double dt);
 void					physics_shoot_ray(struct s_scene *scene, t_ray ray,
 							double impulse);
 t_physics_body			*get_body_ref(struct s_scene *scene, t_bvh_ref ref);
-int						query_sphere(struct s_scene *s, int idx, t_contact *c,
+int						query_prim(struct s_scene *s, int idx, t_contact *c,
 							int count, int max);
-int						sphere_plane_contacts(struct s_scene *s, t_sphere *sp,
+int						prim_plane_contacts(struct s_scene *s, int idx,
 							t_gjk_shape *sa_gjk, t_contact *c, int count,
 							int max);
-int						sphere_others_contacts(struct s_scene *s, int idx,
-							t_sphere *sp, t_aabb sa, t_gjk_shape *sa_gjk,
+int						prim_others_contacts(struct s_scene *s, int idx,
+							t_aabb sa, t_gjk_shape *sa_gjk,
 							t_contact *c, int count, int max);
 int						traverse_bvh_contacts(struct s_scene *s, int idx,
-							t_sphere *sp, t_aabb saabb, t_contact *c, int count,
+							t_aabb saabb, t_contact *c, int count,
 							int max);
-bool					detect_sphere_mesh_collision(const t_sphere *sp,
+bool					detect_prim_mesh_collision(struct s_scene *s, int idx,
 							struct s_mesh *m, t_vec3 *n, double *p);
 
 /* Compound Body */
@@ -379,13 +383,8 @@ void					init_polytope(t_epa_poly *p, t_simplex *s);
 void					get_contact_points(t_epa_poly *p, t_epa_face *f,
 							t_vec3 *pa, t_vec3 *pb);
 t_vec3					rot_by_ang(t_vec3 a, t_vec3 rot, double dt);
-void					integrate_sphere(t_sphere *sp, double dt);
-void					integrate_box(t_box *bx, double dt);
-void					integrate_capsule(t_capsule *cap, double dt);
-void					integrate_cylinder(t_cylinder *cy, double dt);
-void					integrate_rect(t_rect *rc, double dt);
-void					integrate_tri(t_tri_shape *tr, double dt);
-void					integrate_pyramid(t_pyramid *py, double dt);
+void					integrate_prim(struct s_scene *scene, int idx,
+							double dt);
 void					phys_dispatch_object(t_physics_body *b, t_transform *t,
 							double dt);
 void					phys_resolve_ccd(struct s_scene *s, t_physics_body *b,
@@ -402,10 +401,11 @@ void					apply_friction(t_contact *ct, double inv_a,
 							double inv_b, t_vec3 rv);
 t_vec3					md_support(t_gjk_shape *a, t_gjk_shape *b, t_vec3 dir,
 							t_vec3 *pa, t_vec3 *pb);
-int						pyramid_vs_plane(t_pyramid *py, t_plane *pl,
-							t_contact *c, int max_c);
-int						gjk_vs_plane(t_gjk_shape *sa, t_physics_body *ba,
-							t_transform *ta, t_plane *pl, t_contact *c);
+int						prim_vs_plane(struct s_scene *s, int prim_idx,
+							int plane_idx, t_contact *c, int max_c);
+int						gjk_vs_plane(struct s_scene *s, t_gjk_shape *sa,
+							t_physics_body *ba, t_transform *ta, int plane_idx,
+							t_contact *c);
 int						gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
 							t_physics_body *ba, t_physics_body *bb,
 							t_transform *ta, t_transform *tb, t_contact *c);
@@ -421,32 +421,8 @@ void					build_dbvt(struct s_scene *s, t_dbvt *t);
 int						dbvt_query_pairs(t_dbvt *t, t_body_pair *out, int max);
 
 /* Primitive-Specific */
-int						rect_vs_plane(t_rect *rc, t_plane *pl, t_contact *c,
-							int max_c);
-int						rect_vs_others(t_scene *s, int idx, t_rect *rc,
-							t_aabb raabb, t_contact *c, int count, int max);
-int						gjk_vs_rect(t_gjk_shape *sa, t_physics_body *ba,
-							t_transform *ta, t_rect *rc, t_contact *c);
-int						gjk_vs_tri(t_gjk_shape *sa, t_physics_body *ba,
-							t_transform *ta, t_tri_shape *tr, t_contact *c);
-int						gjk_vs_pyramid(t_gjk_shape *sa, t_physics_body *ba,
-							t_transform *ta, t_pyramid *py, t_contact *c);
-int						box_vs_plane(t_box *bx, t_plane *pl, t_contact *c,
-							int max_c);
-int						box_vs_others(t_scene *s, int idx, t_box *bx, t_aabb ba,
-							t_contact *c, int count, int max);
-int						capsule_plane_contacts(t_scene *s, t_capsule *cap,
-							t_gjk_shape *sa, t_contact *c, int count, int max);
-int						cap_vs_others(t_scene *s, int idx, t_capsule *cap,
-							t_aabb ca, t_contact *c, int count, int max);
-int						tri_vs_plane(t_tri_shape *tr, t_plane *pl, t_contact *c,
-							int max_c);
-int						tri_vs_others(t_scene *s, int idx, t_tri_shape *tr,
-							t_aabb ta, t_contact *c, int count, int max);
-int						cyl_plane_contacts(t_scene *s, t_cylinder *cy,
-							t_gjk_shape *sa, t_contact *c, int count, int max);
-int						cyl_vs_others(t_scene *s, int idx, t_cylinder *cy,
-							t_aabb ca, t_contact *c, int count, int max);
+int						gjk_vs_others(struct s_scene *s, int idx,
+							t_aabb saabb, t_contact *c, int count, int max);
 bool					simplex_line(t_simplex *s, t_vec3 *dir);
 bool					simplex_triangle(t_simplex *s, t_vec3 *dir);
 bool					simplex_tetrahedron(t_simplex *s, t_vec3 *dir);

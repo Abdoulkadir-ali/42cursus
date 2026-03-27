@@ -53,7 +53,13 @@ typedef struct s_texture
 	double			scale;
 	int				width;
 	int				height;
-	char			*path;       /* Track resource identity only */
+	int				bpp;
+	int				len;
+	int				endian;
+	unsigned char	*addr;
+	void			*img;        /* Legacy MLX ref if needed */
+	int				pool_idx;    /* DOD: Texture pool mapping */
+	char			*path;       /* Track resource identity */
 }				t_texture;
 
 typedef struct s_material

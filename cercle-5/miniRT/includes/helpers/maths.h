@@ -63,8 +63,8 @@ typedef struct s_ray
 
 typedef struct s_aabb
 {
-	t_vec3		min;
-	t_vec3		max;
+	float		min[3];
+	float		max[3];
 }				t_aabb;
 
 typedef struct s_rotator

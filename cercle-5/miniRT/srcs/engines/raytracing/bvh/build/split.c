@@ -6,96 +6,109 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 06:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 04:10:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-static double	compute_split_cost(t_build_item *items, size_t split,
-		size_t count, double p_area)
+#define SAH_BINS 16
+
+typedef struct s_sah_bin
 {
-	t_aabb	left_box;
-	t_aabb	right_box;
+	t_aabb	bounds;
+	int		count;
+}	t_sah_bin;
+
+/**
+ * @brief Performs high-performance O(n) binning for SAH split evaluation.
+ * Uses pre-computed centroids to avoid redundant floating-point calculations.
+ */
+static void	fill_bins(t_build_item *items, size_t count, t_sah_bin *bins,
+				int axis, float min_c, float scale)
+{
 	size_t	i;
-	double	cost;
+	int		bin_idx;
+	float	val;
 
-	left_box = aabb_create_empty();
-	right_box = aabb_create_empty();
 	i = 0;
-	while (i < split)
-		left_box = aabb_union(&left_box, &items[i++].bbox);
 	while (i < count)
-		right_box = aabb_union(&right_box, &items[i++].bbox);
-	cost = 1.0 + (aabb_surface_area(left_box) / p_area) * split * 2.0
-		+ (aabb_surface_area(right_box) / p_area) * (count - split) * 2.0;
-	return (cost);
-}
-
-static void	find_best_split_for_axis(t_build_item *items, size_t count,
-				double p_area, t_split_info *info)
-{
-	int		s;
-	size_t	split;
-	double	cost;
-
-	s = 1;
-	while (s < 32)
 	{
-		split = (count * s) / 32;
-		if (split < 1 || split >= count)
-		{
-			s++;
-			continue ;
-		}
-		cost = compute_split_cost(items, split, count, p_area);
-		if (cost < info->cost)
-		{
-			info->cost = cost;
-			info->split = split;
-		}
-		s++;
+		val = ((float *)&items[i].centroid.x)[axis];
+		bin_idx = (int)((val - min_c) * scale);
+		if (bin_idx < 0) bin_idx = 0;
+		if (bin_idx >= SAH_BINS) bin_idx = SAH_BINS - 1;
+		bins[bin_idx].count++;
+		bins[bin_idx].bounds = aabb_union(&bins[bin_idx].bounds, &items[i].bbox);
+		i++;
 	}
 }
 
-static t_split_info	try_axis_splits(t_build_item *items, size_t count,
-						double p_area, int axis)
+/**
+ * @brief Evaluates all possible splits in O(SAH_BINS) after binning.
+ */
+static void	eval_bins(t_sah_bin *bins, float p_area, t_split_info *info, int axis)
 {
-	t_split_info	info;
+	t_aabb	left_box[SAH_BINS - 1];
+	t_aabb	right_box[SAH_BINS - 1];
+	int		left_cnt[SAH_BINS - 1];
+	int		right_cnt[SAH_BINS - 1];
+	int		i;
+	float	cost;
 
-	if (axis == 0)
-		qsort(items, count, sizeof(t_build_item), compare_x);
-	else if (axis == 1)
-		qsort(items, count, sizeof(t_build_item), compare_y);
-	else
-		qsort(items, count, sizeof(t_build_item), compare_z);
-	info.axis = axis;
-	info.split = 0;
-	info.cost = count * 2.0;
-	find_best_split_for_axis(items, count, p_area, &info);
-	return (info);
+	/* Forward pass */
+	left_box[0] = bins[0].bounds; left_cnt[0] = bins[0].count;
+	i = 0;
+	while (++i < SAH_BINS - 1)
+	{
+		left_box[i] = aabb_union(&left_box[i - 1], &bins[i].bounds);
+		left_cnt[i] = left_cnt[i - 1] + bins[i].count;
+	}
+	/* Backward pass */
+	right_box[SAH_BINS - 2] = bins[SAH_BINS - 1].bounds;
+	right_cnt[SAH_BINS - 2] = bins[SAH_BINS - 1].count;
+	i = SAH_BINS - 2;
+	while (--i >= 0)
+	{
+		right_box[i] = aabb_union(&right_box[i + 1], &bins[i + 1].bounds);
+		right_cnt[i] = right_cnt[i + 1] + bins[i + 1].count;
+	}
+	/* Select min cost */
+	i = -1;
+	while (++i < SAH_BINS - 1)
+	{
+		cost = 1.0f + (aabb_surface_area(left_box[i]) / p_area) * left_cnt[i]
+				+ (aabb_surface_area(right_box[i]) / p_area) * right_cnt[i];
+		if (cost < info->cost)
+		{
+			info->cost = (double)cost; info->axis = axis; info->split = i;
+		}
+	}
 }
 
 /**
- * @brief Searches for the best split axis and position using Surface Area Heuristic.
+ * @brief DOD-optimized split search using 16-bin Surface Area Heuristic.
  */
-t_split_info	find_best_split(t_build_item *items, size_t count,
-		double p_area)
+t_split_info	find_best_split(t_build_item *items, size_t count, double p_area)
 {
 	t_split_info	info;
-	int				axis;
-	t_split_info	axis_info;
+	t_sah_bin		bins[SAH_BINS];
+	t_aabb			centroid_bounds;
+	int				a;
 
-	info.axis = -1;
-	info.split = 0;
-	info.cost = count * 2.0;
-	axis = 0;
-	while (axis < 3)
+	info.axis = -1; info.cost = (double)count;
+	centroid_bounds = aabb_create_empty();
+	a = -1;
+	while (++a < (int)count)
+		aabb_expand_point(&centroid_bounds, items[a].centroid);
+	a = -1;
+	while (++a < 3)
 	{
-		axis_info = try_axis_splits(items, count, p_area, axis);
-		if (axis_info.cost < info.cost)
-			info = axis_info;
-		axis++;
+		float range = centroid_bounds.max[a] - centroid_bounds.min[a];
+		if (range < 1e-4f) continue ;
+		ft_memset(bins, 0, sizeof(bins));
+		fill_bins(items, count, bins, a, centroid_bounds.min[a], SAH_BINS / range);
+		eval_bins(bins, (float)p_area, &info, a);
 	}
 	return (info);
 }

@@ -20,14 +20,14 @@ bool	parse_obj_entry(t_scene *scene, t_parser *p)
 {
 	char	path[1024];
 	t_vec3	over[4];
-	double	s;
 	bool	res;
+	(void)res;
 
 	if (!parser_get_next_word(p, path, 1024))
 		return (false);
 	parse_vec3(p, &over[0]);
 	parse_vec3(p, &over[1]);
-	s = parse_double(p);
+	parse_double(p);
 	parse_vec3(p, &over[2]);
 	parse_vec3(p, &over[3]);
 	/* OBJ loader in our engine directly adds meshes to scene */

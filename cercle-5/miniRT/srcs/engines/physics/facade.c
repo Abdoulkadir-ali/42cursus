@@ -1,84 +1,58 @@
-/* Minimal physics facade: create/bake/step t_physics on demand for a scene.
- * This file keeps the association between `t_scene*` and `t_physics*` local
- * to the physics implementation so `scene.h` does not need to embed physics.
- */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   facade.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/28 01:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 03:30:00 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "physics.h"
-#include "debug.h"
 #include <stdlib.h>
 
-struct s_scene_phys_map
+/**
+ * @brief Minimal physics facade: manages t_physics lifecycle directly inside t_scene.
+ * Eliminates legacy global mapping and ensures 100% memory safety.
+ */
+void	simulate_physics(t_scene *scene, double dt)
 {
-    t_scene *scene;
-    t_physics *phys;
-    struct s_scene_phys_map *next;
-};
+	t_physics	*phys;
 
-static struct s_scene_phys_map *g_map_head = NULL;
-
-static t_physics *get_mapped_phys(t_scene *scene)
-{
-    struct s_scene_phys_map *it = g_map_head;
-
-    while (it)
-    {
-        if (it->scene == scene)
-            return it->phys;
-        it = it->next;
-    }
-    return NULL;
+	if (scene == NULL)
+		return ;
+	phys = (t_physics *)scene->physics;
+	if (phys == NULL)
+	{
+		phys = phys_create(scene);
+		if (phys == NULL)
+			return ;
+		scene->physics = phys;
+	}
+	if (scene->simulate_physics)
+	{
+		/* Synchronize simulation state with the unified scene DOD buffers */
+		if (phys->needs_bake || phys->baked_version != scene->version)
+		{
+			phys_bake_scene(phys, scene);
+			phys->baked_version = scene->version;
+			phys->needs_bake = false;
+		}
+		update_physics(scene, dt);
+	}
 }
 
-static void map_phys(t_scene *scene, t_physics *phys)
+/**
+ * @brief Clean-up entry for the physics engine.
+ * To be called by destroy_scene to prevent orphaned physics resources.
+ */
+void	physics_destroy(t_scene *scene)
 {
-    struct s_scene_phys_map *n = malloc(sizeof(*n));
-    if (!n)
-        return;
-    n->scene = scene;
-    n->phys = phys;
-    n->next = g_map_head;
-    g_map_head = n;
-}
-
-void simulate_physics(t_scene *scene, double dt)
-{
-    t_physics *phys = get_mapped_phys(scene);
-
-    if (!phys)
-    {
-        phys = phys_create(scene);
-        if (!phys)
-            return;
-        map_phys(scene, phys);
-    }
-    if (scene->simulate_physics)
-    {
-        if (phys->needs_bake || phys->baked_version != scene->version)
-        {
-            phys_bake_scene(phys, scene);
-            phys->baked_version = scene->version;
-            phys->needs_bake = false;
-        }
-        update_physics(scene, dt);
-    }
-}
-
-void update_physics_settings(t_physics *phys, const t_physics_settings *s)
-{
-    if (!phys || !s)
-        return;
-    phys->damping = s->damping;
-    phys->solver_iters = s->solver_iters;
-    phys->fixed_dt = s->fixed_dt;
-    phys->gravity = s->gravity;
-}
-
-void get_physics_settings(const t_physics *phys, t_physics_settings *out)
-{
-    if (!phys || !out)
-        return;
-    out->damping = phys->damping;
-    out->solver_iters = phys->solver_iters;
-    out->fixed_dt = phys->fixed_dt;
-    out->gravity = phys->gravity;
+	if (scene && scene->physics)
+	{
+		phys_destroy((t_physics *)scene->physics);
+		scene->physics = NULL;
+	}
 }

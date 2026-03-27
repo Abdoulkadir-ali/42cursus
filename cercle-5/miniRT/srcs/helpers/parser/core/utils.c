@@ -74,3 +74,26 @@ bool	parser_get_line(t_parser *p, char *buf, size_t max_len)
 	buf[i] = '\0';
 	return (true);
 }
+
+/**
+ * @brief Aggressive word extraction: skips leading spaces and reads up to whitespace.
+ */
+bool	parser_get_next_word(t_parser *p, char *buf, size_t max_len)
+{
+	size_t	i;
+	char	c;
+
+	parser_skip_spaces(p);
+	i = 0;
+	c = parser_peek(p);
+	if (!c && p->eof)
+		return (false);
+	while (c && !ft_isspace(c) && i < max_len - 1)
+	{
+		buf[i++] = c;
+		parser_advance(p);
+		c = parser_peek(p);
+	}
+	buf[i] = '\0';
+	return (i > 0);
+}

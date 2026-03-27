@@ -10,34 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
-
-static bool	scene_add_capsule(t_scene *scene, t_capsule capsule)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->capsules, &scene->capsule_count,
-			&scene->capsule_cap, sizeof(t_capsule)))
-		return (false);
-	if (vec3_mag_sq(capsule.transform.scale) < SCALE_EPSILON)
-		capsule.transform.scale = vec3(1, 1, 1);
-	scene->capsules[scene->capsule_count++] = capsule;
-	return (true);
-}
+#include "loader.h"
 
 bool	parse_capsule(t_scene *scene, t_parser *p)
 {
-	t_capsule	cp;
-	t_vec3		color;
+	t_prim_params	params;
+	t_vec3			color;
 
-	ft_memset(&cp, 0, sizeof(t_capsule));
-	if (!parse_vec3(p, &cp.transform.pos))
+	ft_memset(&params, 0, sizeof(t_prim_params));
+	if (!parse_vec3(p, &params.pos))
 		return (false);
-	if (!parse_vec3(p, &cp.axis))
+	if (!parse_vec3(p, &params.axis))
 		return (false);
-	cp.radius = parse_double(p);
-	cp.half_height = parse_double(p);
+	params.radius = (float)parse_double(p);
+	params.height = (float)parse_double(p) * 2.0f;
 	if (!parse_vec3(p, &color))
 		return (false);
-	cp.axis = vec3_norm(cp.axis);
-	cp.mat_id = scene_add_material(scene, color);
-	return (scene_add_capsule(scene, cp));
+	params.axis = vec3_norm(params.axis);
+	params.mat_id = scene_add_material(scene, color);
+	return (scene_add_primitive(scene, params, PRIM_CAPSULE));
 }

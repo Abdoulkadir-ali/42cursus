@@ -13,14 +13,11 @@
 #include "editor.h"
 static void	*get_tr_cb(t_type type, int i)
 {
-	if (type == TYPE_SPHERE && i == 6)
-		return (sphere_scale_sync);
-	if (type == TYPE_BOX && i >= 6)
-		return (box_scale_sync);
-	if (type == TYPE_CAPSULE && i >= 6)
-		return (capsule_dims_sync);
+	(void)i;
 	if (type == TYPE_MESH)
 		return (mesh_transform_sync);
+	if (type >= TYPE_SPHERE && type <= TYPE_PYRAMID)
+		return (primitive_transform_sync);
 	return (NULL);
 }
 

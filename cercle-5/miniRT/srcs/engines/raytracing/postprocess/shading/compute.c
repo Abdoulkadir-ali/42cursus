@@ -110,7 +110,7 @@ t_vec3	compute_color(t_hit *hit, t_rt_engine *rt,
 			total = vec3_add(total, calc_light(&ctx, rt->scene->lights[i]));
 
 	if (r->depth == 0)
-		add_emissive_lighting(&ctx, sc, &total);
+		add_emissive_lighting(&ctx, ctx.scene, &total);
 	total = vec3_add(total, ctx.mat->emission);
 	if (r->depth >= MAX_DEPTH)
 		return (clamp_color(total));

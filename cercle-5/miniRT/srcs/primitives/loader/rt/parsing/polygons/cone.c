@@ -10,36 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
-
-static bool	scene_add_cone(t_scene *scene, t_cone cone)
-{
-	if (!DYNARRAY_ENSURE_INT(&scene->cones, &scene->cone_count,
-			&scene->cone_cap, sizeof(t_cone)))
-		return (false);
-	if (vec3_mag_sq(cone.transform.scale) < SCALE_EPSILON)
-		cone.transform.scale = vec3(1, 1, 1);
-	scene->cones[scene->cone_count++] = cone;
-	return (true);
-}
+#include "loader.h"
 
 bool	parse_cone(t_scene *scene, t_parser *p)
 {
-	t_cone	co;
-	t_vec3	color;
+	t_prim_params	params;
+	t_vec3			color;
 
-	ft_memset(&co, 0, sizeof(t_cone));
-	if (!parse_vec3(p, &co.transform.pos))
+	ft_memset(&params, 0, sizeof(t_prim_params));
+	if (!parse_vec3(p, &params.pos))
 		return (false);
-	if (!parse_vec3(p, &co.transform.forward))
+	if (!parse_vec3(p, &params.axis))
 		return (false);
-	co.radius = parse_double(p) / 2.0;
-	co.height = parse_double(p);
+	params.radius = (float)parse_double(p) / 2.0f;
+	params.height = (float)parse_double(p);
 	if (!parse_vec3(p, &color))
 		return (false);
-	co.transform.forward = vec3_norm(co.transform.forward);
-	co.mat_id = scene_add_material(scene, color);
-	if (co.mat_id < 0)
-		return (false);
-	return (scene_add_cone(scene, co));
+	params.axis = vec3_norm(params.axis);
+	params.mat_id = scene_add_material(scene, color);
+	return (scene_add_primitive(scene, params, PRIM_CONE));
 }

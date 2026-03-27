@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 02:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 19:55:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,16 @@
 
 /**
  * @brief DOD-compliant ray-sphere intersection logic for SoA storage.
- * Directly accesses parallel arrays for positions and radii.
+ * Fetches parallel components (px, py, pz) manually for maximum precision.
  */
-static void	setup_quadratic(const t_ray *r, t_primitive_array *p, int i, t_quadratic *q)
+static void	setup_quadratic(const t_ray *r, t_primitive_array *p, int i,
+		t_quadratic *q)
 {
 	t_vec3	oc;
+	t_vec3	pos;
 
-	oc = vec3_sub(r->origin, p->positions[i]);
+	pos = vec3(p->px[i], p->py[i], p->pz[i]);
+	oc = vec3_sub(r->origin, pos);
 	q->a = vec3_dot(r->direction, r->direction);
 	q->b = 2.0 * vec3_dot(oc, r->direction);
 	q->c = vec3_dot(oc, oc) - (p->radii[i] * p->radii[i]);
@@ -44,9 +47,11 @@ static bool	select_t(t_quadratic_roots roots, double *t)
 static void	set_hit_data(const t_ray *r, t_primitive_array *p, int i, t_hit *h)
 {
 	t_vec3	local_n;
+	t_vec3	pos;
 
+	pos = vec3(p->px[i], p->py[i], p->pz[i]);
 	h->point = vec3_add(r->origin, vec3_scale(r->direction, h->t));
-	local_n = vec3_norm(vec3_sub(h->point, p->positions[i]));
+	local_n = vec3_norm(vec3_sub(h->point, pos));
 	h->normal = local_n;
 	get_sphere_uv(local_n, &h->u, &h->v);
 	vec3_orthonormal_basis(h->normal, &h->tangent, &h->bitangent);
@@ -57,7 +62,7 @@ static void	set_hit_data(const t_ray *r, t_primitive_array *p, int i, t_hit *h)
 /**
  * @brief High-performance ray-sphere intersection for 100% DOD.
  */
-bool	intersect_sphere(const t_ray *ray, t_primitive_array *prims, 
+bool	intersect_sphere(const t_ray *ray, t_primitive_array *prims,
 		int idx, t_hit *hit)
 {
 	t_quadratic			q;

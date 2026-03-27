@@ -134,10 +134,14 @@ void								parser_skip_spaces(t_parser *p);
 bool								parser_match(t_parser *p, char expected);
 bool								parser_get_line(t_parser *p, char *buf,
 										size_t max_len);
+bool								parser_get_next_word(t_parser *p, char *buf,
+										size_t max_len);
 
 /* Extractors */
 int									parse_int(t_parser *p);
 double								parse_double(t_parser *p);
+bool								parse_double_checked(t_parser *p,
+										double *out);
 bool								parse_vec3(t_parser *p, t_vec3 *out);
 
 struct s_sub_shape					parse_brick(t_json_value *obj);

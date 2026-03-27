@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 16:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 18:27:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 19:07:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <fcntl.h>
 # include <unistd.h>
 
+
+
 /* --- GLB CONSTANTS --- */
 # define GLB_MAGIC 0x46546C67
 # define CHUNK_JSON 0x4E4F534A
@@ -32,6 +34,10 @@
 # define GLB_UBYTE 5121
 
 /* --- GLB DATA TYPES --- */
+
+typedef struct s_animation		t_animation;
+typedef struct s_anim_sampler		t_anim_sampler;
+typedef struct s_skinned_mesh		t_skinned_mesh;
 
 typedef struct s_glb_header
 {
@@ -140,10 +146,24 @@ bool		parse_fbx(t_scene *scene, t_parser *p);
 bool		fdf_load(t_scene *scene, const char *path);
 bool		parse_fdf(t_scene *scene, t_parser *p);
 bool		rt_load(t_scene *scene, const char *path);
+bool		obj_load(t_scene *scene, const char *path);
 
 /* --- RT PARSING --- */
 bool		dispatch_scan(t_scene *scene, t_parser *p, char *id);
 bool		dispatch_meshes(t_scene *scene, t_parser *p, char *id);
+bool		parse_ambient(t_scene *scene, t_parser *p);
+bool		parse_camera(t_scene *scene, t_parser *p);
+bool		parse_light(t_scene *scene, t_parser *p);
+bool		parse_spot_light(t_scene *scene, t_parser *p);
+bool		parse_sphere(t_scene *scene, t_parser *p);
+bool		parse_plane(t_scene *scene, t_parser *p);
+bool		parse_cylinder(t_scene *scene, t_parser *p);
+bool		parse_cone(t_scene *scene, t_parser *p);
+bool		parse_tri_shape(t_scene *scene, t_parser *p);
+bool		parse_rect(t_scene *scene, t_parser *p);
+bool		parse_pyramid(t_scene *scene, t_parser *p);
+bool		parse_box(t_scene *scene, t_parser *p);
+bool		parse_capsule(t_scene *scene, t_parser *p);
 bool		parse_glb_entry(t_scene *scene, t_parser *p);
 bool		parse_fbx_entry(t_scene *scene, t_parser *p);
 bool		parse_fdf_entry(t_scene *scene, t_parser *p);

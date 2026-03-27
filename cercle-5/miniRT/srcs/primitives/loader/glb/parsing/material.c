@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 18:12:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 03:10:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,32 +34,23 @@ static void	load_tex(t_json_value *json, char *bin, t_material *mat, int src)
 }
 
 /**
- * @brief Parses PBR metallic roughness and populates a t_material structure.
+ * @brief Cleanup helper for partially allocated material arrays.
  */
-static void	extract_pbr(t_json_value *json, char *bin, t_material *out, 
-			t_json_value *m)
+static t_material	*cleanup_mats(t_material *mats, size_t n)
 {
-	t_json_value	*pbr;
-	t_json_value	*color;
-	t_json_value	*tex;
-	t_json_value	*t;
+	size_t	i;
 
-	pbr = json_get(m, "pbrMetallicRoughness");
-	if (pbr == NULL)
-		return ;
-	color = json_get(pbr, "baseColorFactor");
-	if (color != NULL && color->type == JSON_ARRAY && color->array.count >= 3)
+	if (mats == NULL)
+		return (NULL);
+	i = 0;
+	while (i < n)
 	{
-		out->albedo_map.color_a.x = json_as_number(json_at(color, 0)) * 255.0;
-		out->albedo_map.color_a.y = json_as_number(json_at(color, 1)) * 255.0;
-		out->albedo_map.color_a.z = json_as_number(json_at(color, 2)) * 255.0;
+		if (mats[i].name)
+			free(mats[i].name);
+		i++;
 	}
-	tex = json_get(pbr, "baseColorTexture");
-	if (tex == NULL)
-		return ;
-	t = json_at(json_get(json, "textures"), json_get_int(tex, "index"));
-	if (t != NULL)
-		load_tex(json, bin, out, json_get_int(t, "source"));
+	free(mats);
+	return (NULL);
 }
 
 /**
@@ -67,27 +58,25 @@ static void	extract_pbr(t_json_value *json, char *bin, t_material *out,
  */
 t_material	*glb_extract_materials(t_json_value *json, char *bin, int *count)
 {
-	t_json_value	*mats_j;
+	t_json_value	*m_j;
 	t_material		*mats;
 	size_t			i;
 
-	mats_j = json_get(json, "materials");
-	if (mats_j == NULL || mats_j->type != JSON_ARRAY)
-	{
-		*count = 0;
-		return (NULL);
-	}
-	*count = (int)mats_j->array.count;
+	m_j = json_get(json, "materials");
+	if (!m_j || m_j->type != JSON_ARRAY)
+		return (*count = 0, NULL);
+	*count = (int)m_j->array.count;
 	mats = ft_calloc(*count, sizeof(t_material));
 	if (mats == NULL)
 		return (NULL);
 	i = 0;
 	while (i < (size_t)*count)
 	{
-		mats[i].name = ft_strdup(json_as_string(json_get(json_at(mats_j, i),
-						"name")));
+		mats[i].name = ft_strdup(json_as_string(json_get(json_at(m_j, i), "name")));
+		if (mats[i].name == NULL)
+			return (cleanup_mats(mats, i));
 		mats[i].albedo_map.type = TEX_SOLID;
-		extract_pbr(json, bin, &mats[i], json_at(mats_j, i));
+		extract_pbr(json, bin, &mats[i], json_at(m_j, i));
 		i++;
 	}
 	return (mats);

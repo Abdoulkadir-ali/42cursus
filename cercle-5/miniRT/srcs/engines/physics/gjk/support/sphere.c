@@ -6,24 +6,26 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 20:00:00 by abdoali           #+#    #+#             */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
 /**
- * @brief GJK support point for a sphere.
+ * @brief DOD-compliant GJK support point for a sphere.
+ * Fetches position and radius directly from the primitive SoA.
  */
-t_vec3	gjk_support_sphere(const void *data, t_vec3 dir)
+t_vec3	gjk_support_sphere(const t_gjk_shape *s, t_vec3 dir)
 {
-	const t_sphere	*sp;
-	double			len;
+	t_primitive_array	*p;
+	t_vec3				pos;
+	double				len;
 
-	sp = (const t_sphere *)data;
+	p = &s->scene->primitives;
+	pos = vec3(p->px[s->idx], p->py[s->idx], p->pz[s->idx]);
 	len = vec3_mag(dir);
 	if (len < 1e-9)
-		return (sp->transform.pos);
-	return (vec3_add(sp->transform.pos, vec3_scale(dir,
-				sqrt(sp->radius_sq) / len)));
+		return (pos);
+	return (vec3_add(pos, vec3_scale(dir, (double)p->radii[s->idx] / len)));
 }

@@ -52,9 +52,13 @@ bool	parse_fbx_entry(t_scene *scene, t_parser *p)
 	i = -1;
 	while (++i < fbx.mesh_count)
 	{
-		fbx.meshes[i].transform.pos = vec3_add(fbx.meshes[i].transform.pos, over[0]);
-		fbx.meshes[i].transform.rot = vec3_add(fbx.meshes[i].transform.rot, over[1]);
-		fbx.meshes[i].transform.scale = vec3_mul_scalar(fbx.meshes[i].transform.scale, s);
+		fbx.meshes[i].transform.pos = vec3_add(fbx.meshes[i].transform.pos,
+				over[0]);
+		fbx.meshes[i].transform.rotation.pitch += over[1].x;
+		fbx.meshes[i].transform.rotation.yaw += over[1].y;
+		fbx.meshes[i].transform.rotation.roll += over[1].z;
+		fbx.meshes[i].transform.scale = vec3_scale(
+				fbx.meshes[i].transform.scale, s);
 		scene_add_mesh(scene, fbx.meshes[i]);
 	}
 	fbx_clear_asset(&fbx);
