@@ -1,76 +1,52 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ascii_array.c                                      :+:      :+:    :+:   */
+/*   array.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 22:25:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
 
-void	*parse_array(char **p, int *count, size_t sz, void (*f)(char **,
-			void *))
+/**
+ * @brief Logic for skiping non-numeric chars in FBX ASCII.
+ */
+static void	skip_non_num(char **p)
 {
-	size_t	cap;
-	size_t	i;
-	void	*arr;
+	while (**p != '\0' && !ft_isdigit(**p) && **p != '-' && **p != '.')
+		(*p)++;
+}
 
-	cap = 10000;
-	i = 0;
-	arr = malloc(sz * cap);
-	if (!arr)
+/**
+ * @brief Parses a numeric array from FBX ASCII content.
+ */
+void	*fbx_parse_array_ascii(char **p, uint32_t *count, size_t elem_sz)
+{
+	void		*arr;
+	uint32_t	cnt;
+	uint32_t	i;
+
+	skip_non_num(p);
+	cnt = (uint32_t)ft_atoi(*p);
+	*count = cnt;
+	while (**p != '{')
+		(*p)++;
+	(*p)++;
+	arr = malloc(cnt * elem_sz);
+	if (arr == NULL)
 		return (NULL);
-	while (**p && **p != '}')
+	i = 0;
+	while (i < cnt)
 	{
-		*p = fbx_next(*p);
-		if (!**p || **p == '}')
-			break ;
-		if (!dynarray_ensure(&arr, i, &cap, sz))
-			return (free(arr), NULL);
-		f(p, (char *)arr + (i * sz));
+		if (elem_sz == 8)
+			((double *)arr)[i] = ft_atof_advance(p);
+		else
+			((int *)arr)[i] = (int)ft_atoi_advance(p);
 		i++;
 	}
-	*count = (int)i;
 	return (arr);
-}
-
-void	f_vec3(char **p, void *dst)
-{
-	t_vec3	*v;
-
-	v = (t_vec3 *)dst;
-	v->x = strtod(*p, p);
-	*p = fbx_next(*p);
-	v->y = strtod(*p, p);
-	*p = fbx_next(*p);
-	v->z = strtod(*p, p);
-	if (**p == ',')
-		(*p)++;
-}
-
-void	f_vec2(char **p, void *dst)
-{
-	t_vec2	*v;
-
-	v = (t_vec2 *)dst;
-	v->x = strtod(*p, p);
-	*p = fbx_next(*p);
-	v->y = strtod(*p, p);
-	if (**p == ',')
-		(*p)++;
-}
-
-void	f_int(char **p, void *dst)
-{
-	*(int *)dst = ft_atoi(*p);
-	if (**p == '-')
-		(*p)++;
-	while (ft_isdigit(**p))
-		(*p)++;
-	if (**p == ',')
-		(*p)++;
 }

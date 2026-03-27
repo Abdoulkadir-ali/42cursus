@@ -12,24 +12,24 @@
 
 #include "surface.h"
 
-t_material	*create_material(t_material_args params)
+ t_material	*create_material(void)
 {
-	t_material	*mat;
+    t_material	*mat;
 
-	mat = malloc(sizeof(t_material));
-	if (!mat)
-		return (NULL);
-	ft_memset(mat, 0, sizeof(t_material));
-	mat->albedo_map.type = TEX_SOLID;
-	mat->albedo_map.color_a = params.albedo;
-	mat->albedo_map.scale = 1.0;
-	mat->metallic = params.metallic;
-	mat->roughness = params.roughness;
-	mat->emission = params.emission;
-	mat->refract_index = params.refract_index;
-	mat->transparency = params.transparency;
-	mat->reflectivity = params.reflectivity;
-	mat->specular = 0.5;
-	mat->shininess = 32.0;
-	return (mat);
+    mat = malloc(sizeof(t_material));
+    if (!mat)
+        return (NULL);
+    ft_memset(mat, 0, sizeof(t_material));
+    mat->albedo_map.type = TEX_SOLID;
+    mat->albedo_map.color_a = get_colors()->white;
+    mat->albedo_map.scale = 1.0;
+    mat->metallic = 0.0;
+    mat->roughness = 1.0;
+    mat->emission = get_colors()->black;
+    mat->refract_index = 1.0;
+    mat->transparency = 0.0;
+    mat->reflectivity = 0.0;
+    mat->specular = 0.5;
+    mat->shininess = 32.0;
+    return (mat);
 }

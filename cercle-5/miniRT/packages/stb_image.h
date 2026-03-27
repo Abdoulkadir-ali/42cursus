@@ -4610,7 +4610,7 @@ typedef struct
    stbi__uint32 type;
 } stbi__pngchunk;
 
-static stbi__pngchunk stbi__get_chunk_header(stbi__context *s)
+static stbi__pngchunk stbi__get_glb_chunk_header(stbi__context *s)
 {
    stbi__pngchunk c;
    c.length = stbi__get32be(s);
@@ -5093,7 +5093,7 @@ static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
    if (scan == STBI__SCAN_type) return 1;
 
    for (;;) {
-      stbi__pngchunk c = stbi__get_chunk_header(s);
+      stbi__pngchunk c = stbi__get_glb_chunk_header(s);
       switch (c.type) {
          case STBI__PNG_TYPE('C','g','B','I'):
             is_iphone = 1;

@@ -6,24 +6,51 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:04:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 12:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 21:15:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
 
-bool	fbx_load(const char *path, t_raw_model *out)
+/**
+ * @brief Injects the pre-parsed FBX assets into the scene's DOD structures.
+ */
+static bool	scene_add_fbx(t_scene *scene, t_fbx *fbx)
 {
-	int		fd;
-	char	header[30];
-	ssize_t	ret;
+	int		i;
 
-	fd = open(path, O_RDONLY);
-	if (fd < 0)
-		return (false);
-	ret = read(fd, header, 23);
-	close(fd);
-	if (ret >= 18 && ft_strncmp(header, "Kaydara FBX Binary", 18) == 0)
-		return (fbx_load_binary(path, out));
-	return (fbx_load_ascii(path, out));
+	i = 0;
+	while (i < fbx->mesh_count)
+	{
+		scene_add_mesh(scene, fbx->meshes[i]);
+		i++;
+	}
+	i = 0;
+	while (i < fbx->anim_count)
+	{
+		scene_add_animation(scene, fbx->animations[i]);
+		i++;
+	}
+	return (true);
+}
+
+/**
+ * @brief FBX parsing entry point. Detects format and populates the scene.
+ */
+bool	parse_fbx(t_scene *scene, t_parser *p)
+{
+	t_fbx	fbx;
+	bool	res;
+
+	ft_memset(&fbx, 0, sizeof(t_fbx));
+	fbx.path = p->path;
+	fbx.fd = p->fd;
+	if (fbx_is_binary(p->fd))
+		res = fbx_parse_binary(&fbx);
+	else
+		res = fbx_parse_ascii(&fbx);
+	if (res == true)
+		res = scene_add_fbx(scene, &fbx);
+	fbx_clear_asset(&fbx);
+	return (res);
 }

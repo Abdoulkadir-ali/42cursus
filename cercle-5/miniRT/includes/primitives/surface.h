@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 13:35:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 17:37:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,17 +73,6 @@ typedef struct s_material
 	double		reflectivity;
 }				t_material;
 
-typedef struct s_material_args
-{
-	t_vec3		albedo;
-	double		metallic;
-	double		roughness;
-	t_vec3		emission;
-	double		refract_index;
-	double		transparency;
-	double		reflectivity;
-}				t_material_args;
-
 typedef struct			s_bilinear
 {
 	double		ux;
@@ -95,12 +84,12 @@ typedef struct			s_bilinear
  } t_bilinear;
 
 /* 3. FUNCTION PROTOTYPES */
-t_material		*create_material(t_material_args params);
-
 /* Material management is part of the scene module. Prototypes were moved
  * to the scene headers to avoid coupling `surface.h` to scene internals.
  */
 
+ 
+t_material		*create_material(void);
 void			convert_rgba_to_bgra(unsigned char *data, int size);
 void			init_texture_props(t_texture *tex, int w, int h, unsigned char *data);
 bool			load_texture(t_scene *scene, t_texture *tex, const char *path);

@@ -6,71 +6,95 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 21:40:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
 
-static size_t	fbx_array_elem_size(char type)
+/**
+ * @brief Reads a FBX binary node header (32 or 64 bit).
+ */
+void	fbx_read_header(int fd, t_fbx_bin_node *n, bool is_64)
 {
-	if (type == 'd' || type == 'l')
-		return (8);
-	if (type == 'f' || type == 'i')
-		return (4);
-	return (1);
+	uint32_t	tmp[3];
+	uint64_t	tmp64[3];
+
+	ft_memset(n, 0, sizeof(*n));
+	if (is_64)
+	{
+		if (read(fd, tmp64, 24) < 24)
+			return ;
+		n->end_offset = tmp64[0];
+		n->num_properties = tmp64[1];
+		n->property_list_len = tmp64[2];
+	}
+	else
+	{
+		if (read(fd, tmp, 12) < 12)
+			return ;
+		n->end_offset = tmp[0];
+		n->num_properties = tmp[1];
+		n->property_list_len = tmp[2];
+	}
+	read(fd, &n->name_len, 1);
+	if (n->name_len > 0)
+		read(fd, n->name, n->name_len);
+	n->name[n->name_len] = '\0';
 }
 
-static void	skip_string_prop(int fd)
-{
-	uint32_t	slen;
-
-	if (safe_read(fd, &slen, 4) < 4)
-		return ;
-	lseek(fd, slen, SEEK_CUR);
-}
-
-static void	skip_array_prop(int fd, char type)
+/**
+ * @brief Skips a binary array property based on type and encoding.
+ */
+static void	skip_arr(int fd, char type)
 {
 	uint32_t	alen;
 	uint32_t	enc;
 	uint32_t	clen;
 	size_t		isz;
 
-	if (safe_read(fd, &alen, 4) < 4 || safe_read(fd, &enc, 4) < 4
-		|| safe_read(fd, &clen, 4) < 4)
+	if (read(fd, &alen, 4) < 4 || read(fd, &enc, 4) < 4
+		|| read(fd, &clen, 4) < 4)
 		return ;
 	if (enc == 1)
 	{
 		lseek(fd, clen, SEEK_CUR);
 		return ;
 	}
-	isz = fbx_array_elem_size(type);
+	isz = 1;
+	if (type == 'd' || type == 'l')
+		isz = 8;
+	else if (type == 'f' || type == 'i')
+		isz = 4;
 	lseek(fd, (uint64_t)alen * isz, SEEK_CUR);
 }
 
-void	skip_properties(int fd, uint64_t num_props)
+/**
+ * @brief Skips FBX node properties.
+ */
+void	fbx_skip_props(int fd, uint64_t num)
 {
 	uint64_t	i;
-	char		type;
+	char		t;
 
 	i = 0;
-	while (i < num_props)
+	while (i < num)
 	{
-		if (safe_read(fd, &type, 1) < 1)
+		if (read(fd, &t, 1) < 1)
 			break ;
-		if (type == 'Y')
-			lseek(fd, 2, SEEK_CUR);
-		else if (type == 'C')
-			lseek(fd, 1, SEEK_CUR);
-		else if (type == 'I' || type == 'F')
+		if (t == 'S' || t == 'R')
+		{
+			read(fd, &t, 4); /* Read slen into t temporary */
+			lseek(fd, (uint32_t)t, SEEK_CUR);
+		}
+		else if (ft_strchr("dflicb", t))
+			skip_arr(fd, t);
+		else if (t == 'I' || t == 'F')
 			lseek(fd, 4, SEEK_CUR);
-		else if (type == 'D' || type == 'L')
+		else if (t == 'D' || t == 'L')
 			lseek(fd, 8, SEEK_CUR);
-		else if (type == 'S' || type == 'R')
-			skip_string_prop(fd);
-		else if (ft_strchr("dflicb", type))
-			skip_array_prop(fd, type);
+		else if (t == 'Y')
+			lseek(fd, 2, SEEK_CUR);
 		i++;
 	}
 }

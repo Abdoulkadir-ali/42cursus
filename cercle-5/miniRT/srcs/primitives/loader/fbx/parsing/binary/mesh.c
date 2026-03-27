@@ -1,73 +1,79 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   binary_mesh.c                                      :+:      :+:    :+:   */
+/*   mesh.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 04:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 22:35:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
 
-static bool	fbx_bin_set_vertices(t_fbx_bin_ctx *ctx)
+/**
+ * @brief Transfers and repacks vertices from fbx raw double buffers.
+ */
+static bool	set_v(t_fbx *f, t_mesh *m)
 {
-	ctx->mesh.base.vertices = repack_doubles_to_vec3((double *)ctx->data.v,
-			ctx->data.vc);
-	free(ctx->data.v);
-	ctx->data.v = NULL;
-	if (!ctx->mesh.base.vertices)
+	m->vertex_count = (int)f->vc / 3;
+	m->vertices = fbx_repack_vec3(f->v, m->vertex_count);
+	free(f->v);
+	f->v = NULL;
+	if (m->vertices == NULL)
 		return (false);
 	return (true);
 }
 
-static void	fbx_bin_set_normals(t_fbx_bin_ctx *ctx)
+/**
+ * @brief Transfers and repacks normals from fbx raw double buffers.
+ */
+static void	set_n(t_fbx *f, t_mesh *m)
 {
-	t_vec3	*rn;
-
-	if (!ctx->data.vn)
-		return ;
-	rn = repack_doubles_to_vec3((double *)ctx->data.vn, ctx->data.nc);
-	free(ctx->data.vn);
-	ctx->data.vn = rn;
+	if (f->vn != NULL)
+	{
+		m->normals = fbx_repack_vec3(f->vn, (int)f->nc / 3);
+		free(f->vn);
+		f->vn = NULL;
+	}
 }
 
-static void	fbx_bin_fill_args(t_fbx_flat_args *p, t_fbx_data *d)
+/**
+ * @brief Safely releases remaining binary buffers in t_fbx.
+ */
+static void	rel_bin(t_fbx *f)
 {
-	p->raw = d->ri;
-	p->raw_c = (int)d->rc;
-	p->n = d->vn;
-	p->nc = (int)d->nc;
-	p->u = d->vu;
-	p->uc = (int)d->uc;
-	p->vc = (int)d->vc;
+	if (f->v != NULL)
+		free(f->v);
+	if (f->ri != NULL)
+		free(f->ri);
+	if (f->vn != NULL)
+		free(f->vn);
+	if (f->vu != NULL)
+		free(f->vu);
 }
 
-static void	fbx_bin_release_arrays(t_fbx_bin_ctx *ctx)
+/**
+ * @brief Primary mesh construction from fbx extraction arrays.
+ */
+bool	fbx_build_mesh(t_fbx *f)
 {
-	if (ctx->data.vn)
-		free(ctx->data.vn);
-	if (ctx->data.vu)
-		free(ctx->data.vu);
-	if (ctx->data.ri)
-		free(ctx->data.ri);
-}
+	t_mesh	m;
 
-bool	fbx_bin_build_mesh(t_fbx_bin_ctx *ctx)
-{
-	t_fbx_flat_args	p;
-
-	if (!fbx_bin_set_vertices(ctx))
+	ft_memset(&m, 0, sizeof(t_mesh));
+	if (set_v(f, &m) == false)
 		return (false);
-	fbx_bin_set_normals(ctx);
-	fbx_bin_fill_args(&p, &ctx->data);
-	ft_print_debug("DEBUG: calling fbx_build_flat\n");
-	fbx_build_flat(&ctx->mesh.base, &p);
-	ft_print_debug("DEBUG: fbx_build_flat finished\n");
-	fbx_bin_release_arrays(ctx);
-	if (ctx->mesh.base.tri_count == 0)
+	set_n(f, &m);
+	m.tri_count = (int)f->rc / 3;
+	m.indices = f->ri;
+	f->ri = NULL;
+	m.name = ft_strdup(f->path);
+	f->meshes = malloc(sizeof(t_mesh));
+	if (f->meshes == NULL)
 		return (false);
+	f->meshes[0] = m;
+	f->mesh_count = 1;
+	rel_bin(f);
 	return (true);
 }

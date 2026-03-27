@@ -1,4 +1,3 @@
-#include <zlib.h>
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -7,94 +6,85 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 21:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
+#include <zlib.h>
 
-static bool	fbx_read_array_header(int fd, t_fbx_array *a)
+/**
+ * @brief FBX binary array header parsing.
+ */
+static bool	h_read(int fd, t_fbx_array *a)
 {
-	if (safe_read(fd, &a->type, 1) < 1)
+	if (read(fd, &a->type, 1) < 1)
 		return (false);
-	if (a->type == 'd')
+	a->actual_sz = 1;
+	if (a->type == 'd' || a->type == 'l')
 		a->actual_sz = 8;
 	else if (a->type == 'f' || a->type == 'i')
 		a->actual_sz = 4;
-	else if (a->type == 'l' || a->type == 'b' || a->type == 'c')
-	{
-		if (a->type == 'l')
-			a->actual_sz = 8;
-		else
-			a->actual_sz = 1;
-	}
-	else
+	if (read(fd, &a->arr_len, 4) < 4 || read(fd, &a->encoding, 4) < 4
+		|| read(fd, &a->comp_len, 4) < 4)
 		return (false);
-	if (safe_read(fd, &a->arr_len, 4) < 4)
-		return (false);
-	if (safe_read(fd, &a->encoding, 4) < 4)
-		return (false);
-	if (safe_read(fd, &a->comp_len, 4) < 4)
-		return (false);
-	if (a->arr_len > 20000000)
+	if (a->arr_len > 2000000)
 		return (false);
 	return (true);
 }
 
-static void	*fbx_read_compressed(int fd, t_fbx_array *a, void *uncomp_data,
-		uLongf *uncomp_len)
+/**
+ * @brief Handle zlib decompression for FBX binary chunks.
+ */
+static void	*c_read(int fd, t_fbx_array *a, void *uncomp_data, uLongf *ulen)
 {
 	void	*comp_data;
-	size_t	size;
 
-	size = a->comp_len;
-	if (size == 0)
-		size = 1;
-	comp_data = malloc(size);
-	if (!comp_data)
+	comp_data = malloc(a->comp_len + 1);
+	if (comp_data == NULL)
 		return (free(uncomp_data), NULL);
-	if (safe_read(fd, comp_data, a->comp_len) < (ssize_t)a->comp_len)
+	if (read(fd, comp_data, a->comp_len) < (ssize_t)a->comp_len)
 		return (free(comp_data), free(uncomp_data), NULL);
-	if (uncompress(uncomp_data, uncomp_len, comp_data, a->comp_len) != Z_OK)
+	if (uncompress(uncomp_data, ulen, comp_data, a->comp_len) != Z_OK)
 		return (free(comp_data), free(uncomp_data), NULL);
 	free(comp_data);
 	return (uncomp_data);
 }
 
-static void	*fbx_read_array_payload(int fd, t_fbx_array *a)
+/**
+ * @brief Acquires FBX binary array payload (raw or compressed).
+ */
+static void	*p_read(int fd, t_fbx_array *a)
 {
-	uLongf	uncomp_len;
-	void	*uncomp_data;
-	size_t	size;
+	uLongf	ulen;
+	void	*u_data;
 
-	uncomp_len = a->arr_len * a->actual_sz;
-	size = (size_t)uncomp_len;
-	if (size == 0)
-		size = 1;
-	uncomp_data = malloc(size);
-	if (!uncomp_data)
+	ulen = (uLongf)a->arr_len * a->actual_sz;
+	u_data = malloc(ulen + 1);
+	if (u_data == NULL)
 		return (NULL);
 	if (a->encoding == 0)
 	{
-		if (safe_read(fd, uncomp_data, uncomp_len) < (ssize_t)uncomp_len)
-			return (free(uncomp_data), NULL);
-		return (uncomp_data);
+		if (read(fd, u_data, ulen) < (ssize_t)ulen)
+			return (free(u_data), NULL);
+		return (u_data);
 	}
-	return (fbx_read_compressed(fd, a, uncomp_data, &uncomp_len));
+	return (c_read(fd, a, u_data, &ulen));
 }
 
-void		*fbx_convert_array(t_fbx_array *a, void *uncomp, size_t elem_sz,
-				uint32_t *count);
-
+/**
+ * @brief Core entry for reading and extracting compressed FBX arrays.
+ */
 void	*read_fbx_array(int fd, uint32_t *count, size_t elem_sz)
 {
 	t_fbx_array	a;
 	void		*uncomp_data;
 
-	if (!fbx_read_array_header(fd, &a))
+	if (h_read(fd, &a) == false)
 		return (NULL);
-	uncomp_data = fbx_read_array_payload(fd, &a);
-	if (!uncomp_data)
+	uncomp_data = p_read(fd, &a);
+	if (uncomp_data == NULL)
 		return (NULL);
+	/* Pointer to conversion will follow in convert.c */
 	return (fbx_convert_array(&a, uncomp_data, elem_sz, count));
 }

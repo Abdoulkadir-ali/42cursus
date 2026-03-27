@@ -19,6 +19,8 @@ a.out
 packages/libft/libft.a
 ignore/
 
+**/ignore/**
+
 # Editor directories
 .vscode/
 .idea/

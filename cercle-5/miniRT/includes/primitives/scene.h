@@ -14,7 +14,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-# include "loader.h"
+#include "objects.h"
 
 typedef struct s_scene
 {
@@ -89,70 +89,8 @@ typedef struct s_scene
 t_scene		*create_scene(const char *name);
 void		destroy_scene(t_scene *scene);
 
-
-int				scene_add_material(t_scene *scene, t_vec3 color);
-int				scene_add_fresh_material(t_scene *scene, t_vec3 color);
-int				scene_clone_material(t_scene *scene, int src_id);
-int				scene_find_material(t_scene *scene, const char *name);
-int				scene_add_named_material(t_scene *scene, const char *name);
-int				scene_add_checker_material(t_scene *scene, t_vec3 color_a,
-					t_vec3 color_b, double scale);
-
-bool		scene_add_ambient(t_scene *scene, double brightness, t_vec3 rgb);
-bool		scene_add_camera(t_scene *scene, t_camera camera);
-bool		scene_add_light(t_scene *scene, t_light light);
-bool		scene_add_sphere(t_scene *scene, t_sphere sphere);
-bool		scene_add_plane(t_scene *scene, t_plane plane);
-bool		scene_add_cylinder(t_scene *scene, t_cylinder cylinder);
-bool		scene_add_cone(t_scene *scene, t_cone cone);
-bool		scene_add_tri(t_scene *scene, t_tri_shape tri);
-bool		scene_add_rect(t_scene *scene, t_rect rect);
-bool		scene_add_pyramid(t_scene *scene, t_pyramid pyramid);
-bool		scene_add_box(t_scene *scene, t_box box);
-bool		scene_add_capsule(t_scene *scene, t_capsule capsule);
-
-/* Bridge Parsers (Rule 2) */
-bool		parse_ambient(t_scene *scene, struct s_parser *p);
-bool		parse_camera(t_scene *scene, struct s_parser *p);
-bool		parse_light(t_scene *scene, struct s_parser *p);
-bool		parse_spot_light(t_scene *scene, struct s_parser *p);
-bool		parse_sphere(t_scene *scene, struct s_parser *p);
-bool		parse_plane(t_scene *scene, struct s_parser *p);
-bool		parse_cylinder(t_scene *scene, struct s_parser *p);
-bool		parse_cone(t_scene *scene, struct s_parser *p);
-bool		parse_tri_shape(t_scene *scene, struct s_parser *p);
-bool		parse_rect(t_scene *scene, struct s_parser *p);
-bool		parse_pyramid(t_scene *scene, struct s_parser *p);
-bool		parse_box(t_scene *scene, struct s_parser *p);
-bool		parse_capsule(t_scene *scene, struct s_parser *p);
-bool		parse_mesh_entry(t_scene *scene, struct s_parser *p, t_type type);
-bool		scene_add_mesh(t_scene *scene, t_mesh mesh);
-bool		scene_add_light(t_scene *scene, t_light light);
-bool		scene_add_animation(t_scene *scene, t_animation anim);
-bool		scene_add_raw_model(t_scene *scene, t_raw_model model);
-bool		scene_add_group(t_scene *scene, t_mesh_group g);
-bool		scene_add_group_for_subs(t_scene *scene, const char *path, int start_mesh);
-
-/* ------------------------------------------------------------------------- */
-/*                               RT PARSER                                   */
-/* ------------------------------------------------------------------------- */
-
-t_scene		*parse_file(const char *path, void *mlx);
-bool		scene_parse_rt(t_scene *scene, const char *path);
-bool		parse_rt_fd(int fd, t_scene *scene);
-bool		rt_parse_loop(t_scene *scene, struct s_parser *p);
-
-/* The Dispatcher now only adds Prepared Objects from the Object Layer */
-bool		dispatch_scan(t_scene *scene, struct s_parser *p, char *id);
-bool		rt_parse_token(struct s_parser *p, char *buf, size_t max_len);
-
-/* Mesh Cache & Injection logic (RT specific) */
-bool		handle_mesh_injection(t_scene *scene, struct s_parser *p, t_type type);
-bool		handle_mesh_injection_internal(t_scene *scene, t_mesh_info *info, t_type type);
-void		rt_parse_scale_raw(struct s_parser *p, t_vec3 *scale);
-bool		mesh_cache_restore(const char *path, t_scene *scene);
-bool		mesh_cache_has(const char *path);
-bool		mesh_cache_save(const char *path, t_scene *scene, int start_mesh);
-bool		load_injected_mesh(const char *path, t_raw_model *model, t_transform transform, t_vec3 color, t_vec3 emission);
+/* Scene injection helpers for format-specific models */
+bool		scene_add_glb(t_scene *scene, t_glb_model model);
+bool		scene_add_fbx(t_scene *scene, t_fbx_model model);
 
 #endif

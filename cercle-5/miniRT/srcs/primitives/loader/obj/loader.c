@@ -6,11 +6,29 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 12:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 16:30:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
+
+static bool	obj_finalize_mesh_to_scene(t_obj_ctx *ctx, t_scene *scene, const char *path)
+{
+	t_mesh	mesh;
+	int		mat_idx;
+
+	if (ctx->out_v_count == 0)
+	{
+		obj_free_ctx(ctx);
+		return (false);
+	}
+	obj_generate_normals(ctx);
+	obj_init_mesh(&mesh, ctx, path);
+	mat_idx = ctx->current_mat_id;
+	mesh.mat_id = mat_idx;
+	obj_free_ctx(ctx);
+	return (scene_add_mesh(scene, mesh));
+}
 
 static void	init_ctx(t_obj_ctx *ctx)
 {

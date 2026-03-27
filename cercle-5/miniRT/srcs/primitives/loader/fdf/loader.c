@@ -5,31 +5,49 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 08:55:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/10 12:45:12 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/27 23:20:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
 
-bool	fdf_load(const char *path, t_raw_model *out)
+/**
+ * @brief DOD Injection of the generated FDF mesh into the scene.
+ */
+static bool	scene_add_fdf(t_scene *scene, t_fdf *fdf)
 {
-	t_mesh	mesh;
-	int		v[4];
-
-	if (!fdf_get_dimensions(path, &v[0], &v[1]))
-		return (false);
-	if (!fdf_init_mesh(&mesh, v[0] * v[1], (v[0] - 1) * (v[1] - 1) * 6, path))
-		return (false);
-	fdf_fill_data(path, &mesh, v[0], v[1]);
-	fdf_compute_normals(&mesh, v[0], v[1]);
-	fdf_compute_uvs(&mesh, v[0], v[1]);
-	fdf_triangulate(&mesh, v[0], v[1]);
-	out->meshes = malloc(sizeof(t_mesh));
-	if (out->meshes)
+	if (fdf->mesh.vertex_count > 0)
 	{
-		out->meshes[0] = mesh;
-		out->mesh_count = 1;
+		scene_add_mesh(scene, fdf->mesh);
+		return (true);
 	}
-	return (out->mesh_count > 0);
+	return (false);
+}
+
+/**
+ * @brief FDF parsing pipeline: Single-pass Grid extraction -> Triangulation.
+ * Relies entirely on the parser without manual seeking.
+ */
+bool	parse_fdf(t_scene *scene, t_parser *p)
+{
+	t_fdf	fdf;
+	bool	res;
+
+	ft_memset(&fdf, 0, sizeof(t_fdf));
+	fdf.path = p->path;
+	if (fdf_parse_grid_single_pass(&fdf, p) == false)
+		return (false);
+	if (fdf_triangulate(&fdf) == false)
+	{
+		if (fdf.grid != NULL)
+			free(fdf.grid);
+		return (false);
+	}
+	fdf_compute_normals(&fdf);
+	fdf_gen_uvs(&fdf);
+	res = scene_add_fdf(scene, &fdf);
+	if (fdf.grid != NULL)
+		free(fdf.grid);
+	return (res);
 }
