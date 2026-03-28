@@ -83,6 +83,18 @@ void	mesh_free(t_mesh *mesh)
         free(mesh->uvs);
     if (mesh->indices)
         free(mesh->indices);
+    if (mesh->bone_ids)
+        free(mesh->bone_ids);
+    if (mesh->weights)
+        free(mesh->weights);
+    if (mesh->weight_counts)
+        free(mesh->weight_counts);
+    if (mesh->weight_offsets)
+        free(mesh->weight_offsets);
+    if (mesh->skeleton)
+        free(mesh->skeleton);
+    if (mesh->bone_matrices)
+        free(mesh->bone_matrices);
     if (mesh->name)
         free(mesh->name);
     ft_memset(mesh, 0, sizeof(t_mesh));

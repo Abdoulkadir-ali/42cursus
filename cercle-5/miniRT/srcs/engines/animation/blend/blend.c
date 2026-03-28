@@ -1,23 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rect.c                                             :+:      :+:    :+:   */
+/*   blend.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 10:04:10 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 09:23:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "raytracing.h"
+#include "animations.h"
 
-int	get_rect_mat(t_shading *sha)
-{
-	t_hit	*h;
-
-	h = sha->hit;
-	if (h->ref.index >= 0 && h->ref.index < (int)sha->rt->scene->primitives.count)
-		return (sha->rt->scene->primitives.mat_ids[h->ref.index]);
-	return (0);
-}
+/*
+** Multi-clip blending: layer two animation clips with a blend weight.
+** e.g. walk (weight=0.4) + run (weight=0.6) -> blended pose
+** TODO: implement when blend trees are needed.
+*/

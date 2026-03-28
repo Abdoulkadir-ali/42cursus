@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 15:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 15:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 10:40:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
  * @param idx Index of the texture in the engine's pool.
  * @param u/v Normalized coordinates.
  */
-t_vec3	sample_texture_pool(t_shading *ctx, int idx, double u, double v)
+t_vec3	sample_texture_pool(t_shading *sha, int idx, double u, double v)
 {
 	unsigned char	*pix;
 	t_vec2i			d;

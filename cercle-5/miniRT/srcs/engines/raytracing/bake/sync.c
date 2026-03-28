@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 15:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 10:54:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,6 @@ void	raytrace_sync_settings(t_rt_engine *rt, t_scene *scene, int w, int h)
 	rt->settings.void_color = scene->ambient.rgb;
 }
 
-static void	raytrace_bake_geometry(t_scene *scene)
-{
-	int	i;
-
-	i = -1;
-	while (++i < scene->pyramid_count)
-		pyramid_cache_verts(&scene->pyramids[i]);
-}
-
-/**
- * @brief Master Engine Sync.
- * The only point where the Engine reads from the Scene.
- */
 void	raytrace_engine_sync(t_rt_engine *rt, t_scene *scene, int w, int h)
 {
 	if (!rt || !scene)
@@ -61,8 +48,7 @@ void	raytrace_engine_sync(t_rt_engine *rt, t_scene *scene, int w, int h)
 	/* 2. Bake Materials and Textures */
 	bake_materials(rt, scene);
 	
-	/* 3. Pre-calculate Geometry state (e.g. Pyramid vertices) */
-	raytrace_bake_geometry(scene);
+	/* 3. Pre-calculate Geometry state (Now handled on-the-fly or in BVH build) */
 	
 	/* 4. Link Geometry State */
 	rt->scene = scene;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 02:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 02:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 10:57:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool	intersect_tri_soa(const t_ray *r, t_tri_array *t, int i, t_hit *h)
 
 	pvec = vec3_cross(r->direction, vec3(t->ex[1][i], t->ey[1][i], t->ez[1][i]));
 	det = vec3_dot(vec3(t->ex[0][i], t->ey[0][i], t->ez[0][i]), pvec);
-	if (ft_abs_double(det) < EPSILON)
+	if (fabs(det) < EPSILON)
 		return (false);
 	inv_det = 1.0 / det;
 	tvec = vec3_sub(r->origin, vec3(t->vx[0][i], t->vy[0][i], t->vz[0][i]));
@@ -48,6 +48,6 @@ bool	intersect_tri_soa(const t_ray *r, t_tri_array *t, int i, t_hit *h)
 	h->point = vec3_add(r->origin, vec3_scale(r->direction, h->t));
 	h->u = u; h->v = v;
 	h->mat_idx = t->mat_ids[i];
-	h->type = PRIM_TRIANGLE;
+	h->type = TYPE_TRI;
 	return (true);
 }

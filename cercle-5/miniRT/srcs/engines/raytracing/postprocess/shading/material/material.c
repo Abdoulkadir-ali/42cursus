@@ -6,57 +6,21 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 10:04:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-static int	get_mat_id(t_shading *ctx)
+/**
+ * @brief DOD simplification: Replace the entire per-type dispatch.
+ * mat_id comes directly from the hit record.
+ */
+void	get_shading_material(t_shading *sha)
 {
-	t_type	type;
-
-	type = ctx->hit->ref.type;
-	if (type == TYPE_SPHERE)
-		return (get_sphere_mat(ctx));
-	if (type == TYPE_PLANE)
-		return (get_plane_mat(ctx));
-	if (type == TYPE_CYLINDER)
-		return (get_cylinder_mat(ctx));
-	if (type == TYPE_CONE)
-		return (get_cone_mat(ctx));
-	if (type == TYPE_TRI)
-		return (get_tri_mat(ctx));
-	if (type == TYPE_RECT)
-		return (get_rect_mat(ctx));
-	if (type == TYPE_PYRAMID)
-		return (get_pyramid_mat(ctx));
-	if (type == TYPE_BOX)
-		return (get_box_mat(ctx));
-	if (type == TYPE_CAPSULE)
-		return (get_capsule_mat(ctx));
-	if (type == TYPE_MESH)
-		return (get_mesh_mat(ctx));
-	if (type == TYPE_ANIM)
-		return (get_anim_mat(ctx));
-	return (0);
-}
-
-void	get_material(t_shading *ctx)
-{
-	int	mat_id;
-
-	mat_id = get_mat_id(ctx);
-	if (ctx->rt_materials)
-	{
-		ctx->mat.albedo_map.color_a = ctx->rt_materials[mat_id].color;
-		ctx->mat.specular = ctx->rt_materials[mat_id].specular;
-		ctx->mat.roughness = ctx->rt_materials[mat_id].roughness;
-		ctx->mat.metallic = ctx->rt_materials[mat_id].metallic;
-		ctx->mat.emission = ctx->rt_materials[mat_id].emission;
+	if (!sha || !sha->rt || !sha->hit)
 		return ;
-	}
-	if (mat_id < 0 || mat_id >= (int)ctx->scene->mat_count)
-		mat_id = 0;
-	ctx->mat = ctx->scene->materials[mat_id];
+	
+	/* Correct assignment for const pointer context */
+	sha->mat = &sha->rt->rt_materials[sha->hit->mat_idx];
 }

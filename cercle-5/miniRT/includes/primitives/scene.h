@@ -17,7 +17,11 @@
 # include "objects.h"
 # include "anim.h"
 
-typedef struct s_emissive_ref		t_emissive_ref;
+typedef struct s_emissive_ref
+{
+	t_type				type;
+	int					index;
+}						t_emissive_ref;
 
 typedef struct s_scene
 {

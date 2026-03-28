@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 08:44:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 20:53:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 10:05:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void	print_camera(t_camera *c);
 void	print_ambient(t_ambient *a);
 void	print_material(t_material *m);
 void	print_mesh(t_mesh *m);
-void	print_obj_ctx(t_obj *c);
+void	print_obj(t_obj *c);
 
 /* System */
 void	print_scene(t_scene *s);

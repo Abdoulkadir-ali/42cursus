@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:10:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:38:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,13 @@ typedef struct s_mesh
 	char			*name;
 	t_aabb			bbox;
 	int				group_id;
-	t_bone_weight	*skin_data;
+	uint16_t		*bone_ids;
+	float			*weights;
+	int				*weight_counts;
+	int				*weight_offsets;
+	t_bone			*skeleton;
+	t_mat4			*bone_matrices;
+	int				bone_count;
 	int				anim_base;
 	int				anim_clip_count;
 }	t_mesh;

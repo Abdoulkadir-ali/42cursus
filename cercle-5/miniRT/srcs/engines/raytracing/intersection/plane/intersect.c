@@ -6,36 +6,32 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 11:08:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-/*
-** Intersects a ray with a plane.
-*/
-bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
+bool	intersect_plane(const t_ray *ray, t_primitive_array *p, int i, t_hit *hit)
 {
+	t_plane pl = unpack_plane(p, i);
 	double	denom;
 	double	t;
-	double	uv_s;
 
-	denom = vec3_dot(pl->transform.forward, ray->direction);
-	if (fabs(denom) < 1e-6)
+	denom = vec3_dot(pl.normal, ray->direction);
+	if (fabs(denom) < EPSILON)
 		return (false);
-	t = vec3_dot(vec3_sub(pl->transform.pos, ray->origin),
-			pl->transform.forward) / denom;
+	t = vec3_dot(vec3_sub(pl.point, ray->origin), pl.normal) / denom;
 	if (t < EPSILON)
 		return (false);
 	hit->t = t;
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
-	hit->normal = pl->transform.forward;
-	if (vec3_dot(ray->direction, hit->normal) > 0)
-		hit->normal = vec3_scale(hit->normal, -1.0);
-	get_plane_uv(hit->point, pl->transform.forward, hit);
-	uv_s = (pl->transform.scale.x > 1e-6) ? pl->transform.scale.x : 1.0;
-	hit->u /= uv_s;
-	hit->v /= uv_s;
+	hit->normal = pl.normal;
+	if (denom > 0)
+		hit->normal = vec3_scale(pl.normal, -1.0);
+	get_plane_uv(hit->point, hit->normal, hit);
+	hit->mat_idx = pl.mat_idx;
+	hit->type = TYPE_PLANE;
+	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
 	return (true);
 }

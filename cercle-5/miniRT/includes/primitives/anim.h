@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:00:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:34:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,10 @@ typedef struct s_skinned_mesh
 	t_vec3			*base_normals;
 	t_vec3			*vertices;
 	t_vec3			*normals;
-	t_bone_weight	*weights;
+	uint16_t		*bone_ids;
+	float			*weights;
+	int				*weight_counts;
+	int				*weight_offsets;
 	t_bone			*skeleton;
 	t_mat4			*bone_matrices;
 	int				bone_count;

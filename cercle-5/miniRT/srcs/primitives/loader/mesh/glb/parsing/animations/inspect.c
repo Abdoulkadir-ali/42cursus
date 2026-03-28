@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "animations.h"
+#include "glb.h"
 
 static void	glb_log_anim(const char *fmt, ...)
 {

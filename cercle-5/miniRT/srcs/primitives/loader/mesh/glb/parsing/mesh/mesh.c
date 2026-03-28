@@ -57,8 +57,6 @@ static bool	alloc_mesh(t_mesh *mesh, t_json_value *json, int ids[6])
 	mesh->vertices = ft_calloc(acc.count, sizeof(t_vec3));
 	mesh->normals = ft_calloc(acc.count, sizeof(t_vec3));
 	mesh->uvs = ft_calloc(acc.count, sizeof(t_vec2));
-	if (ids[4] >= 0 && ids[5] >= 0)
-		mesh->skin_data = ft_calloc(acc.count, sizeof(t_bone_weight));
 	if (mesh->vertices == NULL || mesh->normals == NULL || mesh->uvs == NULL)
 		return (false);
 	return (true);

@@ -6,16 +6,45 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:59:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:48:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
 
 /**
+ * @brief Finds the skin index for a given mesh index by scanning nodes.
+ * In GLTF, the skin is referenced by the node that instantiates the mesh.
+ */
+static int	find_skin_for_mesh(t_json_value *json, int mesh_idx)
+{
+	t_json_value	*nodes;
+	t_json_value	*n;
+	size_t			i;
+	int				skin;
+
+	nodes = json_get(json, "nodes");
+	if (!nodes)
+		return (0);
+	i = 0;
+	while (i < nodes->array.count)
+	{
+		n = json_at(nodes, i);
+		if (json_get_int(n, "mesh") == mesh_idx)
+		{
+			skin = json_get_int(n, "skin");
+			return (skin >= 0 ? skin : 0);
+		}
+		i++;
+	}
+	return (0);
+}
+
+/**
  * @brief DOD Injection of individual meshes into the scene.
  */
-static void	mesh_to_scene(t_scene *s, t_glb *g, t_json_value *p, int *mmap)
+static void	mesh_to_scene(t_scene *s, t_glb *g, t_json_value *p, int *mmap,
+		int mesh_idx)
 {
 	t_mesh	mesh;
 	size_t	i;
@@ -28,7 +57,8 @@ static void	mesh_to_scene(t_scene *s, t_glb *g, t_json_value *p, int *mmap)
 		init_mesh(&mesh, g->path);
 		if (glb_load_primitive(&mesh, g->json, g->bin, 0, (int)i, mat_idx))
 		{
-			glb_load_skeleton_impl(&mesh, g->json, g->bin, 0);
+			glb_load_skeleton_impl(&mesh, g->json, g->bin,
+				find_skin_for_mesh(g->json, mesh_idx));
 			glb_compute_mesh_bbox(&mesh);
 			if (mmap != NULL && mat_idx >= 0)
 				mesh.mat_id = mmap[mat_idx];
@@ -70,7 +100,7 @@ void	scene_add_glb(t_scene *scene, t_glb *glb)
 	i = 0;
 	while (i < ms->array.count)
 	{
-		mesh_to_scene(scene, glb, json_get(json_at(ms, i), "primitives"), map);
+		mesh_to_scene(scene, glb, json_get(json_at(ms, i), "primitives"), map, (int)i);
 		i++;
 	}
 	if (map != NULL)

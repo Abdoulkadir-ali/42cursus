@@ -29,7 +29,7 @@ void	bake_materials(t_rt_engine *rt, t_scene *scene)
 	if (!rt->rt_materials)
 		return ;
 	i = -1;
-	while (++i < scene->mat_count)
+	while (++i < (int)scene->mat_count)
 	{
 		rt->rt_materials[i].color = scene->materials[i].albedo_map.color_a;
 		rt->rt_materials[i].specular = scene->materials[i].specular;

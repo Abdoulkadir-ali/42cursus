@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 10:07:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ typedef struct s_render_thread_arg
 	t_gui			*gui;
 }	t_render_thread_arg;
 
-typedef struct s_render_ctx
+typedef struct s_render
 {
 	t_gui			*gui;
 	int				next_tile_id;
@@ -110,14 +110,14 @@ typedef struct s_render_ctx
 	double			half_height;
 	double			aspect_ratio;
 	int				step;
-}	t_render_ctx;
+}	t_render;
 
 typedef struct s_render_pool
 {
 	pthread_t		threads[128];
 	sem_t			start[128];
 	sem_t			done[128];
-	t_render_ctx		*ctx[128];
+	t_render		*ctx[128];
 	t_render_thread_arg	args[128];
 	int				n;
 	bool			shutdown;
@@ -186,12 +186,6 @@ typedef struct s_render_state
 	int				num_cores;
 	pthread_t		*threads;
 }	t_render_state;
-
-typedef struct s_input_ctxs
-{
-	int				mouse_x;
-	int				mouse_y;
-}	t_input_ctx;
 
 /* ── Map management ──────────────────────────────────────────────────────── */
 typedef struct s_map_entry
@@ -305,17 +299,17 @@ void				gui_loop(t_gui *gui);
 void				gui_render(t_gui *gui);
 unsigned int	color_blend(unsigned int dst, int src, float alpha);
 int				panel_color(t_panel panel, int i, int j);
-void				render_tiles(t_render_ctx *ctx);
+void				render_tiles(t_render *ctx);
 void				draw_panel(t_gui *gui, t_panel panel);
 void				draw_ui_panels(t_gui *gui);
 void				draw_ui_help(t_gui *gui, int *y);
 void				draw_ui_status(t_gui *gui, int *y);
 void				draw_ui_object(t_gui *gui);
 void				draw_ui_text(t_gui *gui, t_camera_controller *ctrl);
-bool				update_hover(t_gui *gui, t_render_ctx *ctx);
+bool				update_hover(t_gui *gui, t_render *ctx);
 void				draw_hover_text(t_gui *gui);
-void				process_pixel(t_render_ctx *ctx, t_vec2i pos, char *pixel_addr);
-void				make_camera_ray(t_render_ctx *ctx, double x, double y, t_ray *ray);
+void				process_pixel(t_render *ctx, t_vec2i pos, char *pixel_addr);
+void				make_camera_ray(t_render *ctx, double x, double y, t_ray *ray);
 
 /* ── Map ─────────────────────────────────────────────────────────────────── */
 void	gui_map_switcher_init(t_gui *gui);

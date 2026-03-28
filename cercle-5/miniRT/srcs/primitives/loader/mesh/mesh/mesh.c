@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 08:28:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:45:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,25 @@ bool	scene_add_mesh(t_scene *s, t_mesh mesh)
 	size_t	i;
 	size_t	ii;
 
+	if (mesh.bone_ids != NULL)
+	{
+		t_skinned_mesh sm;
+		ft_memset(&sm, 0, sizeof(t_skinned_mesh));
+		sm.base_vertices = mesh.vertices;
+		sm.vertices = ft_calloc(mesh.vertex_count, sizeof(t_vec3));
+		sm.base_normals = mesh.normals;
+		sm.normals = ft_calloc(mesh.vertex_count, sizeof(t_vec3));
+		sm.bone_ids = mesh.bone_ids;
+		sm.weights = mesh.weights;
+		sm.weight_counts = mesh.weight_counts;
+		sm.weight_offsets = mesh.weight_offsets;
+		sm.vertex_count = (int)mesh.vertex_count;
+		sm.mat_id = mesh.mat_id;
+		sm.bbox = mesh.bbox;
+		free(mesh.name);
+		free(mesh.indices);
+		return (scene_add_animated(s, sm));
+	}
 	if (!ensure_tri_cap(&s->tri_soa, mesh.tri_count))
 		return (false);
 	m = mat4_transform(mesh.transform);

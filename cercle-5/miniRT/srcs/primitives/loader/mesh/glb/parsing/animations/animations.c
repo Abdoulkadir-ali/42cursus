@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:59:05 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 09:40:22 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 10:27:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ static void	load_samplers(t_json_value *json, char *bin, t_animation *clip)
 	i = 0;
 	while (i < (size_t)clip->sampler_count)
 	{
-		/* Delegation to sampler.c/core parser */
 		glb_parse_sampler(json, bin, &clip->samplers[i], json_at(smps, i));
 		if (clip->samplers[i].count > 0)
 		{
@@ -110,7 +109,7 @@ static void	load_samplers(t_json_value *json, char *bin, t_animation *clip)
 /**
  * @brief Entry point for GLB animation extraction.
  */
-t_animation	*glb_extract_animations(t_json_value *json, char *bin, int *out_count)
+t_animation *glb_extract_animations(t_json_value *json, char *bin, int *out_count)
 {
 	t_json_value	*anims;
 	t_animation		*clips;
@@ -136,14 +135,80 @@ t_animation	*glb_extract_animations(t_json_value *json, char *bin, int *out_coun
 	return (clips);
 }
 
-/**
- * @brief Skeleton loading stub — not yet implemented.
- */
-void	glb_load_skeleton_impl(t_mesh *mesh, t_json_value *json,
-		char *bin, int idx)
+static int	find_parent_node(t_json_value *nodes, int target_node)
 {
-	(void)mesh;
-	(void)json;
-	(void)bin;
-	(void)idx;
+	size_t			i;
+	size_t			j;
+	t_json_value	*n;
+	t_json_value	*children;
+
+	i = 0;
+	while (i < nodes->array.count)
+	{
+		n = json_at(nodes, i);
+		children = json_get(n, "children");
+		if (children && children->type == JSON_ARRAY)
+		{
+			j = 0;
+			while (j < children->array.count)
+			{
+				if (json_get_int(json_at(children, j), NULL) == target_node)
+					return ((int)i);
+				j++;
+			}
+		}
+		i++;
+	}
+	return (-1);
+}
+
+void	glb_load_skeleton_impl(t_mesh *mesh, t_json_value *json, char *bin, int idx)
+{
+	t_json_value	*skins = json_get(json, "skins");
+	t_json_value	*skin = json_at(skins, idx);
+	t_json_value	*joints;
+	t_glb_accessor	acc;
+	t_glb_buffer_view bv;
+	t_mat4 *ibms;
+	t_json_value *nodes;
+	int i, j, node_idx, parent_node;
+
+	if (!skin) return;
+	joints = json_get(skin, "joints");
+	mesh->bone_count = (int)joints->array.count;
+	mesh->skeleton = ft_calloc(mesh->bone_count, sizeof(t_bone));
+	mesh->bone_matrices = ft_calloc(mesh->bone_count, sizeof(t_mat4));
+
+	glb_parse_accessor(json, json_get_int(skin, "inverseBindMatrices"), &acc);
+	glb_parse_buffer_view(json, acc.buffer_view, &bv);
+	ibms = malloc(sizeof(t_mat4) * mesh->bone_count);
+	glb_extract_data(bin, &acc, &bv, ibms);
+
+	nodes = json_get(json, "nodes");
+	i = 0;
+	while (i < mesh->bone_count)
+	{
+		node_idx = json_get_int(json_at(joints, i), NULL);
+		mesh->skeleton[i].node_idx = node_idx;
+		mesh->skeleton[i].inv_bind_pose = ibms[i];
+		mesh->skeleton[i].trs.scale = vec3(1,1,1);
+		
+		parent_node = find_parent_node(nodes, node_idx);
+		mesh->skeleton[i].parent = -1;
+		if (parent_node != -1)
+		{
+			j = 0;
+			while (j < mesh->bone_count)
+			{
+				if (json_get_int(json_at(joints, j), NULL) == parent_node)
+				{
+					mesh->skeleton[i].parent = j;
+					break;
+				}
+				j++;
+			}
+		}
+		i++;
+	}
+	free(ibms);
 }

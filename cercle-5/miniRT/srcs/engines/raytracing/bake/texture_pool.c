@@ -10,18 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #include "raytracing.h"
 
 /**
  * @brief Simple linear search for texture path in the current engine pool.
  * Returns the index or -1 if not found.
  */
-static int	find_texture_in_pool(t_rt_engine *rt, const char *path)
+static int	find_texture_in_pool(const char *path)
 {
-	int	i;
-
 	if (!path || !*path)
 		return (-1);
 	/* Note: Currently surface metadata doesn't store path in Engine context.
@@ -38,26 +34,30 @@ int	engine_pool_add_texture(t_rt_engine *rt, const char *path)
 {
 	int				w, h, channels;
 	unsigned char	*pixels;
-	int				idx;
+	size_t			idx;
+	size_t			*count_ptr;
+	size_t			*cap_ptr;
 
+	(void)find_texture_in_pool;
 	pixels = stbi_load(path, &w, &h, &channels, 4); /* Force RGBA */
 	if (!pixels)
 		return (-1);
 	
+	count_ptr = (size_t *)&rt->texture_count;
+	cap_ptr = (size_t *)&rt->texture_cap;
 	idx = rt->texture_count;
-	/* Use existing dynamic array helpers */
-	if (!DYNARRAY_ENSURE_INT(&rt->texture_pool, &rt->texture_count,
-			&rt->texture_cap, sizeof(unsigned char *)))
+	if (!DYNARRAY_ENSURE_INT(&rt->texture_pool, count_ptr,
+			cap_ptr, sizeof(unsigned char *)))
 		return (-1);
-	rt->texture_count--; /* Keep count in sync with second allocation */
+	rt->texture_count--;
 	
-	if (!DYNARRAY_ENSURE_INT(&rt->texture_dims, &rt->texture_count,
-			&rt->texture_cap, sizeof(t_vec2i)))
+	if (!DYNARRAY_ENSURE_INT(&rt->texture_dims, count_ptr,
+			cap_ptr, sizeof(t_vec2i)))
 		return (-1);
 	
 	rt->texture_pool[idx] = pixels;
 	rt->texture_dims[idx] = vec2i(w, h);
-	return (idx);
+	return ((int)idx);
 }
 
 /**

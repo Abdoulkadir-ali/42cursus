@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:06:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 11:06:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "objects.h"
 # include "scene.h"
 # include "surface.h"
+# include "dod.h"
 
 /* ----------------------------- physics types ----------------------------- */
 # ifndef MAX_SUB_SHAPES
