@@ -253,6 +253,7 @@ struct					s_gui
 	t_hover_cache		*hover;
 	t_render_pool		pool;
 	t_rt_engine			rt;
+	t_physics			*phys;
 };
 
 struct					s_key_action

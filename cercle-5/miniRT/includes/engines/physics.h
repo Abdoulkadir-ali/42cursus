@@ -42,6 +42,16 @@
 # ifndef DBVT_MAX_LEAVES
 # endif
 
+// Lightweight per-body physics config used by the editor UI and snapshots.
+// Actual simulation data lives in t_physics_soa.
+typedef struct s_physics_body
+{
+	float	mass;
+	float	elasticity;
+	float	friction;
+	bool	is_static;
+}	t_physics_body;
+
 typedef enum e_phys_type
 {
 	TYPE_PHYS_SPHERE,

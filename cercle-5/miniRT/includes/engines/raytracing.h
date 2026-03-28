@@ -20,7 +20,7 @@
 # include <stdint.h>
 
 /* 1. EXTERNAL DEPENDENCIES */
-# include "primitives.h"
+# include "scene.h"
 # include "stb_image.h"
 
 /* 2. ENGINE DATA STRUCTURES */
@@ -102,7 +102,8 @@ typedef struct s_hit
 	double		u;
 	double		v;
 	int			mat_idx;
-	t_type		type;
+	t_type		type;   // keep for backward compat
+	t_bvh_ref	ref;    // DOD: full reference (type + index)
 }				t_hit;
 
 typedef struct s_shading

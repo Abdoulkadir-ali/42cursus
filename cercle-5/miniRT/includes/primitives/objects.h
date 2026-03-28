@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 06:38:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:51:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,45 @@ typedef struct s_light
 
 typedef enum e_prim_type
 {
-	PRIM_NONE,
-	PRIM_SPHERE,
-	PRIM_PLANE,
-	PRIM_CYLINDER,
-	PRIM_CONE,
-	PRIM_TRIANGLE,
-	PRIM_RECT,
-	PRIM_BOX,
-	PRIM_CAPSULE,
-	PRIM_PYRAMID
+	PRIM_NONE		= 0,
+	PRIM_SPHERE		= 1,
+	PRIM_PLANE		= 2,
+	PRIM_CYLINDER	= 3,
+	PRIM_CONE		= 4,
+	PRIM_TRIANGLE	= 5,
+	PRIM_RECT		= 6,
+	PRIM_BOX		= 7,
+	PRIM_CAPSULE	= 8,
+	PRIM_PYRAMID	= 9
 }	t_prim_type;
+
+// Unified object type -- superset of e_prim_type
+typedef enum e_type
+{
+	TYPE_NONE		= 0,
+	TYPE_SPHERE		= 1,
+	TYPE_PLANE		= 2,
+	TYPE_CYLINDER	= 3,
+	TYPE_CONE		= 4,
+	TYPE_TRI		= 5,
+	TYPE_RECT		= 6,
+	TYPE_BOX		= 7,
+	TYPE_CAPSULE	= 8,
+	TYPE_PYRAMID	= 9,
+	TYPE_MESH		= 10,
+	TYPE_ANIM		= 11,
+	TYPE_LIGHT		= 12
+}	t_type;
+
+// BVH reference -- indexes into either primitives SoA or tri_soa
+typedef struct s_bvh_ref
+{
+	t_type	type;
+	int		index;
+}	t_bvh_ref;
+
+// Alias used in t_bvh node array
+typedef t_bvh_ref	t_prim_ref;
  
 typedef struct s_prim_params
 {
@@ -131,17 +159,36 @@ typedef struct s_tri_array
 	size_t		cap;
 }	t_tri_array;
 
+/* Skinning weights for skeletal animation (GLB/FBX) */
+typedef struct s_bone_weight
+{
+	uint16_t	bone_ids[4];
+	float		weights[4];
+}	t_bone_weight;
+
 /* Intermediate mesh structure used during loading phase */
 typedef struct s_mesh
 {
-	t_vec3		*vertices;
-	size_t		vertex_count;
-	int			*indices;
-	size_t		tri_count;
-	t_vec2		*uvs;
-	t_vec3		*normals;
-	int			mat_id;
-	t_transform	transform;
+	t_vec3			*vertices;
+	size_t			vertex_count;
+	int				*indices;
+	size_t			tri_count;
+	t_vec2			*uvs;
+	t_vec3			*normals;
+	int				mat_id;
+	t_transform		transform;
+	/* --- Extended loading fields --- */
+	char			*name;
+	t_aabb			bbox;
+	int				group_id;
+	t_bone_weight	*skin_data;
+	int				anim_base;
+	int				anim_clip_count;
+	void			*bvh_nodes;
+	int				*bvh_indices;
+	void			*tri_cache;
+	void			*edit_snap_verts;
+	void			*edit_snap_norms;
 }	t_mesh;
 
 
