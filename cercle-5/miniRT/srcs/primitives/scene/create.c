@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:22:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:09:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,6 @@ t_scene	*create_scene(const char *name)
 	}
 	s->ambient.brightness = 0;
 	s->ambient.rgb = vec3(0, 0, 0);
-	s->simulate_physics = false;
 	s->version = 1;
 	scene_add_material_from_color(s, vec3(200, 160, 255));
 	return (s);

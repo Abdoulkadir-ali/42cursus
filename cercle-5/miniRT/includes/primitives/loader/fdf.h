@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:38:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:06:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define FDF_LOADER_H
 
 # include "parser.h"
-# include "scene.h"
+# include "mesh.h"
 # include "material.h"
 
 /**
@@ -51,8 +51,5 @@ bool			fdf_fill_grid(t_fdf *f, t_parser *p);
 bool			fdf_triangulate(t_fdf *f);
 void			fdf_compute_normals(t_fdf *f);
 void			fdf_gen_uvs(t_fdf *f);
-
-/* --- INJECTION (Scene add functions) --- */
-bool			scene_add_mesh(t_scene *scene, t_mesh mesh);
 
 #endif

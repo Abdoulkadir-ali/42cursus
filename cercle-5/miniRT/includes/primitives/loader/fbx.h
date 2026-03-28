@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:52:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:06:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 # define FBX_LOADER_H
 
 # include "parser.h"
-# include "scene.h"
+# include "mesh.h"
 # include "material.h"
-# include "animations.h"
 
 /* --- FBX LOADER STRUCTURE --- */
 typedef struct s_fbx

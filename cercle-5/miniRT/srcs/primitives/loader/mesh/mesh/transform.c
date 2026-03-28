@@ -6,15 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 17:03:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:10:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "loader.h"
+#include "mesh.h"
 
 static void	apply_v_t(t_mesh *mesh, t_mat4 rot, t_vec3 pos, t_vec3 scale)
 {
-    int		i;
+    size_t		i;
     t_vec3	v;
 
     i = 0;
@@ -30,7 +30,7 @@ static void	apply_v_t(t_mesh *mesh, t_mat4 rot, t_vec3 pos, t_vec3 scale)
 
 static void	apply_n_t(t_mesh *mesh, t_mat4 rot)
 {
-    int	i;
+    size_t i;
 
     if (!mesh->normals)
         return ;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:28:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:28:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:07:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 # define RT_LOADER_H
 
 # include "parser.h"
-# include "scene.h"
-# include "mesh.h"
 # include "obj.h"
 # include "glb.h"
 # include "fbx.h"

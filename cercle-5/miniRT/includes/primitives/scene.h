@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:52:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:08:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 
 # include "libft.h"
 # include "objects.h"
+# include "anim.h"
 
-typedef struct s_animation			t_animation;
-typedef struct s_skinned_mesh		t_skinned_mesh;
 typedef struct s_emissive_ref		t_emissive_ref;
 
 typedef struct s_scene
@@ -50,7 +49,7 @@ typedef struct s_scene
 	size_t							clip_cap;
 	uint32_t						version;
 	void							*mlx;
-	bool							simulate_physics;
+
 	t_emissive_ref					*emissive_cache;
 }	t_scene;
 
@@ -60,7 +59,5 @@ typedef struct s_scene
 
 t_scene		*create_scene(const char *name);
 void		destroy_scene(t_scene *scene);
-bool		scene_add_clip(t_scene *scene, t_animation anim);
-bool		scene_add_animation(t_scene *scene, t_animation anim);
 
 #endif

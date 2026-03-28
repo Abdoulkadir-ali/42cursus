@@ -6,11 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 03:05:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 08:28:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
+#include "mesh.h"
+
+static void	*grow(void *ptr, size_t n)
+{
+	return (realloc(ptr, n));
+}
 
 /**
  * @brief Synchronized parallel reallocation for the triangle SoA.
@@ -20,25 +25,25 @@ static bool	realloc_tri_soa(t_tri_array *soa, size_t new_cap)
 	int		k;
 	size_t	sz;
 
-	sz = new_cap * sizeof(double);
+	sz = new_cap * sizeof(float);
 	k = -1;
 	while (++k < 3)
 	{
-		soa->vx[k] = ft_realloc(soa->vx[k], soa->count * sizeof(double), sz);
-		soa->vy[k] = ft_realloc(soa->vy[k], soa->count * sizeof(double), sz);
-		soa->vz[k] = ft_realloc(soa->vz[k], soa->count * sizeof(double), sz);
+		soa->vx[k] = grow(soa->vx[k], sz);
+		soa->vy[k] = grow(soa->vy[k], sz);
+		soa->vz[k] = grow(soa->vz[k], sz);
 	}
 	k = -1;
 	while (++k < 2)
 	{
-		soa->ex[k] = ft_realloc(soa->ex[k], soa->count * sizeof(double), sz);
-		soa->ey[k] = ft_realloc(soa->ey[k], soa->count * sizeof(double), sz);
-		soa->ez[k] = ft_realloc(soa->ez[k], soa->count * sizeof(double), sz);
+		soa->ex[k] = grow(soa->ex[k], sz);
+		soa->ey[k] = grow(soa->ey[k], sz);
+		soa->ez[k] = grow(soa->ez[k], sz);
 	}
-	soa->nx = ft_realloc(soa->nx, soa->count * sizeof(double), sz);
-	soa->ny = ft_realloc(soa->ny, soa->count * sizeof(double), sz);
-	soa->nz = ft_realloc(soa->nz, soa->count * sizeof(double), sz);
-	soa->mat_ids = ft_realloc(soa->mat_ids, soa->count * sizeof(uint16_t), new_cap * sizeof(uint16_t));
+	soa->nx = grow(soa->nx, sz);
+	soa->ny = grow(soa->ny, sz);
+	soa->nz = grow(soa->nz, sz);
+	soa->mat_ids = grow(soa->mat_ids, new_cap * sizeof(uint16_t));
 	soa->cap = new_cap;
 	return (soa->nx != NULL && soa->mat_ids != NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:38:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:07:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define OBJ_LOADER_H
 
 # include "parser.h"
-# include "scene.h"
+# include "mesh.h"
 # include "material.h"
 
 /* --- OBJ LOADER STRUCTURE --- */

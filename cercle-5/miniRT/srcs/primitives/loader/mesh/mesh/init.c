@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 17:03:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:10:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "loader.h"
+#include "mesh.h"
 
 static bool	alloc_vertex_data(t_mesh *mesh, t_mesh_init init)
 {
@@ -85,15 +85,5 @@ void	mesh_free(t_mesh *mesh)
         free(mesh->indices);
     if (mesh->name)
         free(mesh->name);
-    if (mesh->bvh_nodes)
-        free(mesh->bvh_nodes);
-    if (mesh->bvh_indices)
-        free(mesh->bvh_indices);
-    if (mesh->tri_cache)
-        free(mesh->tri_cache);
-    if (mesh->edit_snap_verts)
-        free(mesh->edit_snap_verts);
-    if (mesh->edit_snap_norms)
-        free(mesh->edit_snap_norms);
     ft_memset(mesh, 0, sizeof(t_mesh));
 }

@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:57:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 08:21:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
+#include "mesh.h"
 
 bool	scene_add_animated(t_scene *scene, t_skinned_mesh animated)
 {

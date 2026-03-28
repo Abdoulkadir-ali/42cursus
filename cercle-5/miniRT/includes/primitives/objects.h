@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:51:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:00:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,41 +159,12 @@ typedef struct s_tri_array
 	size_t		cap;
 }	t_tri_array;
 
-/* Skinning weights for skeletal animation (GLB/FBX) */
+/* Skinning weights for skeletal animation (GLB/FBX/OBJ) */
+/* Defined here so t_primitive_array/t_tri_array sibling types stay together. */
 typedef struct s_bone_weight
 {
 	uint16_t	bone_ids[4];
 	float		weights[4];
 }	t_bone_weight;
-
-/* Intermediate mesh structure used during loading phase */
-typedef struct s_mesh
-{
-	t_vec3			*vertices;
-	size_t			vertex_count;
-	int				*indices;
-	size_t			tri_count;
-	t_vec2			*uvs;
-	t_vec3			*normals;
-	int				mat_id;
-	t_transform		transform;
-	/* --- Extended loading fields --- */
-	char			*name;
-	t_aabb			bbox;
-	int				group_id;
-	t_bone_weight	*skin_data;
-	int				anim_base;
-	int				anim_clip_count;
-	void			*bvh_nodes;
-	int				*bvh_indices;
-	void			*tri_cache;
-	void			*edit_snap_verts;
-	void			*edit_snap_norms;
-}	t_mesh;
-
-
-
-
-
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:24:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:52:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 09:06:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 # define GLB_LOADER_H
 
 # include "parser.h"
-# include "scene.h"
+# include "mesh.h"
 # include "material.h"
-# include "animations.h"
 
 /* --- GLB Binary Format Constants --- */
 # define GLB_MAGIC   0x46546C67
