@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 06:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:22:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:46:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ bool	rt_buf_inject(t_scene *scene, t_rt_buf *buf)
 		if (s->type == PRIM_TRIANGLE)
 		{
 			s->params.mat_id = scene_add_material_from_color(scene, s->color);
-			if (!scene_add_tri(scene, s->v, s->params.mat_id))
+			if (!scene_add_tri(scene, s->data.tri, s->params.mat_id))
 				return (false);
 		}
 		else
@@ -179,8 +179,23 @@ bool	scene_add_tri(t_scene *scene, t_vec3 v[3], int mat_id)
 	return (true);
 }
 
+void	scene_apply_ambient(t_scene *scene, double brightness, t_vec3 rgb)
+{
+	scene->ambient.brightness = brightness;
+	scene->ambient.rgb = rgb;
+}
+
 void	scene_apply_camera(t_scene *scene, t_transform transform, double fov)
 {
 	scene->camera.transform = transform;
 	scene->camera.fov = fov;
 }
+
+bool	scene_add_light(t_scene *scene, t_light light)
+{
+	(void)scene;
+	(void)light;
+	/* Implementation depends on scene light storage (array or list) */
+	return (true);
+}
+

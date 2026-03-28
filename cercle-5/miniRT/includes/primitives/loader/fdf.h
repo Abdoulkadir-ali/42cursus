@@ -6,16 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:06:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:44:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_LOADER_H
 # define FDF_LOADER_H
 
-# include "parser.h"
-# include "mesh.h"
 # include "material.h"
+# include "mesh.h"
+# include "parser.h"
 
 /**
  * @brief Intermediate structure for FDF wireframe loading.

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 13:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:48:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
  *            median-split in dbvt_build_range) → link nodes.
  * Full rebuild is O(n log n) and fast for typical scene sizes (< 256 bodies).
  */
-void	build_dbvt(t_scene *s, t_dbvt *t)
+void	build_dbvt(t_physics *phys, t_dbvt *t)
 {
 	t->node_count = 0;
 	t->leaf_count = 0;
 	t->root = DBVT_NULL;
-	collect_leaves(s, t);
+	collect_leaves(phys, t);
 	if (t->leaf_count == 0)
 		return ;
 	t->root = dbvt_build_range(t, 0, t->leaf_count);

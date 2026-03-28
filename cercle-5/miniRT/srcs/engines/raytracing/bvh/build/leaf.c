@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:05:36 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 06:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 11:30:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,9 @@ t_bvh_tmp_node	*init_leaf_node(t_build_item *items, size_t count)
 	node->bbox = aabb_create_empty();
 	i = 0;
 	while (i < count)
-		aabb_expand_point(&node->bbox, items[i++].bbox.min);
-	i = 0;
-	while (i < count)
-		aabb_expand_point(&node->bbox, items[i++].bbox.max);
+		node->bbox = aabb_union(&node->bbox, &items[i++].bbox);
 	aabb_expand_eps(&node->bbox, 1e-5);
-	node->refs = malloc(sizeof(t_bvh_ref) * count);
-	if (!node->refs)
-		return (free(node), NULL);
-	i = 0;
-	while (i < count)
-	{
-		node->refs[i] = items[i].ref;
-		i++;
-	}
+	node->first_ref = -1; // This will be set by flatten if we don't store refs here
 	node->num_refs = count;
 	return (node);
 }

@@ -1,91 +1,58 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   emissive.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 06:40:00 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "raytracing.h"
 
-static bool	is_emissive(const t_scene *sc, int mat_id)
+static bool is_emissive(const t_scene *sc, int mat_id)
 {
-	t_vec3	e;
-
-	if (mat_id < 0 || mat_id >= sc->mat_count)
+	t_vec3 e;
+	if (mat_id < 0 || (size_t)mat_id >= sc->mat_count)
 		return (false);
 	e = sc->materials[mat_id].emission;
 	return ((e.x * e.x + e.y * e.y + e.z * e.z) > 1.0);
 }
 
-static int	add_emissives_1(const t_scene *sc, t_emissive_ref *ca, int n)
+static int add_emissives_impl(const t_scene *sc, t_emissive_ref *ca)
 {
-	int	i;
-
-	i = -1;
-	while (++i < sc->sphere_count)
-		if (is_emissive(sc, sc->spheres[i].mat_id))
-			ca[n++] = (t_emissive_ref){TYPE_SPHERE, i};
-	i = -1;
-	while (++i < sc->tri_count)
-		if (is_emissive(sc, sc->tris[i].mat_id))
-			ca[n++] = (t_emissive_ref){TYPE_TRI, i};
-	i = -1;
-	while (++i < sc->rect_count)
-		if (is_emissive(sc, sc->rects[i].mat_id))
-			ca[n++] = (t_emissive_ref){TYPE_RECT, i};
+	size_t i;
+	int n;
+	n = 0;
+	i = 0;
+	while (i < sc->primitives.count)
+	{
+		if (is_emissive(sc, sc->primitives.mat_ids[i]))
+		{
+			ca[n].type = (t_type)sc->primitives.types[i];
+			ca[n].index = (int)i;
+			n++;
+		}
+		i++;
+	}
+	i = 0;
+	while (i < sc->tri_soa.count)
+	{
+		if (is_emissive(sc, sc->tri_soa.mat_ids[i]))
+		{
+			ca[n].type = TYPE_TRI;
+			ca[n].index = (int)i;
+			n++;
+		}
+		i++;
+	}
 	return (n);
 }
 
-static int	add_emissives_2(const t_scene *sc, t_emissive_ref *ca, int n)
+void build_emissive_cache(t_scene *sc)
 {
-	int	i;
-
-	i = -1;
-	while (++i < sc->pyramid_count)
-		if (is_emissive(sc, sc->pyramids[i].mat_id))
-			ca[n++] = (t_emissive_ref){TYPE_PYRAMID, i};
-	i = -1;
-	while (++i < sc->box_count)
-		if (is_emissive(sc, sc->boxes[i].mat_id))
-			ca[n++] = (t_emissive_ref){TYPE_BOX, i};
-	i = -1;
-	while (++i < sc->capsule_count)
-		if (is_emissive(sc, sc->capsules[i].mat_id))
-			ca[n++] = (t_emissive_ref){TYPE_CAPSULE, i};
-	i = -1;
-	while (++i < sc->mesh_count)
-		if (is_emissive(sc, sc->meshes[i].mat_id))
-			ca[n++] = (t_emissive_ref){TYPE_MESH, i};
-	return (n);
-}
-
-/**
- * @brief Identifies all emissive shapes in the scene and builds a cache for 
- * fast light sampling during rendering.
- */
-void	build_emissive_cache(t_scene *sc)
-{
-	t_emissive_ref	*cache;
-	int				cap;
-	int				n;
+	t_emissive_ref *cache;
+	size_t cap;
 
 	free(sc->emissive_cache);
 	sc->emissive_cache = NULL;
-	sc->emissive_n = 0;
-	cap = sc->sphere_count + sc->tri_count + sc->rect_count
-		+ sc->pyramid_count + sc->box_count + sc->capsule_count
-		+ sc->mesh_count;
+	sc->emissive_count = 0;
+	cap = sc->primitives.count + sc->tri_soa.count;
 	if (cap == 0)
-		return ;
+		return;
 	cache = malloc(sizeof(t_emissive_ref) * cap);
 	if (!cache)
-		return ;
-	n = add_emissives_1(sc, cache, 0);
+		return;
+	sc->emissive_count = add_emissives_impl(sc, cache);
 	sc->emissive_cache = cache;
-	sc->emissive_n = add_emissives_2(sc, cache, n);
 }

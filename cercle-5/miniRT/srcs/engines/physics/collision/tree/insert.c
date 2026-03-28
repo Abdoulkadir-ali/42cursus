@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 13:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 13:33:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:03:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ static t_aabb	aabb_merge(t_aabb a, t_aabb b)
 {
 	t_aabb	r;
 
-	r.min.x = fmin(a.min.x, b.min.x);
-	r.min.y = fmin(a.min.y, b.min.y);
-	r.min.z = fmin(a.min.z, b.min.z);
-	r.max.x = fmax(a.max.x, b.max.x);
-	r.max.y = fmax(a.max.y, b.max.y);
-	r.max.z = fmax(a.max.z, b.max.z);
+	r.min[0] = fmin(a.min[0], b.min[0]);
+	r.min[1] = fmin(a.min[1], b.min[1]);
+	r.min[2] = fmin(a.min[2], b.min[2]);
+	r.max[0] = fmax(a.max[0], b.max[0]);
+	r.max[1] = fmax(a.max[1], b.max[1]);
+	r.max[2] = fmax(a.max[2], b.max[2]);
 	return (r);
 }
 
@@ -53,7 +53,9 @@ static int	split_axis(t_dbvt *t, int begin, int end)
 	mid = begin + 1;
 	while (mid < end)
 		bound = aabb_merge(bound, t->leaves[mid++].fat_aabb);
-	d = vec3_sub(bound.max, bound.min);
+	d.x = bound.max[0] - bound.min[0];
+	d.y = bound.max[1] - bound.min[1];
+	d.z = bound.max[2] - bound.min[2];
 	if (d.x >= d.y && d.x >= d.z)
 		axis = 0;
 	else if (d.y >= d.z)

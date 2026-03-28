@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 13:09:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,60 +17,60 @@
  * Runs collision detection and extraction of contact parameters.
  * @return 1 on collision, 0 otherwise.
  */
-int	gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
-		t_physics_body *ba, t_physics_body *bb,
-		t_transform *ta, t_transform *tb,
-		t_contact *c)
+int	gjk_make_contact(t_physics *phys, int idx_a, int idx_b, t_contact *c)
 {
 	t_simplex	simplex;
 	t_epa_res	res;
+	t_gjk_shape	sa;
+	t_gjk_shape	sb;
 
-	if (!gjk_intersect(sa, sb, &simplex))
+	sa = (t_gjk_shape){phys->scene, idx_a};
+	sb = (t_gjk_shape){phys->scene, idx_b};
+	if (!gjk_intersect(&sa, &sb, &simplex))
 		return (0);
-	if (!gjk_epa(sa, sb, &simplex, &res))
+	if (!gjk_epa(&sa, &sb, &simplex, &res))
 		return (0);
 	if (res.depth < 1e-9)
 		return (0);
 	c->normal = res.normal;
 	c->penetration = res.depth;
-	c->a = ba;
-	c->b = bb;
-	c->ta = ta;
-	c->tb = tb;
+	c->idx_a = idx_a;
+	c->idx_b = idx_b;
 	c->contact_point = vec3_scale(vec3_add(res.contact_a, res.contact_b), 0.5);
-	c->ra = vec3_sub(c->contact_point, ba->center);
-	c->rb = vec3_sub(c->contact_point, (bb ? bb->center : c->contact_point));
-	c->restitution = fmin(ba->elasticity, bb ? bb->elasticity : 0.5);
-	c->friction = sqrt(ba->friction * (bb ? bb->friction : 0.5));
+	c->ra = vec3_sub(c->contact_point, vec3(phys->soa.px[idx_a],
+				phys->soa.py[idx_a], phys->soa.pz[idx_a]));
+	c->rb = vec3_sub(c->contact_point, vec3(phys->soa.px[idx_b],
+				phys->soa.py[idx_b], phys->soa.pz[idx_b]));
+	c->restitution = fmin(phys->soa.restitution[idx_a],
+			phys->soa.restitution[idx_b]);
+	c->friction = sqrt(phys->soa.friction[idx_a] * phys->soa.friction[idx_b]);
 	return (1);
 }
 
-/**
- * @brief Handles plane vs. convex shape collision using support mapping.
- */
-int	gjk_vs_plane(t_gjk_shape *sa, t_physics_body *ba, t_transform *ta,
-		t_plane *pl, t_contact *c)
+int	gjk_vs_plane(t_physics *phys, int body_idx, int plane_idx, t_contact *c)
 {
-	t_vec3	n;
-	t_vec3	support;
-	double	dist;
+	t_vec3		n;
+	t_vec3		support;
+	double		dist;
+	t_gjk_shape	sa;
 
-	n = (vec3_mag_sq(pl->transform.up) < 1e-6) ? vec3(0, 1, 0)
-		: vec3_norm(pl->transform.up);
-	support = sa->support(sa->data, vec3_scale(n, -1.0));
-	dist = vec3_dot(vec3_sub(support, pl->transform.pos), n);
+	sa = (t_gjk_shape){phys->scene, body_idx};
+	n = vec3_norm(vec3(phys->soa.ax[plane_idx], phys->soa.ay[plane_idx],
+				phys->soa.az[plane_idx]));
+	support = sa_support(&sa, vec3_scale(n, -1.0));
+	dist = vec3_dot(vec3_sub(support, vec3(phys->soa.px[plane_idx],
+					phys->soa.py[plane_idx], phys->soa.pz[plane_idx])), n);
 	if (dist >= 0.0)
 		return (0);
 	c->normal = vec3_scale(n, -1.0);
 	c->penetration = -dist;
-	c->a = ba;
-	c->b = NULL;
-	c->ta = ta;
-	c->tb = &pl->transform;
+	c->idx_a = body_idx;
+	c->idx_b = plane_idx;
 	c->contact_point = support;
-	c->ra = vec3_sub(support, ba->center);
+	c->ra = vec3_sub(support, vec3(phys->soa.px[body_idx],
+				phys->soa.py[body_idx], phys->soa.pz[body_idx]));
 	c->rb = vec3(0, 0, 0);
-	c->restitution = fmin(ba->elasticity, 0.5);
-	c->friction = sqrt(ba->friction * 0.5);
+	c->restitution = fmin(phys->soa.restitution[body_idx], 0.5);
+	c->friction = sqrt(phys->soa.friction[body_idx] * 0.5);
 	return (1);
 }

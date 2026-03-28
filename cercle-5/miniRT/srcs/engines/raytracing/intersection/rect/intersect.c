@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 11:11:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:47:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	intersect_rect(const t_ray *ray, t_primitive_array *p, int i, t_hit *hit)
 {
-	t_rect_scratch re = unpack_rect(p, i);
+	t_rect re = unpack_rect(p, i);
 	t_vec3	v, right, up, rel;
 	double	denom, t, d_u, d_v;
 

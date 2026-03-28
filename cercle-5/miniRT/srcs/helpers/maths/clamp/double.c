@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   others.c                                           :+:      :+:    :+:   */
+/*   double.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/28 13:02:44 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 13:02:45 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 12:57:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 12:57:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "physics.h"
+#include "maths.h"
 
-
-int sphere_others_contacts(t_scene *s, int idx, t_contact *c, int count, int max)
+double	clamp_d(double v, double min, double max)
 {
-	(void)s; (void)idx; (void)c; (void)count; (void)max;
-	return count;
+	if (v < min)
+		return (min);
+	if (v > max)
+		return (max);
+	return (v);
 }

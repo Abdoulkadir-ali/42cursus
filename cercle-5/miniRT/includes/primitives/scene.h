@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:08:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 11:59:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_scene
 	void							*mlx;
 
 	t_emissive_ref					*emissive_cache;
+	size_t							emissive_count;
 }	t_scene;
 
 /* ------------------------------------------------------------------------- */

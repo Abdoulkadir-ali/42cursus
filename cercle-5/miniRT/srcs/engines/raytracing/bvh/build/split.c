@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 04:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 13:04:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	fill_bins(t_build_item *items, size_t count, t_sah_bin *bins,
 	i = 0;
 	while (i < count)
 	{
-		val = ((float *)&items[i].centroid.x)[axis];
+		val = ((double *)&items[i].centroid.x)[axis];
 		bin_idx = (int)((val - min_c) * scale);
 		if (bin_idx < 0) bin_idx = 0;
 		if (bin_idx >= SAH_BINS) bin_idx = SAH_BINS - 1;
@@ -77,11 +77,11 @@ static void	eval_bins(t_sah_bin *bins, float p_area, t_split_info *info, int axi
 	i = -1;
 	while (++i < SAH_BINS - 1)
 	{
-		cost = 1.0f + (aabb_surface_area(left_box[i]) / p_area) * left_cnt[i]
-				+ (aabb_surface_area(right_box[i]) / p_area) * right_cnt[i];
+		cost = 1.0f + (aabb_surface_area(&left_box[i]) / p_area) * left_cnt[i]
+				+ (aabb_surface_area(&right_box[i]) / p_area) * right_cnt[i];
 		if (cost < info->cost)
 		{
-			info->cost = (double)cost; info->axis = axis; info->split = i;
+			info->cost = (double)cost; info->axis = axis; info->split_idx = i;
 		}
 	}
 }
@@ -107,8 +107,35 @@ t_split_info	find_best_split(t_build_item *items, size_t count, double p_area)
 		float range = centroid_bounds.max[a] - centroid_bounds.min[a];
 		if (range < 1e-4f) continue ;
 		ft_memset(bins, 0, sizeof(bins));
-		fill_bins(items, count, bins, a, centroid_bounds.min[a], SAH_BINS / range);
+		fill_bins(items, count, bins, a, centroid_bounds.min[a], (float)SAH_BINS / range);
 		eval_bins(bins, (float)p_area, &info, a);
+	}
+	if (info.axis != -1)
+	{
+		size_t split = 0;
+		float range = centroid_bounds.max[info.axis] - centroid_bounds.min[info.axis];
+		float min_c = centroid_bounds.min[info.axis];
+		float scale = (float)SAH_BINS / range;
+		size_t i = 0;
+		while (i < count)
+		{
+			float val = ((double *)&items[i].centroid.x)[info.axis];
+			int b = (int)((val - min_c) * scale);
+			if (b < 0)
+				b = 0;
+			if (b >= SAH_BINS)
+				b = SAH_BINS - 1;
+			if ((size_t)b <= info.split_idx)
+			{
+				t_build_item tmp = items[i];
+				items[i] = items[split];
+				items[split] = tmp;
+				split++;
+			}
+			i++;
+		}
+		info.split_idx = split;
+		if (split == 0 || split == count) info.axis = -1;
 	}
 	return (info);
 }

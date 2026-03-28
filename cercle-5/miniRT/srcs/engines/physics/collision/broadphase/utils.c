@@ -5,23 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 11:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:45:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 13:04:37 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 13:04:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-/**
- * @brief Test two global AABBs. Returns true if they overlap on all 3 axes.
- */
 bool	aabb_overlap_broad(t_aabb a, t_aabb b)
 {
-	if (a.max.x < b.min.x || a.min.x > b.max.x)
+	if (a.max[0] < b.min[0] || a.min[0] > b.max[0])
 		return (false);
-	if (a.max.y < b.min.y || a.min.y > b.max.y)
+	if (a.max[1] < b.min[1] || a.min[1] > b.max[1])
 		return (false);
-	if (a.max.z < b.min.z || a.min.z > b.max.z)
+	if (a.max[2] < b.min[2] || a.min[2] > b.max[2])
 		return (false);
 	return (true);
 }

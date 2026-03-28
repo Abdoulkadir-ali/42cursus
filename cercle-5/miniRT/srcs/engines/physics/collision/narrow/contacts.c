@@ -1,39 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   others.c                                           :+:      :+:    :+:   */
+/*   contacts.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 09:55:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 13:05:34 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 13:22:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 13:22:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-int	cap_vs_others(t_physics *phys, int idx, t_capsule *cap, t_aabb caabb,
-		t_contact *c, int count, int max)
+int	prim_others_contacts(t_physics *phys, int idx, t_aabb aabb,
+		t_gjk_shape *sa, t_contact *c, int count, int max)
 {
-	t_gjk_shape	sa;
-	t_gjk_shape	sb;
 	int			p;
 	t_scene		*s;
+	t_gjk_shape	sb;
 	t_aabb		pb;
 
+	(void)sa;
 	s = phys->scene;
-	sa = (t_gjk_shape){s, idx};
-	p = idx + 1;
-	while (p < (int)s->primitives.count && count < max)
+	p = idx;
+	while (++p < (int)s->primitives.count && count < max)
 	{
+		if (s->primitives.is_static[p] && s->primitives.is_static[idx])
+			continue ;
+		if (s->primitives.types[p] == PRIM_PLANE)
+			continue ;
 		pb = get_primitive_aabb_soa(&s->primitives, p);
-		if (s->primitives.types[p] == PRIM_CAPSULE && aabb_overlap(&caabb, &pb))
+		if (aabb_overlap(&aabb, &pb))
 		{
 			sb = (t_gjk_shape){s, p};
-			count += gjk_make_contact(&sa, &sb, idx, p, &c[count]);
+			count += gjk_make_contact(phys, idx, p, &c[count]);
 		}
-		p++;
 	}
-	(void)cap;
-	return (prim_others_contacts(phys, idx, caabb, &sa, c, count, max));
+	return (count);
 }

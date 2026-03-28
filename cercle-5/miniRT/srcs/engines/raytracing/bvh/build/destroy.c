@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:04:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 06:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 11:30:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ void	node_destroy(t_bvh_tmp_node *node)
 		return ;
 	node_destroy(node->left);
 	node_destroy(node->right);
-	if (node->refs)
-		free(node->refs);
 	free(node);
 }
 

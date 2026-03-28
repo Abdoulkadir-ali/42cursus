@@ -6,56 +6,34 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 06:17:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 13:07:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-int	cyl_vs_others(t_scene *s, int idx, t_cylinder *cy, t_aabb cyaabb,
+int	cyl_vs_others(t_physics *phys, int idx, t_cylinder *cy, t_aabb cyaabb,
 		t_contact *c, int count, int max)
 {
 	t_gjk_shape	sa;
 	t_gjk_shape	sb;
 	int			p;
+	t_scene		*s;
+	t_aabb		pb;
 
-	sa = (t_gjk_shape){cy, gjk_support_cylinder, cy->phys.center};
+	s = phys->scene;
+	sa = (t_gjk_shape){phys->scene, idx};
 	p = idx + 1;
-	while (p < s->cylinder_count && count < max)
-		if (aabb_overlap(cyaabb, cylinder_aabb(&s->cylinders[p])))
+	while (p < (int)s->primitives.count && count < max)
+	{
+		pb = get_primitive_aabb_soa(&s->primitives, p);
+		if (s->primitives.types[p] == PRIM_CYLINDER && aabb_overlap(&cyaabb, &pb))
 		{
-			sb = (t_gjk_shape){&s->cylinders[p], gjk_support_cylinder,
-				s->cylinders[p].phys.center};
-			count += gjk_make_contact(&sa, &sb, &cy->phys,
-					&s->cylinders[p].phys, &cy->transform,
-					&s->cylinders[p].transform, &c[count]);
+			sb = (t_gjk_shape){phys->scene, p};
+			count += gjk_make_contact(&sa, &sb, idx, p, &c[count]);
 		}
-	p = -1;
-	while (++p < s->rect_count && count < max)
-		if (aabb_overlap(cyaabb, rect_aabb(&s->rects[p])))
-		{
-			sb = (t_gjk_shape){&s->rects[p], gjk_support_rect,
-				s->rects[p].phys.center};
-			count += gjk_make_contact(&sa, &sb, &cy->phys, &s->rects[p].phys,
-					&cy->transform, &s->rects[p].transform, &c[count]);
-		}
-	p = -1;
-	while (++p < s->tri_count && count < max)
-		if (aabb_overlap(cyaabb, tri_aabb(&s->tris[p])))
-		{
-			sb = (t_gjk_shape){&s->tris[p], gjk_support_tri,
-				s->tris[p].phys.center};
-			count += gjk_make_contact(&sa, &sb, &cy->phys, &s->tris[p].phys,
-					&cy->transform, &s->tris[p].transform, &c[count]);
-		}
-	p = -1;
-	while (++p < s->pyramid_count && count < max)
-		if (aabb_overlap(cyaabb, pyramid_aabb(&s->pyramids[p])))
-		{
-			sb = (t_gjk_shape){&s->pyramids[p], gjk_support_pyramid,
-				s->pyramids[p].phys.center};
-			count += gjk_make_contact(&sa, &sb, &cy->phys, &s->pyramids[p].phys,
-					&cy->transform, &s->pyramids[p].transform, &c[count]);
-		}
-	return (count);
+		p++;
+	}
+	(void)cy;
+	return (prim_others_contacts(phys, idx, cyaabb, &sa, c, count, max));
 }

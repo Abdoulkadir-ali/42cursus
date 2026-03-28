@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 06:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 11:30:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,15 @@
 bool	alloc_flat(t_bvh *bvh, size_t k)
 {
 	bvh->nodes = ft_calloc(k * 2, sizeof(t_bvh_node));
-	bvh->refs = malloc(sizeof(t_bvh_ref) * k);
-	return (bvh->nodes != NULL && bvh->refs != NULL);
+	bvh->refs = NULL; // We use the global items buffer now
+	return (bvh->nodes != NULL);
 }
 
 static void	flatten_leaf(t_bvh_tmp_node *n, t_bvh *bvh, int my_idx, int *rc)
 {
-	size_t	i;
-
 	bvh->nodes[my_idx].count = (int)n->num_refs;
-	bvh->nodes[my_idx].left_or_first = *rc;
-	i = 0;
-	while (i < n->num_refs)
-	{
-		bvh->refs[(*rc)++] = n->refs[i];
-		i++;
-	}
+	bvh->nodes[my_idx].left_or_first = n->first_ref;
+	(void)rc;
 }
 
 /**

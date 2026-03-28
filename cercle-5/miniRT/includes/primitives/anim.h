@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:34:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:42:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ANIM_H
 # define ANIM_H
 
-# include "objects.h"
+# include "maths.h"
 
 /* ----------------------------------------------------------------- */
 /*  SCENE-PERSISTENT ANIMATION / SKELETAL TYPES                      */

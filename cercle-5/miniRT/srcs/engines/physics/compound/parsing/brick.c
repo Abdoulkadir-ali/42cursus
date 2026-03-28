@@ -1,55 +1,24 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   brick.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:28:11 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "physics.h"
+#include "parser.h"
+#include "unpacker.h"
 
-static t_vec3	json_vec3(t_json_value *obj, const char *k)
+t_sub_shape create_primitive_subshape(t_type type, int index, t_vec3 offset, t_scene *sc)
 {
-	t_json_value *v = json_get(obj, k);
-	if (!v || v->type != JSON_ARRAY) return (vec3(0, 0, 0));
-	return (vec3(
-		json_as_number(json_at(v, 0)),
-		json_as_number(json_at(v, 1)),
-		json_as_number(json_at(v, 2))
-	));
-}
+	t_sub_shape b;
+	t_aabb a;
 
-static t_phys_type	type_from_str(const char *s)
-{
-	if (!s) return (TYPE_PHYS_BOX);
-	if (ft_strncmp(s, "sphere", 7) == 0) return (TYPE_PHYS_SPHERE);
-	if (ft_strncmp(s, "capsule", 8) == 0) return (TYPE_PHYS_CAPSULE);
-	if (ft_strncmp(s, "cylinder", 9) == 0) return (TYPE_PHYS_CYLINDER);
-	if (ft_strncmp(s, "rect", 5) == 0) return (TYPE_PHYS_RECT);
-	if (ft_strncmp(s, "tri", 4) == 0) return (TYPE_PHYS_TRI);
-	if (ft_strncmp(s, "pyramid", 8) == 0) return (TYPE_PHYS_PYRAMID);
-	return (TYPE_PHYS_BOX);
-}
-
-t_sub_shape	parse_brick(t_json_value *obj)
-{
-	t_sub_shape	b;
-	t_json_value *v_min;
-
-	ft_memset(&b, 0, sizeof(t_sub_shape));
-	b.type = type_from_str(json_as_string(json_get(obj, "type")));
-	b.offset = json_vec3(obj, "offset");
-	v_min = json_get(obj, "aabb_min");
-	if (v_min)
-	{
-		b.local_aabb.min = json_vec3(obj, "aabb_min");
-		b.local_aabb.max = json_vec3(obj, "aabb_max");
-	}
-	else
-		compute_primitive_aabb(&b);
+	b.type = (t_phys_type)type;
+	b.offset = offset;
+	b.data = (void *)(size_t)index;
+	(void)type;
+	a = get_primitive_aabb_soa(&sc->primitives, index);
+	b.local_aabb = a;
 	return (b);
+}
+
+void add_brick_to_body(t_physics_body *body, t_sub_shape brick)
+{
+	if (body->sub_count >= MAX_SUB_SHAPES)
+		return;
+	body->sub_shapes[body->sub_count++] = brick;
 }

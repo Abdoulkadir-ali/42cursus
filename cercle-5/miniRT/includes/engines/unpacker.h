@@ -1,19 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   geometry.h                                         :+:      :+:    :+:   */
+/*   unpacker.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/28 04:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 04:00:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 12:22:32 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 12:40:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GEOMETRY_H
-# define GEOMETRY_H
+#ifndef UNPACKER_H
+#define UNPACKER_H
 
-# include "objects.h"
+#include "objects.h"
+
+/* PROTOTYPES */
+t_sphere	unpack_sphere(const t_primitive_array *p, int i);
+t_plane		unpack_plane(const t_primitive_array *p, int i);
+t_cylinder	unpack_cylinder(const t_primitive_array *p, int i);
+t_cone		unpack_cone(const t_primitive_array *p, int i);
+t_box		unpack_box(const t_primitive_array *p, int i);
+t_capsule	unpack_capsule(const t_primitive_array *p, int i);
+t_rect		unpack_rect(const t_primitive_array *p, int i);
+t_pyramid	unpack_pyramid(const t_primitive_array *p, int i);
+t_tri_view	unpack_tri(const t_tri_array *t, int i);
 
 /**
  * @brief Unified DOD AABB queries for the primitive SoA.

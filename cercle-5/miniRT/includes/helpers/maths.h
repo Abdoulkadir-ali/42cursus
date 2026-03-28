@@ -6,12 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:03:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 13:24:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MATHS_H
-#define MATHS_H
+# define MATHS_H
 
 /* STD lib */
 # include "libft.h"
@@ -41,6 +41,8 @@ typedef struct s_vec3
 	double		w;
 }				t_vec3;
 
+typedef t_vec3	t_vec4;
+
 typedef struct s_mat4
 {
 	double		m[4][4];
@@ -66,6 +68,7 @@ typedef struct s_aabb
 	float		min[3];
 	float		max[3];
 }				t_aabb;
+
 
 typedef struct s_rotator
 {
@@ -191,14 +194,19 @@ t_vec3			vec3_refract(t_vec3 I, t_vec3 N, double ior);
 
 /* Roots */
 bool			solve_quadratic(t_quadratic q, t_quadratic_roots *roots);
+double			clamp_d(double v, double lo, double hi);
+int				clamp_i(int v, int lo, int hi);
+t_vec2			clamp_vec2(t_vec2 v, t_vec2 min, t_vec2 max);
+t_vec2			clamp_vec2d(t_vec2 v, double lo, double hi);
+t_vec3			clamp_vec3(t_vec3 v, t_vec3 min, t_vec3 max);
+t_vec3			clamp_vec3d(t_vec3 v, double lo, double hi);
 
-/* AABB helpers */
+/* AABB */
 t_aabb			aabb_create_empty(void);
+void			aabb_expand_point(t_aabb *aabb, t_vec3 p);
 t_aabb			aabb_union(const t_aabb *a, const t_aabb *b);
-void			aabb_expand_point(t_aabb *bbox, t_vec3 p);
-void			aabb_expand_eps(t_aabb *bbox, double eps);
-double			aabb_surface_area(t_aabb bbox);
-bool			aabb_overlap(t_aabb a, t_aabb b);
-t_aabb			aabb_transform(t_aabb local, t_transform t);
+bool			aabb_overlap(const t_aabb *a, const t_aabb *b);
+void			aabb_expand_eps(t_aabb *aabb, float eps);
+float			aabb_surface_area(const t_aabb *aabb);
 
 #endif

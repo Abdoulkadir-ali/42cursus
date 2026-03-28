@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:48:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@ static t_aabb	fatten(t_aabb a)
 {
 	t_aabb	r;
 
-	r.min = vec3_sub(a.min, vec3(DBVT_FAT_MARGIN, DBVT_FAT_MARGIN,
-				DBVT_FAT_MARGIN));
-	r.max = vec3_add(a.max, vec3(DBVT_FAT_MARGIN, DBVT_FAT_MARGIN,
-				DBVT_FAT_MARGIN));
+	r.min[0] = a.min[0] - DBVT_FAT_MARGIN;
+	r.min[1] = a.min[1] - DBVT_FAT_MARGIN;
+	r.min[2] = a.min[2] - DBVT_FAT_MARGIN;
+	r.max[0] = a.max[0] + DBVT_FAT_MARGIN;
+	r.max[1] = a.max[1] + DBVT_FAT_MARGIN;
+	r.max[2] = a.max[2] + DBVT_FAT_MARGIN;
 	return (r);
 }
 
@@ -59,10 +61,10 @@ static void	push_leaf(t_dbvt *t, int idx, t_aabb aabb, t_phys_type type)
 	l->type = type;
 }
 
-void	collect_leaves(t_scene *s, t_dbvt *t)
+void	collect_leaves(t_physics *phys, t_dbvt *t)
 {
 	size_t				i;
-	t_primitive_array	*p = &s->primitives;
+	t_primitive_array	*p = &phys->scene->primitives;
 
 	t->leaf_count = 0;
 	i = 0;
@@ -70,9 +72,14 @@ void	collect_leaves(t_scene *s, t_dbvt *t)
 	{
 		if (p->has_phys[i] && !p->is_static[i])
 		{
+			t_aabb a;
 			compute_prim_aabb(p, (int)i);
-			t_aabb a = {vec3(p->abb_min_x[i], p->abb_min_y[i], p->abb_min_z[i]),
-			            vec3(p->abb_max_x[i], p->abb_max_y[i], p->abb_max_z[i])};
+			a.min[0] = p->abb_min_x[i];
+			a.min[1] = p->abb_min_y[i];
+			a.min[2] = p->abb_min_z[i];
+			a.max[0] = p->abb_max_x[i];
+			a.max[1] = p->abb_max_y[i];
+			a.max[2] = p->abb_max_z[i];
 			push_leaf(t, (int)i, a, (t_phys_type)p->types[i]);
 		}
 		i++;

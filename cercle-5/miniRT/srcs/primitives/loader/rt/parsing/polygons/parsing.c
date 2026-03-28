@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 06:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:22:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:46:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,11 +156,11 @@ bool	parse_tri_shape(t_rt_buf *buf, t_parser *p)
 
 	ft_memset(&shape, 0, sizeof(t_rt_shape));
 	shape.type = PRIM_TRIANGLE;
-	if (!parse_vec3(p, &shape.v[0]) || !parse_vec3(p, &shape.v[1])
-		|| !parse_vec3(p, &shape.v[2]) || !parse_vec3(p, &shape.color))
+	if (!parse_vec3(p, &shape.data.tri[0]) || !parse_vec3(p, &shape.data.tri[1])
+		|| !parse_vec3(p, &shape.data.tri[2]) || !parse_vec3(p, &shape.color))
 		return (false);
-	e1 = vec3_sub(shape.v[1], shape.v[0]);
-	e2 = vec3_sub(shape.v[2], shape.v[0]);
+	e1 = vec3_sub(shape.data.tri[1], shape.data.tri[0]);
+	e2 = vec3_sub(shape.data.tri[2], shape.data.tri[0]);
 	if (vec3_mag(vec3_cross(e1, e2)) < 1e-9)
 		return (false);
 	return (buf_push_shape(buf, &shape));

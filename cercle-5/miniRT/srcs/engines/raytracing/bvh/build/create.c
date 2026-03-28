@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 06:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 11:30:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,38 @@ static void	cache_assets(t_scene *scene)
 	build_emissive_cache(scene);
 }
 
-static bool	flatten_and_alloc(t_bvh *bvh, t_bvh_tmp_node *root, size_t k)
+static bool	flatten_and_alloc(t_bvh *bvh, t_bvh_tmp_node *root, size_t k,
+		t_build_item *items)
 {
 	int	nc;
 	int	rc;
+	size_t i;
 
 	if (!alloc_flat(bvh, k))
 	{
 		node_destroy(root);
+		free(items);
 		return (false);
 	}
+	bvh->refs = malloc(sizeof(t_bvh_ref) * k);
+	if (!bvh->refs)
+	{
+		node_destroy(root);
+		free(items);
+		return (false);
+	}
+	i = 0;
+	while (i < k)
+	{
+		bvh->refs[i] = items[i].ref;
+		i++;
+	}
+	free(items);
 	nc = 0;
 	rc = 0;
 	flatten_tmp(root, bvh, &nc, &rc);
 	bvh->num_nodes = nc;
-	bvh->num_refs = rc;
+	bvh->num_refs = k;
 	node_destroy(root);
 	return (true);
 }
@@ -54,6 +71,7 @@ t_bvh	*bvh_build_global(t_scene *scene)
 	t_bvh			*bvh;
 	t_bvh_tmp_node	*root;
 	size_t			k;
+	t_build_item	*items;
 
 	if (!scene)
 		return (NULL);
@@ -63,12 +81,10 @@ t_bvh	*bvh_build_global(t_scene *scene)
 	bvh->scene = scene;
 	if (total_objects(scene) == 0)
 		return (bvh);
-	root = build_tmp_tree(scene, total_objects(scene), &k);
+	root = build_tmp_tree(scene, total_objects(scene), &k, &items);
 	if (!root)
 		return (free(bvh), NULL);
-	if (k == 0)
-		return (node_destroy(root), bvh);
-	if (!flatten_and_alloc(bvh, root, k))
+	if (!flatten_and_alloc(bvh, root, k, items))
 		return (free(bvh), NULL);
 	cache_assets(scene);
 	return (bvh);

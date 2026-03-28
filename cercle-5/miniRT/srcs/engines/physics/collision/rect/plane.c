@@ -6,43 +6,55 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 13:05:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-int	rect_vs_plane(t_rect *rc, t_plane *pl, t_contact *c, int max_c)
+int	rect_vs_plane(t_physics *phys, int idx, t_contact *c, int count, int max)
 {
-	t_vec3	n;
+	t_rect	rc;
+	t_plane	pl;
 	t_vec3	to_v;
-	double	dist;
-	int		count;
 	int		i;
+	t_vec3	v[4];
+	t_vec3	right;
+	t_vec3	up;
 
-	n = vec3_norm(pl->transform.up);
-	count = 0;
-	i = 0;
-	while (i < 4 && count < max_c)
+	rc = unpack_rect(&phys->scene->primitives, idx);
+	right = vec3_norm(vec3_cross(rc.normal, vec3(0, 1, 0)));
+	if (vec3_mag(right) < 0.001)
+		right = vec3_norm(vec3_cross(rc.normal, vec3(1, 0, 0)));
+	up = vec3_norm(vec3_cross(rc.normal, right));
+	v[0] = vec3_add(rc.pos, vec3_add(vec3_scale(right, rc.ex), vec3_scale(up, rc.ey)));
+	v[1] = vec3_add(rc.pos, vec3_sub(vec3_scale(right, rc.ex), vec3_scale(up, rc.ey)));
+	v[2] = vec3_sub(rc.pos, vec3_add(vec3_scale(right, rc.ex), vec3_scale(up, rc.ey)));
+	v[3] = vec3_sub(rc.pos, vec3_sub(vec3_scale(right, rc.ex), vec3_scale(up, rc.ey)));
+	i = -1;
+	while (++i < (int)phys->scene->primitives.count && count < max)
 	{
-		to_v = vec3_sub(rc->v[i], pl->transform.pos);
-		dist = vec3_dot(to_v, n);
-		if (dist < 0.0)
+		if (phys->scene->primitives.types[i] != PRIM_PLANE)
+			continue ;
+		pl = unpack_plane(&phys->scene->primitives, i);
+		int p_idx = -1;
+		while (++p_idx < 4 && count < max)
 		{
-			c[count].normal = vec3_scale(n, -1.0);
-			c[count].penetration = -dist;
-			c[count].a = &rc->phys;
-			c[count].b = NULL;
-			c[count].ta = &rc->transform;
-			c[count].tb = &pl->transform;
-			c[count].contact_point = rc->v[i];
-			c[count].ra = vec3_sub(rc->v[i], rc->phys.center);
-			c[count].rb = vec3(0, 0, 0);
-			c[count].restitution = fmin(rc->phys.elasticity, 0.5);
-			c[count].friction = sqrt(rc->phys.friction * 0.5);
-			count++;
+			to_v = vec3_sub(v[p_idx], pl.point);
+			if (vec3_dot(to_v, pl.normal) < 0.0)
+			{
+				c[count].normal = vec3_scale(pl.normal, -1.0);
+				c[count].penetration = -vec3_dot(to_v, pl.normal);
+				c[count].idx_a = idx;
+				c[count].idx_b = i;
+				c[count].contact_point = v[p_idx];
+				c[count].ra = vec3_sub(v[p_idx], rc.pos);
+				c[count].rb = vec3(0, 0, 0);
+				c[count].restitution = phys->soa->elasticity[idx];
+				c[count].friction = phys->soa->friction[idx];
+				count++;
+			}
 		}
-		i++;
 	}
 	return (count);
 }

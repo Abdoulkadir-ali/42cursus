@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 11:10:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 12:47:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dod.h"
+
 
 t_sphere	unpack_sphere(const t_primitive_array *p, int i)
 {
@@ -51,7 +51,6 @@ t_cone	unpack_cone(const t_primitive_array *p, int i)
 	co.tip = vec3(p->px[i], p->py[i], p->pz[i]);
 	co.axis = vec3(p->ax[i], p->ay[i], p->az[i]);
 	co.height = p->heights[i];
-	/* radii[i] stores the angle or base radius depending on implementation */
 	co.angle = p->radii[i];
 	co.mat_idx = p->mat_ids[i];
 	return (co);
@@ -86,9 +85,9 @@ t_capsule	unpack_capsule(const t_primitive_array *p, int i)
 	return (ca);
 }
 
-t_rect_scratch	unpack_rect(const t_primitive_array *p, int i)
+t_rect	unpack_rect(const t_primitive_array *p, int i)
 {
-	t_rect_scratch	re;
+	t_rect	re;
 
 	re.pos = vec3(p->px[i], p->py[i], p->pz[i]);
 	re.normal = vec3(p->ax[i], p->ay[i], p->az[i]);

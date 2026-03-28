@@ -6,27 +6,23 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 13:04:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-int	query_rect(t_scene *s, int idx, t_contact *c, int count, int max)
+int	query_rect(t_physics *phys, int idx, t_contact *c, int count, int max)
 {
-	t_rect	*rc;
-	t_aabb	ra;
-	int		p;
+	t_aabb		ra;
+	t_gjk_shape	sa;
+	t_scene		*s;
 
-	rc = &s->rects[idx];
-	if (rc->phys.is_static)
+	s = phys->scene;
+	if (s->primitives.is_static[idx])
 		return (count);
-	ra = rect_aabb(rc);
-	p = 0;
-	while (p < s->plane_count && count < max)
-	{
-		count += rect_vs_plane(rc, &s->planes[p], &c[count], max - count);
-		p++;
-	}
-	return (rect_vs_others(s, idx, rc, ra, c, count, max));
+	ra = get_primitive_aabb_soa(&s->primitives, idx);
+	sa = (t_gjk_shape){s, idx};
+	count = prim_plane_contacts(phys, idx, &sa, c, count, max);
+	return (prim_others_contacts(phys, idx, ra, &sa, c, count, max));
 }

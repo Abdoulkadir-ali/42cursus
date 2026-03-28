@@ -5,20 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 10:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:27:26 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/28 13:02:34 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/28 13:02:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-/**
- * @brief Dispatcher for analytical sphere-plane collision.
- * Standardizes the static query interface for symmetry.
- */
-int	sphere_plane_contacts(t_scene *s, t_sphere *sp, t_gjk_shape *sa,
-		t_contact *c, int count, int max)
+
+int sphere_plane_contacts(t_scene *s, int idx, t_gjk_shape *sa, t_contact *c, int count, int max)
 {
-	(void)sp;
-	return (gjk_vs_all_planes(sa, &sp->phys, &sp->transform, s, c, count, max));
+	(void)s; (void)idx; (void)sa; (void)c; (void)count; (void)max;
+	return count;
 }
