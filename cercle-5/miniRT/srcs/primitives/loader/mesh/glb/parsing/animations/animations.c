@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 18:12:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:59:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,4 +134,16 @@ t_animation	*glb_extract_animations(t_json_value *json, char *bin, int *out_coun
 		i++;
 	}
 	return (clips);
+}
+
+/**
+ * @brief Skeleton loading stub — not yet implemented.
+ */
+void	glb_load_skeleton_impl(t_mesh *mesh, t_json_value *json,
+		char *bin, int idx)
+{
+	(void)mesh;
+	(void)json;
+	(void)bin;
+	(void)idx;
 }

@@ -9,18 +9,4 @@
 /*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "editor.h"
-
-/**
- * @brief Allocates and copies an array for the scene snapshot.
- */
-void	snap_array(void **dst, void *src, int count, size_t sz)
-{
-	*dst = NULL;
-	if (count <= 0)
-		return ;
-	*dst = malloc(count * sz);
-	if (*dst)
-		ft_memcpy(*dst, src, (size_t)count * sz);
-}

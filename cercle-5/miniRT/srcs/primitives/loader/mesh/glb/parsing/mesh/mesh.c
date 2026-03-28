@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 18:12:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:59:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,17 @@ bool	glb_load_primitive(t_mesh *mesh, t_json_value *json, char *bin,
 		fill_indices(json, bin, &idx_acc, mesh);
 	glb_compute_mesh_bbox(mesh);
 	return (true);
+}
+
+void	glb_compute_mesh_bbox(t_mesh *mesh)
+{
+	size_t	i;
+
+	if (mesh->vertices == NULL || mesh->vertex_count == 0)
+		return ;
+	mesh->bbox = aabb_create_empty();
+	i = 0;
+	while (i < (size_t)mesh->vertex_count)
+		aabb_expand_point(&mesh->bbox, mesh->vertices[i++]);
 }
 

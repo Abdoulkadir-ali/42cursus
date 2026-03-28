@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 17:02:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:57:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,4 +19,18 @@ bool	scene_add_animated(t_scene *scene, t_skinned_mesh animated)
         return (false);
     scene->animated[scene->anim_count++] = animated;
     return (true);
+}
+
+bool	scene_add_clip(t_scene *scene, t_animation anim)
+{
+    if (!DYNARRAY_ENSURE_INT(&scene->clips, &scene->clip_count,
+            &scene->clip_cap, sizeof(t_animation)))
+        return (false);
+    scene->clips[scene->clip_count++] = anim;
+    return (true);
+}
+
+bool	scene_add_animation(t_scene *scene, t_animation anim)
+{
+    return (scene_add_clip(scene, anim));
 }

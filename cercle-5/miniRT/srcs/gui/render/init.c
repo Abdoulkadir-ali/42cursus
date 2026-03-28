@@ -136,6 +136,7 @@ bool	gui_init(t_gui *gui, t_scene *scene, void *mlx)
 	gui->pool.ready = true;
 	ft_memset(&gui->rt, 0, sizeof(t_rt_engine));
 	raytrace_engine_sync(&gui->rt, scene, gui->win.width, gui->win.height);
+	gui->phys = phys_create(scene);
 	mlx_hook(gui->win.win, 22, 1L << 17, gui_window_resize, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
 	return (true);
@@ -177,5 +178,6 @@ void	gui_destroy(t_gui *gui)
 	free(gui->slider_state);
 	free(gui->crud);
 	free(gui->hover);
+	phys_destroy(gui->phys);
 	rt_engine_cleanup(&gui->rt);
 }

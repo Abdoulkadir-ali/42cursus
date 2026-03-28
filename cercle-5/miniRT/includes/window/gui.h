@@ -411,33 +411,7 @@ void					fill_rect(struct s_gui *gui, int x, int y, int w, int h,
 void					slider_begin_drag(t_gui *gui, t_widget *w, int mouse_x);
 void					slider_update_drag(t_gui *gui, int mouse_x);
 void					slider_end_drag(t_gui *gui);
-void					snap_array(void **dst, void *src, int count, size_t sz);
-void					snap_sphere(t_scene_snap *s, t_scene *sc);
-void					snap_plane(t_scene_snap *s, t_scene *sc);
-void					snap_cylinder(t_scene_snap *s, t_scene *sc);
-void					snap_cone(t_scene_snap *s, t_scene *sc);
-void					snap_light(t_scene_snap *s, t_scene *sc);
-void					snap_box(t_scene_snap *s, t_scene *sc);
-void					snap_capsule(t_scene_snap *s, t_scene *sc);
-void					snap_rect(t_scene_snap *s, t_scene *sc);
-void					snap_pyramid(t_scene_snap *s, t_scene *sc);
-void					snap_tri(t_scene_snap *s, t_scene *sc);
-void					snap_mesh(t_scene_snap *s, t_scene *sc);
-void					snap_material(t_scene_snap *s, t_scene *sc);
 
-/* Internal Reset Helpers */
-void					reset_sphere(t_scene *sc, t_scene_snap *s);
-void					reset_plane(t_scene *sc, t_scene_snap *s);
-void					reset_cylinder(t_scene *sc, t_scene_snap *s);
-void					reset_cone(t_scene *sc, t_scene_snap *s);
-void					reset_light(t_scene *sc, t_scene_snap *s);
-void					reset_box(t_scene *sc, t_scene_snap *s);
-void					reset_capsule(t_scene *sc, t_scene_snap *s);
-void					reset_rect(t_scene *sc, t_scene_snap *s);
-void					reset_pyramid(t_scene *sc, t_scene_snap *s);
-void					reset_tri(t_scene *sc, t_scene_snap *s);
-void					reset_mesh(t_scene *sc, t_scene_snap *s);
-void					reset_material(t_scene *sc, t_scene_snap *s);
 int						start_app(void *mlx, const char *path);
 
 /* Internal Inspector Helpers */

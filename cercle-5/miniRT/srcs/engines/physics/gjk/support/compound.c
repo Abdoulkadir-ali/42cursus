@@ -39,7 +39,7 @@ t_vec3	gjk_support_compound(const t_gjk_shape *s, t_vec3 dir)
 		// For simplicity, let's just return the parent center + offset for now if it's too complex.
 		// A full implementation would need a gjk_support_part(comp, first + i, dir).
 		
-		curr_pt = vec3(soa->vx[phys_idx], soa->vy[phys_idx], soa->vz[phys_idx]); // Placeholder
+		curr_pt = vec3(soa->hot.vx[phys_idx], soa->hot.vy[phys_idx], soa->hot.vz[phys_idx]); // Placeholder
 		curr_dot = vec3_dot(curr_pt, dir);
 		if (curr_dot > best_dot)
 		{

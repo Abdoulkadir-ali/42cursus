@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:38:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:52:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "parser.h"
 # include "scene.h"
 # include "material.h"
+# include "animations.h"
 
 /* --- FBX LOADER STRUCTURE --- */
 typedef struct s_fbx
@@ -127,6 +128,7 @@ bool			fbx_build_mesh(t_fbx *f);
 void			fbx_read_header(int fd, t_fbx_bin_node *n, bool is_64);
 void			fbx_skip_props(int fd, uint64_t num);
 t_vec3			*fbx_repack_vec3(double *raw, uint32_t v_count);
+void			*fbx_parse_array_ascii(char **p, uint32_t *count, size_t elem_sz);
 
 /* --- INJECTION (Scene add functions) --- */
 bool			scene_add_mesh(t_scene *scene, t_mesh mesh);

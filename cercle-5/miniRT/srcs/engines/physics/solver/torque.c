@@ -35,7 +35,7 @@ void	apply_torque(struct s_scene *s, t_contact *c, int body_idx, double impulse)
 	r = vec3_sub(c->contact_point, vec3(p->px[prim_idx], p->py[prim_idx], p->pz[prim_idx]));
 	j_vec = vec3_scale(c->normal, impulse);
 	tau = vec3_cross(r, j_vec);
-	soa->ang_vx[body_idx] += (float)(tau.x * soa->inv_ix[body_idx]);
-	soa->ang_vy[body_idx] += (float)(tau.y * soa->inv_iy[body_idx]);
-	soa->ang_vz[body_idx] += (float)(tau.z * soa->inv_iz[body_idx]);
+	soa->hot.ang_vx[body_idx] += (float)(tau.x * soa->inv_ix[body_idx]);
+	soa->hot.ang_vy[body_idx] += (float)(tau.y * soa->inv_iy[body_idx]);
+	soa->hot.ang_vz[body_idx] += (float)(tau.z * soa->inv_iz[body_idx]);
 }

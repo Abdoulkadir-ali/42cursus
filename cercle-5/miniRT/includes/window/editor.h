@@ -122,37 +122,14 @@ struct				s_group_snap
 
 struct				s_scene_snap
 {
-	t_sphere		*spheres;
-	int				sphere_count;
-	t_plane			*planes;
-	int				plane_count;
-	t_cylinder		*cylinders;
-	int				cylinder_count;
-	t_cone			*cones;
-	int				cone_count;
-	t_light			*lights;
-	int				light_count;
-	t_material		*materials;
-	int				mat_count;
-	t_mesh_snap		*meshes;
-	int				mesh_count;
-	int				mesh_group_count;
-	t_group_snap	*groups;
-	int				group_count;
-	t_box			*boxes;
-	int				box_count;
-	t_capsule		*capsules;
-	int				capsule_count;
-	t_rect			*rects;
-	int				rect_count;
-	t_pyramid		*pyramids;
-	int				pyramid_count;
-	t_tri_shape		*tris;
-	int				tri_count;
-	t_ambient		ambient;
-	t_camera		camera;
-	int				ambient_color;
-	double			ambient_intensity;
+	t_primitive_array	prims;
+	t_tri_array			tris;
+	t_light				*lights;
+	size_t				light_count;
+	t_material			*materials;
+	size_t				mat_count;
+	t_ambient			ambient;
+	t_camera			camera;
 };
 
 struct				s_crud_ui

@@ -9,11 +9,4 @@
 /*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "editor.h"
-
-void	snap_cone(t_scene_snap *s, t_scene *sc)
-{
-	snap_array((void **)&s->cones, sc->cones, sc->cone_count, sizeof(t_cone));
-	s->cone_count = sc->cone_count;
-}

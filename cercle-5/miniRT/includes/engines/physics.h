@@ -80,35 +80,40 @@ typedef struct s_compound_part_soa
 }						t_compound_part_soa;
 
 
+typedef struct s_phys_hot
+{
+	float	*vx;
+	float	*vy;
+	float	*vz;
+	float	*ang_vx;
+	float	*ang_vy;
+	float	*ang_vz;
+	float	*amin_x;
+	float	*amin_y;
+	float	*amin_z;
+	float	*amax_x;
+	float	*amax_y;
+	float	*amax_z;
+}	t_phys_hot;
+
 typedef struct s_physics_soa
 {
-	int					*prim_idx;    /* Link back to t_primitive_array */
-	float				*vx;         /* Linear Velocity */
-	float				*vy;
-	float				*vz;
-	float				*ang_vx;     /* Angular Velocity */
-	float				*ang_vy;
-	float				*ang_vz;
-	float				*mass;       /* Dynamic Properties */
-	float				*inv_mass;
-	float				*elasticity;
-	float				*friction;
-	float				*inv_ix;     /* Inverse Inertia Components */
-	float				*inv_iy;
-	float				*inv_iz;
-	float				*amin_x;     /* Cached AABB World min/max */
-	float				*amin_y;
-	float				*amin_z;
-	float				*amax_x;
-	float				*amax_y;
-	float				*amax_z;
-	uint8_t				*is_static;
-	uint8_t				*is_compound;
-	int					*first_part;  /* index into t_compound_part_soa */
-	int					*part_count;
-	size_t				count;       /* Number of active dynamic bodies */
-	size_t				cap;         /* Allocated capacity */
-}						t_physics_soa;
+	t_phys_hot	hot;
+	int		*prim_idx;
+	float		*mass;
+	float		*inv_mass;
+	float		*elasticity;
+	float		*friction;
+	float		*inv_ix;
+	float		*inv_iy;
+	float		*inv_iz;
+	uint8_t		*is_static;
+	uint8_t		*is_compound;
+	int		*first_part;
+	int		*part_count;
+	size_t		count;
+	size_t		cap;
+}	t_physics_soa;
 
 
 typedef struct s_static_node
@@ -288,6 +293,7 @@ void					get_physics_settings(const t_physics *phys,
 void					init_physics_soa(t_physics_soa *p);
 void					destroy_physics_soa(t_physics_soa *p);
 bool					realloc_physics_soa(t_physics_soa *p, size_t new_cap);
+bool							soa_add_body(t_physics_soa *p, t_primitive_array *prims, int prim_idx);
 void					update_physics(struct s_scene *scene, double dt);
 void					integrate_bodies(struct s_scene *scene, double dt);
 int						generate_contacts(struct s_scene *scene,

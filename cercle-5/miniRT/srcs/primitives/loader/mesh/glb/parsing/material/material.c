@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 03:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:59:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static void	extract_pbr(t_json_value *json, char *bin, t_material *m,
 	t_json_value	*color;
 	t_json_value	*emis;
 
+	(void)json;
 	(void)bin;
 	pbr = json_get(mat_j, "pbrMetallicRoughness");
 	if (pbr)
@@ -26,41 +27,20 @@ static void	extract_pbr(t_json_value *json, char *bin, t_material *m,
 		color = json_get(pbr, "baseColorFactor");
 		if (color && color->type == JSON_ARRAY && color->array.count >= 3)
 		{
-			m->albedo_map.color_a.x = json_as_double(json_at(color, 0)) * 255.0;
-			m->albedo_map.color_a.y = json_as_double(json_at(color, 1)) * 255.0;
-			m->albedo_map.color_a.z = json_as_double(json_at(color, 2)) * 255.0;
+			m->albedo_map.color_a.x = json_as_number(json_at(color, 0)) * 255.0;
+			m->albedo_map.color_a.y = json_as_number(json_at(color, 1)) * 255.0;
+			m->albedo_map.color_a.z = json_as_number(json_at(color, 2)) * 255.0;
 		}
-		m->metallic = json_get_double(pbr, "metallicFactor");
-		m->roughness = json_get_double(pbr, "roughnessFactor");
+		m->metallic = json_as_number(json_get(pbr, "metallicFactor"));
+		m->roughness = json_as_number(json_get(pbr, "roughnessFactor"));
 	}
 	emis = json_get(mat_j, "emissiveFactor");
 	if (emis && emis->type == JSON_ARRAY && emis->array.count >= 3)
 	{
-		m->emission.x = json_as_double(json_at(emis, 0));
-		m->emission.y = json_as_double(json_at(emis, 1));
-		m->emission.z = json_as_double(json_at(emis, 2));
+		m->emission.x = json_as_number(json_at(emis, 0));
+		m->emission.y = json_as_number(json_at(emis, 1));
+		m->emission.z = json_as_number(json_at(emis, 2));
 	}
-}
-
-/**
- * @brief Logic for loading a bitmap texture from GLB into memory.
- */
-static void	load_tex(t_json_value *json, char *bin, t_material *mat, int src)
-{
-	t_json_value	*img;
-	t_glb_buffer_view	bv;
-	int				bv_idx;
-
-	img = json_at(json_get(json, "images"), src);
-	if (img == NULL)
-		return ;
-	bv_idx = json_get_int(img, "bufferView");
-	if (bv_idx < 0)
-		return ;
-	glb_parse_buffer_view(json, bv_idx, &bv);
-	load_texture_from_memory(&mat->albedo_map, 
-		(unsigned char *)(bin + bv.byte_offset), bv.byte_length);
-	mat->albedo_map.type = TEX_BITMAP;
 }
 
 /**

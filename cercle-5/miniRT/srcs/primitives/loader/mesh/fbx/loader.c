@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:04:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 04:11:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:55:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static bool	scene_add_fbx(t_scene *scene, t_fbx *fbx)
 		scene_add_mesh(scene, fbx->meshes[i++]);
 	i = 0;
 	while (i < fbx->anim_count)
-		scene_add_animation(scene, fbx->animations[i++]);
+		scene_add_clip(scene, fbx->animations[i++]);
 	return (true);
 }
 

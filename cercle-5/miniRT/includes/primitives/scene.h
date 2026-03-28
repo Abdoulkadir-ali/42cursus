@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 06:53:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:52:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,7 @@ typedef struct s_scene
 
 t_scene		*create_scene(const char *name);
 void		destroy_scene(t_scene *scene);
+bool		scene_add_clip(t_scene *scene, t_animation anim);
+bool		scene_add_animation(t_scene *scene, t_animation anim);
 
 #endif

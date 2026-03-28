@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   inject.c                                           :+:      :+:    :+:   */
+/*   injection.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 21:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:59:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,32 @@ void	scene_add_glb(t_scene *scene, t_glb *glb)
 	}
 	if (map != NULL)
 		free(map);
+}
+
+/**
+ * @brief Injects GLB materials into the scene and returns an index mapping.
+ */
+int	*glb_inject_materials(t_scene *scene, t_glb *glb, int *count)
+{
+	int	*map;
+	int	base;
+	int	i;
+
+	if (glb->mat_count <= 0)
+		return (*count = 0, NULL);
+	map = ft_calloc(glb->mat_count, sizeof(int));
+	if (map == NULL)
+		return (NULL);
+	base = (int)scene->mat_count;
+	i = 0;
+	while (i < glb->mat_count)
+	{
+		scene_add_material(scene, &glb->materials[i]);
+		map[i] = base + i;
+		i++;
+	}
+	*count = glb->mat_count;
+	return (map);
 }
 
 /**

@@ -45,12 +45,6 @@ static bool	init_app(const char *path, t_gui *gui, t_scene **scene, void *mlx)
 		ft_putendl_fd((char *)path, STDERR_FILENO);
 		return (false);
 	}
-	(*scene)->bvh = bvh_create(*scene);
-	if (!(*scene)->bvh)
-	{
-		ft_putendl_fd("Error: Failed to create BVH", STDERR_FILENO);
-		return (false);
-	}
 	return (gui_init(gui, *scene, mlx));
 }
 

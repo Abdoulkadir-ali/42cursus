@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 22:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 07:59:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static bool	p_mesh_ascii(t_fbx *f, char *buf, size_t sz)
 	p = fbx_find_node(buf, buf + sz, "Vertices:");
 	if (p == NULL)
 		return (false);
-	f->v = (float *)fbx_parse_array_ascii(&p, &f->vc, 8);
+	f->v = (double *)fbx_parse_array_ascii(&p, &f->vc, 8);
 	p = fbx_find_node(buf, buf + sz, "PolygonVertexIndex:");
 	if (p == NULL)
 		return (false);

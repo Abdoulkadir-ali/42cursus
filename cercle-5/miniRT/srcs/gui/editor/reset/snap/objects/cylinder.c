@@ -9,12 +9,4 @@
 /*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "editor.h"
-
-void	snap_cylinder(t_scene_snap *s, t_scene *sc)
-{
-	snap_array((void **)&s->cylinders, sc->cylinders, sc->cylinder_count,
-		sizeof(t_cylinder));
-	s->cylinder_count = sc->cylinder_count;
-}

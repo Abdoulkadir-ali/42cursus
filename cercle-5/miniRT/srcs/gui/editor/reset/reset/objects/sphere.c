@@ -9,11 +9,4 @@
 /*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "editor.h"
-
-void	reset_sphere(t_scene *sc, t_scene_snap *s)
-{
-	sc->sphere_count = s->sphere_count;
-	ft_memcpy(sc->spheres, s->spheres, s->sphere_count * sizeof(t_sphere));
-}

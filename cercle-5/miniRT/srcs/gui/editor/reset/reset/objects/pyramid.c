@@ -9,12 +9,4 @@
 /*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "editor.h"
-
-void	reset_pyramid(t_scene *sc, t_scene_snap *s)
-{
-	sc->pyramid_count = s->pyramid_count;
-	ft_memcpy(sc->pyramids, s->pyramids,
-		s->pyramid_count * sizeof(t_pyramid));
-}
