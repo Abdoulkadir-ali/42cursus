@@ -23,59 +23,58 @@ static t_aabb	fatten(t_aabb a)
 	return (r);
 }
 
-static void	push_leaf(t_dbvt *t, void *shape, t_physics_body *body,
-		t_transform *ta, t_aabb aabb, t_support_fn sup, t_phys_type type)
+static void	compute_prim_aabb(t_primitive_array *p, int i)
+{
+	float	r = p->radii[i];
+	float	h = p->heights[i];
+	float	ex = p->ex[i], ey = p->ey[i], ez = p->ez[i];
+
+	if (p->types[i] == PRIM_SPHERE)
+	{
+		p->abb_min_x[i] = p->px[i] - r; p->abb_min_y[i] = p->py[i] - r; p->abb_min_z[i] = p->pz[i] - r;
+		p->abb_max_x[i] = p->px[i] + r; p->abb_max_y[i] = p->py[i] + r; p->abb_max_z[i] = p->pz[i] + r;
+	}
+	else if (p->types[i] == PRIM_BOX || p->types[i] == PRIM_RECT)
+	{
+		p->abb_min_x[i] = p->px[i] - ex; p->abb_min_y[i] = p->py[i] - ey; p->abb_min_z[i] = p->pz[i] - ez;
+		p->abb_max_x[i] = p->px[i] + ex; p->abb_max_y[i] = p->py[i] + ey; p->abb_max_z[i] = p->pz[i] + ez;
+	}
+	else /* Generic fallback - larger radius */
+	{
+		float m = (r > h) ? r : h;
+		p->abb_min_x[i] = p->px[i] - m; p->abb_min_y[i] = p->py[i] - m; p->abb_min_z[i] = p->pz[i] - m;
+		p->abb_max_x[i] = p->px[i] + m; p->abb_max_y[i] = p->py[i] + m; p->abb_max_z[i] = p->pz[i] + m;
+	}
+}
+
+static void	push_leaf(t_dbvt *t, int idx, t_aabb aabb, t_phys_type type)
 {
 	t_dbvt_leaf	*l;
 
 	if (t->leaf_count >= DBVT_MAX_LEAVES)
 		return ;
 	l = &t->leaves[t->leaf_count++];
-	l->shape = shape;
-	l->body = body;
-	l->transform = ta;
+	l->prim_idx = idx;
 	l->fat_aabb = fatten(aabb);
-	l->support = sup;
 	l->type = type;
 }
 
-/**
- * @brief Collects one leaf per non-static dynamic body from the scene.
- * Called by build_dbvt() before tree construction.
- */
 void	collect_leaves(t_scene *s, t_dbvt *t)
 {
-	int	i;
+	size_t				i;
+	t_primitive_array	*p = &s->primitives;
 
 	t->leaf_count = 0;
-	i = -1;
-	while (++i < s->sphere_count)
-		if (!s->spheres[i].phys.is_static)
-			push_leaf(t, &s->spheres[i], &s->spheres[i].phys,
-				&s->spheres[i].transform, sphere_aabb(&s->spheres[i]),
-				gjk_support_sphere, TYPE_PHYS_SPHERE);
-	i = -1;
-	while (++i < s->box_count)
-		if (!s->boxes[i].phys.is_static)
-			push_leaf(t, &s->boxes[i], &s->boxes[i].phys,
-				&s->boxes[i].transform, box_aabb(&s->boxes[i]), gjk_support_box,
-				TYPE_PHYS_BOX);
-	i = -1;
-	while (++i < s->capsule_count)
-		if (!s->capsules[i].phys.is_static)
-			push_leaf(t, &s->capsules[i], &s->capsules[i].phys,
-				&s->capsules[i].transform, capsule_aabb(&s->capsules[i]),
-				gjk_support_capsule, TYPE_PHYS_CAPSULE);
-	i = -1;
-	while (++i < s->cylinder_count)
-		if (!s->cylinders[i].phys.is_static)
-			push_leaf(t, &s->cylinders[i], &s->cylinders[i].phys,
-				&s->cylinders[i].transform, cylinder_aabb(&s->cylinders[i]),
-				gjk_support_cylinder, TYPE_PHYS_CYLINDER);
-	i = -1;
-	while (++i < s->anim_count)
-		if (!s->animated[i].base.phys.is_static)
-			push_leaf(t, &s->animated[i], &s->animated[i].base.phys,
-				&s->animated[i].base.transform,
-				s->animated[i].base.phys.global_aabb, NULL, TYPE_PHYS_MESH);
+	i = 0;
+	while (i < p->count)
+	{
+		if (p->has_phys[i] && !p->is_static[i])
+		{
+			compute_prim_aabb(p, (int)i);
+			t_aabb a = {vec3(p->abb_min_x[i], p->abb_min_y[i], p->abb_min_z[i]),
+			            vec3(p->abb_max_x[i], p->abb_max_y[i], p->abb_max_z[i])};
+			push_leaf(t, (int)i, a, (t_phys_type)p->types[i]);
+		}
+		i++;
+	}
 }

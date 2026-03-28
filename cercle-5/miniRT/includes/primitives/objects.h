@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 19:26:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 06:38:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_light
 	double			cutoff;
 }	t_light;
 
+
 typedef enum e_prim_type
 {
 	PRIM_NONE,
@@ -81,19 +82,27 @@ typedef struct s_primitive_array
 	float		*px;         /* Position component X */
 	float		*py;         /* Position component Y */
 	float		*pz;         /* Position component Z */
-	float		*ax;         /* Normal/Axis component X (primary axis) */
-	float		*ay;         /* Normal/Axis component Y (primary axis) */
-	float		*az;         /* Normal/Axis component Z (primary axis) */
-	float		*tx;         /* Tangent component X (local basis orientation) */
-	float		*ty;         /* Tangent component Y (local basis orientation) */
-	float		*tz;         /* Tangent component Z (local basis orientation) */
+	float		*ax;         /* Normal/Axis component X */
+	float		*ay;         /* Normal/Axis component Y */
+	float		*az;         /* Normal/Axis component Z */
+	float		*tx;         /* Tangent component X */
+	float		*ty;         /* Tangent component Y */
+	float		*tz;         /* Tangent component Z */
 	float		*radii;      /* Sphere/Cyl/Capsule radii */
 	float		*heights;    /* Cyl/Capsule/Pyramid full heights */
 	float		*ex;         /* Extent X: half-width for Box/Rect/Pyramid */
 	float		*ey;         /* Extent Y: half-height for Box/Rect */
 	float		*ez;         /* Extent Z: half-depth for Box/Rect/Pyramid */
 	uint16_t	*mat_ids;    /* Material pool indices */
-	struct s_physics_body **physics; /* Pointers to physics controllers */
+	uint8_t		*is_static;  /* 1 if object is static environment */
+	uint8_t		*has_phys;   /* 1 if object participates in physics */
+	float		*abb_min_x;  /* AABB cached world minimum X */
+	float		*abb_min_y;
+	float		*abb_min_z;
+	float		*abb_max_x;  /* AABB cached world maximum X */
+	float		*abb_max_y;
+	float		*abb_max_z;
+	int			*phys_idx;   /* Link to physics SoA entry (-1 if none) */
 	size_t		count;       /* Active primitive count */
 	size_t		capacity;    /* Allocated capacity */
 }	t_primitive_array;
@@ -134,5 +143,10 @@ typedef struct s_mesh
 	int			mat_id;
 	t_transform	transform;
 }	t_mesh;
+
+
+
+
+
 
 #endif

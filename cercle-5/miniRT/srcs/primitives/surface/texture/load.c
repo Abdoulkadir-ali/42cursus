@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 10:30:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 20:22:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ bool	load_stbi(t_texture *tex, const char *path)
 	if (!data)
 		return (false);
 	convert_rgba_to_bgra(data, w * h * TEX_CH_RGBA);
-	init_texture_props(tex, w, h, (char *)data);
+	init_texture_props(tex, w, h, (unsigned char *)data);
 	return (true);
 }
 
@@ -106,6 +106,6 @@ bool	load_texture_from_memory(t_texture *tex, unsigned char *buffer, int size)
 	if (!data)
 		return (false);
 	convert_rgba_to_bgra(data, w * h * TEX_CH_RGBA);
-	init_texture_props(tex, w, h, (char *)data);
+	init_texture_props(tex, w, h, (unsigned char *)data);
 	return (true);
 }

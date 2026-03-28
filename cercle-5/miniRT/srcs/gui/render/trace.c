@@ -53,7 +53,7 @@ void	process_pixel(t_render_ctx *ctx, t_vec2i pos, char *pixel_addr)
 	t_fill_args	params;
 
 	make_camera_ray(ctx, pos.x, pos.y, &ray);
-	color = trace_ray(ctx->gui->scene->bvh, &ray, ctx->gui->scene);
+	color = trace_ray(&ctx->gui->rt, &ray);
 	c_int = pack_color(color);
 	if (ctx->step > 1)
 	{

@@ -18,16 +18,27 @@
  */
 void	apply_position_correction(t_contact *ct, double inv_a, double inv_b)
 {
-	double	depth;
-	double	scalar;
+	double				depth;
+	double				scalar;
+	t_primitive_array	*p;
+	t_vec3				corr;
 
-	depth = fmax(ct->penetration - SLOP, 0.0);
-
-	scalar = (depth / (inv_a + inv_b + 1e-9)) * BAUMGARTE;
-	if (ct->a && inv_a > 1e-9)
-		ct->ta->pos = vec3_sub(ct->ta->pos,
-				vec3_scale(ct->normal, scalar * inv_a));
-	if (ct->b && inv_b > 1e-9)
-		ct->tb->pos = vec3_add(ct->tb->pos,
-				vec3_scale(ct->normal, scalar * inv_b));
+	p = &ct->scene->primitives;
+	depth = fmax(ct->penetration - 0.01, 0.0);
+	if (depth <= 0)
+		return ;
+	scalar = (depth / (inv_a + inv_b + 1e-9)) * 0.2; /* BAUMGARTE = 0.2 */
+	corr = vec3_scale(ct->normal, scalar);
+	if (inv_a > 1e-9)
+	{
+		p->pos[ct->idx_a].x -= corr.x * inv_a;
+		p->pos[ct->idx_a].y -= corr.y * inv_a;
+		p->pos[ct->idx_a].z -= corr.z * inv_a;
+	}
+	if (inv_b > 1e-9)
+	{
+		p->pos[ct->idx_b].x += corr.x * inv_b;
+		p->pos[ct->idx_b].y += corr.y * inv_b;
+		p->pos[ct->idx_b].z += corr.z * inv_b;
+	}
 }

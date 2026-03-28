@@ -37,8 +37,8 @@ void	primitive_transform_sync(t_gui *gui)
 	p->pz[idx] = (float)tr->pos.z;
 	/* Compute Basis from Rotation for DOD Cylinders/Cones/Rects */
 	m = mat4_rotation(tr->rotation);
-	p->ax[idx] = (float)m.fwd.x; p->ay[idx] = (float)m.fwd.y; p->az[idx] = (float)m.fwd.z;
-	p->tx[idx] = (float)m.right.x; p->ty[idx] = (float)m.right.y; p->tz[idx] = (float)m.right.z;
+	p->ax[idx] = (float)m.m[2][0]; p->ay[idx] = (float)m.m[2][1]; p->az[idx] = (float)m.m[2][2];
+	p->tx[idx] = (float)m.m[0][0]; p->ty[idx] = (float)m.m[0][1]; p->tz[idx] = (float)m.m[0][2];
 	/* Delegate specialized sync (radii/extents) to existing handlers */
 	if (gui->selection->type == TYPE_SPHERE)
 		sphere_scale_sync(gui);

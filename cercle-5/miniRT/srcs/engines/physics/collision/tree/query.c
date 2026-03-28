@@ -20,17 +20,19 @@ static bool	aabb_hit(t_aabb a, t_aabb b)
 	return (true);
 }
 
-static int	test_leaf_pair(t_dbvt *t, int ia, int ib, t_body_pair *out, int count, int max)
+static int	test_leaf_pair(t_dbvt *t, int ni, int nj, t_body_pair *out, int count, int max)
 {
-	t_dbvt_leaf	*a = &t->leaves[t->nodes[ia].leaf];
-	t_dbvt_leaf	*b = &t->leaves[t->nodes[ib].leaf];
+	t_dbvt_leaf	*a;
+	t_dbvt_leaf	*b;
 
-	if (!aabb_hit(a->fat_aabb, b->fat_aabb) || count >= max) return (count);
-	if (a->body == b->body) return (count);
-	out[count].a = a->body;
-	out[count].b = b->body;
-	out[count].la = a;
-	out[count].lb = b;
+	a = &t->leaves[t->nodes[ni].leaf];
+	b = &t->leaves[t->nodes[nj].leaf];
+	if (!aabb_hit(a->fat_aabb, b->fat_aabb) || count >= max)
+		return (count);
+	if (a->prim_idx == b->prim_idx)
+		return (count);
+	out[count].idx_a = a->prim_idx;
+	out[count].idx_b = b->prim_idx;
 	return (count + 1);
 }
 

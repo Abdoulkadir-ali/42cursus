@@ -59,3 +59,19 @@ bool	parse_vec3(t_parser *p, t_vec3 *out)
 	*out = v;
 	return (true);
 }
+
+bool	parse_vec2(t_parser *p, t_vec2 *out)
+{
+	t_vec2	v;
+
+	ft_memset(&v, 0, sizeof(t_vec2));
+	v.x = parse_double(p);
+	parser_skip_spaces(p);
+	if (parser_peek(p) == ',')
+		parser_advance(p);
+	else
+		return (false);
+	v.y = parse_double(p);
+	*out = v;
+	return (true);
+}

@@ -15,7 +15,7 @@ OBJS_DIR    = objs
 CC          = cc
 INC_DIRS    := $(shell find $(INCS_DIR) -type d)
 INC_FLAGS   := $(addprefix -I,$(INC_DIRS))
-CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread $(INC_FLAGS) -Ipackages/libft/includes -Ipackages -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -MMD -MP
+CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -pthread $(INC_FLAGS) -Ipackages/libft/includes -Ipackages -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -MMD -MP
 RM          = rm -f
 SRCS        = $(shell find $(SRCS_DIR) -name "*.c")
 INCS        = $(shell find $(INCS_DIR) -name "*.h")

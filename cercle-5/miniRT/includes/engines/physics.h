@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:29:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 06:51:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 # include <semaphore.h>
 
 /* NEUTRAL DEPENCIES */
-# include "primitives.h"
+# include "scene.h"
+# include "objects.h"
+# include "surface.h"
 
 /* ----------------------------- physics types ----------------------------- */
 # ifndef MAX_SUB_SHAPES
@@ -49,73 +51,62 @@ typedef enum e_phys_type
 	TYPE_PHYS_RECT,
 	TYPE_PHYS_TRI,
 	TYPE_PHYS_PYRAMID,
-	TYPE_PHYS_MESH
+	TYPE_PHYS_MESH,
+	TYPE_PHYS_MAX
 }						t_phys_type;
 
-typedef enum e_collider_type
+typedef struct s_compound_part_soa
 {
-	COLLIDER_SPHERE,
-	COLLIDER_BOX,
-	COLLIDER_PLANE,
-	COLLIDER_CAPSULE
-}						t_collider_type;
+	int					*parent_idx;  /* index into t_physics_soa */
+	t_phys_type			*type;
+	float				*offset_x;
+	float				*offset_y;
+	float				*offset_z;
+	float				*radius;
+	float				*height;
+	float				*half_extents[3];
+	size_t				count;
+	size_t				cap;
+}						t_compound_part_soa;
 
-typedef t_vec3			(*t_support_fn)(const void *shape, t_vec3 dir);
 
-typedef struct s_sub_shape
+typedef struct s_physics_soa
 {
-	int					shape_idx;
-	t_aabb				local_aabb;
-	t_vec3				offset;
-	t_mat4				transform;
-	double				radius;
-	t_phys_type			type;
-}						t_sub_shape;
+	int					*prim_idx;    /* Link back to t_primitive_array */
+	float				*vx;         /* Linear Velocity */
+	float				*vy;
+	float				*vz;
+	float				*ang_vx;     /* Angular Velocity */
+	float				*ang_vy;
+	float				*ang_vz;
+	float				*mass;       /* Dynamic Properties */
+	float				*inv_mass;
+	float				*elasticity;
+	float				*friction;
+	float				*inv_ix;     /* Inverse Inertia Components */
+	float				*inv_iy;
+	float				*inv_iz;
+	float				*amin_x;     /* Cached AABB World min/max */
+	float				*amin_y;
+	float				*amin_z;
+	float				*amax_x;
+	float				*amax_y;
+	float				*amax_z;
+	uint8_t				*is_static;
+	uint8_t				*is_compound;
+	int					*first_part;  /* index into t_compound_part_soa */
+	int					*part_count;
+	size_t				count;       /* Number of active dynamic bodies */
+	size_t				cap;         /* Allocated capacity */
+}						t_physics_soa;
 
-typedef struct s_physics_body
-{
-	t_vec3				velocity;
-	t_vec3				angular_velocity;
-	t_vec3				torque;
-	double				mass;
-	t_mat3				inv_inertia;
-	double				elasticity;
-	double				friction;
-	bool				is_static;
-	bool				is_compound;
-	t_vec3				center;
-	int					owner_idx;
-	t_transform			*transform;
-	t_sub_shape			sub_shapes[MAX_SUB_SHAPES];
-	size_t				sub_count;
-	t_aabb				global_aabb;
-	t_vec3				com;
-}						t_physics_body;
-
-typedef struct s_collider
-{
-	t_collider_type		type;
-	union
-	{
-		double			radius;
-		t_vec3			half_extents;
-		t_vec3			normal;
-		struct
-		{
-			t_vec3		a;
-			t_vec3		b;
-			double		radius;
-		} capsule;
-	} data;
-}						t_collider;
 
 typedef struct s_static_node
 {
 	t_aabb				aabb;
 	int					left;
 	int					right;
-	int					obj_idx;
-	int					obj_type;
+	int					prim_idx;
 }						t_static_node;
 
 typedef struct s_static_bvh
@@ -136,10 +127,7 @@ typedef struct s_dbvt_node
 typedef struct s_dbvt_leaf
 {
 	t_aabb				fat_aabb;
-	t_physics_body		*body;
-	t_transform			*transform;
-	int					shape_idx;
-	t_support_fn		support;
+	int					prim_idx;
 	t_phys_type			type;
 }						t_dbvt_leaf;
 
@@ -154,10 +142,8 @@ typedef struct s_dbvt
 
 typedef struct s_contact
 {
-	t_physics_body		*a;
-	t_transform			*ta;
-	t_physics_body		*b;
-	t_transform			*tb;
+	int					idx_a;
+	int					idx_b;
 	t_vec3				normal;
 	double				penetration;
 	double				restitution;
@@ -197,7 +183,11 @@ typedef struct s_phys_pool
 typedef struct s_physics
 {
 	struct s_scene		*scene;
+	t_physics_soa		*soa;
+	t_compound_part_soa	*comp;
 	struct s_phys_pool	*pool;
+	t_dbvt				dbvt;
+	t_static_bvh		*static_bvh;
 	t_vec3				gravity;
 	double				damping;
 	double				fixed_dt;
@@ -208,19 +198,10 @@ typedef struct s_physics
 
 typedef struct s_body_pair
 {
-	t_physics_body		*a;
-	t_physics_body		*b;
-	void				*la;
-	void				*lb;
+	int					idx_a;
+	int					idx_b;
 }						t_body_pair;
 
-typedef struct s_shape_pair
-{
-	t_sub_shape			*sa;
-	t_sub_shape			*sb;
-	t_physics_body		*ba;
-	t_physics_body		*bb;
-}						t_shape_pair;
 
 typedef struct s_simplex
 {
@@ -263,16 +244,14 @@ typedef struct s_epa_res
 }						t_epa_res;
 
 typedef struct s_gjk_shape	t_gjk_shape;
-typedef t_vec3				(*t_support_fn)(const t_gjk_shape *s, t_vec3 dir);
 
 struct s_gjk_shape
 {
 	struct s_scene		*scene;
 	int					idx;
-	t_support_fn		support;
-	t_vec3				center;
 };
 
+typedef t_vec3			(*t_support_fn)(const struct s_gjk_shape *s, t_vec3 dir);
 /* --------------------------- end physics types --------------------------- */
 
 /* Constants */
@@ -295,8 +274,10 @@ void					update_physics_settings(t_physics *phys,
 							const t_physics_settings *s);
 void					get_physics_settings(const t_physics *phys,
 							t_physics_settings *out);
-
-/* Update loops */
+/* Physics SoA Management */
+void					init_physics_soa(t_physics_soa *p);
+void					destroy_physics_soa(t_physics_soa *p);
+bool					realloc_physics_soa(t_physics_soa *p, size_t new_cap);
 void					update_physics(struct s_scene *scene, double dt);
 void					integrate_bodies(struct s_scene *scene, double dt);
 int						generate_contacts(struct s_scene *scene,
@@ -312,7 +293,6 @@ void					phys_simulate(t_physics *phys, double dt);
 /* Intersection Dispatch */
 void					physics_shoot_ray(struct s_scene *scene, t_ray ray,
 							double impulse);
-t_physics_body			*get_body_ref(struct s_scene *scene, t_bvh_ref ref);
 int						query_prim(struct s_scene *s, int idx, t_contact *c,
 							int count, int max);
 int						prim_plane_contacts(struct s_scene *s, int idx,
@@ -328,28 +308,22 @@ bool					detect_prim_mesh_collision(struct s_scene *s, int idx,
 							struct s_mesh *m, t_vec3 *n, double *p);
 
 /* Compound Body */
-void					init_compound(t_physics_body *b, t_sub_shape *bricks,
-							size_t n);
-void					update_compound(t_physics_body *b);
-void					compute_com(t_physics_body *b);
-void					compute_inertia(t_physics_body *b);
+void					update_compound(t_physics *phys, int body_idx);
+void					compute_com(t_physics *phys, int body_idx);
+void					compute_inertia(t_physics *phys, int body_idx);
 
 /* Broadphase / Midphase */
 int						broadphase(struct s_scene *s, t_body_pair *out,
 							int max);
-size_t					collect_bodies(struct s_scene *s, t_physics_body **out,
-							size_t max);
 int						query_static_bvh(struct s_scene *s, int node_idx,
-							t_gjk_shape *sa, t_physics_body *ba,
-							t_transform *ta, t_contact *c, int count, int max);
-int						midphase(t_body_pair *pairs, int n, t_shape_pair *out,
-							int max);
+							t_gjk_shape *sa, int body_idx, t_contact *c,
+							int count, int max);
 
 /* Solver */
 void					solve_velocities(t_contact *contacts, int count);
 void					solve_positions(t_contact *contacts, int count);
-void					apply_torque(t_contact *c, t_physics_body *body,
-							double impulse);
+void					apply_torque(struct s_scene *s, t_contact *c,
+							int body_idx, double impulse);
 
 void					compute_ab_ao(t_simplex *s, t_vec3 *ab, t_vec3 *ao);
 bool					handle_positive_simplex_line(t_vec3 ab, t_vec3 ao,
@@ -358,14 +332,15 @@ void					reduce_simplex_to_point(t_simplex *s, t_vec3 ao,
 							t_vec3 *dir);
 
 /* Support functions */
-t_vec3					gjk_support_sphere(const void *data, t_vec3 dir);
-t_vec3					gjk_support_box(const void *data, t_vec3 dir);
-t_vec3					gjk_support_capsule(const void *data, t_vec3 dir);
-t_vec3					gjk_support_cylinder(const void *data, t_vec3 dir);
-t_vec3					gjk_support_rect(const void *data, t_vec3 dir);
-t_vec3					gjk_support_tri(const void *data, t_vec3 dir);
-t_vec3					gjk_support_pyramid(const void *data, t_vec3 dir);
-t_vec3					gjk_support_mesh(const void *data, t_vec3 dir);
+t_vec3					gjk_support_sphere(const t_gjk_shape *s, t_vec3 dir);
+t_vec3					gjk_support_box(const t_gjk_shape *s, t_vec3 dir);
+t_vec3					gjk_support_capsule(const t_gjk_shape *s, t_vec3 dir);
+t_vec3					gjk_support_cylinder(const t_gjk_shape *s, t_vec3 dir);
+t_vec3					gjk_support_rect(const t_gjk_shape *s, t_vec3 dir);
+t_vec3					gjk_support_tri(const t_gjk_shape *s, t_vec3 dir);
+t_vec3					gjk_support_pyramid(const t_gjk_shape *s, t_vec3 dir);
+t_vec3					gjk_support_mesh(const t_gjk_shape *s, t_vec3 dir);
+t_vec3					gjk_support_compound(const t_gjk_shape *s, t_vec3 dir);
 
 /* GJK / EPA */
 bool					gjk_intersect(t_gjk_shape *a, t_gjk_shape *b,
@@ -385,18 +360,18 @@ void					get_contact_points(t_epa_poly *p, t_epa_face *f,
 t_vec3					rot_by_ang(t_vec3 a, t_vec3 rot, double dt);
 void					integrate_prim(struct s_scene *scene, int idx,
 							double dt);
-void					phys_dispatch_object(t_physics_body *b, t_transform *t,
+void					phys_dispatch_object(struct s_scene *s, int body_idx,
 							double dt);
-void					phys_resolve_ccd(struct s_scene *s, t_physics_body *b,
+void					phys_resolve_ccd(struct s_scene *s, int body_idx,
 							double dt);
 void					phys_debug_spheres(struct s_scene *s);
 /* Raytracing BVH functions are declared in raytracing.h; keep physics
 ** headers free of conflicting bvh_* declarations. */
-void					apply_solver_torque(t_physics_body *b, t_vec3 r,
-							t_vec3 imp, double inv_m, double s);
-t_vec3					point_vel(t_physics_body *b, t_vec3 r);
-double					ang_term(t_physics_body *b, t_vec3 r, t_vec3 n,
-							double inv_m);
+void					apply_solver_torque(t_physics *p, int body_idx,
+							t_vec3 r, t_vec3 imp, double inv_m, double s);
+t_vec3					point_vel(t_physics *p, int body_idx, t_vec3 r);
+double					ang_term(t_physics *p, int body_idx, t_vec3 r,
+							t_vec3 n, double inv_m);
 void					apply_friction(t_contact *ct, double inv_a,
 							double inv_b, t_vec3 rv);
 t_vec3					md_support(t_gjk_shape *a, t_gjk_shape *b, t_vec3 dir,
@@ -404,15 +379,13 @@ t_vec3					md_support(t_gjk_shape *a, t_gjk_shape *b, t_vec3 dir,
 int						prim_vs_plane(struct s_scene *s, int prim_idx,
 							int plane_idx, t_contact *c, int max_c);
 int						gjk_vs_plane(struct s_scene *s, t_gjk_shape *sa,
-							t_physics_body *ba, t_transform *ta, int plane_idx,
-							t_contact *c);
+							int body_idx, int plane_idx, t_contact *c);
 int						gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
-							t_physics_body *ba, t_physics_body *bb,
-							t_transform *ta, t_transform *tb, t_contact *c);
+							int idx_a, int idx_b, t_contact *c);
 double					clamp_d(double v, double lo, double hi);
-int						gjk_vs_all_planes(t_gjk_shape *sa, t_physics_body *ba,
-							t_transform *ta, struct s_scene *s, t_contact *c,
-							int count, int max);
+int						gjk_vs_all_planes(t_gjk_shape *sa, int body_idx,
+							struct s_scene *s, t_contact *c, int count,
+							int max);
 
 /* Tree-based Broadphase */
 void					collect_leaves(struct s_scene *s, t_dbvt *t);

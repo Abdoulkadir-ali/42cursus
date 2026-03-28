@@ -12,44 +12,50 @@
 
 #include "physics.h"
 
-static void	apply_impulse(t_contact *ct, t_vec3 imp, double inv_a, double inv_b)
+static void	apply_impulse(t_physics *p, t_contact *ct, t_vec3 imp, double inv_a, double inv_b)
 {
-	if (ct->a && inv_a > 1e-9)
+	t_physics_soa	*s = p->soa;
+	int				pa = ct->scene->primitives.phys_idx[ct->idx_a];
+	int				pb = ct->scene->primitives.phys_idx[ct->idx_b];
+
+	if (pa >= 0 && inv_a > 1e-9)
 	{
-		ct->a->velocity = vec3_sub(ct->a->velocity, vec3_scale(imp, inv_a));
-		apply_solver_torque(ct->a, ct->ra, imp, inv_a, -1.0);
+		s->vx[pa] -= (float)(imp.x * inv_a);
+		s->vy[pa] -= (float)(imp.y * inv_a);
+		s->vz[pa] -= (float)(imp.z * inv_a);
+		apply_solver_torque(p, pa, ct->ra, imp, inv_a, -1.0);
 	}
-	if (ct->b && inv_b > 1e-9)
+	if (pb >= 0 && inv_b > 1e-9)
 	{
-		ct->b->velocity = vec3_add(ct->b->velocity, vec3_scale(imp, inv_b));
-		apply_solver_torque(ct->b, ct->rb, imp, inv_b, 1.0);
+		s->vx[pb] += (float)(imp.x * inv_b);
+		s->vy[pb] += (float)(imp.y * inv_b);
+		s->vz[pb] += (float)(imp.z * inv_b);
+		apply_solver_torque(p, pb, ct->rb, imp, inv_b, 1.0);
 	}
 }
 
-/**
- * @brief Handles main collision response impulses.
- * Returns the computed impulse scalar j for compound torque transfer.
- */
-double	solve_one_velocity(t_contact *ct, double inv_a, double inv_b)
+double	solve_one_velocity(t_physics *p, t_contact *ct, double inv_a, double inv_b)
 {
 	t_vec3	rv;
 	double	vn;
 	double	denom;
 	double	j;
 	double	e;
+	int		pa = ct->scene->primitives.phys_idx[ct->idx_a];
+	int		pb = ct->scene->primitives.phys_idx[ct->idx_b];
 
-	rv = vec3_sub(point_vel(ct->b, ct->rb), point_vel(ct->a, ct->ra));
+	rv = vec3_sub(point_vel(p, pb, ct->rb), point_vel(p, pa, ct->ra));
 	vn = vec3_dot(rv, ct->normal);
 	if (vn < 0.0)
 	{
-		denom = (inv_a + inv_b + ang_term(ct->a, ct->ra, ct->normal, inv_a)
-				+ ang_term(ct->b, ct->rb, ct->normal, inv_b));
+		denom = (inv_a + inv_b + ang_term(p, pa, ct->ra, ct->normal, inv_a)
+				+ ang_term(p, pb, ct->rb, ct->normal, inv_b));
 		if (denom < 1e-9)
 			return (0.0);
-		e = (vn < -RESTITUTION_SLOP) ? ct->restitution : 0.0;
+		e = (vn < -0.01) ? ct->restitution : 0.0;
 		j = -(1.0 + e) * vn / denom;
-		apply_impulse(ct, vec3_scale(ct->normal, j), inv_a, inv_b);
-		rv = vec3_sub(point_vel(ct->b, ct->rb), point_vel(ct->a, ct->ra));
+		apply_impulse(p, ct, vec3_scale(ct->normal, j), inv_a, inv_b);
+		rv = vec3_sub(point_vel(p, pb, ct->rb), point_vel(p, pa, ct->ra));
 		apply_friction(ct, inv_a, inv_b, rv);
 		return (j);
 	}

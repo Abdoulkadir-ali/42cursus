@@ -15,7 +15,7 @@
 
 /* PROJECT DEPENCIES */
 # include "gui.h"
-# include "primitives/legacy_structs.h"
+# include "old_structs.h"
 
 struct				s_selection
 {

@@ -97,3 +97,64 @@ bool	parser_get_next_word(t_parser *p, char *buf, size_t max_len)
 	buf[i] = '\0';
 	return (i > 0);
 }
+
+double	ft_atof_advance(char **s)
+{
+	double	res;
+	double	fraction;
+	double	divisor;
+	int		sign;
+
+	res = 0.0;
+	sign = 1;
+	while (**s && ft_isspace(**s))
+		(*s)++;
+	if (**s == '-' || **s == '+')
+	{
+		if (**s == '-')
+			sign = -1;
+		(*s)++;
+	}
+	while (ft_isdigit(**s))
+	{
+		res = res * 10.0 + (**s - '0');
+		(*s)++;
+	}
+	if (**s == '.')
+	{
+		(*s)++;
+		fraction = 0.0;
+		divisor = 10.0;
+		while (ft_isdigit(**s))
+		{
+			fraction += (**s - '0') / divisor;
+			divisor *= 10.0;
+			(*s)++;
+		}
+		res += fraction;
+	}
+	return (res * sign);
+}
+
+int	ft_atoi_advance(char **s)
+{
+	int	res;
+	int	sign;
+
+	res = 0;
+	sign = 1;
+	while (**s && ft_isspace(**s))
+		(*s)++;
+	if (**s == '-' || **s == '+')
+	{
+		if (**s == '-')
+			sign = -1;
+		(*s)++;
+	}
+	while (ft_isdigit(**s))
+	{
+		res = res * 10 + (**s - '0');
+		(*s)++;
+	}
+	return (res * sign);
+}

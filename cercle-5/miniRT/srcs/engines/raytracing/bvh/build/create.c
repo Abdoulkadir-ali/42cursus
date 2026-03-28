@@ -14,23 +14,14 @@
 
 static size_t	total_objects(t_scene *sc)
 {
-	return ((size_t)sc->sphere_count + sc->plane_count
-		+ sc->cylinder_count + sc->cone_count
-		+ sc->tri_count + sc->rect_count
-		+ sc->pyramid_count + sc->box_count
-		+ sc->capsule_count);
+	return (sc->primitives.count + sc->tri_soa.count);
 }
 
 static void	cache_assets(t_scene *scene)
 {
-	int	k;
-
-	k = 0;
-	while (k < scene->pyramid_count)
-	{
-		pyramid_cache_verts(&scene->pyramids[k]);
-		k++;
-	}
+	/* Modern DOD sync handles geometry baking (e.g. Pyramid verts)
+	 * during the raytrace_engine_sync phase. Emissive cache is built 
+	 * once from the material pool. */
 	build_emissive_cache(scene);
 }
 

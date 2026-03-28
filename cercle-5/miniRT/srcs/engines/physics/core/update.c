@@ -14,17 +14,20 @@
 
 static void	integrate_and_ccd(t_scene *scene, double dt)
 {
-	int i;
+	int	i;
+	int	count;
 
+	if (!scene->physics || !scene->physics->soa)
+		return ;
 	integrate_bodies(scene, dt);
-	/* CDC Pass: Prevent tunneling for high-speed objects */
-	i = -1;
-	while (++i < scene->sphere_count)
-		phys_resolve_ccd(scene, &scene->spheres[i].phys, dt);
-	i = -1;
-	while (++i < scene->box_count)
-		phys_resolve_ccd(scene, &scene->boxes[i].phys, dt);
-	phys_debug_spheres(scene);
+	/* CCD Pass: Prevent tunneling for high-speed objects */
+	count = (int)scene->physics->soa->count;
+	i = 0;
+	while (i < count)
+	{
+		phys_resolve_ccd(scene, i, dt);
+		i++;
+	}
 }
 
 static void	solve_contact_iterations(t_contact *contacts, int num_contacts)

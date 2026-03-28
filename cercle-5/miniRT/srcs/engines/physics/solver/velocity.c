@@ -18,23 +18,32 @@
  */
 void	solve_velocities(t_contact *c, int count)
 {
-	int		i;
-	double	inv_a;
-	double	inv_b;
-	double	j;
+	int				i;
+	double			inv_a;
+	double			inv_b;
+	double			j;
+	t_physics		*p;
+	t_physics_soa	*s;
+	int				pa, pb;
 
+	if (count <= 0)
+		return ;
+	p = c[0].scene->physics;
+	s = p->soa;
 	i = 0;
 	while (i < count)
 	{
-		inv_a = get_inv_mass(c[i].a);
-		inv_b = get_inv_mass(c[i].b);
+		pa = c[i].scene->primitives.phys_idx[c[i].idx_a];
+		pb = c[i].scene->primitives.phys_idx[c[i].idx_b];
+		inv_a = (pa >= 0) ? s->inv_mass[pa] : 0.0;
+		inv_b = (pb >= 0) ? s->inv_mass[pb] : 0.0;
 		if (inv_a + inv_b > 1e-8)
 		{
-			j = solve_one_velocity(&c[i], inv_a, inv_b);
-			if (c[i].a && c[i].a->is_compound)
-				apply_torque(&c[i], c[i].a, j);
-			if (c[i].b && c[i].b->is_compound)
-				apply_torque(&c[i], c[i].b, -j);
+			j = solve_one_velocity(p, &c[i], inv_a, inv_b);
+			if (pa >= 0 && s->is_compound[pa])
+				apply_torque(c[i].scene, &c[i], pa, j);
+			if (pb >= 0 && s->is_compound[pb])
+				apply_torque(c[i].scene, &c[i], pb, -j);
 		}
 		i++;
 	}

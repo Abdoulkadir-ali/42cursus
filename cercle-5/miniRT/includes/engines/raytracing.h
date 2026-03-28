@@ -128,6 +128,7 @@ void	bake_materials(t_rt_engine *rt, t_scene *scene);
 void	raytrace_engine_sync(t_rt_engine *rt, t_scene *scene, int w, int h);
 int		engine_pool_add_texture(t_rt_engine *rt, const char *path);
 void	engine_texture_pool_destroy(t_rt_engine *rt);
+void	rt_engine_cleanup(t_rt_engine *rt);
 
 /* --- TRACING --- */
 void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction);

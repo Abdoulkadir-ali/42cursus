@@ -18,17 +18,24 @@
  * Torque:    tau = cross(r, impulse_vec) * inv_inertia.
  * Only effective on compound bodies with meaningful inertia.
  */
-void	apply_torque(t_contact *c, t_physics_body *body, double impulse)
+void	apply_torque(struct s_scene *s, t_contact *c, int body_idx, double impulse)
 {
-	t_vec3	r;
-	t_vec3	j_vec;
-	t_vec3	tau;
+	t_vec3				r;
+	t_vec3				j_vec;
+	t_vec3				tau;
+	t_physics_soa		*soa;
+	t_primitive_array	*p;
+	int					prim_idx;
 
-	if (!body || body->is_static)
+	soa = s->physics->soa;
+	p = &s->primitives;
+	if (body_idx < 0 || soa->is_static[body_idx])
 		return ;
-	r = vec3_sub(c->contact_point, body->com);
+	prim_idx = soa->prim_idx[body_idx];
+	r = vec3_sub(c->contact_point, vec3(p->px[prim_idx], p->py[prim_idx], p->pz[prim_idx]));
 	j_vec = vec3_scale(c->normal, impulse);
 	tau = vec3_cross(r, j_vec);
-	body->angular_velocity = vec3_add(body->angular_velocity,
-			mat3_mul_vec3(body->inv_inertia, tau));
+	soa->ang_vx[body_idx] += (float)(tau.x * soa->inv_ix[body_idx]);
+	soa->ang_vy[body_idx] += (float)(tau.y * soa->inv_iy[body_idx]);
+	soa->ang_vz[body_idx] += (float)(tau.z * soa->inv_iz[body_idx]);
 }

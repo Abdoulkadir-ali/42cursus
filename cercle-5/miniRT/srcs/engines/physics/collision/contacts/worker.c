@@ -19,17 +19,35 @@ void	run_contact_job(t_gen_job *j)
 {
 	t_gjk_shape	sa;
 	t_dbvt_leaf	*leaf;
+	int			i;
 
-	if (!j->scene->static_bvh)
+	if (!j->scene || !j->scene->static_bvh)
 		return ;
-	leaf = (t_dbvt_leaf *)j->arg;
-	if (!leaf)
+	if (j->arg)
+	{
+		leaf = (t_dbvt_leaf *)j->arg;
+		sa.idx = leaf->shape_idx;
+		sa.scene = j->scene;
+		sa.support = leaf->support;
+		sa.center = leaf->body->center;
+		j->count = query_static_bvh(j->scene, j->scene->static_bvh->root,
+				&sa, leaf->body, leaf->transform, j->out, j->count, j->max_c);
 		return ;
-	sa.data = leaf->shape;
-	sa.support = leaf->support;
-	sa.center = leaf->body->center;
-	j->count = query_static_bvh(j->scene, j->scene->static_bvh->root,
-			&sa, leaf->body, leaf->transform, j->out, j->count, j->max_c);
+	}
+	i = -1;
+	while (++i < j->scene->dbvt.leaf_count)
+	{
+		leaf = &j->scene->dbvt.leaves[i];
+		if (leaf->type == (t_phys_type)j->type)
+		{
+			sa.idx = leaf->shape_idx;
+			sa.scene = j->scene;
+			sa.support = leaf->support;
+			sa.center = leaf->body->center;
+			j->count = query_static_bvh(j->scene, j->scene->static_bvh->root,
+					&sa, leaf->body, leaf->transform, j->out, j->count, j->max_c);
+		}
+	}
 }
 
 /**

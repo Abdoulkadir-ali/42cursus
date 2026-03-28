@@ -71,7 +71,11 @@ static void	finish_render(t_gui *gui, t_render_ctx *ctx)
 void	gui_render(t_gui *gui)
 {
 	t_render_ctx	ctx;
+	t_scene			*scene;
 
+	scene = gui->scene;
+	if (gui->rt.baked_version != scene->version)
+		raytrace_engine_sync(&gui->rt, scene, gui->win.width, gui->win.height);
 	PROF_RESET();
 	setup_ctx(gui, &ctx);
 	ctx.tiles_x = (gui->win.width + TILE_SIZE - 1) / TILE_SIZE;

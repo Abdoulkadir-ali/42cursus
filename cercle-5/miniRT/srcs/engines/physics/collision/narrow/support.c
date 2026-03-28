@@ -12,24 +12,20 @@
 
 #include "physics.h"
 
-/**
- * @brief Maps physics shape types to their GJK support functions.
- */
 t_support_fn	get_support(t_phys_type type)
 {
-	if (type == TYPE_PHYS_SPHERE)
-		return (gjk_support_sphere);
-	if (type == TYPE_PHYS_BOX)
+	static t_support_fn	table[TYPE_PHYS_MAX] = {
+	[TYPE_PHYS_SPHERE] = gjk_support_sphere,
+	[TYPE_PHYS_BOX] = gjk_support_box,
+	[TYPE_PHYS_CAPSULE] = gjk_support_capsule,
+	[TYPE_PHYS_CYLINDER] = gjk_support_cylinder,
+	[TYPE_PHYS_RECT] = gjk_support_rect,
+	[TYPE_PHYS_TRI] = gjk_support_tri,
+	[TYPE_PHYS_PYRAMID] = gjk_support_pyramid,
+	[TYPE_PHYS_MESH] = gjk_support_mesh
+	};
+
+	if (type < 0 || type >= TYPE_PHYS_MAX)
 		return (gjk_support_box);
-	if (type == TYPE_PHYS_CAPSULE)
-		return (gjk_support_capsule);
-	if (type == TYPE_PHYS_CYLINDER)
-		return (gjk_support_cylinder);
-	if (type == TYPE_PHYS_RECT)
-		return (gjk_support_rect);
-	if (type == TYPE_PHYS_TRI)
-		return (gjk_support_tri);
-	if (type == TYPE_PHYS_PYRAMID)
-		return (gjk_support_pyramid);
-	return (gjk_support_box);
+	return (table[type]);
 }

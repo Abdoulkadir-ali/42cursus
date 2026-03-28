@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 08:44:23 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:08:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/27 20:53:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ struct s_camera;
 struct s_ambient;
 struct s_material;
 struct s_mesh;
-struct s_obj_ctx;
+struct s_obj;
 struct s_scene;
 struct s_ray;
 struct s_hit;
@@ -78,7 +78,7 @@ typedef struct s_camera t_camera;
 typedef struct s_ambient t_ambient;
 typedef struct s_material t_material;
 typedef struct s_mesh t_mesh;
-typedef struct s_obj_ctx t_obj_ctx;
+typedef struct s_obj t_obj;
 typedef struct s_scene t_scene;
 typedef struct s_ray t_ray;
 typedef struct s_hit t_hit;
@@ -104,7 +104,7 @@ void	print_camera(t_camera *c);
 void	print_ambient(t_ambient *a);
 void	print_material(t_material *m);
 void	print_mesh(t_mesh *m);
-void	print_obj_ctx(t_obj_ctx *c);
+void	print_obj_ctx(t_obj *c);
 
 /* System */
 void	print_scene(t_scene *s);

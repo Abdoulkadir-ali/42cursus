@@ -14,22 +14,15 @@
 
 static int	process_pair(t_scene *s, t_body_pair *p, t_contact *contacts, int c, int max_c)
 {
-	t_shape_pair	sp[MAX_BODY_PAIRS];
+	t_gjk_shape	sa;
+	t_gjk_shape	sb;
 
-	(void)s;
-	int				ns;
-	int				i;
-
-	if (!p->a->is_compound && !p->b->is_compound)
-		return (narrow_dispatch_body_pair(p, contacts, c));
-	ns = midphase(p, 1, sp, MAX_BODY_PAIRS);
-	i = 0;
-	while (i < ns && c < max_c)
-	{
-		c = narrow_dispatch_shape_pair(&sp[i], contacts, c);
-		i++;
-	}
-	return (c);
+	/* For now, we handle simple pairs. Compound pairs need a dedicated loop. */
+	sa.scene = s;
+	sa.idx = p->idx_a;
+	sb.scene = s;
+	sb.idx = p->idx_b;
+	return (c + gjk_make_contact(&sa, &sb, p->idx_a, p->idx_b, &contacts[c]));
 }
 
 int	gather_dbvt_contacts(t_scene *s, t_contact *contacts, int max_c)
@@ -38,9 +31,12 @@ int	gather_dbvt_contacts(t_scene *s, t_contact *contacts, int max_c)
 	int			np;
 	int			i;
 	int			c;
+	t_physics	*phys = s->physics;
 
-	build_dbvt(s, &s->dbvt);
-	np = dbvt_query_pairs(&s->dbvt, pairs, MAX_BODY_PAIRS);
+	if (!phys)
+		return (0);
+	build_dbvt(s, &phys->dbvt);
+	np = dbvt_query_pairs(&phys->dbvt, pairs, MAX_BODY_PAIRS);
 	c = 0;
 	i = 0;
 	while (i < np && c < max_c)

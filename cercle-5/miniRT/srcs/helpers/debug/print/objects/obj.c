@@ -12,8 +12,9 @@
 
 #include "objects.h"
 #include "debug.h"
+#include "loader.h"
 
-void	print_obj_ctx(t_obj_ctx *c)
+void	print_obj_ctx(t_obj *c)
 {
 	if (!c)
 		return ;

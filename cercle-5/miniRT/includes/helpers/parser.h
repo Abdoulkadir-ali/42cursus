@@ -143,6 +143,9 @@ double								parse_double(t_parser *p);
 bool								parse_double_checked(t_parser *p,
 										double *out);
 bool								parse_vec3(t_parser *p, t_vec3 *out);
+bool								parse_vec2(t_parser *p, t_vec2 *out);
+double								ft_atof_advance(char **s);
+int									ft_atoi_advance(char **s);
 
 struct s_sub_shape					parse_brick(t_json_value *obj);
 struct s_physics_body				parse_compound_body(t_json_value *obj);

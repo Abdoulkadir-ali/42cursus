@@ -1,53 +1,52 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   loader.c                                           :+:      :+:    :+:   */
+/*   dispatcher.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 18:20:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 06:32:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "loader.h"
+#include "rt.h"
 
-static bool	dispatch_basic(t_scene *scene, t_parser *p, char *id)
+static bool	dispatch_basic(t_rt_buf *buf, t_parser *p, char *id)
 {
 	if (id[0] == 'A' && id[1] == '\0')
-		return (parse_ambient(scene, p));
+		return (parse_ambient(buf, p));
 	if (id[0] == 'C' && id[1] == '\0')
-		return (parse_camera(scene, p));
+		return (parse_camera(buf, p));
 	if (id[0] == 'L' && id[1] == '\0')
-		return (parse_light(scene, p));
+		return (parse_light(buf, p));
 	return (false);
 }
 
-static bool	dispatch_shapes(t_scene *scene, t_parser *p, char *id)
+static bool	dispatch_shapes(t_rt_buf *buf, t_parser *p, char *id)
 {
 	if (id[0] == 's' && id[1] == 'p')
-		return (parse_sphere(scene, p));
+		return (parse_sphere(buf, p));
 	if (id[0] == 's' && id[1] == 'l')
-		return (parse_spot_light(scene, p));
+		return (parse_spot_light(buf, p));
 	if (id[0] == 'p' && id[1] == 'l')
-		return (parse_plane(scene, p));
+		return (parse_plane(buf, p));
 	if (id[0] == 'c' && id[1] == 'y')
-		return (parse_cylinder(scene, p));
+		return (parse_cylinder(buf, p));
 	if (id[0] == 'c' && id[1] == 'n')
-		return (parse_cone(scene, p));
+		return (parse_cone(buf, p));
 	if (id[0] == 't' && id[1] == 'r')
-		return (parse_tri_shape(scene, p));
+		return (parse_tri_shape(buf, p));
 	if (id[0] == 'r' && id[1] == 'c')
-		return (parse_rect(scene, p));
+		return (parse_rect(buf, p));
 	if (id[0] == 'p' && id[1] == 'y')
-		return (parse_pyramid(scene, p));
+		return (parse_pyramid(buf, p));
 	if (id[0] == 'b' && id[1] == 'x')
-		return (parse_box(scene, p));
+		return (parse_box(buf, p));
 	if (id[0] == 'c' && id[1] == 'a')
-		return (parse_capsule(scene, p));
+		return (parse_capsule(buf, p));
 	return (false);
 }
-
 
 static void	handle_unknown(t_parser *p)
 {
@@ -55,13 +54,17 @@ static void	handle_unknown(t_parser *p)
 		parser_advance(p);
 }
 
-bool	dispatch_scan(t_scene *scene, t_parser *p, char *id)
+/*
+** Meshes (obj/glb) still inject directly since they have their own
+** loader lifecycle. Only rt primitive shapes use the transient buf.
+*/
+bool	dispatch_scan(t_scene *scene, t_rt_buf *buf, t_parser *p, char *id)
 {
 	if (!id || !*id)
 		return (false);
-	if (dispatch_basic(scene, p, id))
+	if (dispatch_basic(buf, p, id))
 		return (true);
-	if (dispatch_shapes(scene, p, id))
+	if (dispatch_shapes(buf, p, id))
 		return (true);
 	if (dispatch_meshes(scene, p, id))
 		return (true);

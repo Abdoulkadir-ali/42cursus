@@ -23,22 +23,20 @@ static void	cleanup_app(t_scene *scene, t_gui *gui)
 		gui_destroy(gui);
 	else if (scene)
 	{
-		if (scene->bvh)
-			bvh_destroy(scene->bvh);
 		phys_destroy_pool(scene);
 		destroy_scene(scene);
 	}
 }
 
 /**
- * @brief Loads the scene, computes the BVH, and initializes GUI data.
+ * @brief Loads the scene and initializes GUI data.
+ * @param path Path to the .rt scene file.
  * @param gui Pointer to the stack-allocated GUI structure.
  * @param scene Output pointer for the loaded scene.
- * @param path Path to the .rt scene file.
  * @param mlx Pointer to the MLX instance.
  * @return bool True on success, false on failure.
  */
-static bool	init_app(t_gui *gui, t_scene **scene, const char *path, void *mlx)
+static bool	init_app(const char *path, t_gui *gui, t_scene **scene, void *mlx)
 {
 	*scene = parse_file(path, mlx);
 	if (!*scene)

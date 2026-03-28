@@ -29,15 +29,23 @@ static bool	box_has_compound(t_json_value *shape_obj)
 
 static bool	apply_to_box(t_scene *s, t_json_value *shape_obj)
 {
-	t_physics_body	body;
+	t_physics_body	*body;
 	t_json_value	*comp;
+	size_t			idx;
 
 	comp = json_get(shape_obj, "compound");
 	if (!comp)
 		return (false);
-	body = parse_compound_body(comp);
-	if (s->box_count > 0)
-		s->boxes[s->box_count - 1].phys = body;
+	if (s->primitives.count == 0)
+		return (false);
+	idx = s->primitives.count - 1;
+	if (s->primitives.types[idx] != (uint8_t)PRIM_BOX)
+		return (false);
+	body = ft_calloc(1, sizeof(t_physics_body));
+	if (!body)
+		return (false);
+	*body = parse_compound_body(comp);
+	s->primitives.physics[idx] = body;
 	return (true);
 }
 

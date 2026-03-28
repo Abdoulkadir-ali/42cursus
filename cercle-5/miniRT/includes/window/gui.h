@@ -252,6 +252,7 @@ struct					s_gui
 	t_crud_ui			*crud;
 	t_hover_cache		*hover;
 	t_render_pool		pool;
+	t_rt_engine			rt;
 };
 
 struct					s_key_action

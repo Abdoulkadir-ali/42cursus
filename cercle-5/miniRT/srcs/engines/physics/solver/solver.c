@@ -18,15 +18,22 @@
  */
 void	solve_positions(t_contact *c, int count)
 {
-	int		i;
-	double	inv_a;
-	double	inv_b;
+	int				i;
+	double			inv_a;
+	double			inv_b;
+	t_physics_soa	*s;
+	int				pa, pb;
 
+	if (count <= 0)
+		return ;
+	s = c[0].scene->physics->soa;
 	i = 0;
 	while (i < count)
 	{
-		inv_a = get_inv_mass(c[i].a);
-		inv_b = get_inv_mass(c[i].b);
+		pa = c[i].scene->primitives.phys_idx[c[i].idx_a];
+		pb = c[i].scene->primitives.phys_idx[c[i].idx_b];
+		inv_a = (pa >= 0) ? s->inv_mass[pa] : 0.0;
+		inv_b = (pb >= 0) ? s->inv_mass[pb] : 0.0;
 		if (inv_a + inv_b > 1e-8)
 			apply_position_correction(&c[i], inv_a, inv_b);
 		i++;

@@ -67,6 +67,30 @@ void	raytrace_engine_sync(t_rt_engine *rt, t_scene *scene, int w, int h)
 	/* 4. Link Geometry State */
 	rt->scene = scene;
 	
-	/* 5. Update internal version to track "dirty" state */
+	/* 5. Rebuild Global BVH (DOD) */
+	if (rt->bvh)
+		bvh_destroy(rt->bvh);
+	rt->bvh = bvh_build_global(scene);
+
+	/* 6. Update internal version to track "dirty" state */
 	rt->baked_version = scene->version;
+}
+
+/**
+ * @brief Graceful Engine Cleanup.
+ */
+void	rt_engine_cleanup(t_rt_engine *rt)
+{
+	if (!rt)
+		return ;
+	engine_texture_pool_destroy(rt);
+	if (rt->bvh)
+		bvh_destroy(rt->bvh);
+	if (rt->rt_materials)
+		free(rt->rt_materials);
+	if (rt->emissive_cache)
+		free(rt->emissive_cache);
+	rt->bvh = NULL;
+	rt->rt_materials = NULL;
+	rt->emissive_cache = NULL;
 }

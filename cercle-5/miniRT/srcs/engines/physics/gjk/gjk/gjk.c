@@ -29,12 +29,17 @@ static bool	next_simplex(t_simplex *s, t_vec3 *dir)
  */
 bool	gjk_intersect(t_gjk_shape *a, t_gjk_shape *b, t_simplex *out)
 {
-	t_simplex	s;
-	t_vec3		dir;
-	t_vec3		pt[3];
-	int			it;
+	t_simplex			s;
+	t_vec3				dir;
+	t_vec3				pt[3];
+	int					it;
+	t_primitive_array	*p;
+	t_vec3				ca, cb;
 
-	dir = vec3_sub(b->center, a->center);
+	p = &a->scene->primitives;
+	ca = vec3(p->px[a->idx], p->py[a->idx], p->pz[a->idx]);
+	cb = vec3(p->px[b->idx], p->py[b->idx], p->pz[b->idx]);
+	dir = vec3_sub(cb, ca);
 	if (vec3_mag_sq(dir) < 1e-9)
 		dir = vec3(1, 0, 0);
 	pt[0] = md_support(a, b, dir, &pt[1], &pt[2]);

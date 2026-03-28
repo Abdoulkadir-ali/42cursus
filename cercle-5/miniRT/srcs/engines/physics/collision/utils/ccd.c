@@ -41,28 +41,45 @@ double	ccd_sweep_sphere_vs_plane(t_vec3 pos, t_vec3 vel, double r,
  * If a hit is detected at t < 1,
 	the body's position is clamped to the hit point.
  */
-void	phys_resolve_ccd(t_scene *s, t_physics_body *b, double dt)
+void	phys_resolve_ccd(t_scene *s, int body_idx, double dt)
 {
-	int		i;
-	double	min_t;
-	double	t;
-	t_vec3	n;
+	int					i;
+	double				min_t;
+	double				t;
+	t_vec3				n, pos, vel;
+	t_physics_soa		*ps;
+	t_primitive_array	*gm;
+	int					prim_idx;
 
-	if (b->is_static || vec3_mag_sq(b->velocity) < 1.0)
+	ps = s->physics->soa;
+	gm = &s->primitives;
+	if (body_idx < 0 || ps->is_static[body_idx])
+		return ;
+	prim_idx = ps->prim_idx[body_idx];
+	vel = vec3(ps->vx[body_idx], ps->vy[body_idx], ps->vz[body_idx]);
+	pos = vec3(gm->px[prim_idx], gm->py[prim_idx], gm->pz[prim_idx]);
+	if (vec3_mag_sq(vel) < 1.0)
 		return ;
 	min_t = 1.0;
 	i = -1;
-	while (++i < s->rect_count)
+	while (++i < (int)gm->count)
 	{
-		n = vec3_norm(s->rects[i].transform.up);
-		t = ccd_sweep_sphere_vs_plane(b->center, b->velocity, 0.5,
-				s->rects[i].transform.pos, n, dt);
-		if (t < min_t)
-			min_t = t;
+		if (gm->types[i] == PRIM_RECT || gm->types[i] == PRIM_PLANE)
+		{
+			n = vec3(gm->ax[i], gm->ay[i], gm->az[i]);
+			t = ccd_sweep_sphere_vs_plane(pos, vel, gm->radii[prim_idx],
+					vec3(gm->px[i], gm->py[i], gm->pz[i]), n, dt);
+			if (t < min_t)
+				min_t = t;
+		}
 	}
 	if (min_t < 1.0)
 	{
-		b->center = vec3_add(b->center, vec3_scale(b->velocity, min_t * dt));
-		b->velocity = vec3_scale(b->velocity, -0.1); /* Collision early-halt */
+		gm->px[prim_idx] += (float)(vel.x * min_t * dt);
+		gm->py[prim_idx] += (float)(vel.y * min_t * dt);
+		gm->pz[prim_idx] += (float)(vel.z * min_t * dt);
+		ps->vx[body_idx] *= -0.1f;
+		ps->vy[body_idx] *= -0.1f;
+		ps->vz[body_idx] *= -0.1f;
 	}
 }
