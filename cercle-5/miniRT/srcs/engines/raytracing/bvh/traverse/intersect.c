@@ -20,33 +20,39 @@ static bool	dispatch_intersect(const t_ray *ray, t_scene *scene,
 		t_bvh_ref ref, t_hit *hit)
 {
 	t_primitive_array	*p;
-	int					i;
+
 
 	p = &scene->primitives;
-	i = ref.index;
+
 	if (ref.type == TYPE_TRI)
-		return (intersect_tri_soa(ray, &scene->tri_soa, i, hit));
-	if (ref.type == PRIM_SPHERE)
-		return (intersect_sphere(ray, p, i, hit));
-	if (ref.type == PRIM_PLANE)
-		return (intersect_plane(ray, p, i, hit));
-	if (ref.type == PRIM_CYLINDER)
-		return (intersect_cylinder(ray, p, i, hit));
-	if (ref.type == PRIM_CONE)
-		return (intersect_cone(ray, p, i, hit));
-	/* Rect/Box/Capsule etc will use the same pattern */
+		return (intersect_tri_soa(ray, &scene->tri_soa, ref.index, hit));
+	if (ref.type == TYPE_SPHERE)
+		return (intersect_sphere(ray, p, ref.index, hit));
+	if (ref.type == TYPE_PLANE)
+		return (intersect_plane(ray, p, ref.index, hit));
+	if (ref.type == TYPE_CYLINDER)
+		return (intersect_cylinder(ray, p, ref.index, hit));
+	if (ref.type == TYPE_CONE)
+		return (intersect_cone(ray, p, ref.index, hit));
+	if (ref.type == TYPE_RECT)
+		return (intersect_rect(ray, p, ref.index, hit));
+	if (ref.type == TYPE_BOX)
+		return (intersect_box(ray, p, ref.index, hit));
+	if (ref.type == TYPE_CAPSULE)
+		return (intersect_capsule(ray, p, ref.index, hit));
+	if (ref.type == TYPE_PYRAMID)
+		return (intersect_pyramid(ray, p, ref.index, hit));
 	return (false);
 }
 
 bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
-		 t_hit *hit)
+	t_hit *hit)
 {
-	bool	res;
-
-	res = dispatch_intersect(ray, scene, ref, hit);
-	if (res)
-		hit->ref = ref;
-	return (res);
+	if (!dispatch_intersect(ray, scene, ref, hit))
+		return (false);
+	hit->ref = ref;
+	hit->type = ref.type;
+	return (true);
 }
 
 /**

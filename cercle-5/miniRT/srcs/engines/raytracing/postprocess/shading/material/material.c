@@ -12,8 +12,11 @@
 
 #include "raytracing.h"
 
-static int	dispatch_mat1(t_shading *ctx, int type)
+static int	get_mat_id(t_shading *ctx)
 {
+	t_type	type;
+
+	type = ctx->hit->ref.type;
 	if (type == TYPE_SPHERE)
 		return (get_sphere_mat(ctx));
 	if (type == TYPE_PLANE)
@@ -26,11 +29,6 @@ static int	dispatch_mat1(t_shading *ctx, int type)
 		return (get_tri_mat(ctx));
 	if (type == TYPE_RECT)
 		return (get_rect_mat(ctx));
-	return (-1);
-}
-
-static int	dispatch_mat2(t_shading *ctx, int type)
-{
 	if (type == TYPE_PYRAMID)
 		return (get_pyramid_mat(ctx));
 	if (type == TYPE_BOX)
@@ -41,18 +39,14 @@ static int	dispatch_mat2(t_shading *ctx, int type)
 		return (get_mesh_mat(ctx));
 	if (type == TYPE_ANIM)
 		return (get_anim_mat(ctx));
-	return (-1);
+	return (0);
 }
 
 void	get_material(t_shading *ctx)
 {
 	int	mat_id;
-	int	type;
 
-	type = ctx->hit->ref.type;
-	mat_id = dispatch_mat1(ctx, type);
-	if (mat_id == -1)
-		mat_id = dispatch_mat2(ctx, type);
+	mat_id = get_mat_id(ctx);
 	if (ctx->rt_materials)
 	{
 		ctx->mat.albedo_map.color_a = ctx->rt_materials[mat_id].color;
@@ -62,7 +56,7 @@ void	get_material(t_shading *ctx)
 		ctx->mat.emission = ctx->rt_materials[mat_id].emission;
 		return ;
 	}
-	if (mat_id < 0 || mat_id >= ctx->scene->mat_count)
+	if (mat_id < 0 || mat_id >= (int)ctx->scene->mat_count)
 		mat_id = 0;
 	ctx->mat = ctx->scene->materials[mat_id];
 }

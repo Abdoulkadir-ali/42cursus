@@ -44,7 +44,7 @@ static size_t	collect_triangles_soa(t_scene *sc, t_build_item *items, size_t n)
 	i = 0;
 	while (i < t->count)
 	{
-		items[n + i].ref = (t_bvh_ref){PRIM_TRIANGLE, (int)i};
+		items[n + i].ref = (t_bvh_ref){TYPE_TRI, (int)i};
 		items[n + i].aabb = get_tri_aabb_soa(t, (int)i);
 		/* Simple centroid: Average of vertices */
 		items[n + i].centroid = vec3(
