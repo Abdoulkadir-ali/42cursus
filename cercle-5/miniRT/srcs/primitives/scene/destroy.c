@@ -6,124 +6,71 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:22:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:18:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
-#include "physics.h"
 
-/**
- * @brief Frees the assets (meshes and animated meshes) in the scene.
- * @param sc Pointer to the scene.
- */
-static void	destroy_assets(t_scene *sc)
+static void	free_primitive_p_meta(t_scene *s)
 {
-	/* Animated skinned-meshes may hold internal allocations; most callers
-	 * manage those via the loader code. To avoid referencing an incomplete
-	 * skinned-mesh type here we only free the animated array container.
-	 * Individual mesh backing data is freed elsewhere when applicable.
-	 */
-	if (sc->animated)
-		free(sc->animated);
-}
+	size_t	i;
 
-/**
- * @brief Frees the geometry arrays and metadata in the scene.
- * @param sc Pointer to the scene.
- */
-static void	destroy_geometry(t_scene *sc)
-{
-	int k;
-
-	/* Free primitive SoA arrays */
-	if (sc->primitives.types)
-		free(sc->primitives.types);
-	if (sc->primitives.px)
-		free(sc->primitives.px);
-	if (sc->primitives.py)
-		free(sc->primitives.py);
-	if (sc->primitives.pz)
-		free(sc->primitives.pz);
-	if (sc->primitives.ax)
-		free(sc->primitives.ax);
-	if (sc->primitives.ay)
-		free(sc->primitives.ay);
-	if (sc->primitives.az)
-		free(sc->primitives.az);
-	if (sc->primitives.tx)
-		free(sc->primitives.tx);
-	if (sc->primitives.ty)
-		free(sc->primitives.ty);
-	if (sc->primitives.tz)
-		free(sc->primitives.tz);
-	if (sc->primitives.radii)
-		free(sc->primitives.radii);
-	if (sc->primitives.heights)
-		free(sc->primitives.heights);
-	if (sc->primitives.ex)
-		free(sc->primitives.ex);
-	if (sc->primitives.ey)
-		free(sc->primitives.ey);
-	if (sc->primitives.ez)
-		free(sc->primitives.ez);
-	if (sc->primitives.mat_ids)
-		free(sc->primitives.mat_ids);
-
-
-
-
-
-
-	/* Free triangle SoA arrays */
-	for (k = 0; k < 3; ++k)
-	{
-		if (sc->tri_soa.vx[k])
-			free(sc->tri_soa.vx[k]);
-		if (sc->tri_soa.vy[k])
-			free(sc->tri_soa.vy[k]);
-		if (sc->tri_soa.vz[k])
-			free(sc->tri_soa.vz[k]);
-	}
-	for (k = 0; k < 2; ++k)
-	{
-		if (sc->tri_soa.ex[k])
-			free(sc->tri_soa.ex[k]);
-		if (sc->tri_soa.ey[k])
-			free(sc->tri_soa.ey[k]);
-		if (sc->tri_soa.ez[k])
-			free(sc->tri_soa.ez[k]);
-	}
-	if (sc->tri_soa.nx)
-		free(sc->tri_soa.nx);
-	if (sc->tri_soa.ny)
-		free(sc->tri_soa.ny);
-	if (sc->tri_soa.nz)
-		free(sc->tri_soa.nz);
-	if (sc->tri_soa.tx)
-		free(sc->tri_soa.tx);
-	if (sc->tri_soa.ty)
-		free(sc->tri_soa.ty);
-	if (sc->tri_soa.tz)
-		free(sc->tri_soa.tz);
-	if (sc->tri_soa.mat_ids)
-		free(sc->tri_soa.mat_ids);
-}
-
-/**
- * @brief Frees all memory associated with the scene and its objects.
- * @param scene Pointer to the scene to be destroyed.
- */
-void	destroy_scene(t_scene *scene)
-{
-	if (!scene)
+	if (!s->prim_meta)
 		return ;
-	free(scene->name);
-	destroy_assets(scene);
-	destroy_geometry(scene);
+	i = 0;
+	while (i < s->primitives.count)
+	{
+		free(s->prim_meta[i].name);
+		free(s->prim_meta[i].file_path);
+		free(s->prim_meta[i].user_comment);
+		i++;
+	}
+	free(s->prim_meta);
+}
 
-	free(scene->materials);
-	free(scene->lights);
-	free(scene->emissive_cache);
-	free(scene);
+static void	destroy_geometry(t_scene *s)
+{
+	int	i;
+
+	free(s->primitives.types);
+	free(s->primitives.mat_ids);
+	free(s->primitives.is_static);
+	free(s->primitives.has_phys);
+	free(s->primitives.phys_idx);
+	free(s->primitives.float_slab);
+	free(s->tri_soa.mat_ids);
+	free(s->tri_soa.float_slab);
+	free(s->plane_indices);
+	if (s->animated)
+	{
+		i = 0;
+		while (i < (int)s->anim_count)
+		{
+			i++;
+		}
+		free(s->animated);
+	}
+}
+
+static void	destroy_metadata(t_scene *s)
+{
+	free_primitive_p_meta(s);
+	free(s->mesh_asset_meta);
+	free(s->mesh_instance_meta);
+	free(s->mat_meta);
+}
+
+void	destroy_scene(t_scene *s)
+{
+	if (!s)
+		return ;
+	free(s->name);
+	destroy_geometry(s);
+	destroy_metadata(s);
+	free(s->materials);
+	free(s->lights);
+	free(s->clips);
+	free(s->emissive_cache);
+	free(s);
 }

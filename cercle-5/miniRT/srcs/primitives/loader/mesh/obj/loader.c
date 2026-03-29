@@ -6,15 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 03:53:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:59:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
 
-static bool	obj_finalize_mesh_to_scene(t_obj *obj, t_scene *scene, const char *path)
+static bool	obj_finalize_mesh_to_scene(t_obj *obj, t_scene *scene)
 {
-	t_mesh	mesh;
+	t_mesh_asset	mesh;
 	int		mat_idx;
 
 	if (obj->out_v_count == 0)
@@ -23,7 +23,7 @@ static bool	obj_finalize_mesh_to_scene(t_obj *obj, t_scene *scene, const char *p
 		return (false);
 	}
 	obj_generate_normals(obj);
-	obj_init_mesh(&mesh, obj, path);
+	obj_init_mesh(&mesh, obj);
 	mat_idx = obj->current_mat_id;
 	mesh.mat_id = mat_idx;
 	obj_free_obj(obj);
@@ -91,5 +91,5 @@ bool	obj_load(t_scene *scene, const char *path)
 
 	if (!obj_parse_to_asset(&obj, path))
 		return (false);
-	return (obj_finalize_mesh_to_scene(&obj, scene, path));
+	return (obj_finalize_mesh_to_scene(&obj, scene));
 }

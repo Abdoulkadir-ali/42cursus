@@ -21,6 +21,7 @@ static int add_emissives_impl(const t_scene *sc, t_emissive_ref *ca)
 		{
 			ca[n].type = (t_type)sc->primitives.types[i];
 			ca[n].index = (int)i;
+			ca[n].cull_sq = MAX_EMISSIVE_DIST_SQ;
 			n++;
 		}
 		i++;
@@ -32,6 +33,7 @@ static int add_emissives_impl(const t_scene *sc, t_emissive_ref *ca)
 		{
 			ca[n].type = TYPE_TRI;
 			ca[n].index = (int)i;
+			ca[n].cull_sq = MAX_EMISSIVE_DIST_SQ;
 			n++;
 		}
 		i++;

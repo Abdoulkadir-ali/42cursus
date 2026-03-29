@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 09:40:22 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 10:27:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ static void	map_path(t_anim_channel *chan, const char *path)
 }
 
 /**
- * @brief Parses individual animation sampler data from binary chunks.
+ * @brief Parses individual animation sampler data into a pre-allocated pool.
  */
-void	glb_parse_sampler(t_json_value *json, char *bin, t_anim_sampler *s, 
-		t_json_value *sj)
+static void	glb_parse_sampler(t_json_value *json, char *bin, t_anim_sampler *s, 
+		t_json_value *sj, float **pool_ptr)
 {
 	t_glb_accessor		acc;
 	t_glb_buffer_view	bv;
@@ -40,11 +40,13 @@ void	glb_parse_sampler(t_json_value *json, char *bin, t_anim_sampler *s,
 
 	glb_parse_accessor(json, json_get_int(sj, "input"), &acc);
 	s->count = acc.count;
-	s->inputs = malloc(sizeof(float) * s->count);
+	s->inputs = *pool_ptr;
+	*pool_ptr += s->count;
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data(bin, &acc, &bv, s->inputs);
 	glb_parse_accessor(json, json_get_int(sj, "output"), &acc);
-	s->outputs = malloc(sizeof(float) * 4 * s->count);
+	s->outputs = *pool_ptr;
+	*pool_ptr += 5 * s->count; /* Guard for cubicspline (3) or rot (4) */
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data(bin, &acc, &bv, s->outputs);
 	interp = json_as_string(json_get(sj, "interpolation"));
@@ -81,21 +83,35 @@ static void	load_chan_list(t_json_value *chans, t_animation *anim)
 }
 
 /**
- * @brief Logic for loading animation samplers.
+ * @brief Logic for loading animation samplers using a unified pool.
  */
 static void	load_samplers(t_json_value *json, char *bin, t_animation *clip)
 {
 	size_t			i;
 	float			time;
+	size_t			total;
 	t_json_value	*smps;
+	float			*pool;
+	t_glb_accessor	acc;
 
 	smps = json_get(json, "samplers");
 	clip->sampler_count = (int)smps->array.count;
-	clip->samplers = malloc(sizeof(t_anim_sampler) * clip->sampler_count);
+	clip->samplers = ft_calloc(clip->sampler_count, sizeof(t_anim_sampler));
+	total = 0; i = 0;
+	while (i < (size_t)clip->sampler_count)
+	{
+		glb_parse_accessor(json, json_get_int(json_at(smps, i), "input"), &acc);
+		total += acc.count;
+		glb_parse_accessor(json, json_get_int(json_at(smps, i), "output"), &acc);
+		total += 5 * acc.count;
+		i++;
+	}
+	clip->anim_pool = malloc(sizeof(float) * total);
+	pool = clip->anim_pool;
 	i = 0;
 	while (i < (size_t)clip->sampler_count)
 	{
-		glb_parse_sampler(json, bin, &clip->samplers[i], json_at(smps, i));
+		glb_parse_sampler(json, bin, &clip->samplers[i], json_at(smps, i), &pool);
 		if (clip->samplers[i].count > 0)
 		{
 			time = clip->samplers[i].inputs[clip->samplers[i].count - 1];
@@ -135,80 +151,47 @@ t_animation *glb_extract_animations(t_json_value *json, char *bin, int *out_coun
 	return (clips);
 }
 
-static int	find_parent_node(t_json_value *nodes, int target_node)
+void	glb_load_skeleton_impl(t_mesh_asset *mesh, t_json_value *json, char *bin, int idx)
 {
-	size_t			i;
-	size_t			j;
-	t_json_value	*n;
-	t_json_value	*children;
-
-	i = 0;
-	while (i < nodes->array.count)
-	{
-		n = json_at(nodes, i);
-		children = json_get(n, "children");
-		if (children && children->type == JSON_ARRAY)
-		{
-			j = 0;
-			while (j < children->array.count)
-			{
-				if (json_get_int(json_at(children, j), NULL) == target_node)
-					return ((int)i);
-				j++;
-			}
-		}
-		i++;
-	}
-	return (-1);
-}
-
-void	glb_load_skeleton_impl(t_mesh *mesh, t_json_value *json, char *bin, int idx)
-{
-	t_json_value	*skins = json_get(json, "skins");
-	t_json_value	*skin = json_at(skins, idx);
-	t_json_value	*joints;
-	t_glb_accessor	acc;
-	t_glb_buffer_view bv;
-	t_mat4 *ibms;
-	t_json_value *nodes;
-	int i, j, node_idx, parent_node;
+	t_json_value *skin = json_at(json_get(json, "skins"), idx);
+	t_json_value *joints;
+	t_json_value *nodes = json_get(json, "nodes");
+	t_glb_accessor acc; t_glb_buffer_view bv;
+	int i, node_idx, node_count;
+	int *node_to_joint; int *child_to_parent;
 
 	if (!skin) return;
 	joints = json_get(skin, "joints");
 	mesh->bone_count = (int)joints->array.count;
 	mesh->skeleton = ft_calloc(mesh->bone_count, sizeof(t_bone));
 	mesh->bone_matrices = ft_calloc(mesh->bone_count, sizeof(t_mat4));
-
 	glb_parse_accessor(json, json_get_int(skin, "inverseBindMatrices"), &acc);
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
-	ibms = malloc(sizeof(t_mat4) * mesh->bone_count);
-	glb_extract_data(bin, &acc, &bv, ibms);
-
-	nodes = json_get(json, "nodes");
+	glb_extract_data(bin, &acc, &bv, mesh->bone_matrices); /* Use scratch area */
+	node_count = (int)nodes->array.count;
+	node_to_joint = malloc(sizeof(int) * node_count);
+	child_to_parent = malloc(sizeof(int) * node_count);
+	i = 0; while (i < node_count) { node_to_joint[i] = -1; child_to_parent[i] = -1; i++; }
+	i = 0; while (i < mesh->bone_count) {
+		node_idx = json_get_int(json_at(joints, i), NULL);
+		if (node_idx >= 0 && node_idx < node_count) node_to_joint[node_idx] = i; 
+		i++; }
+	i = 0; while (i < node_count) {
+		t_json_value *children = json_get(json_at(nodes, i), "children");
+		size_t j = 0; while (children && j < children->array.count) {
+			int cid = json_get_int(json_at(children, j++), NULL);
+			if (cid >= 0 && cid < node_count) child_to_parent[cid] = i; }
+		i++; }
 	i = 0;
 	while (i < mesh->bone_count)
 	{
-		node_idx = json_get_int(json_at(joints, i), NULL);
-		mesh->skeleton[i].node_idx = node_idx;
-		mesh->skeleton[i].inv_bind_pose = ibms[i];
+		node_idx = mesh->skeleton[i].node_idx = json_get_int(json_at(joints, i), NULL);
+		mesh->skeleton[i].inv_bind_pose = mesh->bone_matrices[i];
 		mesh->skeleton[i].trs.scale = vec3(1,1,1);
-		
-		parent_node = find_parent_node(nodes, node_idx);
 		mesh->skeleton[i].parent = -1;
-		if (parent_node != -1)
-		{
-			j = 0;
-			while (j < mesh->bone_count)
-			{
-				if (json_get_int(json_at(joints, j), NULL) == parent_node)
-				{
-					mesh->skeleton[i].parent = j;
-					break;
-				}
-				j++;
-			}
-		}
+		if (node_idx >= 0 && node_idx < node_count && child_to_parent[node_idx] != -1)
+			mesh->skeleton[i].parent = node_to_joint[child_to_parent[node_idx]];
 		i++;
 	}
-	free(ibms);
+	free(node_to_joint); free(child_to_parent);
 }

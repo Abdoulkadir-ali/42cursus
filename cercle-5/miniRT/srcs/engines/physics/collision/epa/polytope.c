@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 18:05:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-t_epa_face	make_face(t_epa_poly *p, int i0, int i1, int i2)
+static t_epa_face	collision_make_face(t_epa_poly *p, int i0, int i1, int i2)
 {
 	t_epa_face	f;
 	t_vec3		v[3];
@@ -37,10 +37,10 @@ void	push_face(t_epa_poly *p, int i0, int i1, int i2)
 {
 	if (p->n_faces >= EPA_MAX_FACES)
 		return ;
-	p->faces[p->n_faces++] = make_face(p, i0, i1, i2);
+	p->faces[p->n_faces++] = collision_make_face(p, i0, i1, i2);
 }
 
-void	init_polytope(t_epa_poly *p, t_simplex *s)
+void	collision_init_polytope(t_epa_poly *p, t_simplex *s)
 {
 	p->n_verts = 4;
 	p->n_faces = 0;

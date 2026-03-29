@@ -24,7 +24,7 @@ bool	scene_panel_handle_scroll(t_gui *gui, int button)
 
 	if (!gui->scene_panel->visible || !gui->scene)
 		return (false);
-	if (gui->input.mouse_x < 0 || gui->input.mouse_x >= gui->scene_panel->width)
+	if (gui->input.mouse.x < 0 || gui->input.mouse.x >= gui->scene_panel->box.size.x)
 		return (false);
 	rows = count_scene_rows(gui->scene);
 	max_scroll = rows * ROW_H;

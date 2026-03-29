@@ -14,16 +14,21 @@
 
 void	editor_add_cylinder(t_gui *gui)
 {
-	t_cylinder	cy;
+	t_prim_params	params;
 
 	if (!gui->scene)
 		return ;
-	ft_memset(&cy, 0, sizeof(cy));
-	cy.transform = make_obj_transform(cam_fwd_pos(gui, 3.0), vec3(0, 1, 0),
-			vec3(0.5, 2.0, 0.5));
-	cy.temp_color = vec3(0.9, 0.7, 0.4);
-	scene_add_cylinder(gui->scene, cy);
-	select_object(gui, TYPE_CYLINDER, gui->scene->cylinder_count - 1);
+	ft_memset(&params, 0, sizeof(params));
+	params.pos = cam_fwd_pos(gui, 3.0);
+	params.axis = vec3(0, 1, 0);
+	params.radius = 0.5;
+	params.height = 2.0;
+	params.mat_id = scene_add_material_from_color(gui->scene,
+			vec3(0.9, 0.7, 0.4));
+	pthread_rwlock_wrlock(&gui->scene_lock);
+	scene_add_primitive(gui->scene, params, PRIM_CYLINDER);
+	select_object(gui, TYPE_CYLINDER, gui->scene->primitives.count - 1);
 	rebuild_bvh(gui);
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->render.dirty = true;
 }

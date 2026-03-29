@@ -15,7 +15,7 @@
 /**
  * @brief Parses numerical values from a line into the FDF grid row.
  */
-static void	p_row(t_fdf *f, char *l, int y)
+void	p_row(t_fdf *f, char *l, int y)
 {
 	int		x;
 	char	*p;

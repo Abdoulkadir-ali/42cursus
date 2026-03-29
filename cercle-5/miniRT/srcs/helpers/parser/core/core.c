@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 06:17:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 01:25:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:11:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static void	read_chunk(t_parser *p)
 void	parser_init(t_parser *p, int fd)
 {
 	ft_memset(p, 0, sizeof(t_parser));
+	setlocale(LC_NUMERIC, "C");
 	p->fd = fd;
 	p->buffer = malloc(PARSER_BUF_SIZE + 1);
 	if (p->buffer == NULL)

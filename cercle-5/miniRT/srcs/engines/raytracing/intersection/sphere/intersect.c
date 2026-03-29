@@ -19,13 +19,19 @@
 bool	intersect_sphere(const t_ray *ray, t_primitive_array *p,
 		int i, t_hit *h)
 {
-	t_sphere sp = unpack_sphere(p, i);
+	t_vec3	center;
+	double	radius;
+	int		mat_idx;
 	t_vec3	oc;
 	double	b, c, delta, t;
 
-	oc = vec3_sub(ray->origin, sp.center);
+	center = vec3(p->px[i], p->py[i], p->pz[i]);
+	radius = p->radii[i];
+	mat_idx = p->mat_ids[i];
+
+	oc = vec3_sub(ray->origin, center);
 	b = 2.0 * vec3_dot(oc, ray->direction);
-	c = vec3_dot(oc, oc) - (sp.radius * sp.radius);
+	c = vec3_dot(oc, oc) - (radius * radius);
 	delta = b * b - 4.0 * c;
 	if (delta < 0)
 		return (false);
@@ -37,10 +43,10 @@ bool	intersect_sphere(const t_ray *ray, t_primitive_array *p,
 		return (false);
 	h->t = t;
 	h->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
-	h->normal = vec3_norm(vec3_sub(h->point, sp.center));
+	h->normal = vec3_norm(vec3_sub(h->point, center));
 	get_sphere_uv(h->normal, &h->u, &h->v);
 	vec3_orthonormal_basis(h->normal, &h->tangent, &h->bitangent);
-	h->mat_idx = sp.mat_idx;
+	h->mat_idx = mat_idx;
 	h->type = TYPE_SPHERE;
 	return (true);
 }

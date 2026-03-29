@@ -14,16 +14,16 @@
 
 static void	get_bilinear(t_texture *tex, double u, double v, t_bilinear *b)
 {
-	b->ux = u * tex->width - TEX_CENTER_OFFSET;
-	b->uy = v * tex->height - TEX_CENTER_OFFSET;
+	b->ux = (float)(u * tex->width - TEX_CENTER_OFFSET);
+	b->uy = (float)(v * tex->height - TEX_CENTER_OFFSET);
 	b->xi = (int)b->ux;
-	if (b->ux < 0.0 && (double)b->xi != b->ux)
+	if (b->ux < 0.0f && (float)b->xi != b->ux)
 		b->xi--;
 	b->yi = (int)b->uy;
-	if (b->uy < 0.0 && (double)b->yi != b->uy)
+	if (b->uy < 0.0f && (float)b->yi != b->uy)
 		b->yi--;
-	b->wx = b->ux - (double)b->xi;
-	b->wy = b->uy - (double)b->yi;
+	b->wx = b->ux - (float)b->xi;
+	b->wy = b->uy - (float)b->yi;
 }
 
 /**
@@ -40,9 +40,9 @@ t_vec3	sample_bitmap(t_texture *tex, double u, double v)
 	t_vec3		bot;
 
 	get_bilinear(tex, u, v, &b);
-	top = vec3_add(vec3_scale(texel_at(tex, b.xi, b.yi), 1.0 - b.wx),
+	top = vec3_add(vec3_scale(texel_at(tex, b.xi, b.yi), 1.0f - b.wx),
 			vec3_scale(texel_at(tex, b.xi + 1, b.yi), b.wx));
-	bot = vec3_add(vec3_scale(texel_at(tex, b.xi, b.yi + 1), 1.0 - b.wx),
+	bot = vec3_add(vec3_scale(texel_at(tex, b.xi, b.yi + 1), 1.0f - b.wx),
 			vec3_scale(texel_at(tex, b.xi + 1, b.yi + 1), b.wx));
-	return (vec3_add(vec3_scale(top, 1.0 - b.wy), vec3_scale(bot, b.wy)));
+	return (vec3_add(vec3_scale(top, 1.0f - b.wy), vec3_scale(bot, b.wy)));
 }

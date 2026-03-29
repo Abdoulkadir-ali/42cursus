@@ -15,26 +15,12 @@
 void	parser_skip_spaces(t_parser *p)
 {
 	char	c;
-	int		count;
 
-	count = 0;
 	c = parser_peek(p);
-	while (c)
+	while (ft_isspace(c))
 	{
-		if (ft_isspace(c))
-		{
-			parser_advance(p);
-			c = parser_peek(p);
-			count++;
-			if (count > 1000000)
-			{
-				printf("CRITICAL ERROR: parser_skip_spaces loop\n");
-				fflush(stdout);
-				break ;
-			}
-		}
-		else
-			break ;
+		parser_advance(p);
+		c = parser_peek(p);
 	}
 }
 
@@ -100,40 +86,13 @@ bool	parser_get_next_word(t_parser *p, char *buf, size_t max_len)
 
 double	ft_atof_advance(char **s)
 {
-	double	res;
-	double	fraction;
-	double	divisor;
-	int		sign;
+	t_parser	p;
+	double		result;
 
-	res = 0.0;
-	sign = 1;
-	while (**s && ft_isspace(**s))
-		(*s)++;
-	if (**s == '-' || **s == '+')
-	{
-		if (**s == '-')
-			sign = -1;
-		(*s)++;
-	}
-	while (ft_isdigit(**s))
-	{
-		res = res * 10.0 + (**s - '0');
-		(*s)++;
-	}
-	if (**s == '.')
-	{
-		(*s)++;
-		fraction = 0.0;
-		divisor = 10.0;
-		while (ft_isdigit(**s))
-		{
-			fraction += (**s - '0') / divisor;
-			divisor *= 10.0;
-			(*s)++;
-		}
-		res += fraction;
-	}
-	return (res * sign);
+	parser_init_str(&p, *s, ft_strlen(*s));
+	result = parse_double(&p);
+	*s += p.cursor;
+	return (result);
 }
 
 int	ft_atoi_advance(char **s)

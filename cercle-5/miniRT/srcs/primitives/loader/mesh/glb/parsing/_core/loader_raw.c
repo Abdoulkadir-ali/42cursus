@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 12:45:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 20:45:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	load_assets(t_glb *glb, t_json_value *json, char *bin)
 	if (meshes == NULL || meshes->type != JSON_ARRAY)
 		return ;
 	glb->mesh_count = (int)meshes->array.count;
-	glb->meshes = ft_calloc(glb->mesh_count, sizeof(t_mesh));
+	glb->meshes = ft_calloc(glb->mesh_count, sizeof(t_mesh_asset));
 	glb->mesh_mats = ft_calloc(glb->mesh_count, sizeof(int));
 	i = 0;
 	while (i < (size_t)glb->mesh_count)

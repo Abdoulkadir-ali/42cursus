@@ -18,15 +18,15 @@ static void	draw_ui_text_footer(t_gui *gui, t_camera_controller *ctrl, int c)
 	int		bh;
 	int		ox;
 
-	bh = gui->win.disp_h;
+	bh = gui->win.disp_size.y;
 	ox = SCENE_PANEL_W + 16;
 	snprintf(buf, sizeof(buf), "POS  %.2f  %.2f  %.2f", ctrl->transform.pos.x,
 		ctrl->transform.pos.y, ctrl->transform.pos.z);
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, bh - 56, c, buf);
+	gui_draw_string(gui, buf, ox, bh - 56, c);
 	snprintf(buf, sizeof(buf), "ROT  %.1f\xc2\xb0  %.1f\xc2\xb0",
 		ctrl->transform.rotation.pitch * 57.29, ctrl->transform.rotation.yaw
 		* 57.29);
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, bh - 36, c, buf);
+	gui_draw_string(gui, buf, ox, bh - 36, c);
 }
 
 static void	draw_ui_fps(t_gui *gui)
@@ -34,8 +34,7 @@ static void	draw_ui_fps(t_gui *gui)
 	char	buf[128];
 
 	snprintf(buf, sizeof(buf), "%.0f FPS", gui->render.fps);
-	mlx_string_put(gui->win.mlx, gui->win.win, gui->win.disp_w - 108, 40,
-		COL_FPS, buf);
+	gui_draw_string(gui, buf, gui->win.disp_size.x - 108, 40, COL_FPS);
 }
 
 void	draw_ui_text(t_gui *gui, t_camera_controller *ctrl)

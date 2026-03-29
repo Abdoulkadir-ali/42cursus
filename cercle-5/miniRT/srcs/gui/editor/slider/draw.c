@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 18:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 20:31:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,41 @@ static void	draw_slider_fill(t_gui *gui, int x, int y, int fill_w, int total_w)
 void	draw_slider_row(t_gui *gui, t_slider_arg arg)
 {
 	char	buf[64];
+	double	value;
 	double	frac;
 	int		fill_w;
 	int		track_w;
+	double	min;
+	double	max;
+	const char *label;
 
+	if (!arg.sl.prop)
+		return ;
+	min = arg.sl.min;
+	max = arg.sl.max;
+	label = arg.sl.label;
+	if (arg.sl.prop)
+	{
+		value = arg.sl.prop->get(gui->scene, gui->selection->index);
+		if (min == 0 && max == 0)
+		{
+			min = arg.sl.prop->min;
+			max = arg.sl.prop->max;
+		}
+		if (!label)
+			label = arg.sl.prop->name;
+	}
 	track_w = INSPECTOR_W - SLIDER_PAD;
-	frac = (*arg.sl.ptr - arg.sl.min) / (arg.sl.max - arg.sl.min);
+	frac = (value - min) / (max - min);
 	if (frac < 0.0)
 		frac = 0.0;
 	if (frac > 1.0)
 		frac = 1.0;
 	fill_w = (int)(frac * track_w);
-	snprintf(buf, sizeof(buf), "%.3f", *arg.sl.ptr);
-	mlx_string_put(gui->win.mlx, gui->win.win, arg.pos.x, arg.pos.y, COL_TEXT,
-		(char *)arg.sl.label);
-	mlx_string_put(gui->win.mlx, gui->win.win, arg.pos.x + track_w - SLIDER_VAL_X,
-		arg.pos.y, COL_HOVER, buf);
-	draw_slider_fill(gui, arg.pos.x, arg.pos.y + SLIDER_Y_OFF, fill_w, track_w);
+	snprintf(buf, sizeof(buf), "%.3f", value);
+	gui_draw_string(gui, (char *)label, arg.pos.x, arg.pos.y, COL_TEXT);
+	gui_draw_string(gui, buf, arg.pos.x + track_w
+		- SLIDER_VAL_X, arg.pos.y, COL_HOVER);
+	draw_slider_fill(gui, arg.pos.x, arg.pos.y + SLIDER_Y_OFF,
+		fill_w, track_w);
 }

@@ -25,16 +25,15 @@ bool	map_load_entry(t_gui *gui, t_map_entry *entry)
 	if (newly_parsed)
 	{
 		ft_print_debug("Loading map: %s\n", entry->path);
-		entry->scene = parse_file(entry->path, gui->win.mlx);
+		entry->scene = create_scene(entry->path);
 		if (!entry->scene)
 		{
 			fprintf(stderr, "Error: failed to load map %s\n", entry->path);
 			return (false);
 		}
-		entry->scene->bvh = bvh_create(entry->scene);
-		if (!entry->scene->bvh)
+		if (!rt_load(entry->scene, entry->path))
 		{
-			fprintf(stderr, "Error: failed to build BVH for %s\n", entry->path);
+			fprintf(stderr, "Error: failed to load map %s\n", entry->path);
 			destroy_scene(entry->scene);
 			entry->scene = NULL;
 			return (false);
@@ -42,7 +41,9 @@ bool	map_load_entry(t_gui *gui, t_map_entry *entry)
 	}
 	else
 		ft_print_debug("Using cached scene: %s\n", entry->path);
+	pthread_rwlock_wrlock(&gui->scene_lock);
 	gui->scene = entry->scene;
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->map_info.current = entry;
 	if (newly_parsed)
 	{
@@ -63,9 +64,9 @@ static void	*async_load_thread(void *arg)
 	if (!entry->scene)
 	{
 		ft_print_debug("Async loading map: %s\n", entry->path);
-		entry->scene = parse_file(entry->path, NULL);
+		entry->scene = create_scene(entry->path);
 		if (entry->scene)
-			entry->scene->bvh = bvh_create(entry->scene);
+			rt_load(entry->scene, entry->path);
 	}
 	job->done = true;
 	return (NULL);
@@ -78,7 +79,9 @@ void	map_load_async(t_gui *gui, t_map_entry *entry)
 	if (entry->scene)
 	{
 		/* Already cached — swap immediately without a thread */
+		pthread_rwlock_wrlock(&gui->scene_lock);
 		gui->scene = entry->scene;
+		pthread_rwlock_unlock(&gui->scene_lock);
 		gui->map_info.current = entry;
 		gui->cam_ctrl.camera = &gui->scene->camera;
 		reset_camera_view(gui);

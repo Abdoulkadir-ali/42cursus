@@ -14,6 +14,8 @@
 
 void	widget_set_label(t_widget *widget, const char *label)
 {
+    free(widget->label);
+    widget->label = NULL;
     if (label)
         widget->label = strdup(label);
 }

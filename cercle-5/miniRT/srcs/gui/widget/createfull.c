@@ -22,8 +22,8 @@ t_widget	*widget_create(t_widget_type type, t_vec2i pos, t_vec2i size,
         return (NULL);
     memset(widget, 0, sizeof(t_widget));
     widget->type = type;
-    widget->pos = pos;
-    widget->size = size;
+    widget->box.pos = pos;
+    widget->box.size = size;
     if (label)
         widget->label = strdup(label);
     return (widget);

@@ -14,8 +14,8 @@
 
 void	rebuild_bvh(t_gui *gui)
 {
-    if (gui->scene->bvh)
-        bvh_destroy(gui->scene->bvh);
-    gui->scene->bvh = bvh_create(gui->scene);
+	if (gui->rt.bvh)
+		bvh_destroy(gui->rt.bvh);
+	gui->rt.bvh = bvh_build_global(gui->scene);
 	gui->scene->version++;
 }

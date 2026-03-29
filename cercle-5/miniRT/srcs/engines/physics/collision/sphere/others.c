@@ -6,15 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 13:02:44 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 13:02:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:23:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
 
-int sphere_others_contacts(t_scene *s, int idx, t_contact *c, int count, int max)
-{
-	(void)s; (void)idx; (void)c; (void)count; (void)max;
-	return count;
-}

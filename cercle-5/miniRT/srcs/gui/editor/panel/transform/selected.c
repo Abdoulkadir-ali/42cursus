@@ -6,39 +6,54 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:10:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:56:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+
+static void	fill_scale(t_gui *gui, int idx)
+{
+	t_primitive_array	*p;
+	t_type				ty;
+
+	p = &gui->scene->primitives;
+	ty = gui->selection->type;
+	gui->scratch_tr.scale = vec3(1.0, 1.0, 1.0);
+	if (ty == TYPE_SPHERE)
+		gui->scratch_tr.scale.x = p->radii[idx];
+	else if (ty == TYPE_BOX || ty == TYPE_PYRAMID)
+	{
+		gui->scratch_tr.scale.x = p->ex[idx];
+		gui->scratch_tr.scale.y = p->ey[idx];
+		gui->scratch_tr.scale.z = p->ez[idx];
+	}
+	else if (ty == TYPE_CYLINDER || ty == TYPE_CONE || ty == TYPE_CAPSULE)
+	{
+		gui->scratch_tr.scale.x = p->radii[idx];
+		gui->scratch_tr.scale.y = p->heights[idx];
+	}
+}
+
 t_transform	*get_selected_transform(t_gui *gui)
 {
-    t_selection	*sel;
-    t_scene		*sc;
+	t_selection			*sel;
+	t_primitive_array	*p;
+	int					idx;
 
-    sel = gui->selection;
-    sc = gui->scene;
-    if (!sel->active || !sc)
-        return (NULL);
-    if (sel->type == TYPE_SPHERE)
-        return (&sc->spheres[sel->index].transform);
-    if (sel->type == TYPE_PLANE)
-        return (&sc->planes[sel->index].transform);
-    if (sel->type == TYPE_CYLINDER)
-        return (&sc->cylinders[sel->index].transform);
-    if (sel->type == TYPE_CONE)
-        return (&sc->cones[sel->index].transform);
-    if (sel->type == TYPE_RECT)
-        return (&sc->rects[sel->index].transform);
-    if (sel->type == TYPE_PYRAMID)
-        return (&sc->pyramids[sel->index].transform);
-    if (sel->type == TYPE_BOX)
-        return (&sc->boxes[sel->index].transform);
-    if (sel->type == TYPE_CAPSULE)
-        return (&sc->capsules[sel->index].transform);
-    if (sel->type == TYPE_TRI)
-        return (&sc->tris[sel->index].transform);
-    if (sel->type == TYPE_MESH)
-        return (&sc->groups[sel->index].transform);
-    return (NULL);
+	sel = gui->selection;
+	if (!sel->active || !gui->scene)
+		return (NULL);
+	idx = sel->index;
+	if (sel->type == gui->scratch_type && idx == gui->scratch_idx)
+		return (&gui->scratch_tr);
+	p = &gui->scene->primitives;
+	gui->scratch_tr.pos = vec3(p->px[idx], p->py[idx], p->pz[idx]);
+	gui->scratch_tr.rotation.pitch = 0;
+	gui->scratch_tr.rotation.yaw = 0;
+	gui->scratch_tr.rotation.roll = 0;
+	fill_scale(gui, idx);
+	gui->scratch_idx = idx;
+	gui->scratch_type = sel->type;
+	return (&gui->scratch_tr);
 }

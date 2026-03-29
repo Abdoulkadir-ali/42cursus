@@ -14,24 +14,21 @@
 
 void	editor_add_pyramid(t_gui *gui)
 {
-	t_pyramid	py;
-	t_vec3		pos;
+	t_prim_params	params;
 
 	if (!gui->scene)
 		return ;
-	pos = cam_fwd_pos(gui, 3.0);
-	ft_memset(&py, 0, sizeof(py));
-	py.transform.pos = pos;
-	py.transform.scale = vec3(1, 1, 1);
-	py.up = vec3(0, 1, 0);
-	py.base_size = 2.0;
-	py.height = 2.0;
-	py.phys.mass = 1.0;
-	py.phys.elasticity = 0.5;
-	py.phys.friction = 0.5;
-	py.temp_color = vec3(0.9, 0.6, 0.3);
-	scene_add_pyramid(gui->scene, py);
-	select_object(gui, TYPE_PYRAMID, gui->scene->pyramid_count - 1);
+	ft_memset(&params, 0, sizeof(params));
+	params.pos = cam_fwd_pos(gui, 3.0);
+	params.axis = vec3(0, 1, 0);
+	params.extents = vec3(2.0, 2.0, 0);
+	params.height = 2.0;
+	params.mat_id = scene_add_material_from_color(gui->scene,
+			vec3(0.9, 0.6, 0.3));
+	pthread_rwlock_wrlock(&gui->scene_lock);
+	scene_add_primitive(gui->scene, params, PRIM_PYRAMID);
+	select_object(gui, TYPE_PYRAMID, gui->scene->primitives.count - 1);
 	rebuild_bvh(gui);
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->render.dirty = true;
 }

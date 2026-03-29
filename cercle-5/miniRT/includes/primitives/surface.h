@@ -6,15 +6,25 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 04:08:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:15:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SURFACE_H
 #define SURFACE_H
 
+/* --- CONSTANTS --- */
+# define TEX_DEFAULT_BPP 32
+# define TEX_CH_RGBA 4
+# define TEX_DEFAULT_SCALE 1.0
+# define TEX_CENTER_OFFSET 0.5
+
 /* 1. EXTERNAL DEPENDENCIES */
 # include "helpers.h"
+# include "maths.h"
+
+/* Forward declarations */
+typedef struct s_scene	t_scene;
 
 
 /* Color constants moved into a runtime-initialized struct to satisfy
@@ -60,6 +70,8 @@ typedef struct s_texture
 	void			*img;        /* Legacy MLX ref if needed */
 	int				pool_idx;    /* DOD: Texture pool mapping */
 	char			*path;       /* Track resource identity */
+	int				bytes_per_pixel;
+	bool			is_pow2;
 }				t_texture;
 
 typedef struct s_material
@@ -81,12 +93,12 @@ typedef struct s_material
 
 typedef struct			s_bilinear
 {
-	double		ux;
-	double		uy;
+	float		ux;
+	float		uy;
 	int			xi;
 	int			yi;
-	double		wx;
-	double		wy;
+	float		wx;
+	float		wy;
  } t_bilinear;
 
 /* 3. FUNCTION PROTOTYPES */

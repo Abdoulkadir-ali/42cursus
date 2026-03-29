@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mul.c                                              :+:      :+:    :+:   */
+/*   factor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 11:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:00:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 08:46:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,12 @@ t_vec3	vec3_lerp(t_vec3 a, t_vec3 b, double t)
 
 t_vec3	vec3_norm(t_vec3 a)
 {
-	double	mag;
+	double	mag_sq;
+	double	inv_mag;
 
-	mag = vec3_mag(a);
-	if (mag < 1e-12)
+	mag_sq = a.x * a.x + a.y * a.y + a.z * a.z;
+	if (mag_sq < 1e-24)
 		return ((t_vec3){0, 0, 0, 0});
-	return (vec3_scale(a, 1.0 / mag));
-}
-
-double	vec3_mag(t_vec3 a)
-{
-	return (sqrt(vec3_mag_sq(a)));
+	inv_mag = 1.0 / sqrt(mag_sq);
+	return ((t_vec3){a.x * inv_mag, a.y * inv_mag, a.z * inv_mag, 0.0});
 }

@@ -6,12 +6,40 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 10:07:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:21:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GUI_H
 # define GUI_H
+
+/* --- CONSTANTS --- */
+# define RENDER_W 1920
+# define RENDER_H 1080
+# define PANEL_RADIUS 6
+# define GUI_AUTOREFRESH_PHYSICS 1
+# define GUI_AUTOREFRESH_SCALE 2
+
+/* Colors */
+# define COL_ACCENT 0xE0A820
+# define COL_BG 0x0A0A12
+# define COL_BORDER 0x333340
+# define COL_FPS 0x20E060
+# define COL_HOVER 0x20C8D0
+# define COL_PANEL_HDR 0x1A1A28U
+# define COL_POPUP_BG 0x1A1A28U
+# define COL_POPUP_BTN 0x22222EEU
+# define COL_POPUP_BTN_CANCEL 0x2A1A1AU
+# define COL_POPUP_BTN_OK 0x1A2A1AU
+# define COL_POPUP_DIM 0x0D0D14U
+# define COL_POPUP_ERR 0xFF4444U
+# define COL_POPUP_ERR_TEXT 0xFF6666U
+# define COL_ROW_HOVER 0x1E2030U
+# define COL_ROW_SEL 0x2A3040U
+# define COL_SELECTED 0x20D870U
+# define COL_SLIDER_BG 0x1A1A20U
+# define COL_SLIDER_FG 0xE0A820U
+# define COL_TEXT 0xD0D0D8
 
 /* ── External dependencies ───────────────────────────────────────────────── */
 # pragma GCC diagnostic push
@@ -30,6 +58,8 @@
 
 /* ── Engine dependencies ─────────────────────────────────────────────────── */
 # include "engines.h"
+# include "profiler.h"
+#include "loader.h"
 
 /* ── Forward declarations (editor types — full defs live in editor.h) ────── */
 typedef struct s_selection		t_selection;
@@ -70,6 +100,15 @@ typedef enum e_mesh_fmt
 	MESH_FMT_GLB,
 }	t_mesh_fmt;
 
+/* ── GUI Geometry ────────────────────────────────────────────────────────── */
+typedef struct s_gui_box
+{
+	t_vec2i			pos;
+	t_vec2i			size;
+}	t_gui_box;
+
+/* ── Callback type (uses forward-declared t_widget / t_gui) ─────────────── */
+
 /* ── Callback type (uses forward-declared t_widget / t_gui) ─────────────── */
 typedef void	(*t_widget_callback)(t_widget *widget, t_gui *gui);
 
@@ -77,8 +116,7 @@ typedef void	(*t_widget_callback)(t_widget *widget, t_gui *gui);
 typedef struct s_widget
 {
 	t_widget_type		type;
-	t_vec2i			pos;
-	t_vec2i			size;
+	t_gui_box			box;
 	char			*label;
 	int				value;
 	int				color;
@@ -110,6 +148,10 @@ typedef struct s_render
 	double			half_height;
 	double			aspect_ratio;
 	int				step;
+	double			px_step_x;
+	double			px_step_y;
+	double			px_off_x;
+	double			px_off_y;
 }	t_render;
 
 typedef struct s_render_pool
@@ -145,8 +187,7 @@ typedef struct s_camera_controller
 	bool			zooming_out;
 	bool			mouse_left_pressed;
 	bool			mouse_middle_pressed;
-	t_vec2i			last_mouse;
-}	t_camera_controller;
+	t_vec2i			last_mouse;	bool				basis_dirty;}	t_camera_controller;
 
 /* ── Window ──────────────────────────────────────────────────────────────── */
 typedef struct s_window
@@ -158,15 +199,13 @@ typedef struct s_window
 	int				bpp;
 	int				line_len;
 	int				endian;
-	int				width;
-	int				height;
+	t_vec2i			size;
 	void			*disp_img;
 	char			*disp_addr;
 	int				disp_bpp;
 	int				disp_line_len;
 	int				disp_endian;
-	int				disp_w;
-	int				disp_h;
+	t_vec2i			disp_size;
 	void			*gui_bg_img;
 	char			*gui_bg_addr;
 	int				gui_bg_line_len;
@@ -185,7 +224,17 @@ typedef struct s_render_state
 	bool			last_dirty;
 	int				num_cores;
 	pthread_t		*threads;
+	bool			proj_dirty;
+	double			cached_half_w;
+	double			cached_half_h;
+	double			cached_aspect;
 }	t_render_state;
+
+/* ── Input state ─────────────────────────────────────────────────────────── */
+typedef struct s_input
+{
+	t_vec2i			mouse;
+}	t_input;
 
 /* ── Map management ──────────────────────────────────────────────────────── */
 typedef struct s_map_entry
@@ -218,7 +267,7 @@ typedef struct s_gui
 	t_scene				*scene;
 	t_camera_controller	cam_ctrl;
 	t_render_state		render;
-	t_input_ctx			input;
+	t_input				input;
 	t_map				map_info;
 	t_widget			*widgets;
 	bool				physics_enabled;
@@ -227,6 +276,8 @@ typedef struct s_gui
 	int					phys_max_steps;
 	int					ambient_color;
 	double				ambient_intensity;
+	int					last_ambient_color;
+	double				last_ambient_intensity;
 	t_selection			*selection;
 	t_inspector			*inspector;
 	t_scene_panel		*scene_panel;
@@ -237,6 +288,11 @@ typedef struct s_gui
 	t_render_pool		pool;
 	t_rt_engine			rt;
 	t_physics			*phys;
+	t_transform			scratch_tr;
+	int					scratch_idx;
+	t_type				scratch_type;
+	t_physics_body		scratch_phys;
+	pthread_rwlock_t	scene_lock;
 }	t_gui;
 
 /* ── Misc UI helpers ─────────────────────────────────────────────────────── */
@@ -249,12 +305,7 @@ typedef struct s_key_action
 
 typedef struct s_panel
 {
-	t_vec2i			pos;
-	t_vec2i			size;
-	int				x;
-	int				y;
-	int				w;
-	int				h;
+	t_gui_box		box;
 	int				bg;
 	int				brd;
 }	t_panel;
@@ -270,11 +321,8 @@ typedef struct s_fill_args
 typedef struct s_tile
 {
 	int				id;
-	int				tx;
-	int				ty;
+	t_vec2i			tile_idx;
 	t_vec2i			pos;
-	int				x;
-	int				y;
 	int				bpp_step;
 	int				row_step;
 	char			*row_ptr;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 13:24:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 08:47:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ typedef struct s_vec2
 	double		y;
 }				t_vec2;
 
+/**
+ * @brief 3D vector with homogeneous/quaternion w component.
+ * sizeof(t_vec3) == 32 (not 24) -- 4 doubles packed.
+ * w is used for homogeneous coords and quaternion storage.
+ * SoA/AABB code must treat w as 0.0 for direction vectors.
+ */
 typedef struct s_vec3
 {
 	double		x;
@@ -65,8 +71,8 @@ typedef struct s_ray
 
 typedef struct s_aabb
 {
-	float		min[3];
-	float		max[3];
+	t_vec3		min;
+	t_vec3		max;
 }				t_aabb;
 
 
@@ -186,7 +192,7 @@ t_vec3			mat4_mul_pos(t_mat4 m, t_vec3 v);
 t_vec3			mat3_mul_vec3(t_mat3 m, t_vec3 v);
 t_mat3			mat3_mul(t_mat3 a, t_mat3 b);
 t_mat3			mat3_transpose(t_mat3 m);
-t_mat3			mat3_inv(t_mat3 m);
+bool			mat3_inv(t_mat3 m, t_mat3 *out);
 t_mat3			mat3_diag(t_vec3 v);
 
 t_vec3			vec3_reflect(t_vec3 I, t_vec3 N);
@@ -206,7 +212,17 @@ t_aabb			aabb_create_empty(void);
 void			aabb_expand_point(t_aabb *aabb, t_vec3 p);
 t_aabb			aabb_union(const t_aabb *a, const t_aabb *b);
 bool			aabb_overlap(const t_aabb *a, const t_aabb *b);
-void			aabb_expand_eps(t_aabb *aabb, float eps);
-float			aabb_surface_area(const t_aabb *aabb);
+void			aabb_expand_eps(t_aabb *aabb, double eps);
+double			aabb_surface_area(const t_aabb *aabb);
+
+/* --- NUMERIC CONSTANTS (see REPORT.md: BUG-U01 re EPSILON usage) --- */
+# define EPSILON 1e-6
+# define EPSILON_MUL 10.0
+# define MAG_EPSILON 1e-6
+# define SCALE_EPSILON 1e-6
+# define MAX_VALUE 1e30
+# define SAFE_RCP_MIN 1e-20
+# define HALF_SCALE 0.5f
+# define BITS_PER_BYTE 8
 
 #endif

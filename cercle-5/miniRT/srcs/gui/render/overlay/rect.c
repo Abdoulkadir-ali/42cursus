@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 05:55:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 05:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 08:37:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,25 @@
  */
 static void	fill_row(t_gui *gui, int x, int y, int w, unsigned int col)
 {
-	char	*dst;
-	int		i;
+	unsigned int	*row;
+	int				x0;
+	int				x1;
+	int				stride;
 
-	if (y < 0 || y >= gui->win.disp_h)
+	if (y < 0 || y >= gui->win.disp_size.y)
 		return ;
-	i = -1;
-	while (++i < w)
-	{
-		if (x + i >= 0 && x + i < gui->win.disp_w)
-		{
-			dst = gui->win.disp_addr + (y * gui->win.disp_line_len + (x + i) * 4);
-			*(unsigned int *)dst = col;
-		}
-	}
+	x0 = x;
+	if (x < 0)
+		x0 = 0;
+	x1 = x + w;
+	if (x1 > gui->win.disp_size.x)
+		x1 = gui->win.disp_size.x;
+	if (x0 >= x1)
+		return ;
+	stride = gui->win.disp_line_len / 4;
+	row = (unsigned int *)gui->win.disp_addr + y * stride;
+	while (x0 < x1)
+		row[x0++] = col;
 }
 
 /**

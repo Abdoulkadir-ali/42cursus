@@ -2,30 +2,18 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
+/*                                            +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 13:04:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:05:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-#define SAH_BINS 16
-
-typedef struct s_sah_bin
-{
-	t_aabb	bounds;
-	int		count;
-}	t_sah_bin;
-
-/**
- * @brief Performs high-performance O(n) binning for SAH split evaluation.
- * Uses pre-computed centroids to avoid redundant floating-point calculations.
- */
 static void	fill_bins(t_build_item *items, size_t count, t_sah_bin *bins,
-				int axis, float min_c, float scale)
+				t_vec3 mc_sc)
 {
 	size_t	i;
 	int		bin_idx;
@@ -34,108 +22,113 @@ static void	fill_bins(t_build_item *items, size_t count, t_sah_bin *bins,
 	i = 0;
 	while (i < count)
 	{
-		val = ((double *)&items[i].centroid.x)[axis];
-		bin_idx = (int)((val - min_c) * scale);
-		if (bin_idx < 0) bin_idx = 0;
-		if (bin_idx >= SAH_BINS) bin_idx = SAH_BINS - 1;
+		val = (float)((double *)&items[i].centroid.x)[(int)mc_sc.x];
+		bin_idx = (int)((val - mc_sc.y) * mc_sc.z);
+		if (bin_idx < 0)
+			bin_idx = 0;
+		if (bin_idx >= BVH_BINS)
+			bin_idx = BVH_BINS - 1;
 		bins[bin_idx].count++;
 		bins[bin_idx].bounds = aabb_union(&bins[bin_idx].bounds, &items[i].bbox);
 		i++;
 	}
 }
 
-/**
- * @brief Evaluates all possible splits in O(SAH_BINS) after binning.
- */
-static void	eval_bins(t_sah_bin *bins, float p_area, t_split_info *info, int axis)
+static void	eval_bins(t_sah_bin *bins, double p_area, t_split_info *info, int ax)
 {
-	t_aabb	left_box[SAH_BINS - 1];
-	t_aabb	right_box[SAH_BINS - 1];
-	int		left_cnt[SAH_BINS - 1];
-	int		right_cnt[SAH_BINS - 1];
+	t_aabb	lbx[BVH_BINS];
+	t_aabb	rbx[BVH_BINS];
+	int		lc[BVH_BINS];
+	int		rc[BVH_BINS];
 	int		i;
-	float	cost;
+	double	cost;
 
-	/* Forward pass */
-	left_box[0] = bins[0].bounds; left_cnt[0] = bins[0].count;
+	lbx[0] = bins[0].bounds;
+	lc[0] = bins[0].count;
 	i = 0;
-	while (++i < SAH_BINS - 1)
+	while (++i < BVH_BINS - 1)
 	{
-		left_box[i] = aabb_union(&left_box[i - 1], &bins[i].bounds);
-		left_cnt[i] = left_cnt[i - 1] + bins[i].count;
+		lbx[i] = aabb_union(&lbx[i - 1], &bins[i].bounds);
+		lc[i] = lc[i - 1] + bins[i].count;
 	}
-	/* Backward pass */
-	right_box[SAH_BINS - 2] = bins[SAH_BINS - 1].bounds;
-	right_cnt[SAH_BINS - 2] = bins[SAH_BINS - 1].count;
-	i = SAH_BINS - 2;
+	rbx[BVH_BINS - 2] = bins[BVH_BINS - 1].bounds;
+	rc[BVH_BINS - 2] = bins[BVH_BINS - 1].count;
+	i = BVH_BINS - 2;
 	while (--i >= 0)
 	{
-		right_box[i] = aabb_union(&right_box[i + 1], &bins[i + 1].bounds);
-		right_cnt[i] = right_cnt[i + 1] + bins[i + 1].count;
+		rbx[i] = aabb_union(&rbx[i + 1], &bins[i + 1].bounds);
+		rc[i] = rc[i + 1] + bins[i + 1].count;
 	}
-	/* Select min cost */
 	i = -1;
-	while (++i < SAH_BINS - 1)
+	while (++i < BVH_BINS - 1)
 	{
-		cost = 1.0f + (aabb_surface_area(&left_box[i]) / p_area) * left_cnt[i]
-				+ (aabb_surface_area(&right_box[i]) / p_area) * right_cnt[i];
-		if (cost < info->cost)
+		cost = 1.0 + (aabb_surface_area(&lbx[i]) / p_area) * lc[i]
+			+ (aabb_surface_area(&rbx[i]) / p_area) * rc[i];
+		if (cost < info->cost && (info->cost = cost))
 		{
-			info->cost = (double)cost; info->axis = axis; info->split_idx = i;
+			info->axis = ax;
+			info->split_idx = (size_t)i;
 		}
 	}
 }
 
-/**
- * @brief DOD-optimized split search using 16-bin Surface Area Heuristic.
- */
+static void	partition_items(t_build_item *items, size_t count,
+		t_split_info *info, t_aabb cent)
+{
+	size_t			s_i[2];
+	float			p[2];
+	int				b;
+	t_build_item	tmp;
+
+	s_i[0] = 0;
+	p[0] = (float)((double *)&cent.min.x)[info->axis];
+	p[1] = (float)BVH_BINS / ((float)((double *)&cent.max.x)[info->axis] - p[0]);
+	s_i[1] = -1;
+	while (++s_i[1] < count)
+	{
+		b = (int)((((double *)&items[s_i[1]].centroid.x)[info->axis] - p[0]) * p[1]);
+		if (b < 0)
+			b = 0;
+		if (b >= BVH_BINS)
+			b = BVH_BINS - 1;
+		if ((size_t)b <= info->split_idx)
+		{
+			tmp = items[s_i[1]];
+			items[s_i[1]] = items[s_i[0]];
+			items[s_i[0]++] = tmp;
+		}
+	}
+	info->split_idx = s_i[0];
+	if (s_i[0] == 0 || s_i[0] == count)
+		info->axis = -1;
+}
+
 t_split_info	find_best_split(t_build_item *items, size_t count, double p_area)
 {
 	t_split_info	info;
-	t_sah_bin		bins[SAH_BINS];
-	t_aabb			centroid_bounds;
+	t_sah_bin		bins[BVH_BINS];
+	t_aabb			cent;
 	int				a;
+	float			r;
 
-	info.axis = -1; info.cost = (double)count;
-	centroid_bounds = aabb_create_empty();
+	info.axis = -1;
+	info.cost = (double)count;
+	cent = aabb_create_empty();
 	a = -1;
 	while (++a < (int)count)
-		aabb_expand_point(&centroid_bounds, items[a].centroid);
+		aabb_expand_point(&cent, items[a].centroid);
 	a = -1;
 	while (++a < 3)
 	{
-		float range = centroid_bounds.max[a] - centroid_bounds.min[a];
-		if (range < 1e-4f) continue ;
+		r = (float)((double *)&cent.max.x)[a] - (float)((double *)&cent.min.x)[a];
+		if (r < 1e-4f)
+			continue ;
 		ft_memset(bins, 0, sizeof(bins));
-		fill_bins(items, count, bins, a, centroid_bounds.min[a], (float)SAH_BINS / range);
-		eval_bins(bins, (float)p_area, &info, a);
+		fill_bins(items, count, bins, vec3((double)a,
+				(double)((double *)&cent.min.x)[a], (double)BVH_BINS / (double)r));
+		eval_bins(bins, p_area, &info, a);
 	}
 	if (info.axis != -1)
-	{
-		size_t split = 0;
-		float range = centroid_bounds.max[info.axis] - centroid_bounds.min[info.axis];
-		float min_c = centroid_bounds.min[info.axis];
-		float scale = (float)SAH_BINS / range;
-		size_t i = 0;
-		while (i < count)
-		{
-			float val = ((double *)&items[i].centroid.x)[info.axis];
-			int b = (int)((val - min_c) * scale);
-			if (b < 0)
-				b = 0;
-			if (b >= SAH_BINS)
-				b = SAH_BINS - 1;
-			if ((size_t)b <= info.split_idx)
-			{
-				t_build_item tmp = items[i];
-				items[i] = items[split];
-				items[split] = tmp;
-				split++;
-			}
-			i++;
-		}
-		info.split_idx = split;
-		if (split == 0 || split == count) info.axis = -1;
-	}
+		partition_items(items, count, &info, cent);
 	return (info);
 }

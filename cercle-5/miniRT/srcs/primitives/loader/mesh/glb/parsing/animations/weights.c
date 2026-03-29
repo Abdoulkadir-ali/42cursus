@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:38:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static void	fill_weights(t_json_value *j, char *b, float *dst, int id)
 	free(tmp);
 }
 
-void	glb_fill_attributes(t_mesh *mesh, t_json_value *json, char *bin,
+void	glb_fill_attributes(t_mesh_asset *mesh, t_json_value *json, char *bin,
 		int ids[6])
 {
 	fill_v3(json, bin, mesh->vertices, ids[0]);

@@ -33,22 +33,26 @@ static void	handle_mouse_zoom_drag(t_gui *gui, int dy)
 static void	update_inline_drag(t_gui *gui, int mouse_x)
 {
 	double	frac;
+	double	val;
 	int		rx;
-	int		tx;
-	int		tw;
 
-	if (!gui->slider_state->dragging || !gui->slider_state->value_ptr)
+	if (!gui->slider_state->dragging)
 		return ;
-	tx = gui->slider_state->track_x;
-	tw = gui->slider_state->track_w;
-	rx = mouse_x - tx;
+	rx = mouse_x - gui->slider_state->track_x;
 	if (rx < 0)
 		rx = 0;
-	if (rx > tw)
-		rx = tw;
-	frac = (double)rx / (double)tw;
-	*gui->slider_state->value_ptr = gui->slider_state->dmin + frac
+	if (rx > gui->slider_state->track_w)
+		rx = gui->slider_state->track_w;
+	frac = (double)rx / (double)gui->slider_state->track_w;
+	val = gui->slider_state->dmin + frac
 		* (gui->slider_state->dmax - gui->slider_state->dmin);
+	if (gui->slider_state->prop)
+	{
+		pthread_rwlock_wrlock(&gui->scene_lock);
+		gui->slider_state->prop->set(gui->scene,
+			gui->slider_state->obj_index, val);
+		pthread_rwlock_unlock(&gui->scene_lock);
+	}
 	if (gui->slider_state->on_change)
 		gui->slider_state->on_change(gui);
 	gui->render.dirty = true;
@@ -62,8 +66,8 @@ int	mouse_motion(int x, int y, t_gui *gui)
 	if (!gui)
 		return (0);
 	mouse = vec2i(x, y);
-	gui->input.mouse_x = mouse.x;
-	gui->input.mouse_y = mouse.y;
+	gui->input.mouse.x = mouse.x;
+	gui->input.mouse.y = mouse.y;
 	if (gui->slider_state->dragging)
 	{
 		update_inline_drag(gui, mouse.x);

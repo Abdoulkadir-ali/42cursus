@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:49:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:11:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,21 @@
 
 void	editor_add_capsule(t_gui *gui)
 {
-	t_capsule	cap;
-	t_vec3		pos;
+	t_prim_params	params;
 
 	if (!gui->scene)
 		return ;
-	pos = cam_fwd_pos(gui, 3.0);
-	ft_memset(&cap, 0, sizeof(cap));
-	cap.transform.pos = pos;
-	cap.transform.scale = vec3(1, 1, 1);
-	cap.axis = vec3(0, 1, 0);
-	cap.radius = 0.5;
-	cap.half_height = 1.0;
-	cap.phys.mass = 1.0;
-	cap.phys.elasticity = 0.5;
-	cap.phys.friction = 0.5;
-	cap.temp_color = vec3(0.8, 0.4, 0.7);
-	scene_add_capsule(gui->scene, cap);
-	select_object(gui, TYPE_CAPSULE, gui->scene->capsule_count - 1);
+	ft_memset(&params, 0, sizeof(params));
+	params.pos = cam_fwd_pos(gui, 3.0);
+	params.axis = vec3(0, 1, 0);
+	params.radius = 0.5;
+	params.height = 2.0;
+	params.mat_id = scene_add_material_from_color(gui->scene,
+			vec3(255.0, 255.0, 255.0));
+	pthread_rwlock_wrlock(&gui->scene_lock);
+	scene_add_primitive(gui->scene, params, PRIM_CAPSULE);
+	select_object(gui, TYPE_CAPSULE, gui->scene->primitives.count - 1);
 	rebuild_bvh(gui);
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->render.dirty = true;
 }

@@ -21,10 +21,10 @@ void	draw_inspector_bg(t_gui *gui)
 
 	if (!gui->inspector->visible || !gui->selection->active)
 		return ;
-	w = gui->inspector->width;
-	h = gui->win.disp_h;
-	x = gui->win.disp_w - w;
-	panel = (t_panel){.x = x, .y = 0, .w = w, .h = h, .bg = COL_BG,
-		.brd = COL_BORDER, .pos = vec2i(x, 0), .size = vec2i(w, h)};
+	w = gui->inspector->box.size.x;
+	h = gui->win.disp_size.y;
+	x = gui->win.disp_size.x - w;
+	panel = (t_panel){.box = (t_gui_box){vec2i(x, 0), vec2i(w, h)},
+		.bg = COL_BG, .brd = COL_BORDER};
 	draw_panel(gui, panel);
 }

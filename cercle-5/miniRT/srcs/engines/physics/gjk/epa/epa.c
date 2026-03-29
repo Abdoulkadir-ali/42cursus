@@ -23,13 +23,15 @@ static void	epa_loop(t_gjk_shape *a, t_gjk_shape *b, t_epa_poly *poly,
 	while (++v[0] < EPA_MAX_ITER)
 	{
 		res->f = &poly->faces[closest_face(poly)];
-		pt[1] = a->support(a->data, ((t_epa_face *)res->f)->normal);
-		pt[2] = b->support(b->data, vec3_scale(((t_epa_face *)res->f)->normal, -1.0));
+		pt[1] = a->support(a, ((t_epa_face *)res->f)->normal);
+		pt[2] = b->support(b, vec3_scale(((t_epa_face *)res->f)->normal, -1.0));
 		pt[0] = vec3_sub(pt[1], pt[2]);
 		if (vec3_dot(((t_epa_face *)res->f)->normal, pt[0])
 			- ((t_epa_face *)res->f)->dist < EPA_TOL)
 			break ;
 		collect_silhouette(poly, pt[0], edges, &v[1]);
+		if (poly->n_verts >= EPA_MAX_VERTS)
+			break ;
 		v[2] = poly->n_verts++;
 		poly->pts[v[2]] = pt[0]; poly->a_pts[v[2]] = pt[1]; poly->b_pts[v[2]] = pt[2];
 		while (v[1]-- > 0 && poly->n_faces < EPA_MAX_FACES)

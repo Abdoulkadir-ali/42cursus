@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 10:08:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:13:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,15 @@
 
 /* POSIX / system */
 # include "libft.h"
+# include "maths.h"
 # include "debug.h"
-# include "constants.h"
 # include <dirent.h>
 # include <fcntl.h>
 # include <sys/stat.h>
 # include <sys/time.h>
+# include <locale.h>
 
-
+# define PARSER_BUF_SIZE 65536
 /* JSON Parser (Robust) */
 
 /* JSON / parser forward types */

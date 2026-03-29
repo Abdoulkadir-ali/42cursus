@@ -14,5 +14,5 @@
 
 void	widget_set_size(t_widget *widget, t_vec2i size)
 {
-    widget->size = size;
+    widget->box.size = size;
 }

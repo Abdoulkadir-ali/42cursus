@@ -15,31 +15,23 @@
 static void	draw_crud_btn(t_gui *gui, t_panel btn, const char *lbl)
 {
 	draw_panel(gui, btn);
-	mlx_string_put(gui->win.mlx, gui->win.win, btn.x + 6,
-		btn.y + btn.h / 2, COL_TEXT, (char *)lbl);
+	gui_draw_string(gui, (char *)lbl, btn.box.pos.x + 6, btn.box.pos.y + btn.box.size.y / 2, COL_TEXT);
 }
 
 static void	draw_crud_buttons_bg(t_gui *gui)
 {
 	t_panel	panel;
 
-	panel.x = 0;
-	panel.y = 0;
-	panel.w = SCENE_PANEL_W;
-	panel.h = CRUD_PANEL_H;
+	ft_memset(&panel, 0, sizeof(t_panel));
 	panel.bg = 0x12121C;
 	panel.brd = COL_BORDER;
-	panel.pos = vec2i(0, 0);
-	panel.size = vec2i(SCENE_PANEL_W, CRUD_PANEL_H);
+	panel.box.pos = vec2i(0, 0);
+	panel.box.size = vec2i(SCENE_PANEL_W, CRUD_PANEL_H);
 	draw_crud_btn(gui, panel, "");
-	panel.x = 0;
-	panel.y = CRUD_PANEL_H - 1;
-	panel.w = SCENE_PANEL_W;
-	panel.h = 1;
 	panel.bg = COL_BORDER;
 	panel.brd = COL_BORDER;
-	panel.pos = vec2i(0, CRUD_PANEL_H - 1);
-	panel.size = vec2i(SCENE_PANEL_W, 1);
+	panel.box.pos = vec2i(0, CRUD_PANEL_H - 1);
+	panel.box.size = vec2i(SCENE_PANEL_W, 1);
 	draw_crud_btn(gui, panel, "");
 }
 
@@ -47,23 +39,16 @@ static void	draw_crud_buttons_actions(t_gui *gui, int add_bg, int del_bg)
 {
 	t_panel	panel;
 
-	panel.x = 4;
-	panel.y = 6;
-	panel.w = CRUD_ADD_W;
-	panel.h = CRUD_BTN_H;
+	ft_memset(&panel, 0, sizeof(t_panel));
 	panel.bg = add_bg;
 	panel.brd = COL_BORDER;
-	panel.pos = vec2i(4, 6);
-	panel.size = vec2i(CRUD_ADD_W, CRUD_BTN_H);
+	panel.box.pos = vec2i(4, 6);
+	panel.box.size = vec2i(CRUD_ADD_W, CRUD_BTN_H);
 	draw_crud_btn(gui, panel, "+ Add");
-	panel.x = CRUD_ADD_W + 10;
-	panel.y = 6;
-	panel.w = SCENE_PANEL_W - CRUD_ADD_W - 16;
-	panel.h = CRUD_BTN_H;
 	panel.bg = del_bg;
 	panel.brd = COL_BORDER;
-	panel.pos = vec2i(CRUD_ADD_W + 10, 6);
-	panel.size = vec2i(SCENE_PANEL_W - CRUD_ADD_W - 16, CRUD_BTN_H);
+	panel.box.pos = vec2i(CRUD_ADD_W + 10, 6);
+	panel.box.size = vec2i(SCENE_PANEL_W - CRUD_ADD_W - 16, CRUD_BTN_H);
 	draw_crud_btn(gui, panel, "DEL");
 }
 

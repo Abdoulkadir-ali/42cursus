@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:09:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 17:06:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,16 @@ static bool	init_basic_arrays(t_scene *s)
 	s->primitives.abb_max_y = NULL;
 	s->primitives.abb_max_z = NULL;
 	s->primitives.phys_idx = NULL;
+	s->primitives.float_slab = NULL;
 	s->primitives.count = 0;
 	s->primitives.capacity = 0;
-
+	s->prim_meta = NULL;
+	s->mesh_asset_meta = NULL;
+	s->mesh_instance_meta = NULL;
+	s->mat_meta = NULL;
+	s->plane_indices = NULL;
+	s->plane_count = 0;
+	s->plane_cap = 0;
 	return (true);
 }
 
@@ -72,26 +79,37 @@ static bool	init_ext_arrays(t_scene *s)
 	s->materials = ft_calloc(s->mat_cap, sizeof(t_material));
 	s->mat_count = 0;
 
+	int	i;
+
 	s->light_cap = INIT_LIGHT_CAP;
 	s->lights = ft_calloc(s->light_cap, sizeof(t_light));
 	s->light_count = 0;
 
 	/* Triangle SoA is empty until meshes are added; pointers initialized NULL. */
-	for (int k = 0; k < 3; ++k)
+	i = 0;
+	while (i < 3)
 	{
-		s->tri_soa.vx[k] = NULL;
-		s->tri_soa.vy[k] = NULL;
-		s->tri_soa.vz[k] = NULL;
+		s->tri_soa.vx[i] = NULL;
+		s->tri_soa.vy[i] = NULL;
+		s->tri_soa.vz[i] = NULL;
+		i++;
 	}
-	for (int k = 0; k < 2; ++k)
+	i = 0;
+	while (i < 2)
 	{
-		s->tri_soa.ex[k] = NULL;
-		s->tri_soa.ey[k] = NULL;
-		s->tri_soa.ez[k] = NULL;
+		s->tri_soa.ex[i] = NULL;
+		s->tri_soa.ey[i] = NULL;
+		s->tri_soa.ez[i] = NULL;
+		i++;
 	}
-	s->tri_soa.nx = NULL; s->tri_soa.ny = NULL; s->tri_soa.nz = NULL;
-	s->tri_soa.tx = NULL; s->tri_soa.ty = NULL; s->tri_soa.tz = NULL;
+	s->tri_soa.nx = NULL;
+	s->tri_soa.ny = NULL;
+	s->tri_soa.nz = NULL;
+	s->tri_soa.tx = NULL;
+	s->tri_soa.ty = NULL;
+	s->tri_soa.tz = NULL;
 	s->tri_soa.mat_ids = NULL;
+	s->tri_soa.float_slab = NULL;
 	s->tri_soa.count = 0;
 	s->tri_soa.cap = 0;
 
@@ -106,6 +124,7 @@ static bool	init_ext_arrays(t_scene *s)
 
 /**
  * @brief Creates a new scene with default settings and empty object lists.
+ * @note Increments scene->version must be called by callers after mutations.
  * @param name The name of the scene.
  * @return t_scene* Pointer to the newly created scene, or NULL on failure.
  */

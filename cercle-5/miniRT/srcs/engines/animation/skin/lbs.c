@@ -44,34 +44,37 @@ void	update_skinned_mesh(t_skinned_mesh *sm)
 	int		i;
 	int		b;
 	t_vec3	v;
-	t_vec3	res;
 	int		bone_id;
 	int		offset;
 	int		count;
 	float	w;
+	t_mat4	blended;
 
 	if (!sm->bone_matrices || sm->vertex_count == 0 || !sm->base_vertices)
 		return ;
-	i = 0;
-	while (i < sm->vertex_count)
+	if (!sm->skeleton_dirty)
+		return ;
+	i = -1;
+	while (++i < sm->vertex_count)
 	{
 		v = sm->base_vertices[i];
 		v.w = 1.0;
-		res = vec3(0, 0, 0);
+		ft_memset(&blended, 0, sizeof(t_mat4));
 		offset = sm->weight_offsets[i];
 		count = sm->weight_counts[i];
-		b = 0;
-		while (b < count)
+		b = -1;
+		while (++b < count)
 		{
 			w = sm->weights[offset + b];
-			if (w > 0.0f)
+			if (w > 1e-6f)
 			{
 				bone_id = sm->bone_ids[offset + b];
-				res = vec3_add(res, vec3_scale(mat4_mul_vec3(sm->bone_matrices[bone_id], v), w));
+				if (bone_id < sm->bone_count)
+					blended = mat4_add(blended,
+							mat4_scale_inplace(sm->bone_matrices[bone_id], w));
 			}
-			b++;
 		}
-		sm->vertices[i] = res;
-		i++;
+		sm->vertices[i] = mat4_mul_vec3(blended, v);
 	}
+	sm->skeleton_dirty = false;
 }

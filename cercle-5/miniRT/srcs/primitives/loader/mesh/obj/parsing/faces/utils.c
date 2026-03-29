@@ -17,7 +17,11 @@ int	obj_fix_index(int idx, int count)
 	if (idx == 0)
 		return (-1);
 	if (idx < 0)
+	{
+		if (count + idx < 0)
+			return (-1);
 		return (count + idx);
+	}
 	return (idx - 1);
 }
 
@@ -47,11 +51,9 @@ void	obj_ensure_out_capacity(t_obj *obj)
 	if (!dynarray_ensure((void **)&obj->out_v, obj->out_v_count, &cap,
 			sizeof(t_vec3)))
 		return ;
-	cap = obj->out_v_cap;
 	if (!dynarray_ensure((void **)&obj->out_vt, obj->out_v_count, &cap,
 			sizeof(t_vec2)))
 		return ;
-	cap = obj->out_v_cap;
 	if (!dynarray_ensure((void **)&obj->out_vn, obj->out_v_count, &cap,
 			sizeof(t_vec3)))
 		return ;

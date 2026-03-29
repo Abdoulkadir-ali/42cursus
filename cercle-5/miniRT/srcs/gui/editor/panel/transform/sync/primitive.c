@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 22:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 22:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:56:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,5 @@ void	primitive_transform_sync(t_gui *gui)
 	else if (gui->selection->type == TYPE_BOX)
 		box_scale_sync(gui);
 	else
-		scene_invalidate(gui->scene);
+		rebuild_bvh(gui);
 }

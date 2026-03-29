@@ -14,23 +14,21 @@
 
 void	editor_add_box(t_gui *gui)
 {
-	t_box	bx;
-	t_vec3	pos;
+	t_prim_params	params;
 
 	if (!gui->scene)
 		return ;
-	pos = cam_fwd_pos(gui, 3.0);
-	ft_memset(&bx, 0, sizeof(bx));
-	bx.transform.pos = pos;
-	bx.transform.forward = vec3(1, 0, 0);
-	bx.transform.scale = vec3(1, 1, 1);
-	bx.half_extents = vec3(1.0, 1.0, 1.0);
-	bx.phys.mass = 1.0;
-	bx.phys.elasticity = 0.5;
-	bx.phys.friction = 0.5;
-	bx.temp_color = vec3(0.4, 0.7, 0.9);
-	scene_add_box(gui->scene, bx);
-	select_object(gui, TYPE_BOX, gui->scene->box_count - 1);
+	ft_memset(&params, 0, sizeof(params));
+	params.pos = cam_fwd_pos(gui, 3.0);
+	params.axis = vec3(1, 0, 0);
+	params.tangent = vec3(0, 1, 0);
+	params.extents = vec3(1.0, 1.0, 1.0);
+	params.mat_id = scene_add_material_from_color(gui->scene,
+			vec3(0.4, 0.7, 0.9));
+	pthread_rwlock_wrlock(&gui->scene_lock);
+	scene_add_primitive(gui->scene, params, PRIM_BOX);
+	select_object(gui, TYPE_BOX, gui->scene->primitives.count - 1);
 	rebuild_bvh(gui);
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->render.dirty = true;
 }

@@ -6,30 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 08:15:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:07:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:33:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-/**
- * @brief Returns the physics body component from a hit reference.
- */
-t_physics_body	*get_body_ref(t_scene *sc, t_hit_ref ref)
+int	get_phys_body(t_physics *phys, int prim_idx)
 {
-	if (ref.type == TYPE_SPHERE)
-		return (&sc->spheres[ref.index].phys);
-	if (ref.type == TYPE_TRI)
-		return (&sc->tris[ref.index].phys);
-	if (ref.type == TYPE_RECT)
-		return (&sc->rects[ref.index].phys);
-	if (ref.type == TYPE_PYRAMID)
-		return (&sc->pyramids[ref.index].phys);
-	if (ref.type == TYPE_BOX)
-		return (&sc->boxes[ref.index].phys);
-	if (ref.type == TYPE_CAPSULE)
-		return (&sc->capsules[ref.index].phys);
-	if (ref.type == TYPE_CYLINDER)
-		return (&sc->cylinders[ref.index].phys);
-	return (NULL);
+	if (!phys || prim_idx < 0)
+		return (-1);
+	return (phys->scene->primitives.phys_idx[prim_idx]);
 }

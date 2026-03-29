@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 13:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 12:48:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:47:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ static t_aabb	fatten(t_aabb a)
 {
 	t_aabb	r;
 
-	r.min[0] = a.min[0] - DBVT_FAT_MARGIN;
-	r.min[1] = a.min[1] - DBVT_FAT_MARGIN;
-	r.min[2] = a.min[2] - DBVT_FAT_MARGIN;
-	r.max[0] = a.max[0] + DBVT_FAT_MARGIN;
-	r.max[1] = a.max[1] + DBVT_FAT_MARGIN;
-	r.max[2] = a.max[2] + DBVT_FAT_MARGIN;
+	r.min.x = a.min.x - DBVT_FAT_MARGIN;
+	r.min.y = a.min.y - DBVT_FAT_MARGIN;
+	r.min.z = a.min.z - DBVT_FAT_MARGIN;
+	r.max.x = a.max.x + DBVT_FAT_MARGIN;
+	r.max.y = a.max.y + DBVT_FAT_MARGIN;
+	r.max.z = a.max.z + DBVT_FAT_MARGIN;
 	return (r);
 }
 
@@ -74,12 +74,12 @@ void	collect_leaves(t_physics *phys, t_dbvt *t)
 		{
 			t_aabb a;
 			compute_prim_aabb(p, (int)i);
-			a.min[0] = p->abb_min_x[i];
-			a.min[1] = p->abb_min_y[i];
-			a.min[2] = p->abb_min_z[i];
-			a.max[0] = p->abb_max_x[i];
-			a.max[1] = p->abb_max_y[i];
-			a.max[2] = p->abb_max_z[i];
+			a.min.x = p->abb_min_x[i];
+			a.min.y = p->abb_min_y[i];
+			a.min.z = p->abb_min_z[i];
+			a.max.x = p->abb_max_x[i];
+			a.max.y = p->abb_max_y[i];
+			a.max.z = p->abb_max_z[i];
 			push_leaf(t, (int)i, a, (t_phys_type)p->types[i]);
 		}
 		i++;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_double.c                                    :+:      :+:    :+:   */
+/*   double.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 08:46:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ double	parse_double(t_parser *p)
 	double	result;
 	int		sign;
 
+	setlocale(LC_NUMERIC, "C");
 	parser_skip_spaces(p);
 	sign = parse_sign(p);
 	result = parse_integer_part(p);
@@ -103,8 +104,11 @@ double	parse_double(t_parser *p)
 
 bool	parse_double_checked(t_parser *p, double *out)
 {
+	char	c;
+
 	parser_skip_spaces(p);
-	if (!ft_isdigit(parser_peek(p)) && parser_peek(p) != '-' && parser_peek(p) != '+')
+	c = parser_peek(p);
+	if (!ft_isdigit(c) && c != '-' && c != '+')
 		return (false);
 	*out = parse_double(p);
 	return (true);

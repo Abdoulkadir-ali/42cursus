@@ -20,8 +20,8 @@ void	widget_handle_mouse(struct s_gui *gui, int button, t_vec2i mouse)
     w = gui->widgets;
     while (w)
     {
-        if (mouse.x >= w->pos.x && mouse.x < w->pos.x + w->size.x
-            && mouse.y >= w->pos.y && mouse.y < w->pos.y + w->size.y)
+        if (mouse.x >= w->box.pos.x && mouse.x < w->box.pos.x + w->box.size.x
+            && mouse.y >= w->box.pos.y && mouse.y < w->box.pos.y + w->box.size.y)
         {
             if (w->on_click)
                 w->on_click(w, gui);

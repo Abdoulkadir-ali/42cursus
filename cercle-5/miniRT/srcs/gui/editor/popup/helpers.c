@@ -14,10 +14,10 @@
 /**
  * @brief Coordinates hit test for popup elements.
  */
-bool	phit(t_vec2i m, t_vec2i pos, t_vec2i size)
+bool	phit(t_vec2i m, t_gui_box box)
 {
-	return (m.x >= pos.x && m.x < pos.x + size.x && m.y >= pos.y
-		&& m.y < pos.y + size.y);
+	return (m.x >= box.pos.x && m.x < box.pos.x + box.size.x
+		&& m.y >= box.pos.y && m.y < box.pos.y + box.size.y);
 }
 
 /**
@@ -27,17 +27,15 @@ void	draw_modal_bg(t_gui *gui)
 {
 	t_panel	p[2];
 
-	p[0] = (t_panel){.x = 0, .y = 0, .w = gui->win.disp_w, .h = gui->win.disp_h,
-		.bg = COL_POPUP_DIM, .brd = COL_POPUP_DIM,
-		.pos = vec2i(0, 0), .size = vec2i(gui->win.disp_w, gui->win.disp_h)};
+	p[0].box = (t_gui_box){vec2i(0, 0), gui->win.disp_size};
+	p[0].bg = COL_POPUP_DIM;
+	p[0].brd = COL_POPUP_DIM;
 	draw_panel(gui, p[0]);
-	p[1] = (t_panel){.x = gui->crud->pos.x, .y = gui->crud->pos.y,
-		.w = gui->crud->w, .h = gui->crud->h,
-		.bg = COL_POPUP_BG, .brd = COL_ACCENT,
-		.pos = gui->crud->pos, .size = vec2i(gui->crud->w, gui->crud->h)};
+	p[1].box = gui->crud->box;
+	p[1].bg = COL_POPUP_BG;
+	p[1].brd = COL_ACCENT;
 	draw_panel(gui, p[1]);
 }
-
 
 /**
  * @brief Draws an interactive button within the popup modal.
@@ -47,12 +45,11 @@ void	draw_popup_btn(t_gui *gui, t_vec2i pos, t_vec2i size,
 {
 	t_panel	btn;
 
-	btn = (t_panel){.x = pos.x, .y = pos.y, .w = size.x, .h = size.y,
-		.bg = bg, .brd = COL_BORDER,
-		.pos = vec2i(pos.x, pos.y), .size = vec2i(size.x, size.y)};
+	btn.box = (t_gui_box){pos, size};
+	btn.bg = bg;
+	btn.brd = COL_BORDER;
 	draw_panel(gui, btn);
-	mlx_string_put(gui->win.mlx, gui->win.win,
-		pos.x + 8, pos.y + size.y / 2, COL_TEXT, (char *)lbl);
+	gui_draw_string(gui, (char *)lbl, pos.x + 8, pos.y + size.y / 2, COL_TEXT);
 }
 
 /**

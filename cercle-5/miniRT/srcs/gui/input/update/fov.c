@@ -29,5 +29,6 @@ void	update_fov(t_gui *gui, t_camera_controller *ctrl)
 		ctrl->camera->fov += (ctrl->target_fov - ctrl->camera->fov)
 			* ctrl->lerp_factor;
 		gui->render.dirty = true;
+		gui->render.proj_dirty = true;
 	}
 }

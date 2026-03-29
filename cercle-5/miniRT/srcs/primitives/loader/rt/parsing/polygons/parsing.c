@@ -97,10 +97,9 @@ static bool	parse_common_prim(t_rt_buf *buf, t_parser *p, t_prim_type type)
 	}
 	if (type == PRIM_PYRAMID)
 	{
-		if (!parse_vec3(p, &shape.params.extents))
-			return (false);
+		shape.params.radius = (float)parse_double(p);
 		shape.params.height = (float)parse_double(p);
-		if (shape.params.height <= 0.0f)
+		if (shape.params.radius <= 0.0f || shape.params.height <= 0.0f)
 			return (false);
 	}
 	if (!parse_vec3(p, &shape.color))

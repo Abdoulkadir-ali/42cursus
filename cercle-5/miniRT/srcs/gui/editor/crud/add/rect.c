@@ -12,42 +12,24 @@
 
 #include "editor.h"
 
-static void	init_rect(t_rect *rc, t_vec3 pos)
-{
-	t_vec3	right;
-	t_vec3	up;
-
-	right = vec3(1, 0, 0);
-	up = vec3(0, 1, 0);
-	rc->v[0] = vec3_add(vec3_add(pos, vec3_scale(right, -1)), vec3_scale(up,
-				-1));
-	rc->v[1] = vec3_add(vec3_add(pos, vec3_scale(right, 1)), vec3_scale(up,
-				-1));
-	rc->v[2] = vec3_add(vec3_add(pos, vec3_scale(right, 1)), vec3_scale(up, 1));
-	rc->v[3] = vec3_add(vec3_add(pos, vec3_scale(right, -1)), vec3_scale(up,
-				1));
-	rc->normal = vec3(0, 0, -1);
-	rc->transform.pos = pos;
-	rc->transform.scale = vec3(1, 1, 1);
-	rc->phys.mass = 1.0;
-	rc->phys.elasticity = 0.5;
-	rc->phys.friction = 0.5;
-	rc->temp_color = vec3(0.6, 0.8, 0.5);
-}
-
 void	editor_add_rect(t_gui *gui)
 {
-	t_rect	rc;
-	t_vec3	pos;
+	t_prim_params	params;
 
 	if (!gui->scene)
 		return ;
-	pos = cam_fwd_pos(gui, 3.0);
-	ft_memset(&rc, 0, sizeof(rc));
-	init_rect(&rc, pos);
-	scene_add_rect(gui->scene, rc);
-	select_object(gui, TYPE_RECT, gui->scene->rect_count - 1);
+	ft_memset(&params, 0, sizeof(params));
+	params.pos = cam_fwd_pos(gui, 3.0);
+	params.axis = vec3(0, 0, -1);
+	params.tangent = vec3(1, 0, 0);
+	params.extents = vec3(2.0, 2.0, 0);
+	params.mat_id = scene_add_material_from_color(gui->scene,
+			vec3(0.6, 0.8, 0.5));
+	pthread_rwlock_wrlock(&gui->scene_lock);
+	scene_add_primitive(gui->scene, params, PRIM_RECT);
+	select_object(gui, TYPE_RECT, gui->scene->primitives.count - 1);
 	rebuild_bvh(gui);
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->render.dirty = true;
 }
 

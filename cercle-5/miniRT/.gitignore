@@ -39,3 +39,11 @@ subjects/
 valgrind-out.txt
 *.md
 !README.md
+
+# Debug
+**/*.log
+
+
+#github
+.github
+.github/

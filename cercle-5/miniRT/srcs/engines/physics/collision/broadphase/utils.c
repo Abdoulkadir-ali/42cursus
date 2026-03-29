@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 13:04:37 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 13:04:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:47:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 bool	aabb_overlap_broad(t_aabb a, t_aabb b)
 {
-	if (a.max[0] < b.min[0] || a.min[0] > b.max[0])
+	if (a.max.x < b.min.x || a.min.x > b.max.x)
 		return (false);
-	if (a.max[1] < b.min[1] || a.min[1] > b.max[1])
+	if (a.max.y < b.min.y || a.min.y > b.max.y)
 		return (false);
-	if (a.max[2] < b.min[2] || a.min[2] > b.max[2])
+	if (a.max.z < b.min.z || a.min.z > b.max.z)
 		return (false);
 	return (true);
 }

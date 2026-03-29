@@ -43,8 +43,7 @@ void		anim_advance_time(t_skinned_mesh *sm, t_animation *clip, float dt);
 
 t_vec3		anim_interpolate(t_anim_sampler *s, int frame, float t,
 				t_anim_path path);
-t_vec3		vec3_lerp_clamped(t_vec3 a, t_vec3 b, float t);
-t_vec3		quat_slerp(t_vec3 a, t_vec3 b, float t);
+t_vec3		vec3_lerp_clamped(t_vec3 a, t_vec3 b, float t);t_vec3	quat_nlerp(t_vec3 a, t_vec3 b, float t);t_vec3		quat_slerp(t_vec3 a, t_vec3 b, float t);
 t_vec3		vec3_step(t_vec3 a, t_vec3 b, float t);
 t_mat4		quat_to_mat4(t_vec3 q);
 

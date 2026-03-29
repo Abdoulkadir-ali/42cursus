@@ -6,13 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 18:08:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-extern void	push_face(t_epa_poly *p, int i0, int i1, int i2);
 
 static void	add_edge(t_edge *edges, int *n, int a, int b)
 {

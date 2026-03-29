@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "raytracing.h"
-#include "physics.h"
 
 static double	intersect_sph(const t_ray *r, t_vec3 c, double rad_sq)
 {

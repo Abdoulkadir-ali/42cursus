@@ -37,7 +37,7 @@ static int	fbx_count_tris(int *raw, int raw_c)
 	return (tc);
 }
 
-static void	fbx_init_build(t_fbx_build *b, t_mesh *m, t_fbx_flat_args *p)
+static void	fbx_init_build(t_fbx_build *b, t_mesh_asset *m, t_fbx_flat_args *p)
 {
 	ft_memset(b, 0, sizeof(*b));
 	b->m = m;
@@ -74,7 +74,7 @@ static void	fbx_set_usage(t_fbx_build *b)
 		b->use_v_u = 1;
 }
 
-bool	fbx_setup_build(t_fbx_build *b, t_mesh *m, t_fbx_flat_args *p)
+bool	fbx_setup_build(t_fbx_build *b, t_mesh_asset *m, t_fbx_flat_args *p)
 {
 	fbx_init_build(b, m, p);
 	if (b->tc <= 0)

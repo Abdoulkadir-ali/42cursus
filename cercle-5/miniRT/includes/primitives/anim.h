@@ -60,6 +60,7 @@ typedef struct s_animation
 	t_anim_sampler	*samplers;
 	int				sampler_count;
 	float			max_time;
+	float			*anim_pool;
 }	t_animation;
 
 typedef struct s_bone_trs
@@ -96,6 +97,7 @@ typedef struct s_skinned_mesh
 	int				anim_clip_count;
 	int				current_anim;
 	double			anim_time;
+	bool			skeleton_dirty;
 	int				mat_id;
 	t_aabb			bbox;
 }	t_skinned_mesh;

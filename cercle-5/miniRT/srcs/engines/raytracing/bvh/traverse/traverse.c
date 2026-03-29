@@ -5,6 +5,8 @@ void push_occ_children(t_occ *v, int node_idx)
 	int l, r;
 	double tl, tr, tlm, trm;
 
+	if (*v->ptr + 2 >= BVH_STACK_MAX)
+		return ;
 	l = v->bvh->nodes[node_idx].left_or_first;
 	r = l + 1;
 	tl = 0.0; tr = 0.0;
@@ -27,4 +29,50 @@ bool process_leaf_occluded(const t_bvh *bvh, int node_idx, const t_ray *ray, dou
 		i++;
 	}
 	return (false);
+}
+
+void	push_children(t_bvh_stack *s, int node_idx)
+{
+	int		l;
+	int		r;
+	double	tl;
+	double	tr;
+	double	tlm;
+	double	trm;
+	bool	hl;
+	bool	hr;
+
+	if (s->ptr + 2 >= BVH_STACK_MAX)
+		return ;
+	l = s->bvh->nodes[node_idx].left_or_first;
+	r = l + 1;
+	hl = aabb_intersect_fast(&s->bvh->nodes[l].bbox, s->ray, &tl, &tlm);
+	hr = aabb_intersect_fast(&s->bvh->nodes[r].bbox, s->ray, &tr, &trm);
+	if (hl && hr)
+	{
+		if (tl <= tr)
+		{
+			s->stack[s->ptr] = r;
+			s->stack_tmin[s->ptr++] = tr;
+			s->stack[s->ptr] = l;
+			s->stack_tmin[s->ptr++] = tl;
+		}
+		else
+		{
+			s->stack[s->ptr] = l;
+			s->stack_tmin[s->ptr++] = tl;
+			s->stack[s->ptr] = r;
+			s->stack_tmin[s->ptr++] = tr;
+		}
+	}
+	else if (hl)
+	{
+		s->stack[s->ptr] = l;
+		s->stack_tmin[s->ptr++] = tl;
+	}
+	else if (hr)
+	{
+		s->stack[s->ptr] = r;
+		s->stack_tmin[s->ptr++] = tr;
+	}
 }

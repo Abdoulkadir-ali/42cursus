@@ -24,13 +24,19 @@ t_vec3	texel_at(t_texture *tex, int x, int y)
 	unsigned char	*px;
 	unsigned int	cl;
 
-	x = x % tex->width;
-	if (x < 0)
-		x += tex->width;
-	y = y % tex->height;
-	if (y < 0)
-		y += tex->height;
-	px = tex->addr + (y * tex->len + x * (tex->bpp / BITS_PER_BYTE));
+	if (tex->is_pow2)
+	{
+		x = x & (tex->width - 1);
+		y = y & (tex->height - 1);
+	}
+	else
+	{
+		x = x % tex->width;
+		if (x < 0) x += tex->width;
+		y = y % tex->height;
+		if (y < 0) y += tex->height;
+	}
+	px = tex->addr + (y * tex->len + x * tex->bytes_per_pixel);
 	cl = *(unsigned int *)px;
 	return (vec3((cl >> 16) & 0xFF, (cl >> 8) & 0xFF, cl & 0xFF));
 }

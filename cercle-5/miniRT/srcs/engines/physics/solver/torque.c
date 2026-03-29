@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 11:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:21:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
  * Torque:    tau = cross(r, impulse_vec) * inv_inertia.
  * Only effective on compound bodies with meaningful inertia.
  */
-void	apply_torque(struct s_scene *s, t_contact *c, int body_idx, double impulse)
+void	apply_torque(t_physics *phys, t_contact *c, int body_idx, double impulse)
 {
 	t_vec3				r;
 	t_vec3				j_vec;
@@ -27,8 +27,8 @@ void	apply_torque(struct s_scene *s, t_contact *c, int body_idx, double impulse)
 	t_primitive_array	*p;
 	int					prim_idx;
 
-	soa = s->physics->soa;
-	p = &s->primitives;
+	soa = phys->soa;
+	p = &phys->scene->primitives;
 	if (body_idx < 0 || soa->is_static[body_idx])
 		return ;
 	prim_idx = soa->prim_idx[body_idx];

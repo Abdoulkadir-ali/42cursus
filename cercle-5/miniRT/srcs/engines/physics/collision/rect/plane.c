@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 09:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 13:05:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:58:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-int	rect_vs_plane(t_physics *phys, int idx, t_contact *c, int count, int max)
+int	rect_gather_plane_contacts(t_physics *phys, int idx, t_contact *c,
+		int count, int max)
 {
 	t_rect	rc;
 	t_plane	pl;

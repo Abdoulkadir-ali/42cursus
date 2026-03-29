@@ -16,34 +16,39 @@
  * @brief Resets the parser by reopening the file.
  * Avoids manual lseek by leveraging OS file pointer resets.
  */
-static bool	reset_parser(t_parser *p, const char *path)
-{
-	close(p->fd);
-	p->fd = open(path, O_RDONLY);
-	if (p->fd < 0)
-		return (false);
-	parser_init(p, p->fd);
-	return (true);
-}
-
 /**
- * @brief Grid extraction without manual seeking.
- * First pass reads dims, reopens, second pass fills grid.
+ * @brief Performs a high-performance single-pass FDF extraction.
+ * Dynamically grows the grid as lines are parsed to eliminate redundant I/O.
  */
 bool	fdf_parse_grid_single_pass(t_fdf *f, t_parser *p)
 {
-	if (fdf_parse_dims(f, p) == false)
-		return (false);
-	if (reset_parser(p, f->path) == false)
-		return (false);
-	f->grid = malloc(sizeof(double) * f->width * f->height);
-	if (f->grid == NULL)
-		return (false);
-	if (fdf_fill_grid(f, p) == false)
+	char	l[PARSER_BUF_SIZE + 1];
+	int		cap;
+	int		y;
+	int		cols;
+	double	*tmp;
+
+	cap = 0;
+	y = 0;
+	while (parser_get_line(p, l, PARSER_BUF_SIZE + 1))
 	{
-		free(f->grid);
-		f->grid = NULL;
-		return (false);
+		cols = get_cols(l);
+		if (cols == 0)
+			continue ;
+		if (f->width == 0)
+			f->width = cols;
+		else if (f->width != cols)
+			return (false);
+		if (y >= cap)
+		{
+			cap = (cap == 0) ? 64 : cap * 2;
+			tmp = realloc(f->grid, (size_t)cap * f->width * sizeof(double));
+			if (!tmp)
+				return (false);
+			f->grid = tmp;
+		}
+		p_row(f, l, y++);
 	}
-	return (true);
+	f->height = y;
+	return (f->width > 0 && f->height > 0);
 }

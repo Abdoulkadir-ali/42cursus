@@ -46,7 +46,10 @@ t_vec3	calc_light(t_shading *sha, const t_rt_engine *rt, t_light light)
 	if (s < 1e-8)
 		s = 0.0;
 	else
-		s = pow(s, sha->mat->specular * 100.0); /* Shininess fallback */
+	{
+		double sh = sha->mat->specular * 100.0;
+		s = exp(sh * log(fmax(s, 1e-7)));
+	}
 	return (vec3_add(pixel_color(sha->albedo, light.rgb, light.brightness
 				* c.ndotl), vec3_scale(light.rgb, light.brightness
 				* sha->mat->specular * s)));

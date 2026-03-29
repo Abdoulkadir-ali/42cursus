@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:10:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mesh.h"
 
-static bool	alloc_vertex_data(t_mesh *mesh, t_mesh_init init)
+static bool	alloc_vertex_data(t_mesh_asset *mesh, t_mesh_init init)
 {
     if (init.v_count <= 0)
         return (true);
@@ -34,7 +34,7 @@ static bool	alloc_vertex_data(t_mesh *mesh, t_mesh_init init)
     return (true);
 }
 
-static bool	alloc_index_data(t_mesh *mesh, t_mesh_init init)
+static bool	alloc_index_data(t_mesh_asset *mesh, t_mesh_init init)
 {
     if (init.i_count <= 0)
         return (true);
@@ -44,14 +44,14 @@ static bool	alloc_index_data(t_mesh *mesh, t_mesh_init init)
     return (true);
 }
 
-static void	mesh_base_init(t_mesh *mesh)
+static void	mesh_base_init(t_mesh_asset *mesh)
 {
-    ft_memset(mesh, 0, sizeof(t_mesh));
+    ft_memset(mesh, 0, sizeof(t_mesh_asset));
     mesh->transform.scale = vec3(1, 1, 1);
     mesh->group_id = -1;
 }
 
-bool	mesh_init(t_mesh *mesh, t_mesh_init init)
+bool	mesh_init(t_mesh_asset *mesh, t_mesh_init init)
 {
     mesh_base_init(mesh);
     mesh->vertex_count = init.v_count;
@@ -63,7 +63,7 @@ bool	mesh_init(t_mesh *mesh, t_mesh_init init)
     return (true);
 }
 
-void	init_mesh(t_mesh *mesh, const char *path)
+void	init_mesh(t_mesh_asset *mesh, const char *path)
 {
     mesh_base_init(mesh);
     if (path)
@@ -71,7 +71,7 @@ void	init_mesh(t_mesh *mesh, const char *path)
     mesh->bbox = aabb_create_empty();
 }
 
-void	mesh_free(t_mesh *mesh)
+void	mesh_free(t_mesh_asset *mesh)
 {
     if (!mesh)
         return ;
@@ -97,5 +97,5 @@ void	mesh_free(t_mesh *mesh)
         free(mesh->bone_matrices);
     if (mesh->name)
         free(mesh->name);
-    ft_memset(mesh, 0, sizeof(t_mesh));
+    ft_memset(mesh, 0, sizeof(t_mesh_asset));
 }

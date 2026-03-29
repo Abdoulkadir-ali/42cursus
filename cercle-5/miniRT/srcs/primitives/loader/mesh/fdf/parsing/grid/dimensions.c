@@ -15,7 +15,7 @@
 /**
  * @brief Count numerical columns in a single FDF line.
  */
-static int	get_cols(char *line)
+int	get_cols(char *line)
 {
 	int		c;
 	char	*p;

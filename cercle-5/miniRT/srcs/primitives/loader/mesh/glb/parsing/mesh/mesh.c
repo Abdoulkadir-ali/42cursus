@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:59:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static bool	get_ids(t_json_value *prim, int ids[6])
 	return (true);
 }
 
-static bool	alloc_mesh(t_mesh *mesh, t_json_value *json, int ids[6])
+static bool	alloc_mesh(t_mesh_asset *mesh, t_json_value *json, int ids[6])
 {
 	t_glb_accessor	acc;
 
@@ -63,7 +63,7 @@ static bool	alloc_mesh(t_mesh *mesh, t_json_value *json, int ids[6])
 }
 
 static void	fill_indices(t_json_value *json, char *bin, t_glb_accessor *acc,
-	t_mesh *mesh)
+	t_mesh_asset *mesh)
 {
 	t_glb_buffer_view	bv;
 
@@ -73,7 +73,7 @@ static void	fill_indices(t_json_value *json, char *bin, t_glb_accessor *acc,
 	glb_extract_data(bin, acc, &bv, mesh->indices);
 }
 
-bool	glb_load_primitive(t_mesh *mesh, t_json_value *json, char *bin,
+bool	glb_load_primitive(t_mesh_asset *mesh, t_json_value *json, char *bin,
 		int mesh_idx, int prim_idx, int mat_id)
 {
 	t_json_value	*prim;
@@ -100,7 +100,7 @@ bool	glb_load_primitive(t_mesh *mesh, t_json_value *json, char *bin,
 	return (true);
 }
 
-void	glb_compute_mesh_bbox(t_mesh *mesh)
+void	glb_compute_mesh_bbox(t_mesh_asset *mesh)
 {
 	size_t	i;
 

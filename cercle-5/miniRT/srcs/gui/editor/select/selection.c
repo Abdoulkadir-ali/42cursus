@@ -5,42 +5,35 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 21:40:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/29 09:28:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
-#include "helpers/geometry.h"
-
-void	rebuild_bvh(t_gui *gui)
-{
-	if (gui->scene->bvh)
-		bvh_destroy(gui->scene->bvh);
-	gui->scene->bvh = bvh_create(gui->scene);
-}
+#include "unpacker.h"
 
 /**
- * @brief DOD-compliant object selection. 
- * Indices now map directly to the unified SoA storage.
+ * @brief Unified DOD object selection.
  */
 void	select_object(t_gui *gui, t_type type, int index)
 {
 	gui->selection->type = type;
 	gui->selection->index = index;
 	gui->selection->active = true;
-	/* In unified DOD, meshes might still use groups, 
-	** but primitives use direct SoA query */
 	if (type == TYPE_MESH)
+		ft_memset(&gui->selection->bbox, 0, sizeof(t_aabb));
+	else if (type == TYPE_LIGHT)
 	{
-		/* Mesh implementation remains AoS-compatible as intended */
-		gui->selection->bbox = gui->scene->meshes[index].bbox;
+		t_vec3 pos = gui->scene->lights[index].transform.pos;
+		gui->selection->bbox.min = vec3_sub(pos, vec3(0.5, 0.5, 0.5));
+		gui->selection->bbox.max = vec3_add(pos, vec3(0.5, 0.5, 0.5));
 	}
+	else if (type == TYPE_TRI)
+		gui->selection->bbox = get_tri_aabb_soa(&gui->scene->tri_soa, index);
 	else
-	{
 		gui->selection->bbox = get_primitive_aabb_soa(&gui->scene->primitives,
 				index);
-	}
 	gui->inspector->visible = true;
 	if (type == TYPE_MESH)
 		gui->inspector->tab = TAB_INFO;
@@ -52,25 +45,16 @@ void	select_object(t_gui *gui, t_type type, int index)
 		(int)type, index);
 }
 
-void	clear_selection(t_gui *gui)
-{
-	gui->selection->active = false;
-	gui->selection->index = -1;
-	gui->selection->type = TYPE_NONE;
-	gui->inspector->visible = false;
-}
-
-/**
- * @brief Extracts material ID from selected object (DOD or AoS mesh).
- */
 static int	mat_id_of_selection(t_gui *gui)
 {
 	t_selection	*sel;
 
 	sel = gui->selection;
+	if (!gui->scene || sel->index < 0)
+		return (-1);
 	if (sel->type == TYPE_MESH)
-		return (gui->scene->meshes[sel->index].mat_id);
-	if (sel->index >= 0 && (size_t)sel->index < gui->scene->primitives.count)
+		return (-1); /* To be implemented when mesh groups are restored */
+	if ((size_t)sel->index < gui->scene->primitives.count)
 		return (gui->scene->primitives.mat_ids[sel->index]);
 	return (-1);
 }
@@ -82,24 +66,33 @@ t_material	*get_selected_material(t_gui *gui)
 	if (!gui->selection->active || !gui->scene)
 		return (NULL);
 	mat_id = mat_id_of_selection(gui);
-	if (mat_id < 0 || mat_id >= (int)gui->scene->mat_count)
+	if (mat_id < 0 || (size_t)mat_id >= gui->scene->mat_count)
 		return (NULL);
 	return (&gui->scene->materials[mat_id]);
 }
 
 void	pick_at_mouse(t_gui *gui, t_vec2i mouse)
 {
+	(void)mouse;
 	t_ray	ray;
 	t_hit	hit;
 
-	if (!gui->scene || !gui->scene->bvh || !gui->cam_ctrl.camera)
+	if (!gui->scene || !gui->rt.bvh || !gui->cam_ctrl.camera)
 		return ;
-	/* Compute pick ray logic (assumed correct from baseline) */
+	/* Ray generation should use the actual viewport logic; usually it's handled 
+	** by the engine, but here we just use cam forward for demo pick */
 	ray_init(&ray, gui->cam_ctrl.transform.pos, gui->cam_ctrl.transform.forward);
 	ft_memset(&hit, 0, sizeof(t_hit));
-	if (bvh_intersect(gui->scene->bvh, &ray, &hit))
+	if (bvh_intersect(gui->rt.bvh, &ray, &hit))
 		select_object(gui, (t_type)hit.ref.type, hit.ref.index);
 	else
 		clear_selection(gui);
 	gui->render.dirty = true;
+}
+
+t_physics_body	*get_selected_physics(t_gui *gui)
+{
+	(void)gui;
+	// TODO: Implement properly
+	return (NULL);
 }

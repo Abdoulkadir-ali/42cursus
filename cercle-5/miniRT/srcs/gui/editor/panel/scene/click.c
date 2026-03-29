@@ -25,7 +25,7 @@ bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
 
 	if (!gui->scene_panel->visible || !gui->scene)
 		return (false);
-	if (mouse.x < 0 || mouse.x >= gui->scene_panel->width)
+	if (mouse.x < 0 || mouse.x >= gui->scene_panel->box.size.x)
 		return (false);
 	if (mouse.y >= 0 && mouse.y < CRUD_PANEL_H)
 		return (crud_handle_click(gui, mouse));

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 12:44:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:54:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,15 @@ typedef struct s_fdf
 	int			width;
 	int			height;
 	double		*grid;
-	t_mesh		mesh;
+	t_mesh_asset	mesh;
 	const char	*path;
 }				t_fdf;
 
 /* --- PUBLIC API --- */
 bool			fdf_load(t_scene *scene, const char *path);
 bool			fdf_load_to_asset(t_fdf *f, const char *path);
+void			init_metadata_fdf(t_mesh_asset_metadata *meta, t_fdf *f,
+					const char *path);
 
 /* --- MATERIAL PARSING & INJECTION --- */
 /* FDF loader generates default wireframe materials as t_material structs.
@@ -45,7 +47,9 @@ bool			parse_fdf(t_scene *scene, t_parser *p);
 /* --- INTERNALS: grid parsing --- */
 bool			fdf_parse_grid_single_pass(t_fdf *f, t_parser *p);
 bool			fdf_parse_dims(t_fdf *f, t_parser *p);
+int				get_cols(char *line);
 bool			fdf_fill_grid(t_fdf *f, t_parser *p);
+void			p_row(t_fdf *f, char *l, int y);
 
 /* --- INTERNALS: mesh generation --- */
 bool			fdf_triangulate(t_fdf *f);

@@ -22,12 +22,10 @@ void	draw_material_panel_text(t_gui *gui, int x)
 	mat = get_selected_material(gui);
 	if (!mat)
 	{
-		mlx_string_put(gui->win.mlx, gui->win.win, x + 8, 90, COL_TEXT,
-			"No material");
+		gui_draw_string(gui, "No material", x + 8, 90, COL_TEXT);
 		return ;
 	}
-	mlx_string_put(gui->win.mlx, gui->win.win, x + 8, 88, COL_HOVER,
-		"MATERIAL");
+	gui_draw_string(gui, "MATERIAL", x + 8, 88, COL_HOVER);
 	build_mat_sliders(mat, sl, &count);
 	y = 104;
 	i = 0;

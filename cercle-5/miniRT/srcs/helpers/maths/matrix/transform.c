@@ -40,25 +40,33 @@ t_mat4	mat4_scaling(t_vec3 v)
 
 t_mat4	mat4_rotation(t_rotator r)
 {
-	t_mat4 m;
-	t_vec3 ang;
-	t_vec3 c;
-	t_vec3 s;
+	t_mat4	m;
+	t_vec3	ang;
+	double	cx;
+	double	sx;
+	double	cy;
+	double	sy;
+	double	cz;
+	double	sz;
 
 	m = mat4_identity();
 	ang = vec3(r.pitch, r.yaw, r.roll);
 	ang = vec3_scale(ang, M_PI / 180.0);
-	c = vec3(cos(ang.x), cos(ang.y), cos(ang.z));
-	s = vec3(sin(ang.x), sin(ang.y), sin(ang.z));
-	m.m[0][0] = c.y * c.z;
-	m.m[0][1] = c.y * s.z;
-	m.m[0][2] = -s.y;
-	m.m[1][0] = s.x * s.y * c.z - c.x * s.z;
-	m.m[1][1] = s.x * s.y * s.z + c.x * c.z;
-	m.m[1][2] = s.x * c.y;
-	m.m[2][0] = c.x * s.y * c.z + s.x * s.z;
-	m.m[2][1] = c.x * s.y * s.z - s.x * c.z;
-	m.m[2][2] = c.x * c.y;
+	sx = sin(ang.x);
+	cx = cos(ang.x);
+	sy = sin(ang.y);
+	cy = cos(ang.y);
+	sz = sin(ang.z);
+	cz = cos(ang.z);
+	m.m[0][0] = cy * cz;
+	m.m[0][1] = cy * sz;
+	m.m[0][2] = -sy;
+	m.m[1][0] = sx * sy * cz - cx * sz;
+	m.m[1][1] = sx * sy * sz + cx * cz;
+	m.m[1][2] = sx * cy;
+	m.m[2][0] = cx * sy * cz + sx * sz;
+	m.m[2][1] = cx * sy * sz - sx * cz;
+	m.m[2][2] = cx * cy;
 	return (m);
 }
 
@@ -91,11 +99,11 @@ t_mat4	mat4_inverse_transform(t_transform t)
 			inv_r.m[i][j] = r.m[j][i];
 	}
 	inv_t = mat4_translation(vec3_scale(t.pos, -1.0));
-	if (fabs(t.scale.x) < 1e-6)
+	if (fabs(t.scale.x) < EPSILON)
 		t.scale.x = 1.0;
-	if (fabs(t.scale.y) < 1e-6)
+	if (fabs(t.scale.y) < EPSILON)
 		t.scale.y = 1.0;
-	if (fabs(t.scale.z) < 1e-6)
+	if (fabs(t.scale.z) < EPSILON)
 		t.scale.z = 1.0;
 	inv_s = mat4_scaling(vec3(1.0 / t.scale.x, 1.0 / t.scale.y, 1.0
 				/ t.scale.z));

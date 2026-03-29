@@ -61,7 +61,9 @@ static bool	handle_special_key(int keycode, t_gui *gui)
     }
     if (keycode == XK_r)
     {
+        pthread_rwlock_wrlock(&gui->scene_lock);
         scene_reset(gui);
+        pthread_rwlock_unlock(&gui->scene_lock);
         return (true);
     }
     return (false);

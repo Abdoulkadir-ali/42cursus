@@ -21,6 +21,6 @@ t_widget	*widget_create_type_pos(t_widget_type type, t_vec2i pos)
         return (NULL);
     memset(widget, 0, sizeof(t_widget));
     widget->type = type;
-    widget->pos = pos;
+    widget->box.pos = pos;
     return (widget);
 }

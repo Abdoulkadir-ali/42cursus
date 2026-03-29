@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:40:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 17:22:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,15 @@ bool	physics_panel_handle_click(t_gui *gui, t_vec2i mouse,
 
     if (!phys)
         return (false);
-    x = gui->win.disp_w - gui->inspector->width;
+    x = gui->win.disp_size.x - gui->inspector->box.size.x;
     y = 140;
-    sl[0] = (t_islider){"Mass (kg)", SL_MASS_MIN, SL_MASS_MAX, &phys->mass};
-    sl[1] = (t_islider){"Elasticity", SL_ELAST_MIN, SL_ELAST_MAX,
-        &phys->elasticity};
-    sl[2] = (t_islider){"Friction", SL_FRIC_MIN, SL_FRIC_MAX, &phys->friction};
+	i = 0;
+	while (g_props_physics[i])
+	{
+		sl[i] = (t_islider){g_props_physics[i]->name, g_props_physics[i]->min,
+			g_props_physics[i]->max, NULL, g_props_physics[i]};
+		i++;
+	}
     i = 0;
 	while (i < 3)
 	{

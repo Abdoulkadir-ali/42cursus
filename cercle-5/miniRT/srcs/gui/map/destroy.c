@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:47:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,6 @@ void	map_manager_destroy(t_gui *gui)
 		}
 		if (entry->scene)
 		{
-			if (entry->scene->bvh)
-				bvh_destroy(entry->scene->bvh);
-			phys_destroy_pool(entry->scene);
 			destroy_scene(entry->scene);
 		}
 		free(entry->path);

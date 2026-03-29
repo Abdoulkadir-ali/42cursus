@@ -15,21 +15,11 @@
 t_mat4	mat4_identity(void)
 {
 	t_mat4	res;
-	int		i;
-	int		j;
 
-	i = 0;
-	while (i < 4)
-	{
-		j = 0;
-		while (j < 4)
-		{
-			res.m[i][j] = 0.0;
-			if (i == j)
-				res.m[i][j] = 1.0;
-			j++;
-		}
-		i++;
-	}
+	ft_memset(&res, 0, sizeof(t_mat4));
+	res.m[0][0] = 1.0;
+	res.m[1][1] = 1.0;
+	res.m[2][2] = 1.0;
+	res.m[3][3] = 1.0;
 	return (res);
 }

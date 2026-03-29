@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:40:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 17:22:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ bool	light_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	int			y;
 	int			x;
 
-	if (!gui->scene || gui->selection->index >= gui->scene->light_count)
+	if (!gui->scene || (size_t)gui->selection->index >= gui->scene->light_count)
 		return (false);
 	lt = &gui->scene->lights[gui->selection->index];
-	x = gui->win.disp_w - gui->inspector->width;
+	x = gui->win.disp_size.x - gui->inspector->box.size.x;
 	build_light_sliders(lt, sl, &count);
 	y = 116;
 	i = 0;
@@ -48,15 +48,14 @@ bool	ambient_panel_handle_click(t_gui *gui, t_vec2i mouse)
 
     if (!gui->scene)
         return (false);
-    x = gui->win.disp_w - gui->inspector->width;
-    sl[0] = (t_islider){"Intensity", SL_AMB_MIN, SL_AMB_MAX,
-        &gui->scene->ambient.brightness};
-    sl[1] = (t_islider){"Color R", SL_COL_MIN, SL_COL_MAX,
-        &gui->scene->ambient.rgb.x};
-    sl[2] = (t_islider){"Color G", SL_COL_MIN, SL_COL_MAX,
-        &gui->scene->ambient.rgb.y};
-    sl[3] = (t_islider){"Color B", SL_COL_MIN, SL_COL_MAX,
-        &gui->scene->ambient.rgb.z};
+    x = gui->win.disp_size.x - gui->inspector->box.size.x;
+	i = 0;
+	while (g_props_ambient[i])
+	{
+		sl[i] = (t_islider){g_props_ambient[i]->name, g_props_ambient[i]->min,
+			g_props_ambient[i]->max, NULL, g_props_ambient[i]};
+		i++;
+	}
     y = 104;
     i = 0;
     while (i < 4)

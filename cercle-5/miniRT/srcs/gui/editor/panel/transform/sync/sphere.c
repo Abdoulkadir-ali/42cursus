@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 22:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:56:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,5 @@ void	sphere_scale_sync(t_gui *gui)
 	/* In unified DOD, radii is stored in single precision float array */
 	p->radii[idx] = (float)tr->scale.x;
 	/* Invalidate Scene to force BVH refit/rebuild */
-	scene_invalidate(gui->scene);
+	rebuild_bvh(gui);
 }

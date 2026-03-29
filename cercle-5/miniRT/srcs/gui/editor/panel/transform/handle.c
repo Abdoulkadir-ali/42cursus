@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 17:11:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	if (!tr)
 		return (false);
 	build_tr_sliders(tr, gui->selection->type, sl, &n[0]);
-	n[1] = gui->win.disp_w - gui->inspector->width;
+	n[1] = gui->win.disp_size.x - gui->inspector->box.size.x;
 	n[2] = TR_PANEL_START_Y;
 	n[3] = 0;
 	while (n[3] < n[0])

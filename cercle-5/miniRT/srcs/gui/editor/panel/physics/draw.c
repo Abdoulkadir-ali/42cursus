@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:40:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:55:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,11 @@ void	draw_physics_panel(t_gui *gui, t_physics_body *phys, int x)
 
     if (!phys)
     {
-        mlx_string_put(gui->win.mlx, gui->win.win, x + 8, 90, COL_TEXT,
-            "No physics body");
+        gui_draw_string(gui, "No physics body", x + 8, 90, COL_TEXT);
         return ;
     }
-    mlx_string_put(gui->win.mlx, gui->win.win, x + 8, 88, COL_HOVER, "PHYSICS");
+    gui_draw_string(gui, "PHYSICS", x + 8, 88, COL_HOVER);
     y = 104;
-    draw_vec3_label(gui, &(t_vec3_label_arg){x, y, "Velocity (m/s)",
-        phys->velocity});
-    y += 32;
-    draw_vec3_label(gui, &(t_vec3_label_arg){x, y, "Angular vel",
-        phys->angular_velocity});
-    y += 36;
     build_phys_sliders(phys, sl);
     i = 0;
 	while (i < 3)
@@ -40,5 +33,5 @@ void	draw_physics_panel(t_gui *gui, t_physics_body *phys, int x)
 		i++;
 	}
 
-    draw_bool_label(gui, &(t_bool_label_arg){x, y, "Static", phys->is_static});
+    draw_bool_label(gui, &(t_bool_label_arg){vec2i(x, y), "Static", phys->is_static});
 }

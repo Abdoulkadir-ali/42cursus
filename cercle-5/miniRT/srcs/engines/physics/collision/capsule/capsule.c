@@ -22,7 +22,7 @@ int	query_capsule(t_physics *phys, int idx, t_contact *c, int count, int max)
 	if (s->primitives.is_static[idx])
 		return (count);
 	ca = get_primitive_aabb_soa(&s->primitives, idx);
-	sa = (t_gjk_shape){s, idx};
-	count = prim_plane_contacts(phys, idx, &sa, c, count, max);
+	init_gjk_shape(&sa, phys, idx);
+	count = prim_plane_contacts(phys, idx, c, count, max);
 	return (prim_others_contacts(phys, idx, ca, &sa, c, count, max));
 }

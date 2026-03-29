@@ -59,7 +59,7 @@ static void	*p_read(int fd, t_fbx_array *a)
 	uLongf	ulen;
 	void	*u_data;
 
-	ulen = (uLongf)a->arr_len * a->actual_sz;
+	ulen = (uLongf)((size_t)a->arr_len * (size_t)a->actual_sz);
 	u_data = malloc(ulen + 1);
 	if (u_data == NULL)
 		return (NULL);

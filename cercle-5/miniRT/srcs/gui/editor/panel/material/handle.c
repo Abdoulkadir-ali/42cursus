@@ -6,38 +6,21 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 16:50:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 17:11:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+
 static void	sync_group_materials(t_gui *gui)
 {
-	t_selection		*sel;
-	t_mesh_group	*g;
-	t_material		*lead;
-	int				si;
-	int				mat_id;
-
-	sel = gui->selection;
-	if (!sel->active || sel->type != TYPE_MESH)
-		return ;
-	g = &gui->scene->groups[sel->index];
-	lead = &gui->scene->materials[gui->scene->meshes[g->start].mat_id];
-	si = 1;
-	while (si < g->sub_count)
-	{
-		mat_id = gui->scene->meshes[g->start + si].mat_id;
-		if (mat_id >= 0 && mat_id < gui->scene->mat_count)
-			gui->scene->materials[mat_id] = *lead;
-		si++;
-	}
+	(void)gui;
 }
 
 static void	material_sync_invalidate(t_gui *gui)
 {
 	sync_group_materials(gui);
-	scene_invalidate(gui->scene);
+	rebuild_bvh(gui);
 }
 
 bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
@@ -52,7 +35,7 @@ bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	mat = get_selected_material(gui);
 	if (!mat)
 		return (false);
-	x = gui->win.disp_w - gui->inspector->width;
+	x = gui->win.disp_size.x - gui->inspector->box.size.x;
 	build_mat_sliders(mat, sl, &count);
 	y = 104;
 	i = -1;

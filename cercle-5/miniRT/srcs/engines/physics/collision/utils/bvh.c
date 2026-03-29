@@ -6,16 +6,9 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 12:47:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 12:51:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:25:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-void	build_static_bvh(t_physics *phys)
-{
-	t_scene	*s;
-
-	s = phys->scene;
-	(void)s;
-}

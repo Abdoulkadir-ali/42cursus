@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:28:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 12:46:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:16:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "fbx.h"
 # include "glb.h"
 # include "obj.h"
+# include "utils.h"
 
 typedef struct s_rt_shape
 {
@@ -54,6 +55,8 @@ typedef struct s_rt_buf
 bool				rt_buf_init(t_rt_buf *buf);
 void				rt_buf_free(t_rt_buf *buf);
 bool				rt_buf_inject(t_scene *scene, t_rt_buf *buf);
+void				init_metadata_shape(t_primitive_metadata *meta,
+						t_rt_shape *shape);
 bool				rt_load(t_scene *scene, const char *path);
 bool				dispatch_scan(t_scene *scene, t_rt_buf *buf, t_parser *p,
 						char *id);
@@ -75,11 +78,15 @@ bool				parse_capsule(t_rt_buf *buf, t_parser *p);
 /* Scene Injection API */
 bool				scene_add_primitive(t_scene *scene, t_prim_params params,
 						t_prim_type type);
+bool				scene_add_primitive_with_time(t_scene *scene,
+						t_prim_params params, t_prim_type type, time_t t);
 bool				scene_add_tri(t_scene *scene, t_vec3 v[3], int mat_id);
 void				scene_apply_ambient(t_scene *scene, double brightness,
 						t_vec3 rgb);
 void				scene_apply_camera(t_scene *scene, t_transform transform,
 						double fov);
 bool				scene_add_light(t_scene *scene, t_light light);
+bool				scene_remove_primitive(t_scene *scene, size_t idx);
+bool				scene_remove_tri(t_scene *scene, size_t idx);
 
 #endif

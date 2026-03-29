@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 06:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 12:46:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 17:55:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ bool	rt_buf_inject(t_scene *scene, t_rt_buf *buf)
 {
 	size_t		i;
 	t_rt_shape	*s;
+	time_t		t;
 
+	t = time(NULL);
 	if (buf->has_ambient)
 		scene_apply_ambient(scene, buf->ambient.brightness, buf->ambient.rgb);
 	if (buf->has_camera)
@@ -63,64 +65,111 @@ bool	rt_buf_inject(t_scene *scene, t_rt_buf *buf)
 	while (i < buf->shape_count)
 	{
 		s = &buf->shapes[i];
+		s->params.mat_id = scene_add_material_from_color(scene, s->color);
 		if (s->type == PRIM_TRIANGLE)
 		{
-			s->params.mat_id = scene_add_material_from_color(scene, s->color);
 			if (!scene_add_tri(scene, s->data.tri, s->params.mat_id))
 				return (false);
 		}
-		else
-		{
-			s->params.mat_id = scene_add_material_from_color(scene, s->color);
-			if (!scene_add_primitive(scene, s->params, s->type))
-				return (false);
-		}
+		else if (!scene_add_primitive_with_time(scene, s->params, s->type, t))
+			return (false);
 		i++;
 	}
 	return (true);
 }
 
-static bool	realloc_prim_soa(t_primitive_array *arr, size_t new_cap)
+static bool	realloc_soa_slabs(t_primitive_array *arr, size_t nc)
 {
-	uint8_t		*nty, *ns, *hp;
-	float		*npx, *nax, *ntx, *nr, *nh, *nex, *nmix, *nmax;
-	uint16_t	*nm;
-	int			*nph;
+	float	*f;
 
-	nty = realloc(arr->types, new_cap);
-	npx = realloc(arr->px, new_cap * 4 * 3); /* px, py, pz */
-	nax = realloc(arr->ax, new_cap * 4 * 3); /* ax, ay, az */
-	ntx = realloc(arr->tx, new_cap * 4 * 3); /* tx, ty, tz */
-	nr = realloc(arr->radii, new_cap * 4);
-	nh = realloc(arr->heights, new_cap * 4);
-	nex = realloc(arr->ex, new_cap * 4 * 3); /* ex, ey, ez */
-	nm = realloc(arr->mat_ids, new_cap * 2);
-	ns = realloc(arr->is_static, new_cap);
-	hp = realloc(arr->has_phys, new_cap);
-	nmix = realloc(arr->abb_min_x, new_cap * 4 * 3);
-	nmax = realloc(arr->abb_max_x, new_cap * 4 * 3);
-	nph = realloc(arr->phys_idx, new_cap * 4);
-	if (!nty || !npx || !nax || !ntx || !nr || !nh || !nex || !nm || !ns || !hp || !nmix || !nmax || !nph)
+	f = realloc(arr->float_slab, nc * 20 * sizeof(float));
+	if (!f)
 		return (false);
-	arr->types = nty;
-	arr->px = npx; arr->py = npx + new_cap; arr->pz = npx + 2 * new_cap;
-	arr->ax = nax; arr->ay = nax + new_cap; arr->az = nax + 2 * new_cap;
-	arr->tx = ntx; arr->ty = ntx + new_cap; arr->tz = ntx + 2 * new_cap;
-	arr->radii = nr; arr->heights = nh;
-	arr->ex = nex; arr->ey = nex + new_cap; arr->ez = nex + 2 * new_cap;
-	arr->mat_ids = nm; arr->is_static = ns; arr->has_phys = hp;
-	arr->abb_min_x = nmix; arr->abb_min_y = nmix + new_cap; arr->abb_min_z = nmix + 2 * new_cap;
-	arr->abb_max_x = nmax; arr->abb_max_y = nmax + new_cap; arr->abb_max_z = nmax + 2 * new_cap;
-	arr->phys_idx = nph; arr->capacity = new_cap;
+	arr->float_slab = f;
+	arr->px = f + 0 * nc; arr->py = f + 1 * nc; arr->pz = f + 2 * nc;
+	arr->ax = f + 3 * nc; arr->ay = f + 4 * nc; arr->az = f + 5 * nc;
+	arr->tx = f + 6 * nc; arr->ty = f + 7 * nc; arr->tz = f + 8 * nc;
+	arr->radii = f + 9 * nc; arr->heights = f + 10 * nc;
+	arr->ex = f + 11 * nc; arr->ey = f + 12 * nc; arr->ez = f + 13 * nc;
+	arr->abb_min_x = f + 14 * nc; arr->abb_min_y = f + 15 * nc; arr->abb_min_z = f + 16 * nc;
+	arr->abb_max_x = f + 17 * nc; arr->abb_max_y = f + 18 * nc; arr->abb_max_z = f + 19 * nc;
 	return (true);
 }
 
-bool	scene_add_primitive(t_scene *scene, t_prim_params params, t_prim_type type)
+static bool	realloc_meta_a(t_primitive_array *arr, size_t nc)
+{
+	uint8_t		*ty;
+	uint16_t	*mid;
+	uint8_t		*st;
+	uint8_t		*hp;
+
+	ty = realloc(arr->types, nc);
+	mid = realloc(arr->mat_ids, nc * sizeof(uint16_t));
+	st = realloc(arr->is_static, nc);
+	hp = realloc(arr->has_phys, nc);
+	if (!ty || !mid || !st || !hp)
+		return (false);
+	arr->types = ty;
+	arr->mat_ids = mid;
+	arr->is_static = st;
+	arr->has_phys = hp;
+	return (true);
+}
+
+static bool	realloc_meta_b(t_scene *s, t_primitive_array *arr, size_t nc)
+{
+	int					*ph;
+	t_primitive_metadata	*pm;
+
+	ph = realloc(arr->phys_idx, nc * sizeof(int));
+	pm = realloc(s->prim_meta, nc * sizeof(t_primitive_metadata));
+	if (!ph || !pm)
+		return (false);
+	arr->phys_idx = ph;
+	s->prim_meta = pm;
+	return (true);
+}
+
+static bool	realloc_prim_soa(t_scene *s, t_primitive_array *arr, size_t new_cap)
+{
+	if (!realloc_soa_slabs(arr, new_cap))
+		return (false);
+	if (!realloc_meta_a(arr, new_cap))
+		return (false);
+	if (!realloc_meta_b(s, arr, new_cap))
+		return (false);
+	arr->capacity = new_cap;
+	return (true);
+}
+
+static bool	add_prim_meta(t_scene *s, size_t idx, time_t t)
+{
+	t_primitive_metadata	*m;
+
+	if (!s->prim_meta)
+		return (false);
+	m = &s->prim_meta[idx];
+	ft_memset(m, 0, sizeof(t_primitive_metadata));
+	m->orig_px = s->primitives.px[idx];
+	m->orig_py = s->primitives.py[idx];
+	m->orig_pz = s->primitives.pz[idx];
+	m->orig_ax = s->primitives.ax[idx];
+	m->orig_ay = s->primitives.ay[idx];
+	m->orig_az = s->primitives.az[idx];
+	m->orig_radii = s->primitives.radii[idx];
+	m->orig_heights = s->primitives.heights[idx];
+	m->import_time = t;
+	return (true);
+}
+
+bool	scene_add_primitive_with_time(t_scene *scene, t_prim_params params, 
+		t_prim_type type, time_t t)
 {
 	size_t	idx;
 
 	if (scene->primitives.count >= scene->primitives.capacity)
-		if (!realloc_prim_soa(&scene->primitives, (scene->primitives.capacity == 0) ? 1024 : scene->primitives.capacity * 2))
+		if (!realloc_prim_soa(scene, &scene->primitives, 
+				(scene->primitives.capacity == 0) ? 1024 : scene->primitives.capacity * 2))
 			return (false);
 	idx = scene->primitives.count++;
 	scene->primitives.types[idx] = (uint8_t)type;
@@ -142,25 +191,50 @@ bool	scene_add_primitive(t_scene *scene, t_prim_params params, t_prim_type type)
 	scene->primitives.phys_idx[idx] = -1;
 	scene->primitives.is_static[idx] = 1;
 	scene->primitives.has_phys[idx] = 0;
+	if (!add_prim_meta(scene, idx, t))
+	{
+		scene->primitives.count--;
+		return (false);
+	}
+	if (type == PRIM_PLANE)
+	{
+		if (scene->plane_count >= scene->plane_cap)
+		{
+			int *tmp = realloc(scene->plane_indices, (scene->plane_cap + 16) * sizeof(int));
+			if (!tmp) return (true);
+			scene->plane_indices = tmp;
+			scene->plane_cap += 16;
+		}
+		scene->plane_indices[scene->plane_count++] = (int)idx;
+	}
 	return (true);
+}
+
+bool	scene_add_primitive(t_scene *scene, t_prim_params params, t_prim_type type)
+{
+	return (scene_add_primitive_with_time(scene, params, type, time(NULL)));
 }
 
 static bool	realloc_tri_soa(t_tri_array *soa, size_t new_cap)
 {
-	int		k;
-	size_t	sz = new_cap * sizeof(float);
-	size_t	szm = new_cap * sizeof(uint16_t);
+	float		*f;
+	uint16_t	*nm;
 
-	k = -1;
-	while (++k < 3)
-	{
-		soa->vx[k] = realloc(soa->vx[k], sz); soa->vy[k] = realloc(soa->vy[k], sz); soa->vz[k] = realloc(soa->vz[k], sz);
-	}
-	soa->nx = realloc(soa->nx, sz); soa->ny = realloc(soa->ny, sz); soa->nz = realloc(soa->nz, sz);
-	soa->tx = realloc(soa->tx, sz); soa->ty = realloc(soa->ty, sz); soa->tz = realloc(soa->tz, sz);
-	soa->mat_ids = realloc(soa->mat_ids, szm);
+	f = realloc(soa->float_slab, new_cap * 21 * sizeof(float));
+	nm = realloc(soa->mat_ids, new_cap * sizeof(uint16_t));
+	if (!f || !nm)
+		return (false);
+	soa->float_slab = f;
+	soa->vx[0] = f + 0 * new_cap; soa->vy[0] = f + 1 * new_cap; soa->vz[0] = f + 2 * new_cap;
+	soa->vx[1] = f + 3 * new_cap; soa->vy[1] = f + 4 * new_cap; soa->vz[1] = f + 5 * new_cap;
+	soa->vx[2] = f + 6 * new_cap; soa->vy[2] = f + 7 * new_cap; soa->vz[2] = f + 8 * new_cap;
+	soa->ex[0] = f + 9 * new_cap; soa->ey[0] = f + 10 * new_cap; soa->ez[0] = f + 11 * new_cap;
+	soa->ex[1] = f + 12 * new_cap; soa->ey[1] = f + 13 * new_cap; soa->ez[1] = f + 14 * new_cap;
+	soa->nx = f + 15 * new_cap; soa->ny = f + 16 * new_cap; soa->nz = f + 17 * new_cap;
+	soa->tx = f + 18 * new_cap; soa->ty = f + 19 * new_cap; soa->tz = f + 20 * new_cap;
+	soa->mat_ids = nm;
 	soa->cap = new_cap;
-	return (soa->nx != NULL && soa->tx != NULL && soa->mat_ids != NULL);
+	return (true);
 }
 
 bool	scene_add_tri(t_scene *scene, t_vec3 v[3], int mat_id)
@@ -179,23 +253,9 @@ bool	scene_add_tri(t_scene *scene, t_vec3 v[3], int mat_id)
 	return (true);
 }
 
-void	scene_apply_ambient(t_scene *scene, double brightness, t_vec3 rgb)
-{
-	scene->ambient.brightness = brightness;
-	scene->ambient.rgb = rgb;
-}
-
 void	scene_apply_camera(t_scene *scene, t_transform transform, double fov)
 {
 	scene->camera.transform = transform;
 	scene->camera.fov = fov;
-}
-
-bool	scene_add_light(t_scene *scene, t_light light)
-{
-	(void)scene;
-	(void)light;
-	/* Implementation depends on scene light storage (array or list) */
-	return (true);
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 22:25:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:56:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,5 @@ void	box_scale_sync(t_gui *gui)
 	p->ey[idx] = (float)tr->scale.y;
 	p->ez[idx] = (float)tr->scale.z;
 	/* Invalidate Scene to force BVH update and re-render */
-	scene_invalidate(gui->scene);
+	rebuild_bvh(gui);
 }

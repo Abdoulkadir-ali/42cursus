@@ -14,9 +14,9 @@
 
 void phys_resolve_ccd(t_physics *phys, int body_idx, double dt)
 {
+	(void)dt;
 	t_physics_soa *pso;
 
-	(void)dt;
 	pso = phys->soa;
 	pso->hot.vx[body_idx] *= -0.1f;
 	pso->hot.vy[body_idx] *= -0.1f;

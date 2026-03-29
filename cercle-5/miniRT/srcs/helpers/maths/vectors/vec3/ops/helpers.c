@@ -1,15 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   helpers.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/26 10:59:47 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 11:01:44 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
+#define _GNU_SOURCE
+#include <math.h>
 #include "maths.h"
 
 void	vec3_orthonormal_basis(t_vec3 normal, t_vec3 *tangent,
@@ -61,21 +51,36 @@ t_vec3	vec3_refract(t_vec3 I, t_vec3 N, double ior)
 
 t_vec3	rotate_vector(t_vec3 v, double pitch, double yaw)
 {
+	double	cp;
+	double	sp;
+	double	cy;
+	double	sy;
 	double	y1;
 	double	z1;
-	t_vec3	v1;
 	double	x2;
 	double	y2;
 
-	y1 = v.y * cos(pitch) - v.z * sin(pitch);
-	z1 = v.y * sin(pitch) + v.z * cos(pitch);
-	v1 = vec3(v.x, y1, z1);
-	x2 = v1.x * cos(yaw) - v1.y * sin(yaw);
-	y2 = v1.x * sin(yaw) + v1.y * cos(yaw);
-	return (vec3(x2, y2, v1.z));
+	sp = sin(pitch);
+	cp = cos(pitch);
+	sy = sin(yaw);
+	cy = cos(yaw);
+	y1 = v.y * cp - v.z * sp;
+	z1 = v.y * sp + v.z * cp;
+	x2 = v.x * cy - y1 * sy;
+	y2 = v.x * sy + y1 * cy;
+	return (vec3(x2, y2, z1));
 }
 
 t_vec3	get_camera_forward(double pitch, double yaw)
 {
-	return (vec3(cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw)));
+	double	cp;
+	double	sp;
+	double	cy;
+	double	sy;
+
+	sp = sin(pitch);
+	cp = cos(pitch);
+	sy = sin(yaw);
+	cy = cos(yaw);
+	return (vec3(cp * sy, sp, cp * cy));
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:24:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ static void	dispatch_click(t_gui *gui, t_vec2i mouse)
 	}
 	else if (gui->inspector->tab == TAB_LIGHT)
 		light_panel_handle_click(gui, mouse);
+	else if (gui->inspector->tab == TAB_OBJECT)
+		metadata_panel_handle_click(gui, mouse);
 }
 
 /**
@@ -44,8 +46,8 @@ bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 
 	if (!gui->inspector->visible || !gui->selection->active)
 		return (false);
-	x = gui->win.disp_w - gui->inspector->width;
-	if (mouse.x < x || mouse.x >= gui->win.disp_w)
+	x = gui->win.disp_size.x - gui->inspector->box.size.x;
+	if (mouse.x < x || mouse.x >= gui->win.disp_size.x)
 		return (false);
 	if (mouse.y >= INSPECTOR_TAB_MIN_Y && mouse.y <= INSPECTOR_TAB_MAX_Y)
 	{

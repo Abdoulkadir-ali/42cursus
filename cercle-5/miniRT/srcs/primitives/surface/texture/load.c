@@ -6,69 +6,29 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 20:22:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:18:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mlx.h"
 #include "surface.h"
 #include "scene.h"
 #include "stb.h"
 
-/**
- * @brief Loads an XPM texture using an MLX context pointer.
- * @param mlx MLX context pointer (may be NULL).
- * @param tex Pointer to the texture.
- * @param path File path.
- * @return true on success, false on failure.
- */
-bool	load_texture_with_mlx(void *mlx, t_texture *tex, const char *path)
+static void	rb_swap_inplace(unsigned char *data, int count)
 {
- 	void	*img;
- 	int		w[2];
+	int				i;
+	unsigned char	tmp;
 
- 	if (!mlx)
- 		return (false);
- 	img = mlx_xpm_file_to_image(mlx, (char *)path, &w[0], &w[1]);
- 	if (!img)
- 		return (false);
- 	tex->img = img;
- 	tex->width = w[0];
- 	tex->height = w[1];
- 	tex->addr = (unsigned char *)mlx_get_data_addr(img, &tex->bpp, &tex->len, &tex->endian);
- 	tex->type = TEX_BITMAP;
- 	tex->scale = TEX_DEFAULT_SCALE;
- 	tex->color_a = get_colors()->white;
- 	return (true);
+	i = 0;
+	while (i < count)
+	{
+		tmp = data[i];
+		data[i] = data[i + 2];
+		data[i + 2] = tmp;
+		i += 4;
+	}
 }
 
-/**
- * @brief Standard entry point to load a texture from disk.
- * @param scene Pointer to the scene.
- * @param tex Pointer to the target texture.
- * @param path Path to the file.
- * @return true on success.
- */
-bool	load_texture(t_scene *scene, t_texture *tex, const char *path)
-{
- 	void *mlx;
-
-	mlx = NULL;
-	if (scene)
-		mlx = scene->mlx;
-	if (load_texture_with_mlx(mlx, tex, path))
-		return (true);
-	if (load_stbi(tex, path))
-		return (true);
-	return (false);
-}
-
-/**
- * @brief Loads a JPEG/PNG/BMP texture via internal stb_image.
- * @param tex Pointer to the texture.
- * @param path File path.
- * @return true on success, false on failure.
- */
 bool	load_stbi(t_texture *tex, const char *path)
 {
 	int				w;
@@ -77,21 +37,14 @@ bool	load_stbi(t_texture *tex, const char *path)
 	unsigned char	*data;
 
 	stbi_set_flip_vertically_on_load(1);
-	data = stbi_load(path, &w, &h, &ch, TEX_CH_RGBA);
+	data = stbi_load(path, &w, &h, &ch, 4);
 	if (!data)
 		return (false);
-	convert_rgba_to_bgra(data, w * h * TEX_CH_RGBA);
+	rb_swap_inplace(data, w * h * 4);
 	init_texture_props(tex, w, h, (unsigned char *)data);
 	return (true);
 }
 
-/**
- * @brief Loads a texture from an in-memory buffer via stb_image.
- * @param tex Pointer to the texture.
- * @param buffer Pointer to the raw buffer.
- * @param size Buffer size in bytes.
- * @return true on success.
- */
 bool	load_texture_from_memory(t_texture *tex, unsigned char *buffer, int size)
 {
 	int				w;
@@ -102,10 +55,16 @@ bool	load_texture_from_memory(t_texture *tex, unsigned char *buffer, int size)
 	if (!buffer || size <= 0)
 		return (false);
 	stbi_set_flip_vertically_on_load(1);
-	data = stbi_load_from_memory(buffer, size, &w, &h, &ch, TEX_CH_RGBA);
+	data = stbi_load_from_memory(buffer, size, &w, &h, &ch, 4);
 	if (!data)
 		return (false);
-	convert_rgba_to_bgra(data, w * h * TEX_CH_RGBA);
+	rb_swap_inplace(data, w * h * 4);
 	init_texture_props(tex, w, h, (unsigned char *)data);
 	return (true);
+}
+
+bool	load_texture(t_scene *scene, t_texture *tex, const char *path)
+{
+	(void)scene;
+	return (load_stbi(tex, path));
 }

@@ -17,17 +17,17 @@
  * This offloads the overhead of the editor/scene material structure
  * and prepares data for the hot shading path.
  */
-void	bake_materials(t_rt_engine *rt, t_scene *scene)
+bool	bake_materials(t_rt_engine *rt, t_scene *scene)
 {
 	int	i;
 
 	if (!scene || scene->mat_count <= 0)
-		return ;
+		return (false);
 	if (rt->rt_materials)
 		free(rt->rt_materials);
 	rt->rt_materials = malloc(sizeof(t_rt_material) * scene->mat_count);
 	if (!rt->rt_materials)
-		return ;
+		return (false);
 	i = -1;
 	while (++i < (int)scene->mat_count)
 	{
@@ -51,4 +51,5 @@ void	bake_materials(t_rt_engine *rt, t_scene *scene)
 			rt->rt_materials[i].normal_map_idx = engine_pool_add_texture(rt, 
 				scene->materials[i].bump_map.path);
 	}
+	return (true);
 }

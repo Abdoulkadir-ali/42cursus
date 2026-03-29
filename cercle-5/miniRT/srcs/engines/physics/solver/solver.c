@@ -1,41 +1,61 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push.c                                             :+:      :+:    :+:   */
+/*   solver.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 03:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 03:36:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:33:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-/**
- * @brief Dispatcher for solving position constraints (Baumgarte).
- * Iterates through all contacts and resolves overlaps.
- */
-void	solve_positions(t_contact *c, int count)
+static bool	check_indices(t_physics *phys, t_contact *c)
+{
+	if (c->idx_a < 0 || (size_t)c->idx_a >= phys->scene->primitives.count
+		|| c->idx_b < 0 || (size_t)c->idx_b >= phys->scene->primitives.count)
+		return (false);
+	if (phys->scene->primitives.phys_idx[c->idx_a] < 0
+		|| (size_t)phys->scene->primitives.phys_idx[c->idx_a] >= phys->soa->count
+		|| phys->scene->primitives.phys_idx[c->idx_b] < 0
+		|| (size_t)phys->scene->primitives.phys_idx[c->idx_b] >= phys->soa->count)
+		return (false);
+	return (true);
+}
+
+static void	apply_pos_impulse(t_physics *phys, t_contact *c, t_physics_soa *s)
+{
+	double	inv_a;
+	double	inv_b;
+	int		pa;
+	int		pb;
+
+	pa = phys->scene->primitives.phys_idx[c->idx_a];
+	pb = phys->scene->primitives.phys_idx[c->idx_b];
+	inv_a = 0.0;
+	if (pa >= 0)
+		inv_a = s->inv_mass[pa];
+	inv_b = 0.0;
+	if (pb >= 0)
+		inv_b = s->inv_mass[pb];
+	if (inv_a + inv_b > 1e-8)
+		apply_position_correction(phys, c, inv_a, inv_b);
+}
+
+void	solve_positions(t_physics *phys, t_contact *c, int count)
 {
 	int				i;
-	double			inv_a;
-	double			inv_b;
 	t_physics_soa	*s;
-	int				pa, pb;
 
 	if (count <= 0)
 		return ;
-	s = c[0].scene->physics->soa;
-	i = 0;
-	while (i < count)
+	s = phys->soa;
+	i = -1;
+	while (++i < count)
 	{
-		pa = c[i].scene->primitives.phys_idx[c[i].idx_a];
-		pb = c[i].scene->primitives.phys_idx[c[i].idx_b];
-		inv_a = (pa >= 0) ? s->inv_mass[pa] : 0.0;
-		inv_b = (pb >= 0) ? s->inv_mass[pb] : 0.0;
-		if (inv_a + inv_b > 1e-8)
-			apply_position_correction(&c[i], inv_a, inv_b);
-		i++;
+		if (check_indices(phys, &c[i]))
+			apply_pos_impulse(phys, &c[i], s);
 	}
 }

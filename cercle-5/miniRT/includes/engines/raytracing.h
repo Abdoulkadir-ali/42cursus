@@ -14,15 +14,45 @@
 #ifndef RAYTRACING_H
 # define RAYTRACING_H
 
+/* --- CONSTANTS --- */
+# define SHADOW_BIAS 1e-4
+# define MAX_DEPTH 5
+# define BVH_BINS 16
+# define TILE_SIZE 32
+# define TRACE_MAX_DIST 1e30
+# define MAX_LEAF_OBJECTS 4
+/* BVH traversal stack depth. 256 covers scenes with ~65k+ objects safely. */
+# define BVH_STACK_MAX 256
+# define BVH_BIN_COUNT 16
+# define COLOR_MAX 255.0
+# define COLOR_MIN 0.0
+
+/* Shading & Materials */
+# define ATTENUATION_K 0.05
+# define EMISSIVE_BR_SCALE 3.0
+# define EMISSIVE_SURF_OFF 0.01
+# define MAX_EMISSIVE_DIST_SQ 2500.0
+# define SHININESS_OFFSET 2.0
+# define SHININESS_SCALE 200.0
+# define METALLIC_BOOST 0.9
+# define METALLIC_REDUCT 0.5
+# define NDOTH_MIN 0.01
+# define NDOTL_MIN 0.02
+# define REFRACT_IOR_SCALE 2.0
+# define REFRACT_MAX_DEG 180.0
+# define WEIGHT_MIN 0.02
+
 # include <math.h>
 # include <pthread.h>
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdint.h>
+# include <string.h>
 
 /* 1. EXTERNAL DEPENDENCIES */
 
 # include "scene.h"
+# include "utils.h"
 # include "stb_image.h"
 # include "unpacker.h"
 
@@ -100,10 +130,16 @@ typedef struct s_split_info
 	double					cost;
 }							t_split_info;
 
+typedef struct s_sah_bin
+{
+	t_aabb					bounds;
+	int						count;
+}							t_sah_bin;
+
 typedef struct s_bvh_stack
 {
-	int						stack[64];
-	double					stack_tmin[64];
+	int						stack[BVH_STACK_MAX];
+	double					stack_tmin[BVH_STACK_MAX];
 	int						ptr;
 	const struct s_bvh		*bvh;
 	const struct s_ray		*ray;
@@ -151,8 +187,10 @@ typedef struct s_rt_engine
 	t_rt_material			*rt_materials;
 	unsigned char			**texture_pool;
 	t_vec2i					*texture_dims;
+	char					**texture_names;
 	int						texture_count;
 	int						texture_cap;
+	pthread_mutex_t			bake_lock;
 	t_rt_settings			settings;
 }							t_rt_engine;
 
@@ -188,7 +226,7 @@ typedef struct s_shading
 /* -------------------------------------------------------------------------- */
 
 /* --- BAKING & SYNC --- */
-void						bake_materials(t_rt_engine *rt, t_scene *scene);
+bool						bake_materials(t_rt_engine *rt, t_scene *scene);
 void						raytrace_engine_sync(t_rt_engine *rt,
 								t_scene *scene, int w, int h);
 int							engine_pool_add_texture(t_rt_engine *rt,
@@ -294,12 +332,8 @@ bool						occlude_object(const t_ray *ray, t_scene *scene,
 
 /* ---- Internal intersection UV / helper prototypes ---- */
 
-void						get_sphere_uv(t_vec3 normal, double *u, double *v);
 void						set_sphere_hit_data(const t_ray *ray, t_sphere *sp,
 								t_hit *hit);
-void						get_plane_uv(t_vec3 p, t_vec3 n, t_hit *hit);
-bool						intersect_triangle_fast(const t_ray *ray,
-								t_vec3 tri[3], double *t, t_vec2 *uv);
 void						pyramid_cache_verts(t_pyramid *py);
 
 #endif

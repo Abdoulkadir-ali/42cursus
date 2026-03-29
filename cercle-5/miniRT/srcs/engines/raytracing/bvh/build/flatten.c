@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 11:30:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:59:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ bool	alloc_flat(t_bvh *bvh, size_t k)
 
 static void	flatten_leaf(t_bvh_tmp_node *n, t_bvh *bvh, int my_idx, int *rc)
 {
+	(void)rc;
 	bvh->nodes[my_idx].count = (int)n->num_refs;
 	bvh->nodes[my_idx].left_or_first = n->first_ref;
-	(void)rc;
 }
 
 /**

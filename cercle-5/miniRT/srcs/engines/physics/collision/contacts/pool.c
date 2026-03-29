@@ -11,19 +11,3 @@
 /* ************************************************************************** */
 
 #include "physics.h"
-
-void phys_init_pool(t_physics *phys)
-{
-	t_phys_pool *pool;
-
-	pool = phys->pool;
-	(void)pool;
-}
-
-void phys_destroy_pool(t_physics *phys)
-{
-	t_phys_pool *pool;
-
-	pool = phys->pool;
-	(void)pool;
-}

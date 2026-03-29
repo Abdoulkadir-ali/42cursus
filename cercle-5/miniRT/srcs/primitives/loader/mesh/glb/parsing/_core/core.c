@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 21:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 21:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
  */
 void	glb_inject_mesh_atomic(t_scene *s, t_glb *g, t_json_value *p, int *mmap)
 {
-	t_mesh	mesh;
+	t_mesh_asset	mesh;
 	size_t	i;
 	int		mat_idx;
 

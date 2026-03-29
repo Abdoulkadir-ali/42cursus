@@ -20,6 +20,7 @@ void	editor_delete_selected(t_gui *gui)
 
 	if (!gui->scene || !gui->selection->active)
 		return ;
+	pthread_rwlock_wrlock(&gui->scene_lock);
 	sel = gui->selection;
 	sc = gui->scene;
 	i = sel->index;
@@ -27,6 +28,7 @@ void	editor_delete_selected(t_gui *gui)
 	{
 		clear_selection(gui);
 		rebuild_bvh(gui);
+		pthread_rwlock_unlock(&gui->scene_lock);
 		gui->render.dirty = true;
 		return ;
 	}
@@ -35,5 +37,6 @@ void	editor_delete_selected(t_gui *gui)
 	delete_sel_extras(sc, sel);
 	clear_selection(gui);
 	rebuild_bvh(gui);
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->render.dirty = true;
 }

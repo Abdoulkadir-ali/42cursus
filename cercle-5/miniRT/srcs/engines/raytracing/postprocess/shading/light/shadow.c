@@ -16,21 +16,19 @@ static bool	plane_shadows(const t_bvh *bvh, const t_ray *sray, double dist)
 {
 	int		i;
 	t_hit	hit;
+	t_scene	*scene;
 
 	if (!bvh || !bvh->scene)
 		return (false);
-	i = 0;
-	while (i < (int)bvh->scene->primitives.count)
+	scene = bvh->scene;
+	i = -1;
+	while (++i < (int)scene->plane_count)
 	{
-		if (bvh->scene->primitives.types[i] == PRIM_PLANE)
+		if (intersect_plane(sray, &scene->primitives, scene->plane_indices[i], &hit))
 		{
-			if (intersect_plane(sray, &bvh->scene->primitives, i, &hit))
-			{
-				if (hit.t > 0.001 && hit.t < dist)
-					return (true);
-			}
+			if (hit.t > 0.001 && hit.t < dist)
+				return (true);
 		}
-		i++;
 	}
 	return (false);
 }

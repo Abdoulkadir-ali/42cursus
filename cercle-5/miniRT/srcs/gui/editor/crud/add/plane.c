@@ -14,16 +14,19 @@
 
 void	editor_add_plane(t_gui *gui)
 {
-	t_plane	pl;
+	t_prim_params	params;
 
 	if (!gui->scene)
 		return ;
-	ft_memset(&pl, 0, sizeof(pl));
-	pl.transform = make_obj_transform(cam_fwd_pos(gui, 3.0), vec3(0, 1, 0),
-			vec3(1, 1, 1));
-	pl.temp_color = vec3(0.5, 0.5, 0.55);
-	scene_add_plane(gui->scene, pl);
-	select_object(gui, TYPE_PLANE, gui->scene->plane_count - 1);
+	ft_memset(&params, 0, sizeof(params));
+	params.pos = cam_fwd_pos(gui, 3.0);
+	params.axis = vec3(0, 1, 0);
+	params.mat_id = scene_add_material_from_color(gui->scene,
+			vec3(0.5, 0.5, 0.55));
+	pthread_rwlock_wrlock(&gui->scene_lock);
+	scene_add_primitive(gui->scene, params, PRIM_PLANE);
+	select_object(gui, TYPE_PLANE, gui->scene->primitives.count - 1);
 	rebuild_bvh(gui);
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->render.dirty = true;
 }

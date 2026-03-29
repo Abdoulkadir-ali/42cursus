@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:06:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:54:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 /* --- FBX LOADER STRUCTURE --- */
 typedef struct s_fbx
 {
-	t_mesh		*meshes;
+	t_mesh_asset	*meshes;
 	int			mesh_count;
 	t_animation	*animations;
 	int			anim_count;
@@ -74,7 +74,7 @@ typedef struct s_fbx_flat_args
 
 typedef struct s_fbx_build
 {
-	t_mesh	*m;
+	t_mesh_asset	*m;
 	int		*raw;
 	int		raw_c;
 	t_vec3	*n;
@@ -95,13 +95,15 @@ typedef struct s_fbx_build
 }				t_fbx_build;
 
 /* --- BINARY INJECTION INTERNALS: Functions --- */
-bool			fbx_setup_build(t_fbx_build *b, t_mesh *m, t_fbx_flat_args *p);
+bool			fbx_setup_build(t_fbx_build *b, t_mesh_asset *m, t_fbx_flat_args *p);
 void			fbx_build_tris(t_fbx_build *b);
 void			fbx_free_build(t_fbx_build *b);
 
 /* --- PUBLIC API --- */
 bool			fbx_load(t_scene *scene, const char *path);
 bool			fbx_load_to_asset(t_fbx *f, const char *path);
+void			init_metadata_fbx(t_mesh_asset_metadata *meta, t_fbx *f,
+					const char *path);
 bool			parse_fbx_entry(t_scene *scene, t_parser *p);
 bool			parse_fbx(t_scene *scene, t_parser *p);
 
@@ -130,6 +132,6 @@ t_vec3			*fbx_repack_vec3(double *raw, uint32_t v_count);
 void			*fbx_parse_array_ascii(char **p, uint32_t *count, size_t elem_sz);
 
 /* --- INJECTION (Scene add functions) --- */
-bool			scene_add_mesh(t_scene *scene, t_mesh mesh);
+bool			scene_add_mesh(t_scene *scene, t_mesh_asset mesh);
 
 #endif

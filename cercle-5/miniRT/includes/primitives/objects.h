@@ -6,34 +6,31 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 12:42:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 17:11:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef OBJECTS_H
 # define OBJECTS_H
 
+/* --- OBJECT LIMITS --- */
+# define MAX_SUB_SHAPES 32
+# define CACHE_CAP 64
+
 # include "maths.h"
 # include "surface.h"
-
-typedef struct s_ambient
-{
-	double			brightness;
-	t_vec3			rgb;
-}					t_ambient;
-
-typedef struct s_camera
-{
-	t_transform		transform;
-	double			fov;
-	double			aspect;
-}					t_camera;
 
 typedef enum e_light_type
 {
 	LIGHT_POINT,
 	LIGHT_SPOT
 }					t_light_type;
+
+typedef struct s_ambient
+{
+	double			brightness;
+	t_vec3			rgb;
+}					t_ambient;
 
 typedef struct s_light
 {
@@ -43,6 +40,13 @@ typedef struct s_light
 	t_vec3			rgb;
 	double			cutoff;
 }					t_light;
+
+typedef struct s_camera
+{
+	t_transform		transform;
+	double			fov;
+	double			aspect;
+}					t_camera;
 
 typedef struct s_sphere
 {
@@ -129,7 +133,10 @@ typedef enum e_prim_type
 	PRIM_RECT = 6,
 	PRIM_BOX = 7,
 	PRIM_CAPSULE = 8,
-	PRIM_PYRAMID = 9
+	PRIM_PYRAMID = 9,
+		PRIM_MESH = 10,
+		PRIM_ANIM = 11,
+		PRIM_LIGHT = 12
 }					t_prim_type;
 
 // Unified object type -- superset of e_prim_type
@@ -201,7 +208,8 @@ typedef struct s_primitive_array
 	float *abb_max_x; /* AABB cached world maximum X */
 	float			*abb_max_y;
 	float			*abb_max_z;
-	int *phys_idx;   /* Link to physics SoA entry (-1 if none) */
+	int *phys_idx;      /* Link to physics SoA entry (-1 if none) */
+	float	*float_slab; /* Single slab for all 20 float fields */
 	size_t count;    /* Active primitive count */
 	size_t capacity; /* Allocated capacity */
 }					t_primitive_array;
@@ -228,6 +236,7 @@ typedef struct s_tri_array
 	uint16_t		*mat_ids;
 	size_t			count;
 	size_t			cap;
+	float			*float_slab;
 }					t_tri_array;
 
 /* Skinning weights for skeletal animation (GLB/FBX/OBJ) */
@@ -237,5 +246,86 @@ typedef struct s_bone_weight
 	uint16_t		bone_ids[4];
 	float			weights[4];
 }					t_bone_weight;
+
+typedef struct s_mesh
+{
+	t_aabb			bbox;
+	int				tri_start;
+	int				mat_id;
+	int				asset_id;
+	int				metadata_id;
+	t_transform		transform;
+}					t_mesh;
+
+typedef struct s_mesh_group
+{
+	char			*name;
+	int				start;
+	int				sub_count;
+	int				anim_clip_count;
+	t_aabb			bbox;
+}					t_mesh_group;
+
+/* ────────── Metadata: cold arrays, indexed by same ID as runtime ───────── */
+# include <time.h>
+
+typedef struct s_primitive_metadata
+{
+	char			*name;
+	char			*file_path;
+	char		*user_comment;
+	float		px, py, pz;
+	float		ax, ay, az;
+	float		orig_px, orig_py, orig_pz;
+	float		orig_ax, orig_ay, orig_az;
+	float		radii;
+	float		heights;
+	float		orig_radii;
+	float		orig_heights;
+	time_t			import_time;
+}					t_primitive_metadata;
+
+typedef struct s_mesh_asset_metadata
+{
+	char			*name;
+	char			*file_path;
+	size_t			vertex_count;
+	size_t			tri_count;
+	size_t			bone_count;
+	size_t			anim_count;
+	size_t			grid_w;
+	size_t			grid_h;
+	time_t			import_time;
+}					t_mesh_asset_metadata;
+
+typedef struct s_mesh_instance_metadata
+{
+	char			*name;
+	char			*file_path;
+	t_mat4			transform;	t_mat4		orig_transform;	time_t			import_time;
+	int				asset_id;
+}					t_mesh_instance_metadata;
+
+typedef struct s_material_metadata
+{
+	char			*name;
+	char			*albedo_path;
+	char			*normal_path;
+	char			*roughness_path;
+	char			*metallic_path;
+	float			roughness;
+	float			metallic;
+	float			reflectivity;
+	float			transparency;
+	float		orig_roughness;
+	float		orig_metallic;
+	float		orig_reflectivity;
+	float		orig_transparency;
+	t_vec3		albedo;
+	t_vec3		emission;
+	t_vec3		orig_albedo;
+	t_vec3		orig_emission;
+	time_t			import_time;
+}					t_material_metadata;
 
 #endif

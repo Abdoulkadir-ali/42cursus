@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 10:53:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:47:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ static void	emissive_mesh(t_shading *sha, const t_rt_engine *rt, t_vec3 *tot,
 	t_vec3			max;
 
 	m = &rt->scene->animated[r.index];
-	min = vec3(m->bbox.min[0], m->bbox.min[1], m->bbox.min[2]);
-	max = vec3(m->bbox.max[0], m->bbox.max[1], m->bbox.max[2]);
+	min = vec3(m->bbox.min.x, m->bbox.min.y, m->bbox.min.z);
+	max = vec3(m->bbox.max.x, m->bbox.max.y, m->bbox.max.z);
 	c = vec3_add(min, vec3_scale(vec3_sub(max, min), 0.5));
 	sha->aux_v = vec3_sub(c, sha->hit->point);
 	apply_emissive_hit(sha, tot, &rt->scene->materials[m->mat_id],

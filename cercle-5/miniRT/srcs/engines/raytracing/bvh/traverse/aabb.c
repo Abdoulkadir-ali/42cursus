@@ -49,6 +49,5 @@ double	aabb_hit_time_or_neg1(const t_bvh *bvh, int idx, const t_ray *ray,
 		t0 = 0.0;
 	if (t0 >= max_t)
 		return (-1.0);
-	t1 = t0 + 0.0;
-	return (t1);
+	return (t0);
 }

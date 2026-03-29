@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:21:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@ static void	set_tab_base(t_inspect_tab *tabs, const char **labels)
 	labels[1] = "Material";
 	tabs[2] = TAB_PHYSICS;
 	labels[2] = "Physics";
+}
+
+static int	set_prim_tabs(t_inspect_tab *tabs, const char **labels)
+{
+	set_tab_base(tabs, labels);
+	tabs[3] = TAB_OBJECT;
+	labels[3] = "Metadata";
+	return (4);
 }
 
 /**
@@ -50,9 +58,7 @@ int	get_tabs(t_type type, t_inspect_tab tabs[4], const char *labels[4])
 		|| type == TYPE_PYRAMID || type == TYPE_BOX || type == TYPE_CAPSULE
 		|| type == TYPE_CYLINDER)
 	{
-		set_tab_base(tabs, labels);
-		return (3);
+		return (set_prim_tabs(tabs, labels));
 	}
-	set_tab_base(tabs, labels);
-	return (3);
+	return (set_prim_tabs(tabs, labels));
 }

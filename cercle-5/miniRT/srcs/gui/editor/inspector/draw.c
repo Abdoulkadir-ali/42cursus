@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:21:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,7 @@ static void	draw_tabs(t_gui *gui, int x)
 		n[3] = COL_TEXT;
 		if (gui->inspector->tab == tabs[n[2]])
 			n[3] = COL_ACCENT;
-		mlx_string_put(gui->win.mlx, gui->win.win,
-			x + n[1] * n[2] + INSPECTOR_PAD, INSPECTOR_TAB_Y, n[3],
-			(char *)labels[n[2]]);
+		gui_draw_string(gui, (char *)labels[n[2]], x + n[1] * n[2] + INSPECTOR_PAD, INSPECTOR_TAB_Y, n[3]);
 		n[2]++;
 	}
 }
@@ -48,6 +46,8 @@ static void	dispatch_draw(t_gui *gui, int x)
 	}
 	else if (gui->inspector->tab == TAB_LIGHT)
 		draw_light_panel(gui, x);
+	else if (gui->inspector->tab == TAB_OBJECT)
+		draw_metadata_panel(gui, x);
 	else if (gui->inspector->tab == TAB_INFO)
 		draw_mesh_info_panel(gui, x);
 }
@@ -63,11 +63,10 @@ void	draw_inspector_text(t_gui *gui)
 
 	if (!gui->inspector->visible || !gui->selection->active || !gui->scene)
 		return ;
-	x = gui->win.disp_w - gui->inspector->width;
+	x = gui->win.disp_size.x - gui->inspector->box.size.x;
 	snprintf(buf, sizeof(buf), "%s  #%d",
 		type_name_str(gui->selection->type), gui->selection->index);
-	mlx_string_put(gui->win.mlx, gui->win.win,
-		x + INSPECTOR_PAD, INSPECTOR_HDR_Y, COL_ACCENT, buf);
+	gui_draw_string(gui, buf, x + INSPECTOR_PAD, INSPECTOR_HDR_Y, COL_ACCENT);
 	draw_tabs(gui, x);
 	dispatch_draw(gui, x);
 }

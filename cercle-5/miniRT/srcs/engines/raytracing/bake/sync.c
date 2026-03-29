@@ -39,27 +39,29 @@ void	raytrace_sync_settings(t_rt_engine *rt, t_scene *scene, int w, int h)
 
 void	raytrace_engine_sync(t_rt_engine *rt, t_scene *scene, int w, int h)
 {
+	bool	settings_dirty;
+	bool	scene_dirty;
+
 	if (!rt || !scene)
 		return ;
-	
-	/* 1. Sync Settings (Bake Constants) */
-	raytrace_sync_settings(rt, scene, w, h);
-	
-	/* 2. Bake Materials and Textures */
-	bake_materials(rt, scene);
-	
-	/* 3. Pre-calculate Geometry state (Now handled on-the-fly or in BVH build) */
-	
-	/* 4. Link Geometry State */
+	settings_dirty = (rt->settings.width != w || rt->settings.height != h);
+	scene_dirty = (__atomic_load_n(&rt->baked_version, __ATOMIC_ACQUIRE)
+			!= scene->version);
+	if (settings_dirty)
+		raytrace_sync_settings(rt, scene, w, h);
+	if (!scene_dirty)
+		return ;
+	if (!bake_materials(rt, scene))
+		return ;
 	rt->scene = scene;
-	
-	/* 5. Rebuild Global BVH (DOD) */
 	if (rt->bvh)
 		bvh_destroy(rt->bvh);
 	rt->bvh = bvh_build_global(scene);
-
-	/* 6. Update internal version to track "dirty" state */
-	rt->baked_version = scene->version;
+	pthread_mutex_lock(&rt->bake_lock);
+	rt->emissive_cache = scene->emissive_cache;
+	rt->emissive_n = (int)scene->emissive_count;
+	pthread_mutex_unlock(&rt->bake_lock);
+	__atomic_store_n(&rt->baked_version, scene->version, __ATOMIC_RELEASE);
 }
 
 /**
@@ -74,8 +76,7 @@ void	rt_engine_cleanup(t_rt_engine *rt)
 		bvh_destroy(rt->bvh);
 	if (rt->rt_materials)
 		free(rt->rt_materials);
-	if (rt->emissive_cache)
-		free(rt->emissive_cache);
+	rt->emissive_cache = NULL;
 	rt->bvh = NULL;
 	rt->rt_materials = NULL;
 	rt->emissive_cache = NULL;

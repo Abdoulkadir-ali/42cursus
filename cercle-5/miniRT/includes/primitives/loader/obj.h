@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:07:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:54:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,11 @@ void		obj_parse_usemtl_to_scene(t_obj *obj, t_parser *p, t_scene *scene);
 
 /* --- FINALIZE & HELPERS --- */
 void		obj_generate_normals(t_obj *obj);
-void		obj_init_mesh(t_mesh *mesh, t_obj *obj, const char *path);
+void		init_metadata_obj(t_mesh_asset_metadata *meta, t_obj *obj,
+				const char *path);
+void		obj_init_mesh(t_mesh_asset *mesh, t_obj *obj);
 void		obj_free_obj(t_obj *obj);
-void		obj_set_mat_id(t_mesh *mesh, t_obj *obj);
+void		obj_set_mat_id(t_mesh_asset *mesh, t_obj *obj);
 void		obj_skip_line(t_parser *p);
 bool		obj_read_id(t_parser *p, char *buf, size_t max_len);
 void		obj_add_vert(t_obj *obj, int vi, int vti, int vni);
@@ -103,6 +105,6 @@ void		mtl_parse_lines_raw(t_raw_model *model, t_parser *parser,
 				int *cur_mat_idx, const char *obj_path);
 
 /* --- INJECTION (Scene add functions) --- */
-bool		scene_add_mesh(t_scene *scene, t_mesh mesh);
+bool		scene_add_mesh(t_scene *scene, t_mesh_asset mesh);
 
 #endif

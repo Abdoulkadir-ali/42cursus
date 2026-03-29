@@ -54,5 +54,5 @@ void	compute_inertia(t_physics_body *b)
 	b->inv_inertia.m[1][0] = b->inv_inertia.m[0][1];
 	b->inv_inertia.m[2][0] = b->inv_inertia.m[0][2];
 	b->inv_inertia.m[2][1] = b->inv_inertia.m[1][2];
-	b->inv_inertia = mat3_inv(b->inv_inertia);
+	mat3_inv(b->inv_inertia, &b->inv_inertia);
 }

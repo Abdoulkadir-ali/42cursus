@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:47:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	handle_delete_light(t_scene *sc, t_selection *sel, int i)
 {
-	if (sel->type != TYPE_LIGHT || i >= sc->light_count)
+	if (sel->type != TYPE_LIGHT || (size_t)i >= sc->light_count)
 		return (false);
 	ft_memmove(sc->lights + i, sc->lights + i + 1,
 		(sc->light_count - i - 1) * sizeof(t_light));

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:45:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 08:52:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,51 @@ static bool	ensure_tri_cap(t_tri_array *soa, size_t needed)
 	return (realloc_tri_soa(soa, n));
 }
 
+static bool	add_mesh_instance_meta(t_scene *s, t_mesh_asset *mesh)
+{
+	t_mesh_instance_metadata	*m;
+	t_mesh_instance_metadata	**nm;
+	size_t				idx;
+
+	m = ft_calloc(1, sizeof(t_mesh_instance_metadata));
+	if (!m)
+		return (false);
+	m->orig_transform = mat4_transform(mesh->transform);
+	m->import_time = time(NULL);
+	if (mesh->name)
+		m->file_path = ft_strdup(mesh->name);
+	if (mesh->name && !m->file_path)
+		return (free(m), false);
+	idx = s->mesh_count;
+	nm = realloc(s->mesh_instance_meta, (idx + 1) * sizeof(t_mesh_instance_metadata *));
+	if (!nm)
+		return (free(m->file_path), free(m), false);
+	s->mesh_instance_meta = nm;
+	s->mesh_instance_meta[idx] = m;
+	s->mesh_count = idx + 1;
+	return (true);
+}
+
+static void	pop_mesh_instance_meta(t_scene *s)
+{
+	size_t	idx;
+
+	if (!s->mesh_instance_meta || s->mesh_count == 0)
+		return ;
+	idx = s->mesh_count - 1;
+	if (s->mesh_instance_meta[idx])
+	{
+		free(s->mesh_instance_meta[idx]->file_path);
+		free(s->mesh_instance_meta[idx]);
+	}
+	s->mesh_instance_meta[idx] = NULL;
+	s->mesh_count = idx;
+}
+
 /**
  * @brief Batch adds a mesh to the scene DOD triangle SoA in world-space.
  */
-bool	scene_add_mesh(t_scene *s, t_mesh mesh)
+bool	scene_add_mesh(t_scene *s, t_mesh_asset mesh)
 {
 	t_mat4	m;
 	t_vec3	v[3];
@@ -92,12 +133,19 @@ bool	scene_add_mesh(t_scene *s, t_mesh mesh)
 		sm.vertex_count = (int)mesh.vertex_count;
 		sm.mat_id = mesh.mat_id;
 		sm.bbox = mesh.bbox;
+		sm.skeleton_dirty = true;
+		if (!add_mesh_instance_meta(s, &mesh))
+			return (mesh_free(&mesh), false);
 		free(mesh.name);
 		free(mesh.indices);
-		return (scene_add_animated(s, sm));
+		if (!scene_add_animated(s, sm))
+			return (pop_mesh_instance_meta(s), false);
+		return (true);
 	}
 	if (!ensure_tri_cap(&s->tri_soa, mesh.tri_count))
 		return (false);
+	if (!add_mesh_instance_meta(s, &mesh))
+		return (mesh_free(&mesh), false);
 	m = mat4_transform(mesh.transform);
 	i = 0;
 	while (i < mesh.tri_count)

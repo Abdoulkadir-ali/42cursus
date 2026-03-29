@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:38:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /**
  * @brief Transfers and repacks vertices from fbx raw double buffers.
  */
-static bool	set_v(t_fbx *f, t_mesh *m)
+static bool	set_v(t_fbx *f, t_mesh_asset *m)
 {
 	m->vertex_count = (int)f->vc / 3;
 	m->vertices = fbx_repack_vec3(f->v, m->vertex_count);
@@ -29,7 +29,7 @@ static bool	set_v(t_fbx *f, t_mesh *m)
 /**
  * @brief Transfers and repacks normals from fbx raw double buffers.
  */
-static void	set_n(t_fbx *f, t_mesh *m)
+static void	set_n(t_fbx *f, t_mesh_asset *m)
 {
 	if (f->vn != NULL)
 	{
@@ -59,16 +59,16 @@ static void	rel_bin(t_fbx *f)
  */
 bool	fbx_build_mesh(t_fbx *f)
 {
-	t_mesh	m;
+	t_mesh_asset	m;
 
-	ft_memset(&m, 0, sizeof(t_mesh));
+	ft_memset(&m, 0, sizeof(t_mesh_asset));
 	if (set_v(f, &m) == false)
 		return (false);
 	set_n(f, &m);
 	m.tri_count = (int)f->rc / 3;
 	m.indices = f->ri;
 	f->ri = NULL;
-	f->meshes = malloc(sizeof(t_mesh));
+	f->meshes = malloc(sizeof(t_mesh_asset));
 	if (f->meshes == NULL)
 		return (false);
 	f->meshes[0] = m;

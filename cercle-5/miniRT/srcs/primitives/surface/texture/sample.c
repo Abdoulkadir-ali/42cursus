@@ -44,14 +44,12 @@ t_vec3	sample_texture(t_texture *tex, double u, double v)
  */
 t_vec3	sample_checker(t_texture *tex, double u, double v)
 {
-	int	ch;
+	int	su;
+	int	sv;
 
-	ch = (int)(floor(u * tex->scale) + floor(v * tex->scale)) % 2;
-	if ((u * tex->scale) < 0)
-		ch++;
-	if ((v * tex->scale) < 0)
-		ch++;
-	if (ch % 2)
+	su = (int)floor(u * tex->scale);
+	sv = (int)floor(v * tex->scale);
+	if ((su + sv) & 1)
 		return (tex->color_a);
 	return (tex->color_b);
 }

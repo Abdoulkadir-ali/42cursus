@@ -18,7 +18,7 @@ static void	draw_panel_pixel(t_gui *gui, t_panel panel, int i, int j)
 	int		col;
 	float	a;
 
-	if (i < 0 || i >= gui->win.disp_w || j < 0 || j >= gui->win.disp_h)
+	if (i < 0 || i >= gui->win.disp_size.x || j < 0 || j >= gui->win.disp_size.y)
 		return ;
 	col = panel_color(panel, i, j);
 	if (col == -1)
@@ -35,11 +35,11 @@ void	draw_panel(t_gui *gui, t_panel panel)
 	int	i;
 	int	j;
 
-	j = panel.y;
-	while (j < panel.y + panel.h)
+	j = panel.box.pos.y;
+	while (j < panel.box.pos.y + panel.box.size.y)
 	{
-		i = panel.x;
-		while (i < panel.x + panel.w)
+		i = panel.box.pos.x;
+		while (i < panel.box.pos.x + panel.box.size.x)
 		{
 			draw_panel_pixel(gui, panel, i, j);
 			i++;
@@ -53,14 +53,13 @@ void	draw_ui_panels(t_gui *gui)
 	t_panel	panel;
 	int		bh;
 
-	bh = gui->win.disp_h;
+	bh = gui->win.disp_size.y;
 	draw_scene_panel_bg(gui);
 	draw_inspector_bg(gui);
-	panel = (t_panel){.x = 16, .y = bh - 72, .w = 460, .h = 56, .bg = COL_BG,
-		.brd = COL_BORDER, .pos = vec2i(16, bh - 72), .size = vec2i(460, 56)};
+	panel = (t_panel){.box = {vec2i(16, bh - 72), vec2i(460, 56)},
+		.bg = COL_BG, .brd = COL_BORDER};
 	draw_panel(gui, panel);
-	panel = (t_panel){.x = gui->win.disp_w - 120, .y = 16, .w = 104, .h = 40,
-		.bg = COL_BG, .brd = COL_FPS, .pos = vec2i(gui->win.disp_w - 120, 16),
-		.size = vec2i(104, 40)};
+	panel = (t_panel){.box = {vec2i(gui->win.disp_size.x - 120, 16), vec2i(104, 40)},
+		.bg = COL_BG, .brd = COL_FPS};
 	draw_panel(gui, panel);
 }

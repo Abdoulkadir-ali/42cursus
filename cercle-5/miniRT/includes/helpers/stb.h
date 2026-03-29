@@ -1,6 +1,6 @@
 #ifndef STB_WRAPPER_H
+# define STB_WRAPPER_H
 
-#include "../packages/stb_image.h"
-#include "constants.h"
+# include "../packages/stb_image.h"
 
 #endif

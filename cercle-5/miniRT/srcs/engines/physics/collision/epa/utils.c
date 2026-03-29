@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 14:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 07:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 18:08:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-t_vec3	bary(const t_vec3 tri[3], t_vec3 p)
+static t_vec3	collision_bary(const t_vec3 tri[3], t_vec3 p)
 {
 	t_vec3	v[2];
 	t_vec3	v0p;
@@ -35,7 +35,7 @@ t_vec3	bary(const t_vec3 tri[3], t_vec3 p)
 	return ((t_vec3){1.0 - d[5] - denom, d[5], denom, 0});
 }
 
-int	closest_face(t_epa_poly *p)
+int	collision_closest_face(t_epa_poly *p)
 {
 	int		idx;
 	int		i;
@@ -55,7 +55,8 @@ int	closest_face(t_epa_poly *p)
 	return (idx);
 }
 
-void	get_contact_points(t_epa_poly *p, t_epa_face *f, t_vec3 *ca, t_vec3 *cb)
+void	collision_get_contact_points(t_epa_poly *p, t_epa_face *f,
+	t_vec3 *ca, t_vec3 *cb)
 {
 	t_vec3	ba;
 	t_vec3	v[3];
@@ -63,7 +64,7 @@ void	get_contact_points(t_epa_poly *p, t_epa_face *f, t_vec3 *ca, t_vec3 *cb)
 	v[0] = p->pts[f->idx[0]];
 	v[1] = p->pts[f->idx[1]];
 	v[2] = p->pts[f->idx[2]];
-	ba = bary(v, vec3_scale(f->normal, f->dist));
+	ba = collision_bary(v, vec3_scale(f->normal, f->dist));
 	*ca = vec3_add(vec3_scale(p->a_pts[f->idx[0]], ba.x),
 			vec3_add(vec3_scale(p->a_pts[f->idx[1]], ba.y),
 				vec3_scale(p->a_pts[f->idx[2]], ba.z)));

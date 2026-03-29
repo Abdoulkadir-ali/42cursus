@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 10:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 22:30:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:56:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,5 @@ void	capsule_dims_sync(t_gui *gui)
 	p->radii[idx] = (float)tr->scale.x;
 	p->heights[idx] = (float)tr->scale.y;
 	/* Update scene version to force render/sync */
-	scene_invalidate(gui->scene);
+	rebuild_bvh(gui);;
 }

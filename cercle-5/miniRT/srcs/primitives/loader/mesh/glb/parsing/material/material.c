@@ -6,21 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:59:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:59:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "loader.h"
 
-static void	extract_pbr(t_json_value *json, char *bin, t_material *m,
-		t_json_value *mat_j)
+static void	extract_pbr(t_material *m, t_json_value *mat_j)
 {
 	t_json_value	*pbr;
 	t_json_value	*color;
 	t_json_value	*emis;
 
-	(void)json;
-	(void)bin;
 	pbr = json_get(mat_j, "pbrMetallicRoughness");
 	if (pbr)
 	{
@@ -68,6 +65,7 @@ static t_material	*cleanup_mats(t_material *mats, size_t n)
  */
 t_material	*glb_extract_materials(t_json_value *json, char *bin, int *count)
 {
+	(void)bin;
 	t_json_value	*m_j;
 	t_material		*mats;
 	size_t			i;
@@ -86,7 +84,7 @@ t_material	*glb_extract_materials(t_json_value *json, char *bin, int *count)
 		if (mats[i].name == NULL)
 			return (cleanup_mats(mats, i));
 		mats[i].albedo_map.type = TEX_SOLID;
-		extract_pbr(json, bin, &mats[i], json_at(m_j, i));
+		extract_pbr(&mats[i], json_at(m_j, i));
 		i++;
 	}
 	return (mats);

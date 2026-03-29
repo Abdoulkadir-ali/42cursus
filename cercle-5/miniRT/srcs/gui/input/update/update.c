@@ -15,32 +15,44 @@
 
 #include "gui.h"
 
+static void	update_cam_basis(t_camera_controller *ctrl)
+{
+	t_vec3	fwd;
+	t_vec3	right;
+	t_vec3	up;
+
+	get_forward(ctrl->transform.rotation.pitch,
+		ctrl->transform.rotation.yaw, &fwd);
+	right = vec3_norm(vec3_cross(fwd, vec3(0, 1, 0)));
+	if (vec3_mag_sq(right) < 1e-6)
+		right = vec3(1, 0, 0);
+	up = vec3_norm(vec3_cross(right, fwd));
+	ctrl->transform.forward = fwd;
+	ctrl->transform.right = right;
+	ctrl->transform.up = up;
+	ctrl->basis_dirty = false;
+}
+
 void	gui_update_input(t_gui *gui)
 {
-	t_camera_controller *ctrl;
-	t_vec3 fwd;
-	t_vec3 right;
+	t_camera_controller	*ctrl;
 
 	ctrl = &gui->cam_ctrl;
 	if (!ctrl->camera)
 		return ;
-	get_forward(ctrl->transform.rotation.pitch, ctrl->transform.rotation.yaw,
-		&fwd);
-	right = vec3_norm(vec3_cross(fwd, vec3(0, 1, 0)));
-	if (vec3_mag_sq(right) < 1e-6)
-		right = vec3(1, 0, 0);
-	t_vec3 up = vec3_norm(vec3_cross(right, fwd));
-	ctrl->transform.forward = fwd;
-	ctrl->transform.right = right;
-	ctrl->transform.up = up;
-
-	apply_movement(ctrl, fwd, right);
+	if (ctrl->basis_dirty)
+		update_cam_basis(ctrl);
+	apply_movement(ctrl, ctrl->transform.forward, ctrl->transform.right);
 	smooth_rotation(gui, ctrl);
 	smooth_position(gui, ctrl);
 	ctrl->camera->transform = ctrl->transform;
 	update_fov(gui, ctrl);
 	if (gui->render.force_fullres)
 		gui->render.scale = 1;
-	else
+	else if (gui->render.fps < 15.0)
+		gui->render.scale = 4;
+	else if (gui->render.fps < 30.0)
 		gui->render.scale = 2;
+	else
+		gui->render.scale = 1;
 }

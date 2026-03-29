@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 02:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 10:57:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 08:46:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ bool	intersect_tri_soa(const t_ray *r, t_tri_array *t, int i, t_hit *h)
 	h->t = vec3_dot(vec3(t->ex[1][i], t->ey[1][i], t->ez[1][i]), qvec) * inv_det;
 	if (h->t < EPSILON)
 		return (false);
-	h->normal = vec3_norm(vec3(t->nx[i], t->ny[i], t->nz[i]));
-	h->tangent = vec3_norm(vec3(t->tx[i], t->ty[i], t->tz[i]));
+	h->normal = vec3(t->nx[i], t->ny[i], t->nz[i]);
+	h->tangent = vec3(t->tx[i], t->ty[i], t->tz[i]);
 	vec3_orthonormal_basis(h->normal, &h->tangent, &h->bitangent);
 	h->point = vec3_add(r->origin, vec3_scale(r->direction, h->t));
 	h->u = u; h->v = v;

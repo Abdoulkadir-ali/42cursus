@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:16:32 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 00:58:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:43:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,13 @@ void	draw_ui_help(t_gui *gui, int *y)
 	int	ox;
 
 	ox = SCENE_PANEL_W + 16;
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_ACCENT, "miniRT");
+	gui_draw_string(gui, "miniRT", ox, *y, COL_ACCENT);
 	*y += 24;
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT,
-		"WASD  Move   SPACE/SHIFT  Up/Down");
+	gui_draw_string(gui, "WASD  Move   SPACE/SHIFT  Up/Down", ox, *y, COL_TEXT);
 	*y += 20;
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT,
-		"LMB   Look   MMB          Zoom");
+	gui_draw_string(gui, "LMB   Look   MMB          Zoom", ox, *y, COL_TEXT);
 	*y += 20;
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, COL_TEXT,
-		"+/-   Speed  N/P  Maps  X  Physics");
+	gui_draw_string(gui, "+/-   Speed  N/P  Maps  X  Physics", ox, *y, COL_TEXT);
 	*y += 20;
 }
 
@@ -47,26 +44,16 @@ void	draw_ui_status(t_gui *gui, int *y)
 		color = 0xFF4444;
 		snprintf(buf, sizeof(buf), "[   ]  PHYSICS  OFF");
 	}
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, color, buf);
+	gui_draw_string(gui, buf, ox, *y, color);
 	*y += 20;
 }
 
 void	draw_ui_object(t_gui *gui)
 {
 	char	buf[128];
-	t_mesh	*mesh;
 
-	if (!gui->scene || gui->scene->mesh_count == 0)
+	if (!gui->scene || gui->scene->primitives.count == 0)
 		return ;
-	mesh = &gui->scene->meshes[0];
-	snprintf(buf, sizeof(buf), "Object: %s",
-		mesh->name ? mesh->name : "(unnamed)");
-	mlx_string_put(gui->win.mlx, gui->win.win, 350, 38, COL_ACCENT, buf);
-	snprintf(buf, sizeof(buf), "Material: %d", mesh->mat_id);
-	mlx_string_put(gui->win.mlx, gui->win.win, 350, 58, COL_TEXT, buf);
-	snprintf(buf, sizeof(buf), "Vertices: %d", mesh->vertex_count);
-	mlx_string_put(gui->win.mlx, gui->win.win, 350, 78, COL_TEXT, buf);
-	snprintf(buf, sizeof(buf), "Transform: Pos(%.2f,%.2f,%.2f)",
-		mesh->transform.pos.x, mesh->transform.pos.y, mesh->transform.pos.z);
-	mlx_string_put(gui->win.mlx, gui->win.win, 350, 98, COL_TEXT, buf);
+	snprintf(buf, sizeof(buf), "Primitives: %zu", gui->scene->primitives.count);
+	gui_draw_string(gui, buf, 350, 38, COL_ACCENT);
 }

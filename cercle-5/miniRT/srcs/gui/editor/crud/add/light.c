@@ -25,8 +25,10 @@ void	editor_add_light(t_gui *gui)
 	lt.rgb = vec3(1.0, 1.0, 1.0);
 	lt.brightness = 0.8;
 	lt.type = LIGHT_POINT;
+	pthread_rwlock_wrlock(&gui->scene_lock);
 	scene_add_light(gui->scene, lt);
 	select_object(gui, TYPE_LIGHT, gui->scene->light_count - 1);
 	rebuild_bvh(gui);
+	pthread_rwlock_unlock(&gui->scene_lock);
 	gui->render.dirty = true;
 }

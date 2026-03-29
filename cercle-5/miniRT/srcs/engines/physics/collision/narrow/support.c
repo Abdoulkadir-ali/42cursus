@@ -12,18 +12,35 @@
 
 #include "physics.h"
 
-t_support_fn	get_support(t_phys_type type)
+t_support_fn	get_support(int type)
 {
-	static t_support_fn	table[TYPE_PHYS_MAX] = {[TYPE_PHYS_SPHERE] = gjk_support_sphere,
-			[TYPE_PHYS_BOX] = gjk_support_box,
-			[TYPE_PHYS_CAPSULE] = gjk_support_capsule,
-			[TYPE_PHYS_CYLINDER] = gjk_support_cylinder,
-			[TYPE_PHYS_RECT] = gjk_support_rect,
-			[TYPE_PHYS_TRI] = gjk_support_tri,
-			[TYPE_PHYS_PYRAMID] = gjk_support_pyramid,
-			[TYPE_PHYS_MESH] = gjk_support_mesh};
-
-	if (type < 0 || type >= TYPE_PHYS_MAX)
+	if (type == PRIM_SPHERE)
+		return (gjk_support_sphere);
+	if (type == PRIM_BOX)
 		return (gjk_support_box);
-	return (table[type]);
+	if (type == PRIM_CAPSULE)
+		return (gjk_support_capsule);
+	if (type == PRIM_CYLINDER)
+		return (gjk_support_cylinder);
+	if (type == PRIM_RECT)
+		return (gjk_support_rect);
+	if (type == PRIM_TRIANGLE)
+		return (gjk_support_tri);
+	if (type == PRIM_PYRAMID)
+		return (gjk_support_pyramid);
+	return (gjk_support_box);
+}
+
+void	init_gjk_shape(t_gjk_shape *s, t_physics *phys, int idx)
+{
+	int	p_idx;
+
+	s->scene = phys->scene;
+	s->phys = phys;
+	s->idx = idx;
+	p_idx = phys->scene->primitives.phys_idx[idx];
+	if (p_idx >= 0 && phys->soa->is_compound[p_idx])
+		s->support = gjk_support_compound;
+	else
+		s->support = get_support(phys->scene->primitives.types[idx]);
 }

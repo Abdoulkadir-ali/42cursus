@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 09:44:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:44:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ static void	cleanup_app(t_scene *scene, t_gui *gui)
 		gui_destroy(gui);
 	else if (scene)
 	{
-		phys_destroy_pool(scene);
 		destroy_scene(scene);
 	}
 }
@@ -36,10 +35,10 @@ static void	cleanup_app(t_scene *scene, t_gui *gui)
  * @param mlx Pointer to the MLX instance.
  * @return bool True on success, false on failure.
  */
-static bool	init_app(const char *path, t_gui *gui, t_scene **scene, void *mlx)
+static bool	init_app(t_gui *gui, t_scene **scene, const char *path, void *mlx)
 {
-	*scene = parse_file(path, mlx);
-	if (!*scene)
+	*scene = create_scene(path);
+	if (!*scene || !rt_load(*scene, path))
 	{
 		ft_putstr_fd("Error: Failed to load scene: ", STDERR_FILENO);
 		ft_putendl_fd((char *)path, STDERR_FILENO);
@@ -59,6 +58,7 @@ int	start_app(void *mlx, const char *path)
 	t_gui	gui;
 	t_scene	*scene;
 
+	ft_memset(&gui, 0, sizeof(t_gui));
 	scene = NULL;
 	if (!init_app(&gui, &scene, path, mlx))
 	{

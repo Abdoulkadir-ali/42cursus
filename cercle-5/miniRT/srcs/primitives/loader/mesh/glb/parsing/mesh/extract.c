@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 18:12:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,18 @@ void	glb_extract_data(char *bin, t_glb_accessor *acc, t_glb_buffer_view *bv,
 
 	if (bin == NULL || bv == NULL || acc == NULL || entry == NULL)
 		return ;
+	if (acc->byte_offset + acc->count * acc->type_size > bv->byte_length)
+		return ;
 	src = bin + bv->byte_offset + acc->byte_offset;
 	src_stride = bv->byte_stride;
 	if (src_stride == 0)
 		src_stride = acc->type_size;
 	dst = (char *)entry;
+	if (src_stride == (int)acc->type_size && (int)acc->stride == (int)acc->type_size)
+	{
+		ft_memcpy(dst, src, (size_t)acc->count * acc->type_size);
+		return ;
+	}
 	i = 0;
 	while (i < acc->count)
 	{
@@ -43,7 +50,7 @@ void	glb_extract_data(char *bin, t_glb_accessor *acc, t_glb_buffer_view *bv,
  * @brief Handles 16-bit indices by expanding them to 32-bit locally.
  * Variables limited to 4. No loops other than while.
  */
-void	glb_handle_indices_short(t_mesh *mesh, t_json_value *json, char *bin, 
+void	glb_handle_indices_short(t_mesh_asset *mesh, t_json_value *json, char *bin, 
 		int idx)
 {
 	t_glb_accessor		acc;

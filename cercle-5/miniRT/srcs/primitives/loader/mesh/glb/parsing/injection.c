@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 09:48:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	find_skin_for_mesh(t_json_value *json, int mesh_idx)
 static void	mesh_to_scene(t_scene *s, t_glb *g, t_json_value *p, int *mmap,
 		int mesh_idx)
 {
-	t_mesh	mesh;
+	t_mesh_asset	mesh;
 	size_t	i;
 	int		mat_idx;
 

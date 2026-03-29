@@ -13,22 +13,34 @@
 #include "maths.h"
 
 /*
-** Solves a quadratic equation ax^2 + bx + c = 0.
-** Stores the two roots in t1 and t2.
-** Returns true if real roots exist, false otherwise.
+** Numerically stable quadratic solver (Kahan's method).
+** Computes the larger-magnitude root first using sign(b)*sqrt(disc)
+** to avoid catastrophic cancellation, then derives the second root
+** via Vieta's formula (t1 * t2 = c/a).
+** Precomputes inv_2a to replace two divisions with one multiply each.
 */
 bool	solve_quadratic(t_quadratic q, t_quadratic_roots *roots)
 {
-	double	discriminant;
+	double	disc;
 	double	sqrt_d;
+	double	sign_b;
+	double	inv_2a;
 
 	if (fabs(q.a) < EPSILON)
 		return (false);
-	discriminant = q.b * q.b - 4 * q.a * q.c;
-	if (discriminant < 0)
+	disc = q.b * q.b - 4.0 * q.a * q.c;
+	if (disc < 0.0)
 		return (false);
-	sqrt_d = sqrt(discriminant);
-	roots->t1 = (-q.b - sqrt_d) / (2 * q.a);
-	roots->t2 = (-q.b + sqrt_d) / (2 * q.a);
+	sqrt_d = sqrt(disc);
+	inv_2a = 1.0 / (2.0 * q.a);
+	if (q.b >= 0.0)
+		sign_b = 1.0;
+	else
+		sign_b = -1.0;
+	roots->t1 = (-q.b - sign_b * sqrt_d) * inv_2a;
+	if (fabs(roots->t1) < EPSILON)
+		roots->t2 = 0.0;
+	else
+		roots->t2 = (q.c / q.a) / roots->t1;
 	return (true);
 }

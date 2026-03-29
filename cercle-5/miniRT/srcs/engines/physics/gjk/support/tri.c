@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 07:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 20:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 14:15:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ t_vec3	gjk_support_tri(const t_gjk_shape *s, t_vec3 dir)
 	t_vec3		v[3];
 
 	t = &s->scene->tri_soa;
-	v[0] = vec3(t->vx0[s->idx], t->vy0[s->idx], t->vz0[s->idx]);
-	v[1] = vec3(t->vx1[s->idx], t->vy1[s->idx], t->vz1[s->idx]);
-	v[2] = vec3(t->vx2[s->idx], t->vy2[s->idx], t->vz2[s->idx]);
+	v[0] = vec3(t->vx[0][s->idx], t->vy[0][s->idx], t->vz[0][s->idx]);
+	v[1] = vec3(t->vx[1][s->idx], t->vy[1][s->idx], t->vz[1][s->idx]);
+	v[2] = vec3(t->vx[2][s->idx], t->vy[2][s->idx], t->vz[2][s->idx]);
 	return (gjk_support_list(v, 3, dir));
 }

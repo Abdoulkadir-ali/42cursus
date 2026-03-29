@@ -24,7 +24,7 @@ void	slider_update_drag(t_gui *gui, int mouse_x)
     w = gui->slider_state->target;
     range = w->dmax - w->dmin;
     delta = (double)(mouse_x - gui->slider_state->drag_start_x)
-        * range / (double)w->size.x;
+        * range / (double)w->box.size.x;
     newval = gui->slider_state->drag_start_val + delta;
     if (newval < w->dmin)
         newval = w->dmin;

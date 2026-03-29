@@ -19,10 +19,9 @@ void	obj_free_obj(t_obj *obj)
 	free(obj->temp_vn);
 }
 
-void	obj_init_mesh(t_mesh *mesh, t_obj *obj, const char *path)
+void	obj_init_mesh(t_mesh_asset *mesh, t_obj *obj)
 {
-	(void)path;
-	ft_memset(mesh, 0, sizeof(t_mesh));
+	ft_memset(mesh, 0, sizeof(t_mesh_asset));
 	mesh->transform.scale = vec3(1, 1, 1);
 	mesh->vertices = obj->out_v;
 	mesh->normals = obj->out_vn;
@@ -32,7 +31,7 @@ void	obj_init_mesh(t_mesh *mesh, t_obj *obj, const char *path)
 	mesh->tri_count = obj->out_i_count / 3;
 }
 
-void	obj_set_mat_id(t_mesh *mesh, t_obj *obj)
+void	obj_set_mat_id(t_mesh_asset *mesh, t_obj *obj)
 {
 	mesh->mat_id = 0;
 	if (obj->current_mat_id >= 0)

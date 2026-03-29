@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 07:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:22:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/28 16:28:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static bool	parse_model_config(t_parser *p, char *path, t_vec3 v[4], double *s)
 	return (true);
 }
 
-static void	apply_overrides(t_mesh *mesh, t_vec3 v[2], double scale, int mat_id)
+static void	apply_overrides(t_mesh_asset *mesh, t_vec3 v[2], double scale, int mat_id)
 {
 	mesh->transform.pos = vec3_add(mesh->transform.pos, v[0]);
 	mesh->transform.rotation.pitch += v[1].x;
@@ -33,7 +33,7 @@ static void	apply_overrides(t_mesh *mesh, t_vec3 v[2], double scale, int mat_id)
 
 bool	parse_mesh_entry(t_scene *scene, t_parser *p)
 {
-	char	path[1024]; t_vec3 v[4]; double s; t_mesh m;
+	char	path[1024]; t_vec3 v[4]; double s; t_mesh_asset m;
 	if (!parse_model_config(p, path, v, &s)) return (false);
 	if (!mesh_load_from_file(&m, path)) return (false);
 	apply_overrides(&m, v, s, scene_add_material_from_color(scene, v[2]));
@@ -59,10 +59,16 @@ bool	parse_glb_entry(t_scene *scene, t_parser *p)
 
 bool	parse_obj_entry(t_scene *scene, t_parser *p)
 {
-	t_obj obj; char path[1024]; t_vec3 v[4]; double s; t_mesh m;
-	if (!parse_model_config(p, path, v, &s)) return (false);
-	if (!obj_parse_to_asset(&obj, path)) return (false);
-	obj_init_mesh(&m, &obj, path);
+	t_obj obj; char path[1024]; 
+	t_vec3 v[4]; 
+	double s;
+	t_mesh_asset m;
+	
+	if (!parse_model_config(p, path, v, &s))
+		return (false);
+	if (!obj_parse_to_asset(&obj, path))
+		return (false);
+	obj_init_mesh(&m, &obj);
 	apply_overrides(&m, v, s, -1);
 	scene_add_mesh(scene, m);
 	obj_free_obj(&obj);
