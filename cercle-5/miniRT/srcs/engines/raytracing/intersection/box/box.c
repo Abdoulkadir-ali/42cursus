@@ -83,10 +83,16 @@ bool	intersect_box(const t_ray *ray, t_primitive_array *p, int i, t_hit *hit)
 	box_compute_t(vec3_mul(vec3_sub(bx.min, ray->origin), ray->inv_dir),
 		vec3_mul(vec3_sub(bx.max, ray->origin), ray->inv_dir), &min_t, &max_t);
 	if (min_t > max_t || max_t < EPSILON)
+	{
+		DBG_TRACE_MSG(DBG_CH_BVH,
+			"intersect_box: miss tmin=%.3f tmax=%.3f\n",
+			min_t, max_t);
 		return (false);
+	}
 	t.x = min_t;
 	if (min_t <= EPSILON)
 		t.x = max_t;
 	box_set_hit(hit, bx, *ray, t.x);
+	DBG_TRACE_MSG(DBG_CH_BVH, "intersect_box: hit t=%.4f\n", t.x);
 	return (true);
 }

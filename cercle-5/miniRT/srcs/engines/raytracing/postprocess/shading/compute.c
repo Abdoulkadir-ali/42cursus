@@ -18,10 +18,18 @@ static void	setup_shading(t_shading *sha, t_hit *hit, t_rt_engine *rt)
 	sha->rt = rt;
 	sha->mat = &rt->rt_materials[hit->mat_idx];
 	if (sha->mat->albedo_tex_idx >= 0)
-		sha->albedo = sample_texture_pool(sha, sha->mat->albedo_tex_idx, hit->u,
-				hit->v);
+	{
+		DBG_TRACE_MSG(DBG_CH_TEXTURE,
+			"setup_shading: albedo tex idx=%d\n",
+			sha->mat->albedo_tex_idx);
+		sha->albedo = sample_texture_pool(sha, sha->mat->albedo_tex_idx,
+				hit->u, hit->v);
+	}
 	else
+	{
+		DBG_TRACE_MSG(DBG_CH_TEXTURE, "setup_shading: albedo color\n");
 		sha->albedo = sha->mat->color;
+	}
 	apply_bump(sha);
 }
 
@@ -96,6 +104,9 @@ t_vec3	compute_color(t_hit *hit, t_rt_engine *rt, const t_ray *r)
 	t_vec3		total;
 	size_t		i;
 
+	DBG_ENTER("compute_color");
+	DBG_INFO_MSG(DBG_CH_RENDER,
+		"compute_color: mat=%d depth=%d\n", hit->mat_idx, r->depth);
 	sha.ray = r;
 	setup_shading(&sha, hit, rt);
 	total = pixel_color(sha.albedo, rt->scene->ambient.rgb,
@@ -109,7 +120,11 @@ t_vec3	compute_color(t_hit *hit, t_rt_engine *rt, const t_ray *r)
 		add_emissive_lighting(&sha, rt, &total);
 	total = vec3_add(total, sha.mat->emission);
 	if (r->depth >= rt->settings.max_depth)
+	{
+		DBG_LEAVE("compute_color");
 		return (clamp_color(total));
+	}
 	apply_bounces(&sha, &total, sha.mat->reflectivity);
+	DBG_LEAVE("compute_color");
 	return (clamp_color(total));
 }

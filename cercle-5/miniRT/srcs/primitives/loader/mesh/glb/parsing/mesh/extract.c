@@ -30,7 +30,7 @@ void	glb_extract_data(char *bin, t_glb_accessor *acc, t_glb_buffer_view *bv,
 		return ;
 	src = bin + bv->byte_offset + acc->byte_offset;
 	src_stride = bv->byte_stride;
-	if (src_stride == 0)
+	if (src_stride <= 0)
 		src_stride = acc->type_size;
 	dst = (char *)entry;
 	if (src_stride == (int)acc->type_size && (int)acc->stride == (int)acc->type_size)

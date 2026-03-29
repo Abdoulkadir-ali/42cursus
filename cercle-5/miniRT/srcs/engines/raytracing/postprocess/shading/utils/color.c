@@ -14,6 +14,10 @@
 
 t_vec3	clamp_color(t_vec3 color)
 {
+	if (color.x > 1.0 || color.y > 1.0 || color.z > 1.0)
+		DBG_WARN_MSG(DBG_CH_RENDER,
+			"clamp_color: overflow r=%.2f g=%.2f b=%.2f\n",
+			color.x, color.y, color.z);
 	color.x = fmin(fmax(color.x, COLOR_MIN), COLOR_MAX);
 	color.y = fmin(fmax(color.y, COLOR_MIN), COLOR_MAX);
 	color.z = fmin(fmax(color.z, COLOR_MIN), COLOR_MAX);

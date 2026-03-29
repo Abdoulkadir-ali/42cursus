@@ -20,7 +20,11 @@ bool	intersect_plane(const t_ray *ray, t_primitive_array *p, int i, t_hit *hit)
 
 	denom = vec3_dot(pl.normal, ray->direction);
 	if (fabs(denom) < EPSILON)
+	{
+		DBG_WARN_MSG(DBG_CH_RENDER,
+			"plane: denom near-zero=%.6f i=%d\n", denom, i);
 		return (false);
+	}
 	t = vec3_dot(vec3_sub(pl.point, ray->origin), pl.normal) / denom;
 	if (t < EPSILON)
 		return (false);
@@ -33,5 +37,6 @@ bool	intersect_plane(const t_ray *ray, t_primitive_array *p, int i, t_hit *hit)
 	hit->mat_idx = pl.mat_idx;
 	hit->type = TYPE_PLANE;
 	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
+	DBG_TRACE_MSG(DBG_CH_RENDER, "plane: t=%.4f i=%d\n", t, i);
 	return (true);
 }

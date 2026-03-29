@@ -57,14 +57,27 @@ bool bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 {
 	t_occ v;
 	int stack[64], ptr, node_idx;
-	if (!bvh || bvh->num_nodes == 0) return (false);
+
+	DBG_ENTER("bvh_occluded");
+	if (!bvh || bvh->num_nodes == 0)
+	{
+		DBG_LEAVE("bvh_occluded");
+		return (false);
+	}
 	v.bvh = bvh; v.ray = ray; v.max_t = max_t; v.stack = stack; v.ptr = &ptr;
 	ptr = 1; stack[0] = 0;
 	while (ptr > 0) {
 		node_idx = stack[--ptr];
 		if (bvh->nodes[node_idx].count > 0) {
-			if (process_leaf_occluded(bvh, node_idx, ray, max_t)) return (true);
+			if (process_leaf_occluded(bvh, node_idx, ray, max_t))
+			{
+				DBG_TRACE_MSG(DBG_CH_BVH, "bvh_occluded: OCCLUDED\n");
+				DBG_LEAVE("bvh_occluded");
+				return (true);
+			}
 		} else push_occ_children(&v, node_idx);
 	}
+	DBG_TRACE_MSG(DBG_CH_BVH, "bvh_occluded: CLEAR\n");
+	DBG_LEAVE("bvh_occluded");
 	return (false);
 }

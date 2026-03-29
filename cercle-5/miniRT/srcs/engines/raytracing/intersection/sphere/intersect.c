@@ -33,6 +33,9 @@ bool	intersect_sphere(const t_ray *ray, t_primitive_array *p,
 	b = 2.0 * vec3_dot(oc, ray->direction);
 	c = vec3_dot(oc, oc) - (radius * radius);
 	delta = b * b - 4.0 * c;
+	if (delta >= 0 && delta < 1e-4)
+		DBG_WARN_MSG(DBG_CH_RENDER,
+			"sphere: delta near-zero=%.6f i=%d\n", delta, i);
 	if (delta < 0)
 		return (false);
 	delta = sqrt(delta);
@@ -48,5 +51,6 @@ bool	intersect_sphere(const t_ray *ray, t_primitive_array *p,
 	vec3_orthonormal_basis(h->normal, &h->tangent, &h->bitangent);
 	h->mat_idx = mat_idx;
 	h->type = TYPE_SPHERE;
+	DBG_TRACE_MSG(DBG_CH_RENDER, "sphere: t=%.4f i=%d\n", t, i);
 	return (true);
 }

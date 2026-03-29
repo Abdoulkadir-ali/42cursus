@@ -48,7 +48,9 @@ static void	traverse_node(t_bvh_stack *s, t_hit *hit, int i)
 bool	run_traverse_loop(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 {
 	t_bvh_stack	s;
+	bool		result;
 
+	DBG_ENTER("run_traverse_loop");
 	s.ptr = 1;
 	s.bvh = bvh;
 	s.ray = ray;
@@ -60,5 +62,11 @@ bool	run_traverse_loop(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 		if (s.stack_tmin[s.ptr] <= hit->t)
 			traverse_node(&s, hit, s.stack[s.ptr]);
 	}
-	return (hit->ref.type != TYPE_NONE);
+	result = (hit->ref.type != TYPE_NONE);
+	if (result)
+		DBG_TRACE_MSG(DBG_CH_BVH,
+			"bvh_traverse: HIT type=%d t=%.4f\n",
+			hit->ref.type, hit->t);
+	DBG_LEAVE("run_traverse_loop");
+	return (result);
 }

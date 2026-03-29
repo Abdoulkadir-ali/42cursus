@@ -18,9 +18,19 @@
  */
 void	get_shading_material(t_shading *sha)
 {
+	int	mat_idx;
+
 	if (!sha || !sha->rt || !sha->hit)
 		return ;
-	
-	/* Correct assignment for const pointer context */
-	sha->mat = &sha->rt->rt_materials[sha->hit->mat_idx];
+	mat_idx = sha->hit->mat_idx;
+	DBG_TRACE_MSG(DBG_CH_RENDER,
+		"get_shading_material: mat_idx=%d\n", mat_idx);
+	if (mat_idx < 0
+		|| mat_idx >= (int)sha->rt->scene->mat_count)
+	{
+		DBG_WARN_MSG(DBG_CH_RENDER,
+			"get_shading_material: mat_idx=%d OOB\n", mat_idx);
+		return ;
+	}
+	sha->mat = &sha->rt->rt_materials[mat_idx];
 }

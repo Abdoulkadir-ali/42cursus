@@ -38,8 +38,14 @@ t_vec3	calc_light(t_shading *sha, const t_rt_engine *rt, t_light light)
 		return (vec3(0, 0, 0));
 	c.ld_norm = vec3_scale(ld, 1.0 / c.dist);
 	c.ndotl = vec3_dot(sha->hit->normal, c.ld_norm);
-	if (c.ndotl < 1e-6 || !light_visible(sha, rt, &light, &c))
+	DBG_TRACE_MSG(DBG_CH_RENDER, "calc_light: ndotl=%.4f\n", c.ndotl);
+	if (c.ndotl < 1e-6)
 		return (vec3(0, 0, 0));
+	if (!light_visible(sha, rt, &light, &c))
+	{
+		DBG_TRACE_MSG(DBG_CH_RENDER, "calc_light: SHADOWED\n");
+		return (vec3(0, 0, 0));
+	}
 	half = vec3_norm(vec3_add(c.ld_norm,
 				vec3_scale(sha->ray->direction, -1.0)));
 	s = fmax(0.0, vec3_dot(sha->hit->normal, half));
@@ -50,7 +56,10 @@ t_vec3	calc_light(t_shading *sha, const t_rt_engine *rt, t_light light)
 		double sh = sha->mat->specular * 100.0;
 		s = exp(sh * log(fmax(s, 1e-7)));
 	}
+	DBG_TRACE_MSG(DBG_CH_RENDER,
+		"calc_light: ndotl=%.3f spec=%.3f\n", c.ndotl, s);
 	return (vec3_add(pixel_color(sha->albedo, light.rgb, light.brightness
 				* c.ndotl), vec3_scale(light.rgb, light.brightness
 				* sha->mat->specular * s)));
 }
+

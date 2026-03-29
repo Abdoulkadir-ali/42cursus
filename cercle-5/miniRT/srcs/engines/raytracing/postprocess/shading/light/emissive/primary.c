@@ -70,6 +70,8 @@ static void	emissive_pyramid(t_shading *sha, const t_rt_engine *rt, t_vec3 *tot,
 void	emissive_primary(t_shading *sha, const t_rt_engine *rt, t_vec3 *tot,
 		t_emissive_ref r)
 {
+	DBG_TRACE_MSG(DBG_CH_RENDER,
+		"emissive_primary: type=%d idx=%d\n", r.type, r.index);
 	if (r.type == TYPE_SPHERE)
 		emissive_sphere(sha, rt, tot, r);
 	else if (r.type == TYPE_TRI)
@@ -78,4 +80,7 @@ void	emissive_primary(t_shading *sha, const t_rt_engine *rt, t_vec3 *tot,
 		emissive_rect(sha, rt, tot, r);
 	else if (r.type == TYPE_PYRAMID)
 		emissive_pyramid(sha, rt, tot, r);
+	else
+		DBG_WARN_MSG(DBG_CH_RENDER,
+			"emissive_primary: unknown type=%d\n", r.type);
 }

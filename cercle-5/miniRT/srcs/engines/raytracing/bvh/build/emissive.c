@@ -43,18 +43,30 @@ static int add_emissives_impl(const t_scene *sc, t_emissive_ref *ca)
 
 void build_emissive_cache(t_scene *sc)
 {
-	t_emissive_ref *cache;
-	size_t cap;
+	t_emissive_ref	*cache;
+	size_t			cap;
 
+	DBG_ENTER("build_emissive_cache");
 	free(sc->emissive_cache);
 	sc->emissive_cache = NULL;
 	sc->emissive_count = 0;
 	cap = sc->primitives.count + sc->tri_soa.count;
 	if (cap == 0)
-		return;
+	{
+		DBG_TRACE_MSG(DBG_CH_BVH, "build_emissive_cache: cap=0\n");
+		DBG_LEAVE("build_emissive_cache");
+		return ;
+	}
 	cache = malloc(sizeof(t_emissive_ref) * cap);
 	if (!cache)
-		return;
+	{
+		DBG_ERR_MSG(DBG_CH_BVH, "build_emissive_cache: malloc FAIL\n");
+		DBG_LEAVE("build_emissive_cache");
+		return ;
+	}
 	sc->emissive_count = add_emissives_impl(sc, cache);
 	sc->emissive_cache = cache;
+	DBG_INFO_MSG(DBG_CH_BVH,
+		"build_emissive_cache: found=%zu\n", sc->emissive_count);
+	DBG_LEAVE("build_emissive_cache");
 }

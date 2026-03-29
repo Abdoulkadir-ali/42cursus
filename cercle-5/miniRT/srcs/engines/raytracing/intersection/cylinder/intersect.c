@@ -56,6 +56,9 @@ bool	intersect_cylinder(const t_ray *ray, t_primitive_array *p, int i, t_hit *h)
 	c = vec3_dot(oc, oc) - (vec3_dot(oc, axis) * vec3_dot(oc, axis))
 		- radius * radius;
 	delta = b * b - 4 * a * c;
+	if (delta < 0)
+		DBG_TRACE_MSG(DBG_CH_RENDER,
+			"intersect_cylinder: disc<0 body miss\n");
 	if (delta >= 0)
 	{
 		t1 = (-b - sqrt(delta)) / (2.0 * a);
@@ -101,6 +104,8 @@ bool	intersect_cylinder(const t_ray *ray, t_primitive_array *p, int i, t_hit *h)
 		h->mat_idx = mat_idx;
 		h->type = TYPE_CYLINDER;
 		vec3_orthonormal_basis(h->normal, &h->tangent, &h->bitangent);
+		DBG_TRACE_MSG(DBG_CH_RENDER,
+			"intersect_cylinder: hit t=%.4f\n", h->t);
 	}
 	return (hit);
 }

@@ -96,8 +96,16 @@ t_bvh_tmp_node	*build_recursive(t_build_item *items, size_t count,
 {
 	t_aabb	bbox;
 
+	DBG_ENTER("build_recursive");
+	DBG_TRACE_MSG(DBG_CH_BVH, "build_recursive: count=%zu\n", count);
 	bbox = compute_bbox(items, count);
 	if (count <= MAX_LEAF_OBJECTS)
+	{
+		DBG_TRACE_MSG(DBG_CH_BVH, "build_recursive: -> LEAF\n");
+		DBG_LEAVE("build_recursive");
 		return (init_leaf_node(items, count, base));
+	}
+	DBG_TRACE_MSG(DBG_CH_BVH, "build_recursive: -> SPLIT\n");
+	DBG_LEAVE("build_recursive");
 	return (build_internal_node(items, count, bbox, base));
 }

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "animations.h"
+#include "debug.h"
 
 /*
 ** Animation engine pipeline entry point.
@@ -90,12 +91,24 @@ static void	apply_trs_to_skeleton(t_skinned_mesh *sm)
 	}
 }
 
+static void	dbg_log_clip(t_skinned_mesh *sm, t_animation *clip)
+{
+	char	*cn;
+
+	cn = clip->name;
+	if (!cn)
+		cn = "?";
+	DBG_INFO_MSG(DBG_CH_ANIM,
+		"update_animations: clip=%s t=%.3f\n", cn, sm->anim_time);
+}
+
 void	update_animations(t_scene *scene, double dt)
 {
 	size_t			i;
 	t_skinned_mesh	*sm;
 	t_animation		*clip;
 
+	DBG_ENTER("update_animations");
 	i = 0;
 	while (i < scene->anim_count)
 	{
@@ -104,10 +117,12 @@ void	update_animations(t_scene *scene, double dt)
 			|| (size_t)sm->current_anim >= scene->clip_count)
 			continue ;
 		clip = &scene->clips[sm->current_anim];
+		dbg_log_clip(sm, clip);
 		anim_advance_time(sm, clip, (float)dt);
 		apply_clip_channels(sm, clip);
 		apply_trs_to_skeleton(sm);
 		update_skeleton_hierarchy(sm);
 		update_skinned_mesh(sm);
 	}
+	DBG_LEAVE("update_animations");
 }

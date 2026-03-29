@@ -78,7 +78,7 @@ bool	glb_load_primitive(t_mesh_asset *mesh, t_json_value *json, char *bin,
 {
 	t_json_value	*prim;
 	int				ids[6];
-	t_glb_accessor		idx_acc;
+	t_glb_accessor	idx_acc;
 
 	prim = get_primitive(json, mesh_idx, prim_idx);
 	if (get_ids(prim, ids) == false)

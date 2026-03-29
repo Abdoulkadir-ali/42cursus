@@ -49,5 +49,11 @@ bool	intersect_tri_soa(const t_ray *r, t_tri_array *t, int i, t_hit *h)
 	h->u = u; h->v = v;
 	h->mat_idx = t->mat_ids[i];
 	h->type = TYPE_TRI;
+	if (h->mat_idx < 0)
+		DBG_WARN_MSG(DBG_CH_BVH,
+			"intersect_tri_soa: mat_id=%d OOB i=%d\n",
+			h->mat_idx, i);
+	DBG_TRACE_MSG(DBG_CH_BVH,
+		"intersect_tri_soa: hit t=%.4f i=%d\n", h->t, i);
 	return (true);
 }

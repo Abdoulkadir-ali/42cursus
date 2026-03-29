@@ -48,10 +48,17 @@ static bool	dispatch_intersect(const t_ray *ray, t_scene *scene,
 bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 	t_hit *hit)
 {
+	DBG_ENTER("intersect_object");
 	if (!dispatch_intersect(ray, scene, ref, hit))
+	{
+		DBG_LEAVE("intersect_object");
 		return (false);
+	}
 	hit->ref = ref;
 	hit->type = ref.type;
+	DBG_TRACE_MSG(DBG_CH_BVH,
+		"intersect_object: type=%d idx=%d\n", ref.type, ref.index);
+	DBG_LEAVE("intersect_object");
 	return (true);
 }
 
@@ -60,9 +67,18 @@ bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
  */
 bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 {
+	bool	result;
+
+	DBG_ENTER("bvh_intersect");
 	if (!bvh || bvh->num_nodes == 0)
+	{
+		DBG_WARN_MSG(DBG_CH_BVH, "bvh_intersect: null/empty bvh\n");
+		DBG_LEAVE("bvh_intersect");
 		return (false);
+	}
 	hit->t = MAX_VALUE;
 	hit->ref.type = TYPE_NONE;
-	return (run_traverse_loop(bvh, ray, hit));
+	result = run_traverse_loop(bvh, ray, hit);
+	DBG_LEAVE("bvh_intersect");
+	return (result);
 }

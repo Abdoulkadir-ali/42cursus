@@ -31,11 +31,19 @@ int	engine_pool_add_texture(t_rt_engine *rt, const char *path)
 	{
 		if (rt->texture_names && rt->texture_names[i]
 			&& strcmp(rt->texture_names[i], path) == 0)
+		{
+			DBG_TRACE_MSG(DBG_CH_TEXTURE,
+				"tex_pool: CACHED %s idx=%d\n", path, i);
 			return (i);
+		}
 	}
 	pixels = stbi_load(path, &w, &h, &channels, 4); /* Force RGBA */
 	if (!pixels)
+	{
+		DBG_ERR_MSG(DBG_CH_TEXTURE,
+			"tex_pool: stbi_load FAIL %s\n", path);
 		return (-1);
+	}
 	count_ptr = (size_t *)&rt->texture_count;
 	cap_ptr = (size_t *)&rt->texture_cap;
 	idx = rt->texture_count;
@@ -53,6 +61,8 @@ int	engine_pool_add_texture(t_rt_engine *rt, const char *path)
 	rt->texture_pool[idx] = pixels;
 	rt->texture_dims[idx] = vec2i(w, h);
 	rt->texture_names[idx] = strdup(path);
+	DBG_INFO_MSG(DBG_CH_TEXTURE,
+		"tex_pool: LOAD %s %dx%d idx=%zu\n", path, w, h, idx);
 	return ((int)idx);
 }
 
