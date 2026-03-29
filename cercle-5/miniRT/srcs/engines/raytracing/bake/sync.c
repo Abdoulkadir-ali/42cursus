@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 10:54:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:28:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
+#include "debug.h"
 
 /**
  * @brief DOD Baking Bridge.
@@ -47,21 +48,36 @@ void	raytrace_engine_sync(t_rt_engine *rt, t_scene *scene, int w, int h)
 	settings_dirty = (rt->settings.width != w || rt->settings.height != h);
 	scene_dirty = (__atomic_load_n(&rt->baked_version, __ATOMIC_ACQUIRE)
 			!= scene->version);
+	DBG_INFO_MSG(DBG_CH_BVH,
+		"rt_sync: settings_dirty=%d scene_dirty=%d v=%u mats=%zu prims=%zu\n",
+		settings_dirty, scene_dirty, scene->version, scene->mat_count,
+		scene->primitives.count);
 	if (settings_dirty)
 		raytrace_sync_settings(rt, scene, w, h);
 	if (!scene_dirty)
 		return ;
 	if (!bake_materials(rt, scene))
+	{
+		DBG_WARN_MSG(DBG_CH_BVH, "rt_sync: bake_materials FAIL mats=%zu\n",
+			scene->mat_count);
 		return ;
+	}
+	DBG_INFO_MSG(DBG_CH_BVH, "rt_sync: bake_materials OK mats=%zu\n",
+		scene->mat_count);
 	rt->scene = scene;
 	if (rt->bvh)
 		bvh_destroy(rt->bvh);
+	DBG_INFO_MSG(DBG_CH_BVH, "rt_sync: bvh_build_global start prims=%zu\n",
+		scene->primitives.count);
 	rt->bvh = bvh_build_global(scene);
+	DBG_INFO_MSG(DBG_CH_BVH, "rt_sync: bvh=%p\n", (void *)rt->bvh);
 	pthread_mutex_lock(&rt->bake_lock);
 	rt->emissive_cache = scene->emissive_cache;
 	rt->emissive_n = (int)scene->emissive_count;
 	pthread_mutex_unlock(&rt->bake_lock);
 	__atomic_store_n(&rt->baked_version, scene->version, __ATOMIC_RELEASE);
+	DBG_INFO_MSG(DBG_CH_BVH, "rt_sync: DONE baked_v=%u emissive=%d\n",
+		scene->version, rt->emissive_n);
 }
 
 /**

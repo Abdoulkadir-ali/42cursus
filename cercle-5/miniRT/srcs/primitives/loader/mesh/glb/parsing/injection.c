@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 11:18:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static void	mesh_to_scene(t_scene *s, t_glb *g, t_json_value *p, int *mmap,
 	{
 		mat_idx = json_get_int(json_at(p, i), "material");
 		init_mesh(&mesh, g->path);
-		if (glb_load_primitive(&mesh, g->json, g->bin, 0, (int)i, mat_idx))
+		if (glb_load_primitive(&mesh, g->json, g->bin, mesh_idx, (int)i, mat_idx))
 		{
 			glb_load_skeleton_impl(&mesh, g->json, g->bin,
 				find_skin_for_mesh(g->json, mesh_idx));

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/29 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:42:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,13 @@ static const char	*lvl_name(int lvl)
 
 static void	write_both(const char *buf, int len)
 {
-	if (write(1, buf, len) < 0)
+	ssize_t	r;
+
+	r = write(1, buf, (size_t)len);
+	if (r < 0 || g_dbg_fd < 0)
 		return ;
-	if (g_dbg_fd >= 0)
-		(void)write(g_dbg_fd, buf, len);
+	r = write(g_dbg_fd, buf, (size_t)len);
+	(void)r;
 }
 
 void	dbg_log_init(const char *path)

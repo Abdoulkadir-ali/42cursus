@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "rt.h"
+#include "debug.h"
 
 static bool	buf_push_light(t_rt_buf *buf, t_light *light)
 {
@@ -34,10 +35,17 @@ bool	parse_ambient(t_rt_buf *buf, t_parser *p)
 	t_vec3	rgb;
 
 	if (!parse_double_checked(p, &brightness) || !parse_vec3(p, &rgb))
+	{
+		DBG_ERR_MSG(DBG_CH_PARSER, "parse_ambient: FAILED\n");
 		return (false);
+	}
 	buf->ambient.brightness = brightness;
 	buf->ambient.rgb = rgb;
 	buf->has_ambient = true;
+	DBG_INFO_MSG(DBG_CH_PARSER,
+		"parse_ambient: bright=%.3f rgb=(%.0f,%.0f,%.0f)\n",
+		buf->ambient.brightness, buf->ambient.rgb.x,
+		buf->ambient.rgb.y, buf->ambient.rgb.z);
 	return (true);
 }
 
@@ -48,13 +56,22 @@ bool	parse_light(t_rt_buf *buf, t_parser *p)
 	ft_memset(&light, 0, sizeof(t_light));
 	light.type = LIGHT_POINT;
 	if (!parse_vec3(p, &light.transform.pos))
+	{
+		DBG_ERR_MSG(DBG_CH_PARSER, "parse_light: FAILED\n");
 		return (false);
+	}
 	light.brightness = parse_double(p);
 	light.rgb = (t_vec3){255.0, 255.0, 255.0, 0.0};
 	parser_skip_spaces(p);
 	if (parser_peek(p) && parser_peek(p) != '\n')
 		parse_vec3(p, &light.rgb);
-	return (buf_push_light(buf, &light));
+	if (!buf_push_light(buf, &light))
+		return (false);
+	DBG_INFO_MSG(DBG_CH_PARSER,
+		"parse_light: pos=(%.2f,%.2f,%.2f) bright=%.2f\n",
+		light.transform.pos.x, light.transform.pos.y,
+		light.transform.pos.z, light.brightness);
+	return (true);
 }
 
 bool	parse_spot_light(t_rt_buf *buf, t_parser *p)

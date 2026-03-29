@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 17:06:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:28:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "material.h"
+#include "debug.h"
 
 /**
  * @brief Initializes the basic object arrays for the scene.
@@ -77,12 +78,14 @@ static bool	init_ext_arrays(t_scene *s)
 	/* Materials and lights: allocate initial pools */
 	s->mat_cap = INIT_MAT_CAP;
 	s->materials = ft_calloc(s->mat_cap, sizeof(t_material));
+	DBG_TRACE_MSG(DBG_CH_PARSER, "init_ext_arrays: materials alloc cap=%zu\n", s->mat_cap);
 	s->mat_count = 0;
 
 	int	i;
 
 	s->light_cap = INIT_LIGHT_CAP;
 	s->lights = ft_calloc(s->light_cap, sizeof(t_light));
+	DBG_TRACE_MSG(DBG_CH_PARSER, "init_ext_arrays: lights alloc cap=%zu\n", s->light_cap);
 	s->light_count = 0;
 
 	/* Triangle SoA is empty until meshes are added; pointers initialized NULL. */
@@ -135,10 +138,12 @@ t_scene	*create_scene(const char *name)
 	s = ft_calloc(1, sizeof(*s));
 	if (!s)
 		return (NULL);
+	DBG_TRACE_MSG(DBG_CH_PARSER, "create_scene: alloc OK name='%s'\n", name ? name : "(null)");
 	if (name)
 		s->name = ft_strdup(name);
 	if (!init_basic_arrays(s) || !init_ext_arrays(s))
 	{
+		DBG_ERR_MSG(DBG_CH_PARSER, "create_scene: array init FAILED\n");
 		destroy_scene(s);
 		return (NULL);
 	}
@@ -146,5 +151,6 @@ t_scene	*create_scene(const char *name)
 	s->ambient.rgb = vec3(0, 0, 0);
 	s->version = 1;
 	scene_add_material_from_color(s, vec3(200, 160, 255));
+	DBG_INFO_MSG(DBG_CH_PARSER, "create_scene OK: mat_cap=%zu light_cap=%zu\n", s->mat_cap, s->light_cap);
 	return (s);
 }

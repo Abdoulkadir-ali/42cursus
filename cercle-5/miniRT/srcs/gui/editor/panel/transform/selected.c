@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:10:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/28 14:56:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 12:16:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,11 @@ t_transform	*get_selected_transform(t_gui *gui)
 	if (!sel->active || !gui->scene)
 		return (NULL);
 	idx = sel->index;
+	p = &gui->scene->primitives;
+	if (idx < 0 || (size_t)idx >= p->count || !p->px)
+		return (NULL);
 	if (sel->type == gui->scratch_type && idx == gui->scratch_idx)
 		return (&gui->scratch_tr);
-	p = &gui->scene->primitives;
 	gui->scratch_tr.pos = vec3(p->px[idx], p->py[idx], p->pz[idx]);
 	gui->scratch_tr.rotation.pitch = 0;
 	gui->scratch_tr.rotation.yaw = 0;

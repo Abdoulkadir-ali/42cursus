@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 12:45:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 06:32:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:39:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+#include "debug.h"
 
 /*
 ** Phase 1: parse a single line into the staging buffer (no scene touch).
@@ -48,6 +49,7 @@ bool	rt_load(t_scene *scene, const char *path)
 	file = fbx_read_file(path, &sz);
 	if (!file)
 		return (false);
+	DBG_INFO_MSG(DBG_CH_PARSER, "rt_load: parsing %s (%zu bytes)\n", path, sz);
 	if (!rt_buf_init(&buf))
 	{
 		free(file);
@@ -56,11 +58,14 @@ bool	rt_load(t_scene *scene, const char *path)
 	parser_init_str(&p, file, sz);
 	p.path = path;
 	ok = true;
-	while (!p.eof && ok)
+	while (parser_peek(&p) && ok)
 	{
 		if (!parse_line(scene, &buf, &p))
 		{
 			ft_printf("Scene parse error @ %s\n", path);
+			DBG_ERR_MSG(DBG_CH_PARSER,
+				"Parse FAIL at cursor=%zu | buf shapes=%zu\n",
+				p.cursor, buf.shape_count);
 			ok = false;
 		}
 		if (parser_peek(&p) == '\n')
@@ -70,5 +75,12 @@ bool	rt_load(t_scene *scene, const char *path)
 		ok = rt_buf_inject(scene, &buf);
 	rt_buf_free(&buf);
 	free(file);
+	if (ok)
+		DBG_INFO_MSG(DBG_CH_PARSER,
+			"rt_load OK: %s | prims=%zu tris=%zu mats=%zu\n",
+			path, scene->primitives.count,
+			scene->tri_soa.count, scene->mat_count);
+	else
+		DBG_ERR_MSG(DBG_CH_PARSER, "rt_load FAIL: %s\n", path);
 	return (ok);
 }

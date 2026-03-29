@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 09:28:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:38:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 #include "unpacker.h"
+#include "debug.h"
 
 /**
  * @brief Unified DOD object selection.
@@ -73,20 +74,32 @@ t_material	*get_selected_material(t_gui *gui)
 
 void	pick_at_mouse(t_gui *gui, t_vec2i mouse)
 {
-	(void)mouse;
-	t_ray	ray;
-	t_hit	hit;
+	t_ray		ray;
+	t_hit		hit;
+	t_render	*ctx;
 
 	if (!gui->scene || !gui->rt.bvh || !gui->cam_ctrl.camera)
 		return ;
-	/* Ray generation should use the actual viewport logic; usually it's handled 
-	** by the engine, but here we just use cam forward for demo pick */
-	ray_init(&ray, gui->cam_ctrl.transform.pos, gui->cam_ctrl.transform.forward);
+	DBG_TRACE_MSG(DBG_CH_EDITOR,
+		"pick_at_mouse: (%d,%d) bvh=%p\n",
+		mouse.x, mouse.y, (void *)gui->rt.bvh);
+	ctx = gui->pool.ctx[0];
+	if (!ctx)
+		return ;
+	make_camera_ray(ctx, (double)mouse.x, (double)mouse.y, &ray);
 	ft_memset(&hit, 0, sizeof(t_hit));
 	if (bvh_intersect(gui->rt.bvh, &ray, &hit))
+	{
+		DBG_INFO_MSG(DBG_CH_EDITOR,
+			"pick_at_mouse: hit type=%d idx=%d\n",
+			(int)hit.ref.type, hit.ref.index);
 		select_object(gui, (t_type)hit.ref.type, hit.ref.index);
+	}
 	else
+	{
+		DBG_TRACE_MSG(DBG_CH_EDITOR, "pick_at_mouse: no hit\n");
 		clear_selection(gui);
+	}
 	gui->render.dirty = true;
 }
 

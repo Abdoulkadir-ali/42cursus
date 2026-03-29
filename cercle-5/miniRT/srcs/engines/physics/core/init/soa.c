@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 05:54:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 05:54:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 14:08:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,22 +65,41 @@ void	destroy_physics_soa(t_physics_soa *p)
 	memset(p, 0, sizeof(t_physics_soa));
 }
 
+static void	init_body_physics(t_physics_soa *p, int idx, uint8_t is_stat)
+{
+	p->mass[idx] = 1.0f;
+	p->elasticity[idx] = 0.5f;
+	p->friction[idx] = 0.5f;
+	if (is_stat)
+	{
+		p->inv_mass[idx] = 0.0f;
+		p->inv_ix[idx] = 0.0f;
+		p->inv_iy[idx] = 0.0f;
+		p->inv_iz[idx] = 0.0f;
+		return ;
+	}
+	p->inv_mass[idx] = 1.0f;
+	p->inv_ix[idx] = 1.0f;
+	p->inv_iy[idx] = 1.0f;
+	p->inv_iz[idx] = 1.0f;
+}
+
 bool	soa_add_body(t_physics_soa *p, t_primitive_array *prims, int prim_idx)
 {
-	int	idx;
+	int		idx;
+	uint8_t	is_stat;
 
 	if (p->count >= p->cap)
 		if (!realloc_physics_soa(p, (p->cap == 0) ? 1024 : p->cap * 2))
 			return (false);
 	idx = (int)p->count++;
+	is_stat = prims->is_static[prim_idx];
 	p->prim_idx[idx] = prim_idx;
 	prims->phys_idx[prim_idx] = idx;
 	p->hot.vx[idx] = 0; p->hot.vy[idx] = 0; p->hot.vz[idx] = 0;
 	p->hot.ang_vx[idx] = 0; p->hot.ang_vy[idx] = 0; p->hot.ang_vz[idx] = 0;
-	p->mass[idx] = 1.0f; p->inv_mass[idx] = 1.0f;
-	p->elasticity[idx] = 0.5f; p->friction[idx] = 0.5f;
-	p->inv_ix[idx] = 1.0f; p->inv_iy[idx] = 1.0f; p->inv_iz[idx] = 1.0f;
-	p->is_static[idx] = 0; p->is_compound[idx] = 0;
+	init_body_physics(p, idx, is_stat);
+	p->is_static[idx] = is_stat; p->is_compound[idx] = 0;
 	p->first_part[idx] = -1; p->part_count[idx] = 0;
 	return (true);
 }

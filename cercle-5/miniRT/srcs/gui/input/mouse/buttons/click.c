@@ -6,17 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 12:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 12:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:17:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+#include "debug.h"
 
 int	mouse_click(int button, int x, int y, t_gui *gui)
 {
 	t_vec2i	mouse;
 
 	mouse = vec2i(x, y);
+	DBG_TRACE_MSG(DBG_CH_EDITOR, "mouse_click btn=%d (%d,%d)\n",
+		button, x, y);
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)
 	{

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 11:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 17:16:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:57:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,40 +24,42 @@
 # define ZOOM_SPEED 2.0
 
 /* UI Dimensions */
-# define ROW_H 24
-# define PANEL_RADIUS 6
+# define ROW_H 32
+# define HEADER_H 48
+# define STATUS_H 40
+# define PANEL_RADIUS 4
 
 /* CRUD Panel */
-# define CRUD_PANEL_H 36
-# define CRUD_BTN_W 52
-# define CRUD_BTN_H 24
-# define CRUD_ADD_W 90
+# define CRUD_PANEL_H 44
+# define CRUD_BTN_W 60
+# define CRUD_BTN_H 28
+# define CRUD_ADD_W 72
 
 /* Inspector Panel */
-# define INSPECTOR_W 280
-# define INSPECTOR_PAD 8
-# define INSPECTOR_HDR_Y 50
-# define INSPECTOR_TAB_Y 70
-# define INSPECTOR_TAB_H 24
-# define INSPECTOR_TAB_MIN_Y 60
-# define INSPECTOR_TAB_MAX_Y 84
+# define INSPECTOR_W 260
+# define INSPECTOR_PAD 12
+# define INSPECTOR_HDR_Y 56
+# define INSPECTOR_TAB_Y 80
+# define INSPECTOR_TAB_H 28
+# define INSPECTOR_TAB_MIN_Y 68
+# define INSPECTOR_TAB_MAX_Y 96
 # define MAX_INSPECT_TABS 4
 
 /* Scene Panel */
-# define SCENE_PANEL_W 220
+# define SCENE_PANEL_W 200
 # define SCENE_PANEL_PAD_X 12
-# define SCENE_PANEL_PAD_Y 8
-# define SCENE_PANEL_HDR_X 8
-# define SCENE_PANEL_EMPTY_COL 0x505060
+# define SCENE_PANEL_PAD_Y 12
+# define SCENE_PANEL_HDR_X 12
+# define SCENE_PANEL_EMPTY_COL 0x64748B
 
 /* Popup Dialogs */
-# define POPUP_W 360
-# define POPUP_PAD 16
-# define POPUP_TITLE_H 36
-# define POPUP_ITEM_H 36
-# define POPUP_INPUT_H 36
-# define POPUP_BTN_H 36
-# define POPUP_FMT_H 36
+# define POPUP_W 380
+# define POPUP_PAD 20
+# define POPUP_TITLE_H 44
+# define POPUP_ITEM_H 40
+# define POPUP_INPUT_H 40
+# define POPUP_BTN_H 40
+# define POPUP_FMT_H 40
 # define POPUP_ERR_H 16
 
 /* Sliders */

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/29 09:21:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 09:21:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:03:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ static const t_property prop_amb_b = {"Amb B", get_amb_b, set_amb_b, 0, 1};
 static const t_property prop_mat_rough = {"Roughness", get_mat_rough, set_mat_rough, 0, 1};
 static const t_property prop_mat_metal = {"Metallic", get_mat_metal, set_mat_metal, 0, 1};
 static const t_property prop_mat_opac = {"Opacity", get_mat_opac, set_mat_opac, 0, 1};
+static const t_property prop_mat_emit_r = {"Emit R", get_mat_emit_r, set_mat_emit_r, 0, 50};
+static const t_property prop_mat_emit_g = {"Emit G", get_mat_emit_g, set_mat_emit_g, 0, 50};
+static const t_property prop_mat_emit_b = {"Emit B", get_mat_emit_b, set_mat_emit_b, 0, 50};
 
 const t_property *g_props_light[] = {&prop_lt_px, &prop_lt_py, &prop_lt_pz, &prop_lt_r, &prop_lt_g, &prop_lt_b, &prop_lt_bright, NULL};
 const t_property *g_props_ambient[] = {&prop_amb_bright, &prop_amb_r, &prop_amb_g, &prop_amb_b, NULL};
-const t_property *g_props_material[] = {&prop_mat_rough, &prop_mat_metal, &prop_mat_opac, NULL};
+const t_property *g_props_material[] = {&prop_mat_rough, &prop_mat_metal, &prop_mat_opac, &prop_mat_emit_r, &prop_mat_emit_g, &prop_mat_emit_b, NULL};

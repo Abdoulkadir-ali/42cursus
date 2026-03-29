@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 18:08:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:45:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,8 +343,8 @@ void						apply_position_correction(t_physics *phys,
 							t_contact *ct, double inv_a, double inv_b);
 
 /* Intersection Dispatch */
-void						physics_shoot_ray(t_physics *phys, t_ray ray,
-								double impulse);
+void						physics_apply_impulse(t_physics *phys, int prim_idx,
+								t_vec3 impulse);
 int							query_prim(t_physics *phys, int idx, t_contact *c,
 								int count, int max);
 int							query_sphere(t_physics *phys, int idx, t_contact *c,

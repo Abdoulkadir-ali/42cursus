@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 18:09:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:57:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void	row_to_object(t_gui *gui, int r, t_type *ty, int *idx)
 
 const char	*row_type_prefix(t_type type)
 {
-	const char *lbl[] = { "[??]", "[LT]", "[SP]", "[PL]", "[CY]", "[CO]",
-		"[TR]", "[RC]", "[PY]", "[BX]", "[CA]", "[ME]"};
+	const char *lbl[] = {"???", "Light", "Sphere", "Plane", "Cylinder", "Cone",
+		"Triangle", "Rect", "Pyramid", "Box", "Capsule", "Mesh"};
 	t_type			ty_map[] = { TYPE_NONE, TYPE_LIGHT, TYPE_SPHERE, TYPE_PLANE,
 		TYPE_CYLINDER, TYPE_CONE, TYPE_TRI, TYPE_RECT, TYPE_PYRAMID,
 		TYPE_BOX, TYPE_CAPSULE, TYPE_MESH};
@@ -63,7 +63,7 @@ const char	*row_type_prefix(t_type type)
 			return (lbl[i]);
 		i++;
 	}
-	return ("[??]");
+	return ("???");
 }
 
 /**
@@ -74,10 +74,10 @@ void	draw_one_row(t_gui *gui, int y_px, t_type ty, int idx)
 	char	buf[64];
 	int		col;
 
-	col = COL_TEXT;
+	col = COL_TEXT_DIM;
 	if (gui->selection->active && gui->selection->type == ty
 		&& gui->selection->index == idx)
-		col = COL_SELECTED;
-	snprintf(buf, sizeof(buf), "%s %d", row_type_prefix(ty), idx);
+		col = COL_ACCENT;
+	snprintf(buf, sizeof(buf), "%s #%d", row_type_prefix(ty), idx);
 	gui_draw_string(gui, buf, SCENE_PANEL_PAD_X, y_px, col);
 }

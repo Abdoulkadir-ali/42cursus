@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 06:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 17:55:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 14:21:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+#include "debug.h"
 
 /* ------------------------------------------------------------------ */
 /* Staging buffer lifecycle                                            */
@@ -49,6 +50,10 @@ bool	rt_buf_inject(t_scene *scene, t_rt_buf *buf)
 	t_rt_shape	*s;
 	time_t		t;
 
+	DBG_INFO_MSG(DBG_CH_PARSER,
+		"inject: shapes=%zu lights=%zu cam=%d amb=%d\n",
+		buf->shape_count, buf->light_count,
+		buf->has_camera, buf->has_ambient);
 	t = time(NULL);
 	if (buf->has_ambient)
 		scene_apply_ambient(scene, buf->ambient.brightness, buf->ambient.rgb);
@@ -66,6 +71,8 @@ bool	rt_buf_inject(t_scene *scene, t_rt_buf *buf)
 	{
 		s = &buf->shapes[i];
 		s->params.mat_id = scene_add_material_from_color(scene, s->color);
+		DBG_TRACE_MSG(DBG_CH_PARSER, "inject shape[%zu] type=%d mat=%d\n",
+			i, s->type, s->params.mat_id);
 		if (s->type == PRIM_TRIANGLE)
 		{
 			if (!scene_add_tri(scene, s->data.tri, s->params.mat_id))
@@ -75,8 +82,21 @@ bool	rt_buf_inject(t_scene *scene, t_rt_buf *buf)
 			return (false);
 		i++;
 	}
+	DBG_INFO_MSG(DBG_CH_PARSER, "inject done: prims=%zu tris=%zu\n",
+		scene->primitives.count, scene->tri_soa.count);
 	return (true);
 }
+
+typedef struct s_soa_alloc
+{
+	float					*f;
+	uint8_t					*ty;
+	uint16_t				*mid;
+	uint8_t					*st;
+	uint8_t					*hp;
+	int						*ph;
+	t_primitive_metadata	*pm;
+}	t_soa_alloc;
 
 static bool	realloc_soa_slabs(t_primitive_array *arr, size_t nc)
 {
@@ -86,59 +106,64 @@ static bool	realloc_soa_slabs(t_primitive_array *arr, size_t nc)
 	if (!f)
 		return (false);
 	arr->float_slab = f;
-	arr->px = f + 0 * nc; arr->py = f + 1 * nc; arr->pz = f + 2 * nc;
-	arr->ax = f + 3 * nc; arr->ay = f + 4 * nc; arr->az = f + 5 * nc;
-	arr->tx = f + 6 * nc; arr->ty = f + 7 * nc; arr->tz = f + 8 * nc;
-	arr->radii = f + 9 * nc; arr->heights = f + 10 * nc;
-	arr->ex = f + 11 * nc; arr->ey = f + 12 * nc; arr->ez = f + 13 * nc;
-	arr->abb_min_x = f + 14 * nc; arr->abb_min_y = f + 15 * nc; arr->abb_min_z = f + 16 * nc;
-	arr->abb_max_x = f + 17 * nc; arr->abb_max_y = f + 18 * nc; arr->abb_max_z = f + 19 * nc;
+	arr->px = f + 0 * nc;
+	arr->py = f + 1 * nc;
+	arr->pz = f + 2 * nc;
+	arr->ax = f + 3 * nc;
+	arr->ay = f + 4 * nc;
+	arr->az = f + 5 * nc;
+	arr->tx = f + 6 * nc;
+	arr->ty = f + 7 * nc;
+	arr->tz = f + 8 * nc;
+	arr->radii = f + 9 * nc;
+	arr->heights = f + 10 * nc;
+	arr->ex = f + 11 * nc;
+	arr->ey = f + 12 * nc;
+	arr->ez = f + 13 * nc;
+	arr->abb_min_x = f + 14 * nc;
+	arr->abb_min_y = f + 15 * nc;
+	arr->abb_min_z = f + 16 * nc;
+	arr->abb_max_x = f + 17 * nc;
+	arr->abb_max_y = f + 18 * nc;
+	arr->abb_max_z = f + 19 * nc;
 	return (true);
 }
 
-static bool	realloc_meta_a(t_primitive_array *arr, size_t nc)
+static bool	alloc_metadata(t_soa_alloc *a, t_primitive_array *arr, 
+		t_scene *s, size_t nc)
 {
-	uint8_t		*ty;
-	uint16_t	*mid;
-	uint8_t		*st;
-	uint8_t		*hp;
-
-	ty = realloc(arr->types, nc);
-	mid = realloc(arr->mat_ids, nc * sizeof(uint16_t));
-	st = realloc(arr->is_static, nc);
-	hp = realloc(arr->has_phys, nc);
-	if (!ty || !mid || !st || !hp)
+	a->ty = realloc(arr->types, nc);
+	a->mid = realloc(arr->mat_ids, nc * sizeof(uint16_t));
+	a->st = realloc(arr->is_static, nc);
+	a->hp = realloc(arr->has_phys, nc);
+	a->ph = realloc(arr->phys_idx, nc * sizeof(int));
+	a->pm = realloc(s->prim_meta, nc * sizeof(t_primitive_metadata));
+	if (!a->ty || !a->mid || !a->st || !a->hp || !a->ph || !a->pm)
 		return (false);
-	arr->types = ty;
-	arr->mat_ids = mid;
-	arr->is_static = st;
-	arr->has_phys = hp;
 	return (true);
 }
 
-static bool	realloc_meta_b(t_scene *s, t_primitive_array *arr, size_t nc)
+static void	commit_metadata(t_soa_alloc *a, t_primitive_array *arr, t_scene *s)
 {
-	int					*ph;
-	t_primitive_metadata	*pm;
-
-	ph = realloc(arr->phys_idx, nc * sizeof(int));
-	pm = realloc(s->prim_meta, nc * sizeof(t_primitive_metadata));
-	if (!ph || !pm)
-		return (false);
-	arr->phys_idx = ph;
-	s->prim_meta = pm;
-	return (true);
+	arr->types = a->ty;
+	arr->mat_ids = a->mid;
+	arr->is_static = a->st;
+	arr->has_phys = a->hp;
+	arr->phys_idx = a->ph;
+	s->prim_meta = a->pm;
 }
 
-static bool	realloc_prim_soa(t_scene *s, t_primitive_array *arr, size_t new_cap)
+static bool	realloc_prim_soa(t_scene *s, t_primitive_array *arr, size_t nc)
 {
-	if (!realloc_soa_slabs(arr, new_cap))
+	t_soa_alloc	a;
+
+	if (!realloc_soa_slabs(arr, nc))
 		return (false);
-	if (!realloc_meta_a(arr, new_cap))
+	ft_memset(&a, 0, sizeof(a));
+	if (!alloc_metadata(&a, arr, s, nc))
 		return (false);
-	if (!realloc_meta_b(s, arr, new_cap))
-		return (false);
-	arr->capacity = new_cap;
+	commit_metadata(&a, arr, s);
+	arr->capacity = nc;
 	return (true);
 }
 
@@ -189,7 +214,7 @@ bool	scene_add_primitive_with_time(t_scene *scene, t_prim_params params,
 	scene->primitives.heights[idx] = (float)params.height;
 	scene->primitives.mat_ids[idx] = (uint16_t)params.mat_id;
 	scene->primitives.phys_idx[idx] = -1;
-	scene->primitives.is_static[idx] = 1;
+	scene->primitives.is_static[idx] = (type == PRIM_PLANE) ? 1 : 0;
 	scene->primitives.has_phys[idx] = 0;
 	if (!add_prim_meta(scene, idx, t))
 	{
@@ -239,7 +264,11 @@ static bool	realloc_tri_soa(t_tri_array *soa, size_t new_cap)
 
 bool	scene_add_tri(t_scene *scene, t_vec3 v[3], int mat_id)
 {
-	size_t i; t_vec3 n;
+	size_t	i;
+	t_vec3	e0;
+	t_vec3	e1;
+	t_vec3	n;
+
 	if (scene->tri_soa.count >= scene->tri_soa.cap)
 		if (!realloc_tri_soa(&scene->tri_soa, (scene->tri_soa.cap == 0) ? 1024 : scene->tri_soa.cap * 2))
 			return (false);
@@ -247,8 +276,13 @@ bool	scene_add_tri(t_scene *scene, t_vec3 v[3], int mat_id)
 	scene->tri_soa.vx[0][i] = (float)v[0].x; scene->tri_soa.vy[0][i] = (float)v[0].y; scene->tri_soa.vz[0][i] = (float)v[0].z;
 	scene->tri_soa.vx[1][i] = (float)v[1].x; scene->tri_soa.vy[1][i] = (float)v[1].y; scene->tri_soa.vz[1][i] = (float)v[1].z;
 	scene->tri_soa.vx[2][i] = (float)v[2].x; scene->tri_soa.vy[2][i] = (float)v[2].y; scene->tri_soa.vz[2][i] = (float)v[2].z;
-	n = vec3_norm(vec3_cross(vec3_sub(v[1], v[0]), vec3_sub(v[2], v[0])));
+	e0 = vec3_sub(v[1], v[0]);
+	e1 = vec3_sub(v[2], v[0]);
+	scene->tri_soa.ex[0][i] = (float)e0.x; scene->tri_soa.ey[0][i] = (float)e0.y; scene->tri_soa.ez[0][i] = (float)e0.z;
+	scene->tri_soa.ex[1][i] = (float)e1.x; scene->tri_soa.ey[1][i] = (float)e1.y; scene->tri_soa.ez[1][i] = (float)e1.z;
+	n = vec3_norm(vec3_cross(e0, e1));
 	scene->tri_soa.nx[i] = (float)n.x; scene->tri_soa.ny[i] = (float)n.y; scene->tri_soa.nz[i] = (float)n.z;
+	scene->tri_soa.tx[i] = 1.0f; scene->tri_soa.ty[i] = 0.0f; scene->tri_soa.tz[i] = 0.0f;
 	scene->tri_soa.mat_ids[i] = (uint16_t)mat_id;
 	return (true);
 }

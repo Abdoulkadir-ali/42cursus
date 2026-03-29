@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "editor.h"
+#include "debug.h"
 
 void	editor_add_tri(t_gui *gui)
 {
@@ -25,8 +26,12 @@ void	editor_add_tri(t_gui *gui)
 	v[1] = vec3_add(pos, vec3(1, -1, 0));
 	v[2] = vec3_add(pos, vec3(0, 1, 0));
 	mat_id = scene_add_material_from_color(gui->scene, vec3(0.6, 0.5, 0.9));
+	DBG_INFO_MSG(DBG_CH_EDITOR, "editor_add_tri: pos=(%.2f,%.2f,%.2f)\n",
+		(double)pos.x, (double)pos.y, (double)pos.z);
 	pthread_rwlock_wrlock(&gui->scene_lock);
 	scene_add_tri(gui->scene, v, mat_id);
+	DBG_INFO_MSG(DBG_CH_EDITOR, "editor_add_tri: prim count now=%zu\n",
+		gui->scene->tri_soa.count);
 	select_object(gui, TYPE_TRI, gui->scene->tri_soa.count - 1);
 	rebuild_bvh(gui);
 	pthread_rwlock_unlock(&gui->scene_lock);

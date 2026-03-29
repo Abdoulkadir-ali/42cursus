@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "editor.h"
+#include "debug.h"
 
 void	editor_add_plane(t_gui *gui)
 {
@@ -23,8 +24,12 @@ void	editor_add_plane(t_gui *gui)
 	params.axis = vec3(0, 1, 0);
 	params.mat_id = scene_add_material_from_color(gui->scene,
 			vec3(0.5, 0.5, 0.55));
+	DBG_INFO_MSG(DBG_CH_EDITOR, "editor_add_plane: pos=(%.2f,%.2f,%.2f)\n",
+		(double)params.pos.x, (double)params.pos.y, (double)params.pos.z);
 	pthread_rwlock_wrlock(&gui->scene_lock);
 	scene_add_primitive(gui->scene, params, PRIM_PLANE);
+	DBG_INFO_MSG(DBG_CH_EDITOR, "editor_add_plane: prim count now=%zu\n",
+		gui->scene->primitives.count);
 	select_object(gui, TYPE_PLANE, gui->scene->primitives.count - 1);
 	rebuild_bvh(gui);
 	pthread_rwlock_unlock(&gui->scene_lock);

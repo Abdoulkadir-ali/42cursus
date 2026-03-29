@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 06:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 12:46:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:56:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+#include "debug.h"
 
 bool	parse_camera(t_rt_buf *buf, t_parser *p)
 {
@@ -45,6 +46,8 @@ static bool	buf_push_shape(t_rt_buf *buf, t_rt_shape *shape)
 			return (false);
 		buf->shapes = tmp;
 	}
+	DBG_TRACE_MSG(DBG_CH_PARSER, "buf push type=%d [%zu]\n",
+		shape->type, buf->shape_count);
 	buf->shapes[buf->shape_count++] = *shape;
 	return (true);
 }
@@ -63,7 +66,7 @@ static bool	parse_common_prim(t_rt_buf *buf, t_parser *p, t_prim_type type)
 			return (false);
 		shape.params.axis = vec3_norm(shape.params.axis);
 	}
-	if (type == PRIM_BOX || type == PRIM_RECT)
+	if (type == PRIM_RECT)
 	{
 		if (!parse_vec3(p, &shape.params.tangent))
 			return (false);
@@ -134,7 +137,28 @@ bool	parse_box(t_rt_buf *buf, t_parser *p)
 
 bool	parse_rect(t_rt_buf *buf, t_parser *p)
 {
-	return (parse_common_prim(buf, p, PRIM_RECT));
+	t_rt_shape	shape;
+	t_vec3		v[4];
+	t_vec3		e0;
+	t_vec3		e1;
+
+	ft_memset(&shape, 0, sizeof(t_rt_shape));
+	shape.type = PRIM_RECT;
+	if (!parse_vec3(p, &v[0]) || !parse_vec3(p, &v[1])
+		|| !parse_vec3(p, &v[2]) || !parse_vec3(p, &v[3]))
+		return (false);
+	if (!parse_vec3(p, &shape.color))
+		return (false);
+	e0 = vec3_sub(v[1], v[0]);
+	e1 = vec3_sub(v[3], v[0]);
+	shape.params.extents.x = (float)(vec3_mag(e0) * 0.5);
+	shape.params.extents.y = (float)(vec3_mag(e1) * 0.5);
+	if (shape.params.extents.x < 1e-6f || shape.params.extents.y < 1e-6f)
+		return (false);
+	shape.params.axis = vec3_norm(vec3_cross(e0, e1));
+	shape.params.pos = vec3_scale(vec3_add(vec3_add(v[0], v[1]),
+				vec3_add(v[2], v[3])), 0.25f);
+	return (buf_push_shape(buf, &shape));
 }
 
 bool	parse_capsule(t_rt_buf *buf, t_parser *p)

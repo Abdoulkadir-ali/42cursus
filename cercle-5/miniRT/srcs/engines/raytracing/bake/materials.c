@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 15:00:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/27 14:56:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:38:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
+#include "debug.h"
 
 /**
  * @brief Bakes scene materials into a raytracer-optimized format.
@@ -21,8 +22,13 @@ bool	bake_materials(t_rt_engine *rt, t_scene *scene)
 {
 	int	i;
 
+	DBG_INFO_MSG(DBG_CH_BVH, "bake_materials: mat_count=%zu\n",
+		scene ? scene->mat_count : 0);
 	if (!scene || scene->mat_count <= 0)
+	{
+		DBG_WARN_MSG(DBG_CH_BVH, "bake_materials: SKIP (no mats)\n");
 		return (false);
+	}
 	if (rt->rt_materials)
 		free(rt->rt_materials);
 	rt->rt_materials = malloc(sizeof(t_rt_material) * scene->mat_count);
@@ -36,6 +42,10 @@ bool	bake_materials(t_rt_engine *rt, t_scene *scene)
 		rt->rt_materials[i].roughness = scene->materials[i].roughness;
 		rt->rt_materials[i].metallic = scene->materials[i].metallic;
 		rt->rt_materials[i].emission = scene->materials[i].emission;
+		rt->rt_materials[i].shininess = scene->materials[i].shininess;
+		rt->rt_materials[i].reflectivity = scene->materials[i].reflectivity;
+		rt->rt_materials[i].transparency = scene->materials[i].transparency;
+		rt->rt_materials[i].refract_index = scene->materials[i].refract_index;
 		
 		/* DOD: Load Albedo Texture */
 		rt->rt_materials[i].albedo_tex_idx = -1;

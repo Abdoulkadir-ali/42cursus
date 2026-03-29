@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 18:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 17:16:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:03:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@
 bool	try_islider_click(t_gui *gui, t_vec2i mouse, t_slider_arg arg)
 {
 	int	rx;
+	int	ry;
 
+	ry = mouse.y - arg.pos.y;
+	if (ry < 0 || ry > ROW_H)
+		return (false);
 	rx = mouse.x - arg.pos.x;
 	if (rx < 0 || rx > INSPECTOR_W - 24)
 		return (false);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 04:24:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 16:42:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:38:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ void				glb_parse_buffer_view(t_json_value *json, int index,
 						t_glb_buffer_view *bv);
 
 /* --- INTERNALS: Mesh extraction --- */
+void				glb_load_meshes_from_json(t_glb *glb, t_json_value *json,
+						char *bin);
 bool				glb_load_primitive(t_mesh_asset *mesh, t_json_value *json,
 					char *bin, int mesh_idx, int prim_idx, int mat_id);
 void				glb_extract_data(char *bin, t_glb_accessor *acc,

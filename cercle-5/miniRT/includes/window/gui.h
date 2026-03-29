@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 09:21:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:57:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,30 +16,37 @@
 /* --- CONSTANTS --- */
 # define RENDER_W 1920
 # define RENDER_H 1080
-# define PANEL_RADIUS 6
+# define PANEL_RADIUS 4
 # define GUI_AUTOREFRESH_PHYSICS 1
 # define GUI_AUTOREFRESH_SCALE 2
 
-/* Colors */
-# define COL_ACCENT 0xE0A820
-# define COL_BG 0x0A0A12
-# define COL_BORDER 0x333340
-# define COL_FPS 0x20E060
-# define COL_HOVER 0x20C8D0
-# define COL_PANEL_HDR 0x1A1A28U
-# define COL_POPUP_BG 0x1A1A28U
-# define COL_POPUP_BTN 0x22222EEU
-# define COL_POPUP_BTN_CANCEL 0x2A1A1AU
-# define COL_POPUP_BTN_OK 0x1A2A1AU
-# define COL_POPUP_DIM 0x0D0D14U
-# define COL_POPUP_ERR 0xFF4444U
-# define COL_POPUP_ERR_TEXT 0xFF6666U
-# define COL_ROW_HOVER 0x1E2030U
-# define COL_ROW_SEL 0x2A3040U
-# define COL_SELECTED 0x20D870U
-# define COL_SLIDER_BG 0x1A1A20U
-# define COL_SLIDER_FG 0xE0A820U
-# define COL_TEXT 0xD0D0D8
+/* Colors - Modern Dark Theme */
+# define COL_ACCENT 0x3B82F6
+# define COL_ACCENT_DIM 0x1E40AF
+# define COL_BG 0x0F0F14
+# define COL_BG_CARD 0x18181F
+# define COL_BORDER 0x2A2A35
+# define COL_FPS 0x22C55E
+# define COL_HOVER 0x60A5FA
+# define COL_PANEL_HDR 0x1F1F28
+# define COL_POPUP_BG 0x1F1F28
+# define COL_POPUP_BTN 0x2A2A38
+# define COL_POPUP_BTN_CANCEL 0x7F1D1D
+# define COL_POPUP_BTN_OK 0x14532D
+# define COL_POPUP_DIM 0x0A0A10
+# define COL_POPUP_ERR 0xEF4444
+# define COL_POPUP_ERR_TEXT 0xFCA5A5
+# define COL_ROW_HOVER 0x1E293B
+# define COL_ROW_SEL 0x1E3A5F
+# define COL_SELECTED 0x22C55E
+# define COL_SLIDER_BG 0x1E1E28
+# define COL_SLIDER_FG 0x3B82F6
+# define COL_TEXT 0xE2E8F0
+# define COL_TEXT_DIM 0x64748B
+# define COL_HEADER 0x14141A
+# define COL_SUCCESS 0x22C55E
+# define COL_WARNING 0xF59E0B
+# define COL_ERROR 0xEF4444
 
 /* ── External dependencies ───────────────────────────────────────────────── */
 # pragma GCC diagnostic push

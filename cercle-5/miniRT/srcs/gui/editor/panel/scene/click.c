@@ -6,17 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:42:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 14:02:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
-/**
- * @brief Handles click events in the scene hierarchy panel.
- * @param gui Pointer to the GUI context.
- * @param mouse Coordinates of the click.
- * @return true if handled.
- */
+
+static int	calc_row_click(t_gui *gui, t_vec2i mouse)
+{
+	int	list_start;
+
+	list_start = CRUD_PANEL_H + SCENE_PANEL_PAD_Y + 28;
+	return ((mouse.y - list_start + gui->scene_panel->scroll) / ROW_H);
+}
+
 bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
 {
 	int		row;
@@ -29,7 +32,7 @@ bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		return (false);
 	if (mouse.y >= 0 && mouse.y < CRUD_PANEL_H)
 		return (crud_handle_click(gui, mouse));
-	row = (mouse.y - CRUD_PANEL_H + gui->scene_panel->scroll) / ROW_H;
+	row = calc_row_click(gui, mouse);
 	if (row < 0 || row >= count_scene_rows(gui->scene))
 		return (false);
 	row_to_object(gui, row, &ty, &idx);

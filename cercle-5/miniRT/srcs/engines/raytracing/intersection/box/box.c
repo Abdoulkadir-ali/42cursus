@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 09:03:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:16:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,12 @@ bool	intersect_box(const t_ray *ray, t_primitive_array *p, int i, t_hit *hit)
 	double	min_t;
 	double	max_t;
 	t_vec2	t;
-	t_vec3	inv_dir;
 
 	bx = unpack_box(p, i);
 	min_t = -1e30;
 	max_t = 1e30;
-	inv_dir = vec3(1.0 / ray->direction.x, 1.0 / ray->direction.y,
-			1.0 / ray->direction.z);
-	box_compute_t(vec3_mul(vec3_sub(bx.min, ray->origin), inv_dir),
-		vec3_mul(vec3_sub(bx.max, ray->origin), inv_dir), &min_t, &max_t);
+	box_compute_t(vec3_mul(vec3_sub(bx.min, ray->origin), ray->inv_dir),
+		vec3_mul(vec3_sub(bx.max, ray->origin), ray->inv_dir), &min_t, &max_t);
 	if (min_t > max_t || max_t < EPSILON)
 		return (false);
 	t.x = min_t;

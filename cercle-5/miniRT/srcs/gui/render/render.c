@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 08:37:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 09:57:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "debug.h"
 
 static void	setup_camera_transform(t_gui *gui, t_render *ctx)
 {
@@ -88,7 +89,14 @@ void	gui_render(t_gui *gui)
 
 	scene = gui->scene;
 	if (gui->rt.baked_version != scene->version)
-		raytrace_engine_sync(&gui->rt, scene, gui->win.size.x, gui->win.size.y);
+	{
+		DBG_INFO_MSG(DBG_CH_RENDER,
+			"gui_render: BVH sync (scene v%d)\n", scene->version);
+		raytrace_engine_sync(&gui->rt, scene, gui->win.size.x,
+			gui->win.size.y);
+	}
+	DBG_TRACE_MSG(DBG_CH_RENDER, "frame start (fps=%.1f scale=%d)\n",
+		gui->render.fps, gui->render.scale);
 	PROF_RESET();
 	setup_ctx(gui, &ctx);
 	ctx.tiles_x = (gui->win.size.x + TILE_SIZE - 1) / TILE_SIZE;

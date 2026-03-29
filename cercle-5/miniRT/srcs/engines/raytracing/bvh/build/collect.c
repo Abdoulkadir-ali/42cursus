@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 12:15:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 12:34:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
+#include "debug.h"
 
 /**
  * @brief DOD Implementation: Gathers bounds from the primitive SoA.
@@ -21,9 +22,13 @@ static size_t collect_primitives_soa(t_scene *sc, t_build_item *items)
 	size_t i;
 
 	p = &sc->primitives;
+	DBG_TRACE_MSG(DBG_CH_BVH, "collect: p->count=%zu px=%p types=%p\n",
+		p->count, (void*)p->px, (void*)p->types);
 	i = 0;
 	while (i < p->count)
 	{
+		DBG_TRACE_MSG(DBG_CH_BVH, "collect[%zu]: type=%d pos=(%f,%f,%f)\n",
+			i, p->types[i], p->px[i], p->py[i], p->pz[i]);
 		items[i].ref = (t_bvh_ref){p->types[i], (int)i};
 		items[i].bbox = get_primitive_aabb_soa(p, (int)i);
 		items[i].centroid = vec3(p->px[i], p->py[i], p->pz[i]);

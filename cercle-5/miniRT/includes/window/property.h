@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 17:12:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 17:12:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:03:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,12 @@ double	get_mat_metal(t_scene *sc, int i);
 void	set_mat_metal(t_scene *sc, int i, double v);
 double	get_mat_opac(t_scene *sc, int i);
 void	set_mat_opac(t_scene *sc, int i, double v);
+double	get_mat_emit_r(t_scene *sc, int i);
+void	set_mat_emit_r(t_scene *sc, int i, double v);
+double	get_mat_emit_g(t_scene *sc, int i);
+void	set_mat_emit_g(t_scene *sc, int i, double v);
+double	get_mat_emit_b(t_scene *sc, int i);
+void	set_mat_emit_b(t_scene *sc, int i, double v);
 
 /* Physics */
 double	get_ph_mass(t_scene *sc, int i);

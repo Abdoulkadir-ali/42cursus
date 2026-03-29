@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 21:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:51:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,39 @@ bool	glb_parse_to_asset(t_glb *glb, int fd, const char *path)
 	if (glb_read_buffers(fd, buf) == false)
 		return (false);
 	json = json_parse(buf[0]);
+	free(buf[0]);
 	if (json == NULL)
-		return (false);
+		return (free(buf[1]), false);
 	ft_memset(glb, 0, sizeof(t_glb));
 	glb->path = path;
 	glb->json = json;
 	glb->bin = buf[1];
 	glb->materials = glb_extract_materials(json, buf[1], &glb->mat_count);
 	glb->animations = glb_extract_animations(json, buf[1], &glb->anim_count);
+	glb_load_meshes_from_json(glb, json, buf[1]);
 	return (true);
+}
+
+/**
+ * @brief Frees all heap resources inside a t_glb asset container.
+ */
+void	glb_clear_asset(t_glb *g)
+{
+	int	i;
+
+	if (!g)
+		return ;
+	i = 0;
+	while (i < g->mesh_count)
+		mesh_free(&g->meshes[i++]);
+	free(g->meshes);
+	free(g->mesh_mats);
+	free(g->materials);
+	free(g->animations);
+	if (g->json)
+		json_free(g->json);
+	free(g->bin);
+	ft_memset(g, 0, sizeof(t_glb));
 }
 
 /**

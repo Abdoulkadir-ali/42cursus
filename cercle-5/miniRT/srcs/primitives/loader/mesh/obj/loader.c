@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "loader.h"
+#include "debug.h"
+#include "debug.h"
 
 static bool	obj_finalize_mesh_to_scene(t_obj *obj, t_scene *scene)
 {
@@ -88,8 +90,18 @@ bool	obj_parse_to_asset(t_obj *obj, const char *path)
 bool	obj_load(t_scene *scene, const char *path)
 {
 	t_obj	obj;
+	bool	res;
 
+	DBG_INFO_MSG(DBG_CH_PARSER, "obj_load: '%s'\n", path);
 	if (!obj_parse_to_asset(&obj, path))
+	{
+		DBG_ERR_MSG(DBG_CH_PARSER, "obj_load: FAILED '%s'\n", path);
 		return (false);
-	return (obj_finalize_mesh_to_scene(&obj, scene));
+	}
+	res = obj_finalize_mesh_to_scene(&obj, scene);
+	if (!res)
+		DBG_ERR_MSG(DBG_CH_PARSER, "obj_load: finalize FAILED\n");
+	else
+		DBG_INFO_MSG(DBG_CH_PARSER, "obj_load: OK '%s'\n", path);
+	return (res);
 }

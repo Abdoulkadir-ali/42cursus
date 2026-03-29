@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 06:32:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:17:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+#include "debug.h"
 
 static bool	dispatch_basic(t_rt_buf *buf, t_parser *p, char *id)
 {
@@ -60,14 +61,21 @@ static void	handle_unknown(t_parser *p)
 */
 bool	dispatch_scan(t_scene *scene, t_rt_buf *buf, t_parser *p, char *id)
 {
+	bool	ok;
+
 	if (!id || !*id)
 		return (false);
-	if (dispatch_basic(buf, p, id))
-		return (true);
-	if (dispatch_shapes(buf, p, id))
-		return (true);
-	if (dispatch_meshes(scene, p, id))
-		return (true);
-	handle_unknown(p);
-	return (false);
+	ok = dispatch_basic(buf, p, id);
+	if (!ok)
+		ok = dispatch_shapes(buf, p, id);
+	if (!ok)
+		ok = dispatch_meshes(scene, p, id);
+	if (!ok)
+	{
+		DBG_WARN_MSG(DBG_CH_PARSER, "unknown/failed id='%s'\n", id);
+		handle_unknown(p);
+		return (false);
+	}
+	DBG_TRACE_MSG(DBG_CH_PARSER, "parsed id='%s' ok\n", id);
+	return (true);
 }

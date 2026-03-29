@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 16:21:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 14:02:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+
 static void	draw_tabs(t_gui *gui, int x)
 {
 	t_inspect_tab	tabs[MAX_INSPECT_TABS];
@@ -22,10 +23,11 @@ static void	draw_tabs(t_gui *gui, int x)
 	n[2] = 0;
 	while (n[2] < n[0])
 	{
-		n[3] = COL_TEXT;
+		n[3] = COL_TEXT_DIM;
 		if (gui->inspector->tab == tabs[n[2]])
 			n[3] = COL_ACCENT;
-		gui_draw_string(gui, (char *)labels[n[2]], x + n[1] * n[2] + INSPECTOR_PAD, INSPECTOR_TAB_Y, n[3]);
+		gui_draw_string(gui, (char *)labels[n[2]],
+			x + n[1] * n[2] + INSPECTOR_PAD, INSPECTOR_TAB_Y, n[3]);
 		n[2]++;
 	}
 }
@@ -52,10 +54,6 @@ static void	dispatch_draw(t_gui *gui, int x)
 		draw_mesh_info_panel(gui, x);
 }
 
-/**
- * @brief Public entrance to draw the active inspector panel and its tabs.
- * @param gui Pointer to the GUI.
- */
 void	draw_inspector_text(t_gui *gui)
 {
 	int		x;
@@ -64,9 +62,9 @@ void	draw_inspector_text(t_gui *gui)
 	if (!gui->inspector->visible || !gui->selection->active || !gui->scene)
 		return ;
 	x = gui->win.disp_size.x - gui->inspector->box.size.x;
-	snprintf(buf, sizeof(buf), "%s  #%d",
+	snprintf(buf, sizeof(buf), "%s #%d",
 		type_name_str(gui->selection->type), gui->selection->index);
-	gui_draw_string(gui, buf, x + INSPECTOR_PAD, INSPECTOR_HDR_Y, COL_ACCENT);
+	gui_draw_string(gui, buf, x + INSPECTOR_PAD, INSPECTOR_HDR_Y, COL_TEXT);
 	draw_tabs(gui, x);
 	dispatch_draw(gui, x);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:38:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:39:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	fbx_skip_props(int fd, uint64_t num)
 {
 	uint64_t	i;
 	char		t;
+	uint32_t	slen;
 
 	i = 0;
 	while (i < num)
@@ -86,9 +87,9 @@ void	fbx_skip_props(int fd, uint64_t num)
 			break ;
 		if (t == 'S' || t == 'R')
 		{
-			if (read(fd, &t, 4) < 4)
+			if (read(fd, &slen, 4) < 4)
 				break ;
-			lseek(fd, (uint32_t)t, SEEK_CUR);
+			lseek(fd, (off_t)slen, SEEK_CUR);
 		}
 		else if (ft_strchr("dflicb", t))
 			skip_arr(fd, t);

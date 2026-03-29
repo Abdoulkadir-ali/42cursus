@@ -6,11 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 17:41:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/26 08:41:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 14:02:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+
+static void	draw_inspector_header(t_gui *gui, int x, int w)
+{
+	t_panel	header;
+
+	header = (t_panel){.box = (t_gui_box){vec2i(x, 0), vec2i(w, HEADER_H)},
+		.bg = COL_HEADER, .brd = COL_BORDER};
+	draw_panel(gui, header);
+}
 
 void	draw_inspector_bg(t_gui *gui)
 {
@@ -27,4 +36,5 @@ void	draw_inspector_bg(t_gui *gui)
 	panel = (t_panel){.box = (t_gui_box){vec2i(x, 0), vec2i(w, h)},
 		.bg = COL_BG, .brd = COL_BORDER};
 	draw_panel(gui, panel);
+	draw_inspector_header(gui, x, w);
 }

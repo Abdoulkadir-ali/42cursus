@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "scene.h"
+#include "debug.h"
 
 static void	free_primitive_p_meta(t_scene *s)
 {
@@ -65,6 +66,7 @@ void	destroy_scene(t_scene *s)
 {
 	if (!s)
 		return ;
+	DBG_INFO_MSG(DBG_CH_PARSER, "destroy_scene: '%s' prims=%zu tris=%zu mats=%zu\n", s->name ? s->name : "?", s->primitives.count, s->tri_soa.count, s->mat_count);
 	free(s->name);
 	destroy_geometry(s);
 	destroy_metadata(s);

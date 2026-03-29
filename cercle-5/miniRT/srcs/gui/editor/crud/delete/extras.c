@@ -11,13 +11,19 @@
 /* ************************************************************************** */
 
 #include "editor.h"
+#include "debug.h"
 
 void	delete_sel_extras(t_scene *sc, t_selection *sel)
 {
 	size_t	idx;
 
+	DBG_INFO_MSG(DBG_CH_EDITOR, "delete_extras: type=%d idx=%d\n",
+		sel->type, sel->index);
 	if (!sel->active)
+	{
+		DBG_ERR_MSG(DBG_CH_EDITOR, "delete_extras: nothing to delete\n");
 		return ;
+	}
 	idx = (size_t)sel->index;
 	if ((sel->type == TYPE_RECT || sel->type == TYPE_PYRAMID
 			|| sel->type == TYPE_BOX || sel->type == TYPE_CAPSULE)

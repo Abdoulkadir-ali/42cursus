@@ -11,14 +11,19 @@
 /* ************************************************************************** */
 
 #include "surface.h"
+#include "debug.h"
 
  t_material	*create_material(void)
 {
     t_material	*mat;
 
+    DBG_TRACE_MSG(DBG_CH_PARSER, "create_material: entry\n");
     mat = malloc(sizeof(t_material));
     if (!mat)
+    {
+        DBG_ERR_MSG(DBG_CH_PARSER, "create_material: malloc failed\n");
         return (NULL);
+    }
     ft_memset(mat, 0, sizeof(t_material));
     mat->albedo_map.type = TEX_SOLID;
     mat->albedo_map.color_a = get_colors()->white;
@@ -31,5 +36,6 @@
     mat->reflectivity = 0.0;
     mat->specular = 0.5;
     mat->shininess = 32.0;
+    DBG_INFO_MSG(DBG_CH_PARSER, "create_material: OK\n");
     return (mat);
 }

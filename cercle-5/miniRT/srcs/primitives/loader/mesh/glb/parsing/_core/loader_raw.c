@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 12:45:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:38:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /**
  * @brief Parses individual meshes and populates the GLB asset container.
  */
-static void	load_assets(t_glb *glb, t_json_value *json, char *bin)
+void	glb_load_meshes_from_json(t_glb *glb, t_json_value *json, char *bin)
 {
 	t_json_value	*meshes;
 	size_t			i;
@@ -64,7 +64,7 @@ t_glb	*glb_load_asset(const char *path)
 	glb->path = path;
 	glb->materials = glb_extract_materials(json, buf[1], &glb->mat_count);
 	glb->animations = glb_extract_animations(json, buf[1], &glb->anim_count);
-	load_assets(glb, json, buf[1]);
+	glb_load_meshes_from_json(glb, json, buf[1]);
 	json_free(json);
 	free(buf[0]);
 	free(buf[1]);

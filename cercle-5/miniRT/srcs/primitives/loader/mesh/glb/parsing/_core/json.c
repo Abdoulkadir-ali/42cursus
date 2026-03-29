@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/27 18:12:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 11:39:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	glb_parse_accessor(t_json_value *json, int index, t_glb_accessor *acc)
 		return ;
 	acc->buffer_view = json_get_int(a, "bufferView");
 	acc->byte_offset = json_get_int(a, "byteOffset");
+	if (acc->byte_offset < 0)
+		acc->byte_offset = 0;
 	acc->component_type = json_get_int(a, "componentType");
 	acc->count = json_get_int(a, "count");
 	type = json_as_string(json_get(a, "type"));

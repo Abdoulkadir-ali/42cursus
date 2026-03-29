@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:04:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 07:55:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:39:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,26 @@ bool	parse_fbx(t_scene *scene, t_parser *p)
 	if (res == true)
 		res = scene_add_fbx(scene, &fbx);
 	fbx_clear_asset(&fbx);
+	return (res);
+}
+
+/**
+ * @brief Opens path, parses FBX binary/ASCII into the asset container.
+ */
+bool	fbx_load_to_asset(t_fbx *f, const char *path)
+{
+	bool	res;
+
+	ft_memset(f, 0, sizeof(*f));
+	f->path = path;
+	f->fd = open(path, O_RDONLY);
+	if (f->fd < 0)
+		return (false);
+	if (fbx_is_binary(f->fd))
+		res = fbx_parse_binary(f);
+	else
+		res = fbx_parse_ascii(f);
+	close(f->fd);
+	f->fd = -1;
 	return (res);
 }

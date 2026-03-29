@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 09:40:22 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 15:55:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 11:18:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,7 @@ void	glb_load_skeleton_impl(t_mesh_asset *mesh, t_json_value *json, char *bin, i
 
 	if (!skin) return;
 	joints = json_get(skin, "joints");
+	if (!joints) return;
 	mesh->bone_count = (int)joints->array.count;
 	mesh->skeleton = ft_calloc(mesh->bone_count, sizeof(t_bone));
 	mesh->bone_matrices = ft_calloc(mesh->bone_count, sizeof(t_mat4));

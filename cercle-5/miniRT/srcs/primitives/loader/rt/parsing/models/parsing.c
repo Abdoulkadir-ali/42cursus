@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/28 07:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 16:28:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:51:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ bool	parse_glb_entry(t_scene *scene, t_parser *p)
 	{
 		apply_overrides(&glb.meshes[i], v, s, -1);
 		scene_add_mesh(scene, glb.meshes[i]);
+		ft_memset(&glb.meshes[i], 0, sizeof(t_mesh_asset));
 	}
 	glb_clear_asset(&glb);
 	return (true);

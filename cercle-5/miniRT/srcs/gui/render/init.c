@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 08:37:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:28:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+#include "debug.h"
 
 /*
 ** Main initialization function for the GUI subsystem.
@@ -134,28 +135,53 @@ static void	init_gui_state(t_gui *gui, void *mlx)
 
 bool	gui_init(t_gui *gui, t_scene *scene, void *mlx)
 {
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: start scene=%p\n", (void *)scene);
 	if (!gui || (ft_memset(gui, 0, sizeof(t_gui)), 0))
 		return (false);
 	gui->scene = scene;
 	init_gui_state(gui, mlx);
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: state done cores=%d\n",
+		gui->render.num_cores);
 	gui->render.threads = malloc(sizeof(pthread_t) * gui->render.num_cores);
 	if (!gui->render.threads || !init_window(gui))
-		return (free(gui->render.threads), false);
+	{
+		DBG_ERR_MSG(DBG_CH_RENDER, "gui_init: window FAIL\n");
+		free(gui->render.threads);
+		return (false);
+	}
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: window OK\n");
 	if (!init_gui_managers(gui))
-		return (gui_destroy(gui), false);
+	{
+		DBG_ERR_MSG(DBG_CH_RENDER, "gui_init: managers FAIL\n");
+		gui_destroy(gui);
+		return (false);
+	}
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: managers OK\n");
 	init_camera(gui);
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: camera OK\n");
 	gui_map_switcher_init(gui);
 	widget_init_default(gui);
 	editor_init(gui);
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: editor OK\n");
 	if (!init_render_pool(gui))
-		return (gui_destroy(gui), false);
+	{
+		DBG_ERR_MSG(DBG_CH_RENDER, "gui_init: render pool FAIL\n");
+		gui_destroy(gui);
+		return (false);
+	}
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: pool OK n=%d\n", gui->pool.n);
 	pthread_rwlock_init(&gui->scene_lock, NULL);
 	gui->render.proj_dirty = true;
 	raytrace_engine_sync(&gui->rt, scene, gui->win.size.x, gui->win.size.y);
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: rt_sync OK baked_v=%d\n",
+		gui->rt.baked_version);
 	gui->phys = phys_create(scene);
 	scene->phys = gui->phys;
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: phys OK p=%p\n",
+		(void *)gui->phys);
 	mlx_hook(gui->win.win, 22, 1L << 17, gui_window_resize, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
+	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: DONE\n");
 	return (true);
 }
 

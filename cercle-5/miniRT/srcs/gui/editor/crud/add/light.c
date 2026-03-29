@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "editor.h"
+#include "debug.h"
 
 void	editor_add_light(t_gui *gui)
 {
@@ -26,7 +27,11 @@ void	editor_add_light(t_gui *gui)
 	lt.brightness = 0.8;
 	lt.type = LIGHT_POINT;
 	pthread_rwlock_wrlock(&gui->scene_lock);
+	DBG_INFO_MSG(DBG_CH_EDITOR, "editor_add_light: count before=%zu\n",
+		gui->scene->light_count);
 	scene_add_light(gui->scene, lt);
+	DBG_INFO_MSG(DBG_CH_EDITOR, "editor_add_light: count after=%zu\n",
+		gui->scene->light_count);
 	select_object(gui, TYPE_LIGHT, gui->scene->light_count - 1);
 	rebuild_bvh(gui);
 	pthread_rwlock_unlock(&gui->scene_lock);

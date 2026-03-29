@@ -6,25 +6,27 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 03:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/28 16:24:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 13:45:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-void	physics_shoot_ray(t_physics *phys, t_ray ray, double impulse)
+void	physics_apply_impulse(t_physics *phys, int prim_idx, t_vec3 impulse)
 {
 	t_physics_soa	*s;
 	int				pb;
 
-	if (!phys || !phys->soa)
+	if (!phys || !phys->soa || !phys->scene)
 		return ;
 	s = phys->soa;
-	pb = -1;
-	if (pb < 0 || s->is_static[pb])
+	if (prim_idx < 0 || (size_t)prim_idx >= phys->scene->primitives.count)
 		return ;
-	s->hot.vx[pb] += (float)(ray.direction.x * impulse * s->inv_mass[pb]);
-	s->hot.vy[pb] += (float)(ray.direction.y * impulse * s->inv_mass[pb]);
-	s->hot.vz[pb] += (float)(ray.direction.z * impulse * s->inv_mass[pb]);
+	pb = phys->scene->primitives.phys_idx[prim_idx];
+	if (pb < 0 || (size_t)pb >= s->count || s->is_static[pb])
+		return ;
+	s->hot.vx[pb] += (float)(impulse.x * s->inv_mass[pb]);
+	s->hot.vy[pb] += (float)(impulse.y * s->inv_mass[pb]);
+	s->hot.vz[pb] += (float)(impulse.z * s->inv_mass[pb]);
 }
 

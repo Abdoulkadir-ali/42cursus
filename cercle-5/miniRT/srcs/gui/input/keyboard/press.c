@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/25 19:30:00 by copilot           #+#    #+#             */
-/*   Updated: 2026/03/25 16:51:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 10:17:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+#include "debug.h"
 
 static t_key_action *get_keymap(void)
 {
@@ -71,11 +72,12 @@ static bool	handle_special_key(int keycode, t_gui *gui)
 
 int	key_press(int keycode, t_gui *gui)
 {
-    t_key_action *keymap;
-    size_t i;
+	t_key_action	*keymap;
+	size_t			i;
 
-    if (!gui->cam_ctrl.camera)
-        return (0);
+	DBG_TRACE_MSG(DBG_CH_EDITOR, "key_press keycode=%d\n", keycode);
+	if (!gui->cam_ctrl.camera)
+		return (0);
     if (handle_special_key(keycode, gui))
         return (0);
     keymap = get_keymap();

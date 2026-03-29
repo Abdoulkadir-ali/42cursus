@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 08:36:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/29 12:55:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 #include "physics.h"
 #include "animations.h"
+#include "debug.h"
 
 static long long	get_time_ms(void)
 {
@@ -69,7 +70,12 @@ static void	update_physics_step(t_gui *gui, double delta)
 		steps++;
 	}
 	if (steps > 0)
+	{
+		DBG_TRACE_MSG(DBG_CH_PHYSICS,
+			"loop: %d phys steps (acc=%.4f)\n", steps,
+			gui->phys_accumulator);
 		gui->render.dirty = true;
+	}
 }
 
 static void	update_autorefresh(t_gui *gui)
@@ -102,6 +108,7 @@ static void	render_if_dirty(t_gui *gui)
 {
 	if (!gui->render.dirty && !gui->render.last_dirty)
 		return ;
+	DBG_TRACE_MSG(DBG_CH_RENDER, "render_if_dirty: triggering frame\n");
 	gui_render(gui);
 	if (!gui->render.dirty)
 		gui->render.last_dirty = false;
@@ -125,7 +132,10 @@ static void	poll_map_job(t_gui *gui)
 	pthread_rwlock_wrlock(&gui->scene_lock);
 	gui->scene = job->entry->scene;
 	pthread_rwlock_unlock(&gui->scene_lock);
-	scene_snapshot(job->entry->snap, gui);
+	if (!job->entry->snap)
+		job->entry->snap = malloc(sizeof(t_scene_snap));
+	if (job->entry->snap)
+		scene_snapshot(job->entry->snap, gui);
 	gui->cam_ctrl.camera = &gui->scene->camera;
 	reset_camera_view(gui);
 	clear_selection(gui);
