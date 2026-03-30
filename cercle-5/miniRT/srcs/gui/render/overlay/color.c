@@ -17,18 +17,12 @@
 */
 unsigned int	color_blend(unsigned int dst, int src, float alpha)
 {
-	unsigned int	a;
-	unsigned int	ia;
-	unsigned int	rb;
-	unsigned int	g;
+	t_vec3i	rgb;
 
-	a = (unsigned int)(alpha * 256.0f);
-	ia = 256 - a;
-	rb = (((unsigned int)src & 0xFF00FF) * a
-		+ (dst & 0xFF00FF) * ia) >> 8;
-	g = (((unsigned int)src & 0x00FF00) * a
-		+ (dst & 0x00FF00) * ia) >> 8;
-	return ((rb & 0xFF00FF) | (g & 0x00FF00));
+	rgb.x = ((src >> 16) & 0xFF) * alpha + ((dst >> 16) & 0xFF) * (1.0 - alpha);
+	rgb.y = ((src >> 8) & 0xFF) * alpha + ((dst >> 8) & 0xFF) * (1.0 - alpha);
+	rgb.z = (src & 0xFF) * alpha + (dst & 0xFF) * (1.0 - alpha);
+	return ((rgb.x << 16) | (rgb.y << 8) | rgb.z);
 }
 
 static t_vec2i	corner_delta(t_panel p, t_vec2i pos)
@@ -38,14 +32,14 @@ static t_vec2i	corner_delta(t_panel p, t_vec2i pos)
 
 	r = PANEL_RADIUS;
 	d = vec2i(0, 0);
-	if (pos.x < p.box.pos.x + r && pos.y < p.box.pos.y + r)
-		d = vec2i(p.box.pos.x + r - pos.x, p.box.pos.y + r - pos.y);
-	else if (pos.x >= p.box.pos.x + p.box.size.x - r && pos.y < p.box.pos.y + r)
-		d = vec2i(pos.x - (p.box.pos.x + p.box.size.x - r - 1), p.box.pos.y + r - pos.y);
-	else if (pos.x < p.box.pos.x + r && pos.y >= p.box.pos.y + p.box.size.y - r)
-		d = vec2i(p.box.pos.x + r - pos.x, pos.y - (p.box.pos.y + p.box.size.y - r - 1));
-	else if (pos.x >= p.box.pos.x + p.box.size.x - r && pos.y >= p.box.pos.y + p.box.size.y - r)
-		d = vec2i(pos.x - (p.box.pos.x + p.box.size.x - r - 1), pos.y - (p.box.pos.y + p.box.size.y - r - 1));
+	if (pos.x < p.x + r && pos.y < p.y + r)
+		d = vec2i(p.x + r - pos.x, p.y + r - pos.y);
+	else if (pos.x >= p.x + p.w - r && pos.y < p.y + r)
+		d = vec2i(pos.x - (p.x + p.w - r - 1), p.y + r - pos.y);
+	else if (pos.x < p.x + r && pos.y >= p.y + p.h - r)
+		d = vec2i(p.x + r - pos.x, pos.y - (p.y + p.h - r - 1));
+	else if (pos.x >= p.x + p.w - r && pos.y >= p.y + p.h - r)
+		d = vec2i(pos.x - (p.x + p.w - r - 1), pos.y - (p.y + p.h - r - 1));
 	return (d);
 }
 
@@ -63,8 +57,8 @@ int	panel_color(t_panel panel, int i, int j)
 {
 	if (is_rounded_corner(panel, i, j))
 		return (-1);
-	if (i <= panel.box.pos.x + 1 || i >= panel.box.pos.x + panel.box.size.x - 2
-		|| j <= panel.box.pos.y + 1 || j >= panel.box.pos.y + panel.box.size.y - 2)
+	if (i <= panel.x + 1 || i >= panel.x + panel.w - 2
+		|| j <= panel.y + 1 || j >= panel.y + panel.h - 2)
 		return (panel.brd);
 	return (panel.bg);
 }

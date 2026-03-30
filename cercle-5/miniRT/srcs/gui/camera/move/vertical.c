@@ -16,3 +16,8 @@ void	camera_move_up(t_camera *camera, double speed)
 {
 	camera_move(camera, vec3(0, 1, 0), speed);
 }
+
+void	camera_move_down(t_camera *camera, double speed)
+{
+	camera_move(camera, vec3(0, 1, 0), -speed);
+}

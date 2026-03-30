@@ -16,3 +16,8 @@ void	camera_move_forward(t_camera *camera, double speed)
 {
 	camera_move(camera, camera->transform.forward, speed);
 }
+
+void	camera_move_backward(t_camera *camera, double speed)
+{
+	camera_move(camera, camera->transform.forward, -speed);
+}

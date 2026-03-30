@@ -230,7 +230,7 @@ static void	draw_char(t_gui *gui, unsigned char c, int x, int y,
 	row = 0;
 	while (row < 8)
 	{
-		if (y + row < 0 || y + row >= gui->win.disp_size.y)
+		if (y + row < 0 || y + row >= gui->win.disp_h)
 		{
 			row++;
 			continue ;
@@ -240,7 +240,7 @@ static void	draw_char(t_gui *gui, unsigned char c, int x, int y,
 		{
 			if ((glyph[row] >> (7 - col)) & 1)
 			{
-				if (x + col >= 0 && x + col < gui->win.disp_size.x)
+				if (x + col >= 0 && x + col < gui->win.disp_w)
 				{
 					px = (unsigned int *)(gui->win.disp_addr
 							+ (y + row) * gui->win.disp_line_len

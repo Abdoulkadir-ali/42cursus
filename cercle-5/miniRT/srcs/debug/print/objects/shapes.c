@@ -10,44 +10,42 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
 #include "debug.h"
+#include "objects.h"
 
 void	print_sphere(t_sphere *s)
 {
 	if (!s)
 		return ;
-	printf("sphere(\n  center: ");
-	print_vec3(&s->center);
-	printf("\n  radius: %.4f\n", s->radius);
-	printf("  mat_idx: %d\n)", s->mat_idx);
+	printf("sphere(\n  transform: ");
+	print_transform(&s->transform);
+	printf("\n  radius_sq: %.4f\n", s->radius_sq);
+	printf("  mat_id: %d\n)", s->mat_id);
 }
 
 void	print_plane(t_plane *p)
 {
 	if (!p)
 		return ;
-	printf("plane(\n  point: ");
-	print_vec3(&p->point);
-	printf("\n  normal: ");
-	print_vec3(&p->normal);
-	printf("\n  mat_idx: %d\n)", p->mat_idx);
+	printf("plane(\n  transform: ");
+	print_transform(&p->transform);
+	printf("\n  mat_id: %d\n)", p->mat_id);
 }
 
 void	print_cylinder(t_cylinder *c)
 {
 	if (!c)
 		return ;
-	printf("cylinder(\n  pos: ");
-	print_vec3(&c->pos);
-	printf("\n  mat_idx: %d\n)", c->mat_idx);
+	printf("cylinder(\n  transform: ");
+	print_transform(&c->transform);
+	printf("\n  mat_id: %d\n)", c->mat_id);
 }
 
 void	print_cone(t_cone *c)
 {
 	if (!c)
 		return ;
-	printf("cone(\n  tip: ");
-	print_vec3(&c->tip);
-	printf("\n  mat_idx: %d\n)", c->mat_idx);
+	printf("cone(\n  transform: ");
+	print_transform(&c->transform);
+	printf("\n  mat_id: %d\n)", c->mat_id);
 }

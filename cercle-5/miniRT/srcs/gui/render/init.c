@@ -5,20 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 10:28:57 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/05 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/11 20:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
-#include "debug.h"
-
-/*
-** Main initialization function for the GUI subsystem.
-** Allocates memory and initializes MLX, window, camera, and map switcher.
-*/
-extern void	*render_tile_worker(void *arg);
-
+#include "gui.h"
+#include <unistd.h>
 
 /*
 ** Initializes MLX window and image.
@@ -29,21 +22,21 @@ static bool	init_window(t_gui *gui)
 {
 	if (!gui->win.mlx)
 		return (false);
-	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.size.x, gui->win.size.y,
+	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.width, gui->win.height,
 			"miniRT");
 	if (!gui->win.win)
 		return (false);
-	gui->win.img = mlx_new_image(gui->win.mlx, gui->win.size.x, gui->win.size.y);
+	gui->win.img = mlx_new_image(gui->win.mlx, gui->win.width, gui->win.height);
 	gui->win.addr = mlx_get_data_addr(gui->win.img, &gui->win.bpp,
 			&gui->win.line_len, &gui->win.endian);
-	gui->win.disp_size.x = gui->win.size.x;
-	gui->win.disp_size.y = gui->win.size.y;
-	gui->win.disp_img = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
-			gui->win.disp_size.y);
+	gui->win.disp_w = gui->win.width;
+	gui->win.disp_h = gui->win.height;
+	gui->win.disp_img = mlx_new_image(gui->win.mlx, gui->win.disp_w,
+			gui->win.disp_h);
 	gui->win.disp_addr = mlx_get_data_addr(gui->win.disp_img,
 			&gui->win.disp_bpp, &gui->win.disp_line_len, &gui->win.disp_endian);
-	gui->win.gui_bg_img = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
-			gui->win.disp_size.y);
+	gui->win.gui_bg_img = mlx_new_image(gui->win.mlx, gui->win.disp_w,
+			gui->win.disp_h);
 	gui->win.gui_bg_addr = mlx_get_data_addr(gui->win.gui_bg_img,
 			&gui->win.gui_bg_bpp, &gui->win.gui_bg_line_len,
 			&gui->win.gui_bg_endian);
@@ -66,61 +59,30 @@ static void	init_camera(t_gui *gui)
 	gui->cam_ctrl.target_fov = gui->cam_ctrl.camera->fov;
 	gui->cam_ctrl.move_speed = 0.5;
 	gui->cam_ctrl.lerp_factor = 0.1;
-	gui->cam_ctrl.basis_dirty = true;
 	gui->render.scale = 1;
 	gui->render.dirty = true;
-	gui->render.proj_dirty = true;
 	gui->widgets = NULL;
 }
 
-static bool	init_gui_managers(t_gui *gui)
+/*
+** Main initialization function for the GUI subsystem.
+** Allocates memory and initializes MLX, window, camera, and map switcher.
+*/
+t_gui	*gui_init(t_scene *scene, void *mlx)
 {
-	gui->selection = malloc(sizeof(t_selection));
-	gui->inspector = malloc(sizeof(t_inspector));
-	gui->scene_panel = malloc(sizeof(t_scene_panel));
-	gui->slider_state = malloc(sizeof(t_slider_state));
-	gui->crud = malloc(sizeof(t_crud_ui));
-	gui->hover = malloc(sizeof(t_hover_cache));
-	if (!gui->selection || !gui->inspector || !gui->scene_panel
-		|| !gui->slider_state || !gui->crud || !gui->hover)
-		return (false);
-	ft_memset(gui->selection, 0, sizeof(t_selection));
-	ft_memset(gui->inspector, 0, sizeof(t_inspector));
-	ft_memset(gui->scene_panel, 0, sizeof(t_scene_panel));
-	ft_memset(gui->slider_state, 0, sizeof(t_slider_state));
-	ft_memset(gui->crud, 0, sizeof(t_crud_ui));
-	ft_memset(gui->hover, 0, sizeof(t_hover_cache));
-	return (true);
-}
+	t_gui	*gui;
 
-static bool	init_render_pool(t_gui *gui)
-{
-	int	i;
-
-	i = 0;
-	while (i < gui->render.num_cores)
-	{
-		gui->pool.args[i].idx = i;
-		gui->pool.args[i].gui = gui;
-		if (sem_init(&gui->pool.start[i], 0, 0) != 0
-			|| sem_init(&gui->pool.done[i], 0, 0) != 0)
-			return (gui->pool.n = i, false);
-		if (pthread_create(&gui->pool.threads[i], NULL, render_tile_worker,
-				&gui->pool.args[i]) != 0)
-			return (gui->pool.n = i, false);
-		i++;
-	}
-	gui->pool.n = gui->render.num_cores;
-	gui->pool.ready = true;
-	return (true);
-}
-
-static void	init_gui_state(t_gui *gui, void *mlx)
-{
-	gui->win.size.x = RENDER_W;
-	gui->win.size.y = RENDER_H;
+	gui = malloc(sizeof(t_gui));
+	if (!gui)
+		return (NULL);
+	ft_memset(gui, 0, sizeof(t_gui));
+	gui->scene = scene;
+	gui->win.width = RENDER_W;
+	gui->win.height = RENDER_H;
 	gui->win.mlx = mlx;
+	/* Initialize new GUI state */
 	gui->physics_enabled = true;
+	/* physics timing defaults */
 	gui->phys_accumulator = 0.0;
 	gui->phys_fixed_dt = 1.0 / 60.0;
 	gui->phys_max_steps = 5;
@@ -131,74 +93,26 @@ static void	init_gui_state(t_gui *gui, void *mlx)
 		gui->render.num_cores = 1;
 	if (gui->render.num_cores > 128)
 		gui->render.num_cores = 128;
-}
-
-bool	gui_init(t_gui *gui, t_scene *scene, void *mlx)
-{
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: start scene=%p\n", (void *)scene);
-	if (!gui || (ft_memset(gui, 0, sizeof(t_gui)), 0))
-		return (false);
-	gui->scene = scene;
-	init_gui_state(gui, mlx);
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: state done cores=%d\n",
-		gui->render.num_cores);
-	gui->render.threads = malloc(sizeof(pthread_t) * gui->render.num_cores);
-	if (!gui->render.threads || !init_window(gui))
+	gui->render.threads = malloc(sizeof(pthread_t)
+			* (size_t)gui->render.num_cores);
+	if (!gui->render.threads)
 	{
-		DBG_ERR_MSG(DBG_CH_RENDER, "gui_init: window FAIL\n");
+		free(gui);
+		return (NULL);
+	}
+	if (!init_window(gui))
+	{
 		free(gui->render.threads);
-		return (false);
+		free(gui);
+		return (NULL);
 	}
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: window OK\n");
-	if (!init_gui_managers(gui))
-	{
-		DBG_ERR_MSG(DBG_CH_RENDER, "gui_init: managers FAIL\n");
-		gui_destroy(gui);
-		return (false);
-	}
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: managers OK\n");
 	init_camera(gui);
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: camera OK\n");
 	gui_map_switcher_init(gui);
 	widget_init_default(gui);
 	editor_init(gui);
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: editor OK\n");
-	if (!init_render_pool(gui))
-	{
-		DBG_ERR_MSG(DBG_CH_RENDER, "gui_init: render pool FAIL\n");
-		gui_destroy(gui);
-		return (false);
-	}
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: pool OK n=%d\n", gui->pool.n);
-	pthread_rwlock_init(&gui->scene_lock, NULL);
-	gui->render.proj_dirty = true;
-	raytrace_engine_sync(&gui->rt, scene, gui->win.size.x, gui->win.size.y);
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: rt_sync OK baked_v=%d\n",
-		gui->rt.baked_version);
-	gui->phys = phys_create(scene);
-	scene->phys = gui->phys;
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: phys OK p=%p\n",
-		(void *)gui->phys);
 	mlx_hook(gui->win.win, 22, 1L << 17, gui_window_resize, gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
-	DBG_INFO_MSG(DBG_CH_RENDER, "gui_init: DONE\n");
-	return (true);
-}
-
-static void	free_widgets(t_gui *gui)
-{
-	t_widget	*w;
-	t_widget	*next;
-
-	w = gui->widgets;
-	while (w)
-	{
-		next = w->next;
-		free(w->label);
-		free(w);
-		w = next;
-	}
-	gui->widgets = NULL;
+	return (gui);
 }
 
 /*
@@ -208,7 +122,6 @@ void	gui_destroy(t_gui *gui)
 {
 	if (!gui)
 		return ;
-	mlx_loop_end(gui->win.mlx);
 	map_manager_destroy(gui);
 	if (gui->win.gui_bg_img)
 		mlx_destroy_image(gui->win.mlx, gui->win.gui_bg_img);
@@ -222,24 +135,5 @@ void	gui_destroy(t_gui *gui)
 		free(gui->win.mlx);
 	if (gui->render.threads)
 		free(gui->render.threads);
-	int j = 0;
-	gui->pool.shutdown = true;
-	while (j < gui->pool.n)
-	{
-		sem_post(&gui->pool.start[j]);
-		pthread_join(gui->pool.threads[j], NULL);
-		sem_destroy(&gui->pool.start[j]);
-		sem_destroy(&gui->pool.done[j]);
-		j++;
-	}
-	free(gui->selection);
-	free(gui->inspector);
-	free(gui->scene_panel);
-	free(gui->slider_state);
-	free(gui->crud);
-	free(gui->hover);
-	free_widgets(gui);
-	pthread_rwlock_destroy(&gui->scene_lock);
-	phys_destroy(gui->phys);
-	rt_engine_cleanup(&gui->rt);
+	free(gui);
 }

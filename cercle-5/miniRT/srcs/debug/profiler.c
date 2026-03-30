@@ -6,25 +6,27 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 09:39:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/15 17:40:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifdef PROFILE_MESH
 
-#include "debug.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <time.h>
 
-static volatile _Atomic long	g_mesh_calls = 0;
-static volatile _Atomic long	g_mesh_aabb_tests = 0;
-static volatile _Atomic long	g_mesh_tri_tests = 0;
-static volatile _Atomic long	g_mesh_occ_calls = 0;
-static int						g_prof_frame = 0;
-static struct timespec			g_prof_start;
+volatile long	g_mesh_calls = 0;
+volatile long	g_mesh_aabb_tests = 0;
+volatile long	g_mesh_tri_tests = 0;
+volatile long	g_mesh_occ_calls = 0;
+int				g_prof_frame = 0;
+struct timespec	g_prof_start;
 
-static __thread long	tl_g_mesh_calls = 0;
-static __thread long	tl_g_mesh_aabb_tests = 0;
-static __thread long	tl_g_mesh_tri_tests = 0;
-static __thread long	tl_g_mesh_occ_calls = 0;
+__thread long	tl_g_mesh_calls = 0;
+__thread long	tl_g_mesh_aabb_tests = 0;
+__thread long	tl_g_mesh_tri_tests = 0;
+__thread long	tl_g_mesh_occ_calls = 0;
 
 static double	g_frame_times[1024];
 static int		g_frame_count = 0;
@@ -65,48 +67,6 @@ void	prof_print_frame(void)
 		printf("Avg frame: %.1f ms (%.1f FPS)\n", avg, 1000.0 / avg);
 		fflush(stdout);
 	}
-}
-
-void	prof_inc(t_prof_id id)
-{
-	switch (id)
-	{
-	case PROF_MESH_CALLS:
-		tl_g_mesh_calls++;
-		break;
-	case PROF_MESH_AABB_TESTS:
-		tl_g_mesh_aabb_tests++;
-		break;
-	case PROF_MESH_TRI_TESTS:
-		tl_g_mesh_tri_tests++;
-		break;
-	case PROF_MESH_OCC_CALLS:
-		tl_g_mesh_occ_calls++;
-		break;
-	default:
-		break;
-	}
-}
-
-void	prof_flush(void)
-{
-	atomic_fetch_add_explicit(&g_mesh_calls, tl_g_mesh_calls,
-		memory_order_relaxed);
-	atomic_fetch_add_explicit(&g_mesh_aabb_tests, tl_g_mesh_aabb_tests,
-		memory_order_relaxed);
-	atomic_fetch_add_explicit(&g_mesh_tri_tests, tl_g_mesh_tri_tests,
-		memory_order_relaxed);
-	atomic_fetch_add_explicit(&g_mesh_occ_calls, tl_g_mesh_occ_calls,
-		memory_order_relaxed);
-	tl_g_mesh_calls = 0; tl_g_mesh_aabb_tests = 0;
-	tl_g_mesh_tri_tests = 0; tl_g_mesh_occ_calls = 0;
-}
-
-void	prof_reset(void)
-{
-	g_mesh_calls = 0; g_mesh_aabb_tests = 0;
-	g_mesh_tri_tests = 0; g_mesh_occ_calls = 0;
-	clock_gettime(CLOCK_MONOTONIC, &g_prof_start);
 }
 
 #endif

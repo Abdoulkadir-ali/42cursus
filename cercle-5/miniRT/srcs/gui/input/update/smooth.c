@@ -23,7 +23,6 @@ void	smooth_rotation(t_gui *gui, t_camera_controller *ctrl)
 	{
 		ctrl->transform.rotation.yaw += diff_yaw * ctrl->lerp_factor;
 		ctrl->transform.rotation.pitch += diff_pitch * ctrl->lerp_factor;
-		ctrl->basis_dirty = true;
 		gui->render.dirty = true;
 	}
 }

@@ -17,9 +17,6 @@ a.out
 # Libraries
 *.a
 packages/libft/libft.a
-ignore/
-
-**/ignore/**
 
 # Editor directories
 .vscode/
@@ -39,11 +36,3 @@ subjects/
 valgrind-out.txt
 *.md
 !README.md
-
-# Debug
-**/*.log
-
-
-#github
-.github
-.github/

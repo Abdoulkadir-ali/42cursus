@@ -10,15 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
 #include "debug.h"
+#include "objects.h"
 
 void	print_mesh(t_mesh *m)
 {
+	const char	*name;
+
 	if (!m)
 		return ;
-	printf("mesh(\n  tri_start: %d\n  mat_id: %d\n  bbox: ",
-		m->tri_start, m->mat_id);
+	name = "NULL";
+	if (m->name)
+		name = m->name;
+	printf("mesh(\n  name: %s\n", name);
+	printf("  tri_count: %d\n  mat_id: %d\n  bbox: ",
+		m->tri_count, m->mat_id);
 	print_aabb(&m->bbox);
 	printf("\n  transform: ");
 	print_transform(&m->transform);

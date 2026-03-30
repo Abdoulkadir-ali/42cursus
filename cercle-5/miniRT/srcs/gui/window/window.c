@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
+#include "gui.h"
 
 /*
 ** Handles window resize events.
@@ -23,21 +23,20 @@ int	gui_window_resize(int width, int height, t_gui *gui)
 
 	if (width < 200 || height < 150)
 		return (0);
-	if (width == gui->win.disp_size.x && height == gui->win.disp_size.y)
+	if (width == gui->win.disp_w && height == gui->win.disp_h)
 		return (0);
 	new_img = mlx_new_image(gui->win.mlx, width, height);
 	if (!new_img)
 		return (0);
 	if (gui->win.disp_img)
 		mlx_destroy_image(gui->win.mlx, gui->win.disp_img);
-	gui->win.disp_size.x = width;
-	gui->win.disp_size.y = height;
+	gui->win.disp_w = width;
+	gui->win.disp_h = height;
 	gui->win.disp_img = new_img;
 	gui->win.disp_addr = mlx_get_data_addr(gui->win.disp_img,
 			&gui->win.disp_bpp, &gui->win.disp_line_len,
 			&gui->win.disp_endian);
 	gui->render.dirty = true;
-	gui->render.proj_dirty = true;
 	return (0);
 }
 

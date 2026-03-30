@@ -1,0 +1,254 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   transform_panel.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/03/08 07:52:31 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "gui.h"
+#include "editor.h"
+
+static void	mesh_transform_sync(t_gui *gui)
+{
+	t_mesh_group	*g;
+	t_scene			*sc;
+	t_mat4			s;
+	t_mat4			r;
+	t_mat4			sr;
+	t_vec3			piv;
+	t_mesh			*m;
+	t_vec3			local;
+	int				si;
+	int				vi;
+
+	if (!gui->selection.active || gui->selection.type != TYPE_MESH)
+		return ;
+	sc = gui->scene;
+	if (gui->selection.index >= sc->group_count)
+		return ;
+	g = &sc->groups[gui->selection.index];
+	if (!sc->meshes[g->start].edit_snap_verts)
+		return ;
+	s = mat4_scaling(g->transform.scale);
+	r = mat4_rotation(g->transform.rotation);
+	sr = mat4_mul(r, s);
+	piv = g->pivot;
+	si = 0;
+	while (si < g->sub_count)
+	{
+		m = &sc->meshes[g->start + si];
+		if (!m->edit_snap_verts)
+		{
+			si++;
+			continue ;
+		}
+		vi = 0;
+		while (vi < m->vertex_count)
+		{
+			local = vec3_sub(m->edit_snap_verts[vi], piv);
+			local = mat4_mul_pos(sr, local);
+			m->vertices[vi] = vec3_add(vec3_add(local, piv),
+					g->transform.pos);
+			if (m->normals && m->edit_snap_norms)
+				m->normals[vi] = vec3_norm(mat4_mul_vec3(r,
+						m->edit_snap_norms[vi]));
+			vi++;
+		}
+		m->bbox = aabb_create_empty();
+		vi = 0;
+		while (vi < m->vertex_count)
+			aabb_expand_point(&m->bbox, m->vertices[vi++]);
+		mesh_build_bvh(m);
+		si++;
+	}
+}
+
+static void	sphere_scale_sync(t_gui *gui)
+{
+	t_selection	*sel;
+	t_sphere	*sp;
+	t_transform	scale_only;
+
+	sel = &gui->selection;
+	if (!sel->active || sel->type != TYPE_SPHERE)
+		return ;
+	sp = &gui->scene->spheres[sel->index];
+	sp->transform.scale.y = sp->transform.scale.x;
+	sp->transform.scale.z = sp->transform.scale.x;
+	sp->radius_sq = sp->transform.scale.x * sp->transform.scale.x;
+	scale_only.pos = sp->transform.pos;
+	scale_only.scale = sp->transform.scale;
+	scale_only.rotation = (t_rotator){0, 0, 0};
+	sp->inv_transform = mat4_inverse_transform(scale_only);
+}
+
+static void	box_scale_sync(t_gui *gui)
+{
+	t_selection	*sel;
+	t_box		*bx;
+
+	sel = &gui->selection;
+	if (!sel->active || sel->type != TYPE_BOX)
+		return ;
+	bx = &gui->scene->boxes[sel->index];
+	bx->half_extents = bx->transform.scale;
+}
+
+static void	capsule_dims_sync(t_gui *gui)
+{
+	t_selection	*sel;
+	t_capsule	*cap;
+
+	sel = &gui->selection;
+	if (!sel->active || sel->type != TYPE_CAPSULE)
+		return ;
+	cap = &gui->scene->capsules[sel->index];
+	cap->radius = cap->transform.scale.x;
+	cap->half_height = cap->transform.scale.y;
+	cap->transform.scale.z = cap->transform.scale.x;
+}
+
+t_transform	*get_selected_transform(t_gui *gui)
+{
+	t_selection	*sel;
+	t_scene		*sc;
+
+	sel = &gui->selection;
+	sc = gui->scene;
+	if (!sel->active || !sc)
+		return (NULL);
+	if (sel->type == TYPE_SPHERE)
+		return (&sc->spheres[sel->index].transform);
+	if (sel->type == TYPE_PLANE)
+		return (&sc->planes[sel->index].transform);
+	if (sel->type == TYPE_CYLINDER)
+		return (&sc->cylinders[sel->index].transform);
+	if (sel->type == TYPE_CONE)
+		return (&sc->cones[sel->index].transform);
+	if (sel->type == TYPE_RECT)
+		return (&sc->rects[sel->index].transform);
+	if (sel->type == TYPE_PYRAMID)
+		return (&sc->pyramids[sel->index].transform);
+	if (sel->type == TYPE_BOX)
+		return (&sc->boxes[sel->index].transform);
+	if (sel->type == TYPE_CAPSULE)
+		return (&sc->capsules[sel->index].transform);
+	if (sel->type == TYPE_TRI)
+		return (&sc->tris[sel->index].xform);
+	if (sel->type == TYPE_MESH)
+		return (&sc->groups[sel->index].transform);
+	return (NULL);
+}
+
+static void	build_tr_sliders(t_transform *tr, t_type type,
+	t_islider *sl, int *count)
+{
+	int	i;
+
+	i = 0;
+	sl[i++] = (t_islider){"Pos X", SL_POS_MIN, SL_POS_MAX, &tr->pos.x};
+	sl[i++] = (t_islider){"Pos Y", SL_POS_MIN, SL_POS_MAX, &tr->pos.y};
+	sl[i++] = (t_islider){"Pos Z", SL_POS_MIN, SL_POS_MAX, &tr->pos.z};
+	sl[i++] = (t_islider){"Pitch", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.pitch};
+	sl[i++] = (t_islider){"Yaw", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.yaw};
+	sl[i++] = (t_islider){"Roll", SL_ROT_MIN, SL_ROT_MAX, &tr->rotation.roll};
+	if (type == TYPE_SPHERE)
+		sl[i++] = (t_islider){"Scale", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+	else if (type == TYPE_CYLINDER || type == TYPE_CONE)
+	{
+		sl[i++] = (t_islider){"Radius", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+		sl[i++] = (t_islider){"Height", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
+	}
+	else if (type == TYPE_MESH)
+	{
+		sl[i++] = (t_islider){"Scale X", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+		sl[i++] = (t_islider){"Scale Y", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
+		sl[i++] = (t_islider){"Scale Z", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.z};
+	}
+	else if (type == TYPE_BOX)
+	{
+		sl[i++] = (t_islider){"Ext X", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+		sl[i++] = (t_islider){"Ext Y", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
+		sl[i++] = (t_islider){"Ext Z", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.z};
+	}
+	else if (type == TYPE_CAPSULE)
+	{
+		sl[i++] = (t_islider){"Radius", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+		sl[i++] = (t_islider){"Half-H", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.y};
+	}
+	else if (type == TYPE_PLANE)
+		sl[i++] = (t_islider){"UV Scale", SL_SCALE_MIN, SL_SCALE_MAX, &tr->scale.x};
+	*count = i;
+}
+
+void	draw_transform_panel(t_gui *gui, int x)
+{
+	t_transform	*tr;
+	t_islider	sl[9];
+	int			count;
+	int			i;
+	int			y;
+
+	tr = get_selected_transform(gui);
+	if (!tr)
+	{
+		mlx_string_put(gui->win.mlx, gui->win.win,
+			x + 8, 90, COL_TEXT, "No transform");
+		return ;
+	}
+	if (gui->selection.type == TYPE_SPHERE)
+		tr->scale.y = tr->scale.z = tr->scale.x;
+	mlx_string_put(gui->win.mlx, gui->win.win,
+		x + 8, 88, COL_HOVER, "TRANSFORM");
+	build_tr_sliders(tr, gui->selection.type, sl, &count);
+	y = 104;
+	i = 0;
+	while (i < count)
+	{
+		draw_slider_row(gui, vec2i(x + 8, y), sl[i]);
+		y += 30;
+		i++;
+	}
+}
+
+bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
+{
+	t_transform	*tr;
+	t_islider	sl[9];
+	int			count;
+	int			i;
+	int			y;
+	int			x;
+
+	tr = get_selected_transform(gui);
+	if (!tr)
+		return (false);
+	x = gui->win.disp_w - gui->inspector.width;
+	build_tr_sliders(tr, gui->selection.type, sl, &count);
+	y = 104;
+	i = 0;
+	while (i < count)
+	{
+		void	(*cb)(t_gui *);
+
+		cb = NULL;
+		if (gui->selection.type == TYPE_SPHERE && i == 6)
+			cb = sphere_scale_sync;
+		else if (gui->selection.type == TYPE_BOX && i >= 6)
+			cb = box_scale_sync;
+		else if (gui->selection.type == TYPE_CAPSULE && i >= 6)
+			cb = capsule_dims_sync;
+		else if (gui->selection.type == TYPE_MESH)
+			cb = mesh_transform_sync;
+		if (try_islider_click(gui, mouse, vec2i(x + 8, y), sl[i], cb))
+			return (true);
+		y += 30;
+		i++;
+	}
+	return (false);
+}

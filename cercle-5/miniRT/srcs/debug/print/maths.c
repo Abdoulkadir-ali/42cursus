@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "maths.h"
 #include "debug.h"
+#include "maths.h"
 
 void	print_vec2(t_vec2 *v)
 {
@@ -77,9 +77,9 @@ void	print_aabb(t_aabb *b)
 {
 	if (!b)
 		return ;
-	printf("aabb(\n  min: %.4f %.4f %.4f",
-		b->min.x, b->min.y, b->min.z);
-	printf("\n  max: %.4f %.4f %.4f",
-		b->max.x, b->max.y, b->max.z);
+	printf("aabb(\n  min: ");
+	print_vec3(&b->min);
+	printf("\n  max: ");
+	print_vec3(&b->max);
 	printf("\n)");
 }

@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "gui.h"
 #include "editor.h"
+
 /*
 ** Finds the map entry matching the currently loaded scene's name and stores
 ** the scene pointer in that entry (transferring ownership to the cache).
@@ -35,9 +37,7 @@ void	set_current_entry(t_gui *gui)
 	}
 	if (gui->map_info.current)
 	{
-		if (!gui->map_info.current->snap)
-			gui->map_info.current->snap = malloc(sizeof(t_scene_snap));
-		if (gui->map_info.current->snap)
-			scene_snapshot(gui->map_info.current->snap, gui);
+		gui->map_info.current->scene = gui->scene;
+		scene_snap_take(&gui->map_info.current->snap, gui);
 	}
 }

@@ -1,4 +1,5 @@
 NAME        = miniRT
+MAKEFLAGS	+= j16
 MINILIBX_DIR = packages/minilibx-linux
 MINILIBX    = $(MINILIBX_DIR)/libmlx.a
 LIBFT_DIR   = packages/libft
@@ -7,18 +8,13 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 
 
 
-SRCS_DIR    = srcs
-INCS_DIR    = includes
-OBJS_DIR    = objs
-
 CC          = cc
-INC_DIRS    := $(shell find $(INCS_DIR) -type d)
-INC_FLAGS   := $(addprefix -I,$(INC_DIRS))
-MAKEFLAGS	+= j16
-CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -pthread $(INC_FLAGS) -Ipackages/libft/includes -Ipackages -I$(MINILIBX_DIR) -MMD -MP
+CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -MMD -MP
 RM          = rm -f
+SRCS_DIR    = srcs
+# Exclude old physics.c if it still exists (handled by file deletion)
+OBJS_DIR    = objs
 SRCS        = $(shell find $(SRCS_DIR) -name "*.c")
-INCS        = $(shell find $(INCS_DIR) -name "*.h")
 OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
 DEPS        = $(OBJS:.o=.d)
 
@@ -33,7 +29,7 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIBFT):
+$(LIBFT): FORCE
 	$(MAKE) -C $(LIBFT_DIR)
 
 $(MINILIBX):
@@ -42,17 +38,15 @@ $(MINILIBX):
 clean:
 	$(RM) -r $(OBJS_DIR)
 	$(MAKE) -C $(LIBFT_DIR) clean
-	$(MAKE) -C $(MINILIBX_DIR) clean
 
 fclean: clean
 	$(RM) $(NAME)
 	$(MAKE) -C $(LIBFT_DIR) fclean
-	$(MAKE) -C $(MINILIBX_DIR) clean
 
 re: fclean all
 
 test: re
-	@echo "No automated test suite. Run: ./miniRT maps/rt/test.rt"
+	bash ~/tools/
 
 # ── Profiling targets ────────────────────────────────────────────────────────
 #
@@ -76,8 +70,8 @@ PROF_DEPS     = $(PROF_OBJS:.o=.d)
 
 # -O1 keeps the call graph readable; -g3 keeps symbols; no -flto (breaks gprof)
 PROF_CFLAGS   = -Wall -Wextra -O1 -g3 -pthread \
-                $(INC_FLAGS) -Ipackages/libft/includes -Ipackages -I$(MINILIBX_DIR) \
-                -DPROFILE_MESH -MMD -MP
+                -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) \
+                -DDEBUG_EXTENDER -DPROFILE_MESH -MMD -MP
 
 -include $(PROF_DEPS)
 
@@ -114,4 +108,4 @@ gprof-build: $(LIBFT) $(MINILIBX) $(GPROF_OBJS)
 prof-clean:
 	$(RM) -r $(PROF_OBJS_DIR) $(GPROF_OBJS_DIR) miniRT-prof miniRT-gprof gmon.out callgrind.out*
 
-.PHONY: all clean fclean re test profile gprof-build prof-clean
+.PHONY: all clean fclean re test FORCE profile gprof-build prof-clean

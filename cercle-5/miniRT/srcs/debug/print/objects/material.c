@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "surface.h"
 #include "debug.h"
+#include "objects.h"
 
 static void	print_texture(t_texture *t, const char *name)
 {

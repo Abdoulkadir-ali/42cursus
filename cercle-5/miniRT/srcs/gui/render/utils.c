@@ -13,14 +13,16 @@
 
 #include "gui.h"
 
-void  make_camera_ray(t_render *ctx, double x, double y, t_ray *ray)
+void	make_camera_ray(t_render_ctx *ctx, double x, double y, t_ray *ray)
 {
 	double	px;
 	double	py;
 	t_vec3	dir;
 
-	px = (x + 0.5) * ctx->px_step_x - ctx->px_off_x;
-	py = ctx->px_off_y - (y + 0.5) * ctx->px_step_y;
+	px = (2.0 * (x + 0.5) / ctx->gui->win.width - 1.0)
+		* ctx->half_width * ctx->aspect_ratio;
+	py = (1.0 - 2.0 * (y + 0.5) / ctx->gui->win.height)
+		* ctx->half_height * ctx->aspect_ratio;
 	dir = vec3_norm(vec3_add(ctx->transform.forward,
 				vec3_add(vec3_scale(ctx->transform.right, px),
 					vec3_scale(ctx->transform.up, py))));

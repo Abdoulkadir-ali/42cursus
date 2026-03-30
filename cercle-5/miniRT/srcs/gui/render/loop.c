@@ -6,21 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/29 12:55:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/08 16:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
+#include "gui.h"
 #include "physics.h"
-#include "animations.h"
-#include "debug.h"
 
 static long long	get_time_ms(void)
 {
-	struct timespec	ts;
+	struct timeval	tv;
 
-	clock_gettime(CLOCK_MONOTONIC, &ts);
-	return (ts.tv_sec * 1000LL + ts.tv_nsec / 1000000);
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000LL + tv.tv_usec / 1000);
 }
 
 static double	update_delta(t_gui *gui)
@@ -41,12 +39,24 @@ static double	update_delta(t_gui *gui)
 	return (delta);
 }
 
-static void	gui_update_animations(t_gui *gui, double delta)
+static void	update_animations(t_gui *gui, double delta)
 {
+	int		i;
+	t_mesh	*mesh;
+
 	if (!gui->scene || gui->scene->clip_count <= 0)
 		return ;
-	update_animations(gui->scene, delta);
-	gui->render.dirty = true;
+	i = 0;
+	while (i < gui->scene->mesh_count)
+	{
+		mesh = &gui->scene->meshes[i];
+		if (mesh->skeleton)
+		{
+			glb_update_mesh_anim(mesh, gui->scene, delta);
+			gui->render.dirty = true;
+		}
+		i++;
+	}
 }
 
 static void	update_physics_step(t_gui *gui, double delta)
@@ -54,36 +64,35 @@ static void	update_physics_step(t_gui *gui, double delta)
 	double	fixed_dt;
 	int		steps;
 
-	if (!gui->phys || !gui->physics_enabled)
+	if (!gui->scene || !gui->physics_enabled)
 		return ;
-	fixed_dt = 1.0 / 60.0;
-	if (gui->phys_fixed_dt > 0.0)
-		fixed_dt = gui->phys_fixed_dt;
+	fixed_dt = (gui->phys_fixed_dt > 0.0) ? gui->phys_fixed_dt : (1.0 / 60.0);
+	/* Clamp delta to prevent runaway accumulation after stalls */
 	if (delta > fixed_dt * 3.0)
 		delta = fixed_dt * 3.0;
 	gui->phys_accumulator += delta;
 	steps = 0;
 	while (gui->phys_accumulator >= fixed_dt && steps < 3)
 	{
-		simulate_physics(gui->phys, fixed_dt);
+		update_physics(gui->scene, fixed_dt);
 		gui->phys_accumulator -= fixed_dt;
 		steps++;
 	}
 	if (steps > 0)
-	{
-		DBG_TRACE_MSG(DBG_CH_PHYSICS,
-			"loop: %d phys steps (acc=%.4f)\n", steps,
-			gui->phys_accumulator);
 		gui->render.dirty = true;
-	}
 }
 
 static void	update_autorefresh(t_gui *gui)
 {
+#if GUI_AUTOREFRESH_PHYSICS
 	if (!gui->physics_enabled)
 		return ;
+	gui->render.dirty = true;
 	if (gui->render.scale < GUI_AUTOREFRESH_SCALE)
 		gui->render.scale = GUI_AUTOREFRESH_SCALE;
+#else
+	(void)gui;
+#endif
 }
 
 static void	update_ambient(t_gui *gui)
@@ -92,11 +101,6 @@ static void	update_ambient(t_gui *gui)
 
 	if (!gui->scene)
 		return ;
-	if (gui->ambient_color == gui->last_ambient_color
-		&& gui->ambient_intensity == gui->last_ambient_intensity)
-		return ;
-	gui->last_ambient_color = gui->ambient_color;
-	gui->last_ambient_intensity = gui->ambient_intensity;
 	amb = &gui->scene->ambient;
 	amb->rgb.x = ((gui->ambient_color >> 16) & 0xFF) / 255.0 * gui->ambient_intensity;
 	amb->rgb.y = ((gui->ambient_color >> 8) & 0xFF) / 255.0 * gui->ambient_intensity;
@@ -108,7 +112,6 @@ static void	render_if_dirty(t_gui *gui)
 {
 	if (!gui->render.dirty && !gui->render.last_dirty)
 		return ;
-	DBG_TRACE_MSG(DBG_CH_RENDER, "render_if_dirty: triggering frame\n");
 	gui_render(gui);
 	if (!gui->render.dirty)
 		gui->render.last_dirty = false;
@@ -129,13 +132,8 @@ static void	poll_map_job(t_gui *gui)
 	if (!job->entry || !job->entry->scene)
 		return ;
 	gui->map_info.current = job->entry;
-	pthread_rwlock_wrlock(&gui->scene_lock);
 	gui->scene = job->entry->scene;
-	pthread_rwlock_unlock(&gui->scene_lock);
-	if (!job->entry->snap)
-		job->entry->snap = malloc(sizeof(t_scene_snap));
-	if (job->entry->snap)
-		scene_snapshot(job->entry->snap, gui);
+	scene_snap_take(&job->entry->snap, gui);
 	gui->cam_ctrl.camera = &gui->scene->camera;
 	reset_camera_view(gui);
 	clear_selection(gui);
@@ -150,7 +148,7 @@ static int	render_loop(void *param)
 	gui = (t_gui *)param;
 	poll_map_job(gui);
 	delta = update_delta(gui);
-	gui_update_animations(gui, delta);
+	update_animations(gui, delta);
 	update_physics_step(gui, delta);
 	update_autorefresh(gui);
 	update_ambient(gui);
@@ -166,10 +164,10 @@ void	gui_loop(t_gui *gui)
 {
 	mlx_hook(gui->win.win, KeyPress, KeyPressMask, key_press, gui);
 	mlx_hook(gui->win.win, KeyRelease, KeyReleaseMask, key_release, gui);
-	mlx_hook(gui->win.win, ButtonPress, ButtonPressMask, mouse_click, gui);
-	mlx_hook(gui->win.win, ButtonRelease, ButtonReleaseMask, mouse_release,
+	mlx_hook(gui->win.win, ButtonPress, ButtonPressMask, mouse_click_hook(), gui);
+	mlx_hook(gui->win.win, ButtonRelease, ButtonReleaseMask, mouse_release_hook(),
 		gui);
-	mlx_hook(gui->win.win, MotionNotify, PointerMotionMask, mouse_motion, gui);
+	mlx_hook(gui->win.win, MotionNotify, PointerMotionMask, mouse_motion_hook(), gui);
 	mlx_hook(gui->win.win, 17, 0, gui_window_close, gui);
 	mlx_loop_hook(gui->win.mlx, (int (*)())render_loop, gui);
 	mlx_loop(gui->win.mlx);

@@ -11,96 +11,117 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "profiler.h"
+#include <semaphore.h>
 
-static void	render_tile(t_render *ctx, int id)
+#define RENDER_POOL_MAX 128
+
+typedef struct s_render_pool
 {
-	t_tile	v;
+	pthread_t		threads[RENDER_POOL_MAX];
+	sem_t			start[RENDER_POOL_MAX];
+	sem_t			done[RENDER_POOL_MAX];
+	t_render_ctx	*ctx[RENDER_POOL_MAX];
+	int				n;
+	bool			shutdown;
+}	t_render_pool;
 
-	v.tile_idx.x = (id % ctx->tiles_x) * TILE_SIZE;
-	v.tile_idx.y = (id / ctx->tiles_x) * TILE_SIZE;
-	v.pos.y = v.tile_idx.y;
+static t_render_pool	g_pool;
+static bool				g_pool_ready = false;
+
+static void	render_tile(t_render_ctx *ctx, int id)
+{
+	t_tile_vars	v;
+
+	v.tx = (id % ctx->tiles_x) * TILE_SIZE;
+	v.ty = (id / ctx->tiles_x) * TILE_SIZE;
+	v.y = v.ty;
 	v.row_ptr = ctx->gui->win.addr
-		+ (v.pos.y * ctx->gui->win.line_len)
-		+ (v.tile_idx.x * (ctx->gui->win.bpp / 8));
+		+ (v.y * ctx->gui->win.line_len)
+		+ (v.tx * (ctx->gui->win.bpp / 8));
 	v.bpp_step = (ctx->gui->win.bpp / 8) * ctx->step;
 	v.row_step = ctx->gui->win.line_len * ctx->step;
-	while (v.pos.y < v.tile_idx.y + TILE_SIZE && v.pos.y < ctx->gui->win.size.y)
+	while (v.y < v.ty + TILE_SIZE && v.y < ctx->gui->win.height)
 	{
-		v.pos.x = v.tile_idx.x;
+		v.x = v.tx;
 		v.pixel_ptr = v.row_ptr;
-		while (v.pos.x < v.tile_idx.x + TILE_SIZE && v.pos.x < ctx->gui->win.size.x)
+		while (v.x < v.tx + TILE_SIZE && v.x < ctx->gui->win.width)
 		{
-			process_pixel(ctx, vec2i(v.pos.x, v.pos.y), v.pixel_ptr);
-			v.pos.x += ctx->step;
+			process_pixel(ctx, vec2i(v.x, v.y), v.pixel_ptr);
+			v.x += ctx->step;
 			v.pixel_ptr += v.bpp_step;
 		}
-		v.pos.y += ctx->step;
+		v.y += ctx->step;
 		v.row_ptr += v.row_step;
 	}
 }
 
-static void	run_worker_frame(t_render_thread_arg *wa, int idx)
+static void	*render_tile_worker(void *arg)
 {
-	t_render	*ctx;
-	int			id;
-
-	ctx = wa->gui->pool.ctx[idx];
-	pthread_rwlock_rdlock(&wa->gui->scene_lock);
-	while (1)
-	{
-		id = __sync_fetch_and_add(&ctx->next_tile_id, 1);
-		if (id >= ctx->total_tiles)
-			break ;
-		render_tile(ctx, id);
-	}
-	pthread_rwlock_unlock(&wa->gui->scene_lock);
-	PROF_FLUSH();
-	sem_post(&wa->gui->pool.done[idx]);
-}
-
-void	*render_tile_worker(void *arg)
-{
-	t_render_thread_arg	*wa;
 	int				idx;
+	t_render_ctx	*ctx;
+	int				id;
 
-	wa = (t_render_thread_arg *)arg;
-	idx = wa->idx;
+	idx = (int)(intptr_t)arg;
 	while (1)
 	{
-		sem_wait(&wa->gui->pool.start[idx]);
-		if (wa->gui->pool.shutdown)
+		sem_wait(&g_pool.start[idx]);
+		if (g_pool.shutdown)
 			break ;
-		run_worker_frame(wa, idx);
+		ctx = g_pool.ctx[idx];
+		while (1)
+		{
+			id = __sync_fetch_and_add(&ctx->next_tile_id, 1);
+			if (id >= ctx->total_tiles)
+				break ;
+			render_tile(ctx, id);
+		}
+		PROF_FLUSH();
+		sem_post(&g_pool.done[idx]);
 	}
 	return (NULL);
 }
 
-void	render_tiles(t_render *ctx)
+static void	init_render_pool(int n)
+{
+	int	i;
+
+	g_pool.n = n;
+	g_pool.shutdown = false;
+	i = 0;
+	while (i < n)
+	{
+		sem_init(&g_pool.start[i], 0, 0);
+		sem_init(&g_pool.done[i], 0, 0);
+		g_pool.ctx[i] = NULL;
+		pthread_create(&g_pool.threads[i], NULL, render_tile_worker,
+			(void *)(intptr_t)i);
+		i++;
+	}
+	g_pool_ready = true;
+}
+
+void	render_tiles(t_render_ctx *ctx)
 {
 	int	num_cores;
 	int	i;
 
 	num_cores = ctx->gui->render.num_cores;
-	if (num_cores < 1 || !ctx->gui->pool.ready)
+	if (num_cores < 1)
 		return ;
-	i = 0;
-	pthread_rwlock_wrlock(&ctx->gui->scene_lock);
-	while (i < num_cores)
-	{
-		ctx->gui->pool.ctx[i] = ctx;
-		i++;
-	}
-	pthread_rwlock_unlock(&ctx->gui->scene_lock);
+	if (!g_pool_ready)
+		init_render_pool(num_cores);
 	i = 0;
 	while (i < num_cores)
 	{
-		sem_post(&ctx->gui->pool.start[i]);
+		g_pool.ctx[i] = ctx;
+		sem_post(&g_pool.start[i]);
 		i++;
 	}
 	i = 0;
 	while (i < num_cores)
 	{
-		sem_wait(&ctx->gui->pool.done[i]);
+		sem_wait(&g_pool.done[i]);
 		i++;
 	}
 }

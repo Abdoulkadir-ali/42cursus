@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "raytracing.h"
 #include "debug.h"
+#include "maths.h"
+#include "objects.h"
 
 void	debug_print_mesh_hit(const t_ray *ray, int tri_idx, double t)
 {
@@ -30,3 +31,21 @@ void	debug_print_mesh_aabb(const t_ray *ray, double tmin, double tmax)
 		ray->direction.z);
 }
 
+void	debug_print_bvh_build(int tri_count, int depth, bool start)
+{
+	(void)tri_count;
+	(void)depth;
+	(void)start;
+}
+
+void	debug_print_mesh_bake(const t_mesh *mesh, bool start)
+{
+	(void)mesh;
+	(void)start;
+}
+
+void	debug_print_triangle_test(int tri_idx, const t_vec3 *v)
+{
+	(void)v;
+	printf("DEBUG: Testing triangle %d\n", tri_idx);
+}

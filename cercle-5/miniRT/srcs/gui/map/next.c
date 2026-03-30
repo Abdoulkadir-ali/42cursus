@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "gui.h"
+#include "editor.h"
+#include <math.h>
 
 void	reset_camera_view(t_gui *gui)
 {
@@ -24,7 +26,6 @@ void	reset_camera_view(t_gui *gui)
 	gui->cam_ctrl.target_rot.pitch = asin(f.y);
 	gui->cam_ctrl.target_pos = gui->cam_ctrl.camera->transform.pos;
 	gui->cam_ctrl.target_fov = gui->cam_ctrl.camera->fov;
-	gui->cam_ctrl.basis_dirty = true;
 }
 
 void	gui_next_map(t_gui *gui)

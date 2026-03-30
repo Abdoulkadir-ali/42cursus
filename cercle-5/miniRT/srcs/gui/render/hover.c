@@ -10,34 +10,33 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "editor.h"
+#include "gui.h"
+
+t_hover_cache	g_hover;
 
 /*
 ** Cache state for hover optimization (P4).
 */
 
-bool	update_hover(t_gui *gui, t_render *ctx)
+bool	update_hover(t_gui *gui, t_render_ctx *ctx)
 {
 	t_hit	hit;
 	t_ray	ray;
 	t_panel	panel;
 
-	if (gui->input.mouse.x != gui->hover->pos.x
-		|| gui->input.mouse.y != gui->hover->pos.y)
+	if (gui->input.mouse_x != g_hover.x || gui->input.mouse_y != g_hover.y
+		|| gui->render.dirty)
 	{
-		gui->hover->pos.x = gui->input.mouse.x;
-		gui->hover->pos.y = gui->input.mouse.y;
-		make_camera_ray(ctx, gui->hover->pos.x * gui->win.size.x
-			/ gui->win.disp_size.x, gui->hover->pos.y * gui->win.size.y
-			/ gui->win.disp_size.y, &ray);
+		g_hover.x = gui->input.mouse_x;
+		g_hover.y = gui->input.mouse_y;
+		make_camera_ray(ctx, g_hover.x * gui->win.width / gui->win.disp_w,
+			g_hover.y * gui->win.height / gui->win.disp_h, &ray);
 		ft_memset(&hit, 0, sizeof(t_hit));
-		gui->hover->active = bvh_intersect(gui->rt.bvh, &ray, &hit);
+		g_hover.active = bvh_intersect(gui->scene->bvh, &ray, &hit);
 	}
-	if (gui->hover->active)
+	if (g_hover.active)
 	{
-		panel = (t_panel){.box = (t_gui_box){vec2i(gui->hover->pos.x + 16,
-			gui->hover->pos.y + 16), vec2i(180, 40)}, .bg = COL_BG,
-			.brd = COL_HOVER};
+		panel = (t_panel){.x=g_hover.x+16, .y=g_hover.y+16, .w=180, .h=40, .bg=COL_BG, .brd=COL_HOVER, .pos=vec2i(g_hover.x+16,g_hover.y+16), .size=vec2i(180,40)};
 		draw_panel(gui, panel);
 		return (true);
 	}
@@ -46,14 +45,14 @@ bool	update_hover(t_gui *gui, t_render *ctx)
 
 void	draw_hover_text(t_gui *gui)
 {
-	if (gui->hover->active)
+	if (g_hover.active)
 	{
-		gui_draw_string(gui, "Object hit", gui->hover->pos.x + 28,
-			gui->hover->pos.y + 40, COL_HOVER);
+		mlx_string_put(gui->win.mlx, gui->win.win, g_hover.x + 28,
+			g_hover.y + 40, COL_HOVER, "Object hit");
 	}
 }
 
-void  handle_hover(t_gui *gui, t_render *ctx)
+void	handle_hover(t_gui *gui, t_render_ctx *ctx)
 {
 	if (update_hover(gui, ctx))
 		draw_hover_text(gui);

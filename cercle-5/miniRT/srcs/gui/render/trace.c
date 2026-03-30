@@ -25,18 +25,18 @@ static int	pack_color(t_vec3 color)
 	return (r | g | b);
 }
 
-static void   fill_block(t_render *ctx, t_fill_args *params)
+static void	fill_block(t_render_ctx *ctx, t_fill_params *params)
 {
 	int		dx;
 	int		dy;
 	char	*dst;
 
 	dy = 0;
-	while (dy < ctx->step && (params->y + dy) < ctx->gui->win.size.y)
+	while (dy < ctx->step && (params->y + dy) < ctx->gui->win.height)
 	{
 		dst = params->pixel_addr + (dy * ctx->gui->win.line_len);
 		dx = 0;
-		while (dx < ctx->step && (params->x + dx) < ctx->gui->win.size.x)
+		while (dx < ctx->step && (params->x + dx) < ctx->gui->win.width)
 		{
 			*(unsigned int *)(dst + (dx * 4)) = params->color;
 			dx++;
@@ -45,15 +45,15 @@ static void   fill_block(t_render *ctx, t_fill_args *params)
 	}
 }
 
-void  process_pixel(t_render *ctx, t_vec2i pos, char *pixel_addr)
+void	process_pixel(t_render_ctx *ctx, t_vec2i pos, char *pixel_addr)
 {
 	t_ray			ray;
 	t_vec3			color;
 	int				c_int;
-	t_fill_args	params;
+	t_fill_params	params;
 
 	make_camera_ray(ctx, pos.x, pos.y, &ray);
-	color = trace_ray(&ctx->gui->rt, &ray);
+	color = trace_ray(ctx->gui->scene->bvh, &ray, ctx->gui->scene);
 	c_int = pack_color(color);
 	if (ctx->step > 1)
 	{
