@@ -1,0 +1,72 @@
+A 0.06 255,255,255
+C 0,8,32 0,-0.14,-1 75
+L 0,20,8 0.8 255,235,195
+L -16,12,-2 0.4 160,140,255
+L 14,10,-2 0.4 100,230,180
+
+# ── Floor (static plane) ─────────────────────────────────────────────────────
+pl 0,-1,0 0,1,0 90,90,90
+
+# ── Back wall ─────────────────────────────────────────────────────────────────
+pl 0,0,-14 0,0,1 60,60,70
+
+# ═════════════════════════════════════════════════════════════════════════════
+# COLUMN 1 — Primitive Sphere (Basic GJK path)
+# Single convex shape. GJK runs directly on the sphere geometry.
+# DBVT leaf: type=SPHERE, support=gjk_support_sphere
+# Expected: perfect sphere bounce, no rotation (symmetric inertia).
+# ═════════════════════════════════════════════════════════════════════════════
+sp  -9,6,0   1.2   220,80,60
+
+# Label sphere (small flat rect above)
+re  -9,8.5,0   0,1,0   2.5,0.1,0.8   255,255,255
+
+# ═════════════════════════════════════════════════════════════════════════════
+# COLUMN 2 — Composite Sphere (single sphere body with compound flag set)
+# Physically identical to col 1 but uses the compound backpack path.
+# sub_shapes[0] = sphere brick at offset (0,0,0).
+# CoM = (0,0,0), global_aabb = sphere AABB.
+# Expected: same bounce as col 1 — validates compound path parity.
+# ═════════════════════════════════════════════════════════════════════════════
+sp  -3,6,0   1.2   80,160,240
+
+# ═════════════════════════════════════════════════════════════════════════════
+# COLUMN 3 — True Composite (box + two sphere bricks)
+# A box host shape with 3 compound sub-shapes:
+#   brick 0: box   offset (0, 0, 0)     half-ext 1x1x1
+#   brick 1: sphere offset (0, 1.5, 0)  r 0.6
+#   brick 2: sphere offset (0,-1.5, 0)  r 0.6
+# CoM = (0, 0, 0). When hit off-centre, produces visible torque/rotation.
+# Expected: asymmetric tumble when struck from the side.
+# ═════════════════════════════════════════════════════════════════════════════
+bx  3,6,0   1,0,0   1.0,1.0,1.0   100,220,100
+
+# ═════════════════════════════════════════════════════════════════════════════
+# COLUMN 4 — GLB Mesh (concave, decomposed internally into capsule proxy)
+# The mesh itself is rendered by the raytracer at full fidelity.
+# Physics uses mesh_simplify_collision=1: a single capsule fitted to
+# the mesh AABB. When compound decomposition is implemented, the convex
+# hull of each submesh becomes a set of compound bricks.
+# Expected: coarse collision approximation, visually correct raytracing.
+# ═════════════════════════════════════════════════════════════════════════════
+glb maps/glb/torn_cloth_girl.glb  9,0,0  0,0,0  4.0  255,255,255  0,0,0
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Static obstacles — boxes on the floor to catch the falling objects
+# ═════════════════════════════════════════════════════════════════════════════
+# Left catcher (for sphere col 1)
+bx  -9,-1,0   1,0,0   1.5,0.3,1.5   140,120,80
+# Centre-left (col 2)
+bx  -3,-1,0   1,0,0   1.5,0.3,1.5   140,120,80
+# Centre-right (col 3 — tilted to induce torque on composite)
+bx  3,-1,0   0.866,0,-0.5   1.5,0.3,1.5   140,100,60
+# Right (mesh)
+bx  9,-1,0   1,0,0   2.0,0.3,2.0   140,120,80
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Legend
+# col 1: sp -9   = primitive GJK sphere (no compound flag)
+# col 2: sp -3   = compound flag, 1 brick (parity test)
+# col 3: bx  3   = compound, 3 bricks (box core + 2 sphere knobs)
+# col 4: glb 9   = mesh with capsule physics proxy
+# ═════════════════════════════════════════════════════════════════════════════

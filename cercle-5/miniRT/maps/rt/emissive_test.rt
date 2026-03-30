@@ -1,0 +1,21 @@
+A 0.02 255,255,255
+C 0,6,20 0,-0.15,-1 70
+
+# Very dim ambient light — let emissive sphere dominate
+L 15,20,5 0.3 200,200,255
+
+# Floor plane (gray)
+pl 0,0,0 0,1,0 140,140,140
+
+# Regular spheres scattered near the emissive one
+sp -4,2,-8 4.0 200,60,60
+sp 4,2,-8 4.0 60,200,60
+sp 0,2,-14 4.0 60,60,200
+sp -6,2,-14 4.0 180,180,180
+sp 6,2,-14 4.0 200,100,50
+
+# EMISSIVE sphere — this should light up everything nearby!
+sp 0,4,-10 4.0 255,255,0
+
+# Far sphere — should be barely lit (showing attenuation)
+sp 0,2,-30 4.0 150,150,150

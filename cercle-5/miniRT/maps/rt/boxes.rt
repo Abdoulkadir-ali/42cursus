@@ -1,0 +1,32 @@
+A 0.08 255,255,255
+C 0,7,28 0,-0.12,-1 75
+L 0,18,6 0.7 255,235,190
+L -14,10,-2 0.4 180,150,255
+L 12,8,-2 0.4 100,220,200
+
+# Floor
+pl 0,-1,0 0,1,0 110,110,110
+
+# ── Boxes (bx  cx cy cz  fx fy fz  hx hy hz  r g b) ───────────────────────
+# bx  center          forward(local-X)   half-extents       colour
+
+# Centre box – axis-aligned, taller than wide
+bx  0,-1,0   1,0,0   1.0,2.0,1.0   220,100,60
+
+# Left box – tilted 45° around Y
+bx  -6,-1,2   0.707,0,0.707   1.5,1.0,1.0   80,160,240
+
+# Right box – wide flat slab
+bx  6,-1,2   1,0,0   2.0,0.5,1.5   120,220,80
+
+# Back-left box – tilted, tall and narrow
+bx  -3,-1,-3   0.866,0,-0.5   0.6,1.8,0.6   240,200,60
+
+# Back-right box – axis-aligned cube
+bx  3,-1,-3   1,0,0   1.0,1.0,1.0   200,80,200
+
+# Small accent box on top of centre (stacked)
+bx  0,3,0   1,0,0   0.5,0.5,0.5   255,255,120
+
+# ── Background sphere (for depth reference) ────────────────────────────────
+sp  0,3,-9   2.0   80,80,130

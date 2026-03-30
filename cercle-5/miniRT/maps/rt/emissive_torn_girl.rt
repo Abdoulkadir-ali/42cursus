@@ -1,0 +1,17 @@
+A 0.05 255,255,255
+C 0,10,30 0,-0.2,-1 90
+
+# Minimal soft light so we can see non-emissive parts if any
+L 10,20,10 0.3 255,255,255
+
+# Gray floor
+pl 0,0,0 0,1,0 100,100,100
+
+# Regular spheres around to catch the light
+sp -4,2,-8 4.0 200,60,60
+sp 4,2,-8 4.0 60,200,60
+sp 0,2,-14 4.0 60,60,200
+sp -6,2,-14 4.0 180,180,180
+
+# The stylized_women.glb - its material will automatically become emissive
+glb maps/glb/torn_cloth_girl.glb 0,0,0 0,0,0 10.0 255,255,255 255,200,200
