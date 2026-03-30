@@ -12,13 +12,6 @@
 
 #include "objects.h"
 
-static char	*skip_spaces(char *p)
-{
-	while (*p && ft_isspace(*p))
-		p++;
-	return (p);
-}
-
 static bool	parse_cell(char *p, t_fdf_row_ctx *ctx, int col)
 {
 	int	w;
@@ -46,7 +39,8 @@ static t_fdf_row_ctx	init_row_ctx(t_mesh *mesh, int row, int dims[2])
 
 static bool	parse_row_cell(char **p, t_fdf_row_ctx *ctx, int col)
 {
-	*p = skip_spaces(*p);
+	while (**p && ft_isspace(**p))
+		(*p)++;
 	if (!**p)
 		return (false);
 	if (!parse_cell(*p, ctx, col))

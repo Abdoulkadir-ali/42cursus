@@ -1,6 +1,7 @@
 #Packages
 packages/minilibx-linux
-maps/
+!maps/rt
+maps/*
 objs/
 digest.txt
 *.txt
