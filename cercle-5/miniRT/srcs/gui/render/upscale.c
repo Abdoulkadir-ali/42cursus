@@ -11,32 +11,25 @@
 /* ************************************************************************** */
 
 #include "gui.h"
-#include <string.h>
 
 /*
 ** Nearest-neighbor upscale from render image to display image.
 ** Maps each display pixel back to the corresponding render pixel.
 */
-void	upscale_image(t_gui *gui)
+static void	upscale_nn(t_gui *gui)
 {
 	int				y;
 	int				x;
-	unsigned int	*src_row;
-	unsigned int	*dst_row;
+	uint32_t		*src_row;
+	uint32_t		*dst_row;
 
-	if (gui->win.width == gui->win.disp_w && gui->win.height == gui->win.disp_h)
-	{
-		memcpy(gui->win.disp_addr, gui->win.addr,
-			(size_t)gui->win.disp_h * (size_t)gui->win.disp_line_len);
-		return ;
-	}
 	y = 0;
 	while (y < gui->win.disp_h)
 	{
-		src_row = (unsigned int *)(gui->win.addr
+		src_row = (uint32_t *)(gui->win.addr
 				+ (y * gui->win.height / gui->win.disp_h)
 				* gui->win.line_len);
-		dst_row = (unsigned int *)(gui->win.disp_addr
+		dst_row = (uint32_t *)(gui->win.disp_addr
 				+ y * gui->win.disp_line_len);
 		x = 0;
 		while (x < gui->win.disp_w)
@@ -46,4 +39,20 @@ void	upscale_image(t_gui *gui)
 		}
 		y++;
 	}
+}
+
+static void	blit_direct(t_gui *gui)
+{
+	memcpy(gui->win.disp_addr, gui->win.addr,
+		(size_t)gui->win.disp_h * (size_t)gui->win.disp_line_len);
+}
+
+void	upscale_image(t_gui *gui)
+{
+	if (gui->win.width == gui->win.disp_w && gui->win.height == gui->win.disp_h)
+	{
+		blit_direct(gui);
+		return ;
+	}
+	upscale_nn(gui);
 }

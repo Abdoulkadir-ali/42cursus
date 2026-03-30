@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:25:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 19:25:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/30 20:20:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 
 static void	shoot_force(t_gui *gui, t_vec2i mouse)
 {
-	t_ray	 ray;
-	double	 scale;
-	double	 aspect;
-	t_vec2	 p;
-	t_vec3	 dir;
+	t_ray	ray;
+	double	scale;
+	double	aspect;
+	t_vec2	p;
+	t_vec3	dir;
 
-	if (!gui->scene)
+	if (!gui || !gui->scene || !gui->cam_ctrl.camera)
 		return ;
 	scale = tan(gui->cam_ctrl.camera->fov * M_PI / 360.0);
 	aspect = (double)gui->win.width / (double)gui->win.height;
@@ -37,17 +37,17 @@ static void	shoot_force(t_gui *gui, t_vec2i mouse)
 	physics_shoot_ray(gui->scene, ray, 10.0);
 }
 
-static void	handle_scroll(int button, t_gui *gui)
+static void	handle_scroll(int b, t_gui *gui)
 {
-	if (scene_panel_handle_scroll(gui, button))
+	if (scene_panel_handle_scroll(gui, b))
 		return ;
-	if (button == Button4)
+	if (b == Button4)
 	{
 		gui->cam_ctrl.target_fov -= ZOOM_SPEED;
 		clamp_fov(&gui->cam_ctrl.target_fov);
 		gui->render.dirty = true;
 	}
-	else if (button == Button5)
+	else if (b == Button5)
 	{
 		gui->cam_ctrl.target_fov += ZOOM_SPEED;
 		clamp_fov(&gui->cam_ctrl.target_fov);
@@ -55,22 +55,22 @@ static void	handle_scroll(int button, t_gui *gui)
 	}
 }
 
-static int	mlx_mouse_click(int button, int x, int y, t_gui *gui)
+static int	mlx_mouse_click(int b, int x, int y, void *p)
 {
-	return (mouse_click(button, vec2i(x, y), gui));
+	return (mouse_click(b, vec2i(x, y), (t_gui *)p));
 }
 
-int	(*mouse_click_hook(void))(int, int, int, t_gui *)
+int	(*mouse_click_hook(void))(int b, int x, int y, void *p)
 {
 	return (mlx_mouse_click);
 }
 
-static int	mlx_mouse_release(int button, int x, int y, t_gui *gui)
+static int	mlx_mouse_release(int b, int x, int y, void *p)
 {
-	return (mouse_release(button, vec2i(x, y), gui));
+	return (mouse_release(b, vec2i(x, y), (t_gui *)p));
 }
 
-int	(*mouse_release_hook(void))(int, int, int, t_gui *)
+int	(*mouse_release_hook(void))(int b, int x, int y, void *p)
 {
 	return (mlx_mouse_release);
 }
@@ -80,7 +80,6 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)
 	{
-		/* Popup intercepts all left-clicks while open */
 		if (popup_handle_click(gui, mouse))
 			return (0);
 		if (!inspector_handle_click(gui, mouse)

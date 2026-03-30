@@ -1,0 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/12 20:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/12 20:50:00 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "objects.h"
+
+static bool	read_id(t_parser *p, char *buf, size_t max_len)
+{
+	size_t	i;
+	char	c;
+
+	parser_skip_spaces(p);
+	i = 0;
+	c = parser_peek(p);
+	if (!c)
+		return (false);
+	while (c && !ft_isspace(c) && i < max_len - 1)
+	{
+		buf[i++] = c;
+		parser_advance(p);
+		c = parser_peek(p);
+	}
+	buf[i] = '\0';
+	return (i > 0);
+}
+
+static void	handle_unknown(t_parser *p)
+{
+	while (parser_peek(p) && parser_peek(p) != '\n')
+		parser_advance(p);
+}
+
+bool	rt_parse_entry(t_scene *scene, t_rt *rt)
+{
+	if (!read_id(rt->parser, rt->id, sizeof(rt->id)))
+		return (false);
+	rt->obj = dispatch_scan(rt->parser, rt->id);
+	if (rt->obj.type == TYPE_NONE)
+	{
+		handle_unknown(rt->parser);
+		rt->status = false;
+		return (true);
+	}
+	if (!process_object(scene, rt->obj))
+		rt->status = false;
+	return (true);
+}

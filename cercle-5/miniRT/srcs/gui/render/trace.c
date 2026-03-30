@@ -10,9 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "gui.h"
-
 static int	pack_color(t_vec3 color)
 {
 	int	r;
@@ -25,44 +22,42 @@ static int	pack_color(t_vec3 color)
 	return (r | g | b);
 }
 
-static void	fill_block(t_render_ctx *ctx, t_fill_params *params)
+static void	fill_block(t_render *render)
 {
 	int		dx;
 	int		dy;
-	char	*dst;
+	uint32_t	*dst;
 
 	dy = 0;
-	while (dy < ctx->step && (params->y + dy) < ctx->gui->win.height)
+	while (dy < render->step && (render->pos.y + dy) < render->gui->win.height)
 	{
-		dst = params->pixel_addr + (dy * ctx->gui->win.line_len);
+		dst = (uint32_t *)(render->pixel_addr + (dy * render->gui->win.line_len));
 		dx = 0;
-		while (dx < ctx->step && (params->x + dx) < ctx->gui->win.width)
+		while (dx < render->step && (render->pos.x + dx) < render->gui->win.width)
 		{
-			*(unsigned int *)(dst + (dx * 4)) = params->color;
+			dst[dx] = render->color;
 			dx++;
 		}
 		dy++;
 	}
 }
 
-void	process_pixel(t_render_ctx *ctx, t_vec2i pos, char *pixel_addr)
+void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 {
 	t_ray			ray;
 	t_vec3			color;
-	int				c_int;
-	t_fill_params	params;
+	uint32_t		*dst;
 
-	make_camera_ray(ctx, pos.x, pos.y, &ray);
-	color = trace_ray(ctx->gui->scene->bvh, &ray, ctx->gui->scene);
-	c_int = pack_color(color);
-	if (ctx->step > 1)
-	{
-		params.x = pos.x;
-		params.y = pos.y;
-		params.color = c_int;
-		params.pixel_addr = pixel_addr;
-		fill_block(ctx, &params);
-	}
+	make_camera_ray(render, pos.x, pos.y, &ray);
+	color = trace_ray(render->gui->scene->bvh, &ray, render->gui->scene);
+	render->pos = pos;
+	render->color = pack_color(color);
+	render->pixel_addr = pixel_addr;
+	if (render->step > 1)
+		fill_block(render);
 	else
-		*(unsigned int *)pixel_addr = c_int;
+	{
+		dst = (uint32_t *)render->pixel_addr;
+		*dst = render->color;
+	}
 }

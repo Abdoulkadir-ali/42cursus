@@ -9,13 +9,22 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -MMD -MP
+INCLUDES_DIRS = $(shell find includes -type d)
+INCLUDES    = $(addprefix -I,$(INCLUDES_DIRS))
+CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -DDEBUG_EXTENDER -MMD -MP
 RM          = rm -f
 SRCS_DIR    = srcs
 # Exclude old physics.c if it still exists (handled by file deletion)
 OBJS_DIR    = objs
 SRCS        = $(shell find $(SRCS_DIR) -name "*.c")
 OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
+# ── Colors ────────────────────────────────────────────────────────────────────
+RESET       = \033[0m
+GREEN       = \033[32m
+BLUE        = \033[34m
+CYAN        = \033[36m
+YELLOW      = \033[33m
+
 DEPS        = $(OBJS:.o=.d)
 
 all: $(NAME)
@@ -23,30 +32,35 @@ all: $(NAME)
 -include $(DEPS)
 
 $(NAME): $(LIBFT) $(MINILIBX) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+	@printf "$(BLUE)Linking $(NAME)...$(RESET)\n"
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+	@printf "$(GREEN)$(NAME) ready!$(RESET)\n"
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@printf "$(CYAN)Compiling $<...$(RESET)\r"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT): FORCE
-	$(MAKE) -C $(LIBFT_DIR)
+	@printf "$(YELLOW)Building libft...$(RESET)\n"
+	@$(MAKE) -s -C $(LIBFT_DIR)
 
 $(MINILIBX):
-	$(MAKE) -C $(MINILIBX_DIR)
+	@printf "$(YELLOW)Building minilibx...$(RESET)\n"
+	@$(MAKE) -s -C $(MINILIBX_DIR)
 
 clean:
-	$(RM) -r $(OBJS_DIR)
-	$(MAKE) -C $(LIBFT_DIR) clean
+	@printf "$(YELLOW)Cleaning objects...$(RESET)\n"
+	@$(RM) -r $(OBJS_DIR)
+	@$(MAKE) -s -C $(LIBFT_DIR) clean
 
 fclean: clean
-	$(RM) $(NAME)
-	$(MAKE) -C $(LIBFT_DIR) fclean
+	@printf "$(YELLOW)Cleaning $(NAME)...$(RESET)\n"
+	@$(RM) $(NAME)
+	@$(MAKE) -s -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
-test: re
-	bash ~/tools/
 
 # ── Profiling targets ────────────────────────────────────────────────────────
 #
@@ -70,7 +84,7 @@ PROF_DEPS     = $(PROF_OBJS:.o=.d)
 
 # -O1 keeps the call graph readable; -g3 keeps symbols; no -flto (breaks gprof)
 PROF_CFLAGS   = -Wall -Wextra -O1 -g3 -pthread \
-                -Iincludes -Ipackages/libft/includes -I$(MINILIBX_DIR) \
+                $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) \
                 -DDEBUG_EXTENDER -DPROFILE_MESH -MMD -MP
 
 -include $(PROF_DEPS)

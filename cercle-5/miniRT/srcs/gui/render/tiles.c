@@ -12,116 +12,110 @@
 
 #include "gui.h"
 #include "profiler.h"
-#include <semaphore.h>
 
-#define RENDER_POOL_MAX 128
-
-typedef struct s_render_pool
-{
-	pthread_t		threads[RENDER_POOL_MAX];
-	sem_t			start[RENDER_POOL_MAX];
-	sem_t			done[RENDER_POOL_MAX];
-	t_render_ctx	*ctx[RENDER_POOL_MAX];
-	int				n;
-	bool			shutdown;
-}	t_render_pool;
-
-static t_render_pool	g_pool;
-static bool				g_pool_ready = false;
-
-static void	render_tile(t_render_ctx *ctx, int id)
+static void	render_tile(t_render *render, int id)
 {
 	t_tile_vars	v;
 
-	v.tx = (id % ctx->tiles_x) * TILE_SIZE;
-	v.ty = (id / ctx->tiles_x) * TILE_SIZE;
-	v.y = v.ty;
-	v.row_ptr = ctx->gui->win.addr
-		+ (v.y * ctx->gui->win.line_len)
-		+ (v.tx * (ctx->gui->win.bpp / 8));
-	v.bpp_step = (ctx->gui->win.bpp / 8) * ctx->step;
-	v.row_step = ctx->gui->win.line_len * ctx->step;
-	while (v.y < v.ty + TILE_SIZE && v.y < ctx->gui->win.height)
+	v.tx = (id % render->tiles_y) * TILE_SIZE;
+	v.ty = (id / render->tiles_y) * TILE_SIZE;
+	v.p_pos.y = v.ty;
+	v.row_ptr = render->gui->win.addr
+		+ (v.p_pos.y * render->gui->win.line_len)
+		+ (v.tx * (render->gui->win.bpp / 8));
+	v.bpp_step = (render->gui->win.bpp / 8) * render->step;
+	v.row_step = render->gui->win.line_len * render->step;
+	while (v.p_pos.y < v.ty + TILE_SIZE && v.p_pos.y < render->gui->win.height)
 	{
-		v.x = v.tx;
+		v.p_pos.x = v.tx;
 		v.pixel_ptr = v.row_ptr;
-		while (v.x < v.tx + TILE_SIZE && v.x < ctx->gui->win.width)
+		while (v.p_pos.x < v.tx + TILE_SIZE && v.p_pos.x < render->gui->win.width)
 		{
-			process_pixel(ctx, vec2i(v.x, v.y), v.pixel_ptr);
-			v.x += ctx->step;
+			process_pixel(render, vec2i(v.p_pos.x, v.p_pos.y), v.pixel_ptr);
+			v.p_pos.x += render->step;
 			v.pixel_ptr += v.bpp_step;
 		}
-		v.y += ctx->step;
+		v.p_pos.y += render->step;
 		v.row_ptr += v.row_step;
 	}
 }
 
-static void	*render_tile_worker(void *arg)
+static void	*render_tile_worker(void *ptr)
 {
+	t_worker	*arg;
+	t_render_pool	*pool;
 	int				idx;
-	t_render_ctx	*ctx;
+	t_render		*render;
 	int				id;
 
-	idx = (int)(intptr_t)arg;
+	arg = (t_worker *)ptr;
+	pool = arg->pool;
+	idx = arg->idx;
+	free(arg);
 	while (1)
 	{
-		sem_wait(&g_pool.start[idx]);
-		if (g_pool.shutdown)
+		sem_wait(&pool->start[idx]);
+		if (pool->shutdown)
 			break ;
-		ctx = g_pool.ctx[idx];
+		render = pool->render[idx];
 		while (1)
 		{
-			id = __sync_fetch_and_add(&ctx->next_tile_id, 1);
-			if (id >= ctx->total_tiles)
+			id = __sync_fetch_and_add(&render->next_tile_id, 1);
+			if (id >= render->total_tiles)
 				break ;
-			render_tile(ctx, id);
+			render_tile(render, id);
 		}
 		PROF_FLUSH();
-		sem_post(&g_pool.done[idx]);
+		sem_post(&pool->done[idx]);
 	}
 	return (NULL);
 }
 
-static void	init_render_pool(int n)
+static void	init_render_pool(t_render_pool *pool, int n)
 {
-	int	i;
+	int				i;
+	t_worker	*arg;
 
-	g_pool.n = n;
-	g_pool.shutdown = false;
+	pool->n = n;
+	pool->shutdown = false;
 	i = 0;
 	while (i < n)
 	{
-		sem_init(&g_pool.start[i], 0, 0);
-		sem_init(&g_pool.done[i], 0, 0);
-		g_pool.ctx[i] = NULL;
-		pthread_create(&g_pool.threads[i], NULL, render_tile_worker,
-			(void *)(intptr_t)i);
+		sem_init(&pool->start[i], 0, 0);
+		sem_init(&pool->done[i], 0, 0);
+		pool->render[i] = NULL;
+		arg = malloc(sizeof(t_worker));
+		arg->pool = pool;
+		arg->idx = i;
+		pthread_create(&pool->threads[i], NULL, render_tile_worker, arg);
 		i++;
 	}
-	g_pool_ready = true;
+	pool->ready = true;
 }
 
-void	render_tiles(t_render_ctx *ctx)
+void	render_tiles(t_render *render)
 {
-	int	num_cores;
-	int	i;
+	int				num_cores;
+	int				i;
+	t_render_pool	*pool;
 
-	num_cores = ctx->gui->render.num_cores;
+	num_cores = render->gui->render.num_cores;
+	pool = &render->gui->render.pool;
 	if (num_cores < 1)
 		return ;
-	if (!g_pool_ready)
-		init_render_pool(num_cores);
+	if (!pool->ready)
+		init_render_pool(pool, num_cores);
 	i = 0;
 	while (i < num_cores)
 	{
-		g_pool.ctx[i] = ctx;
-		sem_post(&g_pool.start[i]);
+		pool->render[i] = render;
+		sem_post(&pool->start[i]);
 		i++;
 	}
 	i = 0;
 	while (i < num_cores)
 	{
-		sem_wait(&g_pool.done[i]);
+		sem_wait(&pool->done[i]);
 		i++;
 	}
 }

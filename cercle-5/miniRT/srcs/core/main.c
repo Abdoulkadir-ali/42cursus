@@ -6,12 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 00:23:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/30 21:44:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scene.h"
 #include "gui.h"
+#include "scene.h"
 #include <locale.h>
 
 /*
@@ -79,7 +79,6 @@ static int	run_app(const char *path)
 		return (1);
 	}
 	scene = NULL;
-	scene = NULL;
 	gui = init_app(path, &scene, mlx);
 	return (start_gui(gui, scene, mlx));
 }
@@ -92,7 +91,7 @@ int	main(int ac, char **av)
 {
 	const char	*path;
 
-	printf("--- MINIRT STARTUP (VER: 2026.02.17.0503) ---\n");
+	printf("---= MINIRT STARTUP =---\n");
 	fflush(stdout);
 	setlocale(LC_NUMERIC, "C");
 	path = "maps/rt/test2.rt";

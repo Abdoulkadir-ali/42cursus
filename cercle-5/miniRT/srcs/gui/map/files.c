@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 16:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/30 20:35:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,40 @@ static bool	is_rt_file(const char *filename)
 	return (ft_strcmp(filename + len - 3, ".rt") == 0);
 }
 
+static t_map_entry	*create_node(const char *name)
+{
+	t_map_entry	*node;
+
+	node = malloc(sizeof(t_map_entry));
+	if (!node)
+		return (NULL);
+	ft_memset(node, 0, sizeof(*node));
+	node->path = ft_strjoin("maps/rt/", name);
+	if (!node->path)
+	{
+		free(node);
+		return (NULL);
+	}
+	return (node);
+}
+
+static void	add_map_node(t_gui *gui, t_map_entry ***tail, const char *name)
+{
+	t_map_entry	*node;
+
+	node = create_node(name);
+	if (node)
+	{
+		***tail = node;
+		*tail = &node->next;
+		gui->map_info.count++;
+	}
+}
+
 void	fill_map_list(t_gui *gui)
 {
 	DIR				*dir;
 	struct dirent	*entry;
-	t_map_entry		*node;
 	t_map_entry		**tail;
 
 	dir = opendir("maps/rt");
@@ -38,22 +67,7 @@ void	fill_map_list(t_gui *gui)
 	while (entry != NULL)
 	{
 		if (entry->d_type == DT_REG && is_rt_file(entry->d_name))
-		{
-			node = malloc(sizeof(t_map_entry));
-			if (node)
-			{
-				ft_memset(node, 0, sizeof(*node));
-				node->path = ft_strjoin("maps/rt/", entry->d_name);
-				if (node->path)
-				{
-					*tail = node;
-					tail = &node->next;
-					gui->map_info.count++;
-				}
-				else
-					free(node);
-			}
-		}
+			add_map_node(gui, &tail, entry->d_name);
 		entry = readdir(dir);
 	}
 	closedir(dir);

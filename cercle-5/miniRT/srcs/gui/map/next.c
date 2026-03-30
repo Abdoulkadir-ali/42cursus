@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/30 20:35:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	gui_prev_map(t_gui *gui)
 		return ;
 	if (gui->map_job.active)
 		return ;
-	/* walk list to find entry before current */
 	entry = gui->map_info.head;
 	prev = NULL;
 	while (entry && entry != gui->map_info.current)
@@ -64,7 +63,6 @@ void	gui_prev_map(t_gui *gui)
 	}
 	if (!prev)
 	{
-		/* current is head — wrap to tail */
 		prev = gui->map_info.head;
 		while (prev->next)
 			prev = prev->next;

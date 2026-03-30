@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 20:30:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/30 20:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,25 @@ static t_key_action	*get_keymap(void)
 	{XK_minus, zoom_out_press, zoom_out_release},
 	{XK_Escape, exit_press, NULL},
 	{XK_f, fullres_toggle, NULL},
-	{0, NULL, NULL}
-	};
+	{0, NULL, NULL}};
 
 	return (keymap);
+}
+
+static void	handle_misc_keys(int code, t_gui *gui)
+{
+	if (code == XK_Escape && gui->crud.popup != POPUP_NONE)
+	{
+		gui->crud.popup = POPUP_NONE;
+		gui->render.dirty = true;
+	}
+	else if (code == XK_x || code == XK_X)
+	{
+		gui->physics_enabled = !gui->physics_enabled;
+		gui->render.dirty = true;
+	}
+	else if (code == XK_r)
+		scene_reset(gui);
 }
 
 int	key_press(int keycode, t_gui *gui)
@@ -48,32 +63,11 @@ int	key_press(int keycode, t_gui *gui)
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
-	/* Track Shift state for popup path input (MLX always delivers level-0 keysyms) */
 	if (keycode == XK_Shift_L || keycode == XK_Shift_R)
 		gui->crud.shift_held = true;
-	/* Path input captures all keys while mesh-path popup is open */
 	if (popup_handle_key(gui, keycode))
 		return (0);
-	/* Escape closes any open popup, then falls through to exit */
-	if (keycode == XK_Escape && gui->crud.popup != POPUP_NONE)
-	{
-		gui->crud.popup = POPUP_NONE;
-		gui->render.dirty = true;
-		return (0);
-	}
-	/* Toggle physics simulation with X */
-	if (keycode == XK_x || keycode == XK_X)
-	{
-		gui->physics_enabled = !gui->physics_enabled;
-		gui->render.dirty = true;
-		return (0);
-	}
-	/* R — reset scene to post-parse state */
-	if (keycode == XK_r)
-	{
-		scene_reset(gui);
-		return (0);
-	}
+	handle_misc_keys(keycode, gui);
 	keymap = get_keymap();
 	i = 0;
 	while (keymap[i].key != 0)

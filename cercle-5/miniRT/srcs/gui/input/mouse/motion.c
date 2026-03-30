@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:08:09 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:08:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/30 20:25:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,15 @@ static void	handle_mouse_zoom_drag(t_gui *gui, int dy)
 	gui->render.dirty = true;
 }
 
-static int	mlx_mouse_motion(int x, int y, t_gui *gui)
+static int	mlx_mouse_motion(int x, int y, void *param)
 {
+	t_gui	*gui;
+
+	gui = (t_gui *)param;
 	return (mouse_motion(vec2i(x, y), gui));
 }
 
-int (*mouse_motion_hook(void))(int, int, t_gui *)
+int	(*mouse_motion_hook(void))(int x, int y, void *param)
 {
 	return (mlx_mouse_motion);
 }

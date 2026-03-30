@@ -8,6 +8,14 @@
 /*   Created: 2026/03/06 20:16:32 by abdoali           #+#    #+#             */
 /*   Updated: 2026/03/08 00:58:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
+
+static char	*mesh_name(t_mesh *mesh)
+{
+	if (mesh->name)
+		return (mesh->name);
+	return ("(unnamed)");
+}
+
 /* ************************************************************************** */
 
 #include "gui.h"
@@ -60,7 +68,7 @@ void	draw_ui_object(t_gui *gui)
 		return ;
 	mesh = &gui->scene->meshes[0];
 	snprintf(buf, sizeof(buf), "Object: %s",
-		mesh->name ? mesh->name : "(unnamed)");
+		mesh_name(mesh));
 	mlx_string_put(gui->win.mlx, gui->win.win, 350, 38, COL_ACCENT, buf);
 	snprintf(buf, sizeof(buf), "Material: %d", mesh->mat_id);
 	mlx_string_put(gui->win.mlx, gui->win.win, 350, 58, COL_TEXT, buf);

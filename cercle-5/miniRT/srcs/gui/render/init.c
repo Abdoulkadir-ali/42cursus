@@ -68,26 +68,18 @@ static void	init_camera(t_gui *gui)
 ** Main initialization function for the GUI subsystem.
 ** Allocates memory and initializes MLX, window, camera, and map switcher.
 */
-t_gui	*gui_init(t_scene *scene, void *mlx)
+static void	gui_init_physics(t_gui *gui)
 {
-	t_gui	*gui;
-
-	gui = malloc(sizeof(t_gui));
-	if (!gui)
-		return (NULL);
-	ft_memset(gui, 0, sizeof(t_gui));
-	gui->scene = scene;
-	gui->win.width = RENDER_W;
-	gui->win.height = RENDER_H;
-	gui->win.mlx = mlx;
-	/* Initialize new GUI state */
 	gui->physics_enabled = true;
-	/* physics timing defaults */
 	gui->phys_accumulator = 0.0;
 	gui->phys_fixed_dt = 1.0 / 60.0;
 	gui->phys_max_steps = 5;
 	gui->ambient_color = 0xFFFFFF;
 	gui->ambient_intensity = 1.0;
+}
+
+static void	gui_init_render(t_gui *gui)
+{
 	gui->render.num_cores = (int)sysconf(_SC_NPROCESSORS_ONLN);
 	if (gui->render.num_cores < 1)
 		gui->render.num_cores = 1;
@@ -95,6 +87,27 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 		gui->render.num_cores = 128;
 	gui->render.threads = malloc(sizeof(pthread_t)
 			* (size_t)gui->render.num_cores);
+}
+
+t_gui	*gui_init(const char *path, void *mlx)
+{
+	t_gui	*gui;
+
+	gui = malloc(sizeof(t_gui));
+	if (!gui)
+		return (NULL);
+	ft_memset(gui, 0, sizeof(t_gui));
+	gui->win.width = RENDER_W;
+	gui->win.height = RENDER_H;
+	gui->win.mlx = mlx;
+	gui->scene = parse_file(path, mlx);
+	if (!gui->scene)
+	{
+		free(gui);
+		return (NULL);
+	}
+	gui_init_physics(gui);
+	gui_init_render(gui);
 	if (!gui->render.threads)
 	{
 		free(gui);

@@ -1,42 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   update.c                                           :+:      :+:    :+:   */
+/*   hover.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/30 19:35:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gui.h"
 
-t_hover_cache	g_hover;
-
 /*
 ** Cache state for hover optimization (P4).
 */
 
-bool	update_hover(t_gui *gui, t_render_ctx *ctx)
+bool	update_hover(t_gui *gui, t_render *render)
 {
 	t_hit	hit;
 	t_ray	ray;
 	t_panel	panel;
 
-	if (gui->input.mouse_x != g_hover.x || gui->input.mouse_y != g_hover.y
+	if (gui->input.mouse_x != gui->hover.x || gui->input.mouse_y != gui->hover.y
 		|| gui->render.dirty)
 	{
-		g_hover.x = gui->input.mouse_x;
-		g_hover.y = gui->input.mouse_y;
-		make_camera_ray(ctx, g_hover.x * gui->win.width / gui->win.disp_w,
-			g_hover.y * gui->win.height / gui->win.disp_h, &ray);
+		gui->hover.x = gui->input.mouse_x;
+		gui->hover.y = gui->input.mouse_y;
+		make_camera_ray(render, gui->hover.x * gui->win.width / gui->win.disp_w,
+			gui->hover.y * gui->win.height / gui->win.disp_h, &ray);
 		ft_memset(&hit, 0, sizeof(t_hit));
-		g_hover.active = bvh_intersect(gui->scene->bvh, &ray, &hit);
+		gui->hover.active = bvh_intersect(gui->scene->bvh, &ray, &hit);
 	}
-	if (g_hover.active)
+	if (gui->hover.active)
 	{
-		panel = (t_panel){.x=g_hover.x+16, .y=g_hover.y+16, .w=180, .h=40, .bg=COL_BG, .brd=COL_HOVER, .pos=vec2i(g_hover.x+16,g_hover.y+16), .size=vec2i(180,40)};
+		panel = (t_panel){.x = gui->hover.x + 16, .y = gui->hover.y + 16,
+			.w = 180, .h = 40, .bg = COL_BG, .brd = COL_HOVER,
+			.pos = vec2i(gui->hover.x + 16, gui->hover.y + 16),
+			.size = vec2i(180, 40)};
 		draw_panel(gui, panel);
 		return (true);
 	}
@@ -45,15 +46,15 @@ bool	update_hover(t_gui *gui, t_render_ctx *ctx)
 
 void	draw_hover_text(t_gui *gui)
 {
-	if (g_hover.active)
+	if (gui->hover.active)
 	{
-		mlx_string_put(gui->win.mlx, gui->win.win, g_hover.x + 28,
-			g_hover.y + 40, COL_HOVER, "Object hit");
+		mlx_string_put(gui->win.mlx, gui->win.win, gui->hover.x + 28,
+			gui->hover.y + 40, COL_HOVER, "Object hit");
 	}
 }
 
-void	handle_hover(t_gui *gui, t_render_ctx *ctx)
+void	handle_hover(t_gui *gui, t_render *render)
 {
-	if (update_hover(gui, ctx))
+	if (update_hover(gui, render))
 		draw_hover_text(gui);
 }
