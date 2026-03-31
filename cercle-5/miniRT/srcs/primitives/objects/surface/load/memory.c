@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "surface.h"
+#include "functions/primitives/objects/surface.h"
 
 /*
 ** Loads a texture from a memory buffer via stb_image.

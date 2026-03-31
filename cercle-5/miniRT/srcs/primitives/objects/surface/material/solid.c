@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:23:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/03/31 09:41:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "material.h"
+#include "functions/primitives/objects/surface.h"
 
-static void	apply_magic_colors(t_material *m, t_vec3 color)
+void	apply_magic_colors(t_material *m, t_vec3 color)
 {
 	if (color.x == 255 && color.y == 0 && color.z == 255)
 	{
@@ -38,7 +38,7 @@ static void	apply_magic_colors(t_material *m, t_vec3 color)
 	}
 }
 
-static void	apply_more_magic_colors(t_material *m, t_vec3 color)
+void	apply_more_magic_colors(t_material *m, t_vec3 color)
 {
 	if (color.x == 200 && color.y == 160 && color.z == 255)
 	{

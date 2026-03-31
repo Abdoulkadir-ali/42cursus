@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "surface.h"
+#include "functions/primitives/objects/surface.h"
 
 /*
 ** Loads a texture from disk. Tries XPM first, then stb_image.

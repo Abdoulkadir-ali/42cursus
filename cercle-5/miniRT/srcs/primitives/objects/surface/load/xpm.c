@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "surface.h"
+#include "functions/primitives/objects/surface.h"
 
 /*
 ** Loads an XPM texture from disk via mlx.

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "surface.h"
+#include "functions/primitives/objects/surface.h"
 
 /*
 ** Loads a JPG/PNG/BMP texture via stb_image.

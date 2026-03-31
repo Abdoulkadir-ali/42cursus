@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "surface.h"
+#include "functions/primitives/objects/surface.h"
 
 /*
 ** Converts RGBA to BGRA format for mlx compatibility.

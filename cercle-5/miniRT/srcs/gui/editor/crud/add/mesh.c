@@ -21,7 +21,7 @@ void	editor_add_obj(t_gui *gui, const char *path)
 	if (!gui->scene)
 		return ;
 	mesh_start = gui->scene->mesh_count;
-	if (!parse_obj(path, gui->scene))
+	if (!scene_parse_obj(path, gui->scene))
 		return ;
 	i = mesh_start;
 	while (i < gui->scene->mesh_count)
