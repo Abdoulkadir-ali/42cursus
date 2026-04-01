@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:54:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:44:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "types.h"
 # include <time.h>
+# include <sys/stat.h>
 
 
 # ifdef PROFILE_MESH

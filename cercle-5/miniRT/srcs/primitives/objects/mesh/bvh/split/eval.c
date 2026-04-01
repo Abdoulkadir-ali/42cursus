@@ -20,8 +20,8 @@
 void	bvh_eval_axis(t_bvh_eval *e)
 {
 	t_bvh_bins	bins;
-	double			min_val;
-	double			max_val;
+	double		min_val;
+	double		max_val;
 
 	bvh_axis_min_max(&e->s->centroid_bounds, e->axis, &min_val, &max_val);
 	e->s->min_val = min_val;

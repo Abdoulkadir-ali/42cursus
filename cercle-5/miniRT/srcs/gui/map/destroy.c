@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "map.h"
+#include "editor.h"
+#include "scene.h"
 
 /*
 ** Frees every map cache entry: its snap buffers, its scene (including BVH),

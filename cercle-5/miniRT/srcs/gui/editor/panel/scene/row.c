@@ -71,7 +71,7 @@ void	draw_scene_rows(t_gui *gui)
 	total = count_scene_rows(gui->scene);
 	row = 0;
 	y_px = (CRUD_PANEL_H + 8) - gui->scene_panel.scroll;
-	while (row < total && y_px < gui->win.disp_h - 8)
+	while (row < total && y_px < gui->win.disp_size.y - 8)
 	{
 		if (y_px >= (CRUD_PANEL_H + 4))
 		{

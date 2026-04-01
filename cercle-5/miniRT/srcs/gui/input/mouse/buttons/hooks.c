@@ -24,7 +24,9 @@ int	(*mouse_click_hook(void))(int b, int x, int y, void *p)
 
 static int	mlx_mouse_release(int b, int x, int y, void *p)
 {
-	return (mouse_release(b, vec2i(x, y), (t_gui *)p));
+	(void)x;
+	(void)y;
+	return (mouse_release(b, (t_gui *)p));
 }
 
 int	(*mouse_release_hook(void))(int b, int x, int y, void *p)

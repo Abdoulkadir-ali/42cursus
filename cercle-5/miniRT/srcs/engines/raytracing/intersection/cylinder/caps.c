@@ -15,10 +15,9 @@
 /*
 ** Fills the hit record for a cylinder cap intersection.
 */
-static void	fill_cap_hit(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit,
+static void	fill_cap_hit(t_cylinder *cy, double *tm, t_hit *hit,
 		t_vec3 center, double normal_sign, double t, t_vec3 p)
 {
-	(void)ray;
 	t_entry_point	pt;
 
 	*tm = t;
@@ -53,7 +52,7 @@ static bool	check_cap(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit,
 					center)) <= cy->transform.scale.x
 			* cy->transform.scale.x)
 		{
-			fill_cap_hit(ray, cy, tm, hit, center, normal_sign, t, p);
+			fill_cap_hit(cy, tm, hit, center, normal_sign, t, p);
 			return (true);
 		}
 	}

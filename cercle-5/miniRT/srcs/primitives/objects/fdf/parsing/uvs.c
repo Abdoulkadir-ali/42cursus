@@ -19,8 +19,10 @@ void	fdf_compute_uvs(t_mesh *mesh, int w, int h)
 	i = 0;
 	while (i < w * h)
 	{
-		mesh->vertices[i].uv.x = (mesh->vertices[i].pos.x + w / 2.0) / (double)w;
-		mesh->vertices[i].uv.y = (mesh->vertices[i].pos.z + h / 2.0) / (double)h;
+		mesh->vertices[i].uv.x = (mesh->vertices[i].pos.x + w / 2.0)
+			/ (double)w;
+		mesh->vertices[i].uv.y = (mesh->vertices[i].pos.z + h / 2.0)
+			/ (double)h;
 		i++;
 	}
 }

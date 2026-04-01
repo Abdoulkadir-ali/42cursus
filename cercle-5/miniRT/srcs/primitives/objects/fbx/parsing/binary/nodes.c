@@ -18,7 +18,6 @@ static void	parse_nodes_depth(t_fbx_parse *fbx, uint64_t end_offset,
 static void	parse_array_bin(t_fbx_parse *fbx, t_fbx_array_req *req,
 		int depth)
 {
-	(void)depth;
 	ft_print_debug("   Depth %d: Reading %s...\n", depth, req->label);
 	*req->dst = read_fbx_array(fbx->fd, req->count, req->elem_sz);
 	if (!*req->dst)

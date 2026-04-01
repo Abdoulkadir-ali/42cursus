@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 21:56:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,35 +41,38 @@ bool	scene_add_group(t_scene *scene, t_mesh_group g)
 	return (true);
 }
 
+static bool	process_resource_items(t_scene *scene, t_mesh_resource *res)
+{
+	int	i;
+
+	i = -1;
+	while (++i < res->mesh_count)
+	{
+		if (!scene_add_mesh(scene, res->meshes[i]))
+			return (false);
+	}
+	i = -1;
+	while (++i < res->group_count)
+	{
+		if (!scene_add_group(scene, res->groups[i]))
+			return (false);
+	}
+	return (true);
+}
+
 bool	scene_add_objects(t_scene *scene, const char *path)
 {
 	t_mesh_resource	res;
-	const char		*ext;
 	int				start;
-	int				i;
 
 	if (!scene || !path)
 		return (false);
-	ext = ft_strrchr(path, '.');
-	if (!ext)
-		return (false);
-	if (!mesh_build_resource(path, ext, &res))
+	if (!mesh_build_resource(path, &res))
 		return (false);
 	start = scene->mesh_count;
-	i = -1;
-	while (++i < res.mesh_count)
-	{
-		if (!scene_add_mesh(scene, res.meshes[i]))
-			return (false);
-	}
-	i = -1;
-	while (++i < res.group_count)
-	{
-		if (!scene_add_group(scene, res.groups[i]))
-			return (false);
-	}
+	if (!process_resource_items(scene, &res))
+		return (false);
 	if (scene->mesh_count > start)
 		scene_add_group_for_subs(scene, path, start);
 	return (true);
 }
-

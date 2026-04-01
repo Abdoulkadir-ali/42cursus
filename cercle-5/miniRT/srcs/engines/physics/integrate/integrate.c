@@ -112,6 +112,7 @@ static void	integrate_sphere(t_sphere *sp, double dt, t_physics_state *state)
 			vec3_scale(sp->phys.velocity, dt));
 	update_rotation(sp, dt);
 	apply_deformation(sp);
+	sp->phys.pos = sp->transform.pos;
 	sp->phys.center = sp->transform.pos;
 }
 

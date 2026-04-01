@@ -43,7 +43,7 @@ bool	scene_add_mesh_file(t_scene *scene, const char *path)
  * Maps the format-specific loading calls (which are scene-oriented)
  * to the t_mesh_resource target.
  */
-bool	mesh_build_resource(const char *path, const char *ext,
+bool	mesh_build_resource(const char *path,
 			t_mesh_resource *res)
 {
 	t_scene	tmp;
@@ -63,6 +63,5 @@ bool	mesh_build_resource(const char *path, const char *ext,
 		res->group_count = tmp.group_count;
 		res->group_cap = tmp.group_cap;
 	}
-	(void)ext;
 	return (ret);
 }

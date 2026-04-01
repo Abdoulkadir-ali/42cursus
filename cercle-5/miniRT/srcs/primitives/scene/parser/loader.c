@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "scene.h"
 
 bool	parse_rt_fd(int fd, t_scene *scene)
 {

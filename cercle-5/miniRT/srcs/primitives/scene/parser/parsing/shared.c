@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:19:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:25:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "scene.h"
 
 void	init_poly_phys(t_physics_body *phys)
 {

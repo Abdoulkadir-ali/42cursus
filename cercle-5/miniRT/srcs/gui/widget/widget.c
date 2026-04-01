@@ -50,7 +50,8 @@ void	widget_handle_mouse(struct s_gui *gui, int button, t_vec2i mouse)
 {
 	t_widget	*w;
 
-	(void)button;
+	if (button != BUTTON_LEFT)
+		return ;
 	w = gui->widgets;
 	while (w)
 	{

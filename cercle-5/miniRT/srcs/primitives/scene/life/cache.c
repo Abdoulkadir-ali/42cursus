@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:07:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:25:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
 #include "scene.h"
 
 int	find_cache_idx(t_scene *scene, const char *path)

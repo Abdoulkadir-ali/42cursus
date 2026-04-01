@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:09:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:20:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
 #include "scene.h"
-
 
 static bool	snap_alloc_geo(t_cache_snap *s, const t_mesh *m)
 {

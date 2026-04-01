@@ -32,4 +32,3 @@ bool	scene_add_cone(t_scene *scene, t_cone cone)
 	scene->cones[scene->cone_count++] = cone;
 	return (true);
 }
-

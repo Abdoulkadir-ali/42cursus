@@ -16,8 +16,8 @@
 bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit)
 {
 	t_trace	trace;
-	double		tmin;
-	double		tmax;
+	double	tmin;
+	double	tmax;
 
 	if (!mesh || !mesh->bvh_nodes)
 		return (false);

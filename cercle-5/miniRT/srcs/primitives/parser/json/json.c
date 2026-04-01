@@ -57,7 +57,7 @@ int	json_get_int(t_json_value *obj, const char *key)
 
 t_json_value	*json_parse_len(const char *json_str, size_t len)
 {
-	char	*buf;
+	char			*buf;
 	t_json_value	*result;
 
 	buf = ft_strndup(json_str, len);

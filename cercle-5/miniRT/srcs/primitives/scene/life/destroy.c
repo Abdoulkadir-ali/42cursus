@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 21:30:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:27:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,3 @@ void	destroy_scene(t_scene *scene)
 	destroy_scene_animated(scene);
 	free(scene);
 }
-

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/05 00:00:00 by abdoali          ###   ########.fr       */
-/*   Updated: 2026/02/11 20:30:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/01 20:05:47 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/01 20:05:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	setup(t_gui *gui, t_render *render)
 	if (gui->cam_ctrl.camera)
 		fov_rad = gui->cam_ctrl.camera->fov;
 	fov_rad = fov_rad * M_PI / 180.0;
-	render->aspect_ratio = (double)gui->win.width / (double)gui->win.height;
+	render->aspect_ratio = (double)gui->win.size.x / (double)gui->win.size.y;
 	render->half_width = tan(fov_rad / 2.0);
 	render->half_height = render->half_width / render->aspect_ratio;
 	if (gui->cam_ctrl.camera)
@@ -74,9 +74,9 @@ void	gui_render(t_gui *gui)
 
 	PROF_RESET();
 	setup(gui, &render);
-	render.tiles_x = (gui->win.width + TILE_SIZE - 1) / TILE_SIZE;
-	render.total_tiles = render.tiles_x * ((gui->win.height + TILE_SIZE - 1)
-			/ TILE_SIZE);
+	render.tiles_count.x = (gui->win.size.x + TILE_SIZE - 1) / TILE_SIZE;
+	render.tiles_count.y = (gui->win.size.y + TILE_SIZE - 1) / TILE_SIZE;
+	render.total_tiles = render.tiles_count.x * render.tiles_count.y;
 	render.next_tile_id = 0;
 	render_tiles(&render);
 	PROF_PRINT();

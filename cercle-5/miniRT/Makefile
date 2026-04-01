@@ -84,7 +84,7 @@ PROF_DEPS     = $(PROF_OBJS:.o=.d)
 
 # -O1 keeps the call graph readable; -g3 keeps symbols; no -flto (breaks gprof)
 PROF_CFLAGS   = -Wall -Wextra -O1 -g3 -pthread \
-                $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) \
+                $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -Ipackages \
                 -DDEBUG_EXTENDER -DPROFILE_MESH -MMD -MP
 
 -include $(PROF_DEPS)

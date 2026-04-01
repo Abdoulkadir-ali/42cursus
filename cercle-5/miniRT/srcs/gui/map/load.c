@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "map.h"
+#include "editor.h"
+#include "scene.h"
 
 static bool	map_load_internal(t_gui *gui, t_map_entry *entry)
 {

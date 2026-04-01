@@ -25,8 +25,7 @@ struct s_gui;
 
 typedef struct s_input
 {
-	int				mouse_x;
-	int				mouse_y;
+	t_vec2i			mouse;
 }	t_input;
 
 typedef struct s_key_action

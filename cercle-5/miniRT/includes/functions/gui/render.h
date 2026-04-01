@@ -44,8 +44,8 @@ void			update_ambient(t_gui *gui);
 
 /* Overlay internals */
 const char		*mesh_name(t_mesh *mesh);
-void			draw_char(t_gui *gui, unsigned char c, int x, int y,
+void			draw_char(t_gui *gui, unsigned char c, t_vec2i pos,
 				unsigned int color);
-int				panel_color(t_panel panel, int i, int j);
+int				panel_color(t_panel panel, t_vec2i pos);
 
 #endif

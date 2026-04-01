@@ -6,13 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 17:48:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:43:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GUI_FUNCTIONS_INPUT_H
 # define GUI_FUNCTIONS_INPUT_H
 
+
+# include <X11/X.h>
+# include <X11/keysym.h>
 # include "editor.h"
 # include "map.h"
 # include "camera.h"
@@ -21,7 +24,7 @@
 int		key_press(int keycode, struct s_gui *gui);
 int		key_release(int keycode, struct s_gui *gui);
 int		mouse_click(int button, t_vec2i mouse, struct s_gui *gui);
-int		mouse_release(int button, t_vec2i mouse, struct s_gui *gui);
+int		mouse_release(int button, struct s_gui *gui);
 int		mouse_motion(t_vec2i mouse, struct s_gui *gui);
 void	gui_update_input(struct s_gui *gui);
 int		(*mouse_click_hook(void))(int b, int x, int y, void *p);

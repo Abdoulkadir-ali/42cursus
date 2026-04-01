@@ -29,8 +29,6 @@ void	slider_begin_drag(struct s_gui *gui, t_widget *w, int mouse_x);
 bool	slider_handle_click(struct s_gui *gui, t_widget *w, t_vec2i mouse);
 
 void	gui_label(struct s_gui *gui, const char *text, t_vec2i pos);
-void	gui_slider(struct s_gui *gui, double *val, double min, double max,
-				t_vec2i pos, const char *fmt);
 void	gui_panel(struct s_gui *gui, t_vec2i pos, t_vec2i size, const char *title);
 
 #endif

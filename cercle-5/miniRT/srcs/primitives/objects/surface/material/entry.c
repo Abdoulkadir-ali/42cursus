@@ -44,7 +44,10 @@ bool	obj_parse_mtllib(t_scene *scene, t_obj *obj, t_parser *p,
 	}
 	name[i] = 0;
 	dir = path_get_dir(obj_path);
-	full = (dir) ? ft_strjoin(dir, name) : ft_strdup(name);
+	if (dir)
+		full = ft_strjoin(dir, name);
+	else
+		full = ft_strdup(name);
 	if (dir)
 		free(dir);
 	if (obj->first_mtl_id == -1)

@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:03:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:21:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:25:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "scene.h"
 
 static void	init_shape_phys(t_physics_body *phys)
 {
@@ -65,7 +65,6 @@ t_parse_obj	parse_rect(t_parser *p)
 	res.type = TYPE_RECT;
 	return (res);
 }
-
 
 t_parse_obj	parse_pyramid(t_parser *p)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "scene.h"
 
 /**
  * Parses the ambient light entry from tokens.

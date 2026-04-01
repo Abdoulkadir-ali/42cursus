@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:03:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:19:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:25:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "scene.h"
 
 t_parse_obj	parse_capsule(t_parser *p)
 {

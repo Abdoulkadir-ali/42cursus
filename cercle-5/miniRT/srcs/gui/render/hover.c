@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 17:18:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:18:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,23 @@ bool	update_hover(t_gui *gui, t_render *render)
 	t_ray	ray;
 	t_panel	panel;
 
-	if (gui->input.mouse_x != gui->hover.x || gui->input.mouse_y != gui->hover.y
+	if (gui->input.mouse.x != gui->hover.mouse.x
+		|| gui->input.mouse.y != gui->hover.mouse.y
 		|| gui->render.dirty)
 	{
-		gui->hover.x = gui->input.mouse_x;
-		gui->hover.y = gui->input.mouse_y;
-		make_camera_ray(render, gui->hover.x * gui->win.width / gui->win.disp_w,
-			gui->hover.y * gui->win.height / gui->win.disp_h, &ray);
+		gui->hover.mouse = gui->input.mouse;
+		make_camera_ray(render, (double)gui->hover.mouse.x * gui->win.size.x
+			/ gui->win.disp_size.x,
+			(double)gui->hover.mouse.y * gui->win.size.y
+			/ gui->win.disp_size.y, &ray);
 		ft_memset(&hit, 0, sizeof(t_hit));
 		gui->hover.active = bvh_intersect(gui->scene->bvh, &ray, &hit);
 	}
 	if (gui->hover.active)
 	{
-		panel = (t_panel){.x = gui->hover.x + 16, .y = gui->hover.y + 16,
-			.w = 180, .h = 40, .bg = COL_BG, .brd = COL_HOVER,
-			.pos = vec2i(gui->hover.x + 16, gui->hover.y + 16),
-			.size = vec2i(180, 40)};
+		panel = (t_panel){
+			.pos = vec2i(gui->hover.mouse.x + 16, gui->hover.mouse.y + 16),
+			.size = vec2i(180, 40), .bg = COL_BG, .brd = COL_HOVER};
 		draw_panel(gui, panel);
 		return (true);
 	}
@@ -48,8 +49,8 @@ void	draw_hover_text(t_gui *gui)
 {
 	if (gui->hover.active)
 	{
-		mlx_string_put(gui->win.mlx, gui->win.win, gui->hover.x + 28,
-			gui->hover.y + 40, COL_HOVER, "Object hit");
+		mlx_string_put(gui->win.mlx, gui->win.win, gui->hover.mouse.x + 28,
+			gui->hover.mouse.y + 40, COL_HOVER, "Object hit");
 	}
 }
 

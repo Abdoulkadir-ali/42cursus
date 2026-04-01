@@ -17,21 +17,20 @@
 ** Recreates only the display image to match the new window dimensions.
 ** The render image stays at the fixed render resolution.
 */
-int	gui_window_resize(int width, int height, t_gui *gui)
+int	gui_window_resize(t_vec2i size, t_gui *gui)
 {
 	void	*new_img;
 
-	if (width < 200 || height < 150)
+	if (size.x < 200 || size.y < 150)
 		return (0);
-	if (width == gui->win.disp_w && height == gui->win.disp_h)
+	if (size.x == gui->win.disp_size.x && size.y == gui->win.disp_size.y)
 		return (0);
-	new_img = mlx_new_image(gui->win.mlx, width, height);
+	new_img = mlx_new_image(gui->win.mlx, size.x, size.y);
 	if (!new_img)
 		return (0);
 	if (gui->win.disp_img)
 		mlx_destroy_image(gui->win.mlx, gui->win.disp_img);
-	gui->win.disp_w = width;
-	gui->win.disp_h = height;
+	gui->win.disp_size = size;
 	gui->win.disp_img = new_img;
 	gui->win.disp_addr = mlx_get_data_addr(gui->win.disp_img,
 			&gui->win.disp_bpp, &gui->win.disp_line_len,

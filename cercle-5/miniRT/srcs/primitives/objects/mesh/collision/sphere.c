@@ -29,8 +29,7 @@ static void	process_mesh_triangles(const struct s_sphere *s, t_mesh *m,
 		v[0] = m->vertices[m->indices[tri_idx * 3 + 0]].pos;
 		v[1] = m->vertices[m->indices[tri_idx * 3 + 1]].pos;
 		v[2] = m->vertices[m->indices[tri_idx * 3 + 2]].pos;
-		if (test_sphere_triangle(s, v, &col->normal, &col->pen,
-				&col->min_dist_sq))
+		if (test_sphere_triangle(s, v, col))
 		{
 			col->hit = true;
 			col->best_normal = col->normal;
@@ -69,7 +68,7 @@ static void	traverse_mesh_bvh(const struct s_sphere *s, t_mesh *m,
 bool	detect_sphere_mesh_collision(const struct s_sphere *s, struct s_mesh *m,
 			t_vec3 *out_normal, double *out_penetration)
 {
-	t_aabb			s_aabb;
+	t_aabb		s_aabb;
 	t_collision	col;
 
 	if (get_physics_state()->mesh_simplify_collision

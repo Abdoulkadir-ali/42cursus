@@ -53,8 +53,7 @@ typedef struct s_widget
 
 typedef struct s_hover_cache
 {
-	int					x;
-	int					y;
+	t_vec2i				mouse;
 	bool				active;
 	bool				hit;
 	long				last_frame;

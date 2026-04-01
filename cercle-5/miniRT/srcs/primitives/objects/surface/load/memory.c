@@ -15,7 +15,8 @@
 /*
 ** Loads a texture from a memory buffer via stb_image.
 */
-bool	load_texture_from_memory(t_texture *tex, unsigned char *buffer, int size)
+bool	load_texture_from_memory(t_texture *tex, unsigned char *buffer,
+			int size)
 {
 	int				w;
 	int				h;

@@ -18,7 +18,7 @@ static void	draw_ui_text_footer(t_gui *gui, t_camera_controller *ctrl, int c)
 	int		bh;
 	int		ox;
 
-	bh = gui->win.disp_h;
+	bh = gui->win.disp_size.y;
 	ox = SCENE_PANEL_W + 16;
 	snprintf(buf, sizeof(buf), "POS  %.2f  %.2f  %.2f", ctrl->transform.pos.x,
 		ctrl->transform.pos.y, ctrl->transform.pos.z);
@@ -34,7 +34,7 @@ static void	draw_ui_fps(t_gui *gui)
 	char	buf[128];
 
 	snprintf(buf, sizeof(buf), "%.0f FPS", gui->render.fps);
-	mlx_string_put(gui->win.mlx, gui->win.win, gui->win.disp_w - 108, 40,
+	mlx_string_put(gui->win.mlx, gui->win.win, gui->win.disp_size.x - 108, 40,
 		COL_FPS, buf);
 }
 

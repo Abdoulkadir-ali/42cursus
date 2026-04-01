@@ -36,11 +36,9 @@ static bool	process_polygon(t_scene *sc, t_parse_obj *obj)
 
 static bool	process_mesh_object(t_scene *scene, t_parse_obj *obj)
 {
-	const char	*ext;
 	bool		ret;
 
-	ext = ft_strrchr(obj->data.mesh_info.path, '.');
-	ret = scene_add_collection(scene, obj, ext);
+	ret = scene_add_collection(scene, obj);
 	free(obj->data.mesh_info.path);
 	return (ret);
 }

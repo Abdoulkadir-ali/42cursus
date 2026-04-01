@@ -6,21 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:52:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:43:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
 
+# include <dirent.h>
 # include <fcntl.h>
-# include <stdbool.h>
-# include <stddef.h>
-# include <stdint.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <unistd.h>
 # include "helpers.h"
 # include "types.h"
 

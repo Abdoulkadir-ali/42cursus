@@ -56,7 +56,7 @@ bool	fdf_parse_line_row(char *line, t_mesh *mesh, int row, int dims[2])
 	int				col;
 	bool			found;
 	int				w;
-	t_fdf	fdf;
+	t_fdf			fdf;
 
 	p = line;
 	col = 0;

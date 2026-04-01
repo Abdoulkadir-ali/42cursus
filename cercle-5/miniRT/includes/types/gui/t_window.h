@@ -36,15 +36,13 @@ typedef struct s_window
 	int		bpp;
 	int		line_len;
 	int		endian;
-	int		width;
-	int		height;
+	t_vec2i	size;
 	void	*disp_img;
 	char	*disp_addr;
 	int		disp_bpp;
 	int		disp_line_len;
 	int		disp_endian;
-	int		disp_w;
-	int		disp_h;
+	t_vec2i	disp_size;
 	void	*gui_bg_img;
 	char	*gui_bg_addr;
 	int		gui_bg_line_len;
@@ -56,28 +54,8 @@ typedef struct s_panel
 {
 	t_vec2i	pos;
 	t_vec2i	size;
-	int		x;
-	int		y;
-	int		w;
-	int		h;
 	int		bg;
 	int		brd;
 }	t_panel;
-
-/* Prototypes */
-struct s_gui	*gui_init(struct s_scene *scene, void *mlx);
-void			gui_destroy(struct s_gui *gui);
-void			gui_loop(struct s_gui *gui);
-int				gui_window_resize(int width, int height, struct s_gui *gui);
-int				gui_window_close(struct s_gui *gui);
-void			gui_draw_string(struct s_gui *gui, const char *str, int x,
-					int y, unsigned int color);
-void			draw_panel(struct s_gui *gui, t_panel panel);
-void			draw_ui_panels(struct s_gui *gui);
-void			draw_ui_help(struct s_gui *gui, int *y);
-void			draw_ui_status(struct s_gui *gui, int *y);
-void			draw_ui_object(struct s_gui *gui);
-void			draw_ui_text(struct s_gui *gui, struct s_camera_controller *ctrl);
-void			draw_hover_text(struct s_gui *gui);
 
 #endif

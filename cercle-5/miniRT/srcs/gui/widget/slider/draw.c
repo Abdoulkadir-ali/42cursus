@@ -6,18 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:01:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 21:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "widget.h"
 
-static void	draw_slider_track(t_gui *gui, t_widget *w)
+static double	get_slider_frac(t_widget *w)
 {
-	t_panel	track;
-	t_panel	fill;
 	double	frac;
-	int		fill_w;
 
 	frac = 0.0;
 	if (w->dmax > w->dmin)
@@ -26,16 +23,27 @@ static void	draw_slider_track(t_gui *gui, t_widget *w)
 		frac = 0.0;
 	if (frac > 1.0)
 		frac = 1.0;
-	fill_w = (int)(frac * w->size.x);
-	track = (t_panel){.x = w->pos.x, .y = w->pos.y + w->size.y / 2 - 3,
-		.w = w->size.x, .h = 6, .bg = COL_SLIDER_BG, .brd = COL_BORDER,
-		.pos = w->pos, .size = vec2i(w->size.x, 6)};
+	return (frac);
+}
+
+static void	draw_slider_track(t_gui *gui, t_widget *w)
+{
+	t_panel	track;
+	t_panel	fill;
+	int		fill_w;
+
+	fill_w = (int)(get_slider_frac(w) * w->size.x);
+	track = (t_panel){
+		.pos = vec2i(w->pos.x, w->pos.y + w->size.y / 2 - 3),
+		.size = vec2i(w->size.x, 6),
+		.bg = COL_SLIDER_BG, .brd = COL_BORDER};
 	draw_panel(gui, track);
 	if (fill_w > 0)
 	{
-		fill = (t_panel){.x = w->pos.x, .y = w->pos.y + w->size.y / 2 - 3,
-			.w = fill_w, .h = 6, .bg = COL_SLIDER_FG, .brd = COL_SLIDER_FG,
-			.pos = w->pos, .size = vec2i(fill_w, 6)};
+		fill = (t_panel){
+			.pos = vec2i(w->pos.x, w->pos.y + w->size.y / 2 - 3),
+			.size = vec2i(fill_w, 6),
+			.bg = COL_SLIDER_FG, .brd = COL_SLIDER_FG};
 		draw_panel(gui, fill);
 	}
 }

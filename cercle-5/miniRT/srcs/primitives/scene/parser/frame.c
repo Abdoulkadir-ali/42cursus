@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:02:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 16:02:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:25:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
 #include "scene.h"
 
 static void	refresh_mesh_snaps(t_scene *scene, int start_idx)

@@ -14,7 +14,6 @@
 #include "scene.h"
 #include "utils.h"
 
-
 int	scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 	t_vec3 color_b, double scale)
 {
@@ -30,7 +29,6 @@ int	scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 	scene->materials[scene->mat_count].shininess = 16.0;
 	return (scene->mat_count++);
 }
-
 
 int	scene_add_material(t_scene *scene, t_vec3 color)
 {
@@ -67,7 +65,6 @@ int	scene_add_named_material(t_scene *scene, const char *name)
 	return (id);
 }
 
-
 int	scene_add_fresh_material(t_scene *scene, t_vec3 color)
 {
 	t_material	*m;
@@ -87,7 +84,6 @@ int	scene_add_fresh_material(t_scene *scene, t_vec3 color)
 	return (scene->mat_count++);
 }
 
-
 int	scene_find_material(t_scene *scene, const char *name)
 {
 	int	i;
@@ -97,26 +93,10 @@ int	scene_find_material(t_scene *scene, const char *name)
 	i = 0;
 	while (i < scene->mat_count)
 	{
-		if (scene->materials[i].name && ft_strcmp(scene->materials[i].name, name) == 0)
+		if (scene->materials[i].name
+			&& ft_strcmp(scene->materials[i].name, name) == 0)
 			return (i);
 		i++;
 	}
 	return (-1);
-}
-
-int	scene_clone_material(t_scene *scene, int src_id)
-{
-	int		id;
-
-	if (src_id < 0 || src_id >= scene->mat_count)
-		return (-1);
-	id = scene_material_allocate_slot(scene);
-	if (id < 0)
-		return (-1);
-	scene->materials[id] = scene->materials[src_id];
-	if (scene->materials[src_id].name)
-		scene->materials[id].name = ft_strdup(scene->materials[src_id].name);
-	else
-		scene->materials[id].name = NULL;
-	return (id);
 }

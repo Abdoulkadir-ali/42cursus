@@ -23,8 +23,8 @@ bool	scene_add_sphere(t_scene *scene, t_sphere sphere)
 	if (mat_id < 0)
 		return (false);
 	sphere.mat_id = mat_id;
-	if (scene_allocate_object_slot((void **)&scene->spheres, &scene->sphere_count,
-			&scene->sphere_cap, sizeof(t_sphere)) < 0)
+	if (scene_allocate_object_slot((void **)&scene->spheres,
+			&scene->sphere_count, &scene->sphere_cap, sizeof(t_sphere)) < 0)
 		return (false);
 	if (vec3_mag_sq(sphere.transform.scale) < 1e-6)
 		sphere.transform.scale = vec3(1, 1, 1);

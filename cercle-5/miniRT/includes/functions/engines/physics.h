@@ -14,6 +14,8 @@
 # define PHYSICS_H
 
 # include "scene.h"
+# include <pthread.h>
+
 # define MAX_CONTACTS 1024
 # define SLOP 0.01
 # define BAUMGARTE 0.2

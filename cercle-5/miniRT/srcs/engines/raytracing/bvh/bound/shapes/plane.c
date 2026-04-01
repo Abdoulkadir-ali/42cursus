@@ -15,11 +15,10 @@
 /**
  * Computes the Axis-Aligned Bounding Box for a plane (infinite).
  */
-t_aabb	plane_aabb(t_plane *pl)
+t_aabb	plane_aabb(void)
 {
 	t_aabb	bbox;
 
-	(void)pl;
 	bbox.min = vec3(-MAX_VALUE, -MAX_VALUE, -MAX_VALUE);
 	bbox.max = vec3(MAX_VALUE, MAX_VALUE, MAX_VALUE);
 	return (bbox);

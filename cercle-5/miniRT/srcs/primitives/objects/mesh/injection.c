@@ -28,19 +28,17 @@ static void	clone_instance_materials(t_scene *scene, int start_mesh)
 	}
 }
 
-static void	apply_material(t_parse_obj *item, t_scene *scene, int start_mesh,
-				int start_anim)
+static void	apply_material(t_parse_obj *item, t_scene *scene, int start_mesh)
 {
 	int	i;
 
 	i = start_mesh;
 	while (i < scene->mesh_count)
 	{
-		scene->materials[scene->meshes[i].mat_id].albedo_map.color_a =
-			item->data.mesh_info.color;
+		scene->materials[scene->meshes[i].mat_id].albedo_map.color_a
+			= item->data.mesh_info.color;
 		i++;
 	}
-	(void)start_anim;
 }
 
 /**
@@ -70,13 +68,11 @@ static bool	inject_mesh_resource(t_scene *scene, t_mesh_resource *res)
 	return (true);
 }
 
-bool	scene_add_collection(t_scene *scene, t_parse_obj *item, const char *ext)
+bool	scene_add_collection(t_scene *scene, t_parse_obj *item)
 {
 	t_mesh_resource	res;
-	int				start_anim;
 	int				start_mesh;
 
-	start_anim = scene->anim_count;
 	start_mesh = scene->mesh_count;
 	if (mesh_cache_has(scene, item->data.mesh_info.path))
 	{
@@ -85,14 +81,14 @@ bool	scene_add_collection(t_scene *scene, t_parse_obj *item, const char *ext)
 	}
 	else
 	{
-		if (!mesh_build_resource(item->data.mesh_info.path, ext, &res))
+		if (!mesh_build_resource(item->data.mesh_info.path, &res))
 			return (false);
 		if (!inject_mesh_resource(scene, &res))
 			return (false);
 		mesh_cache_save(scene, item->data.mesh_info.path, start_mesh);
 		clone_instance_materials(scene, start_mesh);
 	}
-	apply_material(item, scene, start_mesh, start_anim);
+	apply_material(item, scene, start_mesh);
 	if (scene->mesh_count > start_mesh)
 		scene_add_group_for_subs(scene, item->data.mesh_info.path, start_mesh);
 	return (true);

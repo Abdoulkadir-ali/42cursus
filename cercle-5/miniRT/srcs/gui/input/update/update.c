@@ -53,4 +53,3 @@ void	gui_update_input(t_gui *gui)
 	else
 		gui->render.scale = 2;
 }
-

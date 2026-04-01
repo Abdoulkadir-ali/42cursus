@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 12:56:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:39:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	transform_selection_sync(t_gui *gui)
 	if (gui->selection.type == TYPE_SPHERE)
 	{
 		sc->spheres[gui->selection.index].transform.pos = gui->transform.pos;
+		sc->spheres[gui->selection.index].phys.pos = gui->transform.pos;
 		sphere_scale_sync(gui);
 	}
 	else if (gui->selection.type == TYPE_PLANE)

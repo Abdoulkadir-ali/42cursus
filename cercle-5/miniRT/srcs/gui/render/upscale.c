@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 20:45:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,38 +18,37 @@
 */
 static void	upscale_nn(t_gui *gui)
 {
-	int				y;
-	int				x;
+	t_vec2i			p;
 	uint32_t		*src_row;
 	uint32_t		*dst_row;
+	int				sy;
 
-	y = 0;
-	while (y < gui->win.disp_h)
+	p.y = 0;
+	while (p.y < gui->win.disp_size.y)
 	{
-		src_row = (uint32_t *)(gui->win.addr
-				+ (y * gui->win.height / gui->win.disp_h)
-				* gui->win.line_len);
-		dst_row = (uint32_t *)(gui->win.disp_addr
-				+ y * gui->win.disp_line_len);
-		x = 0;
-		while (x < gui->win.disp_w)
+		sy = (p.y * gui->win.size.y) / gui->win.disp_size.y;
+		src_row = (uint32_t *)(gui->win.addr + sy * gui->win.line_len);
+		dst_row = (uint32_t *)(gui->win.disp_addr + p.y * gui->win.disp_line_len);
+		p.x = 0;
+		while (p.x < gui->win.disp_size.x)
 		{
-			dst_row[x] = src_row[x * gui->win.width / gui->win.disp_w];
-			x++;
+			dst_row[p.x] = src_row[(p.x * gui->win.size.x) / gui->win.disp_size.x];
+			p.x++;
 		}
-		y++;
+		p.y++;
 	}
 }
 
 static void	blit_direct(t_gui *gui)
 {
 	memcpy(gui->win.disp_addr, gui->win.addr,
-		(size_t)gui->win.disp_h * (size_t)gui->win.disp_line_len);
+		(size_t)gui->win.disp_size.y * (size_t)gui->win.disp_line_len);
 }
 
 void	upscale_image(t_gui *gui)
 {
-	if (gui->win.width == gui->win.disp_w && gui->win.height == gui->win.disp_h)
+	if (gui->win.size.x == gui->win.disp_size.x
+		&& gui->win.size.y == gui->win.disp_size.y)
 	{
 		blit_direct(gui);
 		return ;

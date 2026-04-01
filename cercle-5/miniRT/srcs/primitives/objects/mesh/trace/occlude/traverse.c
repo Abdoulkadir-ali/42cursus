@@ -35,7 +35,7 @@ int	process_occ_node(t_mesh *mesh, int node_idx, const t_ray *ray,
 bool	traverse_occlude(t_mesh *mesh, const t_ray *ray, double dist)
 {
 	t_occ	occ;
-	int			node_idx;
+	int		node_idx;
 
 	occ.top = 0;
 	occ.dist = dist;

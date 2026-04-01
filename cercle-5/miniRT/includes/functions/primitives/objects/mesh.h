@@ -84,10 +84,9 @@ bool					intersect_finish_hit(t_trace *trace, t_mesh *mesh,
 bool					scene_add_objects(t_scene *scene, const char *path);
 bool					scene_add_mesh(t_scene *scene, t_mesh mesh);
 bool					scene_add_mesh_file(t_scene *scene, const char *path);
-bool					mesh_build_resource(const char *path, const char *ext,
+bool					mesh_build_resource(const char *path,
 							t_mesh_resource *res);
-bool					scene_add_collection(t_scene *scene, t_parse_obj *item,
-							const char *ext);
+bool					scene_add_collection(t_scene *scene, t_parse_obj *item);
 bool					scene_add_animated(t_scene *scene,
 							t_skinned_mesh animated);
 bool					scene_add_group(t_scene *scene, t_mesh_group g);
@@ -103,7 +102,7 @@ bool					mesh_cache_save(t_scene *scene, const char *path,
 bool					mesh_cache_restore(t_scene *scene, const char *path);
 
 # ifndef EPSILON
-#  define EPSILON 1e-4
+#  define EPSILON 1e-3
 # endif
 
 #endif

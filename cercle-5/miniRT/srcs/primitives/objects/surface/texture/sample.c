@@ -44,30 +44,26 @@ static t_vec3	texel_at(t_texture *tex, int x, int y)
 
 static t_vec3	sample_bitmap(t_texture *tex, double u, double v)
 {
-	double	fx;
-	double	fy;
-	int		xi;
-	int		yi;
-	double	wx;
-	double	wy;
-	t_vec3	top;
-	t_vec3	bot;
+	double	f[2];
+	int		i[2];
+	double	w[2];
+	t_vec3	t_b[2];
 
-	fx = u * tex->width - 0.5;
-	fy = v * tex->height - 0.5;
-	xi = (int)fx;
-	if (fx < 0.0 && (double)xi != fx)
-		xi--;
-	yi = (int)fy;
-	if (fy < 0.0 && (double)yi != fy)
-		yi--;
-	wx = fx - (double)xi;
-	wy = fy - (double)yi;
-	top = vec3_add(vec3_scale(texel_at(tex, xi, yi), 1.0 - wx),
-			vec3_scale(texel_at(tex, xi + 1, yi), wx));
-	bot = vec3_add(vec3_scale(texel_at(tex, xi, yi + 1), 1.0 - wx),
-			vec3_scale(texel_at(tex, xi + 1, yi + 1), wx));
-	return (vec3_add(vec3_scale(top, 1.0 - wy), vec3_scale(bot, wy)));
+	f[0] = u * tex->width - 0.5;
+	f[1] = v * tex->height - 0.5;
+	i[0] = (int)f[0];
+	if (f[0] < 0.0 && (double)i[0] != f[0])
+		i[0]--;
+	i[1] = (int)f[1];
+	if (f[1] < 0.0 && (double)i[1] != f[1])
+		i[1]--;
+	w[0] = f[0] - (double)i[0];
+	w[1] = f[1] - (double)i[1];
+	t_b[0] = vec3_add(vec3_scale(texel_at(tex, i[0], i[1]), 1.0 - w[0]),
+			vec3_scale(texel_at(tex, i[0] + 1, i[1]), w[0]));
+	t_b[1] = vec3_add(vec3_scale(texel_at(tex, i[0], i[1] + 1), 1.0 - w[0]),
+			vec3_scale(texel_at(tex, i[0] + 1, i[1] + 1), w[0]));
+	return (vec3_add(vec3_scale(t_b[0], 1.0 - w[1]), vec3_scale(t_b[1], w[1])));
 }
 
 /*

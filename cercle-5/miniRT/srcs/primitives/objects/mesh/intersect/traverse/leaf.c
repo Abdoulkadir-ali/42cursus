@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:15:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 		t_trace *trace)
 {
 	t_leaf	leaf;
-	int			i;
+	int		i;
 
 	i = 0;
 	while (i < node->count)

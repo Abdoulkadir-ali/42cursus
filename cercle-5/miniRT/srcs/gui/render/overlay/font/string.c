@@ -6,41 +6,41 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 17:18:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:25:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
-void	draw_char(t_gui *gui, unsigned char c, int x, int y, unsigned int color);
+static void	skip_utf8(const char **str)
+{
+	(*str)++;
+	while ((**str & 0xC0) == 0x80)
+		(*str)++;
+}
 
 /*
-** Draw a NUL-terminated string into disp_img.
-** Multi-byte UTF-8 lead bytes (>0x7E) are consumed and skipped.
-** Each ASCII glyph advances the cursor by 8 pixels.
+** Draw a NUL-terminated string into disp_img using t_vec2i position.
 */
-void	gui_draw_string(t_gui *gui, const char *str, int x, int y,
-unsigned int color)
+void	gui_draw_string(t_gui *gui, const char *str, t_vec2i pos,
+			unsigned int color)
 {
-	int		cx;
+	t_vec2i			curr;
 	unsigned char	c;
 
 	if (!gui || !str)
 		return ;
-	cx = x;
+	curr = pos;
 	while (*str)
 	{
 		c = (unsigned char)*str;
 		if (c > 0x7E)
 		{
-			/* skip multi-byte UTF-8: count continuation bytes */
-			str++;
-			while ((*str & 0xC0) == 0x80)
-				str++;
+			skip_utf8(&str);
 			continue ;
 		}
-		draw_char(gui, c, cx, y, color);
-		cx += 8;
+		draw_char(gui, c, curr, color);
+		curr.x += 8;
 		str++;
 	}
 }

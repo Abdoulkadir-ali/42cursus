@@ -32,4 +32,3 @@ void	setup_default_scene(t_scene *scene)
 	light.rgb = vec3(255, 255, 255);
 	scene_add_light(scene, light);
 }
-

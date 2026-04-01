@@ -6,12 +6,38 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 21:06:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "mesh.h"
+
+static void	integrate_materials(t_scene *scene, t_mesh_resource *res)
+{
+	int	i;
+
+	i = 0;
+	while (i < res->mat_count)
+	{
+		scene_add_named_material(scene, res->materials[i].name);
+		scene->materials[scene->mat_count - 1] = res->materials[i];
+		i++;
+	}
+}
+
+static void	integrate_meshes(t_scene *scene, t_mesh_resource *res, int base_mat)
+{
+	int	i;
+
+	i = 0;
+	while (i < res->mesh_count)
+	{
+		res->meshes[i].mat_id += base_mat;
+		scene_add_mesh(scene, res->meshes[i]);
+		i++;
+	}
+}
 
 /**
  * Bridges a standalone t_mesh_resource into the global t_scene world state.
@@ -22,32 +48,15 @@ bool	scene_integrate_resource(t_scene *scene, t_mesh_resource *res)
 	int	i;
 	int	base_mat;
 
-	i = 0;
 	base_mat = scene->mat_count;
-	// 1. Integrate Materials
-	while (i < res->mat_count)
-	{
-		scene_add_named_material(scene, res->materials[i].name);
-		scene->materials[scene->mat_count - 1] = res->materials[i];
-		i++;
-	}
-	// 2. Integrate Meshes (remap material IDs)
-	i = 0;
-	while (i < res->mesh_count)
-	{
-		res->meshes[i].mat_id += base_mat;
-		scene_add_mesh(scene, res->meshes[i]);
-		i++;
-	}
-	// 3. Integrate Groups
+	integrate_materials(scene, res);
+	integrate_meshes(scene, res, base_mat);
 	i = 0;
 	while (i < res->group_count)
 	{
 		scene_add_group(scene, res->groups[i]);
 		i++;
 	}
-	// Clear the resource container but don't free the internal data 
-	// (ownership moved to scene)
 	ft_memset(res, 0, sizeof(t_mesh_resource));
 	return (true);
 }

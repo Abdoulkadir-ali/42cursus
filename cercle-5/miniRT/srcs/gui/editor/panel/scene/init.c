@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "editor.h"
+
 void	editor_init(t_gui *gui)
 {
 	gui->scene_panel.visible = true;

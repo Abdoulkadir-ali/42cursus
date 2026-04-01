@@ -29,7 +29,7 @@ typedef struct s_collision
 /* Internal collision helpers */
 bool	mesh_aabb_overlap(const t_aabb *a, const t_aabb *b);
 bool	test_sphere_triangle(const struct s_sphere *s, t_vec3 v[3],
-			t_vec3 *out_normal, double *out_pen, double *min_dist_sq);
+			t_collision *col);
 t_vec3	closest_point_on_triangle(t_vec3 p, t_vec3 v0, t_vec3 v1, t_vec3 v2);
 bool	detect_sphere_capsule_collision(const struct s_sphere *s,
 			const t_collider *c, t_vec3 *out_normal, double *out_penetration);

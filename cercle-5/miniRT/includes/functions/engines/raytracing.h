@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 17:33:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:44:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define BVH_BINS 16
 
 # include "scene.h"
+# include <pthread.h>
 
 /* 3. FUNCTION PROTOTYPES */
 
@@ -49,7 +50,7 @@ t_aabb	rect_aabb(t_rect *rc);
 t_aabb	pyramid_aabb(t_pyramid *py);
 t_aabb	box_aabb(t_box *bx);
 t_aabb	capsule_aabb(t_capsule *cap);
-t_aabb	plane_aabb(t_plane *pl);
+t_aabb	plane_aabb(void);
 t_aabb	cylinder_aabb(t_cylinder *cy);
 t_aabb	cone_aabb(t_cone *co);
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   update.c                                           :+:      :+:    :+:   */
+/*   trace.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 19:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,20 @@ static int	pack_color(t_vec3 color)
 
 static void	fill_block(t_render *render)
 {
-	int		dx;
-	int		dy;
+	t_vec2i		d;
 	uint32_t	*dst;
 
-	dy = 0;
-	while (dy < render->step && (render->pos.y + dy) < render->gui->win.height)
+	d.y = 0;
+	while (d.y < render->step && (render->pos.y + d.y) < render->gui->win.size.y)
 	{
-		dst = (uint32_t *)(render->pixel_addr + (dy * render->gui->win.line_len));
-		dx = 0;
-		while (dx < render->step && (render->pos.x + dx) < render->gui->win.width)
+		dst = (uint32_t *)(render->pixel_addr + (d.y * render->gui->win.line_len));
+		d.x = 0;
+		while (d.x < render->step && (render->pos.x + d.x) < render->gui->win.size.x)
 		{
-			dst[dx] = render->color;
-			dx++;
+			dst[d.x] = render->color;
+			d.x++;
 		}
-		dy++;
+		d.y++;
 	}
 }
 
@@ -50,7 +49,7 @@ void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 	t_vec3			color;
 	uint32_t		*dst;
 
-	make_camera_ray(render, pos.x, pos.y, &ray);
+	make_camera_ray(render, (double)pos.x, (double)pos.y, &ray);
 	color = trace_ray(render->gui->scene->bvh, &ray, render->gui->scene);
 	render->pos = pos;
 	render->color = pack_color(color);

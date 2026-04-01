@@ -32,7 +32,8 @@ static void	load_sampler_outputs(t_json_value *json, char *bin,
 	if (type_str && !strcmp(type_str, "SCALAR"))
 		num = 1;
 	glb_extract_data((t_extract){bin, &acc, &bv, s->outputs,
-		sizeof(float) * num, sizeof(float) * num, sizeof(float) * num, s->count});
+		sizeof(float) * num, sizeof(float) * num,
+		sizeof(float) * num, s->count});
 }
 
 /**

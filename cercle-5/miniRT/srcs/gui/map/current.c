@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "map.h"
+#include "editor.h"
+#include "scene.h"
 
 /*
 ** Finds the map entry matching the currently loaded scene's name and stores

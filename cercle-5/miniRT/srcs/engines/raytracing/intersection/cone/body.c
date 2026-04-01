@@ -42,7 +42,8 @@ static t_quadratic	setup_cone_quadratic(const t_ray *ray, t_cone *cone)
 /*
 ** Checks a single solution for cone body intersection.
 */
-static bool	check_cone_t(const t_ray *ray, t_cone *cone, double t, double *tm)
+static bool	check_cone_t(const t_ray *ray, t_cone *cone, double t, double *tm,
+		double y_cutoff)
 {
 	t_vec3	p;
 	double	y;
@@ -51,7 +52,7 @@ static bool	check_cone_t(const t_ray *ray, t_cone *cone, double t, double *tm)
 	{
 		p = vec3_add(ray->origin, vec3_scale(ray->direction, t));
 		y = vec3_dot(vec3_sub(p, cone->transform.pos), cone->transform.forward);
-		if (y >= 0 && y <= cone->transform.scale.y)
+		if (y >= 0 && y <= y_cutoff)
 		{
 			*tm = t;
 			return (true);
@@ -69,11 +70,10 @@ bool	check_cone_body(const t_ray *ray, t_cone *cone, double *t,
 	t_quadratic			q;
 	t_quadratic_roots	roots;
 
-	(void)y_cutoff;
 	q = setup_cone_quadratic(ray, cone);
 	if (!solve_quadratic(q, &roots))
 		return (false);
-	if (check_cone_t(ray, cone, roots.t1, t))
+	if (check_cone_t(ray, cone, roots.t1, t, y_cutoff))
 		return (true);
-	return (check_cone_t(ray, cone, roots.t2, t));
+	return (check_cone_t(ray, cone, roots.t2, t, y_cutoff));
 }

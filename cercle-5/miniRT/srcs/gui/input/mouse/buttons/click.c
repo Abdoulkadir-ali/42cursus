@@ -41,9 +41,8 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 	return (0);
 }
 
-int	mouse_release(int button, t_vec2i mouse, t_gui *gui)
+int	mouse_release(int button, t_gui *gui)
 {
-	(void)mouse;
 	if (button == BUTTON_LEFT)
 	{
 		end_inline_drag(gui);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:39:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:50:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_render
 	struct s_gui	*gui;
 	int				next_tile_id;
 	int				total_tiles;
-	int				tiles_x;
+	t_vec2i			tiles_count;
 	t_transform		transform;
 	double			half_width;
 	double			half_height;
@@ -75,17 +75,16 @@ typedef struct s_render_state
 	t_render_pool	pool;
 }	t_render_state;
 
-typedef struct s_tile_vars
+typedef struct s_tile
 {
 	int				id;
-	int				tx;
-	int				ty;
+	t_vec2i			tile;
 	t_vec2i			pos;
 	t_vec2i			p_pos;
 	int				bpp_step;
 	int				row_step;
 	char			*row_ptr;
 	char			*pixel_ptr;
-}	t_tile_vars;
+}	t_tile;
 
 #endif

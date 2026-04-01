@@ -6,15 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 17:43:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:43:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GUI_FUNCTIONS_WINDOW_H
 # define GUI_FUNCTIONS_WINDOW_H
 
-# include "core.h"
 # include "types.h"
+# include "mlx.h"
 
 
 # define PANEL_RADIUS 6
@@ -29,10 +29,10 @@
 t_gui	*gui_init(t_scene *scene, void *mlx);
 void			gui_destroy(t_gui *gui);
 void			gui_loop(t_gui *gui);
-int				gui_window_resize(int width, int height, t_gui *gui);
+int				gui_window_resize(t_vec2i size, t_gui *gui);
 int				gui_window_close(t_gui *gui);
-void			gui_draw_string(t_gui *gui, const char *str, int x,
-					int y, unsigned int color);
+void			gui_draw_string(t_gui *gui, const char *str, t_vec2i pos,
+					unsigned int color);
 void			draw_panel(t_gui *gui, t_panel panel);
 void			draw_ui_panels(t_gui *gui);
 void			draw_ui_help(t_gui *gui, int *y);

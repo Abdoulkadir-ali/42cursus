@@ -75,4 +75,3 @@ t_scene	*create_scene(const char *name)
 	scene_add_material(s, vec3(200, 160, 255));
 	return (s);
 }
-

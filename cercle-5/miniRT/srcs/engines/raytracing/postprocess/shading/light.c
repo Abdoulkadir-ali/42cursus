@@ -31,7 +31,7 @@ static bool	light_visible(t_shading *sha, t_light light, t_vec3 ld_norm,
 		return (false);
 	if (light.type == LIGHT_EMISSIVE)
 		return (true);
-	bias = fmax(EPSILON, EPSILON * 10.0 * (1.0 - ndotl));
+	bias = fmax(EPSILON, EPSILON * 20.0 * (1.0 - ndotl));
 	if (is_in_shadow(sha->bvh, vec3_add(sha->hit->point,
 				vec3_scale(sha->hit->normal, bias)), ld_norm, dist))
 		return (false);
@@ -99,7 +99,7 @@ static void	apply_emissive(t_shading *sha, t_vec3 *total,
 	if (ndotl < 0.02)
 		return ;
 	if (is_in_shadow(sha->bvh, vec3_add(sha->hit->point, vec3_scale(
-					sha->hit->normal, fmax(EPSILON, EPSILON * 10 * (1 - ndotl)))),
+					sha->hit->normal, fmax(EPSILON, EPSILON * 20.0 * (1.0 - ndotl)))),
 			ldir, dist_surf))
 		return ;
 	att = light_attenuation(dist_surf * dist_surf);
