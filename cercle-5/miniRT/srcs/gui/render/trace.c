@@ -1,33 +1,19 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   trace.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:30:00 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "functions/gui/render.h"
+#include "public/engines.h"
+#include <stdint.h>
 
-#include "render.h"
-
-static int	pack_color(t_vec3 color)
+static int pack_color(t_vec3 color)
 {
-	int	r;
-	int	g;
-	int	b;
-
-	r = ((int)color.x & 0xFF) << 16;
-	g = ((int)color.y & 0xFF) << 8;
-	b = (int)color.z & 0xFF;
+	int r = ((int)color.x & 0xFF) << 16;
+	int g = ((int)color.y & 0xFF) << 8;
+	int b = (int)color.z & 0xFF;
 	return (r | g | b);
 }
 
-static void	fill_block(t_render *render)
+static void fill_block(t_render *render)
 {
-	t_vec2i		d;
-	uint32_t	*dst;
+	t_vec2i d;
+	uint32_t *dst;
 
 	d.y = 0;
 	while (d.y < render->step && (render->pos.y + d.y) < render->gui->win.size.y)
@@ -43,11 +29,11 @@ static void	fill_block(t_render *render)
 	}
 }
 
-void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
+void process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 {
-	t_ray			ray;
-	t_vec3			color;
-	uint32_t		*dst;
+	t_ray ray;
+	t_vec3 color;
+	uint32_t *dst;
 
 	make_camera_ray(render, (double)pos.x, (double)pos.y, &ray);
 	color = trace_ray(render->gui->scene->bvh, &ray, render->gui->scene);

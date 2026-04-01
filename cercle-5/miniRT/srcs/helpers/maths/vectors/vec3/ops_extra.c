@@ -1,11 +1,11 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ops.c                                              :+:      :+:    :+:   */
+/*   ops_extra.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/06 20:06:54 by abdoali           #+#    #+#             */
+/*   Created: 2026/04/01 20:01:00 by abdoali           #+#    #+#             */
 /*   Updated: 2026/04/01 20:01:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -14,28 +14,19 @@
 
 #ifndef VEC3_HOT_INLINE
 
-t_vec3	vec3_add(t_vec3 a, t_vec3 b)
+t_vec3	vec3_cross(t_vec3 a, t_vec3 b)
 {
-	return ((t_vec3){a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w});
+	return ((t_vec3){a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y \
+- a.y * b.x, 0.0});
 }
 
-t_vec3	vec3_sub(t_vec3 a, t_vec3 b)
+double	vec3_mag_sq(t_vec3 a)
 {
-	return ((t_vec3){a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w});
+	return (vec3_dot(a, a));
 }
 
-t_vec3	vec3_mul(t_vec3 a, t_vec3 b)
+double	vec3_mag(t_vec3 a)
 {
-	return ((t_vec3){a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w});
-}
-
-t_vec3	vec3_scale(t_vec3 a, double s)
-{
-	return ((t_vec3){a.x * s, a.y * s, a.z * s, a.w * s});
-}
-
-double	vec3_dot(t_vec3 a, t_vec3 b)
-{
-	return (a.x * b.x + a.y * b.y + a.z * b.z);
+	return (sqrt(vec3_mag_sq(a)));
 }
 #endif

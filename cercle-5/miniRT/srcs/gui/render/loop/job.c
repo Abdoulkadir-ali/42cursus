@@ -1,20 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   job.c                                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/04 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 17:18:56 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "functions/gui/render.h"
+#include "functions/gui/editor.h"
+#include "functions/gui/map.h"
+#include <pthread.h>
 
-#include "render.h"
-
-void	poll_map_job(t_gui *gui)
+void poll_map_job(t_gui *gui)
 {
-	t_map_job	*job;
+	t_map_job *job;
 
 	job = &gui->map_job;
 	if (!job->active || !job->done)

@@ -1,17 +1,12 @@
-#include "render.h"
+#include "functions/gui/render.h"
+#include <unistd.h>
+#include "mlx.h"
 
-/*
-** Initializes MLX window and image.
-** Creates both the render image (fixed resolution) and display image.
-** Returns false on failure.
-*/
-static bool	init_window(t_gui *gui)
+bool init_window(t_gui *gui)
 {
 	if (!gui->win.mlx)
 		return (false);
 	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.size.x,
-#include "render.h"
-
 			gui->win.size.y, "miniRT");
 	if (!gui->win.win)
 		return (false);
@@ -32,12 +27,9 @@ static bool	init_window(t_gui *gui)
 	return (true);
 }
 
-/*
-** Sets up camera controller default values.
-*/
-static void	init_camera(t_gui *gui)
+void init_camera(t_gui *gui)
 {
-	t_vec3	f;
+	t_vec3 f;
 
 	gui->cam_ctrl.camera = &gui->scene->camera;
 	gui->cam_ctrl.transform = gui->scene->camera.transform;
@@ -53,11 +45,7 @@ static void	init_camera(t_gui *gui)
 	gui->widgets = NULL;
 }
 
-/*
-** Main initialization function for the GUI subsystem.
-** Allocates memory and initializes MLX, window, camera, and map switcher.
-*/
-static void	gui_init_physics(t_gui *gui)
+void gui_init_physics(t_gui *gui)
 {
 	gui->physics_enabled = true;
 	gui->phys_accumulator = 0.0;
@@ -67,7 +55,7 @@ static void	gui_init_physics(t_gui *gui)
 	gui->ambient_intensity = 1.0;
 }
 
-static void	gui_init_render(t_gui *gui)
+void gui_init_render(t_gui *gui)
 {
 	gui->render.num_cores = (int)sysconf(_SC_NPROCESSORS_ONLN);
 	if (gui->render.num_cores < 1)
@@ -76,4 +64,3 @@ static void	gui_init_render(t_gui *gui)
 		gui->render.num_cores = 128;
 	gui->render.pool.ready = false;
 }
-

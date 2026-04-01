@@ -1,61 +1,37 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   hover.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:18:00 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "functions/gui/render.h"
+#include "public/engines.h"
+#include "functions/engines/raytracing.h"
 
-#include "render.h"
-
-/*
-** Cache state for hover optimization (P4).
-*/
-
-bool	update_hover(t_gui *gui, t_render *render)
+void gui_hover(t_gui *gui)
 {
-	t_hit	hit;
-	t_ray	ray;
-	t_panel	panel;
+	t_ray ray;
+	t_hit hit;
+	double aspect_ratio;
+	double half_height;
+	double half_width;
 
-	if (gui->input.mouse.x != gui->hover.mouse.x
-		|| gui->input.mouse.y != gui->hover.mouse.y
-		|| gui->render.dirty)
+	if (!gui || !gui->scene)
+		return ;
+	aspect_ratio = (double)gui->win.size.x / (double)gui->win.size.y;
+	half_height = tan(gui->scene->camera.fov * 0.5 * 3.14159 / 180.0);
+	half_width = half_height * aspect_ratio;
+	
+	ray.origin = gui->scene->camera.transform.pos;
+	ray.direction.x = (2 * (gui->input.mouse.x + 0.5) / (double)gui->win.size.x - 1) * half_width;
+	ray.direction.y = (1 - 2 * (gui->input.mouse.y + 0.5) / (double)gui->win.size.y) * half_height;
+	ray.direction.z = 1;
+	ray.direction = vec3_norm(mat4_mul_dir(mat4_rotation(gui->scene->camera.transform.rotation), 
+					ray.direction));
+	ray_init(&ray, ray.origin, ray.direction);
+	
+	hit.t = 1e30;
+	hit.hit = false;
+	if (bvh_intersect(gui->scene->bvh, &ray, &hit))
 	{
-		gui->hover.mouse = gui->input.mouse;
-		make_camera_ray(render, (double)gui->hover.mouse.x * gui->win.size.x
-			/ gui->win.disp_size.x,
-			(double)gui->hover.mouse.y * gui->win.size.y
-			/ gui->win.disp_size.y, &ray);
-		ft_memset(&hit, 0, sizeof(t_hit));
-		gui->hover.active = bvh_intersect(gui->scene->bvh, &ray, &hit);
+		gui->selection.active = true;
+		gui->selection.type = hit.ref.type;
+		gui->selection.index = hit.ref.index;
 	}
-	if (gui->hover.active)
-	{
-		panel = (t_panel){
-			.pos = vec2i(gui->hover.mouse.x + 16, gui->hover.mouse.y + 16),
-			.size = vec2i(180, 40), .bg = COL_BG, .brd = COL_HOVER};
-		draw_panel(gui, panel);
-		return (true);
-	}
-	return (false);
-}
-
-void	draw_hover_text(t_gui *gui)
-{
-	if (gui->hover.active)
-	{
-		mlx_string_put(gui->win.mlx, gui->win.win, gui->hover.mouse.x + 28,
-			gui->hover.mouse.y + 40, COL_HOVER, "Object hit");
-	}
-}
-
-void	handle_hover(t_gui *gui, t_render *render)
-{
-	if (update_hover(gui, render))
-		draw_hover_text(gui);
+	else
+		gui->selection.active = false;
 }

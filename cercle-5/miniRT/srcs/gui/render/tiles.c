@@ -1,35 +1,24 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   tiles.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/13 06:02:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 20:18:00 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "functions/gui/render.h"
+#include "functions/helpers/profiler.h"
+#include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
 
-#include "render.h"
-
-static void	render_tile(t_render *render, int id)
+static void render_tile(t_render *render, int id)
 {
-	t_tile	v;
+	t_tile v;
 
 	v.tile.x = (id % render->tiles_count.x) * TILE_SIZE;
 	v.tile.y = (id / render->tiles_count.x) * TILE_SIZE;
 	v.p_pos.y = v.tile.y;
-	v.row_ptr = render->gui->win.addr
-		+ (v.p_pos.y * render->gui->win.line_len)
-		+ (v.tile.x * (render->gui->win.bpp / 8));
+	v.row_ptr = render->gui->win.addr + (v.p_pos.y * render->gui->win.line_len) + (v.tile.x * (render->gui->win.bpp / 8));
 	v.bpp_step = (render->gui->win.bpp / 8) * render->step;
 	v.row_step = render->gui->win.line_len * render->step;
 	while (v.p_pos.y < v.tile.y + TILE_SIZE && v.p_pos.y < render->gui->win.size.y)
 	{
 		v.p_pos.x = v.tile.x;
 		v.pixel_ptr = v.row_ptr;
-		while (v.p_pos.x < v.tile.x + TILE_SIZE
-			&& v.p_pos.x < render->gui->win.size.x)
+		while (v.p_pos.x < v.tile.x + TILE_SIZE && v.p_pos.x < render->gui->win.size.x)
 		{
 			process_pixel(render, vec2i(v.p_pos.x, v.p_pos.y), v.pixel_ptr);
 			v.p_pos.x += render->step;
@@ -40,17 +29,14 @@ static void	render_tile(t_render *render, int id)
 	}
 }
 
-static void	*render_tile_worker(void *ptr)
+static void *render_tile_worker(void *ptr)
 {
-	t_worker		*arg;
-	t_render_pool	*pool;
-	int				idx;
-	t_render		*render;
-	int				id;
+	t_worker *arg = (t_worker *)ptr;
+	t_render_pool *pool = arg->pool;
+	int idx = arg->idx;
+	t_render *render;
+	int id;
 
-	arg = (t_worker *)ptr;
-	pool = arg->pool;
-	idx = arg->idx;
 	free(arg);
 	while (1)
 	{
@@ -71,10 +57,10 @@ static void	*render_tile_worker(void *ptr)
 	return (NULL);
 }
 
-static void	init_render_pool(t_render_pool *pool, int n)
+static void init_render_pool(t_render_pool *pool, int n)
 {
-	int				i;
-	t_worker		*arg;
+	int i;
+	t_worker *arg;
 
 	pool->n = n;
 	pool->shutdown = false;
@@ -93,11 +79,11 @@ static void	init_render_pool(t_render_pool *pool, int n)
 	pool->ready = true;
 }
 
-void	render_tiles(t_render *render)
+void render_tiles(t_render *render)
 {
-	int				num_cores;
-	int				i;
-	t_render_pool	*pool;
+	int num_cores;
+	int i;
+	t_render_pool *pool;
 
 	num_cores = render->gui->render.num_cores;
 	pool = &render->gui->render.pool;
