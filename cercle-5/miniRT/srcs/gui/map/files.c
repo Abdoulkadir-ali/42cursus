@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   files.c                                            :+:      :+:    :+:   */
+/*   current.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 20:35:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/02/11 16:20:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "map.h"
 
 static bool	is_rt_file(const char *filename)
 {
@@ -46,7 +46,7 @@ static void	add_map_node(t_gui *gui, t_map_entry ***tail, const char *name)
 	node = create_node(name);
 	if (node)
 	{
-		***tail = node;
+		**tail = node;
 		*tail = &node->next;
 		gui->map_info.count++;
 	}

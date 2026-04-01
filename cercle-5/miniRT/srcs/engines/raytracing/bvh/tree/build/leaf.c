@@ -2,16 +2,14 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   leaf.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+
-	+:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+
-	+#+        */
-/*                                                +#+#+#+#+#+
-	+#+           */
-/*   Created: 2026/02/15 03:05:07 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 03:05:07 by abdoali          ###   ########.fr       */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/01 12:45:55 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/01 12:45:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "raytracing.h"
 
 t_bvh_tmp_node	*init_leaf_node(t_build_item *items, size_t count)

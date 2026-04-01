@@ -61,9 +61,9 @@ void	update_mesh_hit(t_mesh_hit *hit)
 
 	calc.in = hit;
 	calc.idx = &hit->mesh->bvh_indices[hit->tri * 3];
-	calc.v[0] = hit->mesh->vertices[calc.idx[0]];
-	calc.v[1] = hit->mesh->vertices[calc.idx[1]];
-	calc.v[2] = hit->mesh->vertices[calc.idx[2]];
+	calc.v[0] = hit->mesh->vertices[calc.idx[0]].pos;
+	calc.v[1] = hit->mesh->vertices[calc.idx[1]].pos;
+	calc.v[2] = hit->mesh->vertices[calc.idx[2]].pos;
 	hit->hit->t = hit->t;
 	hit->hit->point = vec3_add(hit->ray->origin,
 			vec3_scale(hit->ray->direction, hit->t));

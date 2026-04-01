@@ -54,3 +54,16 @@ int	json_get_int(t_json_value *obj, const char *key)
 		return (-1);
 	return ((int)val->u.number);
 }
+
+t_json_value	*json_parse_len(const char *json_str, size_t len)
+{
+	char	*buf;
+	t_json_value	*result;
+
+	buf = ft_strndup(json_str, len);
+	if (!buf)
+		return (NULL);
+	result = json_parse(buf);
+	free(buf);
+	return (result);
+}

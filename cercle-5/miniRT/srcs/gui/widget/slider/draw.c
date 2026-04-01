@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:46:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 13:01:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "editor.h"
+#include "widget.h"
 
 static void	draw_slider_track(t_gui *gui, t_widget *w)
 {

@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   motion.c                                           :+:      :+:    :+:   */
+/*   move_forward.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/06 20:08:09 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 20:25:00 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 16:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "editor.h"
+#include "input.h"
 
 static void	handle_mouse_rotation(t_gui *gui, int dx, int dy)
 {

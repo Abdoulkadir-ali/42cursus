@@ -9,7 +9,7 @@
 /*   Updated: 2026/03/06 20:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "gui.h"
+#include "render.h"
 
 void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 {

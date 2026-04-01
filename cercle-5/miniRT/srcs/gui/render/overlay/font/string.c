@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/10 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 17:18:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "render.h"
 
-voiddraw_char(t_gui *gui, unsigned char c, int x, int y, unsigned int color);
+void	draw_char(t_gui *gui, unsigned char c, int x, int y, unsigned int color);
 
 /*
 ** Draw a NUL-terminated string into disp_img.

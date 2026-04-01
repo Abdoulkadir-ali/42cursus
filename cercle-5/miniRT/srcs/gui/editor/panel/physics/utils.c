@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 21:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:59:21 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/01 12:55:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	draw_vec3_label(t_gui *gui, t_vec2i pos, const char *label, t_vec3 v)
 {

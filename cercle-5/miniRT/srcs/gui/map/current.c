@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "editor.h"
+#include "map.h"
 
 /*
 ** Finds the map entry matching the currently loaded scene's name and stores

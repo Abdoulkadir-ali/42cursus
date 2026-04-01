@@ -12,7 +12,7 @@
 
 #include "mesh.h"
 
-static void	bvh_update_best(t_bvh_sah *s, int axis, int l_c)
+static void	bvh_update_best(t_bvh_split *s, int axis, int l_c)
 {
 	double	cost;
 
@@ -31,7 +31,7 @@ static void	bvh_update_best(t_bvh_sah *s, int axis, int l_c)
  * Sweeps from right to left along bins to calculate final SAH costs 
  * and identify the optimal split position.
  */
-void	bvh_sweep_right(t_bvh_sah *s, int axis)
+void	bvh_sweep_right(t_bvh_split *s, int axis)
 {
 	int		l_c;
 

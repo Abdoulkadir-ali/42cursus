@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "camera.h"
 
 /**
  * Clamps the field of view between 10 and 170 degrees.

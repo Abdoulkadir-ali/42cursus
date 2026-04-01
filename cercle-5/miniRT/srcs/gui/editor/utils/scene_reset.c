@@ -5,14 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 09:22:45 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/01 12:56:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
 #include "editor.h"
-#include <math.h>
 
 /*
 ** Copies the editable state of each primitive object array from scene into

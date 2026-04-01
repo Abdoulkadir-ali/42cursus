@@ -25,7 +25,7 @@ static void	load_ibms(t_json_value *json, char *bin, int acc_idx, t_mat4 *dst)
 	if (!tmp)
 		return ;
 	glb_extract_data((t_extract){bin, &acc, &bv, tmp, sizeof(float) * 16,
-		acc.count, sizeof(float) * 16});
+		sizeof(float) * 16, sizeof(float) * 16, acc.count});
 	v[0] = -1;
 	while (++v[0] < (int)acc.count)
 	{

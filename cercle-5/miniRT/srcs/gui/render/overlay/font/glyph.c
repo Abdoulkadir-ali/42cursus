@@ -6,17 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/10 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 13:01:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "render.h"
 
 /*
 ** Original 8x8 bitmap font for printable ASCII 32-126.
 ** Each entry is 8 rows, MSB = leftmost pixel, 8 pixels wide.
 */
-static const unsigned charg_font8[95][8] =
+static const unsigned char g_font8[95][8] =
 {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, /* 0x20 space */
 	{0x18, 0x18, 0x18, 0x18, 0x18, 0x00, 0x18, 0x00}, /* 0x21 ! */

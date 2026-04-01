@@ -5,12 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 21:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:58:47 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/01 12:56:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
 #include "editor.h"
 
 static void	mesh_vertex_sync(t_mesh *m, t_mesh_sync s)
@@ -21,9 +20,9 @@ static void	mesh_vertex_sync(t_mesh *m, t_mesh_sync s)
 	vi = 0;
 	while (vi < m->vertex_count)
 	{
-		local = vec3_sub(m->edit_snap_verts[vi], s.piv);
+		local = vec3_sub(m->edit_snap_verts[vi].pos, s.piv);
 		local = mat4_mul_pos(s.sr, local);
-		m->vertices[vi] = vec3_add(vec3_add(local, s.piv), s.pos);
+		m->vertices[vi].pos = vec3_add(vec3_add(local, s.piv), s.pos);
 		if (m->normals && m->edit_snap_norms)
 			m->normals[vi] = vec3_norm(mat4_mul_vec3(s.r,
 						m->edit_snap_norms[vi]));
@@ -32,7 +31,7 @@ static void	mesh_vertex_sync(t_mesh *m, t_mesh_sync s)
 	m->bbox = aabb_create_empty();
 	vi = 0;
 	while (vi < m->vertex_count)
-		aabb_expand_point(&m->bbox, m->vertices[vi++]);
+		aabb_expand_point(&m->bbox, m->vertices[vi++].pos);
 	mesh_build_bvh(m);
 }
 

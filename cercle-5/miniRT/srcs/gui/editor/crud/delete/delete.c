@@ -5,12 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 19:48:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:43:01 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/01 12:55:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
 #include "editor.h"
 
 void	editor_delete_selected(t_gui *gui)

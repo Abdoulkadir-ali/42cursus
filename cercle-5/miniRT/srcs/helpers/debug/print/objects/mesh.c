@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "debug.h"
-#include "objects.h"
 
 void	print_mesh(t_mesh *m)
 {

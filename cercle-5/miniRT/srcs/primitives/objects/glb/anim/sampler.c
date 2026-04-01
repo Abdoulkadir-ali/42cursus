@@ -31,8 +31,8 @@ static void	load_sampler_outputs(t_json_value *json, char *bin,
 		num = 4;
 	if (type_str && !strcmp(type_str, "SCALAR"))
 		num = 1;
-	glb_extract_data((t_extract){bin, &acc, &bv, s->outputs, sizeof(float)
-		* num, s->count, sizeof(float) * num});
+	glb_extract_data((t_extract){bin, &acc, &bv, s->outputs,
+		sizeof(float) * num, sizeof(float) * num, sizeof(float) * num, s->count});
 }
 
 /**
@@ -54,7 +54,7 @@ void	load_glb_sampler(t_json_value *json, char *bin, t_anim_sampler *s,
 	s->inputs = malloc(sizeof(float) * s->count);
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data((t_extract){bin, &acc, &bv, s->inputs, sizeof(float),
-		s->count, sizeof(float)});
+		sizeof(float), sizeof(float), s->count});
 	load_sampler_outputs(json, bin, s, json_get_int(s_json, "output"));
 	s->method = INTERP_LINEAR;
 	if (interp && !strcmp(interp, "STEP"))

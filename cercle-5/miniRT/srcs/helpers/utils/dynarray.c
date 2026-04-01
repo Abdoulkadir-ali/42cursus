@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "utils.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 /* Ensure capacity for one more element. */
 bool	dynarray_ensure(void **array, size_t count,

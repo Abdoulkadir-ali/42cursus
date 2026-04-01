@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   material_panel.c                                   :+:      :+:    :+:   */
+/*   material.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 05:26:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 12:56:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
 #include "editor.h"
-
 static void	build_mat_sliders(t_material *mat, t_islider *sl, int *count)
 {
 	int	i;

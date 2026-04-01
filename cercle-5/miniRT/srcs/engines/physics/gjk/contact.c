@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/09 19:44:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 12:51:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "objects.h"
 
 /*
 ** gjk_make_contact — unified narrow phase.

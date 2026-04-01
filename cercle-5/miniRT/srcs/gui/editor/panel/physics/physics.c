@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 21:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:59:28 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/01 12:55:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "editor.h"
 
 void	draw_physics_panel(t_gui *gui, t_physics_body *phys, int x)
 {

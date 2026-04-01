@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:46:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:00:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,116 +14,6 @@
 # define FBX_H
 
 # include "mesh.h"
-
-typedef struct s_fbx_bin_node
-{
-	uint64_t			end_offset;
-	uint64_t			num_properties;
-	uint64_t			property_list_len;
-	uint8_t				name_len;
-	char				name[1024];
-}						t_fbx_bin_node;
-
-typedef struct s_fbx_data
-{
-	t_vec3				*v;
-	uint32_t			vc;
-	int					*ri;
-	uint32_t			rc;
-	t_vec3				*vn;
-	uint32_t			nc;
-	t_vec2				*vu;
-	uint32_t			uc;
-}						t_fbx_data;
-
-typedef struct s_fbx_flat_params
-{
-	int					*raw;
-	int					raw_c;
-	t_vec3				*n;
-	int					nc;
-	t_vec2				*u;
-	int					uc;
-	int					vc;
-}						t_fbx_flat_params;
-
-typedef struct s_fbx_build
-{
-	t_mesh				*m;
-	int					*raw;
-	int					raw_c;
-	t_vec3				*n;
-	int					nc;
-	t_vec2				*u;
-	int					uc;
-	int					vc;
-	int					tc;
-	t_vertex			*vertices;
-	t_triangle			*triangles;
-	int					*v;
-	int					vp;
-	int					ps;
-	int					use_v_n;
-	int					use_v_u;
-}						t_fbx_build;
-
-typedef struct s_fbx_parse
-{
-	int					fd;
-	bool				is_64;
-	t_fbx_data			*d;
-}						t_fbx_parse;
-
-typedef struct s_fbx_array_req
-{
-	const char			*label;
-	void				**dst;
-	uint32_t			*count;
-	size_t				elem_sz;
-	uint32_t			div;
-}						t_fbx_array_req;
-
-typedef struct s_fbx_array
-{
-	uint32_t			arr_len;
-	uint32_t			encoding;
-	uint32_t			comp_len;
-	size_t				actual_sz;
-	char				type;
-}						t_fbx_array;
-
-typedef struct s_fbx_bin
-{
-	int					fd;
-	uint32_t			version;
-	t_skinned_mesh		mesh;
-	t_fbx_data			data;
-}						t_fbx_bin;
-
-typedef struct s_fbx_buf
-{
-	char				*buf;
-	size_t				cap;
-	size_t				len;
-}						t_fbx_buf;
-
-typedef struct s_fbx_ascii
-{
-	t_skinned_mesh		mesh;
-	t_vec3				*rn;
-	t_vec2				*ru;
-	int					*ri;
-	int					rc;
-	int					vc;
-	int					nc;
-	int					uc;
-	char				*buf;
-	char				*p;
-	char				*end;
-	size_t				buf_size;
-	int					mat_id;
-	const char			*path;
-}						t_fbx_ascii;
 
 /* Prototypes */
 bool					fbx_bin_build_mesh(t_fbx_bin *fbx);
@@ -164,5 +54,10 @@ void					mesh_free(t_mesh *mesh);
 /* FBX Specific (srcs/primitives/objects/parsing/) */
 void					skip_properties(int fd, uint64_t num_props);
 char					*fbx_next(char *p);
+
+/* FBX Scene Addition (srcs/primitives/scene/add/objects/mesh/loaders/) */
+bool					parse_fbx(const char *path, t_scene *scene);
+bool					parse_fbx_binary(const char *path, t_scene *scene);
+bool					parse_fbx_ascii(const char *path, t_scene *scene);
 
 #endif

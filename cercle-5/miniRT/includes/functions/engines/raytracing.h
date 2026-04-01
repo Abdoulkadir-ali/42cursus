@@ -12,6 +12,8 @@
 
 #ifndef RAYTRACING_H
 # define RAYTRACING_H
+# define MAX_LEAF_OBJECTS 4
+# define BVH_BINS 16
 
 # include "scene.h"
 
@@ -70,6 +72,7 @@ t_vec3	pixel_color(t_vec3 obj, t_vec3 light, double intensity);
 void	get_material(t_shading *sha);
 void	apply_bump(t_shading *sha);
 t_vec3	calc_light(t_shading *sha, t_light light);
+void	add_emissive_lighting(t_shading *sha, t_scene *sc, t_vec3 *total);
 
 /* srcs/raytracing/intersection/ */
 bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit);

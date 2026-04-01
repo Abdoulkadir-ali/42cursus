@@ -1,19 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   update.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
-	+:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+      
-	+#+        */
-/*                                                +#+#+#+#+#+  
-	+#+           */
-/*   Created: 2026/02/11 16:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 16:40:00 by abdoali          ###   ########.fr       */
+/*   move_forward.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/02/11 16:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "input.h"
 
 static void	update_ctrl_transform(t_camera_controller *ctrl, t_vec3 fwd,
 	t_vec3 right, t_vec3 up)

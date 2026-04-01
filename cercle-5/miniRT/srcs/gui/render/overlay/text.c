@@ -6,20 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:16:32 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 00:58:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 17:18:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
-
-static char	*mesh_name(t_mesh *mesh)
-{
-	if (mesh->name)
-		return (mesh->name);
-	return ("(unnamed)");
-}
-
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "render.h"
 
+const char	*mesh_name(t_mesh *mesh)
+{
+        if (mesh->name)
+                return (mesh->name);
+        return ("(unnamed)");
+}
 void	draw_ui_help(t_gui *gui, int *y)
 {
 	int	ox;

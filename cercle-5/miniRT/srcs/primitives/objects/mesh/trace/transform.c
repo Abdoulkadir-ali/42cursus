@@ -19,7 +19,7 @@ static void	init_editor_snapshot(t_mesh *mesh)
 
 	if (!mesh->edit_snap_verts)
 	{
-		size = sizeof(t_vec3) * mesh->vertex_count;
+		size = sizeof(t_vertex) * mesh->vertex_count;
 		mesh->edit_snap_verts = malloc(size);
 		if (mesh->edit_snap_verts)
 			ft_memcpy(mesh->edit_snap_verts, mesh->vertices, size);
@@ -46,7 +46,7 @@ static void	init_phys_collider(t_mesh *mesh)
 
 	mesh->phys.is_static = true;
 	mesh->phys.mass = 0.0;
-	mesh->phys.elasticity = 0.5;
+	mesh->phys.restitution = 0.5;
 	mesh->collider.type = COLLIDER_CAPSULE;
 	w_x = mesh->bbox.max.x - mesh->bbox.min.x;
 	w_z = mesh->bbox.max.z - mesh->bbox.min.z;
@@ -68,7 +68,7 @@ static void	apply_vertex_transform(t_mesh *m, t_mat4 mat, t_mat4 rot)
 	i = 0;
 	while (i < m->vertex_count)
 	{
-		m->vertices[i] = mat4_mul_pos(mat, m->vertices[i]);
+		m->vertices[i].pos = mat4_mul_pos(mat, m->vertices[i].pos);
 		if (m->normals)
 		{
 			m->normals[i] = mat4_mul_vec3(rot, m->normals[i]);
@@ -79,7 +79,10 @@ static void	apply_vertex_transform(t_mesh *m, t_mat4 mat, t_mat4 rot)
 	m->bbox = aabb_create_empty();
 	i = 0;
 	while (i < m->vertex_count)
-		aabb_expand_point(&m->bbox, m->vertices[i++]);
+	{
+		aabb_expand_point(&m->bbox, m->vertices[i].pos);
+		i++;
+	}
 }
 
 /**

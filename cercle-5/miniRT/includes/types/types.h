@@ -6,27 +6,37 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:50:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 17:43:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPES_H
 # define TYPES_H
 
-/* 1. CORE TYPES */
-# include "types/helpers/maths.h"
+/* helpers */
+# include "t_maths.h"
 
-/* 2. PRIMITIVE TYPES */
-# include "types/primitives/objects.h"
-# include "types/primitives/meshes.h"
-# include "types/primitives/surface.h"
-# include "types/primitives/scene.h"
+/* primitives */
+# include "t_surface.h"
+# include "t_objects.h"
+# include "t_meshes.h"
+# include "t_scene.h"
 
-/* 3. ENGINE TYPES */
-# include "types/engine/physics.h"
-# include "types/engine/raytracing.h"
+/* engine */
+# include "t_physics.h"
+# include "t_raytracing.h"
 
-/* 4. PARSING TYPES */
-# include "types/parsing/parser.h"
+/* gui */
+# include "t_window.h"
+# include "t_widget.h"
+# include "t_render.h"
+# include "t_input.h"
+# include "t_editor.h"
+# include "t_camera.h"
+# include "t_map.h"
+# include "t_gui.h"
+
+/* parsing */
+# include "t_parser.h"
 
 #endif

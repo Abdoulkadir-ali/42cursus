@@ -13,6 +13,7 @@
 #include "collision.h"
 #include "physics.h"
 #include "mesh.h"
+#include "functions/engines/raytracing.h"
 
 static void	process_mesh_triangles(const struct s_sphere *s, t_mesh *m,
 				t_mbvh_node *node, t_collision *col)
@@ -25,9 +26,9 @@ static void	process_mesh_triangles(const struct s_sphere *s, t_mesh *m,
 	while (++i < node->count)
 	{
 		tri_idx = m->bvh_indices[node->left_or_first + i];
-		v[0] = m->vertices[m->indices[tri_idx * 3 + 0]];
-		v[1] = m->vertices[m->indices[tri_idx * 3 + 1]];
-		v[2] = m->vertices[m->indices[tri_idx * 3 + 2]];
+		v[0] = m->vertices[m->indices[tri_idx * 3 + 0]].pos;
+		v[1] = m->vertices[m->indices[tri_idx * 3 + 1]].pos;
+		v[2] = m->vertices[m->indices[tri_idx * 3 + 2]].pos;
 		if (test_sphere_triangle(s, v, &col->normal, &col->pen,
 				&col->min_dist_sq))
 		{

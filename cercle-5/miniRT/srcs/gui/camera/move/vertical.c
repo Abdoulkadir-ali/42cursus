@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "camera.h"
 
 void	camera_move_up(t_camera *camera, double speed)
 {

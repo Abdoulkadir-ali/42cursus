@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:50:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:55:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 17:59:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define DEBUG_H
 
 # include "maths.h"
+# include "objects.h"
 
 # ifndef DEBUG
 #  define DEBUG 1
@@ -21,7 +22,7 @@
 
 /* Debug print: only active when compiled with -DDEBUG or DEBUG 1 */
 # if DEBUG
-#  define ft_print_debug(...) (printf(__VA_ARGS__), fflush(stdout))
+#  define ft_print_debug(...) do { printf(__VA_ARGS__); fflush(stdout); } while (0)
 # else
 #  define ft_print_debug(...) ((void)0)
 # endif
@@ -33,5 +34,35 @@ void	print_mat4(t_mat4 *m);
 void	print_transform(t_transform *t);
 void	print_aabb(t_aabb *b);
 void	print_ray(t_ray *r);
+void	print_hit(t_hit *h);
+
+/* Object Debug */
+void	print_light(t_light *l);
+void	print_camera(t_camera *c);
+void	print_ambient(t_ambient *a);
+void	print_material(t_material *m);
+void	print_mesh(t_mesh *m);
+void	print_obj(t_obj *c);
+void	print_sphere(t_sphere *s);
+void	print_plane(t_plane *p);
+void	print_cylinder(t_cylinder *c);
+void	print_cone(t_cone *c);
+
+/* System Debug */
+void	print_scene(t_scene *s);
+void	print_bvh_node(const t_bvh *b, int idx, int depth);
+void	print_bvh(t_bvh *b);
+void	print_gui(t_gui *g);
+void	print_parser(t_parser *p);
+
+/* Mesh Debug */
+void	debug_print_mesh_hit(const t_ray *ray, int tri_idx, double t);
+void	debug_print_mesh_aabb(const t_ray *ray, double tmin, double tmax);
+void	debug_print_bvh_build(int tri_count, int depth, bool start);
+void	debug_print_mesh_bake(const t_mesh *mesh, bool start);
+void	debug_print_triangle_test(int tri_idx, const t_vec3 *v);
+
+/* Profiler */
+void	prof_print_frame(void);
 
 #endif

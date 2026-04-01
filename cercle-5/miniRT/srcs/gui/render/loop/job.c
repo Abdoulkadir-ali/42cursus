@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:33:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 17:18:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "render.h"
 
 void	poll_map_job(t_gui *gui)
 {

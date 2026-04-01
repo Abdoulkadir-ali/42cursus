@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "render.h"
 
 static void	draw_ui_text_footer(t_gui *gui, t_camera_controller *ctrl, int c)
 {

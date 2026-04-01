@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "widget.h"
 
 void	widget_physics_toggle(t_widget *w, t_gui *gui)
 {

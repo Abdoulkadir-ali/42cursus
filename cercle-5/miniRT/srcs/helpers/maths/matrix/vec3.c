@@ -45,3 +45,14 @@ t_vec3	mat4_mul_pos(t_mat4 m, t_vec3 v)
 	}
 	return (res);
 }
+
+t_vec3	mat4_mul_dir(t_mat4 m, t_vec3 v)
+{
+	t_vec3	res;
+
+	res.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0];
+	res.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1];
+	res.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2];
+	res.w = 0.0;
+	return (res);
+}

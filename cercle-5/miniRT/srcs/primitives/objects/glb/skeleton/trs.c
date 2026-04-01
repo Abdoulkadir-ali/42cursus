@@ -53,10 +53,9 @@ void	fill_bone_trs(t_bone *bone, t_json_value *node)
 	s[2] = 1;
 	parse_trs_props(node, &t, &r, s);
 	bone->trs.pos = t;
-	bone->trs.rot = vec3(r.x, r.y, r.z);
+	bone->r_quat = r;
 	bone->trs.scale = vec3(s[0], s[1], s[2]);
 	bone->local_transform = make_transform(t, r, s);
 	bone->global_transform = bone->local_transform;
 	bone->inv_bind_pose = mat4_identity();
-	bone->bind_pose = bone->local_transform;
 }

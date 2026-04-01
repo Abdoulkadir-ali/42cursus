@@ -17,11 +17,27 @@
 # include <float.h>
 # include <math.h>
 
+# ifndef PI
+#  define PI 3.14159265358979323846
+# endif
+# ifndef EPSILON
+#  define EPSILON 1e-6
+# endif
+# ifndef MAX_VALUE
+#  define MAX_VALUE DBL_MAX
+# endif
+# ifndef MIN_VALUE
+#  define MIN_VALUE -DBL_MAX
+# endif
+
 
 /* AABB Utilities (srcs/engines/raytracing/bvh/bound/) */
 t_aabb								aabb_union(const t_aabb *a, const t_aabb *b);
 bool								aabb_intersect(const t_ray *ray,
 										const t_aabb *box, double *t);
+bool								aabb_intersect_fast(const t_aabb *box,
+										const t_ray *ray, double *tmin,
+										double *tmax);
 t_aabb								aabb_init(void);
 void								aabb_expand_point(t_aabb *bbox, t_vec3 p);
 t_aabb								aabb_create_empty(void);
@@ -136,6 +152,7 @@ t_mat4								mat4_rotation(t_rotator r);
 t_mat4								mat4_transform(t_transform t);
 t_mat4								mat4_inverse_transform(t_transform t);
 t_vec3								mat4_mul_pos(t_mat4 m, t_vec3 v);
+t_vec3								mat4_mul_dir(t_mat4 m, t_vec3 v);
 
 t_vec3								vec3_reflect(t_vec3 I, t_vec3 N);
 t_vec3								vec3_refract(t_vec3 I, t_vec3 N,
@@ -144,5 +161,7 @@ t_vec3								vec3_refract(t_vec3 I, t_vec3 N,
 /* Roots */
 bool								solve_quadratic(t_quadratic q,
 										t_quadratic_roots *roots);
+
+double								aabb_surface_area(t_aabb bbox);
 
 #endif

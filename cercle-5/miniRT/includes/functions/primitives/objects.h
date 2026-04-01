@@ -14,5 +14,8 @@
 # define PRIMITIVES_OBJECTS_REGISTRY_H
 
 # include "rt.h"
+# include "mesh.h"
+# include "surface.h"
+# include "dispatcher.h"
 
 #endif

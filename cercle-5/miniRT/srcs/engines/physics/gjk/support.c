@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/08 11:20:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 12:51:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
 #include "physics.h"
 
 /*
@@ -223,16 +222,16 @@ t_vec3	gjk_support_mesh(const void *data, t_vec3 dir)
 	m = (const t_mesh *)data;
 	if (!m->vertices || m->vertex_count == 0)
 		return (vec3(0, 0, 0));
-	best = m->vertices[0];
-	best_d = vec3_dot(m->vertices[0], dir);
+	best = m->vertices[0].pos;
+	best_d = vec3_dot(m->vertices[0].pos, dir);
 	i = 1;
 	while (i < m->vertex_count)
 	{
-		d = vec3_dot(m->vertices[i], dir);
+		d = vec3_dot(m->vertices[i].pos, dir);
 		if (d > best_d)
 		{
 			best_d = d;
-			best = m->vertices[i];
+			best = m->vertices[i].pos;
 		}
 		i++;
 	}

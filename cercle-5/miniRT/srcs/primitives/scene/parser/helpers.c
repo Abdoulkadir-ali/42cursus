@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "objects.h"
+#include "scene.h"
 
 static bool	read_id(t_parser *p, char *buf, size_t max_len)
 {

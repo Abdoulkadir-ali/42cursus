@@ -112,7 +112,7 @@ int	parse_texture(char *p, char *end, t_scene *scene, const char *fbx_path)
 	full_path = resolve_fbx_path(fbx_path, filename);
 	free(filename);
 	mat_id = scene_add_named_material(scene, "FBX_Mat");
-	if (load_texture_xpm(scene, &scene->materials[mat_id].albedo_map,
+	if (load_texture_xpm(scene->mlx, &scene->materials[mat_id].albedo_map,
 			full_path))
 		ft_print_debug("FBX Texture Loaded: %s\n", full_path);
 	free(full_path);

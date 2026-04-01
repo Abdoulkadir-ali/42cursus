@@ -25,7 +25,6 @@ static void	apply_anim_channel(t_bone *bone, t_anim_channel *chan,
 	else if (chan->path == PATH_ROTATION)
 	{
 		sample_channel(s, time, res, 4);
-		bone->trs.rot = vec3(res[0], res[1], res[2]);
 		bone->r_quat = (t_vec4){res[0], res[1], res[2], res[3]};
 	}
 	else if (chan->path == PATH_SCALE)

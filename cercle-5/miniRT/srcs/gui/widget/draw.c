@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 06:25:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 21:44:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 13:01:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "widget.h"
 
 void	widget_draw_label(t_gui *gui, t_widget *w)
 {

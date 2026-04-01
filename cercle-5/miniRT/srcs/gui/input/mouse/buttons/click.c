@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 21:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:46:51 by abdoali          ###   ########.fr       */
+/*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/01 12:57:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "editor.h"
+#include "input.h"
 
 void	shoot_force(t_gui *gui, t_vec2i mouse);
 void	handle_scroll(int b, t_gui *gui);

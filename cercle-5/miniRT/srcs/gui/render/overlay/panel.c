@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:16:32 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/07 20:54:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 13:01:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "render.h"
 
 static void	draw_panel_pixel(t_gui *gui, t_panel panel, int i, int j)
 {

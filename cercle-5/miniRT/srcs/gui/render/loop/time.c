@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:33:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 13:01:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "render.h"
 
 static long long	get_time_ms(void)
 {

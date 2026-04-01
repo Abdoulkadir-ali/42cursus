@@ -33,7 +33,11 @@ void	*glb_read_file(const char *path, size_t *size)
 		close(fd);
 		return (NULL);
 	}
-	read(fd, buf, *size);
+	if (read(fd, buf, *size) < 0)
+	{
+		free(buf);
+		return (NULL);
+	}
 	close(fd);
 	return (buf);
 }

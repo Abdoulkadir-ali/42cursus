@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include <unistd.h>
+#include "render.h"
 
 /*
 ** Initializes MLX window and image.
@@ -85,11 +84,10 @@ static void	gui_init_render(t_gui *gui)
 		gui->render.num_cores = 1;
 	if (gui->render.num_cores > 128)
 		gui->render.num_cores = 128;
-	gui->render.threads = malloc(sizeof(pthread_t)
-			* (size_t)gui->render.num_cores);
+	gui->render.pool.ready = false;
 }
 
-t_gui	*gui_init(const char *path, void *mlx)
+t_gui	*gui_init(t_scene *scene, void *mlx)
 {
 	t_gui	*gui;
 
@@ -100,22 +98,11 @@ t_gui	*gui_init(const char *path, void *mlx)
 	gui->win.width = RENDER_W;
 	gui->win.height = RENDER_H;
 	gui->win.mlx = mlx;
-	gui->scene = parse_file(path, mlx);
-	if (!gui->scene)
-	{
-		free(gui);
-		return (NULL);
-	}
+	gui->scene = scene;
 	gui_init_physics(gui);
 	gui_init_render(gui);
-	if (!gui->render.threads)
-	{
-		free(gui);
-		return (NULL);
-	}
 	if (!init_window(gui))
 	{
-		free(gui->render.threads);
 		free(gui);
 		return (NULL);
 	}
@@ -146,7 +133,5 @@ void	gui_destroy(t_gui *gui)
 		mlx_destroy_window(gui->win.mlx, gui->win.win);
 	if (gui->win.mlx)
 		free(gui->win.mlx);
-	if (gui->render.threads)
-		free(gui->render.threads);
 	free(gui);
 }

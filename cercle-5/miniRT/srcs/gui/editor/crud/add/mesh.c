@@ -6,11 +6,10 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:07:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 12:55:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
 #include "editor.h"
 
 void	editor_add_obj(t_gui *gui, const char *path)
@@ -53,7 +52,7 @@ void	editor_add_glb(t_gui *gui, const char *path)
 	{
 		if (!mesh_cache_restore(gui->scene, path))
 			return ;
-		gid = gui->scene->mesh_group_count++;
+		gid = gui->scene->group_count++;
 		i = mesh_start;
 		while (i < gui->scene->mesh_count)
 			gui->scene->meshes[i++].group_id = gid;

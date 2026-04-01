@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 21:44:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 12:48:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "scene.h"
-#include <locale.h>
+#include "core.h"
 
 /*
 ** Cleans up all resources.

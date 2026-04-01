@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:46:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 18:00:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,48 +15,17 @@
 
 # include "mesh.h"
 
-typedef struct s_obj			t_obj;
-
-typedef struct s_obj_face
-{
-	int					vi[32];
-	int					vti[32];
-	int					vni[32];
-	int					count;
-}						t_obj_face;
-
-typedef struct s_obj
-{
-	t_vec3				*temp_v;
-	size_t				v_count;
-	size_t				v_cap;
-	t_vec2				*temp_vt;
-	size_t				vt_count;
-	size_t				vt_cap;
-	t_vec3				*temp_vn;
-	size_t				vn_count;
-	size_t				vn_cap;
-
-	t_vec3				*out_v;
-	t_vec2				*out_vt;
-	t_vec3				*out_vn;
-	size_t				out_v_count;
-	size_t				out_v_cap;
-
-	int					*out_i;
-	size_t				out_i_count;
-	size_t				out_i_cap;
-
-	t_aabb				bbox;
-	int					current_mat_id;
-	int					first_mtl_id;
-}						t_obj;
 
 /* Prototypes (srcs/objects/meshes/obj/) */
-bool					parse_obj(const char *path, t_mesh_resource *out,
-							void *mlx_ptr);
-bool					obj_build_mesh(t_mesh_resource *out, t_obj *obj,
-							const char *path, void *mlx_ptr);
+bool					parse_obj(const char *path, struct s_scene *scene);
+bool					obj_build_mesh(struct s_scene *scene, t_obj *obj,
+							const char *path);
+bool					obj_parse_mtllib(t_scene *scene, t_obj *obj,
+							t_parser *p, const char *path);
+bool					obj_parse_usemtl(t_scene *scene, t_obj *obj,
+							t_parser *p);
+bool					parse_mtl(t_scene *scene, t_obj *obj, const char *path);
+bool					scene_parse_obj(const char *path, t_scene *scene);
 void					obj_parse_v(t_obj *obj, t_parser *p);
 void					obj_parse_vt(t_obj *obj, t_parser *p);
 void					obj_parse_vn(t_obj *obj, t_parser *p);

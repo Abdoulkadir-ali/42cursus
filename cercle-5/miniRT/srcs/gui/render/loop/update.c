@@ -6,10 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 02:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 19:33:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 17:18:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "render.h"
 
 static double	fixed_dt_val(t_gui *gui)
 {
@@ -17,9 +18,6 @@ static double	fixed_dt_val(t_gui *gui)
 		return (gui->phys_fixed_dt);
 	return (1.0 / 60.0);
 }
-
-#include "gui.h"
-#include "physics.h"
 
 void	update_animations(t_gui *gui, double delta)
 {

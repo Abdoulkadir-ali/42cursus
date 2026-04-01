@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "widget.h"
 
 void	widget_set_size(t_widget *widget, t_vec2i size)
 {

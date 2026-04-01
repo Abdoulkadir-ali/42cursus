@@ -24,7 +24,7 @@ static void	load_positions(t_json_value *json, char *bin, t_mesh *m,
 	m->geometry.vertices = malloc(sizeof(t_vec3) * acc.count);
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data((t_extract){bin, &acc, &bv, m->base_geometry.vertices,
-		sizeof(t_vec3), acc.count, sizeof(t_vec3)});
+		sizeof(t_vec3), sizeof(t_vec3), sizeof(t_vec3), acc.count});
 	ft_memcpy(m->geometry.vertices, m->base_geometry.vertices,
 		sizeof(t_vec3) * acc.count);
 }
@@ -41,7 +41,7 @@ static void	load_normals(t_json_value *json, char *bin, t_mesh *m, int acc_idx)
 	m->normals = malloc(sizeof(t_vec3) * acc.count);
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data((t_extract){bin, &acc, &bv, m->base_normals,
-		sizeof(t_vec3), acc.count, sizeof(t_vec3)});
+		sizeof(t_vec3), sizeof(t_vec3), sizeof(t_vec3), acc.count});
 	ft_memcpy(m->normals, m->base_normals, sizeof(t_vec3) * acc.count);
 }
 

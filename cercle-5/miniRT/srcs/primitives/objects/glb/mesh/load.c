@@ -28,7 +28,7 @@ static void	load_indices(t_json_value *json, char *bin, t_mesh *m, int acc_idx)
 	m->base_geometry.indices = malloc(sizeof(int) * acc.count);
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data((t_extract){bin, &acc, &bv, m->base_geometry.indices,
-		sizeof(int), acc.count, sizeof(int)});
+		sizeof(int), sizeof(int), sizeof(int), acc.count});
 }
 
 /**

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 21:05:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/01 12:45:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	mesh_resource_init(t_mesh_resource *res)
 
 bool	mesh_resource_add_mesh(t_mesh_resource *res, t_mesh mesh)
 {
-	if (!DYNARRAY_ENSURE_INT(&res->meshes, &res->mesh_count,
-			&res->mesh_cap, sizeof(t_mesh)))
+	if (!DYNARRAY_ENSURE_INT(&res->meshes, &res->mesh_count, &res->mesh_cap,
+			sizeof(t_mesh)))
 		return (false);
 	res->meshes[res->mesh_count++] = mesh;
 	return (true);
@@ -31,8 +31,8 @@ int	mesh_resource_add_material(t_mesh_resource *res, const char *name)
 {
 	t_material	*m;
 
-	if (!DYNARRAY_ENSURE_INT(&res->materials, &res->mat_count,
-			&res->mat_cap, sizeof(t_material)))
+	if (!DYNARRAY_ENSURE_INT(&res->materials, &res->mat_count, &res->mat_cap,
+			sizeof(t_material)))
 		return (-1);
 	m = &res->materials[res->mat_count];
 	ft_memset(m, 0, sizeof(t_material));

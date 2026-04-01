@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "fbx.h"
-#include "functions/primitives/scene.h"
 
 static bool	ascii_parse_mesh(t_fbx_ascii *asc)
 {

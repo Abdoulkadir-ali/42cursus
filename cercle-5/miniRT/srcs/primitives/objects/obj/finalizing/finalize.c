@@ -28,12 +28,10 @@ static void	obj_set_mat_id(t_mesh *mesh, t_obj *obj)
 		mesh->mat_id = obj->first_mtl_id;
 }
 
-bool	obj_build_mesh(t_mesh_resource *out, t_obj *obj, const char *path,
-		void *mlx_ptr)
+bool	obj_build_mesh(t_scene *scene, t_obj *obj, const char *path)
 {
 	t_mesh	mesh;
 
-	(void)mlx_ptr;
 	if (obj->out_v_count == 0)
 	{
 		obj_free(obj);
@@ -44,5 +42,5 @@ bool	obj_build_mesh(t_mesh_resource *out, t_obj *obj, const char *path,
 	obj_set_mat_id(&mesh, obj);
 	obj_free(obj);
 	mesh_build_bvh(&mesh);
-	return (mesh_resource_add_mesh(out, mesh));
+	return (scene_add_mesh(scene, mesh));
 }

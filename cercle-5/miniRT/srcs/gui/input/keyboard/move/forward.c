@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
+#include "input.h"
 
 void	move_forward_press(t_gui *gui)
 {

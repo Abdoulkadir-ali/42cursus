@@ -24,9 +24,9 @@ void	bvh_get_triangle_info(t_mesh *mesh, int tri_idx, t_mesh_build_item *out)
 	t_vec3	v2;
 
 	idx = &mesh->indices[tri_idx * 3];
-	v0 = mesh->vertices[idx[0]];
-	v1 = mesh->vertices[idx[1]];
-	v2 = mesh->vertices[idx[2]];
+	v0 = mesh->vertices[idx[0]].pos;
+	v1 = mesh->vertices[idx[1]].pos;
+	v2 = mesh->vertices[idx[2]].pos;
 	out->index = tri_idx;
 	out->bbox.min = vec3_min(v0, vec3_min(v1, v2));
 	out->bbox.max = vec3_max(v0, vec3_max(v1, v2));

@@ -28,9 +28,9 @@ void	mesh_build_tri_cache(t_mesh *mesh)
 	{
 		tc = &mesh->tri_cache[i];
 		idx = &mesh->bvh_indices[i * 3];
-		tc->v0 = mesh->vertices[idx[0]];
-		tc->e1 = vec3_sub(mesh->vertices[idx[1]], tc->v0);
-		tc->e2 = vec3_sub(mesh->vertices[idx[2]], tc->v0);
+		tc->v0 = mesh->vertices[idx[0]].pos;
+		tc->e1 = vec3_sub(mesh->vertices[idx[1]].pos, tc->v0);
+		tc->e2 = vec3_sub(mesh->vertices[idx[2]].pos, tc->v0);
 		i++;
 	}
 }

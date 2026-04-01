@@ -10,15 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gui.h"
-#include "profiler.h"
+#include "render.h"
 
 static void	render_tile(t_render *render, int id)
 {
 	t_tile_vars	v;
 
-	v.tx = (id % render->tiles_y) * TILE_SIZE;
-	v.ty = (id / render->tiles_y) * TILE_SIZE;
+	v.tx = (id % render->tiles_x) * TILE_SIZE;
+	v.ty = (id / render->tiles_x) * TILE_SIZE;
 	v.p_pos.y = v.ty;
 	v.row_ptr = render->gui->win.addr
 		+ (v.p_pos.y * render->gui->win.line_len)

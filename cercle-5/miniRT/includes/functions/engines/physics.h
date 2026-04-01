@@ -14,6 +14,11 @@
 # define PHYSICS_H
 
 # include "scene.h"
+# define MAX_CONTACTS 1024
+# define SLOP 0.01
+# define BAUMGARTE 0.2
+# define SOLVER_ITERATIONS 10
+# define RESTITUTION_SLOP 1.0
 
 /* ── GJK / EPA ──────────────────────────────────────────────────────────── */
 typedef t_vec3 (*t_support_fn)(const void *shape, t_vec3 dir);
@@ -50,8 +55,10 @@ typedef struct s_simplex
 
 /* Global State Access */
 t_physics_state *get_physics_state(void);
+void    phys_debug_spheres(t_scene *scene);
 
 /* Integration */
+void    update_physics(t_scene *scene, double dt);
 void    integrate_bodies(t_scene *scene, double dt);
 int     generate_contacts(t_scene *scene, t_contact *contacts, int max_c);
 
@@ -64,6 +71,8 @@ t_vec3	gjk_support_rect(const void *data, t_vec3 dir);
 t_vec3	gjk_support_tri(const void *data, t_vec3 dir);
 t_vec3	gjk_support_pyramid(const void *data, t_vec3 dir);
 t_vec3	gjk_support_mesh(const void *data, t_vec3 dir);
+bool	detect_sphere_mesh_collision(const t_sphere *s, t_mesh *m,
+			t_vec3 *nrm, double *pen);
 
 /* GJK intersection test — fills 'out' simplex for EPA */
 bool	gjk_intersect(t_gjk_shape *a, t_gjk_shape *b, t_simplex *out);
