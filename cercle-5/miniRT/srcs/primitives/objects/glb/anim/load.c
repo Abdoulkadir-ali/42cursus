@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:32:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:40:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 17:48:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,26 @@ void	glb_load_animations(t_scene *scene, t_json_value *json, char *bin)
 	anims = json_get(json, "animations");
 	if (!anims || anims->type != JSON_ARRAY)
 		return ;
+	ft_print_debug("GLB: Parsing %zu animation clip(s)...\n",
+		anims->u.array.count);
 	glb_ensure_clip_capacity(scene, anims->u.array.count);
 	i = -1;
 	while (++i < anims->u.array.count)
 	{
 		clip = &scene->clips[scene->clip_count + i];
 		assign_anim_data(clip, json_at(anims, i));
+		ft_print_debug("GLB: Anim %zu/%zu: '%s' (%zu samplers)\n",
+			i + 1, anims->u.array.count,
+			clip->name ? clip->name : "(unnamed)",
+			json_get(json_at(anims, i), "samplers")
+				? json_get(json_at(anims, i), "samplers")->u.array.count : 0);
 		load_all_samplers(json, bin, clip,
 			json_get(json_at(anims, i), "samplers"));
+		ft_print_debug("GLB: Anim %zu: samplers loaded, max_time=%.3f\n",
+			i + 1, clip->max_time);
 		load_channels(json_at(anims, i), clip);
+		ft_print_debug("GLB: Anim %zu: %zu channels loaded\n",
+			i + 1, clip->channel_count);
 	}
 	scene->clip_count += anims->u.array.count;
 }

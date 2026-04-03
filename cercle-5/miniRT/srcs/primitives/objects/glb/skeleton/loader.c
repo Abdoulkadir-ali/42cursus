@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:21:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:47:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 17:48:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin,
 	js[1] = json_get(json, "nodes");
 	if (!skin || !js[0] || !js[1])
 		return ;
+	ft_print_debug("GLB: Skeleton: %zu joints, %zu extra nodes\n",
+		js[0]->u.array.count, extra_count);
 	setup_skeleton(mesh, js[0]->u.array.count, extra_count);
 	ibms = malloc(sizeof(t_mat4) * mesh->bone_count);
 	if (!ibms)

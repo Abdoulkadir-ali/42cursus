@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 16:32:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 17:25:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,26 +61,34 @@ void	update_ambient(t_gui *gui)
 int	gui_update(t_gui *gui)
 {
 	double	delta;
+#ifdef PROFILE_BUILD
+	static int	_prof_frames = 0;
+	if (++_prof_frames > 30)
+		mlx_loop_end(gui->win.mlx);
+#endif
+#ifdef TIME_LOOP
+	struct timeval _tv0, _tv1;
+# define T0() gettimeofday(&_tv0, NULL)
+# define T1(label) do { gettimeofday(&_tv1, NULL); \
+	printf(label ": %ldms\n", \
+		(_tv1.tv_sec - _tv0.tv_sec) * 1000 + (_tv1.tv_usec - _tv0.tv_usec) / 1000); \
+	fflush(stdout); } while (0)
+#else
+# define T0()
+# define T1(label)
+#endif
 
-	delta = update_delta(gui);
-	// ft_print_debug("LOOP: START INPUT\n");
-	gui_update_input(gui);
-	// ft_print_debug("LOOP: START ANIM\n");
-	update_animations(gui, delta);
-	// ft_print_debug("LOOP: START PHYS\n");
-	update_physics_step(gui, delta);
+	T0(); delta = update_delta(gui); T1("update_delta");
+	T0(); gui_update_input(gui); T1("gui_update_input");
+	T0(); update_animations(gui, delta); T1("update_animations");
+	T0(); update_physics_step(gui, delta); T1("update_physics_step");
 	if (gui->render.dirty)
 	{
-		// ft_print_debug("LOOP: START RENDER (DIRTY)\n");
-		gui_render(gui);
-		// ft_print_debug("LOOP: START UPSCALE\n");
-		upscale_image(gui);
+		T0(); gui_render(gui); T1("gui_render");
+		T0(); upscale_image(gui); T1("upscale_image");
 		gui->render.dirty = false;
 	}
-	// ft_print_debug("LOOP: START MLX PUT\n");
-	mlx_put_image_to_window(gui->win.mlx, gui->win.win, gui->win.disp_img, 0, 0);
-	// ft_print_debug("LOOP: START UI TEXT\n");
-	draw_ui_text(gui, &gui->cam_ctrl);
-	// ft_print_debug("LOOP: FINISHED\n");
+	T0(); mlx_put_image_to_window(gui->win.mlx, gui->win.win, gui->win.disp_img, 0, 0); T1("mlx_put");
+	T0(); draw_ui_text(gui, &gui->cam_ctrl); T1("draw_ui_text");
 	return (0);
 }

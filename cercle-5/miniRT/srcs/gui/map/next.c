@@ -22,8 +22,11 @@ void	reset_camera_view(t_gui *gui)
 	gui->cam_ctrl.transform = gui->cam_ctrl.camera->transform;
 	gui->cam_ctrl.target_rot.yaw = atan2(f.x, f.z);
 	gui->cam_ctrl.target_rot.pitch = asin(f.y);
+	gui->cam_ctrl.transform.rotation.yaw = gui->cam_ctrl.target_rot.yaw;
+	gui->cam_ctrl.transform.rotation.pitch = gui->cam_ctrl.target_rot.pitch;
 	gui->cam_ctrl.target_pos = gui->cam_ctrl.camera->transform.pos;
 	gui->cam_ctrl.target_fov = gui->cam_ctrl.camera->fov;
+	gui->render.dirty = true;
 }
 
 void	gui_next_map(t_gui *gui)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:59:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 17:12:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ volatile long	g_mesh_tri_tests = 0;
 volatile long	g_mesh_occ_calls = 0;
 int				g_prof_frame = 0;
 struct timespec	g_prof_start;
-__thread long	g_tl_mesh_calls = 0;
-__thread long	g_tl_mesh_aabb_tests = 0;
-__thread long	g_tl_mesh_tri_tests = 0;
-__thread long	g_tl_mesh_occ_calls = 0;
+__thread long	tl_g_mesh_calls = 0;
+__thread long	tl_g_mesh_aabb_tests = 0;
+__thread long	tl_g_mesh_tri_tests = 0;
+__thread long	tl_g_mesh_occ_calls = 0;
 
 static double	g_frame_times[1024];
 static int		g_frame_count = 0;

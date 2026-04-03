@@ -11,7 +11,7 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 CC          = cc
 INCLUDES_DIRS = $(shell find includes -type d)
 INCLUDES    = $(addprefix -I,$(INCLUDES_DIRS))
-CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -Ipackages -DDEBUG_EXTENDER -MMD -MP
+CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -Ipackages -DDEBUG_EXTENDER -DDEBUG -MMD -MP
 RM          = rm -f
 SRCS_DIR    = srcs
 # Exclude old physics.c if it still exists (handled by file deletion)
@@ -86,7 +86,7 @@ PROF_DEPS     = $(PROF_OBJS:.o=.d)
 # -O1 keeps the call graph readable; -g3 keeps symbols; no -flto (breaks gprof)
 PROF_CFLAGS   = -Wall -Wextra -O1 -g3 -pthread \
                 $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -Ipackages \
-                -DDEBUG_EXTENDER -DPROFILE_MESH -MMD -MP
+                -DDEBUG_EXTENDER -DPROFILE_MESH -DPROFILE_BUILD -DTIME_LOOP -MMD -MP
 
 -include $(PROF_DEPS)
 
