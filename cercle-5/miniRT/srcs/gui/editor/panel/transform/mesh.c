@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:55:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	mesh_transform_sync(t_gui *gui)
 	if (gui->selection.index >= sc->group_count)
 		return ;
 	g = &sc->groups[gui->selection.index];
-	if ( g->start >= sc->mesh_count
+	if (g->start >= sc->mesh_count
 		|| !sc->meshes[g->start].edit_snap_verts)
 		return ;
 	sr = mat4_mul(mat4_rotation(g->transform.rotation),

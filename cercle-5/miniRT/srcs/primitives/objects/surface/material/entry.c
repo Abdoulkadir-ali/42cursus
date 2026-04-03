@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:02:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:19:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:47:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,21 @@ bool	parse_mtl(t_scene *scene, t_obj *obj, const char *path)
 	return (true);
 }
 
+static char	*get_mtl_full_path(const char *name, const char *obj_path)
+{
+	char	*dir;
+	char	*full;
+
+	dir = path_get_dir(obj_path);
+	if (dir)
+		full = ft_strjoin(dir, name);
+	else
+		full = ft_strdup(name);
+	if (dir)
+		free(dir);
+	return (full);
+}
+
 /**
  * Orchestrates OBJ material library loading.
  * Relocated to the scene domain as it bridge the parsed object context
@@ -31,7 +46,6 @@ bool	obj_parse_mtllib(t_scene *scene, t_obj *obj, t_parser *p,
 			const char *obj_path)
 {
 	char	name[256];
-	char	*dir;
 	char	*full;
 	int		i;
 
@@ -43,18 +57,9 @@ bool	obj_parse_mtllib(t_scene *scene, t_obj *obj, t_parser *p,
 		parser_advance(p);
 	}
 	name[i] = 0;
-	dir = path_get_dir(obj_path);
-	if (dir)
-		full = ft_strjoin(dir, name);
-	else
-		full = ft_strdup(name);
-	if (dir)
-		free(dir);
+	full = get_mtl_full_path(name, obj_path);
 	if (obj->first_mtl_id.error)
-	{
-		obj->first_mtl_id.i = scene->mat_count;
-		obj->first_mtl_id.error = false;
-	}
+		obj->first_mtl_id = (t_index){scene->mat_count, false};
 	parse_mtl(scene, NULL, full);
 	free(full);
 	return (true);

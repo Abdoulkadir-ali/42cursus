@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:55:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,11 @@ void	draw_modal_bg(t_gui *gui, int h, t_vec2i *p)
 	draw_panel(gui, box);
 }
 
-void	draw_popup_btn(t_gui *gui, t_vec2i pos, t_vec2i size,
-	const char *lbl, int bg)
+void	draw_popup_btn(t_gui *gui, t_panel btn)
 {
-	t_panel	btn;
-
-	btn = (t_panel){
-		.pos = pos, .size = size,
-		.bg = bg, .brd = COL_BORDER};
 	draw_panel(gui, btn);
-	if (lbl && *lbl)
+	if (btn.lbl && *btn.lbl)
 		mlx_string_put(gui->win.mlx, gui->win.win,
-			pos.x + 8, pos.y + size.y / 2 + 4, COL_TEXT, (char *)lbl);
+			btn.pos.x + 8, btn.pos.y + btn.size.y / 2 + 4, COL_TEXT,
+			(char *)btn.lbl);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:36:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:07:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,27 @@ typedef struct s_scene_row_res
 void				scene_snap_take(t_scene_snap *snap, struct s_gui *gui);
 void				scene_snap_free(t_scene_snap *snap);
 void				scene_reset(struct s_gui *gui);
+
+/* types/gui/editor.h */
+struct s_tab_draw
+{
+	t_inspect_tab	*tabs;
+	const char		**labels;
+	int				step;
+};
+
+/* snap_utils.c */
+void				snap_array(void **dst, void *src, size_t count, size_t sz);
+void				snap_meshes(t_scene_snap *snap, t_scene *sc);
+void				snap_groups(t_scene_snap *snap, t_scene *sc);
+void				snap_primitives(t_scene_snap *snap, t_scene *sc);
+void				snap_extra(t_scene_snap *snap, t_scene *sc);
+
+/* reset_utils.c */
+void				reset_meshes(t_scene *sc, t_scene_snap *snap);
+void				reset_groups(t_scene *sc, t_scene_snap *snap);
+void				reset_primitives(t_scene *sc, t_scene_snap *snap);
+void				reset_extra(t_scene *sc, t_scene_snap *snap);
 
 /* srcs/gui/editor/panel/transform/sync.c */
 void				transform_selection_sync(t_gui *gui);
@@ -83,8 +104,7 @@ void				sync_group_materials(struct s_gui *gui);
 void				draw_slider_row(struct s_gui *gui, t_vec2i pos,
 						t_islider sl);
 bool				try_islider_click(struct s_gui *gui, t_vec2i mouse,
-						t_vec2i pos, t_islider sl,
-						void (*on_change)(struct s_gui *gui));
+						t_vec2i pos, t_islider sl);
 void				update_inline_drag(struct s_gui *gui, t_vec2i mouse);
 void				end_inline_drag(struct s_gui *gui);
 
@@ -107,6 +127,8 @@ t_vec3				cam_fwd_pos(struct s_gui *gui, double dist);
 void				editor_delete_selected(struct s_gui *gui);
 void				delete_sel_sp_pl(t_scene *sc, t_selection *sel);
 void				delete_sel_cy_co(t_scene *sc, t_selection *sel);
+void				delete_sel_rect_tri(t_scene *sc, t_selection *sel);
+void				delete_sel_py_bx(t_scene *sc, t_selection *sel);
 
 /* srcs/gui/editor/crud/ui.c */
 void				draw_crud_buttons(struct s_gui *gui);
@@ -115,14 +137,16 @@ bool				crud_handle_click(struct s_gui *gui, t_vec2i mouse);
 /* srcs/gui/editor/crud/popup/utils.c */
 bool				phit(t_vec2i m, t_vec2i pos, t_vec2i size);
 void				draw_modal_bg(struct s_gui *gui, int h, t_vec2i *p);
-void				draw_popup_btn(struct s_gui *gui, t_vec2i pos, t_vec2i size,
-						const char *lbl, int bg);
+void				draw_popup_btn(struct s_gui *gui, t_panel p);
+
+/* srcs/gui/editor/crud/popup/draw.c */
+void				draw_popup(struct s_gui *gui);
+void				draw_popup_shape(struct s_gui *gui);
+void				draw_popup_mesh_fmt(struct s_gui *gui);
+void				draw_popup_mesh_path(struct s_gui *gui);
+void				draw_path_field(struct s_gui *gui, t_vec2i o, int modal_h);
 
 /* srcs/gui/editor/crud/popup.c */
-void				draw_popup(struct s_gui *gui);
-bool				popup_handle_click(struct s_gui *gui, t_vec2i mouse);
-bool				popup_handle_key(struct s_gui *gui, int keycode);
-void				popup_load_mesh(struct s_gui *gui);
 
 /* srcs/gui/editor/panel/physics/physics.c */
 void				draw_physics_panel(struct s_gui *gui, t_physics_body *phys,
@@ -144,7 +168,8 @@ void				draw_mesh_info_panel(struct s_gui *gui, t_vec2i pos);
 size_t				count_mesh_entries(t_scene *sc);
 int					mesh_row_to_idx(int r);
 size_t				count_scene_rows(t_scene *sc);
-int					row_strip(int *r, int count, t_type t, t_scene_row_res *res);
+int					row_strip(int *r, int count, t_type t,
+						t_scene_row_res *res);
 void				row_to_object(t_gui *gui, size_t r, t_type *ty, int *idx);
 
 /* srcs/gui/editor/panel/scene/row.c */
@@ -153,21 +178,26 @@ void				draw_scene_rows(t_gui *gui);
 /* srcs/gui/editor/panel/light/utils.c */
 void				build_light_sliders(t_light *lt, t_islider *sl, int *count);
 void				get_ambient_sliders(t_scene *scene, t_islider sl[4]);
-void				draw_panel_sliders(struct s_gui *gui, t_islider *sl, int count, t_vec2i pos);
+void				draw_panel_sliders(struct s_gui *gui, t_islider *sl,
+						int count, t_vec2i pos);
 
 /* srcs/gui/editor/panel/mesh_info/utils.c */
-void				draw_info_row(struct s_gui *gui, t_vec2i pos, const char *label, const char *val);
+void				draw_info_row(struct s_gui *gui, t_vec2i pos,
+						const char *label, const char *val);
 
 /* srcs/gui/editor/panel/physics/utils.c */
-void				draw_vec3_label(struct s_gui *gui, t_vec2i pos, const char *label, t_vec3 v);
-void				draw_bool_label(struct s_gui *gui, t_vec2i pos, const char *label, bool val);
+void				draw_vec3_label(struct s_gui *gui, t_vec2i pos,
+						const char *label, t_vec3 v);
+void				draw_bool_label(struct s_gui *gui, t_vec2i pos,
+						const char *label, bool val);
 void				get_phys_sliders(t_physics_body *phys, t_islider sl[3]);
 
 /* srcs/gui/editor/core/inspector/tabs.c */
-int				get_tabs(t_type type, t_inspect_tab tabs[4], const char *labels[4]);
+int					get_tabs(t_type type, t_inspect_tab tabs[4],
+						const char *labels[4]);
 void				draw_inspector_tabs(struct s_gui *gui, t_vec2i pos);
 
 /* srcs/gui/editor/core/inspector/utils.c */
-t_physics_body			*get_selected_physics(struct s_gui *gui);
+t_physics_body		*get_selected_physics(struct s_gui *gui);
 
 #endif

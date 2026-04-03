@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:32:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:12:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:40:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 	if (!json_get(anim_json, "channels"))
 		return ;
 	anim->channel_count = json_get(anim_json, "channels")->u.array.count;
-		anim->channels = malloc(sizeof(t_anim_channel) * anim->channel_count);
+	anim->channels = malloc(sizeof(t_anim_channel) * anim->channel_count);
 	i = -1;
 	while (++i < anim->channel_count)
 	{

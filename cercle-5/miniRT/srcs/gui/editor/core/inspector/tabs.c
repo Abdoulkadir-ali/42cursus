@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:39:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:01:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-int	get_tabs(t_type type, t_inspect_tab tabs[4], const char *labels[4])
+static int	get_basic_tabs(t_type type, t_inspect_tab tabs[4],
+	const char *labels[4])
 {
 	if (type == TYPE_SPHERE || type == TYPE_TRI || type == TYPE_RECT
 		|| type == TYPE_PYRAMID || type == TYPE_BOX || type == TYPE_CAPSULE
@@ -38,6 +39,16 @@ int	get_tabs(t_type type, t_inspect_tab tabs[4], const char *labels[4])
 		labels[3] = "Physics";
 		return (4);
 	}
+	return (0);
+}
+
+int	get_tabs(t_type type, t_inspect_tab tabs[4], const char *labels[4])
+{
+	int	n;
+
+	n = get_basic_tabs(type, tabs, labels);
+	if (n > 0)
+		return (n);
 	tabs[0] = TAB_TRANSFORM;
 	labels[0] = "Transform";
 	tabs[1] = TAB_MATERIAL;
@@ -50,25 +61,31 @@ int	get_tabs(t_type type, t_inspect_tab tabs[4], const char *labels[4])
 	return (2);
 }
 
+static void	draw_tab_label(t_gui *gui, t_vec2i pos, struct s_tab_draw d, int i)
+{
+	int	color;
+
+	color = COL_TEXT;
+	if (gui->inspector.tab == d.tabs[i])
+		color = COL_ACCENT;
+	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + d.step * i + 8, 70,
+		color, (char *)d.labels[i]);
+}
+
 void	draw_inspector_tabs(t_gui *gui, t_vec2i pos)
 {
-	t_inspect_tab	tabs[4];
-	const char		*labels[4];
-	int				n;
-	int				step;
-	int				i;
-	int				color;
+	t_inspect_tab		tabs[4];
+	const char			*labels[4];
+	struct s_tab_draw	d;
+	int					n;
+	int					i;
 
 	n = get_tabs(gui->selection.type, tabs, labels);
-	step = INSPECTOR_W / n;
+	d = (struct s_tab_draw){tabs, labels, INSPECTOR_W / n};
 	i = 0;
 	while (i < n)
 	{
-		color = COL_TEXT;
-		if (gui->inspector.tab == tabs[i])
-			color = COL_ACCENT;
-		mlx_string_put(gui->win.mlx, gui->win.win, pos.x + step * i + 8, 70,
-			color, (char *)labels[i]);
+		draw_tab_label(gui, pos, d, i);
 		i++;
 	}
 }

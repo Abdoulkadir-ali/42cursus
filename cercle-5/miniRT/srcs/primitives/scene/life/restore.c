@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:36:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:47:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,16 @@ static bool	restore_one(const t_cache_snap *snap, t_scene *scene)
 
 bool	mesh_cache_restore(t_scene *scene, const char *path)
 {
-	size_t	idx;
+	t_index	idx;
 	size_t	i;
 
 	idx = find_cache_idx(scene, path);
-	if (idx == (size_t)-1)
+	if (idx.error)
 		return (false);
 	i = 0;
-	while (i < get_cache_entry(scene, idx)->count)
+	while (i < get_cache_entry(scene, idx.i)->count)
 	{
-		if (!restore_one(&get_cache_entry(scene, idx)->snaps[i], scene))
+		if (!restore_one(&get_cache_entry(scene, idx.i)->snaps[i], scene))
 			return (false);
 		i++;
 	}

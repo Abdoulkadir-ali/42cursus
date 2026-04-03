@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:07:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,23 +51,18 @@ static t_type	idx_to_type(int i)
 	return (map[i]);
 }
 
-static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
+static bool	click_item(t_gui *gui, t_vec2i mouse, t_vec2i o, t_vec2i s)
 {
-	t_vec2i	o;
-	t_vec2i	s;
 	int		i;
-	int		modal_h;
 	t_type	type;
+	t_vec2i	p;
 
-	modal_h = POPUP_PAD * 2 + 36 + 4 * (POPUP_ITEM_H + 8) + 40;
-	o = vec2i((gui->win.disp_size.x - POPUP_W) / 2,
-		(gui->win.disp_size.y - modal_h) / 2);
-	s = vec2i((POPUP_W - POPUP_PAD * 4) / 3, POPUP_ITEM_H);
 	i = 0;
 	while (i < 11)
 	{
-		if (phit(mouse, vec2i(o.x + POPUP_PAD + (i % 3) * (s.x + POPUP_PAD),
-			o.y + 36 + POPUP_PAD + (i / 3) * (s.y + 8)), s))
+		p.x = o.x + POPUP_PAD + (i % 3) * (s.x + POPUP_PAD);
+		p.y = o.y + 36 + POPUP_PAD + (i / 3) * (s.y + 8);
+		if (phit(mouse, p, s))
 		{
 			type = idx_to_type(i);
 			if (type == TYPE_MESH)
@@ -82,23 +77,17 @@ static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 	return (false);
 }
 
-static bool	click_popup_mesh_fmt(t_gui *gui, t_vec2i mouse)
+static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 {
 	t_vec2i	o;
-	int		bw;
+	t_vec2i	s;
 	int		modal_h;
 
-	modal_h = POPUP_PAD * 2 + 36 + POPUP_ITEM_H + 16 + 36;
+	modal_h = POPUP_PAD * 2 + 36 + 4 * (POPUP_ITEM_H + 8) + 40;
 	o = vec2i((gui->win.disp_size.x - POPUP_W) / 2,
-		(gui->win.disp_size.y - modal_h) / 2);
-	bw = (POPUP_W - POPUP_PAD * 3) / 2;
-	if (phit(mouse, vec2i(o.x + POPUP_PAD, o.y + 36 + POPUP_PAD),
-			vec2i(bw, POPUP_ITEM_H)))
-		gui->crud.popup = POPUP_MESH_PATH;
-	if (phit(mouse, vec2i(o.x + POPUP_PAD * 2 + bw, o.y + 36 + POPUP_PAD),
-			vec2i(bw, POPUP_ITEM_H)))
-		gui->crud.popup = POPUP_MESH_PATH;
-	return (true);
+			(gui->win.disp_size.y - modal_h) / 2);
+	s = vec2i((POPUP_W - POPUP_PAD * 4) / 3, POPUP_ITEM_H);
+	return (click_item(gui, mouse, o, s));
 }
 
 bool	popup_handle_click(t_gui *gui, t_vec2i mouse)

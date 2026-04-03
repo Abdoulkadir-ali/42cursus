@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 14:24:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:55:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,11 @@ typedef struct s_window
 
 typedef struct s_panel
 {
-	t_vec2i	pos;
-	t_vec2i	size;
-	int		bg;
-	int		brd;
+	t_vec2i		pos;
+	t_vec2i		size;
+	int			bg;
+	int			brd;
+	const char	*lbl;
 }	t_panel;
 
 #endif

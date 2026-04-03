@@ -1,37 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   reset.c                                            :+:      :+:    :+:   */
+/*   reset_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:30:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:58:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-/**
- * Restores camera controller smooth-follow targets after a scene reset.
- */
-static void	reset_cam_ctrl(t_gui *gui)
-{
-	t_vec3	f;
-
-	gui->cam_ctrl.camera = &gui->scene->camera;
-	gui->cam_ctrl.transform = gui->scene->camera.transform;
-	f = gui->scene->camera.transform.forward;
-	gui->cam_ctrl.target_rot.yaw = atan2(f.x, f.z);
-	gui->cam_ctrl.target_rot.pitch = asin(f.y);
-	gui->cam_ctrl.target_pos = gui->scene->camera.transform.pos;
-	gui->cam_ctrl.target_fov = gui->scene->camera.fov;
-}
-
-/**
- * Restores per-mesh mutable fields, then frees any editor-added meshes.
- */
-static void	reset_meshes(t_scene *sc, t_scene_snap *snap)
+void	reset_meshes(t_scene *sc, t_scene_snap *snap)
 {
 	size_t	i;
 
@@ -49,10 +30,7 @@ static void	reset_meshes(t_scene *sc, t_scene_snap *snap)
 	sc->mesh_group_count = snap->mesh_group_count;
 }
 
-/**
- * Restores group transforms and frees any editor-added groups.
- */
-static void	reset_groups(t_scene *sc, t_scene_snap *snap)
+void	reset_groups(t_scene *sc, t_scene_snap *snap)
 {
 	size_t	i;
 
@@ -73,7 +51,7 @@ static void	reset_groups(t_scene *sc, t_scene_snap *snap)
 	sc->group_count = snap->group_count;
 }
 
-static void	reset_primitives(t_scene *sc, t_scene_snap *snap)
+void	reset_primitives(t_scene *sc, t_scene_snap *snap)
 {
 	sc->sphere_count = snap->sphere_count;
 	ft_memcpy(sc->spheres, snap->spheres,
@@ -94,7 +72,7 @@ static void	reset_primitives(t_scene *sc, t_scene_snap *snap)
 		snap->mat_count * sizeof(t_material));
 }
 
-static void	reset_extra(t_scene *sc, t_scene_snap *snap)
+void	reset_extra(t_scene *sc, t_scene_snap *snap)
 {
 	if (snap->box_count)
 		ft_memcpy(sc->boxes, snap->boxes,
@@ -116,31 +94,4 @@ static void	reset_extra(t_scene *sc, t_scene_snap *snap)
 		ft_memcpy(sc->tris, snap->tris,
 			snap->tri_count * sizeof(t_tri_shape));
 	sc->tri_count = snap->tri_count;
-}
-
-/**
- * Restores the scene to its post-parse state and clears editor selection.
- * Safe to call at any time during a session.
- */
-void	scene_reset(t_gui *gui)
-{
-	t_scene_snap	*snap;
-	t_scene			*sc;
-
-	if (!gui->map_info.current)
-		return ;
-	snap = &gui->map_info.current->snap;
-	sc = gui->scene;
-	reset_primitives(sc, snap);
-	reset_meshes(sc, snap);
-	reset_groups(sc, snap);
-	reset_extra(sc, snap);
-	sc->ambient = snap->ambient;
-	sc->camera = snap->camera;
-	gui->ambient_color = snap->ambient_color;
-	gui->ambient_intensity = snap->ambient_intensity;
-	reset_cam_ctrl(gui);
-	clear_selection(gui);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
 }

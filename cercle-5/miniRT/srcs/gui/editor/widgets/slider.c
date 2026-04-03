@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:36:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:05:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	draw_slider_row(t_gui *gui, t_vec2i pos, t_islider sl)
 }
 
 bool	try_islider_click(t_gui *gui, t_vec2i mouse, t_vec2i pos,
-		t_islider sl, void (*on_change)(t_gui *gui))
+		t_islider sl)
 {
 	int	track_w;
 	int	track_y;
@@ -104,39 +104,6 @@ bool	try_islider_click(t_gui *gui, t_vec2i mouse, t_vec2i pos,
 	gui->slider_state.dmax = sl.max;
 	gui->slider_state.track_x = pos.x;
 	gui->slider_state.track_w = track_w;
-	gui->slider_state.on_change = on_change;
+	gui->slider_state.on_change = sl.on_change;
 	return (true);
-}
-
-void	update_inline_drag(t_gui *gui, t_vec2i mouse)
-{
-	double	range;
-	double	delta;
-	double	newval;
-
-	if (!gui->slider_state.dragging || !gui->slider_state.value_ptr)
-		return ;
-	range = gui->slider_state.dmax - gui->slider_state.dmin;
-	delta = (double)(mouse.x - gui->slider_state.drag_start_x)
-		* range / (double)gui->slider_state.track_w;
-	newval = gui->slider_state.drag_start_val + delta;
-	if (newval < gui->slider_state.dmin)
-		newval = gui->slider_state.dmin;
-	if (newval > gui->slider_state.dmax)
-		newval = gui->slider_state.dmax;
-	*gui->slider_state.value_ptr = newval;
-	gui->render.dirty = true;
-}
-
-void	end_inline_drag(t_gui *gui)
-{
-	if (!gui->slider_state.dragging)
-		return ;
-	gui->slider_state.dragging = false;
-	gui->slider_state.value_ptr = NULL;
-	if (gui->slider_state.on_change)
-		gui->slider_state.on_change(gui);
-	gui->slider_state.on_change = NULL;
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
 }

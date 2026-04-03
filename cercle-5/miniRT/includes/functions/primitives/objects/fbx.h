@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:23:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:10:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "mesh.h"
 
 /* Prototypes */
+
 bool					fbx_bin_build_mesh(t_fbx_bin *fbx);
 void					fbx_build_flat(t_mesh *m, t_fbx_flat_params *p);
 bool					fbx_setup_build(t_fbx_build *b, t_mesh *m,
@@ -49,6 +50,8 @@ void					f_int(char **p, void *dst);
 char					*read_file_content(const char *path, size_t *out_size);
 t_index					parse_texture(char *p, char *end, t_scene *scene,
 							const char *fbx_path);
+char					*resolve_fbx_path(const char *fbx_path,
+							const char *tex_filename);
 void					mesh_free(t_mesh *mesh);
 
 /* FBX Specific (srcs/primitives/objects/parsing/) */

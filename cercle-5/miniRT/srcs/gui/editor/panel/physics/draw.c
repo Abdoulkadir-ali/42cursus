@@ -6,16 +6,30 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:55:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-void	draw_physics_panel(t_gui *gui, t_physics_body *phys, t_vec2i pos)
+static void	draw_phys_sliders_row(t_gui *gui, t_physics_body *phys, t_vec2i pos,
+	int *y)
 {
 	t_islider	sl[3];
 	int			i;
+
+	get_phys_sliders(phys, sl);
+	i = 0;
+	while (i < 3)
+	{
+		draw_slider_row(gui, (t_vec2i){pos.x + 8, *y}, sl[i]);
+		*y += 30;
+		i++;
+	}
+}
+
+void	draw_physics_panel(t_gui *gui, t_physics_body *phys, t_vec2i pos)
+{
 	int			y;
 
 	if (!phys)
@@ -32,13 +46,6 @@ void	draw_physics_panel(t_gui *gui, t_physics_body *phys, t_vec2i pos)
 	draw_vec3_label(gui, (t_vec2i){pos.x, y}, "Angular vel",
 		phys->angular_velocity);
 	y += 36;
-	get_phys_sliders(phys, sl);
-	i = 0;
-	while (i < 3)
-	{
-		draw_slider_row(gui, (t_vec2i){pos.x + 8, y}, sl[i]);
-		y += 30;
-		i++;
-	}
+	draw_phys_sliders_row(gui, phys, pos, &y);
 	draw_bool_label(gui, (t_vec2i){pos.x, y}, "Static", phys->is_static);
 }

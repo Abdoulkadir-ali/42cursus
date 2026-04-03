@@ -1,22 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   snap.c                                             :+:      :+:    :+:   */
+/*   snap_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:30:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:58:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-/**
- * Allocates a heap copy of @count elements of size @sz from @src into *@dst.
- * Sets *@dst to NULL when count is zero or allocation fails.
- */
-static void	snap_array(void **dst, void *src, size_t count, size_t sz)
+void	snap_array(void **dst, void *src, size_t count, size_t sz)
 {
 	*dst = NULL;
 	if (!count)
@@ -26,10 +22,7 @@ static void	snap_array(void **dst, void *src, size_t count, size_t sz)
 		ft_memcpy(*dst, src, count * sz);
 }
 
-/**
- * Snapshots only the mutable per-mesh fields (transform, mat_id, phys).
- */
-static void	snap_meshes(t_scene_snap *snap, t_scene *sc)
+void	snap_meshes(t_scene_snap *snap, t_scene *sc)
 {
 	size_t	i;
 
@@ -50,10 +43,7 @@ static void	snap_meshes(t_scene_snap *snap, t_scene *sc)
 	}
 }
 
-/**
- * Snapshots transform, pivot, and physics for every group.
- */
-static void	snap_groups(t_scene_snap *snap, t_scene *sc)
+void	snap_groups(t_scene_snap *snap, t_scene *sc)
 {
 	size_t	i;
 
@@ -74,7 +64,7 @@ static void	snap_groups(t_scene_snap *snap, t_scene *sc)
 	}
 }
 
-static void	snap_primitives(t_scene_snap *snap, t_scene *sc)
+void	snap_primitives(t_scene_snap *snap, t_scene *sc)
 {
 	snap_array((void **)&snap->spheres, sc->spheres,
 		sc->sphere_count, sizeof(t_sphere));
@@ -96,7 +86,7 @@ static void	snap_primitives(t_scene_snap *snap, t_scene *sc)
 	snap->mat_count = sc->mat_count;
 }
 
-static void	snap_extra(t_scene_snap *snap, t_scene *sc)
+void	snap_extra(t_scene_snap *snap, t_scene *sc)
 {
 	snap_array((void **)&snap->boxes, sc->boxes,
 		sc->box_count, sizeof(t_box));
@@ -113,48 +103,4 @@ static void	snap_extra(t_scene_snap *snap, t_scene *sc)
 	snap_array((void **)&snap->tris, sc->tris,
 		sc->tri_count, sizeof(t_tri_shape));
 	snap->tri_count = sc->tri_count;
-}
-
-/**
- * Takes a full mutable-state snapshot immediately after parse.
- * Must be called once during gui_init, before the first frame renders.
- */
-void	scene_snap_take(t_scene_snap *snap, t_gui *gui)
-{
-	t_scene	*sc;
-
-	sc = gui->scene;
-	ft_memset(snap, 0, sizeof(*snap));
-	snap_primitives(snap, sc);
-	snap_meshes(snap, sc);
-	snap_groups(snap, sc);
-	snap->mesh_group_count = sc->mesh_group_count;
-	snap_extra(snap, sc);
-	snap->ambient = sc->ambient;
-	snap->camera = sc->camera;
-	snap->ambient_color = gui->ambient_color;
-	snap->ambient_intensity = gui->ambient_intensity;
-}
-
-/**
- * Frees all heap buffers owned by the snapshot and zeroes the struct.
- */
-void	scene_snap_free(t_scene_snap *snap)
-{
-	if (!snap)
-		return ;
-	free(snap->spheres);
-	free(snap->planes);
-	free(snap->cylinders);
-	free(snap->cones);
-	free(snap->lights);
-	free(snap->materials);
-	free(snap->meshes);
-	free(snap->groups);
-	free(snap->boxes);
-	free(snap->capsules);
-	free(snap->rects);
-	free(snap->pyramids);
-	free(snap->tris);
-	ft_memset(snap, 0, sizeof(*snap));
 }

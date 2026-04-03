@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:44:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ bool					scene_add_group_for_subs(t_scene *scene,
 							const char *path, size_t start_mesh);
 
 /* Cache (srcs/primitives/scene/add/objects/mesh/cache/) */
-size_t					find_cache_idx(t_scene *scene, const char *path);
+t_index					find_cache_idx(t_scene *scene, const char *path);
 t_model_cache			*get_cache_entry(t_scene *scene, size_t idx);
 bool					mesh_cache_has(t_scene *scene, const char *path);
 bool					mesh_cache_save(t_scene *scene, const char *path,

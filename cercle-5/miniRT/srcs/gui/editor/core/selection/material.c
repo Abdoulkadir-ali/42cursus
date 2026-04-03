@@ -6,11 +6,29 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:05:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+
+static int	mat_id_extra(t_gui *gui)
+{
+	t_selection	*sel;
+	t_scene		*sc;
+
+	sel = &gui->selection;
+	sc = gui->scene;
+	if (sel->type == TYPE_PYRAMID)
+		return (sc->pyramids[sel->index].mat_id);
+	if (sel->type == TYPE_BOX)
+		return (sc->boxes[sel->index].mat_id);
+	if (sel->type == TYPE_CAPSULE)
+		return (sc->capsules[sel->index].mat_id);
+	if (sel->type == TYPE_MESH && sel->index < sc->group_count)
+		return (sc->meshes[sc->groups[sel->index].start].mat_id);
+	return (-1);
+}
 
 static int	mat_id_of_selection(t_gui *gui)
 {
@@ -31,16 +49,7 @@ static int	mat_id_of_selection(t_gui *gui)
 		return (sc->tris[sel->index].mat_id);
 	if (sel->type == TYPE_RECT)
 		return (sc->rects[sel->index].mat_id);
-	if (sel->type == TYPE_PYRAMID)
-		return (sc->pyramids[sel->index].mat_id);
-	if (sel->type == TYPE_BOX)
-		return (sc->boxes[sel->index].mat_id);
-	if (sel->type == TYPE_CAPSULE)
-		return (sc->capsules[sel->index].mat_id);
-	if (sel->type == TYPE_MESH && 1
-		&& sel->index < sc->group_count)
-		return (sc->meshes[sc->groups[sel->index].start].mat_id);
-	return (-1);
+	return (mat_id_extra(gui));
 }
 
 t_material	*get_selected_material(t_gui *gui)
