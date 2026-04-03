@@ -1,11 +1,20 @@
-#include "functions/gui/render.h"
-#include "functions/gui/editor.h"
-#include "functions/gui/map.h"
-#include <pthread.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   job.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 12:53:45 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void poll_map_job(t_gui *gui)
+#include "render.h"
+
+void	poll_map_job(t_gui *gui)
 {
-	t_map_job *job;
+	t_map_job	*job;
 
 	job = &gui->map_job;
 	if (!job->active || !job->done)
@@ -22,3 +31,4 @@ void poll_map_job(t_gui *gui)
 	clear_selection(gui);
 	gui->render.dirty = true;
 }
+

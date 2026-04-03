@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 19:12:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:12:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:52:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
-#include "functions/gui/map.h"
-#include "functions/gui/editor.h"
 
 t_gui	*gui_init(t_scene *scene, void *mlx)
 {

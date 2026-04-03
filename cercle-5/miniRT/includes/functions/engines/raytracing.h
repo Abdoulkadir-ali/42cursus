@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:41:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:57:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,6 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
 bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t);
 bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 			t_hit *hit);
-bool	occlude_primitive(const t_ray *ray, t_scene *sc, t_bvh_ref ref,
-			double max_t);
 
 t_vec3	clamp_color(t_vec3 color);
 bool	is_emissive(t_scene *sc, size_t mat_id);

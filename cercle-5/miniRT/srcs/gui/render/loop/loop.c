@@ -1,10 +1,18 @@
-#include "functions/gui/window.h"
-#include "functions/gui/input.h"
-#include <X11/X.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   loop.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 12:54:33 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int gui_update(t_gui *gui);
+#include "render.h"
 
-void gui_loop(t_gui *gui)
+void	gui_loop(t_gui *gui)
 {
 	mlx_hook(gui->win.win, KeyPress, (1L << 0), key_press, gui);
 	mlx_hook(gui->win.win, KeyRelease, (1L << 1), key_release, gui);
@@ -15,3 +23,4 @@ void gui_loop(t_gui *gui)
 	mlx_loop_hook(gui->win.mlx, (int (*)(void *))gui_update, gui);
 	mlx_loop(gui->win.mlx);
 }
+

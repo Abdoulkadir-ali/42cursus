@@ -1,6 +1,16 @@
-#include "functions/gui/render.h"
-#include "public/engines.h"
-#include "functions/engines/raytracing.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hover.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/03 12:50:30 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 12:50:41 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "render.h"
 
 void gui_hover(t_gui *gui)
 {

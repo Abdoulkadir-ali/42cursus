@@ -1,17 +1,28 @@
-#include "functions/gui/render.h"
-#include "functions/gui/input.h"
-#include "functions/engines/physics.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   update.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 12:55:45 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void update_animations(t_gui *gui, double delta)
+#include "render.h"
+
+
+void	update_animations(t_gui *gui, double delta)
 {
 	(void)gui;
 	(void)delta;
 }
 
-void update_physics_step(t_gui *gui, double delta)
+void	update_physics_step(t_gui *gui, double delta)
 {
-	double fixed_dt;
-	int steps;
+	double	fixed_dt;
+	int		steps;
 
 	if (!gui || !gui->scene || !gui->physics_enabled)
 		return ;
@@ -33,22 +44,25 @@ void update_physics_step(t_gui *gui, double delta)
 		gui->render.dirty = true;
 }
 
-void update_ambient(t_gui *gui)
+void	update_ambient(t_gui *gui)
 {
-	t_ambient *amb;
+	t_ambient	*amb;
 
 	if (!gui->scene)
 		return ;
 	amb = &gui->scene->ambient;
-	amb->rgb.x = ((gui->ambient_color >> 16) & 0xFF) / 255.0 * gui->ambient_intensity;
-	amb->rgb.y = ((gui->ambient_color >> 8) & 0xFF) / 255.0 * gui->ambient_intensity;
-	amb->rgb.z = (gui->ambient_color & 0xFF) / 255.0 * gui->ambient_intensity;
+	amb->rgb.x = ((gui->ambient_color >> 16) & 0xFF) / 255.0 \
+		* gui->ambient_intensity;
+	amb->rgb.y = ((gui->ambient_color >> 8) & 0xFF) / 255.0 \
+		* gui->ambient_intensity;
+	amb->rgb.z = (gui->ambient_color & 0xFF) / 255.0 \
+		* gui->ambient_intensity;
 	amb->brightness = gui->ambient_intensity;
 }
 
-int gui_update(t_gui *gui)
+int	gui_update(t_gui *gui)
 {
-	double delta;
+	double	delta;
 
 	delta = update_delta(gui);
 	gui_update_input(gui);
@@ -57,3 +71,4 @@ int gui_update(t_gui *gui)
 	gui_render(gui);
 	return (0);
 }
+

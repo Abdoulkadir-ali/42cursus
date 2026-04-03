@@ -1,8 +1,20 @@
-#include "functions/gui/render.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/03 12:49:57 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 12:50:03 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void gui_render(t_gui *gui)
+#include "render.h"
+
+void	gui_render(t_gui *gui)
 {
-	t_render render;
+	t_render	render;
 
 	if (!gui || !gui->scene)
 		return ;

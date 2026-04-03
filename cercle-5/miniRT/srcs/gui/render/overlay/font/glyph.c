@@ -1,4 +1,4 @@
-#include "functions/gui/render.h"
+#include "render.h"
 
 static const unsigned char g_font8[][8] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},

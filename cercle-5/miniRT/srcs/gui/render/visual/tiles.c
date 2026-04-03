@@ -1,8 +1,16 @@
-#include "functions/gui/render.h"
-#include "functions/helpers/profiler.h"
-#include <stdlib.h>
-#include <pthread.h>
-#include <semaphore.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tiles.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/03 12:50:57 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 12:51:02 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "render.h"
 
 static void render_tile(t_render *render, int id)
 {

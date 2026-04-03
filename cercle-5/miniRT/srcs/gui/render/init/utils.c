@@ -6,15 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 10:48:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:52:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
-#include <unistd.h>
-#include "mlx.h"
 
-bool init_window(t_gui *gui)
+bool	init_window(t_gui *gui)
 {
 	if (!gui->win.mlx)
 		return (false);
@@ -39,9 +37,9 @@ bool init_window(t_gui *gui)
 	return (true);
 }
 
-void init_camera(t_gui *gui)
+void	init_camera(t_gui *gui)
 {
-	t_vec3 f;
+	t_vec3	f;
 
 	gui->cam_ctrl.camera = &gui->scene->camera;
 	gui->cam_ctrl.transform = gui->scene->camera.transform;
@@ -57,7 +55,7 @@ void init_camera(t_gui *gui)
 	gui->widgets = NULL;
 }
 
-void gui_init_physics(t_gui *gui)
+void	gui_init_physics(t_gui *gui)
 {
 	gui->physics_enabled = true;
 	gui->phys_accumulator = 0.0;
@@ -77,7 +75,7 @@ void gui_init_physics(t_gui *gui)
 	gui->phys_engine.pool.initialized = 0;
 }
 
-void gui_init_render(t_gui *gui)
+void	gui_init_render(t_gui *gui)
 {
 	gui->render.num_cores = sysconf(_SC_NPROCESSORS_ONLN);
 	if (gui->render.num_cores < 1)
@@ -86,3 +84,4 @@ void gui_init_render(t_gui *gui)
 		gui->render.num_cores = 128;
 	gui->render.pool.ready = false;
 }
+
