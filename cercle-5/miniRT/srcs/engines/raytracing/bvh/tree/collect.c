@@ -14,7 +14,7 @@
 
 static t_vec3	get_centroid(const t_aabb *bbox)
 {
-	t_vec	sum;
+	t_vec3	sum;
 
 	sum = vec3_add(bbox->min, bbox->max);
 	return (vec3_scale(sum, 0.5));

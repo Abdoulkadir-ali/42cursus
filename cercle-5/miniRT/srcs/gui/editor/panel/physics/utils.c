@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 12:55:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:17:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ void	draw_bool_label(t_gui *gui, t_vec2i pos, const char *label, bool val)
 
 void	get_phys_sliders(t_physics_body *phys, t_islider sl[3])
 {
-	sl[0] = (t_islider){"Mass (kg)", SL_MASS_MIN, SL_MASS_MAX, &phys->mass};
+	sl[0] = (t_islider){"Mass (kg)", SL_MASS_MIN, SL_MASS_MAX, &phys->mass,
+		NULL};
 	sl[1] = (t_islider){"Elasticity", SL_ELAST_MIN, SL_ELAST_MAX,
-		&phys->elasticity};
-	sl[2] = (t_islider){"Friction", SL_FRIC_MIN, SL_FRIC_MAX, &phys->friction};
+		&phys->elasticity, NULL};
+	sl[2] = (t_islider){"Friction", SL_FRIC_MIN, SL_FRIC_MAX, &phys->friction,
+		NULL};
 }

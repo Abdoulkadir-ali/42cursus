@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   draw.c                                             :+:      :+:    :+:   */
+/*   shape.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:07:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:17:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	draw_object_item(t_gui *gui, t_vec2i o, t_vec2i s, int i)
 	draw_popup_btn(gui, (t_panel){p, s, 0x22222E, COL_BORDER, lbl[i]});
 }
 
-static void	draw_popup_shape(t_gui *gui)
+void	draw_popup_shape(t_gui *gui)
 {
 	t_vec2i				o;
 	t_vec2i				s;

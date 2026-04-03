@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:44:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:18:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,3 +41,4 @@ t_model_cache	*get_cache_entry(t_scene *scene, size_t idx)
 	if (idx >= scene->cache_count)
 		return (NULL);
 	return (&scene->cache[idx]);
+}

@@ -6,17 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:31:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:14:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GUI_EDITOR_H
-# define GUI_EDITOR_H
+#ifndef T_EDITOR_H
+# define T_EDITOR_H
 
 # include "t_physics.h"
 
-struct s_gui;
-struct s_widget;
+struct			s_gui;
+struct			s_widget;
 
 typedef enum e_popup
 {
@@ -142,6 +142,7 @@ typedef struct s_islider
 	double			min;
 	double			max;
 	double			*ptr;
+	void			(*on_change)(struct s_gui *);
 }					t_islider;
 
 typedef struct s_slider_state

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:33:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:15:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ static void	build_mat_emissive_sliders(t_material *mat, t_islider *sl,
 	int *i)
 {
 	sl[(*i)++] = (t_islider){"Emission R", SL_EMIT_MIN, SL_EMIT_MAX,
-		&mat->emission.x};
+		&mat->emission.x, sync_group_materials};
 	sl[(*i)++] = (t_islider){"Emission G", SL_EMIT_MIN, SL_EMIT_MAX,
-		&mat->emission.y};
+		&mat->emission.y, sync_group_materials};
 	sl[(*i)++] = (t_islider){"Emission B", SL_EMIT_MIN, SL_EMIT_MAX,
-		&mat->emission.z};
+		&mat->emission.z, sync_group_materials};
 }
 
 void	build_mat_sliders(t_material *mat, t_islider *sl, int *count)
@@ -29,21 +29,21 @@ void	build_mat_sliders(t_material *mat, t_islider *sl, int *count)
 
 	i = 0;
 	sl[i++] = (t_islider){"Roughness", SL_ROUGH_MIN, SL_ROUGH_MAX,
-		&mat->roughness};
+		&mat->roughness, sync_group_materials};
 	sl[i++] = (t_islider){"Metallic", SL_METAL_MIN, SL_METAL_MAX,
-		&mat->metallic};
+		&mat->metallic, sync_group_materials};
 	sl[i++] = (t_islider){"Opacity", SL_OPAC_MIN, SL_OPAC_MAX,
-		&mat->transparency};
+		&mat->transparency, sync_group_materials};
 	sl[i++] = (t_islider){"Reflectivity", SL_REFL_MIN, SL_REFL_MAX,
-		&mat->reflectivity};
+		&mat->reflectivity, sync_group_materials};
 	sl[i++] = (t_islider){"Refr.Angle", SL_IOR_MIN, SL_IOR_MAX,
-		&mat->refract_index};
+		&mat->refract_index, sync_group_materials};
 	sl[i++] = (t_islider){"Albedo R", SL_COL_MIN, SL_COL_MAX,
-		&mat->albedo_map.color_a.x};
+		&mat->albedo_map.color_a.x, sync_group_materials};
 	sl[i++] = (t_islider){"Albedo G", SL_COL_MIN, SL_COL_MAX,
-		&mat->albedo_map.color_a.y};
+		&mat->albedo_map.color_a.y, sync_group_materials};
 	sl[i++] = (t_islider){"Albedo B", SL_COL_MIN, SL_COL_MAX,
-		&mat->albedo_map.color_a.z};
+		&mat->albedo_map.color_a.z, sync_group_materials};
 	build_mat_emissive_sliders(mat, sl, &i);
 	*count = i;
 }

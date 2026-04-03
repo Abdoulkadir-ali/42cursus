@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:07:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:17:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,6 +191,11 @@ void				draw_vec3_label(struct s_gui *gui, t_vec2i pos,
 void				draw_bool_label(struct s_gui *gui, t_vec2i pos,
 						const char *label, bool val);
 void				get_phys_sliders(t_physics_body *phys, t_islider sl[3]);
+
+/* srcs/gui/editor/crud/popup/click/ */
+bool				click_popup_mesh_fmt(struct s_gui *gui, t_vec2i mouse);
+bool				popup_handle_click(struct s_gui *gui, t_vec2i mouse);
+bool				popup_handle_key(struct s_gui *gui, int keycode);
 
 /* srcs/gui/editor/core/inspector/tabs.c */
 int					get_tabs(t_type type, t_inspect_tab tabs[4],
