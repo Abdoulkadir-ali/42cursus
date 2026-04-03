@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:04:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:46:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,15 @@ void	draw_ui_text(t_gui *gui, t_camera_controller *ctrl)
 {
 	int	y;
 
+	draw_scene_panel_bg(gui);
+	draw_inspector_bg(gui);
 	y = 38;
 	draw_ui_help(gui, &y);
 	draw_ui_status(gui, &y);
 	draw_ui_object(gui);
 	draw_ui_text_footer(gui, ctrl, 0xD0D0D8);
 	draw_ui_fps(gui);
+	draw_scene_panel_text(gui);
+	draw_inspector_text(gui);
 	widget_draw_all(gui);
 }

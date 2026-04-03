@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:27:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ bool	intersect_finish_hit(t_trace *trace, t_mesh *mesh, t_hit *hit,
 {
 	t_mesh_hit	m_hit;
 
-	if (trace->best_tri == (size_t)-1)
-		return (false);
 	m_hit.hit = hit;
 	m_hit.mesh = mesh;
 	m_hit.ray = ray;

@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 12:48:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 16:18:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
+#include "debug.h"
 
 /*
 ** Cleans up all resources.
@@ -69,7 +70,7 @@ static int	run_app(const char *path)
 
 	printf("RUN_APP_START: path='%s'\n", path);
 	fflush(stdout);
-	ft_print_debug("DEBUG: Starting miniRT with map: %s\n", path);
+	ft_print_debug("DEBUG: Initializing MLX\n");
 	mlx = mlx_init();
 	if (!mlx)
 	{
@@ -78,6 +79,7 @@ static int	run_app(const char *path)
 	}
 	scene = NULL;
 	gui = init_app(path, &scene, mlx);
+	ft_print_debug("DEBUG: Starting GUI\n");
 	return (start_gui(gui, scene, mlx));
 }
 

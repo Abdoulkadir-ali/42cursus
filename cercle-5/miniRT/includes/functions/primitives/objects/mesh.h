@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:44:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:23:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 /* Resource Factory (srcs/objects/meshes/resource.c) */
 bool					mesh_resource_add_mesh(t_mesh_resource *res,
 							t_mesh mesh);
-size_t					mesh_resource_add_material(t_mesh_resource *res,
-							const char *name, bool *error);
+t_index					mesh_resource_add_material(t_mesh_resource *res,
+							const char *name);
 void					mesh_resource_init(t_mesh_resource *res);
 void					mesh_resource_free(t_mesh_resource *res);
 void					mesh_build_bvh(t_mesh *mesh);

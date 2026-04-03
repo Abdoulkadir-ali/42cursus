@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:43:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:43:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include "types.h"
 # include "mlx.h"
-
 
 # define PANEL_RADIUS 6
 # define COL_BG 0x0A0A12

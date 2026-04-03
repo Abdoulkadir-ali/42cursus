@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:22:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 16:25:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,20 @@ void	init_camera(t_gui *gui)
 	gui->cam_ctrl.target_fov = gui->cam_ctrl.camera->fov;
 	gui->cam_ctrl.move_speed = 0.5;
 	gui->cam_ctrl.lerp_factor = 0.1;
-	gui->render.scale = 1;
+	gui->cam_ctrl.moving_forward = false;
+	gui->cam_ctrl.moving_backward = false;
+	gui->cam_ctrl.moving_left = false;
+	gui->cam_ctrl.moving_right = false;
+	gui->cam_ctrl.moving_up = false;
+	gui->cam_ctrl.moving_down = false;
+	gui->cam_ctrl.zooming_in = false;
+	gui->cam_ctrl.zooming_out = false;
+	gui->cam_ctrl.mouse_left_pressed = false;
+	gui->cam_ctrl.mouse_middle_pressed = false;
+	gui->cam_ctrl.last_mouse = vec2i(0, 0);
+	gui->cam_ctrl.transform.rotation.yaw = gui->cam_ctrl.target_rot.yaw;
+	gui->cam_ctrl.transform.rotation.pitch = gui->cam_ctrl.target_rot.pitch;
+	gui->render.scale = 2;
 	gui->render.dirty = true;
 	gui->widgets = NULL;
 }

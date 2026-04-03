@@ -17,11 +17,13 @@ void	smooth_rotation(t_gui *gui, t_camera_controller *ctrl)
 	double	diff_yaw;
 	double	diff_pitch;
 
-	diff_yaw = ctrl->target_rot.yaw - ctrl->transform.rotation.yaw;
+	diff_yaw = normalize_angle(ctrl->target_rot.yaw
+			- ctrl->transform.rotation.yaw);
 	diff_pitch = ctrl->target_rot.pitch - ctrl->transform.rotation.pitch;
 	if (fabs(diff_yaw) > 1e-4 || fabs(diff_pitch) > 1e-4)
 	{
-		ctrl->transform.rotation.yaw += diff_yaw * ctrl->lerp_factor;
+		ctrl->transform.rotation.yaw = normalize_angle(
+				ctrl->transform.rotation.yaw + diff_yaw * ctrl->lerp_factor);
 		ctrl->transform.rotation.pitch += diff_pitch * ctrl->lerp_factor;
 		gui->render.dirty = true;
 	}

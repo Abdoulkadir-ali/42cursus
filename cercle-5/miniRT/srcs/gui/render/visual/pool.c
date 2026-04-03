@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:31:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 16:26:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,13 @@ void	render_tiles(t_render *render)
 	while (i < num_cores)
 	{
 		pool->render[i] = render;
-		sem_post(&pool->start[i++]);
+		sem_post(&pool->start[i]);
+		i++;
 	}
 	i = 0;
 	while (i < num_cores)
-		sem_wait(&pool->done[i++]);
+	{
+		sem_wait(&pool->done[i]);
+		i++;
+	}
 }

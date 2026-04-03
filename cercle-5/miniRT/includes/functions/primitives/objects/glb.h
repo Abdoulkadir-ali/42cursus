@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:00:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:37:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,16 @@ void					load_glb_base_texture(t_json_value *json, char *bin,
 							t_material *mat, t_json_value *pbr);
 t_mat4					quat_to_mat4(t_vec4 q);
 void					*glb_read_file(const char *path, size_t *size);
+
+void					glb_load_mesh(t_mesh *mesh, t_json_value *json,
+							char *bin, int mesh_idx);
+t_index					*glb_load_materials(t_mesh_resource *out, void *mlx_ptr,
+							t_json_value *json, char *bin);
+void					glb_load_skeleton(t_mesh *mesh, t_json_value *json,
+							char *bin, size_t extra_count);
+int						glb_count_extra_anim_nodes(t_json_value *json);
+void					glb_load_animations(t_scene *scene, t_json_value *json,
+							char *bin);
 
 /* GLB Scene Addition (srcs/primitives/scene/add/objects/mesh/loaders/) */
 bool					parse_glb(const char *path, t_scene *scene);

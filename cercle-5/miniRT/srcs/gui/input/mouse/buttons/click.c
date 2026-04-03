@@ -6,17 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 12:57:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 16:32:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
-
-void	shoot_force(t_gui *gui, t_vec2i mouse);
-void	handle_scroll(int b, t_gui *gui);
+#include "debug.h"
 
 int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 {
+	ft_print_debug("CLICK: btn=%d pos=%zu,%zu\n", button, mouse.x,
+		mouse.y);
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)
 	{
@@ -26,11 +26,15 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 			&& !scene_panel_handle_click(gui, mouse))
 			pick_at_mouse(gui, mouse);
 		if (!gui->slider_state.dragging)
+		{
+			ft_print_debug("ROTATION START\n");
 			gui->cam_ctrl.mouse_left_pressed = true;
+		}
 		gui->cam_ctrl.last_mouse = mouse;
 	}
 	else if (button == BUTTON_MIDDLE)
 	{
+		ft_print_debug("ZOOM START\n");
 		gui->cam_ctrl.mouse_middle_pressed = true;
 		gui->cam_ctrl.last_mouse = mouse;
 	}
@@ -43,6 +47,7 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 
 int	mouse_release(int button, t_gui *gui)
 {
+	ft_print_debug("RELEASE: btn=%d\n", button);
 	if (button == BUTTON_LEFT)
 	{
 		end_inline_drag(gui);

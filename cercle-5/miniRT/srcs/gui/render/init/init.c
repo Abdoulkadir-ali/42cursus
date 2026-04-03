@@ -22,7 +22,7 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	ft_memset(gui, 0, sizeof(t_gui));
 	gui->scene = scene;
 	gui->win.mlx = mlx;
-	gui->win.size = (t_vec2i){1280, 720};
+	gui->win.size = (t_vec2i){RENDER_W, RENDER_H};
 	if (!init_window(gui))
 	{
 		free(gui);

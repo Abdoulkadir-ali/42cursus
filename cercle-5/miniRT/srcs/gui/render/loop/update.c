@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:04:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 16:32:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,24 @@ int	gui_update(t_gui *gui)
 	double	delta;
 
 	delta = update_delta(gui);
+	// ft_print_debug("LOOP: START INPUT\n");
 	gui_update_input(gui);
+	// ft_print_debug("LOOP: START ANIM\n");
 	update_animations(gui, delta);
+	// ft_print_debug("LOOP: START PHYS\n");
 	update_physics_step(gui, delta);
-	gui_render(gui);
+	if (gui->render.dirty)
+	{
+		// ft_print_debug("LOOP: START RENDER (DIRTY)\n");
+		gui_render(gui);
+		// ft_print_debug("LOOP: START UPSCALE\n");
+		upscale_image(gui);
+		gui->render.dirty = false;
+	}
+	// ft_print_debug("LOOP: START MLX PUT\n");
+	mlx_put_image_to_window(gui->win.mlx, gui->win.win, gui->win.disp_img, 0, 0);
+	// ft_print_debug("LOOP: START UI TEXT\n");
+	draw_ui_text(gui, &gui->cam_ctrl);
+	// ft_print_debug("LOOP: FINISHED\n");
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:54:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:57:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,5 +163,10 @@ bool								solve_quadratic(t_quadratic q,
 										t_quadratic_roots *roots);
 
 double								aabb_surface_area(t_aabb bbox);
+
+/* Utils */
+double								clamp_d(double v, double lo, double hi);
+double								lerp_d(double a, double b, double t);
+double								normalize_angle(double angle);
 
 #endif

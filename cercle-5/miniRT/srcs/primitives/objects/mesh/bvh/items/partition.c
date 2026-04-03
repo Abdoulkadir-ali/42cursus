@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:14:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:25:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,17 @@ size_t	bvh_partition_items(t_mesh_build_item *items, size_t count, int axis,
 	double	c_val;
 
 	left = 0;
+	if (!count)
+		return (0);
 	right = count - 1;
-	while (left <= (size_t)right && right != (size_t)-1)
+	while (left <= right)
 	{
 		c_val = bvh_item_centroid(items, left, axis);
 		if (c_val < split_val)
 			left++;
 		else
 		{
-			bvh_swap_item(items, left, (size_t)right);
+			bvh_swap_item(items, left, right);
 			right--;
 		}
 	}

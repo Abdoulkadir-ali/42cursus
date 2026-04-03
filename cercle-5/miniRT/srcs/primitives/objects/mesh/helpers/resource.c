@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:03:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:23:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,13 @@ bool	mesh_resource_add_mesh(t_mesh_resource *res, t_mesh mesh)
 	return (true);
 }
 
-size_t	mesh_resource_add_material(t_mesh_resource *res, const char *name,
-			bool *error)
+t_index	mesh_resource_add_material(t_mesh_resource *res, const char *name)
 {
 	t_material	*m;
 
-	if (error)
-		*error = false;
 	if (!DYNARRAY_ENSURE_INT(&res->materials, &res->mat_count, &res->mat_cap,
 			sizeof(t_material)))
-	{
-		if (error)
-			*error = true;
-		return (0);
-	}
+		return (index_error());
 	m = &res->materials[res->mat_count];
 	ft_memset(m, 0, sizeof(t_material));
 	m->name = ft_strdup(name);
@@ -49,7 +42,7 @@ size_t	mesh_resource_add_material(t_mesh_resource *res, const char *name,
 	m->albedo_map.scale = 1.0;
 	m->specular = 0.1;
 	m->shininess = 16.0;
-	return (res->mat_count++);
+	return (index_success(res->mat_count++));
 }
 
 void	mesh_resource_free(t_mesh_resource *res)

@@ -11,17 +11,15 @@
 /* ************************************************************************** */
 
 #include "camera.h"
+#include "helpers.h"
 
 /*
 ** Rotates the camera yaw (horizontal rotation).
 */
 void	camera_rotate_yaw(t_gui *gui, double delta_yaw)
 {
-	gui->cam_ctrl.target_rot.yaw += delta_yaw;
-	while (gui->cam_ctrl.target_rot.yaw > M_PI)
-		gui->cam_ctrl.target_rot.yaw -= 2 * M_PI;
-	while (gui->cam_ctrl.target_rot.yaw < -M_PI)
-		gui->cam_ctrl.target_rot.yaw += 2 * M_PI;
+	gui->cam_ctrl.target_rot.yaw = normalize_angle(
+			gui->cam_ctrl.target_rot.yaw + delta_yaw);
 }
 
 /*

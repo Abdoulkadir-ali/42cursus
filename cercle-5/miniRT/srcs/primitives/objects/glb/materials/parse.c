@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:23:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:23:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,17 @@ void	parse_glb_material(t_glb_mat *mat)
 {
 	t_json_value	*m;
 	t_json_value	*ext;
+	t_index			s_idx;
 	size_t			s_id;
-	bool			err;
 
 	m = json_at(json_get(mat->json, "materials"), mat->mat_idx);
 	if (!m || m->type != JSON_OBJECT)
 		return ;
-	s_id = mesh_resource_add_material(mat->out, "glb_material", &err);
-	if (err)
+	s_idx = mesh_resource_add_material(mat->out, "glb_material");
+	if (s_idx.error)
 		return ;
-	mat->out_ids[mat->mat_idx] = init_index(s_id, false);
+	s_id = s_idx.i;
+	mat->out_ids[mat->mat_idx] = s_idx;
 	parse_pbr(mat, s_id, m);
 	if (!mat->out->materials[s_id].albedo_map.addr)
 	{

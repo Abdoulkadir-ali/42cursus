@@ -6,26 +6,31 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 20:13:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 16:32:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
+#include "debug.h"
 
 static void	handle_mouse_rotation(t_gui *gui, t_vec2i delta)
 {
-	gui->cam_ctrl.target_rot.yaw -= -delta.x * MOUSE_SENSITIVITY;
-	gui->cam_ctrl.target_rot.pitch -= delta.y * MOUSE_SENSITIVITY;
-	if (gui->cam_ctrl.target_rot.pitch > M_PI / 2 - 0.05)
-		gui->cam_ctrl.target_rot.pitch = M_PI / 2 - 0.05;
-	if (gui->cam_ctrl.target_rot.pitch < -M_PI / 2 + 0.05)
-		gui->cam_ctrl.target_rot.pitch = -M_PI / 2 + 0.05;
+	ssize_t	sdx;
+	ssize_t	sdy;
+
+	sdx = (ssize_t)delta.x;
+	sdy = (ssize_t)delta.y;
+	if (sdx == 0 && sdy == 0)
+		return ;
+	ft_print_debug("ROTATION: sdx=%zd sdy=%zd\n", sdx, sdy);
+	camera_rotate_yaw(gui, (double)sdx * MOUSE_SENSITIVITY);
+	camera_rotate_pitch(gui, (double)-sdy * MOUSE_SENSITIVITY);
 	gui->render.dirty = true;
 }
 
 static void	handle_mouse_zoom_drag(t_gui *gui, int dy)
 {
-	gui->cam_ctrl.target_fov -= dy * 0.1;
+	gui->cam_ctrl.target_fov -= (double)dy * 0.1;
 	clamp_fov(&gui->cam_ctrl.target_fov);
 	gui->render.dirty = true;
 }
@@ -57,10 +62,21 @@ int	mouse_motion(t_vec2i mouse, t_gui *gui)
 		return (0);
 	}
 	delta = vec2i_sub(mouse, gui->cam_ctrl.last_mouse);
+	if (gui->cam_ctrl.mouse_left_pressed || gui->cam_ctrl.mouse_middle_pressed)
+	{
+		if (delta.x != 0 || delta.y != 0)
+		{
+			ft_print_debug("MOTION: mouse=%zu,%zu last=%zu,%zu delta=%zd,%zd\n",
+				mouse.x, mouse.y, gui->cam_ctrl.last_mouse.x,
+				gui->cam_ctrl.last_mouse.y, delta.x, delta.y);
+		}
+	}
 	if (gui->cam_ctrl.mouse_left_pressed)
+	{
 		handle_mouse_rotation(gui, delta);
+	}
 	else if (gui->cam_ctrl.mouse_middle_pressed)
-		handle_mouse_zoom_drag(gui, delta.y);
+		handle_mouse_zoom_drag(gui, (int)delta.y);
 	gui->cam_ctrl.last_mouse = mouse;
 	return (0);
 }

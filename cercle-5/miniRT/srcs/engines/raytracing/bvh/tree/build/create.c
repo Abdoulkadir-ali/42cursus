@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:46:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 15:29:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ t_bvh	*bvh_create(t_scene *scene)
 	size_t			nc[2];
 
 	if (!scene)
+		return (NULL);
+	if (get_scene_total(scene) == 0)
 		return (NULL);
 	bvh = ft_calloc(1, sizeof(t_bvh));
 	if (!bvh)
