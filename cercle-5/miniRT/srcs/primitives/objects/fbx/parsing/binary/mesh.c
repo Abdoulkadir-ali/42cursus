@@ -34,7 +34,7 @@ static bool	fbx_bin_set_vertices(t_fbx_bin *fbx)
 		fbx->mesh.base.vertices[i].pos = v[i];
 		i++;
 	}
-	fbx->mesh.base.vertex_count = (int)fbx->data.vc;
+	fbx->mesh.base.vertex_count = fbx->data.vc;
 	free(v);
 	return (true);
 }
@@ -53,12 +53,12 @@ static void	fbx_bin_set_normals(t_fbx_bin *fbx)
 static void	fbx_bin_fill_params(t_fbx_flat_params *p, t_fbx_data *d)
 {
 	p->raw = d->ri;
-	p->raw_c = (int)d->rc;
+	p->raw_c = d->rc;
 	p->n = d->vn;
-	p->nc = (int)d->nc;
+	p->nc = d->nc;
 	p->u = d->vu;
-	p->uc = (int)d->uc;
-	p->vc = (int)d->vc;
+	p->uc = d->uc;
+	p->vc = d->vc;
 }
 
 static void	fbx_bin_release_arrays(t_fbx_bin *fbx)

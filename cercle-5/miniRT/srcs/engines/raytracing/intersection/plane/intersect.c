@@ -34,7 +34,9 @@ bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
 	if (vec3_dot(ray->direction, hit->normal) > 0)
 		hit->normal = vec3_scale(hit->normal, -1.0);
 	get_plane_uv(hit->point, pl->transform.forward, hit);
-	uv_s = (pl->transform.scale.x > 1e-6) ? pl->transform.scale.x : 1.0;
+	uv_s = pl->transform.scale.x;
+	if (uv_s <= 1e-6)
+		uv_s = 1.0;
 	hit->u /= uv_s;
 	hit->v /= uv_s;
 	return (true);

@@ -25,10 +25,10 @@ static void	load_indices(t_json_value *json, char *bin, t_mesh *m, int acc_idx)
 	}
 	glb_parse_accessor(json, acc_idx, &acc);
 	m->base_geometry.index_count = acc.count;
-	m->base_geometry.indices = malloc(sizeof(int) * acc.count);
+	m->base_geometry.indices = malloc(sizeof(size_t) * acc.count);
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data((t_extract){bin, &acc, &bv, m->base_geometry.indices,
-		sizeof(int), sizeof(int), sizeof(int), acc.count});
+		sizeof(size_t), sizeof(size_t), sizeof(size_t), acc.count});
 }
 
 /**
@@ -47,5 +47,5 @@ void	glb_load_mesh(t_mesh *mesh, t_json_value *json, char *bin,
 	if (!prim)
 		return ;
 	glb_load_attributes(mesh, json, bin, json_get(prim, "attributes"));
-	load_indices(json, bin, mesh, (int)json_get_int(prim, "indices"));
+	load_indices(json, bin, mesh, json_get_size_t(prim, "indices", NULL));
 }

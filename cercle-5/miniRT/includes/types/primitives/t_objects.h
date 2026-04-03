@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:01:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:49:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_sphere
 {
 	t_transform			transform;
 	double				radius_sq;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 	t_physics_body		phys;
 	bool				is_deformed;
@@ -57,7 +57,7 @@ typedef struct s_sphere
 typedef struct s_plane
 {
 	t_transform			transform;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 	t_physics_body		phys;
 }						t_plane;
@@ -66,14 +66,14 @@ typedef struct s_cylinder
 {
 	t_transform			transform;
 	t_physics_body		phys;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 }						t_cylinder;
 
 typedef struct s_cone
 {
 	t_transform			transform;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 	t_physics_body		phys;
 }						t_cone;
@@ -84,7 +84,7 @@ typedef struct s_tri_shape
 	t_physics_body		phys;
 	t_vec3				v[3];
 	t_vec3				normal;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 }						t_tri_shape;
 
@@ -94,7 +94,7 @@ typedef struct s_rect
 	t_physics_body		phys;
 	t_vec3				v[4];
 	t_vec3				normal;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 }						t_rect;
 
@@ -105,7 +105,7 @@ typedef struct s_pyramid
 	t_vec3				up;
 	double				base_size;
 	double				height;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 	t_vec3				c[4];
 	t_vec3				apex;
@@ -116,7 +116,7 @@ typedef struct s_box
 	t_transform			transform;
 	t_physics_body		phys;
 	t_vec3				half_extents;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 }						t_box;
 
@@ -127,7 +127,7 @@ typedef struct s_capsule
 	t_vec3				axis;
 	double				radius;
 	double				half_height;
-	int					mat_id;
+	size_t				mat_id;
 	t_vec3				temp_color;
 }						t_capsule;
 
@@ -138,12 +138,14 @@ typedef struct s_light
 	double				cutoff;
 	double				brightness;
 	t_vec3				rgb;
+	size_t				id;
 }						t_light;
 
 typedef struct s_camera
 {
 	t_transform			transform;
 	double				fov;
+	size_t				id;
 }						t_camera;
 
 typedef struct s_ambient

@@ -22,7 +22,7 @@ void	print_mesh(t_mesh *m)
 	if (m->name)
 		name = m->name;
 	printf("mesh(\n  name: %s\n", name);
-	printf("  tri_count: %d\n  mat_id: %d\n  bbox: ",
+	printf("  tri_count: %zu\n  mat_id: %zu\n  bbox: ",
 		m->tri_count, m->mat_id);
 	print_aabb(&m->bbox);
 	printf("\n  transform: ");

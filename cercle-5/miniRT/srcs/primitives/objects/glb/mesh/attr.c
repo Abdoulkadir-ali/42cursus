@@ -51,6 +51,6 @@ static void	load_normals(t_json_value *json, char *bin, t_mesh *m, int acc_idx)
 void	glb_load_attributes(t_mesh *mesh, t_json_value *json, char *bin,
 			t_json_value *attr)
 {
-	load_positions(json, bin, mesh, (int)json_get_int(attr, "POSITION"));
-	load_normals(json, bin, mesh, (int)json_get_int(attr, "NORMAL"));
+	load_positions(json, bin, mesh, json_get_size_t(attr, "POSITION", NULL));
+	load_normals(json, bin, mesh, json_get_size_t(attr, "NORMAL", NULL));
 }

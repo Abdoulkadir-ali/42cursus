@@ -31,8 +31,8 @@ int	*glb_load_materials(t_mesh_resource *out, void *mlx_ptr,
 	m_array = json_get(json, "materials");
 	if (!m_array || m_array->type != JSON_ARRAY)
 		return (NULL);
-	count = (int)m_array->u.array.count;
-	ids = malloc(sizeof(int) * count);
+	count = m_array->u.array.count;
+	ids = malloc(sizeof(size_t) * count);
 	if (!ids)
 		return (NULL);
 	mat.out_ids = ids;

@@ -6,15 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:02:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "glb.h"
 
-static t_mat4	*get_joint_matrix(t_mesh *mesh, int joint_idx)
+static t_mat4	*get_joint_matrix(t_mesh *mesh, size_t joint_idx)
 {
-	if (joint_idx < 0 || joint_idx >= mesh->bone_count)
+	if (joint_idx == (size_t)-1 || joint_idx >= mesh->bone_count)
 		return (NULL);
 	return (&mesh->bone_matrices[joint_idx]);
 }
@@ -75,11 +75,14 @@ static void	update_mesh_vertex(t_mesh *mesh, int i)
 
 void	glb_skin_mesh(t_mesh *mesh)
 {
-	int		i;
+	size_t		i;
 
 	if (!mesh->weights || !mesh->skeleton)
 		return ;
-	i = -1;
-	while (++i < mesh->base_geometry.vertex_count)
+	i = 0;
+	while (i < mesh->base_geometry.vertex_count)
+	{
 		update_mesh_vertex(mesh, i);
+		i++;
+	}
 }

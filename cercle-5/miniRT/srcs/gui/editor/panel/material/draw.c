@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:33:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,11 @@ void	draw_material_panel_text(t_gui *gui, t_vec2i pos)
 		pos.x + 8, 88, COL_HOVER, "MATERIAL");
 	build_mat_sliders(mat, sl, &count);
 	y = 104;
-	i = -1;
-	while (++i < count)
+	i = 0;
+	while (i < count)
 	{
 		draw_slider_row(gui, vec2i(pos.x + 8, y), sl[i]);
 		y += 30;
+		i++;
 	}
 }

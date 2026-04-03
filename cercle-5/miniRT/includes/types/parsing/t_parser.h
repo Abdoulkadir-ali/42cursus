@@ -1,30 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   t_parser.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:23:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:09:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPES_PARSING_PARSER_H
 # define TYPES_PARSING_PARSER_H
 
-
+# define PARSER_BUF_SIZE 65536
 # include <stdio.h>
 # include <stddef.h>
 # include <stdbool.h>
 # include <fcntl.h>
 # include <unistd.h>
 # include "libft.h"
-
-
-# ifndef PARSER_BUF_SIZE
-#  define PARSER_BUF_SIZE 65536
-# endif
 
 typedef struct s_parser
 {

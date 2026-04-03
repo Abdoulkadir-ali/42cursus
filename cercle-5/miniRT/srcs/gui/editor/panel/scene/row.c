@@ -46,10 +46,10 @@ void	draw_one_row(t_gui *gui, int y_px, t_type ty, int idx)
 
 	col = COL_TEXT;
 	if (gui->selection.active && gui->selection.type == ty
-		&& gui->selection.index == idx)
+		&& gui->selection.index == (size_t)idx)
 		col = COL_SELECTED;
 	if (ty == TYPE_MESH && idx >= 0
-		&& idx < gui->scene->group_count
+		&& (size_t)idx < gui->scene->group_count
 		&& gui->scene->groups[idx].name)
 	{
 		snprintf(buf, sizeof(buf), "[ME] %.55s",

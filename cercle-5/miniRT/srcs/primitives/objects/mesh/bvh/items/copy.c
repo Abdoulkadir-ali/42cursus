@@ -23,7 +23,7 @@ void	bvh_copy_indices(t_mesh *mesh, t_mbvh *bvh)
 	int		i;
 
 	i = 0;
-	while (i < mesh->tri_count)
+	while ((size_t)i < mesh->tri_count)
 	{
 		tri = bvh->items[i].index;
 		mesh->bvh_indices[i * 3 + 0] = mesh->indices[tri * 3 + 0];

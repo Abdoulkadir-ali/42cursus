@@ -48,7 +48,7 @@ void	load_glb_sampler(t_json_value *json, char *bin, t_anim_sampler *s,
 	const char		*interp;
 
 	interp = json_as_string(json_get(s_json, "interpolation"));
-	glb_parse_accessor(json, json_get_int(s_json, "input"), &acc);
+	glb_parse_accessor(json, json_get_size_t(s_json, "input", NULL), &acc);
 	s->count = acc.count;
 	if (s->count <= 0)
 		return ;
@@ -56,7 +56,7 @@ void	load_glb_sampler(t_json_value *json, char *bin, t_anim_sampler *s,
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data((t_extract){bin, &acc, &bv, s->inputs, sizeof(float),
 		sizeof(float), sizeof(float), s->count});
-	load_sampler_outputs(json, bin, s, json_get_int(s_json, "output"));
+	load_sampler_outputs(json, bin, s, json_get_size_t(s_json, "output", NULL));
 	s->method = INTERP_LINEAR;
 	if (interp && !strcmp(interp, "STEP"))
 		s->method = INTERP_STEP;

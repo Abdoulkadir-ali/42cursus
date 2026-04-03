@@ -18,7 +18,7 @@ static int	build_mesh_split(t_mbvh *bvh, int first, int count,
 {
 	t_bvh_split		split;
 	t_bvh_try		try;
-	int				mid;
+	size_t			mid;
 
 	try.bvh = bvh;
 	try.node = node;

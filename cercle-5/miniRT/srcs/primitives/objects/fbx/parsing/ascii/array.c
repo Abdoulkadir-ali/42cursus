@@ -12,7 +12,7 @@
 
 #include "fbx.h"
 
-void	*parse_array(char **p, int *count, size_t sz, void (*f)(char **,
+void	*parse_array(char **p, size_t *count, size_t sz, void (*f)(char **,
 			void *))
 {
 	size_t	cap;
@@ -34,7 +34,7 @@ void	*parse_array(char **p, int *count, size_t sz, void (*f)(char **,
 		f(p, (char *)arr + (i * sz));
 		i++;
 	}
-	*count = (int)i;
+	*count = i;
 	return (arr);
 }
 

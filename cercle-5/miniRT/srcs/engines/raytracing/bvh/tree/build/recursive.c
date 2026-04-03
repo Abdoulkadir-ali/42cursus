@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:09:41 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 03:09:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,16 @@ static int	build_children(t_bvh_tmp_node *node, t_build_item *items,
 static t_bvh_tmp_node	*build_internal_node(t_build_item *items, size_t count,
 		t_aabb bbox)
 {
-	t_bvh_tmp_node		*node;
+	t_bvh_tmp_node	*node;
 	t_split_info	info;
-	double			p_area;
 
 	node = ft_calloc(1, sizeof(t_bvh_tmp_node));
 	if (!node)
 		return (NULL);
 	node->bbox = bbox;
-	p_area = aabb_surface_area(bbox);
-	info = find_best_split(items, count, p_area);
+	ft_memset(&info, 0, sizeof(t_split_info));
+	info.axis = -1;
+	find_best_split(items, count, &info, &bbox);
 	if (info.axis == -1)
 	{
 		free(node);

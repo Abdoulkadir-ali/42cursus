@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:50:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:33:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@
 typedef struct s_render
 {
 	struct s_gui	*gui;
-	int				next_tile_id;
-	int				total_tiles;
+	size_t			next_tile_id;
+	size_t			total_tiles;
 	t_vec2i			tiles_count;
 	t_transform		transform;
 	double			half_width;
 	double			half_height;
 	double			aspect_ratio;
-	int				step;
+	size_t			step;
 	t_vec2i			pos;
 	int				color;
 	char			*pixel_addr;
@@ -49,7 +49,7 @@ typedef struct s_render
 typedef struct s_worker
 {
 	struct s_render_pool	*pool;
-	int						idx;
+	size_t					idx;
 }	t_worker;
 
 typedef struct s_render_pool
@@ -58,31 +58,31 @@ typedef struct s_render_pool
 	sem_t			start[RENDER_POOL_MAX];
 	sem_t			done[RENDER_POOL_MAX];
 	t_render		*render[RENDER_POOL_MAX];
-	int				n;
+	size_t			n;
 	bool			shutdown;
 	bool			ready;
 }	t_render_pool;
 
 typedef struct s_render_state
 {
-	int				scale;
+	size_t			scale;
 	bool			dirty;
 	bool			force_fullres;
 	double			fps;
 	long long		last_time;
 	bool			last_dirty;
-	int				num_cores;
+	size_t			num_cores;
 	t_render_pool	pool;
 }	t_render_state;
 
 typedef struct s_tile
 {
-	int				id;
+	size_t			id;
 	t_vec2i			tile;
 	t_vec2i			pos;
 	t_vec2i			p_pos;
-	int				bpp_step;
-	int				row_step;
+	size_t			bpp_step;
+	size_t			row_step;
 	char			*row_ptr;
 	char			*pixel_ptr;
 }	t_tile;

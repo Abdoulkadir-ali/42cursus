@@ -22,7 +22,7 @@ static void	load_from_image(t_json_value *json, char *bin, t_material *mat,
 	img = json_at(json_get(json, "images"), source);
 	if (!img)
 		return ;
-	bv_idx = json_get_int(img, "bufferView");
+	bv_idx = json_get_size_t(img, "bufferView", NULL);
 	if (bv_idx < 0)
 		return ;
 	glb_parse_buffer_view(json, bv_idx, &bv);
@@ -44,9 +44,9 @@ void	load_glb_base_texture(t_json_value *json, char *bin,
 	base_color_tex = json_get(pbr, "baseColorTexture");
 	if (!base_color_tex)
 		return ;
-	tex_idx = json_get_int(base_color_tex, "index");
+	tex_idx = json_get_size_t(base_color_tex, "index", NULL);
 	t = json_at(json_get(json, "textures"), tex_idx);
 	if (!t)
 		return ;
-	load_from_image(json, bin, mat, json_get_int(t, "source"));
+	load_from_image(json, bin, mat, json_get_size_t(t, "source", NULL));
 }

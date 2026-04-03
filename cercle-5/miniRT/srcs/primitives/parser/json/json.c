@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/17 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:13:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,23 @@ int	json_get_int(t_json_value *obj, const char *key)
 	val = json_get(obj, key);
 	if (!val || val->type != JSON_NUMBER)
 		return (-1);
-	return ((int)val->u.number);
+	return (val->u.number);
+}
+
+size_t	json_get_size_t(t_json_value *obj, const char *key, bool *error)
+{
+	t_json_value	*val;
+
+	val = json_get(obj, key);
+	if (!val || val->type != JSON_NUMBER)
+	{
+		if (error)
+			*error = true;
+		return ((size_t)-1);
+	}
+	if (error)
+		*error = false;
+	return ((size_t)val->u.number);
 }
 
 t_json_value	*json_parse_len(const char *json_str, size_t len)

@@ -20,7 +20,7 @@
  */
 void	update_skinned_mesh(t_skinned_mesh *mesh)
 {
-	int		i;
+	size_t	i;
 	int		b;
 	t_vec3	v;
 	t_vec3	res;
@@ -28,22 +28,27 @@ void	update_skinned_mesh(t_skinned_mesh *mesh)
 
 	if (!mesh->skeleton || mesh->bone_count == 0 || !mesh->base.vertices)
 		return ;
-	i = -1;
-	while (++i < mesh->vertex_count)
+	i = 0;
+	while (i < mesh->vertex_count)
 	{
 		v = mesh->base_vertices[i];
 		res = vec3(0, 0, 0);
-		b = -1;
-		while (++b < 4)
+		b = 0;
+		while (b < 4)
 		{
 			if (mesh->weights[i].weights[b] <= 0.0f)
+			{
+				b++;
 				continue ;
+			}
 			bone_id = mesh->weights[i].bone_indices[b];
 			res = vec3_add(res,
 					vec3_scale(mat4_mul_vec3(mesh->bone_matrices[bone_id], v),
 						mesh->weights[i].weights[b]));
+			b++;
 		}
 		mesh->base.vertices[i].pos = res;
+		i++;
 	}
 }
 
@@ -55,7 +60,7 @@ void	update_skinned_mesh(t_skinned_mesh *mesh)
  */
 void	update_skeleton_hierarchy(t_skinned_mesh *mesh)
 {
-	int		i;
+	size_t	i;
 	t_bone	*bone;
 
 	i = 0;

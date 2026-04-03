@@ -30,7 +30,7 @@ void	mesh_build_bvh(t_mesh *mesh)
 	bvh_copy_indices(mesh, &bvh);
 	mesh_build_tri_cache(mesh);
 	debug_print_bvh_build(mesh->tri_count, 0, false);
-	ft_print_debug("DEBUG: Mesh BVH built: %d nodes for %d tris\n",
+	ft_print_debug("DEBUG: Mesh BVH built: %lu nodes for %lu tris\n",
 		bvh.node_count, mesh->tri_count);
 	free(bvh.items);
 }

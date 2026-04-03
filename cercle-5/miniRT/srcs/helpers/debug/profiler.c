@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 20:05:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:59:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ volatile long	g_mesh_calls = 0;
 volatile long	g_mesh_aabb_tests = 0;
 volatile long	g_mesh_tri_tests = 0;
 volatile long	g_mesh_occ_calls = 0;
-int			g_prof_frame = 0;
+int				g_prof_frame = 0;
 struct timespec	g_prof_start;
 __thread long	g_tl_mesh_calls = 0;
 __thread long	g_tl_mesh_aabb_tests = 0;
@@ -47,15 +47,15 @@ static void	prof_print_benchmark(int max_frames)
 	fflush(stdout);
 }
 
-void		prof_print_frame(void)
+void	prof_print_frame(void)
 {
 	struct timespec	end;
 	double			ms;
-	int			max_frames;
+	int				max_frames;
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
-	ms = (end.tv_sec - g_prof_start.tv_sec) * 1000.0 \
-		+ (end.tv_nsec - g_prof_start.tv_nsec) / 1e6;
+	ms = (end.tv_sec - g_prof_start.tv_sec) * 1000.0;
+	ms += (end.tv_nsec - g_prof_start.tv_nsec) / 1e6;
 	fflush(stdout);
 	if (g_frame_count < 1024)
 		g_frame_times[g_frame_count++] = ms;

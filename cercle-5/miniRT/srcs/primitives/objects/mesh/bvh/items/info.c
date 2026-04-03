@@ -23,7 +23,7 @@ void	bvh_get_triangle_info(t_mesh *mesh, int tri_idx, t_mesh_build_item *out)
 	t_vec3	v1;
 	t_vec3	v2;
 
-	idx = &mesh->indices[tri_idx * 3];
+	idx = (int *)&mesh->indices[tri_idx * 3];
 	v0 = mesh->vertices[idx[0]].pos;
 	v1 = mesh->vertices[idx[1]].pos;
 	v2 = mesh->vertices[idx[2]].pos;

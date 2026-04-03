@@ -22,11 +22,11 @@ void	print_scene(t_scene *s)
 	if (s->name)
 		name = s->name;
 	printf("scene(\n  name: %s\n", name);
-	printf("  counts: spheres: %d, planes: %d, ",
+	printf("  counts: spheres: %zu, planes: %zu, ",
 		s->sphere_count, s->plane_count);
-	printf("cylinders: %d, cones: %d, meshes: %d,\n",
+	printf("cylinders: %zu, cones: %zu, meshes: %zu,\n",
 		s->cylinder_count, s->cone_count, s->mesh_count);
-	printf("          animated: %d, lights: %d, materials: %d\n",
+	printf("          animated: %zu, lights: %zu, materials: %zu\n",
 		s->anim_count, s->light_count, s->mat_count);
 	printf("  ambient: ");
 	print_ambient(&s->ambient);

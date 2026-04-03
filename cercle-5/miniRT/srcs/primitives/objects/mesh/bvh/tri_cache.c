@@ -14,8 +14,8 @@
 
 void	mesh_build_tri_cache(t_mesh *mesh)
 {
-	int				i;
-	int				*idx;
+	size_t			i;
+	size_t			*idx;
 	t_tri_precomp	*tc;
 
 	if (mesh->tri_cache)
@@ -23,14 +23,13 @@ void	mesh_build_tri_cache(t_mesh *mesh)
 	mesh->tri_cache = malloc(sizeof(t_tri_precomp) * mesh->tri_count);
 	if (!mesh->tri_cache)
 		return ;
-	i = 0;
-	while (i < mesh->tri_count)
+	i = -1;
+	while (++i < mesh->tri_count)
 	{
 		tc = &mesh->tri_cache[i];
 		idx = &mesh->bvh_indices[i * 3];
 		tc->v0 = mesh->vertices[idx[0]].pos;
 		tc->e1 = vec3_sub(mesh->vertices[idx[1]].pos, tc->v0);
 		tc->e2 = vec3_sub(mesh->vertices[idx[2]].pos, tc->v0);
-		i++;
 	}
 }

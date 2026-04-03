@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ void	draw_physics_panel(t_gui *gui, t_physics_body *phys, t_vec2i pos)
 		phys->angular_velocity);
 	y += 36;
 	get_phys_sliders(phys, sl);
-	i = -1;
-	while (++i < 3)
+	i = 0;
+	while (i < 3)
 	{
 		draw_slider_row(gui, (t_vec2i){pos.x + 8, y}, sl[i]);
 		y += 30;
+		i++;
 	}
 	draw_bool_label(gui, (t_vec2i){pos.x, y}, "Static", phys->is_static);
 }

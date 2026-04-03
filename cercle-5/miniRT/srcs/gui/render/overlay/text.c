@@ -53,9 +53,9 @@ void draw_ui_object(t_gui *gui)
 	mesh = &gui->scene->meshes[0];
 	snprintf(buf, sizeof(buf), "Object: %s", mesh_name(mesh));
 	mlx_string_put(gui->win.mlx, gui->win.win, 350, 38, 0xE0A820, buf);
-	snprintf(buf, sizeof(buf), "Material: %d", mesh->mat_id);
+	snprintf(buf, sizeof(buf), "Material: %zu", (size_t)mesh->mat_id);
 	mlx_string_put(gui->win.mlx, gui->win.win, 350, 58, 0xD0D0D8, buf);
-	snprintf(buf, sizeof(buf), "Vertices: %d", mesh->vertex_count);
+	snprintf(buf, sizeof(buf), "Vertices: %zu", (size_t)mesh->vertex_count);
 	mlx_string_put(gui->win.mlx, gui->win.win, 350, 78, 0xD0D0D8, buf);
 	snprintf(buf, sizeof(buf), "Transform: Pos(%.2f,%.2f,%.2f)",
 mesh->transform.pos.x, mesh->transform.pos.y, mesh->transform.pos.z);

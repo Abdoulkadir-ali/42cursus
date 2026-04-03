@@ -44,7 +44,7 @@ bool	scene_add_group_for_subs(t_scene *scene, const char *path,
 {
 	t_mesh_group	g;
 
-	if (scene->mesh_count <= start_mesh)
+	if (scene->mesh_count <= (size_t)start_mesh)
 		return (false);
 	ft_memset(&g, 0, sizeof(g));
 	set_group_name(&g, path);

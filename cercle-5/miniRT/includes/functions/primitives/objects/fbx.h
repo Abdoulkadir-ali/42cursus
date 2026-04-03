@@ -41,7 +41,7 @@ ssize_t					safe_read(int fd, void *buf, size_t count);
 /* ASCII Parsing Helpers */
 char					*find_node(char *p, char *end, const char *name);
 char					*advance_to_data(char *p, char *end);
-void					*parse_array(char **p, int *count, size_t sz,
+void					*parse_array(char **p, size_t *count, size_t sz,
 							void (*f)(char **, void *));
 void					f_vec2(char **p, void *dst);
 void					f_vec3(char **p, void *dst);

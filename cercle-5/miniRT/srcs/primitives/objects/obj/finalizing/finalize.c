@@ -22,9 +22,9 @@ static void	obj_free(t_obj *obj)
 static void	obj_set_mat_id(t_mesh *mesh, t_obj *obj)
 {
 	mesh->mat_id = 0;
-	if (obj->current_mat_id >= 0)
+	if (obj->current_mat_id != (size_t)-1)
 		mesh->mat_id = obj->current_mat_id;
-	else if (obj->first_mtl_id >= 0)
+	else if (obj->first_mtl_id != (size_t)-1)
 		mesh->mat_id = obj->first_mtl_id;
 }
 

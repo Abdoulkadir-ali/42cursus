@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:44:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:41:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,84 @@
 # define RAYTRACING_H
 # define MAX_LEAF_OBJECTS 4
 # define BVH_BINS 16
+# define MAX_DEPTH 5
 
 # include "scene.h"
 # include <pthread.h>
 
-/* 3. FUNCTION PROTOTYPES */
+typedef struct s_light_calc
+{
+	t_vec3	ld;
+	t_vec3	norm;
+	double	dist;
+	double	ndotl;
+}	t_light_calc;
+
+typedef struct s_ray_query
+{
+	const t_ray	*ray;
+	t_hit		*hit;
+	double		*tm;
+}	t_ray_query;
+
+typedef struct s_occ_query
+{
+	const t_bvh	*bvh;
+	const t_ray	*ray;
+	double		max_t;
+}	t_occ_query;
+
+typedef struct s_box_calc
+{
+	t_vec3	ax[3];
+	double	p[3];
+	double	d[3];
+	double	h[3];
+}	t_box_calc;
+
+typedef struct s_cap_calc
+{
+	t_vec3	p[2];
+	double	t[3];
+	bool	hit[3];
+	double	best;
+	int		type;
+}	t_cap_calc;
+
+
+/* Private sweep context used only by the BVH split implementation */
+typedef struct s_sweep
+{
+    t_aabb  bboxes[BVH_BINS];
+    size_t  cnts[BVH_BINS];
+    double  lo;
+    double  hi;
+    double  inv;
+    int     axis;
+}   t_sweep;
+
+
+
 
 /* 3. FUNCTION PROTOTYPES */
-
 /* srcs/raytracing/bvh/tree/ */
+/* Helper functions – internal to the split folder */
+void    init_bins(t_sweep *sw);
+void    fill_bins(t_sweep *sw, t_build_item *items, size_t count);
+
+
 t_bvh			*bvh_create(t_scene *scene);
 void			bvh_destroy(t_bvh *bvh);
 void			node_destroy(t_bvh_tmp_node *node);
-t_split_info	find_best_split(t_build_item *items, size_t count,
-				double p_area);
+void			find_best_split(t_build_item *items, size_t count,
+				t_split_info *info, t_aabb *bounds);
 t_bvh_tmp_node	*init_leaf_node(t_build_item *items, size_t count);
 t_bvh_tmp_node	*build_recursive(t_build_item *items, size_t count);
 size_t			collect_objects(t_scene *scene, t_build_item *items);
 int				compare_x(const void *a, const void *b);
 int				compare_y(const void *a, const void *b);
 int				compare_z(const void *a, const void *b);
+void			build_emissive_cache(t_scene *sc);
 
 /* srcs/raytracing/bvh/bound/ */
 t_aabb	aabb_from_ref(t_scene *s, t_bvh_ref ref);
@@ -44,7 +102,7 @@ void	aabb_expand_point(t_aabb *bbox, t_vec3 p);
 double	aabb_surface_area(t_aabb bbox);
 bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray, double *tmin,
 			double *tmax);
-t_aabb	sphere_aabb(t_sphere *sp);
+t_aabb	sphere_aabb(const t_sphere *sp);
 t_aabb	tri_shape_aabb(t_tri_shape *tr);
 t_aabb	rect_aabb(t_rect *rc);
 t_aabb	pyramid_aabb(t_pyramid *py);
@@ -59,8 +117,11 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
 bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t);
 bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 			t_hit *hit);
+bool	occlude_primitive(const t_ray *ray, t_scene *sc, t_bvh_ref ref,
+			double max_t);
 
 t_vec3	clamp_color(t_vec3 color);
+bool	is_emissive(t_scene *sc, size_t mat_id);
 
 /* srcs/raytracing/trace/ */
 void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction);
@@ -74,6 +135,10 @@ void	get_material(t_shading *sha);
 void	apply_bump(t_shading *sha);
 t_vec3	calc_light(t_shading *sha, t_light light);
 void	add_emissive_lighting(t_shading *sha, t_scene *sc, t_vec3 *total);
+void	em_vol(t_shading *sha, t_scene *sc, t_vec3 *total, t_emissive_ref ref);
+void	em_surf(t_shading *sha, t_scene *sc, t_vec3 *total, t_emissive_ref ref);
+void	apply_em(t_shading *sha, t_vec3 *total, t_material *mat, double r);
+double	shading_attenuation(double dist_sq);
 
 /* srcs/raytracing/intersection/ */
 bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit);

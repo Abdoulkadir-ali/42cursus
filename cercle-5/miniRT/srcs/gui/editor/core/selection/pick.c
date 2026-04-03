@@ -14,13 +14,13 @@
 
 static int	find_group_by_mesh(t_scene *sc, int mesh_idx)
 {
-	int	gi;
+	size_t	gi;
 
 	gi = 0;
 	while (gi < sc->group_count)
 	{
-		if (mesh_idx >= sc->groups[gi].start
-			&& mesh_idx < sc->groups[gi].start + sc->groups[gi].sub_count)
+		if ((size_t)mesh_idx >= sc->groups[gi].start
+			&& (size_t)mesh_idx < sc->groups[gi].start + sc->groups[gi].sub_count)
 			return (gi);
 		gi++;
 	}

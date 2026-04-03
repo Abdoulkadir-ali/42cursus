@@ -18,7 +18,7 @@ void	fbx_build_flat(t_mesh *m, t_fbx_flat_params *p)
 
 	if (!p)
 		return ;
-	ft_print_debug("DEBUG: Starting fbx_build_flat (raw_c=%d, vc=%d)\n",
+	ft_print_debug("DEBUG: Starting fbx_build_flat (raw_c=%zu, vc=%zu)\n",
 		p->raw_c, p->vc);
 	if (!fbx_setup_build(&b, m, p))
 		return ;
@@ -31,6 +31,6 @@ void	fbx_build_flat(t_mesh *m, t_fbx_flat_params *p)
 	b.vertices = NULL;
 	b.triangles = NULL;
 	free(b.v);
-	ft_print_debug("DEBUG: fbx_build_flat final count: %d vertices (%d tris)\n",
+	ft_print_debug("DEBUG: fbx_build_flat final count: %zu vertices (%zu tris)\n",
 		b.vp, b.vp / 3);
 }

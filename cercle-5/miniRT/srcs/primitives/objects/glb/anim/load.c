@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:32:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 	t_json_value	*ch;
 	t_json_value	*tgt;
 	const char		*path;
-	int				i;
+	size_t			i;
 
 	if (!json_get(anim_json, "channels"))
 		return ;
@@ -29,8 +29,8 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 		ch = json_at(json_get(anim_json, "channels"), i);
 		tgt = json_get(ch, "target");
 		path = json_as_string(json_get(tgt, "path"));
-		anim->channels[i].sampler_idx = json_get_int(ch, "sampler");
-		anim->channels[i].node_idx = json_get_int(tgt, "node");
+		anim->channels[i].sampler_idx = json_get_size_t(ch, "sampler", NULL);
+		anim->channels[i].node_idx = json_get_size_t(tgt, "node", NULL);
 		anim->channels[i].path = PATH_WEIGHTS;
 		if (path && !strcmp(path, "translation"))
 			anim->channels[i].path = PATH_TRANSLATION;
@@ -57,7 +57,7 @@ static void	update_max_time(t_animation *clip, t_anim_sampler *s)
 static void	load_all_samplers(t_json_value *j, char *bin, t_animation *clip,
 				t_json_value *samplers)
 {
-	int	s;
+	size_t	s;
 
 	clip->sampler_count = samplers->u.array.count;
 	clip->samplers = malloc(sizeof(t_anim_sampler) * clip->sampler_count);
@@ -76,14 +76,14 @@ void	glb_load_animations(t_scene *scene, t_json_value *json, char *bin)
 {
 	t_animation		*clip;
 	t_json_value	*anims;
-	int				i;
+	size_t			i;
 
 	anims = json_get(json, "animations");
 	if (!anims || anims->type != JSON_ARRAY)
 		return ;
 	glb_ensure_clip_capacity(scene, anims->u.array.count);
 	i = -1;
-	while (++i < (int)anims->u.array.count)
+	while (++i < anims->u.array.count)
 	{
 		clip = &scene->clips[scene->clip_count + i];
 		assign_anim_data(clip, json_at(anims, i));

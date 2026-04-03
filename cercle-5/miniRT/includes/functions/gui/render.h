@@ -17,7 +17,6 @@ unsigned int color_blend(unsigned int dst, int src, float alpha);
 void render_tiles(t_render *render);
 void gui_update_hover(t_gui *gui);
 void process_pixel(t_render *render, t_vec2i pos, char *pixel_addr);
-void make_camera_ray(t_render *render, double u, double v, t_ray *ray);
 void upscale_image(t_gui *gui);
 void fullres_toggle(t_gui *gui);
 void poll_map_job(t_gui *gui);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:15 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:08:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	update_bone_recursive(t_mesh *mesh, int bone_idx, t_mat4 parent_mat)
 {
 	t_bone	*bone;
 	double	s[3];
-	int		i;
+	size_t	i;
 
 	bone = &mesh->skeleton[bone_idx];
 	s[0] = bone->trs.scale.x;
@@ -48,28 +48,33 @@ static void	update_bone_recursive(t_mesh *mesh, int bone_idx, t_mat4 parent_mat)
 	bone->global_transform = mat4_mul(bone->local_transform, parent_mat);
 	mesh->bone_matrices[bone_idx] = mat4_mul(bone->inv_bind_pose,
 			bone->global_transform);
-	i = -1;
-	while (++i < mesh->bone_count)
+	i = 0;
+	while (i < mesh->bone_count)
+	{
 		if (mesh->skeleton[i].parent == bone_idx)
 			update_bone_recursive(mesh, i, bone->global_transform);
+		i++;
+	}
 }
 
 static void	apply_animation(t_mesh *mesh, t_animation *clip)
 {
-	int	i;
-	int	bone_idx;
+	size_t	i;
+	size_t	bone_idx;
 
 	i = -1;
 	while (++i < clip->channel_count)
 	{
 		bone_idx = -1;
 		while (++bone_idx < mesh->bone_count)
+		{
 			if (mesh->skeleton[bone_idx].node_idx
 				== clip->channels[i].node_idx)
 				apply_anim_channel(&mesh->skeleton[bone_idx],
 					&clip->channels[i],
 					&clip->samplers[clip->channels[i].sampler_idx],
 					clip->current_time);
+		}
 	}
 }
 
@@ -80,7 +85,7 @@ static void	apply_animation(t_mesh *mesh, t_animation *clip)
 void	glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 {
 	t_animation	*clip;
-	int			i;
+	size_t	i;
 
 	if (!mesh->skeleton || scene->clip_count <= 0)
 		return ;
@@ -89,10 +94,13 @@ void	glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 	if (clip->current_time > clip->max_time)
 		clip->current_time = fmod(clip->current_time, clip->max_time);
 	apply_animation(mesh, clip);
-	i = -1;
-	while (++i < mesh->bone_count)
+	i = 0;
+	while (i < mesh->bone_count)
+	{
 		if (mesh->skeleton[i].parent == -1)
 			update_bone_recursive(mesh, i, mat4_identity());
+		i++;
+	}
 	glb_skin_mesh(mesh);
 	glb_reapply_scene_transform(mesh);
 }

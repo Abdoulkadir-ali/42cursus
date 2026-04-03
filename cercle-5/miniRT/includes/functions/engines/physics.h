@@ -1,68 +1,70 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   physics.h                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/06 20:26:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/06 20:26:50 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef PHYSICS_H
 # define PHYSICS_H
 
 # include "scene.h"
-# include <pthread.h>
+# include "objects.h"
 
-# define MAX_CONTACTS 1024
-# define SLOP 0.01
-# define BAUMGARTE 0.2
-# define SOLVER_ITERATIONS 10
-# define RESTITUTION_SLOP 1.0
+/* Forward declarations */
+typedef struct s_collision t_collision;
+
+/* ── Mesh Collision ─────────────────────────────────────────────────────── */
+
+bool	test_sphere_triangle(const t_sphere *s, t_vec3 v[3], t_collision *col);
+t_vec3	closest_point_on_triangle(t_vec3 p, t_vec3 a, t_vec3 b, t_vec3 c);
+bool	mesh_aabb_overlap(const t_aabb *a, const t_aabb *b);
+bool	detect_sphere_capsule_collision(const t_sphere *s,
+			const t_collider *c, t_collision *out);
+t_aabb	sphere_aabb(const t_sphere *s);
 
 /* ── GJK / EPA ──────────────────────────────────────────────────────────── */
-typedef t_vec3 (*t_support_fn)(const void *shape, t_vec3 dir);
 
-typedef struct s_gjk_shape
-{
-	const void		*data;
-	t_support_fn	support;
-	t_vec3			center;
-}	t_gjk_shape;
-
-typedef struct s_contact
-{
-	t_physics_body		*a;
-	t_transform			*ta;
-	t_physics_body		*b;
-	t_transform			*tb;
-	t_vec3				normal;
-	double				penetration;
-	double				restitution;
-	double				friction;
-	t_vec3				contact_point;
-	t_vec3				ra;
-	t_vec3				rb;
-}						t_contact;
-
-typedef struct s_simplex
-{
-	t_vec3	pts[4];
-	t_vec3	a_pts[4];
-	t_vec3	b_pts[4];
-	int		n;
-}	t_simplex;
-
+#define GJK_MAX_ITER 20
 /* Global State Access */
-t_physics_state *get_physics_state(void);
+
 void    phys_debug_spheres(t_scene *scene);
 
 /* Integration */
-void    update_physics(t_scene *scene, double dt);
-void    integrate_bodies(t_scene *scene, double dt);
-int     generate_contacts(t_scene *scene, t_contact *contacts, int max_c);
+void    update_physics(t_scene *scene, t_physic_engine *engine, double dt);
+void    integrate_bodies(t_scene *scene, t_physic_engine *engine, double dt);
+size_t  generate_contacts(t_scene *scene, t_physic_engine *engine, t_contact *contacts, size_t max_c);
+
+/* Internal Integrators */
+void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s);
+void	integrate_rect(t_rect *rc, double dt, t_physics_settings *s);
+void	integrate_pyramid(t_pyramid *py, double dt, t_physics_settings *s);
+void	integrate_box(t_box *bx, double dt, t_physics_settings *s);
+void	integrate_capsule(t_capsule *cap, double dt, t_physics_settings *s);
+void	integrate_tri(t_tri_shape *tr, double dt, t_physics_settings *s);
+void	integrate_cylinder(t_cylinder *cy, double dt, t_physics_settings *s);
+t_vec3	rot_by_ang(t_vec3 v, t_vec3 w, double dt);
+
+/* Query Functions */
+void	loop_boxes(t_contact_query *q, t_gjk_shape *s, t_physics_body *b,
+			t_transform *t);
+void	loop_capsules(t_contact_query *q, t_gjk_shape *s, t_physics_body *b,
+			t_transform *t);
+void	loop_cylinders(t_contact_query *q, t_gjk_shape *s, t_physics_body *b,
+			t_transform *t);
+void	loop_rects(t_contact_query *q, t_gjk_shape *s, t_physics_body *b,
+			t_transform *t);
+void	loop_tris(t_contact_query *q, t_gjk_shape *s, t_physics_body *b,
+			t_transform *t);
+void	loop_pyramids(t_contact_query *q, t_gjk_shape *s, t_physics_body *b,
+			t_transform *t);
+size_t	query_shapes(t_contact_query *query, t_gjk_shape *sa,
+			t_physics_body *ba, t_transform *ta);
+size_t	query_sphere(t_contact_query *qu, size_t idx);
+size_t	query_box(t_contact_query *qu, size_t idx);
+size_t	query_capsule(t_contact_query *qu, size_t idx);
+size_t	query_cylinder(t_contact_query *qu, size_t idx);
+size_t	query_rect(t_contact_query *qu, size_t idx);
+size_t	query_tri(t_contact_query *qu, size_t idx);
+size_t	query_pyramid(t_contact_query *qu, size_t idx);
+
+/* Internal Helpers */
+bool	aabb_overlap(t_aabb a, t_aabb b);
+bool	aabb_v_sphere(t_aabb a, t_vec3 center, double radius);
+void	init_phys_pool(t_physic_engine *engine);
 
 /* Support functions (one per shape type) */
 t_vec3	gjk_support_sphere(const void *data, t_vec3 dir);
@@ -74,31 +76,67 @@ t_vec3	gjk_support_tri(const void *data, t_vec3 dir);
 t_vec3	gjk_support_pyramid(const void *data, t_vec3 dir);
 t_vec3	gjk_support_mesh(const void *data, t_vec3 dir);
 bool	detect_sphere_mesh_collision(const t_sphere *s, t_mesh *m,
-			t_vec3 *nrm, double *pen);
+			t_physic_engine *en, t_collision *out);
+
 
 /* GJK intersection test — fills 'out' simplex for EPA */
 bool	gjk_intersect(t_gjk_shape *a, t_gjk_shape *b, t_simplex *out);
 
+/* GJK Internal Helpers (modular structure) */
+bool	gjk_simplex_line(t_simplex *s, t_vec3 *dir);
+bool	gjk_simplex_triangle(t_simplex *s, t_vec3 *dir);
+bool	gjk_simplex_tetrahedron(t_simplex *s, t_vec3 *dir);
+t_vec3	md_support(t_gjk_shape *a, t_gjk_shape *b, t_vec3 dir, t_simplex *s);
+void	set_simplex3(t_simplex *s, size_t *i, t_vec3 *p);
+
 /* EPA — extracts MTD from GJK simplex */
-bool	gjk_epa(t_gjk_shape *a, t_gjk_shape *b, t_simplex *s,
-			t_vec3 *normal, double *depth,
-			t_vec3 *contact_a, t_vec3 *contact_b);
+bool	gjk_epa(t_col_pair *p, t_simplex *s, t_epa_res *res);
+
+/* EPA Internal Helpers (modular structure) */
+t_epa_face	epa_make_face(t_epa_poly *p, size_t i0, size_t i1, size_t i2);
+size_t		epa_closest_face(t_epa_poly *p);
+void		epa_init_poly(t_epa_poly *p, t_simplex *s);
+void		epa_expand_poly(t_epa_poly *p, t_vec3 *v, t_edge *e, size_t n_e);
+void		epa_collect_silhouette(t_epa_poly *p, t_vec3 pt, t_edge *e, size_t *n);
+void		epa_interpolate(t_epa_poly *poly, t_epa_face *f, t_epa_res *res);
 
 /* Contact generation */
-int		gjk_make_contact(t_gjk_shape *sa, t_gjk_shape *sb,
-			t_physics_body *ba, t_physics_body *bb,
-			t_transform *ta, t_transform *tb,
-			t_contact *c);
-
-int		gjk_vs_plane(t_gjk_shape *sa, t_physics_body *ba, t_transform *ta,
-			t_plane *pl, t_contact *c);
+bool	gjk_make_contact(t_col_pair *pair, t_contact *c);
+bool	gjk_vs_plane(t_col_pair *p, t_plane *pl, t_contact *c);
 
 /* Solver */
-void    solve_velocities(t_contact *contacts, int count);
-void    solve_positions(t_contact *contacts, int count);
+void	solve_velocities(t_contact *c, t_physic_engine *en, size_t count);
+void	solve_positions(t_contact *contacts, t_physic_engine *engine, size_t count);
+
+/* Velocity Solver Internal Helpers */
+void	solve_one_velocity(t_contact *ct, t_physic_engine *en, double ia, double ib);
+void	apply_friction(t_contact *ct, double inv_a, double inv_b, t_vec3 rel_v);
+void	apply_phys_torque(t_physics_body *b, t_vec3 r, t_vec3 imp, double i_m_s);
+double	ang_term(t_physics_body *body, t_vec3 r, t_vec3 dir, double inv_m);
+t_vec3	point_vel(t_physics_body *body, t_vec3 r);
+double	get_inv_mass(t_physics_body *body);
 
 /* Utils */
 double  clamp_d(double v, double lo, double hi);
 
+
+
+size_t	pyramid_vs_planes(t_contact_query *qu, t_pyramid *py);
+size_t	cylinder_vs_all_planes(t_contact_query *qu, t_col_pair *p);
+size_t	box_vs_all_planes(t_contact_query *qu, t_box *bx);
+size_t	rect_vs_all_planes(t_contact_query *qu, t_rect *rc);
+size_t	tri_vs_all_planes(t_contact_query *qu, t_tri_shape *tr);
+void	sphere_vs_sphere(t_sphere *sp, t_sphere *other, t_contact_query *q);
+void	sphere_vs_mesh(t_sphere *sp, t_mesh *m, t_contact_query *q);
+void	sphere_vs_plane_analytic(t_sphere *sp, t_plane *pl, t_contact_query *q);
+void	traverse_sphere_bvh(t_contact_query *qu, size_t idx, t_sphere *sp);
+
+/* Internal collision helpers */
+bool	mesh_aabb_overlap(const t_aabb *a, const t_aabb *b);
+bool	test_sphere_triangle(const struct s_sphere *s, t_vec3 v[3],
+			t_collision *col);
+t_vec3	closest_point_on_triangle(t_vec3 p, t_vec3 v0, t_vec3 v1, t_vec3 v2);
+bool	detect_sphere_capsule_collision(const struct s_sphere *s,
+			const t_collider *c, t_collision *out);
 
 #endif

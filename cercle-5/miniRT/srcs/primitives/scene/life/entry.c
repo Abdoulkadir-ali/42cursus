@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:20:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static bool	snap_alloc_geo(t_cache_snap *s, const t_mesh *m)
 	s->vertices = malloc(sizeof(t_vec3) * m->vertex_count);
 	if (!s->vertices)
 		return (false);
-	s->indices = malloc(sizeof(int) * m->tri_count * 3);
+	s->indices = malloc(sizeof(size_t) * m->tri_count * 3);
 	if (!s->indices)
 		return (false);
 	if (m->normals)
@@ -48,7 +48,7 @@ static bool	snap_one(t_cache_snap *s, const t_mesh *m)
 	if (!s->name || !snap_alloc_geo(s, m))
 		return (false);
 	ft_memcpy(s->vertices, m->vertices, sizeof(t_vec3) * m->vertex_count);
-	ft_memcpy(s->indices, m->indices, sizeof(int) * m->tri_count * 3);
+	ft_memcpy(s->indices, m->indices, sizeof(size_t) * m->tri_count * 3);
 	if (m->normals)
 		ft_memcpy(s->normals, m->normals, sizeof(t_vec3) * m->vertex_count);
 	if (m->uvs)
@@ -75,12 +75,13 @@ bool	mesh_cache_save(t_scene *scene, const char *path, int start_mesh)
 	if (!entry->snaps)
 		return (true);
 	entry->count = 0;
-	i = -1;
-	while (++i < count)
+	i = 0;
+	while (i < count)
 	{
 		if (!snap_one(&entry->snaps[i], &scene->meshes[start_mesh + i]))
 			return (true);
 		entry->count++;
+		i++;
 	}
 	return (true);
 }

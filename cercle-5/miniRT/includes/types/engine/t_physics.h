@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   physics.h                                          :+:      :+:    :+:   */
+/*   t_physics.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:50:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:25:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,33 @@
 # define TYPES_ENGINE_PHYSICS_H
 
 # include "maths.h"
+# include <pthread.h>
+# include <semaphore.h>
+# include <stdbool.h>
+
+# define MAX_CONTACTS 1024
+# define PHYS_NUM_TYPES 7
+
+struct s_scene;
+
+typedef t_vec3 (*t_support_fn)(const void *shape, t_vec3 dir);
+
+typedef struct s_collision
+{
+	t_vec3	normal;
+	double	pen;
+	double	min_dist_sq;
+	bool	hit;
+	t_vec3	best_normal;
+	double	best_pen;
+}	t_collision;
+
+typedef struct s_gjk_shape
+{
+	const void		*data;
+	t_support_fn	support;
+	t_vec3			center;
+}	t_gjk_shape;
 
 typedef struct s_physics_body
 {
@@ -32,13 +59,93 @@ typedef struct s_physics_body
 	bool				use_gravity;
 }						t_physics_body;
 
-typedef struct s_physics_state
+typedef struct s_contact
 {
+	t_physics_body		*a;
+	t_transform			*ta;
+	t_physics_body		*b;
+	t_transform			*tb;
+	t_vec3				normal;
+	double				penetration;
+	double				restitution;
+	double				friction;
+	t_vec3				contact_point;
+	t_vec3				ra;
+	t_vec3				rb;
+}						t_contact;
+
+typedef struct s_simplex
+{
+	t_vec3	pts[4];
+	t_vec3	a_pts[4];
+	t_vec3	b_pts[4];
+	size_t	n;
+}	t_simplex;
+
+typedef struct s_physics_settings
+{
+	double				slop;
+	double				baumgarte;
+	size_t				solver_iterations;
+	double				restitution_slop;
 	t_vec3				gravity;
 	double				global_damping;
 	double				time_scale;
-	int					mesh_simplify_collision;
-}						t_physics_state;
+	bool				mesh_simplify_collision;
+}						t_physics_settings;
+
+typedef struct s_gen_job
+{
+	struct s_physic_engine	*engine;
+	struct s_scene			*scene;
+	struct s_contact		*out;
+	size_t					max_c;
+	size_t					count;
+	size_t					type;
+}	t_gen_job;
+
+typedef struct s_contact_query
+{
+	struct s_physic_engine	*engine;
+	t_contact			*contacts;
+	size_t				count;
+	size_t				max;
+}						t_contact_query;
+
+typedef struct s_col_pair
+{
+	t_gjk_shape		*sa;
+	t_gjk_shape		*sb;
+	t_physics_body	*ba;
+	t_physics_body	*bb;
+	t_transform		*ta;
+	t_transform		*tb;
+}						t_col_pair;
+
+typedef struct s_worker_info
+{
+	struct s_physic_engine	*engine;
+	size_t					idx;
+}						t_worker_info;
+
+typedef struct s_phys_pool
+{
+	pthread_t			threads[PHYS_NUM_TYPES];
+	t_gen_job			jobs[PHYS_NUM_TYPES];
+	t_worker_info		worker_info[PHYS_NUM_TYPES];
+	size_t				indices[PHYS_NUM_TYPES];
+	sem_t				start[PHYS_NUM_TYPES];
+	sem_t				done[PHYS_NUM_TYPES];
+	bool				shutdown;
+	bool				initialized;
+}						t_phys_pool;
+
+typedef struct s_physic_engine
+{
+	struct s_scene		*scene;
+	t_physics_settings	settings;
+	t_phys_pool			pool;
+}						t_physic_engine;
 
 typedef enum e_collider_type
 {
@@ -65,5 +172,40 @@ typedef struct s_collider
 	}					data;
 }						t_collider;
 
+typedef struct s_epa_face
+{
+	size_t	idx[3];
+	t_vec3	normal;
+	double	dist;
+}	t_epa_face;
+
+# define EPA_MAX_ITER   30
+# define EPA_MAX_FACES  64
+# define EPA_MAX_VERTS  32
+# define EPA_TOL        1e-5
+
+typedef struct s_epa_poly
+{
+	t_vec3		pts[EPA_MAX_VERTS];
+	t_vec3		a_pts[EPA_MAX_VERTS];
+	t_vec3		b_pts[EPA_MAX_VERTS];
+	size_t		n_verts;
+	t_epa_face	faces[EPA_MAX_FACES];
+	size_t		n_faces;
+}	t_epa_poly;
+
+typedef struct s_edge
+{
+	size_t	a;
+	size_t	b;
+}	t_edge;
+
+typedef struct s_epa_res
+{
+	t_vec3	normal;
+	double	depth;
+	t_vec3	contact_a;
+	t_vec3	contact_b;
+}	t_epa_res;
 
 #endif

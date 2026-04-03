@@ -16,7 +16,7 @@ static void	draw_inspector_header(t_gui *gui, t_vec2i pos)
 {
 	char	buf[64];
 
-	snprintf(buf, sizeof(buf), "%s  #%d",
+	snprintf(buf, sizeof(buf), "%s  #%zu",
 		type_name_str(gui->selection.type), gui->selection.index);
 	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + 8, 50, COL_ACCENT, buf);
 }

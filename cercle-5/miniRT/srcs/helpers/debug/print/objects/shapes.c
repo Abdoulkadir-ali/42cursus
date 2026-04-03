@@ -19,7 +19,7 @@ void	print_sphere(t_sphere *s)
 	printf("sphere(\n  transform: ");
 	print_transform(&s->transform);
 	printf("\n  radius_sq: %.4f\n", s->radius_sq);
-	printf("  mat_id: %d\n)", s->mat_id);
+	printf("  mat_id: %zu\n)", s->mat_id);
 }
 
 void	print_plane(t_plane *p)
@@ -28,7 +28,7 @@ void	print_plane(t_plane *p)
 		return ;
 	printf("plane(\n  transform: ");
 	print_transform(&p->transform);
-	printf("\n  mat_id: %d\n)", p->mat_id);
+	printf("\n  mat_id: %zu\n)", p->mat_id);
 }
 
 void	print_cylinder(t_cylinder *c)
@@ -37,7 +37,7 @@ void	print_cylinder(t_cylinder *c)
 		return ;
 	printf("cylinder(\n  transform: ");
 	print_transform(&c->transform);
-	printf("\n  mat_id: %d\n)", c->mat_id);
+	printf("\n  mat_id: %zu\n)", c->mat_id);
 }
 
 void	print_cone(t_cone *c)
@@ -46,5 +46,5 @@ void	print_cone(t_cone *c)
 		return ;
 	printf("cone(\n  transform: ");
 	print_transform(&c->transform);
-	printf("\n  mat_id: %d\n)", c->mat_id);
+	printf("\n  mat_id: %zu\n)", c->mat_id);
 }

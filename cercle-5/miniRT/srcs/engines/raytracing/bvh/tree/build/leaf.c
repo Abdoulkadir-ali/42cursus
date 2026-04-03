@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 12:45:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 12:45:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:43:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_bvh_tmp_node	*init_leaf_node(t_build_item *items, size_t count)
 {
 	t_bvh_tmp_node	*node;
-	size_t		i;
+	size_t			i;
 
 	node = ft_calloc(1, sizeof(t_bvh_tmp_node));
 	if (!node)

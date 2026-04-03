@@ -37,7 +37,7 @@ static int	mat_id_of_selection(t_gui *gui)
 		return (sc->boxes[sel->index].mat_id);
 	if (sel->type == TYPE_CAPSULE)
 		return (sc->capsules[sel->index].mat_id);
-	if (sel->type == TYPE_MESH && sel->index >= 0
+	if (sel->type == TYPE_MESH && 1
 		&& sel->index < sc->group_count)
 		return (sc->meshes[sc->groups[sel->index].start].mat_id);
 	return (-1);
@@ -52,7 +52,7 @@ t_material	*get_selected_material(t_gui *gui)
 	if (!sel->active || !gui->scene)
 		return (NULL);
 	mat_id = mat_id_of_selection(gui);
-	if (mat_id < 0 || mat_id >= gui->scene->mat_count)
+	if ((size_t)mat_id >= gui->scene->mat_count)
 		return (NULL);
 	return (&gui->scene->materials[mat_id]);
 }

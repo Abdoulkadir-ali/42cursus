@@ -26,12 +26,12 @@ static void	set_selection_bbox(t_gui *gui, t_type type, int index)
 	t_bvh_ref		ref;
 	int				si;
 
-	if (type == TYPE_MESH && index >= 0 && index < gui->scene->group_count)
+	if (type == TYPE_MESH && (size_t)index < gui->scene->group_count)
 	{
 		g = &gui->scene->groups[index];
 		union_bbox = gui->scene->meshes[g->start].bbox;
 		si = 0;
-		while (++si < g->sub_count)
+		while ((size_t)++si < g->sub_count)
 			union_bbox = aabb_union(&union_bbox,
 					&gui->scene->meshes[g->start + si].bbox);
 		gui->selection.bbox = union_bbox;

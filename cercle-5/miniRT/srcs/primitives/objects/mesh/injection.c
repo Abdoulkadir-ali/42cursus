@@ -19,7 +19,7 @@ static void	clone_instance_materials(t_scene *scene, int start_mesh)
 	int	new_id;
 
 	i = start_mesh;
-	while (i < scene->mesh_count)
+	while ((size_t)i < scene->mesh_count)
 	{
 		new_id = scene_clone_material(scene, scene->meshes[i].mat_id);
 		if (new_id >= 0)
@@ -33,7 +33,7 @@ static void	apply_material(t_parse_obj *item, t_scene *scene, int start_mesh)
 	int	i;
 
 	i = start_mesh;
-	while (i < scene->mesh_count)
+	while ((size_t)i < scene->mesh_count)
 	{
 		scene->materials[scene->meshes[i].mat_id].albedo_map.color_a
 			= item->data.mesh_info.color;
@@ -52,14 +52,14 @@ static bool	inject_mesh_resource(t_scene *scene, t_mesh_resource *res)
 	int	gi;
 
 	mi = 0;
-	while (mi < res->mesh_count)
+	while ((size_t)mi < res->mesh_count)
 	{
 		if (!scene_add_mesh(scene, res->meshes[mi]))
 			return (false);
 		mi++;
 	}
 	gi = 0;
-	while (gi < res->group_count)
+	while ((size_t)gi < res->group_count)
 	{
 		if (!scene_add_group(scene, res->groups[gi]))
 			return (false);
@@ -89,7 +89,7 @@ bool	scene_add_collection(t_scene *scene, t_parse_obj *item)
 		clone_instance_materials(scene, start_mesh);
 	}
 	apply_material(item, scene, start_mesh);
-	if (scene->mesh_count > start_mesh)
+	if (scene->mesh_count > (size_t)start_mesh)
 		scene_add_group_for_subs(scene, item->data.mesh_info.path, start_mesh);
 	return (true);
 }

@@ -16,7 +16,7 @@ static t_vec3	sample_checker(t_texture *tex, double u, double v)
 {
 	int	ch;
 
-	ch = (int)(floor(u * tex->scale) + floor(v * tex->scale)) % 2;
+	ch = (size_t)(floor(u * tex->scale) + floor(v * tex->scale)) % 2;
 	if ((u * tex->scale) < 0)
 		ch++;
 	if ((v * tex->scale) < 0)
@@ -51,10 +51,10 @@ static t_vec3	sample_bitmap(t_texture *tex, double u, double v)
 
 	f[0] = u * tex->width - 0.5;
 	f[1] = v * tex->height - 0.5;
-	i[0] = (int)f[0];
+	i[0] = f[0];
 	if (f[0] < 0.0 && (double)i[0] != f[0])
 		i[0]--;
-	i[1] = (int)f[1];
+	i[1] = f[1];
 	if (f[1] < 0.0 && (double)i[1] != f[1])
 		i[1]--;
 	w[0] = f[0] - (double)i[0];

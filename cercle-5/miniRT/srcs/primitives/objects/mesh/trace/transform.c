@@ -66,7 +66,7 @@ static void	apply_vertex_transform(t_mesh *m, t_mat4 mat, t_mat4 rot)
 	int	i;
 
 	i = 0;
-	while (i < m->vertex_count)
+	while ((size_t)i < m->vertex_count)
 	{
 		m->vertices[i].pos = mat4_mul_pos(mat, m->vertices[i].pos);
 		if (m->normals)
@@ -78,7 +78,7 @@ static void	apply_vertex_transform(t_mesh *m, t_mat4 mat, t_mat4 rot)
 	}
 	m->bbox = aabb_create_empty();
 	i = 0;
-	while (i < m->vertex_count)
+	while ((size_t)i < m->vertex_count)
 	{
 		aabb_expand_point(&m->bbox, m->vertices[i].pos);
 		i++;

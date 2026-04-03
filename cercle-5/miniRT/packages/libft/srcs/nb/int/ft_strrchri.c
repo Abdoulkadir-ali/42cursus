@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 23:44:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/01/15 19:50:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:15:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
  */
 int	ft_strrchri(char *str, char c)
 {
-	int	i;
+	size_t	i;
 
 	if (!str)
 		return (-1);
-	i = (int)ft_strlen(str);
+	i = ft_strlen(str);
 	while (i)
 	{
 		if (str[i - 1] == c)

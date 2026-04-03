@@ -68,7 +68,7 @@ static void	*fbx_read_array_payload(int fd, t_fbx_array *a)
 	size_t	size;
 
 	uncomp_len = a->arr_len * a->actual_sz;
-	size = (size_t)uncomp_len;
+	size = uncomp_len;
 	if (size == 0)
 		size = 1;
 	uncomp_data = malloc(size);

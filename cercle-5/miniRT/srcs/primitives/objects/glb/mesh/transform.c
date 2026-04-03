@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
  */
 void	glb_reapply_scene_transform(t_mesh *mesh)
 {
-	int		i;
+	size_t	i;
 	t_vec3	v;
 
-	i = -1;
-	while (++i < mesh->geometry.vertex_count)
+	i = 0;
+	while (i < mesh->geometry.vertex_count)
 	{
 		v = mat4_mul_dir(mesh->scene_transform, mesh->geometry.vertices[i]);
 		mesh->geometry.vertices[i] = v;
@@ -31,5 +31,6 @@ void	glb_reapply_scene_transform(t_mesh *mesh)
 			v = mat4_mul_dir(mesh->scene_transform, mesh->normals[i]);
 			mesh->normals[i] = v;
 		}
+		i++;
 	}
 }

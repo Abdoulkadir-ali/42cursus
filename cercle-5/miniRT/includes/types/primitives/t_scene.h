@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   scene.h                                            :+:      :+:    :+:   */
+/*   t_scene.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:24:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:24:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:44:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,25 @@ typedef struct s_cache_snap
 	char				*name;
 	t_vertex			*vertices;
 	t_triangle			*triangles;
-	int					*indices;
+	size_t				*indices;
 	t_vec3				*normals;
 	t_vec2				*uvs;
-	int					vertex_count;
-	int					tri_count;
-	int					mat_id;
+	size_t				vertex_count;
+	size_t				tri_count;
+	size_t				mat_id;
 }						t_cache_snap;
 
 typedef struct s_model_cache
 {
 	char				path[512];
 	t_cache_snap		*snaps;
-	int					count;
+	size_t				count;
 }						t_model_cache;
 
 typedef struct s_emissive_ref
 {
 	t_type				type;
-	int					index;
+	size_t				index;
 }						t_emissive_ref;
 
 typedef struct s_scene
@@ -51,73 +51,73 @@ typedef struct s_scene
 	void				*mlx;
 	
 	t_sphere			*spheres;
-	int					sphere_count;
-	int					sphere_cap;
+	size_t				sphere_count;
+	size_t				sphere_cap;
 	
 	t_plane				*planes;
-	int					plane_count;
-	int					plane_cap;
+	size_t				plane_count;
+	size_t				plane_cap;
 
 	t_cylinder			*cylinders;
-	int					cylinder_count;
-	int					cylinder_cap;
+	size_t				cylinder_count;
+	size_t				cylinder_cap;
 
 	t_cone				*cones;
-	int					cone_count;
-	int					cone_cap;
+	size_t				cone_count;
+	size_t				cone_cap;
 
 	t_tri_shape			*tris;
-	int					tri_count;
-	int					tri_cap;
+	size_t				tri_count;
+	size_t				tri_cap;
 
 	t_rect				*rects;
-	int					rect_count;
-	int					rect_cap;
+	size_t				rect_count;
+	size_t				rect_cap;
 
 	t_pyramid			*pyramids;
-	int					pyramid_count;
-	int					pyramid_cap;
+	size_t				pyramid_count;
+	size_t				pyramid_cap;
 
 	t_box				*boxes;
-	int					box_count;
-	int					box_cap;
+	size_t				box_count;
+	size_t				box_cap;
 
 	t_capsule			*capsules;
-	int					capsule_count;
-	int					capsule_cap;
+	size_t				capsule_count;
+	size_t				capsule_cap;
 
 	t_mesh				*meshes;
-	int					mesh_count;
-	int					mesh_cap;
+	size_t				mesh_count;
+	size_t				mesh_cap;
 
 	t_mesh_group		*groups;
-	int					group_count;
-	int							 mesh_group_count;
-	int					group_cap;
+	size_t				group_count;
+	size_t				mesh_group_count;
+	size_t				group_cap;
 
 	t_skinned_mesh		*animated;
-	int					anim_count;
-	int					anim_cap;
+	size_t				anim_count;
+	size_t				anim_cap;
 
 	t_material			*materials;
-	int					mat_count;
-	int					mat_cap;
+	size_t				mat_count;
+	size_t				mat_cap;
 
 	t_ambient			ambient;
 	t_camera			camera;
 	t_light				*lights;
-	int					light_count;
-	int					light_cap;
+	size_t				light_count;
+	size_t				light_cap;
 
 	struct s_animation	*clips;
-	int					clip_count;
-	int					clip_cap;
+	size_t				clip_count;
+	size_t				clip_cap;
 
 	struct s_bvh		*bvh;
 	t_emissive_ref		*emissive_cache;
-	int					emissive_n;
+	size_t				emissive_n;
 	t_model_cache		cache[MAX_MODEL_CACHE];
-	int					cache_count;
+	size_t				cache_count;
 }						t_scene;
 
 #endif

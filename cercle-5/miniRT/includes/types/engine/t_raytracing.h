@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   raytracing.h                                       :+:      :+:    :+:   */
+/*   t_raytracing.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:50:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:55:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_entry_point
 typedef struct s_bvh_ref
 {
 	uint8_t				type;
-	int					index;
+	size_t				index;
 }						t_bvh_ref;
 
 typedef struct s_hit
@@ -40,10 +40,10 @@ typedef struct s_hit
 	t_vec3				tangent;
 	t_vec3				bitangent;
 	t_vec2				uv;
-	int					mat_id;
+	size_t				mat_id;
 	t_bvh_ref			ref;
 	void				*mesh;
-	int					tri_idx;
+	size_t				tri_idx;
 	t_vec3				bary;
 	double				u;
 	double				v;
@@ -55,10 +55,10 @@ typedef struct s_trace
 	const struct s_mesh	*mesh;
 	const t_ray			*ray;
 	double				dist;
-	int					stack[64];
-	int					top;
-	int					node_idx;
-	int					best_tri;
+	size_t				stack[64];
+	size_t				top;
+	size_t				node_idx;
+	size_t				best_tri;
 	double				best_t;
 	t_vec2				best_uv;
 }						t_trace;
@@ -66,8 +66,8 @@ typedef struct s_trace
 typedef struct s_bvh_node
 {
 	t_aabb				bbox;
-	int					left_or_first;
-	int					count;
+	size_t				left_or_first;
+	size_t				count;
 }						t_bvh_node;
 
 typedef struct s_bvh_tmp_node
@@ -84,8 +84,8 @@ typedef struct s_bvh
 	struct s_scene		*scene;
 	t_bvh_node			*nodes;
 	t_bvh_ref			*refs;
-	int					num_nodes;
-	int					num_refs;
+	size_t				num_nodes;
+	size_t				num_refs;
 }						t_bvh;
 
 typedef struct s_shading

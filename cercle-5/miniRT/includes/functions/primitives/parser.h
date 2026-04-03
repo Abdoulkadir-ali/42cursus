@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:43:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:13:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 # include <fcntl.h>
 # include "helpers.h"
 # include "types.h"
-
-# define PARSER_BUF_SIZE 65536
 
 /* JSON Parser Types */
 typedef enum e_json_type
@@ -98,6 +96,8 @@ const char				*json_as_string(t_json_value *value);
 double					json_as_number(t_json_value *value);
 bool					json_as_bool(t_json_value *value);
 int						json_get_int(t_json_value *obj, const char *key);
+size_t					json_get_size_t(t_json_value *obj, const char *key,
+							bool *error);
 void					*json_realloc(void *ptr, size_t old_size,
 							size_t new_size);
 void					*json_malloc(size_t size);

@@ -16,7 +16,7 @@
  * Sweeps from left to right along bins to calculate prefix-sum areas 
  * and counts for SAH evaluation.
  */
-void	bvh_sweep_left(t_bin *bins, double *left_area, int *left_counts)
+void	bvh_sweep_left(t_bin *bins, double *left_area, size_t *left_counts)
 {
 	t_aabb	left_box;
 	int		left_count;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 21:42:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,13 @@ static void	draw_popup_shape(t_gui *gui)
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		o.x + POPUP_PAD, o.y + POPUP_PAD, COL_ACCENT, "Add Object");
 	s = vec2i((POPUP_W - POPUP_PAD * 4) / 3, POPUP_ITEM_H);
-	i = -1;
-	while (++i < 11)
+	i = 0;
+	while (i < 11)
+	{
 		draw_popup_btn(gui, vec2i(o.x + POPUP_PAD + (i % 3) * (s.x + POPUP_PAD),
 				o.y + 36 + POPUP_PAD + (i / 3) * (s.y + 8)), s, lbl[i], 0x22222E);
+		i++;
+	}
 }
 
 void	draw_popup(t_gui *gui)

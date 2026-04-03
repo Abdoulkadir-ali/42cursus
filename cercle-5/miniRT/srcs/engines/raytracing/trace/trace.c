@@ -1,21 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   types.h                                            :+:      :+:    :+:   */
+/*   trace.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:42:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-/*
-** Clamp near-zero to tiny epsilon so 1/d stays finite (avoids inf*0 = NaN
-** inside aabb_intersect_fast under -ffast-math / -ffinite-math-only).
-*/
 static inline double	safe_rcp(double d)
 {
 	double	ad;
@@ -24,15 +20,15 @@ static inline double	safe_rcp(double d)
 	ad = __builtin_fabs(d);
 	if (__builtin_expect(ad < 1e-20, 0))
 	{
-		nd = (d >= 0.0) ? 1e-20 : -1e-20;
+		if (d >= 0.0)
+			nd = 1e-20;
+		else
+			nd = -1e-20;
 		return (1.0 / nd);
 	}
 	return (1.0 / d);
 }
 
-/*
-** Computes inverse direction and sign bits for a ray.
-*/
 static inline void	ray_compute_inv(t_ray *ray)
 {
 	ray->inv_dir = vec3(safe_rcp(ray->direction.x),
@@ -42,9 +38,6 @@ static inline void	ray_compute_inv(t_ray *ray)
 	ray->sign[2] = (ray->inv_dir.z < 0);
 }
 
-/*
-** Initializes a ray with the given origin and direction.
-*/
 void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction)
 {
 	ray->origin = origin;
@@ -54,25 +47,34 @@ void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction)
 	ray_compute_inv(ray);
 }
 
-/*
-** Normalizes the direction vector of a ray.
-*/
-void	ray_normalize_direction(t_ray *ray)
+static void	check_planes(const t_ray *ray, t_scene *sc, t_hit *hit, bool *any)
 {
-	ray->direction = vec3_norm(ray->direction);
-	ray_compute_inv(ray);
+	t_hit	temp;
+	size_t	i;
+
+	if (!sc)
+		return ;
+	i = 0;
+	while (i < sc->plane_count)
+	{
+		if (intersect_plane(ray, &sc->planes[i], &temp))
+		{
+			if (temp.t < hit->t)
+			{
+				*hit = temp;
+				hit->ref.type = TYPE_PLANE;
+				hit->ref.index = i;
+				*any = true;
+			}
+		}
+		i++;
+	}
 }
 
-/*
-** Primary raytracing function.
-** Intersects ray with BVH and planes, then computes color.
-*/
-t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *scene)
+t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *sc)
 {
 	t_hit	hit;
-	t_hit	temp_hit;
 	bool	hit_any;
-	int		i;
 
 	hit.t = 1e30;
 	hit.ref.type = TYPE_NONE;
@@ -80,28 +82,8 @@ t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *scene)
 	hit_any = bvh_intersect(bvh, ray, &hit);
 	if (!hit_any)
 		hit.t = 1e30;
-
-	/* Check planes globally */
-	if (scene)
-	{
-		i = 0;
-		while (i < scene->plane_count)
-		{
-			if (intersect_plane(ray, &scene->planes[i], &temp_hit))
-			{
-				if (temp_hit.t < hit.t)
-				{
-					hit = temp_hit;
-					hit.ref.type = TYPE_PLANE;
-					hit.ref.index = i;
-					hit_any = true;
-				}
-			}
-			i++;
-		}
-	}
-
+	check_planes(ray, sc, &hit, &hit_any);
 	if (hit_any)
-		return (compute_color(&hit, scene, bvh, ray));
+		return (compute_color(&hit, sc, bvh, ray));
 	return (vec3(0, 0, 0));
 }

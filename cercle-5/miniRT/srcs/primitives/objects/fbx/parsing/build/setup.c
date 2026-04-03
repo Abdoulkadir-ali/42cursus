@@ -12,9 +12,9 @@
 
 #include "fbx.h"
 
-static int	fbx_count_tris(int *raw, int raw_c)
+static size_t	fbx_count_tris(size_t *raw, size_t raw_c)
 {
-	int	ps;
+	size_t	ps;
 	int	vn;
 	int	idx;
 	int	tc;
@@ -56,7 +56,7 @@ static bool	fbx_alloc_buffers(t_fbx_build *b)
 {
 	b->vertices = ft_calloc(b->tc * 3, sizeof(t_vertex));
 	b->triangles = ft_calloc(b->tc, sizeof(t_triangle));
-	b->v = malloc(sizeof(int) * (b->raw_c + 1));
+	b->v = malloc(sizeof(size_t) * (b->raw_c + 1));
 	if (!b->vertices || !b->triangles || !b->v)
 		return (false);
 	return (true);

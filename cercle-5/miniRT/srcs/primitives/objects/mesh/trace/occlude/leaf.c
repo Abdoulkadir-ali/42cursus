@@ -20,7 +20,7 @@ bool	leaf_occluded(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 	double	t;
 
 	i = 0;
-	while (i < node->count)
+	while ((size_t)i < node->count)
 	{
 		tri = node->left_or_first + i;
 		if (intersect_tri_precomp(ray, &mesh->tri_cache[tri], &t, NULL)

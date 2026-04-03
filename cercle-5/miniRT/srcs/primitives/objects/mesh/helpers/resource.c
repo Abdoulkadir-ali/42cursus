@@ -50,11 +50,11 @@ void	mesh_resource_free(t_mesh_resource *res)
 	int	i;
 
 	i = 0;
-	while (i < res->mat_count)
+	while ((size_t)i < res->mat_count)
 		free(res->materials[i++].name);
 	free(res->materials);
 	i = 0;
-	while (i < res->mesh_count)
+	while ((size_t)i < res->mesh_count)
 	{
 		free(res->meshes[i].vertices);
 		free(res->meshes[i].triangles);
@@ -63,7 +63,7 @@ void	mesh_resource_free(t_mesh_resource *res)
 	}
 	free(res->meshes);
 	i = 0;
-	while (i < res->group_count)
+	while ((size_t)i < res->group_count)
 		free(res->groups[i++].name);
 	free(res->groups);
 }

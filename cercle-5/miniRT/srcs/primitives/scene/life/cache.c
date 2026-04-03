@@ -23,7 +23,7 @@ int	find_cache_idx(t_scene *scene, const char *path)
 		return (-1);
 	}
 	i = 0;
-	while (i < scene->cache_count)
+	while ((size_t)i < scene->cache_count)
 	{
 		if (ft_strcmp(scene->cache[i].path, path) == 0)
 			return (i);
@@ -39,7 +39,7 @@ t_model_cache	*get_cache_entry(t_scene *scene, int idx)
 		scene->cache_count++;
 		return (&scene->cache[scene->cache_count - 1]);
 	}
-	if (idx < 0 || idx >= scene->cache_count)
+	if (idx < 0 || (size_t)idx >= scene->cache_count)
 		return (NULL);
 	return (&scene->cache[idx]);
 }

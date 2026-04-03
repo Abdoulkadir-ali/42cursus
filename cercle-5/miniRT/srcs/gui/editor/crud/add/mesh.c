@@ -23,13 +23,13 @@ void	editor_add_obj(t_gui *gui, const char *path)
 	if (!scene_parse_obj(path, gui->scene))
 		return ;
 	i = mesh_start;
-	while (i < gui->scene->mesh_count)
+	while ((size_t)i < gui->scene->mesh_count)
 	{
 		mesh_apply_transform(&gui->scene->meshes[i],
 			gui->scene->meshes[i].transform);
 		i++;
 	}
-	if (gui->scene->mesh_count > mesh_start)
+	if (gui->scene->mesh_count > (size_t)mesh_start)
 	{
 		scene_add_group_for_subs(gui->scene, path, mesh_start);
 		select_object(gui, TYPE_MESH, gui->scene->group_count - 1);
@@ -54,7 +54,7 @@ void	editor_add_glb(t_gui *gui, const char *path)
 			return ;
 		gid = gui->scene->group_count++;
 		i = mesh_start;
-		while (i < gui->scene->mesh_count)
+		while ((size_t)i < gui->scene->mesh_count)
 			gui->scene->meshes[i++].group_id = gid;
 	}
 	else
@@ -64,7 +64,7 @@ void	editor_add_glb(t_gui *gui, const char *path)
 		mesh_cache_save(gui->scene, path, mesh_start);
 	}
 	i = mesh_start;
-	while (i < gui->scene->mesh_count)
+	while ((size_t)i < gui->scene->mesh_count)
 	{
 		gui->scene->meshes[i].transform = (t_transform){0};
 		gui->scene->meshes[i].transform.scale = vec3(1, 1, 1);
@@ -76,7 +76,7 @@ void	editor_add_glb(t_gui *gui, const char *path)
 			gui->scene->meshes[i].mat_id = new_id;
 		i++;
 	}
-	if (gui->scene->mesh_count > mesh_start)
+	if (gui->scene->mesh_count > (size_t)mesh_start)
 	{
 		scene_add_group_for_subs(gui->scene, path, mesh_start);
 		select_object(gui, TYPE_MESH, gui->scene->group_count - 1);

@@ -24,7 +24,7 @@ int	vec2i_mag_sq(t_vec2i a)
 
 int	vec2i_mag(t_vec2i a)
 {
-	return ((int)sqrt(a.x * a.x + a.y * a.y));
+	return (sqrt(a.x * a.x + a.y * a.y));
 }
 
 t_vec2i	vec2i_norm(t_vec2i a)

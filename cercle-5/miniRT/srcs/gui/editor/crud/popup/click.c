@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:59:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 	o = vec2i((gui->win.disp_size.x - POPUP_W) / 2,
 		(gui->win.disp_size.y - modal_h) / 2);
 	s = vec2i((POPUP_W - POPUP_PAD * 4) / 3, POPUP_ITEM_H);
-	i = -1;
-	while (++i < 11)
+	i = 0;
+	while (i < 11)
 	{
 		if (phit(mouse, vec2i(o.x + POPUP_PAD + (i % 3) * (s.x + POPUP_PAD),
 			o.y + 36 + POPUP_PAD + (i / 3) * (s.y + 8)), s))
@@ -77,6 +77,7 @@ static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 			gui->render.dirty = true;
 			return (true);
 		}
+		i++;
 	}
 	return (false);
 }

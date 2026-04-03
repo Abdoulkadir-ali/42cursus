@@ -6,19 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:10:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:27:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "collision.h"
 #include "physics.h"
-#include "mesh.h"
 
 /**
  * Checks if a sphere collides with a single triangle (v0, v1, v2).
  * Returns true if a collision is found that is closer than *min_dist_sq.
  */
-bool	test_sphere_triangle(const struct s_sphere *s, t_vec3 v[3],
+bool	test_sphere_triangle(const t_sphere *s, t_vec3 v[3],
 			t_collision *col)
 {
 	t_vec3	closest;

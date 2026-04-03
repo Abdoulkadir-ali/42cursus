@@ -23,9 +23,9 @@ void	glb_parse_buffer_view(t_json_value *json, int idx, t_buffer_view *out)
 	bv = json_at(json_get(json, "bufferViews"), idx);
 	if (!bv)
 		return ;
-	out->buffer = json_get_int(bv, "buffer");
-	out->byte_offset = json_get_int(bv, "byteOffset");
-	out->byte_length = json_get_int(bv, "byteLength");
-	if (out->byte_offset < 0)
+	out->buffer = json_get_size_t(bv, "buffer", NULL);
+	out->byte_offset = json_get_size_t(bv, "byteOffset", NULL);
+	out->byte_length = json_get_size_t(bv, "byteLength", NULL);
+	if (out->byte_offset == (size_t)-1)
 		out->byte_offset = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:42:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,14 @@ void	draw_inspector_tabs(t_gui *gui, t_vec2i pos)
 
 	n = get_tabs(gui->selection.type, tabs, labels);
 	step = INSPECTOR_W / n;
-	i = -1;
-	while (++i < n)
+	i = 0;
+	while (i < n)
 	{
 		color = COL_TEXT;
 		if (gui->inspector.tab == tabs[i])
 			color = COL_ACCENT;
 		mlx_string_put(gui->win.mlx, gui->win.win, pos.x + step * i + 8, 70,
 			color, (char *)labels[i]);
+		i++;
 	}
 }

@@ -20,27 +20,27 @@ static t_vec3	get_centroid(const t_aabb *bbox)
 static int	get_count_for_type(int type, t_scene *scene)
 {
 	if (type == TYPE_ANIM)
-		return (scene->anim_count);
+		return ((int)scene->anim_count);
 	else if (type == TYPE_MESH)
-		return (scene->mesh_count);
+		return ((int)scene->mesh_count);
 	else if (type == TYPE_SPHERE)
-		return (scene->sphere_count);
+		return ((int)scene->sphere_count);
 	else if (type == TYPE_PLANE)
-		return (scene->plane_count);
+		return ((int)scene->plane_count);
 	else if (type == TYPE_CYLINDER)
-		return (scene->cylinder_count);
+		return ((int)scene->cylinder_count);
 	else if (type == TYPE_CONE)
-		return (scene->cone_count);
+		return ((int)scene->cone_count);
 	else if (type == TYPE_TRI)
-		return (scene->tri_count);
+		return ((int)scene->tri_count);
 	else if (type == TYPE_RECT)
-		return (scene->rect_count);
+		return ((int)scene->rect_count);
 	else if (type == TYPE_PYRAMID)
-		return (scene->pyramid_count);
+		return ((int)scene->pyramid_count);
 	else if (type == TYPE_BOX)
-		return (scene->box_count);
+		return ((int)scene->box_count);
 	else if (type == TYPE_CAPSULE)
-		return (scene->capsule_count);
+		return ((int)scene->capsule_count);
 	else
 		return (0);
 }
@@ -51,13 +51,13 @@ static void	add_items(t_build_item *items, size_t *k, int type, t_scene *scene)
 	int	count;
 
 	count = get_count_for_type(type, scene);
-	if (count == 0)
+	if (count <= 0)
 		return ;
 	i = 0;
 	while (i < count)
 	{
-		items[*k].ref.type = type;
-		items[*k].ref.index = i;
+		items[*k].ref.type = (uint8_t)type;
+		items[*k].ref.index = (size_t)i;
 		items[*k].bbox = aabb_from_ref(scene, items[*k].ref);
 		items[*k].centroid = get_centroid(&items[*k].bbox);
 		(*k)++;
@@ -77,12 +77,11 @@ size_t	collect_objects(t_scene *scene, t_build_item *items)
 	size_t	k;
 
 	k = 0;
-	ft_print_debug("BVH Collect: spheres=%d, planes=%d, cylinders=%d, cones=%d, meshes=%d, anim=%d\n",
-		scene->sphere_count, scene->plane_count, scene->cylinder_count,
+	ft_print_debug("BVH Collect: spheres=%zu, planes=%zu, cylinders=%zu, ",
+		scene->sphere_count, scene->plane_count, scene->cylinder_count);
+	ft_print_debug("cones=%zu, meshes=%zu, anim=%zu\n",
 		scene->cone_count, scene->mesh_count, scene->anim_count);
 	add_items(items, &k, TYPE_SPHERE, scene);
-	/* Planes are handled globally, not in BVH to avoid infinite bbox issues */
-	/* add_items(items, &k, TYPE_PLANE, scene); */
 	add_items(items, &k, TYPE_CYLINDER, scene);
 	add_items(items, &k, TYPE_CONE, scene);
 	add_items(items, &k, TYPE_TRI, scene);

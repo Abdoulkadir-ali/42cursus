@@ -32,7 +32,7 @@ static void	draw_slider_track(t_gui *gui, t_widget *w)
 	t_panel	fill;
 	int		fill_w;
 
-	fill_w = (int)(get_slider_frac(w) * w->size.x);
+	fill_w = get_slider_frac(w) * w->size.x;
 	track = (t_panel){
 		.pos = vec2i(w->pos.x, w->pos.y + w->size.y / 2 - 3),
 		.size = vec2i(w->size.x, 6),

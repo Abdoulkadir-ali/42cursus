@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:27:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,21 @@ static void	destroy_scene_animated(t_scene *scene)
 {
 	int	i;
 
-	i = -1;
-	while (++i < scene->anim_count)
+	i = 0;
+	while ((size_t)i < scene->anim_count)
 	{
 		mesh_free(&scene->animated[i].base);
 		free(scene->animated[i].skeleton);
 		free(scene->animated[i].bone_matrices);
+		i++;
 	}
 	free(scene->animated);
-	i = -1;
-	while (++i < scene->group_count)
+	i = 0;
+	while ((size_t)i < scene->group_count)
 	{
 		free(scene->groups[i].name);
 		free(scene->groups[i].path);
+		i++;
 	}
 	free(scene->groups);
 }
@@ -60,9 +62,12 @@ void	destroy_scene(t_scene *scene)
 		bvh_destroy(scene->bvh);
 	free(scene->name);
 	destroy_scene_arrays(scene);
-	i = -1;
-	while (++i < scene->mesh_count)
+	i = 0;
+	while ((size_t)i < scene->mesh_count)
+	{
 		mesh_free(&scene->meshes[i]);
+		i++;
+	}
 	free(scene->meshes);
 	destroy_scene_animated(scene);
 	free(scene);

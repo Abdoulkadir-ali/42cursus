@@ -23,7 +23,7 @@ static void	read_buffer(t_parser *p)
 		p->eof = true;
 		return ;
 	}
-	p->bytes_read = (size_t)n;
+	p->bytes_read = n;
 	p->buffer[p->bytes_read] = '\0';
 	if (p->bytes_read < PARSER_BUF_SIZE)
 		p->eof = true;

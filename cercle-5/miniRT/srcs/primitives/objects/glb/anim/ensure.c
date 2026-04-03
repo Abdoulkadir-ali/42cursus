@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:39:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:01:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
  */
 void	glb_ensure_clip_capacity(t_scene *scene, int count)
 {
-	int			new_cap;
-	t_animation	*new_clips;
+	size_t			new_cap;
+	t_animation		*new_clips;
 
 	if (scene->clip_count + count <= scene->clip_cap)
 		return ;

@@ -1,6 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   box.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/03 11:09:29 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 11:43:00 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "raytracing.h"
-#include "objects.h"
-#include <math.h>
 
 static void	get_box_axes(t_box *bx, t_vec3 ax[3])
 {
@@ -15,25 +25,23 @@ t_aabb	box_aabb(t_box *bx)
 {
 	t_aabb	aabb;
 	t_vec3	ax[3];
-	t_vec3	corner;
-	double	sx;
-	double	sy;
-	double	sz;
-	int		i;
+	t_vec3	c;
+	t_vec3	s;
+	size_t	i;
 
 	get_box_axes(bx, ax);
 	aabb = aabb_create_empty();
 	i = 0;
 	while (i < 8)
 	{
-		sx = (double)((i & 1) * 2 - 1);
-		sy = (double)((((i >> 1) & 1)) * 2 - 1);
-		sz = (double)((((i >> 2) & 1)) * 2 - 1);
-		corner = vec3_add(bx->transform.pos,
-				vec3_add(vec3_scale(ax[0], sx * bx->half_extents.x),
-					vec3_add(vec3_scale(ax[1], sy * bx->half_extents.y),
-						vec3_scale(ax[2], sz * bx->half_extents.z))));
-		aabb_expand_point(&aabb, corner);
+		s.x = (double)((i & 1) * 2 - 1);
+		s.y = (double)(((i >> 1) & 1) * 2 - 1);
+		s.z = (double)(((i >> 2) & 1) * 2 - 1);
+		c = vec3_add(bx->transform.pos,
+				vec3_add(vec3_scale(ax[0], s.x * bx->half_extents.x),
+					vec3_add(vec3_scale(ax[1], s.y * bx->half_extents.y),
+						vec3_scale(ax[2], s.z * bx->half_extents.z))));
+		aabb_expand_point(&aabb, c);
 		i++;
 	}
 	return (aabb);

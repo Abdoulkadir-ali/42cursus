@@ -32,13 +32,14 @@ all: $(NAME)
 -include $(DEPS)
 
 $(NAME): $(LIBFT) $(MINILIBX) $(OBJS)
+	@echo ""
 	@printf "$(BLUE)Linking $(NAME)...$(RESET)\n"
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 	@printf "$(GREEN)$(NAME) ready!$(RESET)\n"
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
-	@printf "$(CYAN)Compiling $<...$(RESET)\r"
+	@printf "\r\033[K$(CYAN)Compiling $<...$(RESET)"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT): FORCE

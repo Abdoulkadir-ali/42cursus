@@ -14,7 +14,7 @@
 
 void	obj_face_emit_tris(t_obj *obj, t_obj_face *face)
 {
-	int	i;
+	size_t	i;
 
 	i = 1;
 	while (i < face->count - 1)

@@ -50,7 +50,7 @@ bool	obj_parse_mtllib(t_scene *scene, t_obj *obj, t_parser *p,
 		full = ft_strdup(name);
 	if (dir)
 		free(dir);
-	if (obj->first_mtl_id == -1)
+	if (obj->first_mtl_id == (size_t)-1)
 		obj->first_mtl_id = scene->mat_count;
 	parse_mtl(scene, NULL, full);
 	free(full);

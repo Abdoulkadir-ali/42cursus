@@ -17,7 +17,7 @@ bool	intersect_finish_hit(t_trace *trace, t_mesh *mesh, t_hit *hit,
 {
 	t_mesh_hit	m_hit;
 
-	if (trace->best_tri == -1)
+	if (trace->best_tri == (size_t)-1)
 		return (false);
 	m_hit.hit = hit;
 	m_hit.mesh = mesh;

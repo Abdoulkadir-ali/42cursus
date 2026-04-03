@@ -35,7 +35,7 @@ int	parse_int(t_parser *p)
 		parser_advance(p);
 		c = parser_peek(p);
 	}
-	return ((int)(result * sign));
+	return (result * sign);
 }
 
 bool	parse_vec3(t_parser *p, t_vec3 *out)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:02:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:39:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:33:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ struct s_map
 {
 	t_map_entry	*head;
 	t_map_entry	*current;
-	int			count;
+	size_t		count;
 };
 
 typedef struct s_map_job

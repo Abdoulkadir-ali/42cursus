@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:32:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	interpolate_quat(float *res, float t, float *a, float *b)
 static void	apply_interpolation(t_anim_sampler *s, float t, float *res,
 				int stride)
 {
-	int	idx;
+	size_t	idx;
 
 	idx = 0;
 	while (idx < s->count - 1 && t > s->inputs[idx + 1])

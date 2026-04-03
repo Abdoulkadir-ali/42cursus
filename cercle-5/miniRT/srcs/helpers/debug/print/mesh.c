@@ -22,7 +22,7 @@ void	debug_print_mesh_hit(const t_ray *ray, int tri_idx, double t)
 void	debug_print_mesh_aabb(const t_ray *ray, double tmin, double tmax)
 {
 	printf("DEBUG: Mesh Root AABB HIT: tmin=%.2f, tmax=%.2f, ",
-	tmin, tmax);
+		tmin, tmax);
 	printf("org=(%.1f,%.1f,%.1f), ", ray->origin.x, ray->origin.y,
 		ray->origin.z);
 	printf("dir=(%.2f,%.2f,%.2f)\n", ray->direction.x, ray->direction.y,
@@ -53,5 +53,5 @@ void	debug_print_mesh_bake(const t_mesh *mesh, bool start)
 void	debug_print_triangle_test(int tri_idx, const t_vec3 *v)
 {
 	printf("DEBUG: Testing triangle %d: v0=(%.2f,%.2f,%.2f)\n",
-	tri_idx, v[0].x, v[0].y, v[0].z);
+		tri_idx, v[0].x, v[0].y, v[0].z);
 }

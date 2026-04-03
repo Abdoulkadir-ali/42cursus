@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:39:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:33:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_crud_ui
 	t_popup		popup;
 	t_mesh_fmt	mesh_fmt;
 	char		path_buf[1024];
-	int			path_len;
+	size_t		path_len;
 	bool		path_error;
 	bool		shift_held;
 }	t_crud_ui;
@@ -105,7 +105,7 @@ typedef struct s_crud_ui
 typedef struct s_selection
 {
 	t_type			type;
-	int				index;
+	size_t			index;
 	bool			active;
 	t_aabb			bbox;
 }					t_selection;
@@ -171,7 +171,7 @@ typedef struct s_mesh_sync
 typedef struct s_mesh_snap
 {
 	t_transform		transform;
-	int				mat_id;
+	size_t			mat_id;
 	t_physics_body	phys;
 }					t_mesh_snap;
 
@@ -185,32 +185,32 @@ typedef struct s_group_snap
 typedef struct s_scene_snap
 {
 	t_sphere		*spheres;
-	int				sphere_count;
+	size_t			sphere_count;
 	t_plane			*planes;
-	int				plane_count;
+	size_t			plane_count;
 	t_cylinder		*cylinders;
-	int				cylinder_count;
+	size_t			cylinder_count;
 	t_cone			*cones;
-	int				cone_count;
+	size_t			cone_count;
 	t_light			*lights;
-	int				light_count;
+	size_t			light_count;
 	t_material		*materials;
-	int				mat_count;
+	size_t			mat_count;
 	t_mesh_snap		*meshes;
-	int				mesh_count;
-	int				mesh_group_count;
+	size_t			mesh_count;
+	size_t			mesh_group_count;
 	t_group_snap	*groups;
-	int				group_count;
+	size_t			group_count;
 	t_box			*boxes;
-	int				box_count;
+	size_t			box_count;
 	t_capsule		*capsules;
-	int				capsule_count;
+	size_t			capsule_count;
 	t_rect			*rects;
-	int				rect_count;
+	size_t			rect_count;
 	t_pyramid		*pyramids;
-	int				pyramid_count;
+	size_t			pyramid_count;
 	t_tri_shape		*tris;
-	int				tri_count;
+	size_t			tri_count;
 	t_ambient		ambient;
 	t_camera		camera;
 	int				ambient_color;

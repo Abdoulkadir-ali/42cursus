@@ -25,7 +25,7 @@ void update_physics_step(t_gui *gui, double delta)
 	steps = 0;
 	while (gui->phys_accumulator >= fixed_dt && steps < 3)
 	{
-		update_physics(gui->scene, fixed_dt);
+		update_physics(gui->scene, &gui->phys_engine, fixed_dt);
 		gui->phys_accumulator -= fixed_dt;
 		steps++;
 	}

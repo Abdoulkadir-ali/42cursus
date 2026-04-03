@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 15:52:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 15:52:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,16 @@ static t_mat4	mat4_transpose_3x3(t_mat4 r)
 	int		j;
 
 	res = mat4_identity();
-	i = -1;
-	while (++i < 3)
+	i = 0;
+	while (i < 3)
 	{
-		j = -1;
-		while (++j < 3)
+		j = 0;
+		while (j < 3)
+		{
 			res.m[i][j] = r.m[j][i];
+			j++;
+		}
+		i++;
 	}
 	return (res);
 }

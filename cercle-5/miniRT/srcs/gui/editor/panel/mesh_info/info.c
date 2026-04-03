@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh_info.c                                        :+:      :+:    :+:   */
+/*   info.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 20:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:28:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ void	draw_mesh_info_panel(t_gui *gui, t_vec2i pos)
 	else
 		snprintf(buf, sizeof(buf), "(unnamed)");
 	draw_info_row(gui, (t_vec2i){pos.x, y}, "Name:", buf);
-	snprintf(buf, sizeof(buf), "%d", g->sub_count);
+	snprintf(buf, sizeof(buf), "%zu", g->sub_count);
 	draw_info_row(gui, (t_vec2i){pos.x, y += 18}, "Sub-meshes:", buf);
-	snprintf(buf, sizeof(buf), "%d", mesh->vertex_count);
+	snprintf(buf, sizeof(buf), "%zu", mesh->vertex_count);
 	draw_info_row(gui, (t_vec2i){pos.x, y += 18}, "Vertices[0]:", buf);
-	snprintf(buf, sizeof(buf), "%d", mesh->tri_count);
+	snprintf(buf, sizeof(buf), "%zu", mesh->tri_count);
 	draw_info_row(gui, (t_vec2i){pos.x, y += 18}, "Triangles[0]:", buf);
 	draw_bbox_info(gui, mesh, pos, &y);
 }

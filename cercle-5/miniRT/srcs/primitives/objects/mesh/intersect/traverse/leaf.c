@@ -20,7 +20,7 @@ void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 	int		i;
 
 	i = 0;
-	while (i < node->count)
+	while ((size_t)i < node->count)
 	{
 		PROF_INC(g_mesh_tri_tests);
 		leaf.tri = node->left_or_first + i;

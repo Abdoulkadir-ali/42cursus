@@ -6,11 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:10:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:27:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "collision.h"
+#include "physics.h"
 
 static void	handle_negative_s(double *st, double *abcde, double t)
 {

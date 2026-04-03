@@ -38,7 +38,7 @@ static bool	alloc_index_data(t_mesh *mesh, t_mesh_init init)
 {
 	if (init.i_count <= 0)
 		return (true);
-	mesh->indices = malloc(sizeof(int) * init.i_count);
+	mesh->indices = malloc(sizeof(size_t) * init.i_count);
 	if (!mesh->indices)
 		return (false);
 	return (true);

@@ -16,7 +16,7 @@ int	scene_clone_material(t_scene *scene, int src_id)
 {
 	int	id;
 
-	if (src_id < 0 || src_id >= scene->mat_count)
+	if ((size_t)src_id == (size_t)-1 || (size_t)src_id >= scene->mat_count)
 		return (-1);
 	id = scene_material_allocate_slot(scene);
 	if (id < 0)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:33:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:27:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ void	sync_group_materials(t_gui *gui)
 	t_selection		*sel;
 	t_mesh_group	*g;
 	t_material		*lead;
-	int				si;
-	int				mat_id;
+	size_t			si;
+	size_t			mat_id;
 
 	sel = &gui->selection;
 	if (!sel->active || sel->type != TYPE_MESH)
@@ -29,7 +29,7 @@ void	sync_group_materials(t_gui *gui)
 	while (++si < g->sub_count)
 	{
 		mat_id = gui->scene->meshes[g->start + si].mat_id;
-		if (mat_id >= 0 && mat_id < gui->scene->mat_count)
+		if (mat_id < gui->scene->mat_count)
 			gui->scene->materials[mat_id] = *lead;
 	}
 }

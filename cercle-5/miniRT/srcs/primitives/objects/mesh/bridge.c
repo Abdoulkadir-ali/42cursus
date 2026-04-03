@@ -18,7 +18,7 @@ static void	integrate_materials(t_scene *scene, t_mesh_resource *res)
 	int	i;
 
 	i = 0;
-	while (i < res->mat_count)
+	while ((size_t)i < res->mat_count)
 	{
 		scene_add_named_material(scene, res->materials[i].name);
 		scene->materials[scene->mat_count - 1] = res->materials[i];
@@ -31,7 +31,7 @@ static void	integrate_meshes(t_scene *scene, t_mesh_resource *res, int base_mat)
 	int	i;
 
 	i = 0;
-	while (i < res->mesh_count)
+	while ((size_t)i < res->mesh_count)
 	{
 		res->meshes[i].mat_id += base_mat;
 		scene_add_mesh(scene, res->meshes[i]);
@@ -52,7 +52,7 @@ bool	scene_integrate_resource(t_scene *scene, t_mesh_resource *res)
 	integrate_materials(scene, res);
 	integrate_meshes(scene, res, base_mat);
 	i = 0;
-	while (i < res->group_count)
+	while ((size_t)i < res->group_count)
 	{
 		scene_add_group(scene, res->groups[i]);
 		i++;

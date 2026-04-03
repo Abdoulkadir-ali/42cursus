@@ -19,7 +19,7 @@ static bool	bvh_alloc_nodes(t_mbvh *bvh, t_mesh *mesh)
 	if (mesh->bvh_indices)
 		free(mesh->bvh_indices);
 	mesh->bvh_nodes = ft_calloc(mesh->tri_count * 2, sizeof(t_mbvh_node));
-	mesh->bvh_indices = malloc(sizeof(int) * mesh->tri_count * 3);
+	mesh->bvh_indices = malloc(sizeof(size_t) * mesh->tri_count * 3);
 	if (!mesh->bvh_nodes || !mesh->bvh_indices)
 	{
 		free(bvh->items);
@@ -36,16 +36,13 @@ static bool	bvh_alloc_nodes(t_mbvh *bvh, t_mesh *mesh)
  */
 bool	bvh_prepare(t_mbvh *bvh, t_mesh *mesh)
 {
-	int	i;
+	size_t	i;
 
 	bvh->items = malloc(sizeof(t_mesh_build_item) * mesh->tri_count);
 	if (!bvh->items)
 		return (false);
-	i = 0;
-	while (i < mesh->tri_count)
-	{
+	i = -1;
+	while (++i < mesh->tri_count)
 		bvh_get_triangle_info(mesh, i, &bvh->items[i]);
-		i++;
-	}
 	return (bvh_alloc_nodes(bvh, mesh));
 }

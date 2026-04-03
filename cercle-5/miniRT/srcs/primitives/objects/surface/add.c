@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:27:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:01:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 
 int	scene_add_material(t_scene *scene, t_vec3 color)
 {
-	int			i;
+	size_t		i;
 	t_material	*m;
 
 	i = 0;
@@ -86,7 +86,7 @@ int	scene_add_fresh_material(t_scene *scene, t_vec3 color)
 
 int	scene_find_material(t_scene *scene, const char *name)
 {
-	int	i;
+	size_t	i;
 
 	if (!name || !scene)
 		return (-1);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:03:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:49:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,18 @@ typedef struct s_vertex
 	t_vec2				uv;
 	t_vec3				tangent;
 	t_vec3				bitangent;
-	int					bone_ids[4];
+	size_t				bone_ids[4];
 	float				bone_weights[4];
 }						t_vertex;
 
 typedef struct s_triangle
 {
-	int					v[3];
+	size_t				v[3];
 }						t_triangle;
 
 typedef struct s_bone_weight
 {
-	int					bone_indices[4];
+	size_t				bone_indices[4];
 	float				weights[4];
 }						t_bone_weight;
 
@@ -55,18 +55,18 @@ typedef struct s_mesh_geom
 	t_vec3				*vertices;
 	t_vec3				*normals;
 	t_vec2				*uvs;
-	int					*indices;
-	int					vertex_count;
-	int					tri_count;
-	int					index_count;
+	size_t				*indices;
+	size_t				vertex_count;
+	size_t				tri_count;
+	size_t				index_count;
 }						t_mesh_geom;
 
 typedef struct s_mesh_group
 {
-	int					mesh_start;
-	int					mesh_count;
-	int					start;
-	int					sub_count;
+	size_t				mesh_start;
+	size_t				mesh_count;
+	size_t				start;
+	size_t				sub_count;
 	t_vec3				pivot;
 	char				*name;
 	char				*path;
@@ -78,7 +78,7 @@ typedef struct s_bone
 {
 	char				*name;
 	int					parent;
-	int					node_idx;
+	size_t				node_idx;
 	t_mat4				offset_matrix;
 	t_mat4				local_transform;
 	t_mat4				global_transform;
@@ -90,22 +90,22 @@ typedef struct s_bone
 typedef struct s_mbvh_node
 {
 	t_aabb				bbox;
-	int					left_or_first;
-	int					count;
+	size_t				left_or_first;
+	size_t				count;
 	int					axis;
 }						t_mbvh_node;
 
 typedef struct s_bin
 {
 	t_aabb				bounds;
-	int					count;
+	size_t				count;
 }						t_bin;
 
 typedef struct s_bvh_bins
 {
 	struct s_mbvh		*bvh;
-	int					first;
-	int					count;
+	size_t				first;
+	size_t				count;
 	int					axis;
 	double				min_val;
 	double				scale;
@@ -121,13 +121,13 @@ typedef struct s_bvh_split
 	double				parent_sa;
 	t_bin				bins[BVH_BINS];
 	double				left_area[BVH_BINS];
-	int					left_counts[BVH_BINS];
+	size_t				left_counts[BVH_BINS];
 	int					axis;
 	double				pos;
 	double				best_cost;
-	int					i;
+	size_t				i;
 	double				split_pos;
-	int					right_count;
+	size_t				right_count;
 	t_aabb				right_box;
 	int					best_axis;
 }						t_bvh_split;
@@ -137,8 +137,8 @@ typedef struct s_bvh_eval
 	struct s_mbvh		*bvh;
 	struct s_mbvh_node	*node;
 	struct s_bvh_split	*s;
-	int					first;
-	int					count;
+	size_t				first;
+	size_t				count;
 	int					axis;
 }						t_bvh_eval;
 
@@ -146,8 +146,8 @@ typedef struct s_bvh_find
 {
 	struct s_mbvh		*bvh;
 	struct s_mbvh_node	*node;
-	int					first;
-	int					count;
+	size_t				first;
+	size_t				count;
 	struct s_bvh_split	*out;
 	t_bvh_split			s;
 }						t_bvh_find;
@@ -156,17 +156,17 @@ typedef struct s_bvh_try
 {
 	struct s_mbvh		*bvh;
 	struct s_mbvh_node	*node;
-	int					first;
-	int					count;
+	size_t				first;
+	size_t				count;
 	struct s_bvh_split	*split;
-	int					*mid;
+	size_t				*mid;
 }						t_bvh_try;
 
 typedef struct s_mesh_build_item
 {
 	t_aabb				bbox;
 	t_vec3				centroid;
-	int					index;
+	size_t				index;
 }						t_mesh_build_item;
 
 typedef struct s_mbvh
@@ -174,17 +174,17 @@ typedef struct s_mbvh
 	t_mesh				*mesh;
 	t_mesh_build_item	*items;
 	t_mbvh_node			*nodes;
-	int					node_count;
+	size_t				node_count;
 }						t_mbvh;
 
 typedef struct s_mesh
 {
 	/* Vertex-Centric Data (Model A) */
 	t_vertex			*vertices;
-	int					vertex_count;
+	size_t				vertex_count;
 	t_triangle			*triangles;
-	int					tri_count;
-	int					*indices;
+	size_t				tri_count;
+	size_t				*indices;
 	t_vertex			*edit_snap_verts;
 	t_vec3				*edit_snap_norms;
 	t_tri_precomp		*tri_cache;
@@ -197,16 +197,16 @@ typedef struct s_mesh
 	t_vec2				*uvs;
 	struct s_bone		*skeleton;
 	t_bone_weight		*weights;
-	int					bone_count;
+	size_t				bone_count;
 	t_mat4				*bone_matrices;
 
 	/* Physics and Intersection (BVH) */
 	struct s_mbvh_node	*bvh_nodes;
-	int					*bvh_indices;
-	int					bvh_node_count;
+	size_t				*bvh_indices;
+	size_t				bvh_node_count;
 	struct s_collider	collider;
-	int					mat_id;
-	int					group_id;
+	size_t				mat_id;
+	size_t				group_id;
 	t_aabb				bbox;
 	struct s_bvh		*bvh;
 	char				*name;
@@ -225,25 +225,25 @@ typedef struct s_skinned_mesh
 {
 	t_mesh				base;
 	t_bone				*bones;
-	int					bone_count;
+	size_t				bone_count;
 	t_mat4				global_inverse;
 	t_bone				*skeleton;
 	t_mat4				*bone_matrices;
-	int					vertex_count;
+	size_t				vertex_count;
 	t_vec3				*base_vertices;
 	t_bone_weight		*weights;
 }						t_skinned_mesh;
 
 typedef struct s_mesh_resource
 {
-	int					mesh_count;
-	int					mesh_cap;
+	size_t				mesh_count;
+	size_t				mesh_cap;
 	t_mesh				*meshes;
-	int					group_count;
-	int					group_cap;
+	size_t				group_count;
+	size_t				group_cap;
 	t_mesh_group		*groups;
-	int					mat_count;
-	int					mat_cap;
+	size_t				mat_count;
+	size_t				mat_cap;
 	struct s_material	*materials;
 }						t_mesh_resource;
 
@@ -257,8 +257,8 @@ typedef struct s_mesh_info
 
 typedef struct s_mesh_init
 {
-	int					v_count;
-	int					i_count;
+	size_t				v_count;
+	size_t				i_count;
 	bool				has_normals;
 	bool				has_uvs;
 }						t_mesh_init;
@@ -266,14 +266,14 @@ typedef struct s_mesh_init
 typedef struct s_occ
 {
 	double				dist;
-	int					top;
-	int					stack[64];
+	size_t				top;
+	size_t				stack[64];
 }						t_occ;
 
 typedef struct s_occ_child
 {
-	int					left_idx;
-	int					right_idx;
+	size_t				left_idx;
+	size_t				right_idx;
 	bool				hit_l;
 	bool				hit_r;
 	double				tl_min;
@@ -289,13 +289,13 @@ typedef struct s_mesh_hit
 	struct s_hit		*hit;
 	t_vec2				bary;
 	double				t;
-	int					tri;
+	size_t				tri;
 }						t_mesh_hit;
 
 typedef struct s_hit_calc
 {
 	t_mesh_hit			*in;
-	int					*idx;
+	size_t				*idx;
 	t_vec3				v[3];
 }						t_hit_calc;
 
@@ -314,15 +314,15 @@ typedef struct s_tri_hit
 
 typedef struct s_leaf
 {
-	int					tri;
+	size_t				tri;
 	double				t;
 	t_vec2				uv;
 }						t_leaf;
 
 typedef struct s_child
 {
-	int					left_idx;
-	int					right_idx;
+	size_t				left_idx;
+	size_t				right_idx;
 	bool				hit_l;
 	bool				hit_r;
 	double				tl_min;
@@ -344,7 +344,7 @@ typedef struct s_fbx_data
 {
 	t_vec3				*v;
 	uint32_t			vc;
-	int					*ri;
+	size_t				*ri;
 	uint32_t			rc;
 	t_vec3				*vn;
 	uint32_t			nc;
@@ -354,30 +354,30 @@ typedef struct s_fbx_data
 
 typedef struct s_fbx_flat_params
 {
-	int					*raw;
-	int					raw_c;
+	size_t				*raw;
+	size_t				raw_c;
 	t_vec3				*n;
-	int					nc;
+	size_t				nc;
 	t_vec2				*u;
-	int					uc;
-	int					vc;
+	size_t				uc;
+	size_t				vc;
 }						t_fbx_flat_params;
 
 typedef struct s_fbx_build
 {
 	t_mesh				*m;
-	int					*raw;
-	int					raw_c;
+	size_t				*raw;
+	size_t				raw_c;
 	t_vec3				*n;
-	int					nc;
+	size_t				nc;
 	t_vec2				*u;
-	int					uc;
-	int					vc;
-	int					tc;
+	size_t				uc;
+	size_t				vc;
+	size_t				tc;
 	t_vertex			*vertices;
 	t_triangle			*triangles;
-	int					*v;
-	int					vp;
+	size_t				*v;
+	size_t				vp;
 	int					ps;
 	int					use_v_n;
 	int					use_v_u;
@@ -428,24 +428,24 @@ typedef struct s_fbx_ascii
 	t_skinned_mesh		mesh;
 	t_vec3				*rn;
 	t_vec2				*ru;
-	int					*ri;
-	int					rc;
-	int					vc;
-	int					nc;
-	int					uc;
+	size_t				*ri;
+	size_t				rc;
+	size_t				vc;
+	size_t				nc;
+	size_t				uc;
 	char				*buf;
 	char				*p;
 	char				*end;
 	size_t				buf_size;
-	int					mat_id;
+	size_t				mat_id;
 	const char			*path;
 }						t_fbx_ascii;
 
 typedef struct s_fdf
 {
 	t_mesh				*mesh;
-	int					dims[2];
-	int					row;
+	size_t				dims[2];
+	size_t				row;
 }						t_fdf;
 
 typedef struct s_fdf_dim
@@ -469,19 +469,19 @@ typedef struct s_chunk_header
 
 typedef struct s_accessor
 {
-	int					buffer_view;
-	int					byte_offset;
+	size_t				buffer_view;
+	size_t				byte_offset;
 	int					component_type;
-	int					count;
+	size_t				count;
 	char				type[16];
 }						t_accessor;
 
 typedef struct s_buffer_view
 {
-	int					buffer;
-	int					byte_offset;
-	int					byte_length;
-	int					byte_stride;
+	size_t				buffer;
+	size_t				byte_offset;
+	size_t				byte_length;
+	size_t				byte_stride;
 }						t_buffer_view;
 
 typedef struct s_extract
@@ -490,10 +490,10 @@ typedef struct s_extract
 	t_accessor			*acc;
 	t_buffer_view		*bv;
 	void				*dst;
-	int					dst_stride;
-	int					ext_stride;
-	int					elem_size;
-	int					count;
+	size_t				dst_stride;
+	size_t				ext_stride;
+	size_t				elem_size;
+	size_t				count;
 }						t_extract;
 
 typedef enum e_interpolation
@@ -507,7 +507,7 @@ typedef struct s_anim_sampler
 {
 	float				*inputs;
 	float				*outputs;
-	int					count;
+	size_t				count;
 	t_interpolation		method;
 }						t_anim_sampler;
 
@@ -521,18 +521,18 @@ typedef enum e_anim_path
 
 typedef struct s_anim_channel
 {
-	int					node_idx;
+	size_t				node_idx;
 	t_anim_path			path;
-	int					sampler_idx;
+	size_t				sampler_idx;
 }						t_anim_channel;
 
 typedef struct s_animation
 {
 	char				*name;
 	t_anim_channel		*channels;
-	int					channel_count;
+	size_t				channel_count;
 	t_anim_sampler		*samplers;
-	int					sampler_count;
+	size_t				sampler_count;
 	double				max_time;
 	double				current_time;
 }						t_animation;
@@ -552,7 +552,7 @@ typedef struct s_obj_face
 	int					vi[32];
 	int					vti[32];
 	int					vni[32];
-	int					count;
+	size_t				count;
 }						t_obj_face;
 
 typedef struct s_obj
@@ -573,13 +573,13 @@ typedef struct s_obj
 	size_t				out_v_count;
 	size_t				out_v_cap;
 
-	int					*out_i;
+	size_t				*out_i;
 	size_t				out_i_count;
 	size_t				out_i_cap;
 
 	t_aabb				bbox;
-	int					current_mat_id;
-	int					first_mtl_id;
+	size_t				current_mat_id;
+	size_t				first_mtl_id;
 }						t_obj;
 
 

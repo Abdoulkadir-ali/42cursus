@@ -96,7 +96,7 @@ bool	parse_fbx_binary(const char *path, t_scene *scene)
 		mesh_free(&fbx.mesh.base);
 		return (false);
 	}
-	ft_print_debug("FBX Binary Loaded: %s (%d tris)\n", path,
+	ft_print_debug("FBX Binary Loaded: %s (%zu tris)\n", path,
 		fbx.mesh.base.tri_count);
 	return (scene_add_animated(scene, fbx.mesh));
 }

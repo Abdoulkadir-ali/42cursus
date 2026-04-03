@@ -18,7 +18,7 @@ static void	mesh_vertex_sync(t_mesh *m, t_mesh_sync s)
 	t_vec3	local;
 
 	vi = 0;
-	while (vi < m->vertex_count)
+	while ((size_t)vi < m->vertex_count)
 	{
 		local = vec3_sub(m->edit_snap_verts[vi].pos, s.piv);
 		local = mat4_mul_pos(s.sr, local);
@@ -30,7 +30,7 @@ static void	mesh_vertex_sync(t_mesh *m, t_mesh_sync s)
 	}
 	m->bbox = aabb_create_empty();
 	vi = 0;
-	while (vi < m->vertex_count)
+	while ((size_t)vi < m->vertex_count)
 		aabb_expand_point(&m->bbox, m->vertices[vi++].pos);
 	mesh_build_bvh(m);
 }
@@ -48,13 +48,13 @@ void	mesh_transform_sync(t_gui *gui)
 	if (gui->selection.index >= sc->group_count)
 		return ;
 	g = &sc->groups[gui->selection.index];
-	if (g->start < 0 || g->start >= sc->mesh_count
+	if ( g->start >= sc->mesh_count
 		|| !sc->meshes[g->start].edit_snap_verts)
 		return ;
 	sr = mat4_mul(mat4_rotation(g->transform.rotation),
 			mat4_scaling(g->transform.scale));
 	si = 0;
-	while (si < g->sub_count)
+	while ((size_t)si < g->sub_count)
 	{
 		if (sc->meshes[g->start + si].edit_snap_verts)
 			mesh_vertex_sync(&sc->meshes[g->start + si], (t_mesh_sync){sr,

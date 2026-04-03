@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 11:43:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,44 +15,41 @@
 /*
 ** Fills the hit record for a cylinder cap intersection.
 */
-static void	fill_cap_hit(t_cylinder *cy, double *tm, t_hit *hit,
-		t_vec3 center, double normal_sign, double t, t_vec3 p)
+static void	fill_cap_hit(t_cylinder *cy, t_ray_query *q,
+		t_vec3 center, double normal_sign)
 {
 	t_entry_point	pt;
 
-	*tm = t;
-	hit->t = t;
-	hit->point = p;
-	hit->normal = vec3_scale(cy->transform.forward,
-			normal_sign);
-	pt = (t_entry_point){p, center, cy->transform.scale.x,
+	q->hit->normal = vec3_scale(cy->transform.forward, normal_sign);
+	pt = (t_entry_point){q->hit->point, center, cy->transform.scale.x,
 		cy->transform.scale.y, 0};
-	get_cylinder_uv(pt, cy, hit, true);
+	get_cylinder_uv(pt, cy, q->hit, true);
 }
 
 /*
 ** Checks intersection with a cylinder cap.
 */
-static bool	check_cap(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit,
+static bool	check_cap(t_ray_query *q, t_cylinder *cy,
 		t_vec3 center, double normal_sign)
 {
 	double	t;
-	t_vec3	p;
 	double	denom;
 
-	denom = vec3_dot(ray->direction, cy->transform.forward);
+	denom = vec3_dot(q->ray->direction, cy->transform.forward);
 	if (fabs(denom) < 1e-6)
 		return (false);
-	t = vec3_dot(vec3_sub(center, ray->origin),
+	t = vec3_dot(vec3_sub(center, q->ray->origin),
 			cy->transform.forward) / denom;
-	if (t > EPSILON && t < *tm)
+	if (t > EPSILON && t < *(q->tm))
 	{
-		p = vec3_add(ray->origin, vec3_scale(ray->direction, t));
-		if (vec3_mag_sq(vec3_sub(p,
-					center)) <= cy->transform.scale.x
-			* cy->transform.scale.x)
+		q->hit->point = vec3_add(q->ray->origin,
+				vec3_scale(q->ray->direction, t));
+		if (vec3_mag_sq(vec3_sub(q->hit->point, center))
+			<= cy->transform.scale.x * cy->transform.scale.x)
 		{
-			fill_cap_hit(cy, tm, hit, center, normal_sign, t, p);
+			*(q->tm) = t;
+			q->hit->t = t;
+			fill_cap_hit(cy, q, center, normal_sign);
 			return (true);
 		}
 	}
@@ -65,7 +62,12 @@ static bool	check_cap(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit,
 bool	check_bottom_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 		t_hit *hit)
 {
-	return (check_cap(ray, cy, tm, hit, cy->transform.pos, -1.0));
+	t_ray_query	q;
+
+	q.ray = ray;
+	q.tm = tm;
+	q.hit = hit;
+	return (check_cap(&q, cy, cy->transform.pos, -1.0));
 }
 
 /*
@@ -73,9 +75,13 @@ bool	check_bottom_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 */
 bool	check_top_cap(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit)
 {
-	t_vec3	top;
+	t_vec3		top;
+	t_ray_query	q;
 
+	q.ray = ray;
+	q.tm = tm;
+	q.hit = hit;
 	top = vec3_add(cy->transform.pos, vec3_scale(cy->transform.forward,
 				cy->transform.scale.y));
-	return (check_cap(ray, cy, tm, hit, top, 1.0));
+	return (check_cap(&q, cy, top, 1.0));
 }

@@ -19,11 +19,11 @@ static bool	restore_geo(t_mesh *mesh, const t_cache_snap *snap)
 		return (mesh_free(mesh), false);
 	ft_memcpy(mesh->vertices, snap->vertices,
 		sizeof(t_vec3) * snap->vertex_count);
-	mesh->indices = malloc(sizeof(int) * snap->tri_count * 3);
+	mesh->indices = malloc(sizeof(size_t) * snap->tri_count * 3);
 	if (!mesh->indices)
 		return (mesh_free(mesh), false);
 	ft_memcpy(mesh->indices, snap->indices,
-		sizeof(int) * snap->tri_count * 3);
+		sizeof(size_t) * snap->tri_count * 3);
 	if (snap->normals)
 	{
 		mesh->normals = malloc(sizeof(t_vec3) * snap->vertex_count);
@@ -68,7 +68,7 @@ bool	mesh_cache_restore(t_scene *scene, const char *path)
 	if (idx < 0)
 		return (false);
 	i = 0;
-	while (i < get_cache_entry(scene, idx)->count)
+	while ((size_t)i < get_cache_entry(scene, idx)->count)
 	{
 		if (!restore_one(&get_cache_entry(scene, idx)->snaps[i], scene))
 			return (false);

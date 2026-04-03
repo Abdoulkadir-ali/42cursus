@@ -14,18 +14,18 @@
 
 static int	fbx_read_poly(t_fbx_build *b, int *si)
 {
-	int	idx;
+	size_t	idx;
 	int	vn;
 
 	*si = b->ps;
 	vn = 0;
-	while (b->ps < b->raw_c)
+	while ((size_t)b->ps < b->raw_c)
 	{
 		idx = b->raw[b->ps++];
-		if (idx < 0)
+		if ((long long)idx < 0)
 			idx = idx ^ -1;
 		b->v[vn++] = idx;
-		if (b->raw[b->ps - 1] < 0)
+		if ((long long)b->raw[b->ps - 1] < 0)
 			break ;
 	}
 	return (vn);
@@ -84,7 +84,7 @@ void	fbx_build_tris(t_fbx_build *b)
 
 	b->ps = 0;
 	b->vp = 0;
-	while (b->ps < b->raw_c)
+	while ((size_t)b->ps < b->raw_c)
 	{
 		vn = fbx_read_poly(b, &si);
 		fbx_emit_tris(b, vn, si);

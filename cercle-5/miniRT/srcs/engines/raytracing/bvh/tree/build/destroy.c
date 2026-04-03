@@ -5,12 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/15 03:04:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 03:04:57 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/03 11:46:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 12:35:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
+
+void	bvh_destroy(t_bvh *bvh)
+{
+	if (!bvh)
+		return ;
+	free(bvh->nodes);
+	free(bvh->refs);
+	free(bvh);
+}
 
 void	node_destroy(t_bvh_tmp_node *node)
 {
@@ -18,7 +27,6 @@ void	node_destroy(t_bvh_tmp_node *node)
 		return ;
 	node_destroy(node->left);
 	node_destroy(node->right);
-	if (node->refs)
-		free(node->refs);
+	free(node->refs);
 	free(node);
 }

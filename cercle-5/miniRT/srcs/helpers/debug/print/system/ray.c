@@ -35,5 +35,5 @@ void	print_hit(t_hit *h)
 	printf("\n  normal: ");
 	print_vec3(&h->normal);
 	printf("\n  uv: (%.4f, %.4f)\n", h->u, h->v);
-	printf("  ref: type: %d, index: %d\n)", h->ref.type, h->ref.index);
+	printf("  ref: type: %d, index: %zu\n)", h->ref.type, h->ref.index);
 }

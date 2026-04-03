@@ -43,7 +43,7 @@ void					bvh_axis_min_max(t_aabb *bounds, int axis,
 void					bvh_bins_init(t_bin *bins);
 void					bvh_fill_bins(t_bvh_bins *b);
 void					bvh_sweep_left(t_bin *bins, double *left_area,
-							int *left_counts);
+							size_t *left_counts);
 void					bvh_sweep_right(t_bvh_split *s, int axis);
 bool					bvh_find_split(t_bvh_find *f);
 int						bvh_make_leaf(t_mbvh_node *node, int first,

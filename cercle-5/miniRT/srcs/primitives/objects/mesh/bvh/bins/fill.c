@@ -31,10 +31,10 @@ void	bvh_fill_bins(t_bvh_bins *b)
 	double	val;
 
 	i = 0;
-	while (i < b->count)
+	while ((size_t)i < b->count)
 	{
 		val = get_centroid_val(b, i);
-		bin_idx = (int)((val - b->min_val) * b->scale);
+		bin_idx = (val - b->min_val) * b->scale;
 		if (bin_idx >= BVH_BINS)
 			bin_idx = BVH_BINS - 1;
 		if (bin_idx < 0)

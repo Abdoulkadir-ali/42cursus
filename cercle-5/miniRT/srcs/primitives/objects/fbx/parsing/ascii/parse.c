@@ -28,7 +28,7 @@ static bool	ascii_parse_mesh(t_fbx_ascii *asc)
 	if (!temp)
 		return (false);
 	temp = advance_to_data(temp, asc->end);
-	asc->ri = parse_array(&temp, &asc->rc, sizeof(int), f_int);
+	asc->ri = parse_array(&temp, &asc->rc, sizeof(size_t), f_int);
 	if (!asc->ri)
 		return (false);
 	ascii_load_normals(asc);
@@ -53,7 +53,7 @@ static bool	ascii_build_mesh(t_fbx_ascii *asc, t_scene *scene,
 		return (false);
 	mesh_build_bvh(&asc->mesh.base);
 	asc->mat_id = parse_texture(asc->p, asc->end, scene, path);
-	if (asc->mat_id >= 0)
+	if (asc->mat_id != (size_t)-1)
 		asc->mesh.base.mat_id = asc->mat_id;
 	return (true);
 }
@@ -65,7 +65,7 @@ static bool	parse_fbx_ascii_internal(t_fbx_ascii *asc, t_scene *scene,
 		return (false);
 	if (!ascii_build_mesh(asc, scene, path))
 		return (false);
-	ft_print_debug("FBX ASCII Loaded: %s (%d tris)\n", path,
+	ft_print_debug("FBX ASCII Loaded: %s (%zu tris)\n", path,
 		asc->mesh.base.tri_count);
 	return (scene_add_animated(scene, asc->mesh));
 }
