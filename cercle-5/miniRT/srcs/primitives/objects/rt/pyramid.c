@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 15:54:10 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 21:24:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:19:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 bool	scene_add_pyramid(t_scene *scene, t_pyramid py)
 {
-	int	mat_id;
+	t_index	mat_id;
 
 	mat_id = scene_add_material(scene, py.temp_color);
-	if (mat_id < 0)
+	if (mat_id.error)
 		return (false);
-	py.mat_id = mat_id;
+	py.mat_id = mat_id.i;
 	if (!DYNARRAY_ENSURE_INT(&scene->pyramids, &scene->pyramid_count,
 			&scene->pyramid_cap, sizeof(t_pyramid)))
 		return (false);

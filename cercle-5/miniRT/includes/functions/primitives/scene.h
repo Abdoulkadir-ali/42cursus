@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:59:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,9 @@ bool					load_scene(t_scene *scene, const char *path);
 t_scene					*parse_file(const char *path, void *mlx);
 
 /* Internal helpers */
-int						scene_material_allocate_slot(t_scene *scene);
-int						scene_allocate_object_slot(void **ptr, size_t *count,
+t_index					scene_material_allocate_slot(t_scene *scene);
+t_index					scene_allocate_object_slot(void **ptr, size_t *count,
 							size_t *cap, size_t sz);
+void					refresh_editor_snaps(t_scene *scene, size_t start_idx);
 
 #endif

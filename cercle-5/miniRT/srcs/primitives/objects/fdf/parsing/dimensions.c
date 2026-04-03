@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include "functions/primitives/parser.h"
+#include "parser.h"
 
 static int	count_columns(char *line)
 {

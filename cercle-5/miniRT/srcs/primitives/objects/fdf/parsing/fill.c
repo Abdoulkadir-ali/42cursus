@@ -13,7 +13,7 @@
 #include "fdf.h"
 #include "helpers.h"
 #include "types.h"
-#include "functions/primitives/parser.h"
+#include "parser.h"
 
 bool	fdf_parse_line_row(char *line, t_mesh *mesh, int row, int dims[2]);
 

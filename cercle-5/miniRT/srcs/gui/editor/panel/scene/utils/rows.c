@@ -6,15 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:33:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:32:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-int	count_scene_rows(t_scene *sc)
+size_t	count_scene_rows(t_scene *sc)
 {
-	int	total;
+	size_t	total;
 
 	total = sc->light_count + sc->sphere_count + sc->plane_count;
 	total += sc->cylinder_count + sc->cone_count + sc->tri_count;

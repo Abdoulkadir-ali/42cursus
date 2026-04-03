@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   material.c                                         :+:      :+:    :+:   */
+/*   entry.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:02:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:02:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:19:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,11 @@ bool	obj_parse_mtllib(t_scene *scene, t_obj *obj, t_parser *p,
 		full = ft_strdup(name);
 	if (dir)
 		free(dir);
-	if (obj->first_mtl_id == (size_t)-1)
-		obj->first_mtl_id = scene->mat_count;
+	if (obj->first_mtl_id.error)
+	{
+		obj->first_mtl_id.i = scene->mat_count;
+		obj->first_mtl_id.error = false;
+	}
 	parse_mtl(scene, NULL, full);
 	free(full);
 	return (true);

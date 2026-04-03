@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   build_tris.c                                       :+:      :+:    :+:   */
+/*   poly.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 04:45:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:55:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fbx.h"
 
-static int	fbx_read_poly(t_fbx_build *b, int *si)
+static size_t	fbx_read_poly(t_fbx_build *b, size_t *si)
 {
 	size_t	idx;
-	int	vn;
+	size_t	vn;
 
 	*si = b->ps;
 	vn = 0;
-	while ((size_t)b->ps < b->raw_c)
+	while (b->ps < b->raw_c)
 	{
 		idx = b->raw[b->ps++];
 		if ((long long)idx < 0)
@@ -31,7 +31,8 @@ static int	fbx_read_poly(t_fbx_build *b, int *si)
 	return (vn);
 }
 
-static void	fbx_emit_vertex(t_fbx_build *b, int v_index, int si, int offset)
+static void	fbx_emit_vertex(t_fbx_build *b, size_t v_index,
+				size_t si, size_t offset)
 {
 	t_vertex	*v;
 
@@ -54,13 +55,13 @@ static void	fbx_emit_vertex(t_fbx_build *b, int v_index, int si, int offset)
 	b->vp++;
 }
 
-static void	fbx_emit_tris(t_fbx_build *b, int vn, int si)
+static void	fbx_emit_tris(t_fbx_build *b, size_t vn, size_t si)
 {
-	int	i;
-	int	tri_idx;
+	size_t	i;
+	size_t	tri_idx;
 
-	i = 1;
-	while (i < vn - 1)
+	i = 0;
+	while (i < vn)
 	{
 		if (b->v[0] < b->vc && b->v[i] < b->vc && b->v[i + 1] < b->vc
 			&& b->vp <= b->tc * 3 - 3)
@@ -79,12 +80,12 @@ static void	fbx_emit_tris(t_fbx_build *b, int vn, int si)
 
 void	fbx_build_tris(t_fbx_build *b)
 {
-	int	vn;
-	int	si;
+	size_t	vn;
+	size_t	si;
 
 	b->ps = 0;
 	b->vp = 0;
-	while ((size_t)b->ps < b->raw_c)
+	while (b->ps < b->raw_c)
 	{
 		vn = fbx_read_poly(b, &si);
 		fbx_emit_tris(b, vn, si);

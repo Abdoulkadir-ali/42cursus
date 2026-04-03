@@ -15,8 +15,8 @@
 static void	init(t_obj *obj)
 {
 	ft_memset(obj, 0, sizeof(t_obj));
-	obj->current_mat_id = -1;
-	obj->first_mtl_id = -1;
+	obj->current_mat_id = init_index(0, true);
+	obj->first_mtl_id = init_index(0, true);
 	obj->bbox = aabb_create_empty();
 }
 

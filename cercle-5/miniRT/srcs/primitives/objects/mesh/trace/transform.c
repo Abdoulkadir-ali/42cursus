@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:16:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:46:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ static void	init_phys_collider(t_mesh *mesh)
 
 static void	apply_vertex_transform(t_mesh *m, t_mat4 mat, t_mat4 rot)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while ((size_t)i < m->vertex_count)
+	while (i < m->vertex_count)
 	{
 		m->vertices[i].pos = mat4_mul_pos(mat, m->vertices[i].pos);
 		if (m->normals)
@@ -78,7 +78,7 @@ static void	apply_vertex_transform(t_mesh *m, t_mat4 mat, t_mat4 rot)
 	}
 	m->bbox = aabb_create_empty();
 	i = 0;
-	while ((size_t)i < m->vertex_count)
+	while (i < m->vertex_count)
 	{
 		aabb_expand_point(&m->bbox, m->vertices[i].pos);
 		i++;

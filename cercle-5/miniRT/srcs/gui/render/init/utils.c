@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_utils.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:52:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:22:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,5 @@ void	gui_init_render(t_gui *gui)
 	if (gui->render.num_cores > 128)
 		gui->render.num_cores = 128;
 	gui->render.pool.ready = false;
+	font_load(gui, FONT_PATH);
 }
-

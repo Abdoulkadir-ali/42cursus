@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:23:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "glb.h"
 
-static void	parse_pbr(t_glb_mat *mat, int s_id, t_json_value *m)
+static void	parse_pbr(t_glb_mat *mat, size_t s_id, t_json_value *m)
 {
 	t_json_value	*pbr;
 	t_json_value	*color;
@@ -38,7 +38,7 @@ static void	parse_pbr(t_glb_mat *mat, int s_id, t_json_value *m)
 	}
 }
 
-static void	parse_specgloss(t_glb_mat *mat, int s_id, t_json_value *ext)
+static void	parse_specgloss(t_glb_mat *mat, size_t s_id, t_json_value *ext)
 {
 	t_json_value	*sg;
 
@@ -58,15 +58,16 @@ void	parse_glb_material(t_glb_mat *mat)
 {
 	t_json_value	*m;
 	t_json_value	*ext;
-	int				s_id;
+	size_t			s_id;
+	bool			err;
 
 	m = json_at(json_get(mat->json, "materials"), mat->mat_idx);
 	if (!m || m->type != JSON_OBJECT)
 		return ;
-	s_id = mesh_resource_add_material(mat->out, "glb_material");
-	if (s_id < 0)
+	s_id = mesh_resource_add_material(mat->out, "glb_material", &err);
+	if (err)
 		return ;
-	mat->out_ids[mat->mat_idx] = s_id;
+	mat->out_ids[mat->mat_idx] = init_index(s_id, false);
 	parse_pbr(mat, s_id, m);
 	if (!mat->out->materials[s_id].albedo_map.addr)
 	{

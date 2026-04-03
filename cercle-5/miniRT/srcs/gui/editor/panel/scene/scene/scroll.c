@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:51:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:32:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 bool	scene_panel_handle_scroll(t_gui *gui, int button)
 {
-	int	max_scroll;
-	int	rows;
+	int		max_scroll;
+	size_t	rows;
 
 	if (!gui->scene_panel.visible || !gui->scene)
 		return (false);
-	if (gui->input.mouse.x < 0 || gui->input.mouse.x >= gui->scene_panel.width)
+	if (gui->input.mouse.x >= gui->scene_panel.width)
 		return (false);
 	rows = count_scene_rows(gui->scene);
-	max_scroll = rows * ROW_H;
+	max_scroll = (int)rows * ROW_H;
 	if (button == BUTTON_SCROLL_UP)
 		gui->scene_panel.scroll -= ROW_H;
 	else if (button == BUTTON_SCROLL_DOWN)

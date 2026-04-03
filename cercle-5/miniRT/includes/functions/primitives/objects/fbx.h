@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:00:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:23:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void					f_vec2(char **p, void *dst);
 void					f_vec3(char **p, void *dst);
 void					f_int(char **p, void *dst);
 char					*read_file_content(const char *path, size_t *out_size);
-int						parse_texture(char *p, char *end, t_scene *scene,
+t_index					parse_texture(char *p, char *end, t_scene *scene,
 							const char *fbx_path);
 void					mesh_free(t_mesh *mesh);
 

@@ -12,18 +12,18 @@
 
 #include "mesh.h"
 
-void	test_children(t_mesh *mesh, int node_idx, const t_ray *ray,
+void	test_children(t_mesh *mesh, t_index node_idx, const t_ray *ray,
 		t_child *c)
 {
-	c->left_idx = node_idx + 1;
-	c->right_idx = mesh->bvh_nodes[node_idx].left_or_first;
+	c->left_idx = node_idx.i + 1;
+	c->right_idx = mesh->bvh_nodes[node_idx.i].left_or_first;
 	c->hit_l = aabb_intersect_fast(&mesh->bvh_nodes[c->left_idx].bbox,
 			ray, &c->tl_min, &c->tl_max);
 	c->hit_r = aabb_intersect_fast(&mesh->bvh_nodes[c->right_idx].bbox,
 			ray, &c->tr_min, &c->tr_max);
 }
 
-int	select_child(t_child *c, t_trace *trace)
+size_t	select_child(t_child *c, t_trace *trace)
 {
 	if (c->hit_l && c->hit_r)
 	{
@@ -39,10 +39,10 @@ int	select_child(t_child *c, t_trace *trace)
 		return (c->left_idx);
 	if (c->hit_r)
 		return (c->right_idx);
-	return (-1);
+	return (0);
 }
 
-int	pick_children(t_mesh *mesh, int node_idx, const t_ray *ray,
+size_t	pick_children(t_mesh *mesh, t_index node_idx, const t_ray *ray,
 		t_trace *trace)
 {
 	t_child	c;

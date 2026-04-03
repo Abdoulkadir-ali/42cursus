@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 20:04:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:33:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ bool	crud_handle_click(t_gui *gui, t_vec2i mouse)
 {
 	if (!gui->scene || !gui->scene_panel.visible)
 		return (false);
-	if (mouse.x < 0 || mouse.x >= SCENE_PANEL_W)
+	if (mouse.x >= SCENE_PANEL_W)
 		return (false);
-	if (mouse.y < 0 || mouse.y >= CRUD_PANEL_H)
+	if (mouse.y >= CRUD_PANEL_H)
 		return (false);
 	if (btn_hit(mouse, vec2i(4, 6), vec2i(CRUD_ADD_W, CRUD_BTN_H)))
 	{

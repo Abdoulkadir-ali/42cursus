@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh.c                                             :+:      :+:    :+:   */
+/*   bvh.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 15:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:37:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ static void	print_node_info(const t_bvh_node *n, int idx)
 	printf(")\n");
 }
 
-void	print_bvh_node(const t_bvh *b, int idx, int depth)
+void	print_bvh_node(const t_bvh *b, size_t idx, size_t depth)
 {
 	const t_bvh_node	*n;
-	int					i;
+	size_t				i;
 
-	if (!b || idx < 0 || (size_t)idx >= b->num_nodes)
+	if (!b || idx >= b->num_nodes)
 		return ;
 	n = &b->nodes[idx];
 	i = 0;
@@ -40,7 +40,7 @@ void	print_bvh_node(const t_bvh *b, int idx, int depth)
 		printf("  ");
 		i++;
 	}
-	print_node_info(n, idx);
+	print_node_info(n, (int)idx);
 	if (n->count == 0)
 	{
 		print_bvh_node(b, idx + 1, depth + 1);

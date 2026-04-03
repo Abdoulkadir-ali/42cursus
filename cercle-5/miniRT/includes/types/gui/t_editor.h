@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:33:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:31:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ typedef struct s_inspector
 typedef struct s_scene_panel
 {
 	bool			visible;
-	int				width;
+	size_t			width;
 	int				scroll;
 	int				hovered_row;
 }					t_scene_panel;

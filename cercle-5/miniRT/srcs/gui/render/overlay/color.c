@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:37:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:04:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ static t_vec2i	corner_delta(t_panel p, t_vec2i pos)
 	else if (pos.x < p.pos.x + r && pos.y >= p.pos.y + p.size.y - r)
 		d = vec2i(p.pos.x + r - pos.x, pos.y - (p.pos.y + p.size.y - r - 1));
 	else if (pos.x >= p.pos.x + p.size.x - r && pos.y >= p.pos.y + p.size.y - r)
-		d = vec2i(pos.x - (p.pos.x + p.size.x - r - 1),
-				pos.y - (p.pos.y + p.size.y - r - 1));
+		d = vec2i(pos.x - (p.pos.x + p.size.x - r - 1), pos.y - (p.pos.y
+					+ p.size.y - r - 1));
 	return (d);
 }
 

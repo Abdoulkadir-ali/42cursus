@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:10 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:10:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,17 @@
 void	glb_parse_accessor(t_json_value *json, int idx, t_accessor *out)
 {
 	t_json_value	*acc;
+	t_index			val;
 
 	acc = json_at(json_get(json, "accessors"), idx);
 	if (!acc)
 		return ;
-	out->buffer_view = json_get_size_t(acc, "bufferView", NULL);
-	out->byte_offset = json_get_size_t(acc, "byteOffset", NULL);
-	out->component_type = json_get_size_t(acc, "componentType", NULL);
-	out->count = json_get_size_t(acc, "count", NULL);
-	if (out->byte_offset == (size_t)-1)
-		out->byte_offset = 0;
+	val = json_get_size_t(acc, "bufferView");
+	out->buffer_view = val.i;
+	val = json_get_size_t(acc, "byteOffset");
+	out->byte_offset = val.i;
+	val = json_get_size_t(acc, "componentType");
+	out->component_type = val.i;
+	val = json_get_size_t(acc, "count");
+	out->count = val.i;
 }

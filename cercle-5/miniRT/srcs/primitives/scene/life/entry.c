@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:39:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,8 @@ static bool	snap_alloc_geo(t_cache_snap *s, const t_mesh *m)
 	return (true);
 }
 
-static bool	snap_one(t_cache_snap *s, const t_mesh *m)
+static bool	snap_one_copy(t_cache_snap *s, const t_mesh *m)
 {
-	ft_memset(s, 0, sizeof(*s));
-	s->vertex_count = m->vertex_count;
-	s->tri_count = m->tri_count;
-	s->mat_id = m->mat_id;
-	if (m->name)
-		s->name = ft_strdup(m->name);
-	else
-		s->name = ft_strdup("");
 	if (!s->name || !snap_alloc_geo(s, m))
 		return (false);
 	ft_memcpy(s->vertices, m->vertices, sizeof(t_vec3) * m->vertex_count);
@@ -56,25 +48,24 @@ static bool	snap_one(t_cache_snap *s, const t_mesh *m)
 	return (true);
 }
 
-bool	mesh_cache_save(t_scene *scene, const char *path, int start_mesh)
+static bool	snap_one(t_cache_snap *s, const t_mesh *m)
 {
-	t_model_cache	*entry;
-	int				count;
-	int				i;
+	ft_memset(s, 0, sizeof(*s));
+	s->vertex_count = m->vertex_count;
+	s->tri_count = m->tri_count;
+	s->mat_id = m->mat_id;
+	if (m->name)
+		s->name = ft_strdup(m->name);
+	else
+		s->name = ft_strdup("");
+	return (snap_one_copy(s, m));
+}
 
-	if (find_cache_idx(scene, NULL) == -2)
-		return (true);
-	count = scene->mesh_count - start_mesh;
-	if (count <= 0)
-		return (true);
-	entry = get_cache_entry(scene, -2);
-	if (!entry)
-		return (true);
-	ft_strlcpy(entry->path, path, sizeof(entry->path));
-	entry->snaps = malloc(sizeof(t_cache_snap) * count);
-	if (!entry->snaps)
-		return (true);
-	entry->count = 0;
+static bool	cache_save_loop(t_scene *scene, t_model_cache *entry,
+				size_t start_mesh, size_t count)
+{
+	size_t	i;
+
 	i = 0;
 	while (i < count)
 	{
@@ -84,4 +75,26 @@ bool	mesh_cache_save(t_scene *scene, const char *path, int start_mesh)
 		i++;
 	}
 	return (true);
+}
+
+bool	mesh_cache_save(t_scene *scene, const char *path, size_t start_mesh)
+{
+	t_model_cache	*entry;
+	size_t			count;
+
+	if (scene->cache_count >= MAX_MODEL_CACHE)
+		return (true);
+	count = scene->mesh_count - start_mesh;
+	if (count == 0)
+		return (true);
+	scene->cache_count++;
+	entry = get_cache_entry(scene, scene->cache_count - 1);
+	if (!entry)
+		return (true);
+	ft_strlcpy(entry->path, path, sizeof(entry->path));
+	entry->snaps = malloc(sizeof(t_cache_snap) * count);
+	if (!entry->snaps)
+		return (true);
+	entry->count = 0;
+	return (cache_save_loop(scene, entry, start_mesh, count));
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:23:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ static bool	ascii_build_mesh(t_fbx_ascii *asc, t_scene *scene,
 		return (false);
 	mesh_build_bvh(&asc->mesh.base);
 	asc->mat_id = parse_texture(asc->p, asc->end, scene, path);
-	if (asc->mat_id != (size_t)-1)
-		asc->mesh.base.mat_id = asc->mat_id;
+	if (!asc->mat_id.error)
+		asc->mesh.base.mat_id = asc->mat_id.i;
 	return (true);
 }
 

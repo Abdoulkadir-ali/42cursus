@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:19:46 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:47:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:08:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ static bool	traverse_step(const t_bvh *bvh, const t_ray *ray, double max_t,
 		}
 		else
 		{
-			stack[++top] = bvh->nodes[node_idx].left_or_first + 1;
 			stack[++top] = bvh->nodes[node_idx].left_or_first;
+			stack[++top] = node_idx + 1;
 		}
 	}
 	return (false);

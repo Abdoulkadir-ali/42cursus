@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:14:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,23 +35,23 @@ static void	bvh_swap_item(t_mesh_build_item *items, int left, int right)
  * specified axis. Returns the index of the first item in the right 
  * partition.
  */
-int	bvh_partition_items(t_mesh_build_item *items, int count, int axis,
+size_t	bvh_partition_items(t_mesh_build_item *items, size_t count, int axis,
 		double split_val)
 {
-	int		left;
-	int		right;
+	size_t	left;
+	size_t	right;
 	double	c_val;
 
 	left = 0;
 	right = count - 1;
-	while (left <= right)
+	while (left <= (size_t)right && right != (size_t)-1)
 	{
 		c_val = bvh_item_centroid(items, left, axis);
 		if (c_val < split_val)
 			left++;
 		else
 		{
-			bvh_swap_item(items, left, right);
+			bvh_swap_item(items, left, (size_t)right);
 			right--;
 		}
 	}

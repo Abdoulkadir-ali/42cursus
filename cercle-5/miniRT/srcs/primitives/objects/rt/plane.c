@@ -18,14 +18,14 @@
 */
 bool	scene_add_plane(t_scene *scene, t_plane plane)
 {
-	int	mat_id;
+	t_index	mat_id;
 
 	mat_id = scene_add_material(scene, plane.temp_color);
-	if (mat_id < 0)
+	if (mat_id.error)
 		return (false);
-	plane.mat_id = mat_id;
+	plane.mat_id = mat_id.i;
 	if (scene_allocate_object_slot((void **)&scene->planes, &scene->plane_count,
-			&scene->plane_cap, sizeof(t_plane)) < 0)
+			&scene->plane_cap, sizeof(t_plane)).error)
 		return (false);
 	if (vec3_mag_sq(plane.transform.scale) < 1e-6)
 		plane.transform.scale = vec3(1, 1, 1);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:13:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:10:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,6 @@
 # include <fcntl.h>
 # include "helpers.h"
 # include "types.h"
-
-/* JSON Parser Types */
-typedef enum e_json_type
-{
-	JSON_NULL,
-	JSON_BOOL,
-	JSON_NUMBER,
-	JSON_STRING,
-	JSON_ARRAY,
-	JSON_OBJECT
-}						t_json_type;
 
 typedef struct s_json_value t_json_value;
 
@@ -96,8 +85,7 @@ const char				*json_as_string(t_json_value *value);
 double					json_as_number(t_json_value *value);
 bool					json_as_bool(t_json_value *value);
 int						json_get_int(t_json_value *obj, const char *key);
-size_t					json_get_size_t(t_json_value *obj, const char *key,
-							bool *error);
+t_index					json_get_size_t(t_json_value *obj, const char *key);
 void					*json_realloc(void *ptr, size_t old_size,
 							size_t new_size);
 void					*json_malloc(size_t size);

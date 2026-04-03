@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:20:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:36:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static bool	restore_geo(t_mesh *mesh, const t_cache_snap *snap)
 static bool	restore_one(const t_cache_snap *snap, t_scene *scene)
 {
 	t_mesh	mesh;
-	int		inst_mat;
+	t_index	inst_mat;
 
 	ft_memset(&mesh, 0, sizeof(t_mesh));
 	mesh.transform.scale = vec3(1, 1, 1);
@@ -46,8 +46,8 @@ static bool	restore_one(const t_cache_snap *snap, t_scene *scene)
 	mesh.vertex_count = snap->vertex_count;
 	mesh.tri_count = snap->tri_count;
 	inst_mat = scene_clone_material(scene, snap->mat_id);
-	if (inst_mat >= 0)
-		mesh.mat_id = inst_mat;
+	if (!inst_mat.error)
+		mesh.mat_id = inst_mat.i;
 	else
 		mesh.mat_id = snap->mat_id;
 	if (snap->name)
@@ -61,14 +61,14 @@ static bool	restore_one(const t_cache_snap *snap, t_scene *scene)
 
 bool	mesh_cache_restore(t_scene *scene, const char *path)
 {
-	int	idx;
-	int	i;
+	size_t	idx;
+	size_t	i;
 
 	idx = find_cache_idx(scene, path);
-	if (idx < 0)
+	if (idx == (size_t)-1)
 		return (false);
 	i = 0;
-	while ((size_t)i < get_cache_entry(scene, idx)->count)
+	while (i < get_cache_entry(scene, idx)->count)
 	{
 		if (!restore_one(&get_cache_entry(scene, idx)->snaps[i], scene))
 			return (false);

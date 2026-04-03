@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:12:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	glb_load_mesh(t_mesh *mesh, t_json_value *json, char *bin,
 {
 	t_json_value	*m;
 	t_json_value	*prim;
+	t_index			idx;
 
 	m = json_at(json_get(json, "meshes"), mesh_idx);
 	if (!m)
@@ -47,5 +48,7 @@ void	glb_load_mesh(t_mesh *mesh, t_json_value *json, char *bin,
 	if (!prim)
 		return ;
 	glb_load_attributes(mesh, json, bin, json_get(prim, "attributes"));
-	load_indices(json, bin, mesh, json_get_size_t(prim, "indices", NULL));
+	idx = json_get_size_t(prim, "indices");
+	if (!idx.error)
+		load_indices(json, bin, mesh, idx.i);
 }

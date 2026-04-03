@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:00:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:48:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ bool					obj_read_id(t_parser *p, char *buf, size_t size);
 void					obj_skip_line(t_parser *p);
 
 void					obj_add_vert(t_obj *obj, int vi, int vti, int vni);
+void					obj_set_out_vertex(t_obj *obj, size_t vi,
+							size_t vti, size_t vni);
 void					obj_generate_normals(t_obj *obj);
 void					obj_init_mesh(t_mesh *mesh, t_obj *obj, const char *path);
 void					obj_face_init(t_obj_face *face);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:09:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:17:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,17 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include "libft.h"
+
+/* JSON Parser Types */
+typedef enum e_json_type
+{
+	JSON_NULL,
+	JSON_BOOL,
+	JSON_NUMBER,
+	JSON_STRING,
+	JSON_ARRAY,
+	JSON_OBJECT
+}						t_json_type;
 
 typedef struct s_parser
 {

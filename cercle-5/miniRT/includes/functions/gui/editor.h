@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:57:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:36:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ bool				transform_panel_handle_click(struct s_gui *gui,
 /* 3. FUNCTION PROTOTYPES */
 
 /* srcs/gui/editor/selection.c */
-void				select_object(struct s_gui *gui, t_type type, int index);
+void				select_object(struct s_gui *gui, t_type type, size_t index);
 void				clear_selection(struct s_gui *gui);
 t_material			*get_selected_material(struct s_gui *gui);
 void				pick_at_mouse(struct s_gui *gui, t_vec2i mouse);
@@ -141,11 +141,11 @@ bool				ambient_panel_handle_click(struct s_gui *gui,
 void				draw_mesh_info_panel(struct s_gui *gui, t_vec2i pos);
 
 /* srcs/gui/editor/panel/scene/utils.c */
-int					count_mesh_entries(t_scene *sc);
+size_t				count_mesh_entries(t_scene *sc);
 int					mesh_row_to_idx(int r);
-int					count_scene_rows(t_scene *sc);
+size_t				count_scene_rows(t_scene *sc);
 int					row_strip(int *r, int count, t_type t, t_scene_row_res *res);
-void				row_to_object(t_gui *gui, int r, t_type *ty, int *idx);
+void				row_to_object(t_gui *gui, size_t r, t_type *ty, int *idx);
 
 /* srcs/gui/editor/panel/scene/row.c */
 void				draw_scene_rows(t_gui *gui);

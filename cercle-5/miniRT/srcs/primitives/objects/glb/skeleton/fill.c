@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:21:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:13:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:21:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void	add_non_joint_bones(t_mesh *mesh, t_json_value *nodes,
 	while (++i < nodes->u.array.count && i < PARSER_BUF_SIZE)
 	{
 		node = json_at(nodes, i);
-		if (!is_joint[i] && json_get_size_t(node, "mesh", NULL) != (size_t)-1)
+		if (!is_joint[i] && !json_get_size_t(node, "mesh").error)
 		{
 			bone = &mesh->skeleton[mesh->bone_count];
 			ft_memset(bone, 0, sizeof(t_bone));
@@ -92,13 +92,18 @@ static void	add_non_joint_bones(t_mesh *mesh, t_json_value *nodes,
 static void	prepare_fill_state(size_t *state[2], t_json_value *joints)
 {
 	size_t	i;
+	size_t	idx;
 
 	i = -1;
 	while (++i < PARSER_BUF_SIZE)
 		state[1][i] = -1;
 	i = -1;
 	while (++i < joints->u.array.count)
-		state[0][(size_t)json_as_number(json_at(joints, i))] = 1;
+	{
+		idx = json_as_number(json_at(joints, i));
+		if (idx < PARSER_BUF_SIZE)
+			state[0][idx] = 1;
+	}
 }
 
 void	glb_fill_extra_anim_nodes(t_mesh *m, t_json_value *j)

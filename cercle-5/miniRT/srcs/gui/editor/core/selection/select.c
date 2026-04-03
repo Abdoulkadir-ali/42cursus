@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:44:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,19 @@ void	rebuild_bvh(t_gui *gui)
 	gui->scene->bvh = bvh_create(gui->scene);
 }
 
-static void	set_selection_bbox(t_gui *gui, t_type type, int index)
+static void	set_selection_bbox(t_gui *gui, t_type type, size_t index)
 {
 	t_aabb			union_bbox;
 	t_mesh_group	*g;
 	t_bvh_ref		ref;
-	int				si;
+	size_t			si;
 
-	if (type == TYPE_MESH && (size_t)index < gui->scene->group_count)
+	if (type == TYPE_MESH && index < gui->scene->group_count)
 	{
 		g = &gui->scene->groups[index];
 		union_bbox = gui->scene->meshes[g->start].bbox;
 		si = 0;
-		while ((size_t)++si < g->sub_count)
+		while (++si < g->sub_count)
 			union_bbox = aabb_union(&union_bbox,
 					&gui->scene->meshes[g->start + si].bbox);
 		gui->selection.bbox = union_bbox;
@@ -55,7 +55,7 @@ static void	set_inspector_tab(t_gui *gui, t_type type)
 		gui->inspector.tab = TAB_TRANSFORM;
 }
 
-void	select_object(t_gui *gui, t_type type, int index)
+void	select_object(t_gui *gui, t_type type, size_t index)
 {
 	gui->selection.type = type;
 	gui->selection.index = index;

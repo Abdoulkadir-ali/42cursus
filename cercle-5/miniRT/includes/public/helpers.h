@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/31 09:53:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:07:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "types.h"
 # include "libs.h"
 # include "maths.h"
+# include "index.h"
 # include "debug.h"
 # include "utils.h"
 # include "profiler.h"

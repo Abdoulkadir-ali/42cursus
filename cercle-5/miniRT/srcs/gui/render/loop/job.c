@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:53:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:03:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,3 @@ void	poll_map_job(t_gui *gui)
 	clear_selection(gui);
 	gui->render.dirty = true;
 }
-

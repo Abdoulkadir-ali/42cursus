@@ -27,12 +27,12 @@ void	test_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		c->tr_min = 0.0;
 }
 
-int	pick_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
+size_t	pick_occ_children(t_mesh *mesh, t_index node_idx, const t_ray *ray,
 		t_occ *occ)
 {
 	t_occ_child	c;
 
-	test_occ_children(mesh, node_idx, ray, &c);
+	test_occ_children(mesh, node_idx.i, ray, &c);
 	if (c.hit_l && c.tl_min >= occ->dist)
 		c.hit_l = false;
 	if (c.hit_r && c.tr_min >= occ->dist)
@@ -51,5 +51,5 @@ int	pick_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		return (c.left_idx);
 	if (c.hit_r)
 		return (c.right_idx);
-	return (-1);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/10 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:25:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:04:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	skip_utf8(const char **str)
 ** Draw a NUL-terminated string into disp_img using t_vec2i position.
 */
 void	gui_draw_string(t_gui *gui, const char *str, t_vec2i pos,
-			unsigned int color)
+		unsigned int color)
 {
 	t_vec2i			curr;
 	unsigned char	c;

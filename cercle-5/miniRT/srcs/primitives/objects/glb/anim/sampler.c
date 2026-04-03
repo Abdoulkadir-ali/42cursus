@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:37:10 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:12:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	load_glb_sampler(t_json_value *json, char *bin, t_anim_sampler *s,
 	const char		*interp;
 
 	interp = json_as_string(json_get(s_json, "interpolation"));
-	glb_parse_accessor(json, json_get_size_t(s_json, "input", NULL), &acc);
+	glb_parse_accessor(json, json_get_size_t(s_json, "input").i, &acc);
 	s->count = acc.count;
 	if (s->count <= 0)
 		return ;
@@ -56,7 +56,7 @@ void	load_glb_sampler(t_json_value *json, char *bin, t_anim_sampler *s,
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	glb_extract_data((t_extract){bin, &acc, &bv, s->inputs, sizeof(float),
 		sizeof(float), sizeof(float), s->count});
-	load_sampler_outputs(json, bin, s, json_get_size_t(s_json, "output", NULL));
+	load_sampler_outputs(json, bin, s, json_get_size_t(s_json, "output").i);
 	s->method = INTERP_LINEAR;
 	if (interp && !strcmp(interp, "STEP"))
 		s->method = INTERP_STEP;

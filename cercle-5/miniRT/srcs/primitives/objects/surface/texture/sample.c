@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 13:42:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:46:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static t_vec3	sample_checker(t_texture *tex, double u, double v)
 {
 	int	ch;
 
-	ch = (size_t)(floor(u * tex->scale) + floor(v * tex->scale)) % 2;
+	ch = (int)(floor(u * tex->scale) + floor(v * tex->scale)) % 2;
 	if ((u * tex->scale) < 0)
 		ch++;
 	if ((v * tex->scale) < 0)

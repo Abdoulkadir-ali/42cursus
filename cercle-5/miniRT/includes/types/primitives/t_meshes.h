@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:49:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:24:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ typedef struct s_mesh_group
 typedef struct s_bone
 {
 	char				*name;
-	int					parent;
+	size_t				parent;
 	size_t				node_idx;
 	t_mat4				offset_matrix;
 	t_mat4				local_transform;
@@ -160,6 +160,7 @@ typedef struct s_bvh_try
 	size_t				count;
 	struct s_bvh_split	*split;
 	size_t				*mid;
+	bool				*error;
 }						t_bvh_try;
 
 typedef struct s_mesh_build_item
@@ -378,9 +379,9 @@ typedef struct s_fbx_build
 	t_triangle			*triangles;
 	size_t				*v;
 	size_t				vp;
-	int					ps;
-	int					use_v_n;
-	int					use_v_u;
+	size_t				ps;
+	bool				use_v_n;
+	bool				use_v_u;
 }						t_fbx_build;
 
 typedef struct s_fbx_parse
@@ -437,7 +438,7 @@ typedef struct s_fbx_ascii
 	char				*p;
 	char				*end;
 	size_t				buf_size;
-	size_t				mat_id;
+	t_index				mat_id;
 	const char			*path;
 }						t_fbx_ascii;
 
@@ -543,8 +544,8 @@ typedef struct s_glb_mat
 	void			*mlx_ptr;
 	t_json_value	*json;
 	char			*bin;
-	int				mat_idx;
-	int				*out_ids;
+	size_t			mat_idx;
+	t_index			*out_ids;
 }	t_glb_mat;
 
 typedef struct s_obj_face
@@ -578,8 +579,8 @@ typedef struct s_obj
 	size_t				out_i_cap;
 
 	t_aabb				bbox;
-	size_t				current_mat_id;
-	size_t				first_mtl_id;
+	t_index				current_mat_id;
+	t_index				first_mtl_id;
 }						t_obj;
 
 

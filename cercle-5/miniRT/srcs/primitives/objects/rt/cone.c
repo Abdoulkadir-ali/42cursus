@@ -18,12 +18,12 @@
 */
 bool	scene_add_cone(t_scene *scene, t_cone cone)
 {
-	int	mat_id;
+	t_index	mat_id;
 
 	mat_id = scene_add_material(scene, cone.temp_color);
-	if (mat_id < 0)
+	if (mat_id.error)
 		return (false);
-	cone.mat_id = mat_id;
+	cone.mat_id = mat_id.i;
 	if (!DYNARRAY_ENSURE_INT(&scene->cones, &scene->cone_count,
 			&scene->cone_cap, sizeof(t_cone)))
 		return (false);

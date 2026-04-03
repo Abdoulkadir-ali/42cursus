@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:14:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:46:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
  */
 void	bvh_copy_indices(t_mesh *mesh, t_mbvh *bvh)
 {
-	int		tri;
-	int		i;
+	size_t	tri;
+	size_t	i;
 
 	i = 0;
-	while ((size_t)i < mesh->tri_count)
+	while (i < mesh->tri_count)
 	{
 		tri = bvh->items[i].index;
 		mesh->bvh_indices[i * 3 + 0] = mesh->indices[tri * 3 + 0];

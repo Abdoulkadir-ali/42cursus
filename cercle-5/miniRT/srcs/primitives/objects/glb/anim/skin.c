@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:02:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:24:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static t_mat4	*get_joint_matrix(t_mesh *mesh, size_t joint_idx)
 {
-	if (joint_idx == (size_t)-1 || joint_idx >= mesh->bone_count)
+	if (joint_idx >= mesh->bone_count)
 		return (NULL);
 	return (&mesh->bone_matrices[joint_idx]);
 }

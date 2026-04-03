@@ -12,11 +12,11 @@
 
 #include "mesh.h"
 
-void	bvh_update_node_bounds(t_mbvh_node *node, t_mbvh *bvh, int first,
-		int count)
+void	bvh_update_node_bounds(t_mbvh_node *node, t_mbvh *bvh, size_t first,
+		size_t count)
 {
 	t_aabb	bbox;
-	int		i;
+	size_t	i;
 
 	bbox = aabb_create_empty();
 	i = 0;

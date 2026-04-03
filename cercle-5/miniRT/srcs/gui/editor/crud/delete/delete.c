@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 12:55:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ void	editor_delete_selected(t_gui *gui)
 {
 	t_selection	*sel;
 	t_scene		*sc;
-	int			i;
+	size_t		i;
 
 	if (!gui || !gui->scene || !gui->selection.active)
 		return ;
 	sel = &gui->selection;
 	sc = gui->scene;
 	i = sel->index;
-	if (sel->type == TYPE_LIGHT && (size_t)i < sc->light_count)
+	if (sel->type == TYPE_LIGHT && i < sc->light_count)
 	{
 		ft_memmove(sc->lights + i, sc->lights + i + 1,
 			(sc->light_count - i - 1) * sizeof(t_light));

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:47:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ static int	mat_id_of_selection(t_gui *gui)
 t_material	*get_selected_material(t_gui *gui)
 {
 	t_selection	*sel;
-	int			mat_id;
+	size_t		mat_id;
 
 	sel = &gui->selection;
 	if (!sel->active || !gui->scene)
 		return (NULL);
 	mat_id = mat_id_of_selection(gui);
-	if ((size_t)mat_id >= gui->scene->mat_count)
+	if (mat_id >= gui->scene->mat_count)
 		return (NULL);
 	return (&gui->scene->materials[mat_id]);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 12:49:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 20:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:16:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,12 @@ void	debug_print_mesh_aabb(const t_ray *ray, double tmin, double tmax)
 		ray->direction.z);
 }
 
-void	debug_print_bvh_build(int tri_count, int depth, bool start)
+void	debug_print_bvh_build(size_t tri_count, size_t depth, bool start)
 {
 	if (start)
-		printf("DEBUG: Starting BVH build: tri_count=%d\n", tri_count);
+		printf("DEBUG: Starting BVH build: tri_count=%zu\n", tri_count);
 	else
-		printf("DEBUG: Finished BVH build: depth=%d\n", depth);
+		printf("DEBUG: Finished BVH build: depth=%zu\n", depth);
 }
 
 void	debug_print_mesh_bake(const t_mesh *mesh, bool start)

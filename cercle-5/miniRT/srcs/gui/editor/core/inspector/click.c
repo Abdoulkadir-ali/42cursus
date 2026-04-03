@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:42:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:33:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static bool	handle_tab_click(t_gui *gui, t_vec2i mouse, int x)
 
 bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 {
-	int				x;
+	size_t			x;
 	t_physics_body	*phys;
 
 	if (!gui->inspector.visible || !gui->selection.active)

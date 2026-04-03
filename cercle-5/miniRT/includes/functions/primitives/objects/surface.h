@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:45:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:33:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ bool					load_texture_xpm(void *mlx_ptr, t_texture *tex,
 							const char *path);
 
 /* Material Scene Addition (srcs/primitives/scene/add/material/) */
-int						scene_add_material(t_scene *scene, t_vec3 color);
-int						scene_add_fresh_material(t_scene *scene, t_vec3 color);
-int						scene_clone_material(t_scene *scene, int src_id);
-int						scene_add_checker_material(t_scene *scene, t_vec3 a,
+t_index					scene_add_material(t_scene *scene, t_vec3 color);
+t_index					scene_add_fresh_material(t_scene *scene, t_vec3 color);
+t_index					scene_clone_material(t_scene *scene, size_t src_id);
+size_t					scene_add_checker_material(t_scene *scene, t_vec3 a,
 							t_vec3 b, double scale);
-int						scene_find_material(t_scene *scene, const char *name);
-int						scene_add_named_material(t_scene *scene,
+t_index					scene_find_material(t_scene *scene, const char *name);
+t_index					scene_add_named_material(t_scene *scene,
 							const char *name);
 
 #endif

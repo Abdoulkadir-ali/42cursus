@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:31:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:21:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
  * Iterates through the GLB 'materials' array and parses each material 
  * into the standalone mesh resource system. Returns an array of resource IDs.
  */
-int	*glb_load_materials(t_mesh_resource *out, void *mlx_ptr,
+t_index	*glb_load_materials(t_mesh_resource *out, void *mlx_ptr,
 		t_json_value *json, char *bin)
 {
 	t_glb_mat		mat;
-	int				count;
-	int				*ids;
+	size_t			count;
+	t_index			*ids;
 	t_json_value	*m_array;
 
 	mat.out = out;
@@ -32,15 +32,16 @@ int	*glb_load_materials(t_mesh_resource *out, void *mlx_ptr,
 	if (!m_array || m_array->type != JSON_ARRAY)
 		return (NULL);
 	count = m_array->u.array.count;
-	ids = malloc(sizeof(size_t) * count);
+	ids = malloc(sizeof(t_index) * count);
 	if (!ids)
 		return (NULL);
 	mat.out_ids = ids;
-	mat.mat_idx = -1;
-	while (++mat.mat_idx < count)
+	mat.mat_idx = 0;
+	while (mat.mat_idx < count)
 	{
-		ids[mat.mat_idx] = -1;
+		ids[mat.mat_idx] = init_index(0, true);
 		parse_glb_material(&mat);
+		mat.mat_idx++;
 	}
 	return (ids);
 }

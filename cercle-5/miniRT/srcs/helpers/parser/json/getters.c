@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   json.c                                             :+:      :+:    :+:   */
+/*   getters.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:13:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:12:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
-
-t_json_value	*json_parse(const char *json_str)
-{
-	const char	*s;
-
-	s = json_str;
-	return (json_parse_inner_value(&s));
-}
 
 t_json_value	*json_get(t_json_value *val, const char *key)
 {
@@ -55,31 +47,19 @@ int	json_get_int(t_json_value *obj, const char *key)
 	return (val->u.number);
 }
 
-size_t	json_get_size_t(t_json_value *obj, const char *key, bool *error)
+t_index	json_get_size_t(t_json_value *obj, const char *key)
 {
 	t_json_value	*val;
+	t_index			idx;
 
 	val = json_get(obj, key);
 	if (!val || val->type != JSON_NUMBER)
 	{
-		if (error)
-			*error = true;
-		return ((size_t)-1);
+		idx.i = 0;
+		idx.error = true;
+		return (idx);
 	}
-	if (error)
-		*error = false;
-	return ((size_t)val->u.number);
-}
-
-t_json_value	*json_parse_len(const char *json_str, size_t len)
-{
-	char			*buf;
-	t_json_value	*result;
-
-	buf = ft_strndup(json_str, len);
-	if (!buf)
-		return (NULL);
-	result = json_parse(buf);
-	free(buf);
-	return (result);
+	idx.i = (size_t)val->u.number;
+	idx.error = false;
+	return (idx);
 }

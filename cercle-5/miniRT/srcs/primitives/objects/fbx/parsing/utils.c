@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:00:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ void	fbx_build_flat(t_mesh *m, t_fbx_flat_params *p)
 	b.vertices = NULL;
 	b.triangles = NULL;
 	free(b.v);
-	ft_print_debug("DEBUG: fbx_build_flat final count: %zu vertices (%zu tris)\n",
+	ft_print_debug("FBX flat count: %zu vertices (%zu tris)\n",
 		b.vp, b.vp / 3);
 }

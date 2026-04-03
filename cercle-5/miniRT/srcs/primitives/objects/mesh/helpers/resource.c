@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 12:45:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:03:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,20 @@ bool	mesh_resource_add_mesh(t_mesh_resource *res, t_mesh mesh)
 	return (true);
 }
 
-int	mesh_resource_add_material(t_mesh_resource *res, const char *name)
+size_t	mesh_resource_add_material(t_mesh_resource *res, const char *name,
+			bool *error)
 {
 	t_material	*m;
 
+	if (error)
+		*error = false;
 	if (!DYNARRAY_ENSURE_INT(&res->materials, &res->mat_count, &res->mat_cap,
 			sizeof(t_material)))
-		return (-1);
+	{
+		if (error)
+			*error = true;
+		return (0);
+	}
 	m = &res->materials[res->mat_count];
 	ft_memset(m, 0, sizeof(t_material));
 	m->name = ft_strdup(name);
@@ -47,14 +54,14 @@ int	mesh_resource_add_material(t_mesh_resource *res, const char *name)
 
 void	mesh_resource_free(t_mesh_resource *res)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while ((size_t)i < res->mat_count)
+	while (i < res->mat_count)
 		free(res->materials[i++].name);
 	free(res->materials);
 	i = 0;
-	while ((size_t)i < res->mesh_count)
+	while (i < res->mesh_count)
 	{
 		free(res->meshes[i].vertices);
 		free(res->meshes[i].triangles);
@@ -63,7 +70,7 @@ void	mesh_resource_free(t_mesh_resource *res)
 	}
 	free(res->meshes);
 	i = 0;
-	while ((size_t)i < res->group_count)
+	while (i < res->group_count)
 		free(res->groups[i++].name);
 	free(res->groups);
 }

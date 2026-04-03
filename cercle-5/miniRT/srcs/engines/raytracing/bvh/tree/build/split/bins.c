@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:37:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:37:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static size_t	centroid_bin(double c, t_sweep *sw)
 {
 	size_t	b;
 
-	b = (size_t)((c - sw->lo) * sw->inv * BVH_BINS);
+	b = (c - sw->lo) * sw->inv * BVH_BINS;
 	if (b >= BVH_BINS)
 		b = BVH_BINS - 1;
 	return (b);

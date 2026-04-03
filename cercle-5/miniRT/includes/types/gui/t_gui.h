@@ -51,7 +51,6 @@ typedef struct s_gui
 	t_crud_ui			crud;
 	t_hover_cache		hover;
 	t_transform			transform;
-	t_physic_engine		phys_engine;
-}						t_gui;
+	t_physic_engine		phys_engine;	unsigned char		font[95][8];}						t_gui;
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:14:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,15 @@
  * Calculates essential geometry information for a single triangle, 
  * including its AABB and centroid, used for BVH construction.
  */
-void	bvh_get_triangle_info(t_mesh *mesh, int tri_idx, t_mesh_build_item *out)
+void	bvh_get_triangle_info(t_mesh *mesh, size_t tri_idx,
+			t_mesh_build_item *out)
 {
-	int		*idx;
+	size_t	*idx;
 	t_vec3	v0;
 	t_vec3	v1;
 	t_vec3	v2;
 
-	idx = (int *)&mesh->indices[tri_idx * 3];
+	idx = (size_t *)&mesh->indices[tri_idx * 3];
 	v0 = mesh->vertices[idx[0]].pos;
 	v1 = mesh->vertices[idx[1]].pos;
 	v2 = mesh->vertices[idx[2]].pos;

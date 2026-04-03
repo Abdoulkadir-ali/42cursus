@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:21:25 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:13:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:12:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	mark_joints(t_json_value *joints, size_t *is_joint)
 	i = 0;
 	while (i < joints->u.array.count)
 	{
-		idx = (size_t)json_as_number(json_at(joints, i));
+		idx = json_as_number(json_at(joints, i));
 		if (idx < PARSER_BUF_SIZE)
 			is_joint[idx] = 1;
 		i++;
@@ -36,8 +36,7 @@ static int	count_extra(t_json_value *nodes, size_t *is_joint, size_t nc)
 	i = 0;
 	while (i < nc && i < PARSER_BUF_SIZE)
 	{
-		if (!is_joint[i] && json_get_size_t(json_at(nodes, i), "mesh", NULL)
-			!= (size_t)-1)
+		if (!is_joint[i] && !json_get_size_t(json_at(nodes, i), "mesh").error)
 			extra++;
 		i++;
 	}

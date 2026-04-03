@@ -93,26 +93,31 @@ static char	*extract_quoted(char *p, char *end)
 	return (ft_substr(start, 0, finish - start));
 }
 
-int	parse_texture(char *p, char *end, t_scene *scene, const char *fbx_path)
+t_index	parse_texture(char *p, char *end, t_scene *scene, const char *fbx_path)
 {
 	char	*node;
 	char	*filename;
 	char	*full_path;
-	int		mat_id;
+	t_index	mat_id;
 
 	node = find_node(p, end, "Texture:");
 	if (!node)
-		return (-1);
+		return (init_index(0, true));
 	node = find_node(node, end, "FileName:");
 	if (!node)
-		return (-1);
+		return (init_index(0, true));
 	filename = extract_quoted(node, end);
 	if (!filename)
-		return (-1);
+		return (init_index(0, true));
 	full_path = resolve_fbx_path(fbx_path, filename);
 	free(filename);
 	mat_id = scene_add_named_material(scene, "FBX_Mat");
-	if (load_texture_xpm(scene->mlx, &scene->materials[mat_id].albedo_map,
+	if (mat_id.error)
+	{
+		free(full_path);
+		return (init_index(0, true));
+	}
+	if (load_texture_xpm(scene->mlx, &scene->materials[mat_id.i].albedo_map,
 			full_path))
 		ft_print_debug("FBX Texture Loaded: %s\n", full_path);
 	free(full_path);

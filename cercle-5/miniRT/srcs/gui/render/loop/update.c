@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:55:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:04:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
-
 
 void	update_animations(t_gui *gui, double delta)
 {
@@ -51,12 +50,11 @@ void	update_ambient(t_gui *gui)
 	if (!gui->scene)
 		return ;
 	amb = &gui->scene->ambient;
-	amb->rgb.x = ((gui->ambient_color >> 16) & 0xFF) / 255.0 \
+	amb->rgb.x = ((gui->ambient_color >> 16) & 0xFF) / 255.0
 		* gui->ambient_intensity;
-	amb->rgb.y = ((gui->ambient_color >> 8) & 0xFF) / 255.0 \
+	amb->rgb.y = ((gui->ambient_color >> 8) & 0xFF) / 255.0
 		* gui->ambient_intensity;
-	amb->rgb.z = (gui->ambient_color & 0xFF) / 255.0 \
-		* gui->ambient_intensity;
+	amb->rgb.z = (gui->ambient_color & 0xFF) / 255.0 * gui->ambient_intensity;
 	amb->brightness = gui->ambient_intensity;
 }
 
@@ -71,4 +69,3 @@ int	gui_update(t_gui *gui)
 	gui_render(gui);
 	return (0);
 }
-

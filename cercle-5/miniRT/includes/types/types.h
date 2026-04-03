@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 17:43:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:03:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 /* helpers */
 # include "t_maths.h"
+# include "t_index.h"
 
 /* primitives */
 # include "t_surface.h"

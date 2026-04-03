@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:33:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:33:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,23 +40,25 @@ static bool	strip_primary_objects(t_scene *sc, int *r, t_scene_row_res *res)
 	return (false);
 }
 
-void	row_to_object(t_gui *gui, int r, t_type *ty, int *idx)
+void	row_to_object(t_gui *gui, size_t r, t_type *ty, int *idx)
 {
 	t_scene_row_res		res;
+	int					row_i;
 
 	*ty = TYPE_NONE;
 	*idx = -1;
 	res.type = TYPE_NONE;
 	res.index = -1;
-	if (strip_primary_objects(gui->scene, &r, &res))
+	row_i = (int)r;
+	if (strip_primary_objects(gui->scene, &row_i, &res))
 	{
 		*ty = res.type;
 		*idx = res.index;
 		return ;
 	}
-	if (r < count_mesh_entries(gui->scene))
+	if ((size_t)row_i < count_mesh_entries(gui->scene))
 	{
 		*ty = TYPE_MESH;
-		*idx = r;
+		*idx = row_i;
 	}
 }

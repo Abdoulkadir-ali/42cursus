@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:33:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:33:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-int	count_mesh_entries(t_scene *sc)
+size_t	count_mesh_entries(t_scene *sc)
 {
 	return (sc->group_count);
 }

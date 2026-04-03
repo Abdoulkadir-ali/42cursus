@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:54:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:03:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,3 @@ void	gui_loop(t_gui *gui)
 	mlx_loop_hook(gui->win.mlx, (int (*)(void *))gui_update, gui);
 	mlx_loop(gui->win.mlx);
 }
-

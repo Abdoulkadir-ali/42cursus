@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	get_material(t_shading *sha)
 {
 	size_t	mat_id;
 
-	mat_id = (size_t)dispatch_mat(sha, sha->hit);
+	mat_id = dispatch_mat(sha, sha->hit);
 	if (mat_id >= sha->scene->mat_count)
 		mat_id = 0;
 	sha->mat = sha->scene->materials[mat_id];

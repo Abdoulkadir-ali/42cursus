@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:49:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 
 typedef struct s_vec2i
 {
-	int								x;
-	int								y;
+	size_t							x;
+	size_t							y;
 }									t_vec2i;
 
 typedef struct s_vec3i

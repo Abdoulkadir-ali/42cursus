@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:50:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 17:59:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:36:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	print_cone(t_cone *c);
 
 /* System Debug */
 void	print_scene(t_scene *s);
-void	print_bvh_node(const t_bvh *b, int idx, int depth);
+void	print_bvh_node(const t_bvh *b, size_t idx, size_t depth);
 void	print_bvh(t_bvh *b);
 void	print_gui(t_gui *g);
 void	print_parser(t_parser *p);
@@ -58,7 +58,7 @@ void	print_parser(t_parser *p);
 /* Mesh Debug */
 void	debug_print_mesh_hit(const t_ray *ray, int tri_idx, double t);
 void	debug_print_mesh_aabb(const t_ray *ray, double tmin, double tmax);
-void	debug_print_bvh_build(int tri_count, int depth, bool start);
+void	debug_print_bvh_build(size_t tri_count, size_t depth, bool start);
 void	debug_print_mesh_bake(const t_mesh *mesh, bool start);
 void	debug_print_triangle_test(int tri_idx, const t_vec3 *v);
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:32:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:12:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 	if (!json_get(anim_json, "channels"))
 		return ;
 	anim->channel_count = json_get(anim_json, "channels")->u.array.count;
-	anim->channels = malloc(sizeof(t_anim_channel) * anim->channel_count);
+		anim->channels = malloc(sizeof(t_anim_channel) * anim->channel_count);
 	i = -1;
 	while (++i < anim->channel_count)
 	{
 		ch = json_at(json_get(anim_json, "channels"), i);
 		tgt = json_get(ch, "target");
 		path = json_as_string(json_get(tgt, "path"));
-		anim->channels[i].sampler_idx = json_get_size_t(ch, "sampler", NULL);
-		anim->channels[i].node_idx = json_get_size_t(tgt, "node", NULL);
+		anim->channels[i].sampler_idx = json_get_size_t(ch, "sampler").i;
+		anim->channels[i].node_idx = json_get_size_t(tgt, "node").i;
 		anim->channels[i].path = PATH_WEIGHTS;
 		if (path && !strcmp(path, "translation"))
 			anim->channels[i].path = PATH_TRANSLATION;

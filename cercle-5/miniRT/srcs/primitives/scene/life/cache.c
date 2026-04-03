@@ -6,45 +6,39 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:25:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 
-int	find_cache_idx(t_scene *scene, const char *path)
+size_t	find_cache_idx(t_scene *scene, const char *path)
 {
-	int	i;
+	size_t	i;
 
 	if (!path)
-	{
-		if (scene->cache_count >= MAX_MODEL_CACHE)
-			return (-2);
-		return (-1);
-	}
+		return ((size_t) -1);
 	i = 0;
-	while ((size_t)i < scene->cache_count)
+	while (i < scene->cache_count)
 	{
 		if (ft_strcmp(scene->cache[i].path, path) == 0)
 			return (i);
 		i++;
 	}
-	return (-1);
+	return ((size_t) -1);
 }
 
-t_model_cache	*get_cache_entry(t_scene *scene, int idx)
-{
-	if (idx == -2)
-	{
-		scene->cache_count++;
-		return (&scene->cache[scene->cache_count - 1]);
-	}
-	if (idx < 0 || (size_t)idx >= scene->cache_count)
-		return (NULL);
-	return (&scene->cache[idx]);
-}
-
+/**
+ * Checks if a model for a given path already exists in the cache.
+ */
 bool	mesh_cache_has(t_scene *scene, const char *path)
 {
-	return (find_cache_idx(scene, path) >= 0);
+	return (find_cache_idx(scene, path) != (size_t)-1);
+}
+
+t_model_cache	*get_cache_entry(t_scene *scene, size_t idx)
+{
+	if (idx >= scene->cache_count)
+		return (NULL);
+	return (&scene->cache[idx]);
 }

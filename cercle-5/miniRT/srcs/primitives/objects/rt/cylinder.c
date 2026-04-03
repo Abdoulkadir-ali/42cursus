@@ -18,12 +18,12 @@
 */
 bool	scene_add_cylinder(t_scene *scene, t_cylinder cylinder)
 {
-	int	mat_id;
+	t_index	mat_id;
 
 	mat_id = scene_add_material(scene, cylinder.temp_color);
-	if (mat_id < 0)
+	if (mat_id.error)
 		return (false);
-	cylinder.mat_id = mat_id;
+	cylinder.mat_id = mat_id.i;
 	if (!DYNARRAY_ENSURE_INT(&scene->cylinders, &scene->cylinder_count,
 			&scene->cylinder_cap, sizeof(t_cylinder)))
 		return (false);

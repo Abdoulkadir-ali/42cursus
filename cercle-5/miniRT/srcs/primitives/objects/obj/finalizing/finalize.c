@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   obj_finalize.c                                     :+:      :+:    :+:   */
+/*   finalize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:19:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ static void	obj_free(t_obj *obj)
 static void	obj_set_mat_id(t_mesh *mesh, t_obj *obj)
 {
 	mesh->mat_id = 0;
-	if (obj->current_mat_id != (size_t)-1)
-		mesh->mat_id = obj->current_mat_id;
-	else if (obj->first_mtl_id != (size_t)-1)
-		mesh->mat_id = obj->first_mtl_id;
+	if (obj->current_mat_id.error == false)
+		mesh->mat_id = obj->current_mat_id.i;
+	else if (obj->first_mtl_id.error == false)
+		mesh->mat_id = obj->first_mtl_id.i;
 }
 
 bool	obj_build_mesh(t_scene *scene, t_obj *obj, const char *path)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:14:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:23:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ static double	get_centroid_val(t_bvh_bins *b, int i)
  */
 void	bvh_fill_bins(t_bvh_bins *b)
 {
-	int		bin_idx;
-	int		i;
+	size_t	i;
 	double	val;
+	int		bin_idx;
 
 	i = 0;
-	while ((size_t)i < b->count)
+	while (i < b->count)
 	{
-		val = get_centroid_val(b, i);
+		val = get_centroid_val(b, (int)i);
 		bin_idx = (val - b->min_val) * b->scale;
 		if (bin_idx >= BVH_BINS)
 			bin_idx = BVH_BINS - 1;

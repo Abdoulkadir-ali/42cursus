@@ -6,22 +6,22 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:44:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:35:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-static int	find_group_by_mesh(t_scene *sc, int mesh_idx)
+static int	find_group_by_mesh(t_scene *sc, size_t mesh_idx)
 {
 	size_t	gi;
 
 	gi = 0;
 	while (gi < sc->group_count)
 	{
-		if ((size_t)mesh_idx >= sc->groups[gi].start
-			&& (size_t)mesh_idx < sc->groups[gi].start + sc->groups[gi].sub_count)
-			return (gi);
+		if (mesh_idx >= sc->groups[gi].start
+			&& mesh_idx < sc->groups[gi].start + sc->groups[gi].sub_count)
+			return ((int)gi);
 		gi++;
 	}
 	return (-1);

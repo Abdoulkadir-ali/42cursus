@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:15:15 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:04:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@
  * Configures a BVH node as a leaf, storing the range of triangle 
  * indices it contains.
  */
-int	bvh_make_leaf(t_mbvh_node *node, int first, int count, int node_idx)
+size_t	bvh_make_leaf(t_mbvh_node *node, size_t first, size_t count,
+			t_index idx)
 {
+	(void)idx;
 	node->left_or_first = first;
 	node->count = count;
-	return (node_idx);
+	return (idx.i);
 }

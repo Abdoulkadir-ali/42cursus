@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:39:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:46:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ static void	destroy_scene_arrays(t_scene *scene)
 
 static void	destroy_scene_animated(t_scene *scene)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while ((size_t)i < scene->anim_count)
+	while (i < scene->anim_count)
 	{
 		mesh_free(&scene->animated[i].base);
 		free(scene->animated[i].skeleton);
@@ -43,7 +43,7 @@ static void	destroy_scene_animated(t_scene *scene)
 	}
 	free(scene->animated);
 	i = 0;
-	while ((size_t)i < scene->group_count)
+	while (i < scene->group_count)
 	{
 		free(scene->groups[i].name);
 		free(scene->groups[i].path);
@@ -54,7 +54,7 @@ static void	destroy_scene_animated(t_scene *scene)
 
 void	destroy_scene(t_scene *scene)
 {
-	int	i;
+	size_t	i;
 
 	if (!scene)
 		return ;
@@ -63,7 +63,7 @@ void	destroy_scene(t_scene *scene)
 	free(scene->name);
 	destroy_scene_arrays(scene);
 	i = 0;
-	while ((size_t)i < scene->mesh_count)
+	while (i < scene->mesh_count)
 	{
 		mesh_free(&scene->meshes[i]);
 		i++;

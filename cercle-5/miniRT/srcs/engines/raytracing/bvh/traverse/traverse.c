@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 13:08:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 			process_leaf(bvh, node_idx, ray, hit);
 		else
 		{
-			stack[top++] = bvh->nodes[node_idx].left_or_first + 1;
 			stack[top++] = bvh->nodes[node_idx].left_or_first;
+			stack[top++] = node_idx + 1;
 		}
 	}
 	return (hit->t < 1e29);

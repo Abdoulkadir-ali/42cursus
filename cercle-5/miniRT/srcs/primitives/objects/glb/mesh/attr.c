@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 14:10:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,12 @@ static void	load_normals(t_json_value *json, char *bin, t_mesh *m, int acc_idx)
 void	glb_load_attributes(t_mesh *mesh, t_json_value *json, char *bin,
 			t_json_value *attr)
 {
-	load_positions(json, bin, mesh, json_get_size_t(attr, "POSITION", NULL));
-	load_normals(json, bin, mesh, json_get_size_t(attr, "NORMAL", NULL));
+	t_index	idx;
+
+	idx = json_get_size_t(attr, "POSITION");
+	if (!idx.error)
+		load_positions(json, bin, mesh, idx.i);
+	idx = json_get_size_t(attr, "NORMAL");
+	if (!idx.error)
+		load_normals(json, bin, mesh, idx.i);
 }
