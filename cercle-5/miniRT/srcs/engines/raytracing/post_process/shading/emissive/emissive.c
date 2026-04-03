@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:37:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 18:11:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static void	apply_em_val(t_shading *sha, t_vec3 *total,
 	double	bright;
 	double	att;
 
+	if (vec3_mag_sq(sha->aux_v) > 2500.0)
+		return ;
 	d_surf = vec3_mag(sha->aux_v) - r - 0.01;
 	if (d_surf <= 0.0)
 		return ;
