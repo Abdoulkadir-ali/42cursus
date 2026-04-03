@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 10:53:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:45:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
  */
 size_t	query_sphere(t_contact_query *qu, size_t idx)
 {
-	size_t			j;
-	t_sphere		*sp;
-	t_gjk_shape		sa;
+	size_t		j;
+	t_sphere	*sp;
+	t_gjk_shape	sa;
 
 	sp = &qu->engine->scene->spheres[idx];
 	if (sp->phys.is_static)

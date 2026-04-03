@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 10:44:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:45:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ static void	pyramid_vs_pyramids(t_contact_query *qu, t_pyramid *py, size_t idx)
 	p = idx + 1;
 	while (p < qu->engine->scene->pyramid_count && qu->count < qu->max)
 	{
-		sb = (t_gjk_shape){&qu->engine->scene->pyramids[p],
-			gjk_support_pyramid, qu->engine->scene->pyramids[p].phys.pos};
+		sb = (t_gjk_shape){&qu->engine->scene->pyramids[p], gjk_support_pyramid,
+			qu->engine->scene->pyramids[p].phys.pos};
 		pair = (t_col_pair){&sa, &sb, &py->phys,
 			&qu->engine->scene->pyramids[p].phys, &py->transform,
 			&qu->engine->scene->pyramids[p].transform};

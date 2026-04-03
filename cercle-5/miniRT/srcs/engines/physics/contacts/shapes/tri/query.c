@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:24:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:45:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ static void	tri_vs_tris(t_contact_query *qu, t_tri_shape *tr, size_t idx)
 	{
 		other = &qu->engine->scene->tris[p];
 		sb = (t_gjk_shape){other, gjk_support_tri, other->phys.pos};
-		pair = (t_col_pair){&sa, &sb, &tr->phys, &other->phys,
-			&tr->xform, &other->xform};
+		pair = (t_col_pair){&sa, &sb, &tr->phys, &other->phys, &tr->xform,
+			&other->xform};
 		test_tri_pair(qu, &pair);
 		p++;
 	}

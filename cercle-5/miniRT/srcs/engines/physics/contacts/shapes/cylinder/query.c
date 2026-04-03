@@ -6,14 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:24:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:45:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 #include "raytracing.h"
 
-static void	cylinder_vs_cylinders(t_contact_query *qu, t_col_pair *p, size_t idx)
+static void	cylinder_vs_cylinders(t_contact_query *qu, t_col_pair *p,
+		size_t idx)
 {
 	size_t		pi;
 	t_gjk_shape	sb;
@@ -28,8 +29,8 @@ static void	cylinder_vs_cylinders(t_contact_query *qu, t_col_pair *p, size_t idx
 				cylinder_aabb(other)))
 		{
 			sb = (t_gjk_shape){other, gjk_support_cylinder, other->phys.pos};
-			pair = (t_col_pair){p->sa, &sb, p->ba, &other->phys,
-				p->ta, &other->transform};
+			pair = (t_col_pair){p->sa, &sb, p->ba, &other->phys, p->ta,
+				&other->transform};
 			if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
 				qu->count++;
 		}

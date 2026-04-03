@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:00:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 12:46:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-static void	flatten_tmp(t_bvh_tmp_node *node, t_bvh *bvh, size_t *nc, size_t *rc)
+static void	flatten_tmp(t_bvh_tmp_node *node, t_bvh *bvh, size_t *nc,
+		size_t *rc)
 {
 	size_t	my_idx;
 
@@ -61,6 +62,20 @@ static size_t	get_scene_total(t_scene *scene)
 	return (total);
 }
 
+static t_bvh	*init_bvh_buffers(t_bvh *bvh, size_t k)
+{
+	bvh->nodes = malloc(sizeof(t_bvh_node) * (2 * k + 1));
+	bvh->refs = malloc(sizeof(t_bvh_ref) * (k + 1));
+	if (!bvh->nodes || !bvh->refs)
+	{
+		free(bvh->nodes);
+		free(bvh->refs);
+		free(bvh);
+		return (NULL);
+	}
+	return (bvh);
+}
+
 t_bvh	*bvh_create(t_scene *scene)
 {
 	t_bvh			*bvh;
@@ -77,13 +92,11 @@ t_bvh	*bvh_create(t_scene *scene)
 	root = build_tmp_tree(scene, get_scene_total(scene), &k);
 	if (!root)
 		return (free(bvh), NULL);
-	bvh->nodes = malloc(sizeof(t_bvh_node) * (2 * k + 1));
-	bvh->refs = malloc(sizeof(t_bvh_ref) * (k + 1));
+	bvh = init_bvh_buffers(bvh, k);
+	if (!bvh)
+		return (node_destroy(root), NULL);
 	nc[0] = 0;
 	nc[1] = 0;
-	if (!bvh->nodes || !bvh->refs)
-		return (free(bvh->nodes), free(bvh->refs), free(bvh),
-			node_destroy(root), NULL);
 	flatten_tmp(root, bvh, &nc[0], &nc[1]);
 	bvh->num_nodes = nc[0];
 	bvh->num_refs = nc[1];
