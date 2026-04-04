@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:24:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 11:05:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,4 +101,31 @@ t_index	scene_find_material(t_scene *scene, const char *name)
 		i++;
 	}
 	return (init_index(0, true));
+}
+
+static bool	mat_needs_uv(t_material *m)
+{
+	return (m->albedo_map.type != TEX_SOLID
+		|| m->roughness_map.type != TEX_SOLID
+		|| m->metallic_map.type != TEX_SOLID);
+}
+
+void	scene_init_uv_flags(t_scene *scene)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < scene->sphere_count)
+	{
+		scene->spheres[i].needs_uv = mat_needs_uv(
+				&scene->materials[scene->spheres[i].mat_id]);
+		i++;
+	}
+	i = 0;
+	while (i < scene->plane_count)
+	{
+		scene->planes[i].needs_uv = mat_needs_uv(
+				&scene->materials[scene->planes[i].mat_id]);
+		i++;
+	}
 }

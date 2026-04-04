@@ -21,7 +21,8 @@ static bool	select_sphere_t(t_quadratic_roots roots, double *t)
 	return (*t > EPSILON);
 }
 
-static void	scale_normal(t_hit *hit, t_vec3 inv_scale, t_vec3 n_local)
+static void	scale_normal(t_hit *hit, t_vec3 inv_scale, t_vec3 n_local,
+		bool needs_uv)
 {
 	t_vec3	n_world;
 
@@ -30,7 +31,8 @@ static void	scale_normal(t_hit *hit, t_vec3 inv_scale, t_vec3 n_local)
 	n_world.z = n_local.z * inv_scale.z;
 	n_world.w = 0;
 	hit->normal = vec3_norm(n_world);
-	get_sphere_uv(n_local, &hit->u, &hit->v);
+	if (needs_uv)
+		get_sphere_uv(n_local, &hit->u, &hit->v);
 }
 
 static void	build_local_ray(t_vec3 *lo, t_vec3 *ld, const t_ray *r,
@@ -66,7 +68,7 @@ static bool	solve_deformed(const t_ray *ray, t_sphere *sp, t_hit *hit)
 		return (false);
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
 		scale_normal(hit, sp->inv_scale,
-		vec3_norm(vec3_add(lo, vec3_scale(ld, hit->t))));
+		vec3_norm(vec3_add(lo, vec3_scale(ld, hit->t))), sp->needs_uv);
 	return (true);
 }
 

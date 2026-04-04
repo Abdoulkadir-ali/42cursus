@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 21:05:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 11:05:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_sphere
 	t_vec3				temp_color;
 	t_physics_body		phys;
 	bool				is_deformed;
+	bool				needs_uv;
 	t_vec3					inv_scale;
 }						t_sphere;
 
@@ -60,6 +61,7 @@ typedef struct s_plane
 	size_t				mat_id;
 	t_vec3				temp_color;
 	t_physics_body		phys;
+	bool				needs_uv;
 }						t_plane;
 
 typedef struct s_cylinder

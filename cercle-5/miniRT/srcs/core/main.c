@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 16:18:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 11:05:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static t_gui	*init_app(const char *path, t_scene **scene, void *mlx)
 		fprintf(stderr, "Failed to load scene: %s\n", path);
 		return (NULL);
 	}
+	scene_init_uv_flags(*scene);
 	(*scene)->bvh = bvh_create(*scene);
 	if (!(*scene)->bvh)
 	{

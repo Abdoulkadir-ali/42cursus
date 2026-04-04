@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 10:28:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 11:05:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,10 @@ void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 	uint32_t	*dst;
 	uint32_t	*src;
 	float		*dep;
+	float		ifx;
+	float		m10;
+	float		m01;
+	float		m11;
 
 	src = (uint32_t *)gui->win.addr;
 	dep = gui->render.depth_buf;
@@ -122,11 +126,12 @@ void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 				fx = 0.0f;
 			dref = depy0[x0];
 			thresh = (dref < 1e28f ? fmaxf(dref * 0.15f, 0.5f) : 1e30f);
+			ifx = 1.0f - fx;
+			m10 = (float)(fabsf(depy0[x1] - dref) < thresh);
+			m01 = (float)(fabsf(depy1[x0] - dref) < thresh);
+			m11 = (float)(fabsf(depy1[x1] - dref) < thresh);
 			dst[dx] = bilerp_pixel(srcy0[x0], srcy0[x1], srcy1[x0], srcy1[x1],
-					(1.0f - fx) * ify,
-					(fabsf(depy0[x1] - dref) < thresh) ? fx * ify : 0.0f,
-					(fabsf(depy1[x0] - dref) < thresh) ? (1.0f - fx) * fy : 0.0f,
-					(fabsf(depy1[x1] - dref) < thresh) ? fx * fy : 0.0f);
+					ifx * ify, fx * ify * m10, ifx * fy * m01, fx * fy * m11);
 			rx += step_x;
 			dx++;
 		}

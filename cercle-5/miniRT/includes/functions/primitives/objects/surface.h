@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:34:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:33:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 11:05:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,5 @@ size_t					scene_add_checker_material(t_scene *scene, t_vec3 a,
 							t_vec3 b, double scale);
 t_index					scene_find_material(t_scene *scene, const char *name);
 t_index					scene_add_named_material(t_scene *scene,
-							const char *name);
-
+							const char *name);void						scene_init_uv_flags(t_scene *scene);
 #endif
