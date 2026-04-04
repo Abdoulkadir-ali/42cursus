@@ -12,7 +12,7 @@
 
 #include "fbx.h"
 
-bool	parse_fbx(const char *path, t_scene *scene)
+bool	parse_fbx_worker(const char *path, t_scene *scene)
 {
 	int		fd;
 	char	header[30];

@@ -25,12 +25,12 @@ static void	parse_array_bin(t_fbx_parse *fbx, t_fbx_array_req *req,
 		return ;
 	if (req->div > 1)
 	{
-		ft_print_debug("   Depth %d: Got %s: %u floats\n", depth, req->label,
+		ft_print_debug("   Depth %d: Got %s: %zu floats\n", depth, req->label,
 			*req->count);
 		*req->count /= req->div;
 		return ;
 	}
-	ft_print_debug("   Depth %d: Got %s: %u\n", depth, req->label, *req->count);
+	ft_print_debug("   Depth %d: Got %s: %zu\n", depth, req->label, *req->count);
 }
 
 static void	parse_node_data(t_fbx_parse *fbx, t_fbx_bin_node *n, int depth)

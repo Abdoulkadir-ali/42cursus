@@ -84,9 +84,9 @@ static void	*fbx_read_array_payload(int fd, t_fbx_array *a)
 }
 
 void		*fbx_convert_array(t_fbx_array *a, void *uncomp, size_t elem_sz,
-				uint32_t *count);
+				size_t *count);
 
-void	*read_fbx_array(int fd, uint32_t *count, size_t elem_sz)
+void	*read_fbx_array(int fd, size_t *count, size_t elem_sz)
 {
 	t_fbx_array	a;
 	void		*uncomp_data;

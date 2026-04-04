@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 16:15:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 08:50:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,37 +14,16 @@
 
 static int	pack_color(t_vec3 color)
 {
-	int	r;
-	int	g;
-	int	b;
+	unsigned int	r;
+	unsigned int	g;
+	unsigned int	b;
 
-	r = ((int)color.x & 0xFF) << 16;
-	g = ((int)color.y & 0xFF) << 8;
-	b = (int)color.z & 0xFF;
-	return (r | g | b);
+	r = ((unsigned int)color.x & 0xFF) << 16;
+	g = ((unsigned int)color.y & 0xFF) << 8;
+	b = (unsigned int)color.z & 0xFF;
+	return ((int)(r | g | b));
 }
 
-static void	fill_block(t_render *render)
-{
-	t_vec2i		d;
-	t_vec2i		lim;
-	uint32_t	*dst;
-
-	lim = render->gui->win.size;
-	d.y = 0;
-	while (d.y < render->step && render->pos.y + d.y < lim.y)
-	{
-		dst = (uint32_t *)(render->pixel_addr + (d.y
-					* render->gui->win.line_len));
-		d.x = 0;
-		while (d.x < render->step && render->pos.x + d.x < lim.x)
-		{
-			dst[d.x] = render->color;
-			d.x++;
-		}
-		d.y++;
-	}
-}
 
 static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 {
@@ -62,20 +41,16 @@ static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 
 void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 {
-	t_ray		ray;
-	t_vec3		color;
-	uint32_t	*dst;
+	t_ray	ray;
+	t_vec3	color;
+	float	out_t;
+	int		idx;
 
 	make_camera_ray(render, (double)pos.x, (double)pos.y, &ray);
-	color = trace_ray(render->gui->scene->bvh, &ray, render->gui->scene);
-	render->pos = pos;
-	render->color = pack_color(color);
-	render->pixel_addr = pixel_addr;
-	if (render->step > 1)
-		fill_block(render);
-	else
-	{
-		dst = (uint32_t *)render->pixel_addr;
-		*dst = render->color;
-	}
+	color = trace_ray_ex(render->gui->scene->bvh, &ray,
+			render->gui->scene, &out_t);
+	idx = pos.y * render->gui->win.size.x + pos.x;
+	if (render->gui->render.depth_buf)
+		render->gui->render.depth_buf[idx] = out_t;
+	((uint32_t *)pixel_addr)[0] = (uint32_t)pack_color(color);
 }

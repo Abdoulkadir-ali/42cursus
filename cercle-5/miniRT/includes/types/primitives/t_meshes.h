@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:24:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 08:35:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,13 +344,13 @@ typedef struct s_fbx_bin_node
 typedef struct s_fbx_data
 {
 	t_vec3				*v;
-	uint32_t			vc;
+	size_t			vc;
 	size_t				*ri;
-	uint32_t			rc;
+	size_t			rc;
 	t_vec3				*vn;
-	uint32_t			nc;
+	size_t			nc;
 	t_vec2				*vu;
-	uint32_t			uc;
+	size_t			uc;
 }						t_fbx_data;
 
 typedef struct s_fbx_flat_params
@@ -395,16 +395,16 @@ typedef struct s_fbx_array_req
 {
 	const char			*label;
 	void				**dst;
-	uint32_t			*count;
+	size_t			*count;
 	size_t				elem_sz;
-	uint32_t			div;
+	size_t			div;
 }						t_fbx_array_req;
 
 typedef struct s_fbx_array
 {
-	uint32_t			arr_len;
-	uint32_t			encoding;
-	uint32_t			comp_len;
+	size_t			arr_len;
+	size_t			encoding;
+	size_t			comp_len;
 	size_t				actual_sz;
 	char				type;
 }						t_fbx_array;
@@ -412,7 +412,7 @@ typedef struct s_fbx_array
 typedef struct s_fbx_bin
 {
 	int					fd;
-	uint32_t			version;
+	size_t			version;
 	t_skinned_mesh		mesh;
 	t_fbx_data			data;
 }						t_fbx_bin;
@@ -457,15 +457,15 @@ typedef struct s_fdf_dim
 
 typedef struct s_glb_header
 {
-	uint32_t			magic;
-	uint32_t			version;
-	uint32_t			length;
+	size_t			magic;
+	size_t			version;
+	size_t			length;
 }						t_glb_header;
 
 typedef struct s_chunk_header
 {
-	uint32_t			length;
-	uint32_t			type;
+	size_t			length;
+	size_t			type;
 }						t_chunk_header;
 
 typedef struct s_accessor
@@ -537,16 +537,6 @@ typedef struct s_animation
 	double				max_time;
 	double				current_time;
 }						t_animation;
-
-typedef struct s_glb_mat
-{
-	t_mesh_resource	*out;
-	void			*mlx_ptr;
-	t_json_value	*json;
-	char			*bin;
-	size_t			mat_idx;
-	t_index			*out_ids;
-}	t_glb_mat;
 
 typedef struct s_obj_face
 {

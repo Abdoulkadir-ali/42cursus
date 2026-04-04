@@ -27,13 +27,13 @@ bool	scene_add_mesh_file(t_scene *scene, const char *path)
 	if (!ext)
 		return (false);
 	if (ft_strcmp(ext, ".fbx") == 0)
-		return (parse_fbx(path, scene));
+		return (parse_fbx_worker(path, scene));
 	if (ft_strcmp(ext, ".obj") == 0)
-		return (parse_obj(path, scene));
+		return (parse_obj_worker(path, scene));
 	if (ft_strcmp(ext, ".fdf") == 0)
-		return (parse_fdf(path, scene));
+		return (parse_fdf_worker(path, scene));
 	if (ft_strcmp(ext, ".glb") == 0)
-		return (parse_glb(path, scene));
+		return (parse_glb_worker(path, scene));
 	return (false);
 }
 
@@ -43,13 +43,14 @@ bool	scene_add_mesh_file(t_scene *scene, const char *path)
  * Maps the format-specific loading calls (which are scene-oriented)
  * to the t_mesh_resource target.
  */
-bool	mesh_build_resource(const char *path,
+bool	mesh_build_resource(t_thread_pool *pool, const char *path,
 			t_mesh_resource *res)
 {
 	t_scene	tmp;
 	bool	ret;
 
 	ft_memset(&tmp, 0, sizeof(tmp));
+	tmp.pool = pool;
 	ret = scene_add_mesh_file(&tmp, path);
 	if (ret)
 	{

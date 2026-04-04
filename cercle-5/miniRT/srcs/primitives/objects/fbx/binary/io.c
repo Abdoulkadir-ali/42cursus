@@ -19,7 +19,7 @@ ssize_t	safe_read(int fd, void *buf, size_t count)
 
 void	read_offsets(int fd, t_fbx_bin_node *node, bool is_64bit)
 {
-	uint32_t	tmp;
+	size_t	tmp;
 
 	if (is_64bit)
 	{

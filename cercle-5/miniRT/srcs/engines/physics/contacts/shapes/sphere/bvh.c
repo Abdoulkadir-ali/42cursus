@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:24:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 08:14:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	sphere_leaf(size_t idx, t_sphere *sp, t_contact_query *q,
  */
 void	traverse_sphere_bvh(t_contact_query *qu, size_t idx, t_sphere *sp)
 {
-	size_t				st[64];
+	size_t				st[128];
 	size_t				top;
 	const t_bvh_node	*nd;
 	t_scene				*s;
@@ -50,7 +50,7 @@ void	traverse_sphere_bvh(t_contact_query *qu, size_t idx, t_sphere *sp)
 		nd = &s->bvh->nodes[st[--top]];
 		if (nd->count > 0)
 			sphere_leaf(idx, sp, qu, nd);
-		else
+		else if (top < 126)
 		{
 			if (aabb_v_sphere(s->bvh->nodes[nd->left_or_first + 1].bbox,
 					sp->phys.pos, sqrt(sp->radius_sq)))

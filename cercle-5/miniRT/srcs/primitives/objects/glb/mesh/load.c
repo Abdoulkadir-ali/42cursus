@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:12:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	load_indices(t_json_value *json, char *bin, t_mesh *m, int acc_idx)
  * Loads a GLB mesh primitive into the engine's internal mesh structure.
  */
 void	glb_load_mesh(t_mesh *mesh, t_json_value *json, char *bin,
-			int mesh_idx)
+				size_t mesh_idx)
 {
 	t_json_value	*m;
 	t_json_value	*prim;

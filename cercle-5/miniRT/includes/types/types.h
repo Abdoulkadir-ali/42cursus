@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:03:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:20:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include "t_render.h"
 # include "t_input.h"
 # include "t_editor.h"
+# include "t_settings.h"
 # include "t_camera.h"
 # include "t_map.h"
 # include "t_gui.h"

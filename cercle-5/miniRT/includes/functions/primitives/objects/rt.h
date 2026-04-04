@@ -17,6 +17,18 @@
 # include "obj.h"
 # include "glb.h"
 # include "fdf.h"
+# include "thread.h"
+
+typedef struct s_rt_line_task
+{
+	char			**lines;
+	size_t			count;
+	size_t			next_idx;
+	t_parse_obj		*results;
+	bool			*statuses;
+	t_mesh_resource	*resources;
+	t_thread_pool	*pool;
+}	t_rt_line_task;
 
 
 /* Dispatcher Prototypes (srcs/objects/dispatcher/) */
@@ -24,6 +36,10 @@ t_parse_obj				dispatch_scan(t_parser *p, char *id);
 bool					rt_init_parser(t_rt *rt, const char *path);
 bool					rt_parse_loop(t_scene *scene, t_rt *rt);
 bool					rt_parse_entry(t_scene *scene, t_rt *rt);
+bool					parse_rt_worker(const char *path, t_scene *scene);
+bool					parse_rt_fd(int fd, t_scene *scene);
+bool					read_id(t_parser *p, char *buf, size_t max_len);
+char					*read_file_to_str(int fd);
 
 /* RT Shape Parsers */
 t_parse_obj				parse_ambient(t_parser *p);

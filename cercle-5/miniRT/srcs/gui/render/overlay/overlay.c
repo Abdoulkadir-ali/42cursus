@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:46:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:21:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,6 @@ void	draw_ui_text(t_gui *gui, t_camera_controller *ctrl)
 	draw_ui_fps(gui);
 	draw_scene_panel_text(gui);
 	draw_inspector_text(gui);
+	draw_settings(gui);
 	widget_draw_all(gui);
 }

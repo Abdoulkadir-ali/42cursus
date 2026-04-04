@@ -6,19 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:37:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
 
-static void	print_node_info(const t_bvh_node *n, int idx)
+static void	print_node_info(const t_bvh_node *n, size_t idx)
 {
 	if (n->count > 0)
 		printf("leaf(refs[%zu..%zu], bbox: ", n->left_or_first,
 			n->left_or_first + n->count - 1);
 	else
-		printf("internal(left=%d, right=%zu, bbox: ", idx + 1,
+		printf("internal(left=%zu, right=%zu, bbox: ", idx + 1,
 			n->left_or_first);
 	print_vec3((t_vec3 *)&n->bbox.min);
 	printf(" to ");
@@ -40,7 +40,7 @@ void	print_bvh_node(const t_bvh *b, size_t idx, size_t depth)
 		printf("  ");
 		i++;
 	}
-	print_node_info(n, (int)idx);
+	print_node_info(n, idx);
 	if (n->count == 0)
 	{
 		print_bvh_node(b, idx + 1, depth + 1);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:33:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:20:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 /* 2. MODULAR HEADERS */
 # include "t_camera.h"
 # include "t_editor.h"
+# include "t_settings.h"
 # include "t_input.h"
 # include "t_map.h"
 # include "t_render.h"
@@ -51,6 +52,6 @@ typedef struct s_gui
 	t_crud_ui			crud;
 	t_hover_cache		hover;
 	t_transform			transform;
-	t_physic_engine		phys_engine;	unsigned char		font[95][8];}						t_gui;
+	t_physic_engine		phys_engine;	t_settings_panel	settings;	unsigned char		font[95][8];}						t_gui;
 
 #endif

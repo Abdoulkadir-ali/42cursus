@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 16:32:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	handle_mouse_rotation(t_gui *gui, t_vec2i delta)
 	gui->render.dirty = true;
 }
 
-static void	handle_mouse_zoom_drag(t_gui *gui, int dy)
+static void	handle_mouse_zoom_drag(t_gui *gui, ssize_t dy)
 {
 	gui->cam_ctrl.target_fov -= (double)dy * 0.1;
 	clamp_fov(&gui->cam_ctrl.target_fov);
@@ -76,7 +76,7 @@ int	mouse_motion(t_vec2i mouse, t_gui *gui)
 		handle_mouse_rotation(gui, delta);
 	}
 	else if (gui->cam_ctrl.mouse_middle_pressed)
-		handle_mouse_zoom_drag(gui, (int)delta.y);
+		handle_mouse_zoom_drag(gui, (ssize_t)delta.y);
 	gui->cam_ctrl.last_mouse = mouse;
 	return (0);
 }

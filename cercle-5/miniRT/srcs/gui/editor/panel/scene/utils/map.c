@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:33:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-int	row_strip(int *r, int count, t_type t, t_scene_row_res *res)
+int	row_strip(size_t *r, size_t count, t_type t, t_scene_row_res *res)
 {
 	if (*r < count)
 	{
@@ -24,7 +24,7 @@ int	row_strip(int *r, int count, t_type t, t_scene_row_res *res)
 	return (0);
 }
 
-static bool	strip_primary_objects(t_scene *sc, int *r, t_scene_row_res *res)
+static bool	strip_primary_objects(t_scene *sc, size_t *r, t_scene_row_res *res)
 {
 	if (row_strip(r, sc->light_count, TYPE_LIGHT, res)
 		|| row_strip(r, sc->sphere_count, TYPE_SPHERE, res)
@@ -43,20 +43,20 @@ static bool	strip_primary_objects(t_scene *sc, int *r, t_scene_row_res *res)
 void	row_to_object(t_gui *gui, size_t r, t_type *ty, int *idx)
 {
 	t_scene_row_res		res;
-	int					row_i;
+	size_t				row_i;
 
 	*ty = TYPE_NONE;
 	*idx = -1;
 	res.type = TYPE_NONE;
 	res.index = -1;
-	row_i = (int)r;
+	row_i = r;
 	if (strip_primary_objects(gui->scene, &row_i, &res))
 	{
 		*ty = res.type;
 		*idx = res.index;
 		return ;
 	}
-	if ((size_t)row_i < count_mesh_entries(gui->scene))
+	if (row_i < count_mesh_entries(gui->scene))
 	{
 		*ty = TYPE_MESH;
 		*idx = row_i;

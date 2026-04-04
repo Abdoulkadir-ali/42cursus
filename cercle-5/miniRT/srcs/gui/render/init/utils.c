@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 16:25:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 09:54:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,23 @@
 
 bool	init_window(t_gui *gui)
 {
+	size_t	max_n;
+
 	if (!gui->win.mlx)
 		return (false);
 	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.size.x,
 			gui->win.size.y, "miniRT");
 	if (!gui->win.win)
 		return (false);
-	gui->win.img = mlx_new_image(gui->win.mlx, gui->win.size.x,
-			gui->win.size.y);
-	gui->win.addr = mlx_get_data_addr(gui->win.img, &gui->win.bpp,
-			&gui->win.line_len, &gui->win.endian);
+	max_n = (size_t)gui->win.size.x * (size_t)gui->win.size.y;
+	gui->win.render_pixels = ft_calloc(max_n, sizeof(uint32_t));
+	if (!gui->win.render_pixels)
+		return (false);
+	gui->win.img = NULL;
+	gui->win.addr = (char *)gui->win.render_pixels;
+	gui->win.bpp = 32;
+	gui->win.line_len = gui->win.size.x * 4;
+	gui->win.endian = 0;
 	gui->win.disp_size = gui->win.size;
 	gui->win.disp_img = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
 			gui->win.disp_size.y);
@@ -64,6 +71,9 @@ void	init_camera(t_gui *gui)
 	gui->cam_ctrl.transform.rotation.yaw = gui->cam_ctrl.target_rot.yaw;
 	gui->cam_ctrl.transform.rotation.pitch = gui->cam_ctrl.target_rot.pitch;
 	gui->render.scale = 2;
+	gui->win.size.x = gui->win.disp_size.x / (int)gui->render.scale;
+	gui->win.size.y = gui->win.disp_size.y / (int)gui->render.scale;
+	gui->win.line_len = gui->win.size.x * 4;
 	gui->render.dirty = true;
 	gui->widgets = NULL;
 }
@@ -90,11 +100,16 @@ void	gui_init_physics(t_gui *gui)
 
 void	gui_init_render(t_gui *gui)
 {
-	gui->render.num_cores = sysconf(_SC_NPROCESSORS_ONLN);
-	if (gui->render.num_cores < 1)
-		gui->render.num_cores = 1;
-	if (gui->render.num_cores > 128)
-		gui->render.num_cores = 128;
-	gui->render.pool.ready = false;
+	size_t	n;
+
+	n = (size_t)gui->win.disp_size.x * (size_t)gui->win.disp_size.y;
+	gui->render.prev_buf = ft_calloc(n, sizeof(uint32_t));
+	gui->render.depth_buf = ft_calloc(n, sizeof(float));
+	gui->render.prev_depth = ft_calloc(n, sizeof(float));
+	gui->render.reproj_buf = ft_calloc(n, sizeof(uint32_t));
+	gui->render.reproj_tag = ft_calloc(n, sizeof(size_t));
+	gui->render.reproj_gen = 1;
+	gui->render.prev_valid = false;
+	optimizations_init(gui);
 	font_load(gui, FONT_PATH);
 }

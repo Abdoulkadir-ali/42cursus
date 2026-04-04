@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 21:05:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,23 @@
 /**
  * @brief Updates rotation and deformation for a sphere based on its velocity.
  */
+/**
+ * @brief Caches 1/scale for each axis so intersect_sphere avoids per-ray divisions.
+ */
+static void	cache_inv_scale(t_sphere *sp)
+{
+	sp->inv_scale.x = 1.0 / sp->transform.scale.x;
+	sp->inv_scale.y = 1.0 / sp->transform.scale.y;
+	sp->inv_scale.z = 1.0 / sp->transform.scale.z;
+	sp->inv_scale.w = 0.0;
+}
+
+/**
+ * @brief Updates rotation and deformation for a sphere based on its velocity.
+ */
 static void	update_state(t_sphere *sp, double dt)
 {
-	t_vec3		r_d;
-	t_transform	s_t;
+	t_vec3	r_d;
 
 	r_d = vec3_scale(sp->phys.angular_velocity, dt * 180.0 / M_PI);
 	sp->transform.rotation.pitch += r_d.x;
@@ -26,19 +39,15 @@ static void	update_state(t_sphere *sp, double dt)
 	if (vec3_mag(sp->phys.velocity) > 0.1)
 	{
 		sp->transform.scale = vec3(1.0 + fmin(vec3_mag(sp->phys.velocity)
-					* 0.05, 0.3), 1.0, 1.0);
+						* 0.05, 0.3), 1.0, 1.0);
 		sp->is_deformed = true;
-		ft_memset(&s_t, 0, sizeof(t_transform));
-		s_t.pos = sp->transform.pos;
-		s_t.scale = sp->transform.scale;
-		s_t.forward = vec3(0, 0, 1);
-		sp->inv_transform = mat4_inverse_transform(s_t);
 	}
 	else
 	{
 		sp->transform.scale = vec3(1, 1, 1);
 		sp->is_deformed = false;
 	}
+	cache_inv_scale(sp);
 }
 
 /**

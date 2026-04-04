@@ -13,12 +13,12 @@
 #include "fbx.h"
 
 static void	*fbx_convert_float_to_double(t_fbx_array *a, void *uncomp,
-		uint32_t *count)
+		size_t *count)
 {
 	void		*final_data;
 	float		*src;
 	double		*dst;
-	uint32_t	i;
+	size_t	i;
 
 	final_data = malloc(a->arr_len * sizeof(double));
 	if (!final_data)
@@ -37,7 +37,7 @@ static void	*fbx_convert_float_to_double(t_fbx_array *a, void *uncomp,
 }
 
 void	*fbx_convert_array(t_fbx_array *a, void *uncomp, size_t elem_sz,
-		uint32_t *count)
+		size_t *count)
 {
 	void	*final_data;
 	size_t	copy_sz;

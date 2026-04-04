@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:17:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ void				draw_mesh_info_panel(struct s_gui *gui, t_vec2i pos);
 size_t				count_mesh_entries(t_scene *sc);
 int					mesh_row_to_idx(int r);
 size_t				count_scene_rows(t_scene *sc);
-int					row_strip(int *r, int count, t_type t,
+int						row_strip(size_t *r, size_t count, t_type t,
 						t_scene_row_res *res);
 void				row_to_object(t_gui *gui, size_t r, t_type *ty, int *idx);
 

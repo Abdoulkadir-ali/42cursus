@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 16:03:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:21:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <X11/X.h>
 # include <X11/keysym.h>
 # include "editor.h"
+# include "settings.h"
 # include "map.h"
 # include "camera.h"
 

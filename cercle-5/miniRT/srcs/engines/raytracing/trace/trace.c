@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:42:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 10:28:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,10 @@
 static inline double	safe_rcp(double d)
 {
 	double	ad;
-	double	nd;
 
 	ad = __builtin_fabs(d);
 	if (__builtin_expect(ad < 1e-20, 0))
-	{
-		if (d >= 0.0)
-			nd = 1e-20;
-		else
-			nd = -1e-20;
-		return (1.0 / nd);
-	}
+		d = __builtin_copysign(1e-20, d);
 	return (1.0 / d);
 }
 
@@ -71,7 +64,8 @@ static void	check_planes(const t_ray *ray, t_scene *sc, t_hit *hit, bool *any)
 	}
 }
 
-t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *sc)
+static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
+		t_scene *sc, float *out_t)
 {
 	t_hit	hit;
 	bool	hit_any;
@@ -83,7 +77,19 @@ t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *sc)
 	if (!hit_any)
 		hit.t = 1e30;
 	check_planes(ray, sc, &hit, &hit_any);
+	if (out_t)
+		*out_t = (float)hit.t;
 	if (hit_any)
 		return (compute_color(&hit, sc, bvh, ray));
 	return (vec3(0, 0, 0));
+}
+
+t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *sc)
+{
+	return (do_trace(bvh, ray, sc, NULL));
+}
+
+t_vec3	trace_ray_ex(const t_bvh *bvh, const t_ray *ray, t_scene *sc, float *out_t)
+{
+	return (do_trace(bvh, ray, sc, out_t));
 }

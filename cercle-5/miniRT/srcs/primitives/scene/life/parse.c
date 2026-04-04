@@ -31,7 +31,7 @@ bool	load_scene(t_scene *scene, const char *path)
 		return (false);
 	}
 	if (is_rt_ext(ext))
-		return (parse_rt(path, scene));
+		return (parse_rt_worker(path, scene));
 	setup_default_scene(scene);
 	return (scene_add_objects(scene, path));
 }

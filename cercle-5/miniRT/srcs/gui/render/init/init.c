@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 19:12:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:03:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 08:50:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ t_gui	*gui_init(t_scene *scene, void *mlx)
 	gui_init_render(gui);
 	gui_map_switcher_init(gui);
 	editor_init(gui);
+	settings_init(gui);
 	return (gui);
 }
 
@@ -41,6 +42,10 @@ void	gui_destroy(t_gui *gui)
 	if (!gui)
 		return ;
 	map_manager_destroy(gui);
+	blend_free(gui);
+	reproject_free(gui);
+	if (gui->win.render_pixels)
+		free(gui->win.render_pixels);
 	if (gui->win.win)
 		mlx_destroy_window(gui->win.mlx, gui->win.win);
 	if (gui->win.img)

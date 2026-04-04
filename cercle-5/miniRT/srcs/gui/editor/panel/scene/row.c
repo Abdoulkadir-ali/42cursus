@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:32:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,13 @@ void	draw_scene_rows(t_gui *gui)
 	int		y_px;
 	t_type	ty;
 	int		idx;
+	int		disp_h;
 
 	total = count_scene_rows(gui->scene);
 	row = 0;
+	disp_h = (int)gui->win.disp_size.y;
 	y_px = (CRUD_PANEL_H + 8) - gui->scene_panel.scroll;
-	while (row < total && y_px < (int)gui->win.disp_size.y - 8)
+	while (row < total && y_px < disp_h - 8)
 	{
 		if (y_px >= (CRUD_PANEL_H + 4))
 		{

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 10:34:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,5 @@ bool	intersect_box(const t_ray *ray, t_box *bx, t_hit *hit)
 		hit->normal = vec3_scale(c.ax[face], -1.0);
 	if (vec3_dot(ray->direction, hit->normal) > 0.0)
 		hit->normal = vec3_scale(hit->normal, -1.0);
-	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
 	return (true);
 }

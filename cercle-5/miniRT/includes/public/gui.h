@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:18:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:21:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,6 @@
 # include "editor.h"
 # include "map.h"
 # include "widget.h"
+# include "settings.h"
 
 #endif

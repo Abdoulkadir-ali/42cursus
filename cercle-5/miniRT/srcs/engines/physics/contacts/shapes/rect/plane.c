@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:24:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
 static void	set_rect_plane_contact(t_contact *c, t_rect *rc,
-				t_plane *pl, int i)
+					t_plane *pl, size_t i)
 {
 	t_vec3	n;
 	t_vec3	to_v;
@@ -34,7 +34,7 @@ static void	set_rect_plane_contact(t_contact *c, t_rect *rc,
 }
 
 static void	check_rect_vert(t_contact_query *qu, t_rect *rc,
-				t_plane *pl, int i)
+					t_plane *pl, size_t i)
 {
 	t_vec3	n;
 	t_vec3	to_v;
@@ -59,7 +59,7 @@ size_t	rect_vs_all_planes(t_contact_query *qu, t_rect *rc)
 		i = 0;
 		while (i < 4 && qu->count < qu->max)
 		{
-			check_rect_vert(qu, rc, &qu->engine->scene->planes[p], (int)i);
+				check_rect_vert(qu, rc, &qu->engine->scene->planes[p], i);
 			i++;
 		}
 		p++;

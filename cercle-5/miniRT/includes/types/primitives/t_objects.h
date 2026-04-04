@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:49:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 21:05:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef struct s_sphere
 	t_vec3				temp_color;
 	t_physics_body		phys;
 	bool				is_deformed;
-	t_mat4				inv_transform;
+	t_vec3					inv_scale;
 }						t_sphere;
 
 typedef struct s_plane

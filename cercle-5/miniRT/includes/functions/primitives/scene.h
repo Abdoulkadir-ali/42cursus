@@ -19,6 +19,8 @@
 # include "rt.h"
 # include "mesh.h"
 # include "surface.h"
+# include "thread.h"
+# include "t_scene.h"
 
 # ifndef INIT_SCENE_CAP
 #  define INIT_SCENE_CAP 128

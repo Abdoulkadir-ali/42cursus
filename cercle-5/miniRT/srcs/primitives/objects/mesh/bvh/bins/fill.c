@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:14:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:23:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mesh.h"
 
-static double	get_centroid_val(t_bvh_bins *b, int i)
+static double	get_centroid_val(t_bvh_bins *b, size_t i)
 {
 	if (b->axis == 0)
 		return (b->bvh->items[b->first + i].centroid.x);
@@ -33,7 +33,7 @@ void	bvh_fill_bins(t_bvh_bins *b)
 	i = 0;
 	while (i < b->count)
 	{
-		val = get_centroid_val(b, (int)i);
+		val = get_centroid_val(b, i);
 		bin_idx = (val - b->min_val) * b->scale;
 		if (bin_idx >= BVH_BINS)
 			bin_idx = BVH_BINS - 1;

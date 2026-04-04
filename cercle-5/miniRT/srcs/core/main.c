@@ -12,6 +12,7 @@
 
 #include "core.h"
 #include "debug.h"
+#include "thread.h"
 
 /*
 ** Cleans up all resources.

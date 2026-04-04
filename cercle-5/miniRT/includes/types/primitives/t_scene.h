@@ -16,6 +16,7 @@
 # include "t_objects.h"
 # include "t_meshes.h"
 # include "t_surface.h"
+# include "thread.h"
 
 # define MAX_MODEL_CACHE 64
 
@@ -118,6 +119,7 @@ typedef struct s_scene
 	size_t				emissive_n;
 	t_model_cache		cache[MAX_MODEL_CACHE];
 	size_t				cache_count;
+	t_thread_pool		*pool;
 }						t_scene;
 
 #endif

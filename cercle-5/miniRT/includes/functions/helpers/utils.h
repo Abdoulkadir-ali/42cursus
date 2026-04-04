@@ -37,5 +37,4 @@ bool	dynarray_ensure(void **array, size_t count, size_t *cap,
 		*(cap_ptr) = (int)_cap;                                                \
 		_ret;                                                                  \
 	})
-
 #endif

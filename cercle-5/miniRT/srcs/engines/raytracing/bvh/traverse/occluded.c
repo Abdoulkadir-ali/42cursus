@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:19:46 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 18:11:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 09:33:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,32 @@
 static bool	occlude_sphere(const t_ray *ray, t_sphere *sp, double max_t)
 {
 	t_vec3	oc;
-	double	a;
-	double	b;
+	double	hb;
+	double	c;
 	double	disc;
+	double	sq;
 	double	t;
 
 	oc = vec3_sub(ray->origin, sp->transform.pos);
-	a = vec3_dot(ray->direction, ray->direction);
-	b = 2.0 * vec3_dot(oc, ray->direction);
-	disc = b * b - 4.0 * a * (vec3_dot(oc, oc) - sp->radius_sq);
+	hb = vec3_dot(oc, ray->direction);
+	c = vec3_dot(oc, oc) - sp->radius_sq;
+	disc = hb * hb - c;
 	if (disc < 0.0)
 		return (false);
-	disc = sqrt(disc);
-	t = (-b - disc) / (2.0 * a);
+	sq = sqrt(disc);
+	t = -hb - sq;
 	if (t < EPSILON)
-		t = (-b + disc) / (2.0 * a);
+		t = -hb + sq;
 	return (t > EPSILON && t < max_t);
 }
 
 static bool	occlude_primitive(const t_ray *ray, t_scene *sc, t_bvh_ref ref,
-		double max_t)
+		double max_t, t_bvh_ref self)
 {
 	t_hit	h;
 
+	if (ref.type == self.type && ref.index == self.index)
+		return (false);
 	if (ref.type == TYPE_SPHERE)
 		return (occlude_sphere(ray, &sc->spheres[ref.index], max_t));
 	h.t = max_t;
@@ -47,7 +50,7 @@ static bool	occlude_primitive(const t_ray *ray, t_scene *sc, t_bvh_ref ref,
 }
 
 static bool	check_leaf_occlusion(const t_bvh *bvh, size_t node_idx,
-		const t_ray *ray, double max_t)
+		const t_ray *ray, double max_t, t_bvh_ref self)
 {
 	size_t	i;
 	size_t	ref_start;
@@ -56,7 +59,8 @@ static bool	check_leaf_occlusion(const t_bvh *bvh, size_t node_idx,
 	ref_start = bvh->nodes[node_idx].left_or_first;
 	while (i < bvh->nodes[node_idx].count)
 	{
-		if (occlude_primitive(ray, bvh->scene, bvh->refs[ref_start + i], max_t))
+		if (occlude_primitive(ray, bvh->scene, bvh->refs[ref_start + i], max_t,
+				self))
 			return (true);
 		i++;
 	}
@@ -108,7 +112,8 @@ static void	push_occ_children(size_t *stack, size_t *top, const t_bvh *bvh,
 		stack[(*top)++] = right;
 }
 
-bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
+bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t,
+		t_bvh_ref self)
 {
 	size_t	stack[128];
 	size_t	top;
@@ -133,7 +138,7 @@ bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 		node_idx = stack[--top];
 		if (bvh->nodes[node_idx].count > 0)
 		{
-			if (check_leaf_occlusion(bvh, node_idx, ray, max_t))
+			if (check_leaf_occlusion(bvh, node_idx, ray, max_t, self))
 				return (true);
 		}
 		else if (top < 126)

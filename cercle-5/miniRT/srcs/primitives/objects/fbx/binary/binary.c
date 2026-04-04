@@ -59,7 +59,7 @@ static bool	fbx_bin_parse(t_fbx_bin *fbx)
 	parse_nodes(fbx->fd, (uint64_t)-1, fbx->version >= 7500, &fbx->data);
 	close(fbx->fd);
 	fbx->fd = -1;
-	ft_print_debug("DEBUG: parse_nodes finished. counts: vc=%u nc=%u\n",
+	ft_print_debug("DEBUG: parse_nodes finished. counts: vc=%zu nc=%zu\n",
 		fbx->data.vc, fbx->data.nc);
 	if (!fbx->data.v || !fbx->data.ri)
 	{
@@ -68,7 +68,7 @@ static bool	fbx_bin_parse(t_fbx_bin *fbx)
 	}
 	if (fbx->data.vc > 1000000)
 	{
-		fprintf(stderr, "Error: FBX mesh too large (%d vertices, limit 1M)\n",
+		fprintf(stderr, "Error: FBX mesh too large (%zu vertices, limit 1M)\n",
 			fbx->data.vc);
 		return (false);
 	}
@@ -84,7 +84,7 @@ bool	parse_fbx_binary(const char *path, t_scene *scene)
 	fbx.fd = -1;
 	if (!fbx_bin_open(&fbx, path))
 		return (false);
-	ft_print_debug("DEBUG: FBX Binary Version: %u\n", fbx.version);
+	ft_print_debug("DEBUG: FBX Binary Version: %zu\n", fbx.version);
 	if (!fbx_bin_parse(&fbx))
 	{
 		fbx_bin_free_data(&fbx);

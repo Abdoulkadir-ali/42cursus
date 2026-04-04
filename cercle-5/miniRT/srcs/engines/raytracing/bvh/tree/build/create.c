@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:29:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 09:34:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static t_bvh_tmp_node	*build_tmp_tree(t_scene *scene, size_t total, size_t *k)
 	items = malloc(sizeof(t_build_item) * total);
 	if (!items)
 		return (NULL);
-	*k = collect_objects(scene, items);
+	*k = collect_objects_worker(scene, items);
 	root = build_recursive(items, *k);
 	free(items);
 	return (root);
@@ -94,6 +94,8 @@ t_bvh	*bvh_create(t_scene *scene)
 	root = build_tmp_tree(scene, get_scene_total(scene), &k);
 	if (!root)
 		return (free(bvh), NULL);
+	if (k == 0)
+		return (node_destroy(root), free(bvh), NULL);
 	bvh = init_bvh_buffers(bvh, k);
 	if (!bvh)
 		return (node_destroy(root), NULL);

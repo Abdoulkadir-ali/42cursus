@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:32:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 10:28:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,13 @@ double	shading_attenuation(double dist_sq)
 
 static bool	light_visible(t_shading *sha, t_light light, t_light_calc *c)
 {
-	double	bias;
-
 	if (light.type == LIGHT_SPOT && vec3_dot(vec3_scale(c->norm, -1.0),
 			light.transform.forward) < light.cutoff)
 		return (false);
 	if (light.type == LIGHT_EMISSIVE)
 		return (true);
-	bias = fmax(EPSILON, EPSILON * 20.0 * (1.0 - c->ndotl));
-	if (is_in_shadow(sha->bvh, vec3_add(sha->hit->point,
-				vec3_scale(sha->hit->normal, bias)), c->norm, c->dist))
+	if (is_in_shadow(sha->bvh, sha->hit->point, c->norm, c->dist,
+			sha->hit->ref))
 		return (false);
 	return (true);
 }
@@ -45,7 +42,9 @@ static double	calc_specular(t_shading *sha, t_vec3 ld_norm)
 	ndoth = (float)fmax(0.0, vec3_dot(sha->hit->normal, half));
 	if (ndoth < 0.01f)
 		return (0.0);
-	return ((double)powf(ndoth, (float)sha->mat.shininess));
+	if (ndoth >= 0.9999f)
+		return (1.0);
+	return ((double)exp2f((float)sha->mat.shininess * log2f(ndoth)));
 }
 
 /*

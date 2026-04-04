@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 12:55:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 21:05:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	editor_add_sphere(t_gui *gui)
 			vec3(0, 0, -1), vec3(1, 1, 1));
 	sp.temp_color = vec3(0.7, 0.7, 0.9);
 	sp.radius_sq = 1.0;
+	sp.inv_scale = vec3(1, 1, 1);
 	scene_add_sphere(gui->scene, sp);
 	select_object(gui, TYPE_SPHERE, gui->scene->sphere_count - 1);
 	rebuild_bvh(gui);

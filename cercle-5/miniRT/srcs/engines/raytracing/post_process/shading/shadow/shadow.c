@@ -12,19 +12,28 @@
 
 #include "raytracing.h"
 
-static bool	plane_shadows(const t_bvh *bvh, const t_ray *sray, double dist)
+static bool	plane_shadows(const t_bvh *bvh, const t_ray *sray, double dist,
+		t_bvh_ref self)
 {
-	t_hit	hit;
+	t_vec3	oc;
+	double	ndotd;
+	double	t;
 	size_t	i;
 
-	if (!bvh || !bvh->scene)
-		return (false);
 	i = 0;
 	while (i < bvh->scene->plane_count)
 	{
-		if (intersect_plane(sray, &bvh->scene->planes[i], &hit))
+		if (self.type == TYPE_PLANE && self.index == i)
 		{
-			if (hit.t > 0.001 && hit.t < dist)
+			i++;
+			continue;
+		}
+		ndotd = vec3_dot(bvh->scene->planes[i].transform.forward, sray->direction);
+		if (fabs(ndotd) > 1e-6)
+		{
+			oc = vec3_sub(bvh->scene->planes[i].transform.pos, sray->origin);
+			t = vec3_dot(oc, bvh->scene->planes[i].transform.forward) / ndotd;
+			if (t > 0.001 && t < dist)
 				return (true);
 		}
 		i++;
@@ -32,12 +41,13 @@ static bool	plane_shadows(const t_bvh *bvh, const t_ray *sray, double dist)
 	return (false);
 }
 
-bool	is_in_shadow(const t_bvh *bvh, t_vec3 p, t_vec3 ldir_norm, double dist)
+bool	is_in_shadow(const t_bvh *bvh, t_vec3 p, t_vec3 ldir_norm, double dist,
+		t_bvh_ref self)
 {
 	t_ray	shadow_ray;
 
 	ray_init(&shadow_ray, p, ldir_norm);
-	if (bvh_occluded(bvh, &shadow_ray, dist))
+	if (bvh_occluded(bvh, &shadow_ray, dist, self))
 		return (true);
-	return (plane_shadows(bvh, &shadow_ray, dist));
+	return (plane_shadows(bvh, &shadow_ray, dist, self));
 }

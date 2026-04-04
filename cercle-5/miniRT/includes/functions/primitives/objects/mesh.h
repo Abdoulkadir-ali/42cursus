@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:23:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 09:11:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MESH_H
 # define MESH_H
+
 
 # include "helpers.h"
 # include "surface.h"
@@ -87,8 +88,10 @@ bool					intersect_finish_hit(t_trace *trace, t_mesh *mesh,
 bool					scene_add_objects(t_scene *scene, const char *path);
 bool					scene_add_mesh(t_scene *scene, t_mesh mesh);
 bool					scene_add_mesh_file(t_scene *scene, const char *path);
-bool					mesh_build_resource(const char *path,
+bool					mesh_build_resource(t_thread_pool *pool, const char *path,
 							t_mesh_resource *res);
+bool					scene_inject_mesh_resource(t_scene *scene,
+							t_mesh_resource *res, t_mesh_info *info);
 bool					scene_add_collection(t_scene *scene, t_parse_obj *item);
 bool					scene_add_animated(t_scene *scene,
 							t_skinned_mesh animated);

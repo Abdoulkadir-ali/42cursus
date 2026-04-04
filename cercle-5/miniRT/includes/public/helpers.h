@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:07:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 09:11:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,6 @@
 # include "debug.h"
 # include "utils.h"
 # include "profiler.h"
+# include "thread.h"
 
 #endif

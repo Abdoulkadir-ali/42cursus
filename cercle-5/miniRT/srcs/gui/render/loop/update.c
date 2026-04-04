@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 17:25:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 22:55:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,10 @@ int	gui_update(t_gui *gui)
 	T0(); update_physics_step(gui, delta); T1("update_physics_step");
 	if (gui->render.dirty)
 	{
+		rebuild_bvh(gui);
 		T0(); gui_render(gui); T1("gui_render");
 		T0(); upscale_image(gui); T1("upscale_image");
+		T0(); optimize_frames(gui, delta); T1("optimize_frames");
 		gui->render.dirty = false;
 	}
 	T0(); mlx_put_image_to_window(gui->win.mlx, gui->win.win, gui->win.disp_img, 0, 0); T1("mlx_put");

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 10:34:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,5 @@ bool	intersect_capsule(const t_ray *ray, t_capsule *cap, t_hit *hit)
 	set_n(ray, cap, hit, &c);
 	hit->u = 0.5;
 	hit->v = 0.5;
-	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
 	return (true);
 }

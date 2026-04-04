@@ -21,5 +21,4 @@ void	set_sphere_hit_data(const t_ray *ray, t_sphere *sp, t_hit *hit)
 	hit->normal = vec3_scale(vec3_sub(hit->point, sp->transform.pos),
 			1.0 / sqrt(sp->radius_sq));
 	get_sphere_uv(hit->normal, &hit->u, &hit->v);
-	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
 }

@@ -3,6 +3,8 @@
 
 # include "scene.h"
 # include "objects.h"
+# include "thread.h"
+# include "t_physics.h"
 
 /* Forward declarations */
 typedef struct s_collision t_collision;
@@ -25,7 +27,7 @@ void    phys_debug_spheres(t_scene *scene);
 
 /* Integration */
 void    update_physics(t_scene *scene, t_physic_engine *engine, double dt);
-void    integrate_bodies(t_scene *scene, t_physic_engine *engine, double dt);
+void    integrate_bodies_worker(t_scene *scene, t_physic_engine *engine, double dt);
 size_t  generate_contacts(t_scene *scene, t_physic_engine *engine, t_contact *contacts, size_t max_c);
 
 /* Internal Integrators */

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 16:32:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:21:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)
 	{
+		if (settings_handle_click(gui, mouse))
+			return (0);
 		if (popup_handle_click(gui, mouse))
 			return (0);
 		if (!inspector_handle_click(gui, mouse)

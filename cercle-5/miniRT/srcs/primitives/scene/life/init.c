@@ -70,6 +70,9 @@ t_scene	*create_scene(const char *name)
 		destroy_scene(s);
 		return (NULL);
 	}
+	s->pool = ft_calloc(1, sizeof(t_thread_pool));
+	if (s->pool)
+		threads_init(s->pool);
 	s->ambient.brightness = 0;
 	s->ambient.rgb = vec3(0, 0, 0);
 	scene_add_material(s, vec3(200, 160, 255));

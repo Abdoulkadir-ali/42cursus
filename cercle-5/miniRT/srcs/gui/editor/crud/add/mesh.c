@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:46:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 10:00:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	glb_load_logic(t_gui *gui, size_t mesh_start, const char *path)
 	}
 	else
 	{
-		if (!parse_glb(path, gui->scene))
+		if (!parse_glb_worker(path, gui->scene))
 			return ;
 		mesh_cache_save(gui->scene, path, mesh_start);
 	}
@@ -64,7 +64,7 @@ void	editor_add_obj(t_gui *gui, const char *path)
 	if (!gui->scene)
 		return ;
 	mesh_start = gui->scene->mesh_count;
-	if (!scene_parse_obj(path, gui->scene))
+	if (!scene_parse_obj_worker(path, gui->scene))
 		return ;
 	glb_post_process(gui, mesh_start, path);
 	rebuild_bvh(gui);

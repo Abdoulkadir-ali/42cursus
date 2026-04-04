@@ -16,7 +16,7 @@
 /**
  * Main parser for FDF files. Converts heightmap to mesh.
  */
-bool	parse_fdf(const char *path, t_scene *scene)
+bool	parse_fdf_worker(const char *path, t_scene *scene)
 {
 	t_mesh	mesh;
 	int		v[4];
@@ -26,9 +26,9 @@ bool	parse_fdf(const char *path, t_scene *scene)
 	if (!fdf_init_mesh(&mesh, v[0] * v[1], (v[0] - 1) * (v[1] - 1) * 6, path))
 		return (false);
 	fdf_fill_data(path, &mesh, v[0], v[1]);
-	fdf_compute_normals(&mesh, v[0], v[1]);
-	fdf_compute_uvs(&mesh, v[0], v[1]);
-	fdf_triangulate(&mesh, v[0], v[1]);
+	fdf_compute_normals(scene->pool, &mesh, v[0], v[1]);
+	fdf_compute_uvs(scene->pool, &mesh, v[0], v[1]);
+	fdf_triangulate(scene->pool, &mesh, v[0], v[1]);
 	mesh_build_bvh(&mesh);
 	if (!scene_add_mesh(scene, mesh))
 	{

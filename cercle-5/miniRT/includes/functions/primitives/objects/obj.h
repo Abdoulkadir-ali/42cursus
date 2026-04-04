@@ -17,7 +17,7 @@
 
 
 /* Prototypes (srcs/objects/meshes/obj/) */
-bool					parse_obj(const char *path, struct s_scene *scene);
+bool					parse_obj_worker(const char *path, struct s_scene *scene);
 bool					obj_build_mesh(struct s_scene *scene, t_obj *obj,
 							const char *path);
 bool					obj_parse_mtllib(t_scene *scene, t_obj *obj,
@@ -25,7 +25,7 @@ bool					obj_parse_mtllib(t_scene *scene, t_obj *obj,
 bool					obj_parse_usemtl(t_scene *scene, t_obj *obj,
 							t_parser *p);
 bool					parse_mtl(t_scene *scene, t_obj *obj, const char *path);
-bool					scene_parse_obj(const char *path, t_scene *scene);
+bool					scene_parse_obj_worker(const char *path, t_scene *scene);
 void					obj_parse_v(t_obj *obj, t_parser *p);
 void					obj_parse_vt(t_obj *obj, t_parser *p);
 void					obj_parse_vn(t_obj *obj, t_parser *p);

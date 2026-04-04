@@ -23,7 +23,7 @@ static size_t	fbx_array_elem_size(char type)
 
 static void	skip_string_prop(int fd)
 {
-	uint32_t	slen;
+	size_t	slen;
 
 	if (safe_read(fd, &slen, 4) < 4)
 		return ;
@@ -32,9 +32,9 @@ static void	skip_string_prop(int fd)
 
 static void	skip_array_prop(int fd, char type)
 {
-	uint32_t	alen;
-	uint32_t	enc;
-	uint32_t	clen;
+	size_t	alen;
+	size_t	enc;
+	size_t	clen;
 	size_t		isz;
 
 	if (safe_read(fd, &alen, 4) < 4 || safe_read(fd, &enc, 4) < 4

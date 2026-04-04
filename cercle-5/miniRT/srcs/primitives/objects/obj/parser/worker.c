@@ -41,7 +41,7 @@ static void	handle_id(t_obj *obj, t_parser *p, t_scene *scene,
 		obj_parse_usemtl(scene, obj, p);
 }
 
-bool	scene_parse_obj(const char *path, t_scene *scene)
+bool	scene_parse_obj_worker(const char *path, t_scene *scene)
 {
 	t_parser	p;
 	t_obj		obj;
@@ -69,7 +69,7 @@ bool	scene_parse_obj(const char *path, t_scene *scene)
 	return (obj_build_mesh(scene, &obj, path));
 }
 
-bool	parse_obj(const char *path, t_scene *scene)
+bool	parse_obj_worker(const char *path, t_scene *scene)
 {
-	return (scene_parse_obj(path, scene));
+	return (scene_parse_obj_worker(path, scene));
 }

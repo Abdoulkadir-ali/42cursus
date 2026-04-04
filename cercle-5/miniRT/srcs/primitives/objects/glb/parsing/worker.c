@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 17:48:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 09:28:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,52 +18,69 @@ static void	parse_header(unsigned char *buf, int *json_len, int *bin_len)
 	*bin_len = *(int *)(buf + 20 + *json_len);
 }
 
+static void	*glb_mesh_worker(void *ptr)
+{
+	t_glb_mesh_task	*task;
+	size_t			i;
+	t_json_value	*v[2];
+	t_index			midx;
+
+	task = (t_glb_mesh_task *)ptr;
+	while (1)
+	{
+		i = __sync_fetch_and_add(&task->next_idx, 1);
+		if (i >= task->count)
+			break ;
+		glb_load_mesh(&task->meshes[i], task->json, task->bin, i);
+		v[0] = json_get(task->json, "meshes");
+		v[1] = json_at(json_get(json_at(v[0], i), "primitives"), 0);
+		midx = json_get_size_t(v[1], "material");
+		if (!midx.error && task->mat_ids)
+			task->meshes[i].mat_id = task->mat_ids[midx.i].i;
+		else
+			task->meshes[i].mat_id = (size_t)-1;
+		if (json_get(task->json, "skins"))
+			glb_load_skeleton(&task->meshes[i], task->json, task->bin,
+				glb_count_extra_anim_nodes(task->json));
+	}
+	return (NULL);
+}
+
 static void	load_glb_meshes_into_scene(t_json_value *json, char *bin,
 				t_scene *scene, t_index *mat_ids)
 {
-	t_json_value	*v[3];
-	t_mesh			m;
+	t_glb_mesh_task	task;
 	size_t			i;
-	t_index			midx;
+	t_json_value	*v_meshes;
 
-	v[0] = json_get(json, "meshes");
-	if (!v[0] || v[0]->type != JSON_ARRAY)
+	v_meshes = json_get(json, "meshes");
+	if (!v_meshes || v_meshes->type != JSON_ARRAY)
 		return ;
-	ft_print_debug("GLB: Loading %zu mesh(es)...\n", v[0]->u.array.count);
+	ft_memset(&task, 0, sizeof(t_glb_mesh_task));
+	task.count = v_meshes->u.array.count;
+	task.meshes = ft_calloc(task.count, sizeof(t_mesh));
+	task.json = json;
+	task.bin = bin;
+	task.mat_ids = mat_ids;
+	task.scene = scene;
+	parallel_run(scene->pool, task.count, glb_mesh_worker, &task);
 	i = 0;
-	while (i < v[0]->u.array.count)
+	while (i < task.count)
 	{
-		ft_print_debug("GLB: Mesh %zu/%zu...\n", i + 1, v[0]->u.array.count);
-		ft_memset(&m, 0, sizeof(t_mesh));
-		glb_load_mesh(&m, json, bin, (int)i);
-		ft_print_debug("GLB: Mesh %zu: %zu verts, %zu indices\n",
-			i + 1, m.base_geometry.vertex_count,
-			m.base_geometry.index_count);
-		v[1] = json_at(json_get(json_at(v[0], i), "primitives"), 0);
-		midx = json_get_size_t(v[1], "material");
-		if (!midx.error && mat_ids)
-			m.mat_id = mat_ids[midx.i].i;
-		else
-			m.mat_id = scene_add_material(scene, vec3(200, 200, 200)).i;
-		if (json_get(json, "skins"))
-		{
-			ft_print_debug("GLB: Mesh %zu: loading skeleton...\n", i + 1);
-			glb_load_skeleton(&m, json, bin, glb_count_extra_anim_nodes(json));
-			ft_print_debug("GLB: Mesh %zu: skeleton done (%zu bones)\n",
-				i + 1, m.bone_count);
-		}
-		scene_add_mesh(scene, m);
-		ft_print_debug("GLB: Mesh %zu added to scene\n", i + 1);
-		i++;
+		if (task.meshes[i].mat_id == (size_t)-1)
+			task.meshes[i].mat_id = scene_add_material(scene, vec3(200, 200, 200)).i;
+		scene_add_mesh(scene, task.meshes[i++]);
 	}
+	free(task.meshes);
 }
+
 
 /**
  * Main entry point for loading a GLB file into the engine scene.
  * Parses the binary header, extracts JSON and binary chunks, and
  * delegates the mesh and animation loading.
  */
-bool	parse_glb(const char *path, t_scene *scene)
+bool	parse_glb_worker(const char *path, t_scene *scene)
 {
 	size_t			size;
 	unsigned char	*buf;

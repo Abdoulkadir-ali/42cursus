@@ -47,6 +47,6 @@ bool					process_object(t_scene *scene, t_parse_obj obj);
 bool					rt_parse_loop(t_scene *scene, t_rt *rt);
 bool					rt_parse_entry(t_scene *scene, t_rt *rt);
 bool					validate_file(const char *path);
-bool					parse_rt(const char *path, t_scene *scene);
+bool					parse_rt_worker(const char *path, t_scene *scene);
 
 #endif

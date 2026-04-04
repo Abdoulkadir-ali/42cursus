@@ -6,18 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:31:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/03 23:21:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GUI_RENDER_H
 # define GUI_RENDER_H
 
-# include "physics.h"
-# include "raytracing.h"
 # include "input.h"
 # include "mlx.h"
+# include "physics.h"
+# include "raytracing.h"
 # include "types.h"
+# include "optimizations.h"
+# include "settings.h"
 # include <pthread.h>
 # include <sys/time.h>
 
@@ -33,9 +35,10 @@ void			gui_init_physics(t_gui *gui);
 void			gui_init_render(t_gui *gui);
 void			gui_render(t_gui *gui);
 unsigned int	color_blend(unsigned int dst, int src, float alpha);
-void			render_tiles(t_render *render);
+void			render_tiles_worker(t_render *render);
 void			render_tile(t_render *render, size_t id);
 void			gui_update_hover(t_gui *gui);
+void			gui_parallel_task_worker(t_gui *gui, t_pool_task type);
 void			process_pixel(t_render *render, t_vec2i pos, char *pixel_addr);
 void			upscale_image(t_gui *gui);
 void			fullres_toggle(t_gui *gui);

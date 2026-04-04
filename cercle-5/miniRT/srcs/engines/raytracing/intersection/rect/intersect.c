@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 10:34:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ static void	set_rect_hit(const t_ray *ray, t_rect *rc, t_hit *hit, double t)
 	hit->normal = rc->normal;
 	if (vec3_dot(ray->direction, hit->normal) > 0)
 		hit->normal = vec3_scale(hit->normal, -1.0);
-	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
 }
 
 bool	intersect_rect(const t_ray *ray, t_rect *rc, t_hit *hit)

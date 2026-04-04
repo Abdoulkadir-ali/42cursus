@@ -12,7 +12,7 @@
 
 #include "scene.h"
 
-static bool	read_id(t_parser *p, char *buf, size_t max_len)
+bool	read_id(t_parser *p, char *buf, size_t max_len)
 {
 	size_t	i;
 	char	c;
@@ -52,4 +52,25 @@ bool	rt_parse_entry(t_scene *scene, t_rt *rt)
 	if (!process_object(scene, rt->obj))
 		rt->status = false;
 	return (true);
+}
+
+char	*read_file_to_str(int fd)
+{
+	char	*content;
+	char	buf[4096];
+	ssize_t	n;
+	char	*tmp;
+
+	content = ft_strdup("");
+	while (1)
+	{
+		n = read(fd, buf, 4095);
+		if (n <= 0)
+			break ;
+		buf[n] = '\0';
+		tmp = ft_strjoin(content, buf);
+		free(content);
+		content = tmp;
+	}
+	return (content);
 }

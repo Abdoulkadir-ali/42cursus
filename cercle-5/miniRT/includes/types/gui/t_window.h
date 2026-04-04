@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:55:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 08:50:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,11 @@ struct s_camera_controller;
 
 typedef struct s_window
 {
-	void	*mlx;
-	void	*win;
-	void	*img;
-	char	*addr;
+	void		*mlx;
+	void		*win;
+	void		*img;
+	char		*addr;
+	uint32_t	*render_pixels;
 	int		bpp;
 	int		line_len;
 	int		endian;

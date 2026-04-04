@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:43:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 08:50:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 
 # include <pthread.h>
 # include <semaphore.h>
+# include <stdint.h>
 # include "t_physics.h"
 # include "t_maths.h"
 
 # define RENDER_POOL_MAX 128
-# define RENDER_W 1920
-# define RENDER_H 1080
+# define RENDER_W 2560
+# define RENDER_H 1440
 
 # ifndef GUI_AUTOREFRESH_PHYSICS
 #  define GUI_AUTOREFRESH_PHYSICS 1
@@ -29,7 +30,19 @@
 # ifndef GUI_AUTOREFRESH_SCALE
 #  define GUI_AUTOREFRESH_SCALE 2
 # endif
-
+/*
+** Runtime optimization settings — flip any field at runtime to
+** enable / disable an optimization without recompiling.
+** Add new fields here as new techniques are implemented.
+*/
+typedef struct s_optimization_settings
+{
+	bool	adaptive_scale;   /* auto-adjust render.scale to hit target FPS  */
+	bool	reprojection;     /* camera reprojection (combo A)               */
+	bool	temporal_blend;   /* legacy temporal blend (disabled by default) */
+	bool	frame_interp;     /* frame interpolation  (combo B — planned)    */
+	bool	taa;              /* temporal anti-aliasing (combo D — planned)  */
+}	t_optimization_settings;
 typedef struct s_render
 {
 	struct s_gui	*gui;
@@ -46,33 +59,46 @@ typedef struct s_render
 	char			*pixel_addr;
 }	t_render;
 
-typedef struct s_worker
+typedef enum e_pool_task
 {
-	struct s_render_pool	*pool;
-	size_t					idx;
-}	t_worker;
+	TASK_RENDER,
+	TASK_SCATTER,
+	TASK_APPLY,
+	TASK_UPSCALE
+}	t_pool_task;
 
-typedef struct s_render_pool
+typedef struct s_render_task
 {
-	pthread_t		threads[RENDER_POOL_MAX];
-	sem_t			start[RENDER_POOL_MAX];
-	sem_t			done[RENDER_POOL_MAX];
-	t_render		*render[RENDER_POOL_MAX];
-	size_t			n;
-	bool			shutdown;
-	bool			ready;
-}	t_render_pool;
+	struct s_gui	*gui;
+	t_render		*render;
+	t_pool_task		type;
+}	t_render_task;
 
 typedef struct s_render_state
 {
-	size_t			scale;
-	bool			dirty;
-	bool			force_fullres;
-	double			fps;
-	long long		last_time;
-	bool			last_dirty;
-	size_t			num_cores;
-	t_render_pool	pool;
+	size_t					scale;
+	bool					dirty;
+	bool					force_fullres;
+	double					fps;
+	long long				last_time;
+	long long				scale_last_change;
+	bool					last_dirty;
+	int						*prev_buf;
+	float					*depth_buf;
+	float					*prev_depth;
+	uint32_t				*reproj_buf;
+	size_t					*reproj_tag;
+	size_t					reproj_gen;
+	t_transform				cur_cam;
+	double					cur_half_w;
+	double					cur_half_h;
+	t_transform				prev_cam;
+	double					prev_half_w;
+	double					prev_half_h;
+	size_t					prev_step;
+	bool					prev_valid;
+	t_vec2i					prev_render_size;
+	t_optimization_settings	opts;
 }	t_render_state;
 
 typedef struct s_tile

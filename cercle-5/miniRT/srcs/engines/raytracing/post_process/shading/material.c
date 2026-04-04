@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 10:33:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ void	apply_bump(t_shading *sha)
 
 	if (sha->mat.bump_map.type == TEX_SOLID || !sha->mat.bump_map.addr)
 		return ;
+	vec3_orthonormal_basis(sha->hit->normal,
+		&sha->hit->tangent, &sha->hit->bitangent);
 	s = sample_texture(&sha->mat.bump_map, sha->hit->u, sha->hit->v);
 	m.x = (s.x / 255.0) * 2.0 - 1.0;
 	m.y = (s.y / 255.0) * 2.0 - 1.0;

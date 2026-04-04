@@ -69,7 +69,7 @@ bool	scene_add_objects(t_scene *scene, const char *path)
 
 	if (!scene || !path)
 		return (false);
-	if (!mesh_build_resource(path, &res))
+	if (!mesh_build_resource(scene->pool, path, &res))
 		return (false);
 	start = scene->mesh_count;
 	if (!process_resource_items(scene, &res))

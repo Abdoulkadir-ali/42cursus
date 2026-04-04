@@ -12,10 +12,10 @@
 
 #include "fbx.h"
 
-t_vec3	*repack_doubles_to_vec3(double *raw, uint32_t count)
+t_vec3	*repack_doubles_to_vec3(double *raw, size_t count)
 {
 	t_vec3		*out;
-	uint32_t	i;
+	size_t	i;
 
 	out = ft_calloc(count, sizeof(t_vec3));
 	if (!out)

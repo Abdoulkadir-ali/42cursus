@@ -12,18 +12,6 @@
 
 #include "raytracing.h"
 
-static t_quadratic	setup_sphere_quadratic(const t_ray *ray, t_sphere *sp)
-{
-	t_vec3		oc;
-	t_quadratic	q;
-
-	oc = vec3_sub(ray->origin, sp->transform.pos);
-	q.a = vec3_dot(ray->direction, ray->direction);
-	q.b = 2.0 * vec3_dot(oc, ray->direction);
-	q.c = vec3_dot(oc, oc) - sp->radius_sq;
-	return (q);
-}
-
 static bool	select_sphere_t(t_quadratic_roots roots, double *t)
 {
 	if (roots.t1 > EPSILON)
@@ -33,58 +21,79 @@ static bool	select_sphere_t(t_quadratic_roots roots, double *t)
 	return (*t > EPSILON);
 }
 
-static void	deformed_normal(t_hit *hit, t_mat4 inv, t_vec3 n_local)
+static void	scale_normal(t_hit *hit, t_vec3 inv_scale, t_vec3 n_local)
 {
 	t_vec3	n_world;
 
-	n_world.x = inv.m[0][0] * n_local.x + inv.m[1][0] * n_local.y
-		+ inv.m[2][0] * n_local.z;
-	n_world.y = inv.m[0][1] * n_local.x + inv.m[1][1] * n_local.y
-		+ inv.m[2][1] * n_local.z;
-	n_world.z = inv.m[0][2] * n_local.x + inv.m[1][2] * n_local.y
-		+ inv.m[2][2] * n_local.z;
+	n_world.x = n_local.x * inv_scale.x;
+	n_world.y = n_local.y * inv_scale.y;
+	n_world.z = n_local.z * inv_scale.z;
 	n_world.w = 0;
 	hit->normal = vec3_norm(n_world);
 	get_sphere_uv(n_local, &hit->u, &hit->v);
-	vec3_orthonormal_basis(hit->normal, &hit->tangent, &hit->bitangent);
+}
+
+static void	build_local_ray(t_vec3 *lo, t_vec3 *ld, const t_ray *r,
+		t_sphere *sp)
+{
+	t_vec3	is;
+
+	is = sp->inv_scale;
+	lo->x = (r->origin.x - sp->transform.pos.x) * is.x;
+	lo->y = (r->origin.y - sp->transform.pos.y) * is.y;
+	lo->z = (r->origin.z - sp->transform.pos.z) * is.z;
+	lo->w = 0.0;
+	ld->x = r->direction.x * is.x;
+	ld->y = r->direction.y * is.y;
+	ld->z = r->direction.z * is.z;
+	ld->w = 0.0;
 }
 
 static bool	solve_deformed(const t_ray *ray, t_sphere *sp, t_hit *hit)
 {
-	t_mat4				inv;
-	t_ray				local_ray;
-	t_sphere			temp_sp;
+	t_vec3				lo;
+	t_vec3				ld;
 	t_quadratic			q;
 	t_quadratic_roots	roots;
 
-	inv = sp->inv_transform;
-	local_ray.origin = mat4_mul_pos(inv, ray->origin);
-	local_ray.direction = mat4_mul_vec3(inv, ray->direction);
-	temp_sp = *sp;
-	temp_sp.transform.pos = vec3(0, 0, 0);
-	q = setup_sphere_quadratic(&local_ray, &temp_sp);
+	build_local_ray(&lo, &ld, ray, sp);
+	q.a = vec3_dot(ld, ld);
+	q.b = 2.0 * vec3_dot(lo, ld);
+	q.c = vec3_dot(lo, lo) - sp->radius_sq;
 	if (!solve_quadratic(q, &roots))
 		return (false);
 	if (!select_sphere_t(roots, &hit->t))
 		return (false);
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
-	deformed_normal(hit, inv, vec3_norm(vec3_add(local_ray.origin,
-				vec3_scale(local_ray.direction, hit->t))));
+		scale_normal(hit, sp->inv_scale,
+		vec3_norm(vec3_add(lo, vec3_scale(ld, hit->t))));
 	return (true);
 }
 
 bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit)
 {
-	t_quadratic			q;
-	t_quadratic_roots	roots;
+	t_vec3	oc;
+	double	hb;
+	double	c;
+	double	disc;
+	double	sq;
 
 	if (sp->is_deformed)
 		return (solve_deformed(ray, sp, hit));
-	q = setup_sphere_quadratic(ray, sp);
-	if (!solve_quadratic(q, &roots))
+	oc = vec3_sub(ray->origin, sp->transform.pos);
+	hb = vec3_dot(oc, ray->direction);
+	c = vec3_dot(oc, oc) - sp->radius_sq;
+	disc = hb * hb - c;
+	if (disc < 0.0)
 		return (false);
-	if (!select_sphere_t(roots, &hit->t))
-		return (false);
+	sq = sqrt(disc);
+	hit->t = -hb - sq;
+	if (hit->t <= EPSILON)
+	{
+		hit->t = -hb + sq;
+		if (hit->t <= EPSILON)
+			return (false);
+	}
 	set_sphere_hit_data(ray, sp, hit);
 	return (true);
 }

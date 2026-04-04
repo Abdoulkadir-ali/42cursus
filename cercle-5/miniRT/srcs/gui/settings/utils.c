@@ -1,0 +1,60 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 23:42:10 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "settings.h"
+
+/*
+** Draws a labeled ON/OFF radio row.
+** The toggle button is right-aligned inside a band of width w.
+*/
+void	draw_radio_row(t_gui *gui, t_vec2i pos, t_iradio r, size_t w)
+{
+	int			btn_x;
+	int			bg;
+	int			col;
+	const char	*status;
+
+	btn_x = pos.x + (int)w - 44 - 4;
+	bg = 0x2A1616;
+	col = 0x804040;
+	status = "OFF";
+	if (*r.ptr)
+	{
+		bg = 0x0E2E18;
+		col = 0x20D860;
+		status = "ON";
+	}
+	mlx_string_put(gui->win.mlx, gui->win.win,
+		pos.x + 8, pos.y + 15, COL_TEXT, (char *)r.label);
+	draw_panel(gui, (t_panel){vec2i(btn_x, pos.y + 4),
+		vec2i(44, 20), bg, col, ""});
+	mlx_string_put(gui->win.mlx, gui->win.win,
+		btn_x + 10, pos.y + 18, col, (char *)status);
+}
+
+/*
+** Returns true if the mouse hit anywhere on the row and toggles the bool.
+** Entire row is clickable (not just the button) for ergonomics.
+*/
+bool	try_radio_click(t_gui *gui, t_vec2i mouse, t_vec2i pos,
+			t_iradio r, size_t w)
+{
+	if (mouse.x < pos.x || mouse.x >= pos.x + w)
+		return (false);
+	if (mouse.y < pos.y || mouse.y >= pos.y + (size_t)SETTINGS_ROW_H)
+		return (false);
+	*r.ptr = !*r.ptr;
+	if (r.on_change)
+		r.on_change(gui);
+	gui->render.dirty = true;
+	return (true);
+}

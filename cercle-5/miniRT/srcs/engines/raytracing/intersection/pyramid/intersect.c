@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:43:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 10:34:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ static bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
 	if (vec3_dot(q->ray->direction, n) > 0)
 		n = vec3_scale(n, -1.0);
 	q->hit->normal = n;
-	vec3_orthonormal_basis(q->hit->normal, &q->hit->tangent,
-		&q->hit->bitangent);
 	return (true);
 }
 
