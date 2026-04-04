@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:51:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,8 @@ t_aabb	cone_aabb(t_cone *co);
 
 /* srcs/raytracing/bvh/traverse/ */
 bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
-bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t,
-			t_bvh_ref self);
+bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t);
+bool	occlude_cylinder(const t_ray *ray, t_cylinder *cy, double max_t);
 bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 			t_hit *hit);
 
@@ -129,8 +129,7 @@ t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *scene);
 t_vec3	trace_ray_ex(const t_bvh *bvh, const t_ray *ray, t_scene *scene, float *out_t);
 t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
 			const t_ray *ray);
-bool	is_in_shadow(const t_bvh *bvh, t_vec3 p, t_vec3 ldir_norm, double dist,
-			t_bvh_ref self);
+bool	is_in_shadow(const t_bvh *bvh, t_vec3 p, t_vec3 ldir_norm, double dist);
 t_vec3	pixel_color(t_vec3 obj, t_vec3 light, double intensity);
 void	get_material(t_shading *sha);
 void	apply_bump(t_shading *sha);

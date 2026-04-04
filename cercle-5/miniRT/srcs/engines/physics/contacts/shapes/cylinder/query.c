@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:45:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,10 @@ size_t	query_cylinder(t_contact_query *qu, size_t idx)
 	p = (t_col_pair){&sa, NULL, &cy->phys, NULL, &cy->transform, NULL};
 	cylinder_vs_all_planes(qu, &p);
 	cylinder_vs_cylinders(qu, &p, idx);
-	query_shapes(qu, &sa, &cy->phys, &cy->transform);
+	loop_boxes(qu, &sa, &cy->phys, &cy->transform);
+	loop_capsules(qu, &sa, &cy->phys, &cy->transform);
+	loop_rects(qu, &sa, &cy->phys, &cy->transform);
+	loop_tris(qu, &sa, &cy->phys, &cy->transform);
+	loop_pyramids(qu, &sa, &cy->phys, &cy->transform);
 	return (qu->count);
 }

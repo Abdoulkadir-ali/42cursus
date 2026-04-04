@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:37:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:51:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 18:52:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ static void	apply_em_val(t_shading *sha, t_vec3 *total,
 	ndotl = vec3_dot(sha->hit->normal, ldir);
 	if (ndotl < 0.02)
 		return ;
-	if (is_in_shadow(sha->bvh, sha->hit->point, ldir, d_surf,
-					sha->hit->ref))
+	if (is_in_shadow(sha->bvh, vec3_add(sha->hit->point,
+				vec3_scale(sha->hit->normal, EPSILON * 10.0)), ldir, d_surf))
 		return ;
 	bright = vec3_mag(mat->emission) / 255.0 * fmax(r, 0.5) * 3.0;
 	att = shading_attenuation(d_surf * d_surf);

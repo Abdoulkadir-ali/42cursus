@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:45:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ size_t	query_pyramid(t_contact_query *qu, size_t idx)
 	pyramid_vs_planes(qu, py);
 	pyramid_vs_pyramids(qu, py, idx);
 	sa = (t_gjk_shape){py, gjk_support_pyramid, py->phys.pos};
-	query_shapes(qu, &sa, &py->phys, &py->transform);
+	loop_boxes(qu, &sa, &py->phys, &py->transform);
+	loop_capsules(qu, &sa, &py->phys, &py->transform);
+	loop_cylinders(qu, &sa, &py->phys, &py->transform);
+	loop_rects(qu, &sa, &py->phys, &py->transform);
+	loop_tris(qu, &sa, &py->phys, &py->transform);
 	return (qu->count);
 }

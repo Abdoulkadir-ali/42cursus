@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:24:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,10 @@ size_t	query_capsule(t_contact_query *qu, size_t idx)
 		pi++;
 	}
 	capsule_vs_capsules(qu, &p, idx);
-	query_shapes(qu, &sa, &cap->phys, &cap->transform);
+	loop_boxes(qu, &sa, &cap->phys, &cap->transform);
+	loop_cylinders(qu, &sa, &cap->phys, &cap->transform);
+	loop_rects(qu, &sa, &cap->phys, &cap->transform);
+	loop_tris(qu, &sa, &cap->phys, &cap->transform);
+	loop_pyramids(qu, &sa, &cap->phys, &cap->transform);
 	return (qu->count);
 }

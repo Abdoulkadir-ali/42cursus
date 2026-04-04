@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:45:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ size_t	query_tri(t_contact_query *qu, size_t idx)
 	tri_vs_all_planes(qu, tr);
 	tri_vs_tris(qu, tr, idx);
 	sa = (t_gjk_shape){tr, gjk_support_tri, tr->phys.pos};
-	query_shapes(qu, &sa, &tr->phys, &tr->xform);
+	loop_boxes(qu, &sa, &tr->phys, &tr->xform);
+	loop_capsules(qu, &sa, &tr->phys, &tr->xform);
+	loop_cylinders(qu, &sa, &tr->phys, &tr->xform);
+	loop_rects(qu, &sa, &tr->phys, &tr->xform);
+	loop_pyramids(qu, &sa, &tr->phys, &tr->xform);
 	return (qu->count);
 }
