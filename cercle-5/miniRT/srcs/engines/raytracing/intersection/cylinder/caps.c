@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:43:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static bool	check_cap(t_ray_query *q, t_cylinder *cy,
 		q->hit->point = vec3_add(q->ray->origin,
 				vec3_scale(q->ray->direction, t));
 		if (vec3_mag_sq(vec3_sub(q->hit->point, center))
-			<= cy->transform.scale.x * cy->transform.scale.x)
+			<= cy->radius_sq)
 		{
 			*(q->tm) = t;
 			q->hit->t = t;
@@ -75,13 +75,10 @@ bool	check_bottom_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 */
 bool	check_top_cap(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit)
 {
-	t_vec3		top;
 	t_ray_query	q;
 
 	q.ray = ray;
 	q.tm = tm;
 	q.hit = hit;
-	top = vec3_add(cy->transform.pos, vec3_scale(cy->transform.forward,
-				cy->transform.scale.y));
-	return (check_cap(&q, cy, top, 1.0));
+	return (check_cap(&q, cy, cy->top, 1.0));
 }

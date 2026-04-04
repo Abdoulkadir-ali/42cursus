@@ -63,6 +63,10 @@ size_t	query_rect(t_contact_query *qu, size_t idx);
 size_t	query_tri(t_contact_query *qu, size_t idx);
 size_t	query_pyramid(t_contact_query *qu, size_t idx);
 
+/* BVH broadphase */
+bool	bvh_resolve_ref(t_scene *s, t_bvh_ref ref, t_ref_data *d);
+void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa);
+
 /* Internal Helpers */
 bool	aabb_overlap(t_aabb a, t_aabb b);
 bool	aabb_v_sphere(t_aabb a, t_vec3 center, double radius);

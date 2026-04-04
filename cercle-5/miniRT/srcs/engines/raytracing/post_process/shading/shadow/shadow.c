@@ -12,6 +12,23 @@
 
 #include "raytracing.h"
 
+static inline double	s_rcp(double d)
+{
+	if (__builtin_fabs(d) < 1e-20)
+		d = __builtin_copysign(1e-20, d);
+	return (1.0 / d);
+}
+
+static void	shadow_ray_init(t_ray *ray, t_vec3 origin, t_vec3 dir)
+{
+	ray->origin = origin;
+	ray->direction = dir;
+	ray->inv_dir = vec3(s_rcp(dir.x), s_rcp(dir.y), s_rcp(dir.z));
+	ray->sign[0] = (ray->inv_dir.x < 0);
+	ray->sign[1] = (ray->inv_dir.y < 0);
+	ray->sign[2] = (ray->inv_dir.z < 0);
+}
+
 static bool	plane_shadows(const t_bvh *bvh, const t_ray *sray, double dist)
 {
 	t_vec3	oc;
@@ -40,10 +57,10 @@ static bool	plane_shadows(const t_bvh *bvh, const t_ray *sray, double dist)
 
 bool	is_in_shadow(const t_bvh *bvh, t_vec3 p, t_vec3 ldir_norm, double dist)
 {
-	t_ray	shadow_ray;
+	t_ray	sray;
 
-	ray_init(&shadow_ray, p, ldir_norm);
-	if (bvh_occluded(bvh, &shadow_ray, dist))
+	shadow_ray_init(&sray, p, ldir_norm);
+	if (bvh_occluded4(bvh, &sray, dist))
 		return (true);
-	return (plane_shadows(bvh, &shadow_ray, dist));
+	return (plane_shadows(bvh, &sray, dist));
 }

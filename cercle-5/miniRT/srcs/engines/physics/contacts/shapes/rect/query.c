@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ static void	rect_vs_rects(t_contact_query *qu, t_rect *rc, size_t idx)
 
 size_t	query_rect(t_contact_query *qu, size_t idx)
 {
-	t_rect		*rc;
-	t_gjk_shape	sa;
+	t_rect			*rc;
+	t_gjk_shape		sa;
+	t_bvh_phys_ctx	ctx;
 
 	rc = &qu->engine->scene->rects[idx];
 	if (rc->phys.is_static)
@@ -55,10 +56,7 @@ size_t	query_rect(t_contact_query *qu, size_t idx)
 	rect_vs_all_planes(qu, rc);
 	rect_vs_rects(qu, rc, idx);
 	sa = (t_gjk_shape){rc, gjk_support_rect, rc->phys.pos};
-	loop_boxes(qu, &sa, &rc->phys, &rc->transform);
-	loop_capsules(qu, &sa, &rc->phys, &rc->transform);
-	loop_cylinders(qu, &sa, &rc->phys, &rc->transform);
-	loop_tris(qu, &sa, &rc->phys, &rc->transform);
-	loop_pyramids(qu, &sa, &rc->phys, &rc->transform);
+	ctx = (t_bvh_phys_ctx){qu, &sa, &rc->phys, &rc->transform, TYPE_RECT};
+	bvh_query_shapes(&ctx, rect_aabb(rc));
 	return (qu->count);
 }

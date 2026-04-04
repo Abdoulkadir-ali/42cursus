@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ static void	tri_vs_tris(t_contact_query *qu, t_tri_shape *tr, size_t idx)
 
 size_t	query_tri(t_contact_query *qu, size_t idx)
 {
-	t_tri_shape	*tr;
-	t_gjk_shape	sa;
+	t_tri_shape		*tr;
+	t_gjk_shape		sa;
+	t_bvh_phys_ctx	ctx;
 
 	tr = &qu->engine->scene->tris[idx];
 	if (tr->phys.is_static)
@@ -55,10 +56,7 @@ size_t	query_tri(t_contact_query *qu, size_t idx)
 	tri_vs_all_planes(qu, tr);
 	tri_vs_tris(qu, tr, idx);
 	sa = (t_gjk_shape){tr, gjk_support_tri, tr->phys.pos};
-	loop_boxes(qu, &sa, &tr->phys, &tr->xform);
-	loop_capsules(qu, &sa, &tr->phys, &tr->xform);
-	loop_cylinders(qu, &sa, &tr->phys, &tr->xform);
-	loop_rects(qu, &sa, &tr->phys, &tr->xform);
-	loop_pyramids(qu, &sa, &tr->phys, &tr->xform);
+	ctx = (t_bvh_phys_ctx){qu, &sa, &tr->phys, &tr->xform, TYPE_TRI};
+	bvh_query_shapes(&ctx, tri_shape_aabb(tr));
 	return (qu->count);
 }

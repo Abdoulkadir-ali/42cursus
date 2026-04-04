@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,10 @@ static void	cylinder_vs_cylinders(t_contact_query *qu, t_col_pair *p,
 
 size_t	query_cylinder(t_contact_query *qu, size_t idx)
 {
-	t_cylinder	*cy;
-	t_gjk_shape	sa;
-	t_col_pair	p;
+	t_cylinder		*cy;
+	t_gjk_shape		sa;
+	t_col_pair		p;
+	t_bvh_phys_ctx	ctx;
 
 	cy = &qu->engine->scene->cylinders[idx];
 	if (cy->phys.is_static)
@@ -51,10 +52,7 @@ size_t	query_cylinder(t_contact_query *qu, size_t idx)
 	p = (t_col_pair){&sa, NULL, &cy->phys, NULL, &cy->transform, NULL};
 	cylinder_vs_all_planes(qu, &p);
 	cylinder_vs_cylinders(qu, &p, idx);
-	loop_boxes(qu, &sa, &cy->phys, &cy->transform);
-	loop_capsules(qu, &sa, &cy->phys, &cy->transform);
-	loop_rects(qu, &sa, &cy->phys, &cy->transform);
-	loop_tris(qu, &sa, &cy->phys, &cy->transform);
-	loop_pyramids(qu, &sa, &cy->phys, &cy->transform);
+	ctx = (t_bvh_phys_ctx){qu, &sa, &cy->phys, &cy->transform, TYPE_CYLINDER};
+	bvh_query_shapes(&ctx, cylinder_aabb(cy));
 	return (qu->count);
 }

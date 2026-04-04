@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:25:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,5 +207,21 @@ typedef struct s_epa_res
 	t_vec3	contact_a;
 	t_vec3	contact_b;
 }	t_epa_res;
+
+typedef struct s_ref_data
+{
+	t_gjk_shape		shape;
+	t_physics_body	*body;
+	t_transform		*xform;
+}					t_ref_data;
+
+typedef struct s_bvh_phys_ctx
+{
+	t_contact_query	*qu;
+	t_gjk_shape		*sa;
+	t_physics_body	*ba;
+	t_transform		*ta;
+	uint8_t			skip_type;
+}					t_bvh_phys_ctx;
 
 #endif

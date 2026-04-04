@@ -1,33 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   destroy.c                                          :+:      :+:    :+:   */
+/*   precompute.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/03 11:46:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-void	bvh_destroy(t_bvh *bvh)
+void	cylinder_precompute(t_cylinder *cy)
 {
-	if (!bvh)
-		return ;
-	free(bvh->nodes);
-	free(bvh->refs);
-	free(bvh->nodes4);
-	free(bvh);
-}
-
-void	node_destroy(t_bvh_tmp_node *node)
-{
-	if (!node)
-		return ;
-	node_destroy(node->left);
-	node_destroy(node->right);
-	free(node->refs);
-	free(node);
+	cy->radius_sq = cy->transform.scale.x * cy->transform.scale.x;
+	cy->top = vec3_add(cy->transform.pos,
+			vec3_scale(cy->transform.forward, cy->transform.scale.y));
+	vec3_orthonormal_basis(cy->transform.forward, &cy->local_u, &cy->local_v);
 }

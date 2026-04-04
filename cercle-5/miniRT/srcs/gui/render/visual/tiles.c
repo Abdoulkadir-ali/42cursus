@@ -6,11 +6,32 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:50:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:31:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+
+static const uint8_t	g_z4[16][2] = {
+	{0, 0}, {1, 0}, {0, 1}, {1, 1},
+	{2, 0}, {3, 0}, {2, 1}, {3, 1},
+	{0, 2}, {1, 2}, {0, 3}, {1, 3},
+	{2, 2}, {3, 2}, {2, 3}, {3, 3}
+};
+
+static bool	decode_morton(t_render *r, size_t id, t_vec2i *out)
+{
+	size_t	bk_x;
+	size_t	bid;
+	size_t	lid;
+
+	bk_x = (r->tiles_count.x + 3) / 4;
+	bid = id / 16;
+	lid = id % 16;
+	out->x = (bid % bk_x) * 4 + g_z4[lid][0];
+	out->y = (bid / bk_x) * 4 + g_z4[lid][1];
+	return (out->x < r->tiles_count.x && out->y < r->tiles_count.y);
+}
 
 static void	process_tile_row(t_render *render, t_tile *v)
 {
@@ -29,8 +50,10 @@ void	render_tile(t_render *render, size_t id)
 {
 	t_tile	v;
 
-	v.tile.x = (id % render->tiles_count.x) * TILE_SIZE;
-	v.tile.y = (id / render->tiles_count.x) * TILE_SIZE;
+	if (!decode_morton(render, id, &v.tile))
+		return ;
+	v.tile.x *= TILE_SIZE;
+	v.tile.y *= TILE_SIZE;
 	v.p_pos.y = v.tile.y;
 	v.row_ptr = render->gui->win.addr + (v.p_pos.y * render->gui->win.line_len)
 		+ (v.tile.x * (render->gui->win.bpp / 8));

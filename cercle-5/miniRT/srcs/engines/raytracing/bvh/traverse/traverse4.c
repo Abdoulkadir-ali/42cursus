@@ -1,0 +1,95 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   traverse4.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "raytracing.h"
+
+static bool	test_child(const t_bvh_node4 *n4, size_t i, const t_ray *ray,
+		double max_t)
+{
+	t_aabb	a;
+	double	t[2];
+
+	a.min = vec3(n4->min_x[i], n4->min_y[i], n4->min_z[i]);
+	a.max = vec3(n4->max_x[i], n4->max_y[i], n4->max_z[i]);
+	if (!aabb_intersect_fast(&a, ray, &t[0], &t[1]))
+		return (false);
+	if (t[0] < 0.0)
+		t[0] = 0.0;
+	return (t[0] < max_t);
+}
+
+static bool	check_leaf4(const t_bvh *bvh, const t_ray *ray, t_hit *hit,
+		size_t sd[2])
+{
+	size_t	j;
+	t_hit	tmp;
+	bool	any;
+
+	any = false;
+	j = 0;
+	while (j < sd[1])
+	{
+		tmp.t = hit->t;
+		if (intersect_object(ray, bvh->scene, bvh->refs[sd[0] + j], &tmp))
+		{
+			if (tmp.t < hit->t)
+			{
+				*hit = tmp;
+				any = true;
+			}
+		}
+		j++;
+	}
+	return (any);
+}
+
+static void	visit_node4(const t_bvh *bvh, const t_ray *ray, t_hit *hit,
+		t_mbvh_stk *stk)
+{
+	const t_bvh_node4	*n4;
+	size_t				i;
+	size_t				sd[2];
+
+	n4 = &bvh->nodes4[stk->st[--stk->top]];
+	i = 0;
+	while (i < n4->n_children)
+	{
+		if (!test_child(n4, i, ray, hit->t))
+		{
+			i++;
+			continue ;
+		}
+		if (n4->count[i] > 0)
+		{
+			sd[0] = n4->child[i];
+			sd[1] = n4->count[i];
+			stk->any |= check_leaf4(bvh, ray, hit, sd);
+		}
+		else if (stk->top < 62)
+			stk->st[stk->top++] = n4->child[i];
+		i++;
+	}
+}
+
+bool	bvh_intersect4(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
+{
+	t_mbvh_stk	stk;
+
+	if (!bvh || !bvh->nodes4)
+		return (bvh_intersect(bvh, ray, hit));
+	stk.any = false;
+	stk.top = 0;
+	stk.st[stk.top++] = 0;
+	while (stk.top > 0)
+		visit_node4(bvh, ray, hit, &stk);
+	return (stk.any);
+}

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,11 @@ static void	capsule_vs_capsules(t_contact_query *qu, t_col_pair *p, size_t idx)
 
 size_t	query_capsule(t_contact_query *qu, size_t idx)
 {
-	t_capsule	*cap;
-	t_gjk_shape	sa;
-	t_col_pair	p;
-	size_t		pi;
+	t_capsule		*cap;
+	t_gjk_shape		sa;
+	t_col_pair		p;
+	size_t			pi;
+	t_bvh_phys_ctx	ctx;
 
 	cap = &qu->engine->scene->capsules[idx];
 	if (cap->phys.is_static)
@@ -57,10 +58,7 @@ size_t	query_capsule(t_contact_query *qu, size_t idx)
 		pi++;
 	}
 	capsule_vs_capsules(qu, &p, idx);
-	loop_boxes(qu, &sa, &cap->phys, &cap->transform);
-	loop_cylinders(qu, &sa, &cap->phys, &cap->transform);
-	loop_rects(qu, &sa, &cap->phys, &cap->transform);
-	loop_tris(qu, &sa, &cap->phys, &cap->transform);
-	loop_pyramids(qu, &sa, &cap->phys, &cap->transform);
+	ctx = (t_bvh_phys_ctx){qu, &sa, &cap->phys, &cap->transform, TYPE_CAPSULE};
+	bvh_query_shapes(&ctx, capsule_aabb(cap));
 	return (qu->count);
 }

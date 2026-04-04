@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 09:34:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,11 @@ static t_bvh_tmp_node	*build_tmp_tree(t_scene *scene, size_t total, size_t *k)
 {
 	t_build_item	*items;
 	t_bvh_tmp_node	*root;
+	size_t			i;
 
+	i = 0;
+	while (i < scene->cylinder_count)
+		cylinder_precompute(&scene->cylinders[i++]);
 	items = malloc(sizeof(t_build_item) * total);
 	if (!items)
 		return (NULL);
@@ -105,6 +109,7 @@ t_bvh	*bvh_create(t_scene *scene)
 	bvh->num_nodes = nc[0];
 	bvh->num_refs = nc[1];
 	node_destroy(root);
+	bvh_collapse(bvh);
 	build_emissive_cache(scene);
 	return (bvh);
 }

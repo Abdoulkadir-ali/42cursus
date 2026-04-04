@@ -6,11 +6,29 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 09:39:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:21:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+
+static bool	depth_reject(t_gui *gui, int *n, double cz)
+{
+	size_t	rx;
+	size_t	ry;
+	float	cur_d;
+
+	if (!gui->render.depth_buf)
+		return (false);
+	rx = (size_t)n[0] * (size_t)gui->win.size.x
+		/ (size_t)gui->win.disp_size.x;
+	ry = (size_t)n[1] * (size_t)gui->win.size.y
+		/ (size_t)gui->win.disp_size.y;
+	cur_d = gui->render.depth_buf[ry * (size_t)gui->win.size.x + rx];
+	if (cur_d > 1e29f || (float)cz < 1e-4f)
+		return (false);
+	return (fabsf((float)cz - cur_d) / fmaxf((float)cz, cur_d) > 0.15f);
+}
 
 static void	project_pixel(t_gui *gui, size_t idx, t_vec2i p, size_t gen)
 {
@@ -38,7 +56,8 @@ static void	project_pixel(t_gui *gui, size_t idx, t_vec2i p, size_t gen)
 	n[1] = (int)((1.0 - vec3_dot(rel, gui->render.cur_cam.up) / cz
 				/ gui->render.cur_half_h) * gui->win.disp_size.y * 0.5);
 	if (n[0] >= 0 && (size_t)n[0] < gui->win.disp_size.x
-		&& n[1] >= 0 && (size_t)n[1] < gui->win.disp_size.y)
+		&& n[1] >= 0 && (size_t)n[1] < gui->win.disp_size.y
+		&& !depth_reject(gui, n, cz))
 	{
 		gui->render.reproj_buf[n[1] * gui->win.disp_size.x + n[0]]
 			= (uint32_t)gui->render.prev_buf[idx];

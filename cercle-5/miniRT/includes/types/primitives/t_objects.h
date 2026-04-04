@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 11:05:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,10 @@ typedef struct s_cylinder
 	t_physics_body		phys;
 	size_t				mat_id;
 	t_vec3				temp_color;
+	double				radius_sq;
+	t_vec3				top;
+	t_vec3				local_u;
+	t_vec3				local_v;
 }						t_cylinder;
 
 typedef struct s_cone

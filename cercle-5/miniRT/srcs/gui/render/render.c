@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:49:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 08:50:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ void	gui_render(t_gui *gui)
 	render.step = 1;
 	render.tiles_count.x = (gui->win.size.x + TILE_SIZE - 1) / TILE_SIZE;
 	render.tiles_count.y = (gui->win.size.y + TILE_SIZE - 1) / TILE_SIZE;
-	render.total_tiles = render.tiles_count.x * render.tiles_count.y;
+	render.total_tiles = ((render.tiles_count.x + 3) / 4)
+		* ((render.tiles_count.y + 3) / 4) * 16;
 	render.transform = gui->scene->camera.transform;
 	render.aspect_ratio = (double)gui->win.size.x / (double)gui->win.size.y;
 	render.half_height = tan(gui->scene->camera.fov * 0.5 * 3.14159 / 180.0);

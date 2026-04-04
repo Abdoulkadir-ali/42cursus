@@ -6,20 +6,22 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:45:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
+#include "raytracing.h"
 
 /**
  * @brief Main query function for sphere collision detection.
  */
 size_t	query_sphere(t_contact_query *qu, size_t idx)
 {
-	size_t		j;
-	t_sphere	*sp;
-	t_gjk_shape	sa;
+	size_t			j;
+	t_sphere		*sp;
+	t_gjk_shape		sa;
+	t_bvh_phys_ctx	ctx;
 
 	sp = &qu->engine->scene->spheres[idx];
 	if (sp->phys.is_static)
@@ -30,6 +32,7 @@ size_t	query_sphere(t_contact_query *qu, size_t idx)
 	if (qu->engine->scene->bvh)
 		traverse_sphere_bvh(qu, idx, sp);
 	sa = (t_gjk_shape){sp, gjk_support_sphere, sp->phys.pos};
-	query_shapes(qu, &sa, &sp->phys, &sp->transform);
+	ctx = (t_bvh_phys_ctx){qu, &sa, &sp->phys, &sp->transform, TYPE_SPHERE};
+	bvh_query_shapes(&ctx, sphere_aabb(sp));
 	return (qu->count);
 }

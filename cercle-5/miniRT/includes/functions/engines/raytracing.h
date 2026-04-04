@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,17 @@ t_aabb	cone_aabb(t_cone *co);
 
 /* srcs/raytracing/bvh/traverse/ */
 bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
+bool	bvh_intersect4(const t_bvh *bvh, const t_ray *ray, t_hit *hit);
 bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t);
+bool	bvh_occluded4(const t_bvh *bvh, const t_ray *ray, double max_t);
 bool	occlude_cylinder(const t_ray *ray, t_cylinder *cy, double max_t);
+bool	occlude_primitive(const t_ray *ray, t_scene *sc, t_bvh_ref ref,
+			double max_t);
 bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 			t_hit *hit);
+
+/* srcs/raytracing/bvh/tree/ */
+void	bvh_collapse(t_bvh *bvh);
 
 t_vec3	clamp_color(t_vec3 color);
 bool	is_emissive(t_scene *sc, size_t mat_id);
@@ -165,6 +172,7 @@ void	get_cone_uv(t_hit *hit, t_cone *cone, t_vec3 radial, double h);
 void	fill_hit_record(t_hit *hit, const t_ray *ray, t_cone *cone, double t);
 bool	check_cone_body(const t_ray *ray, t_cone *cone, double *t,
 			double y_cutoff);
+void	cylinder_precompute(t_cylinder *cy);
 void	get_cylinder_uv(t_entry_point pt, t_cylinder *cy, t_hit *hit,
 			bool cap);
 bool	check_bottom_cap(const t_ray *ray, t_cylinder *cy, double *tm,

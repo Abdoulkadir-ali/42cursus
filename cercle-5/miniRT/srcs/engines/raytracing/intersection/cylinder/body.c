@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:43:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ static t_quadratic	setup_cylinder_quadratic(const t_ray *ray, t_cylinder *cy)
 	q.b = 2.0 * (vec3_dot(ray->direction, oc) - dd * vec3_dot(oc,
 				cy->transform.forward));
 	q.c = vec3_dot(oc, oc) - vec3_dot(oc, cy->transform.forward)
-		* vec3_dot(oc, cy->transform.forward) - cy->transform.scale.x
-		* cy->transform.scale.x;
+		* vec3_dot(oc, cy->transform.forward) - cy->radius_sq;
 	return (q);
 }
 

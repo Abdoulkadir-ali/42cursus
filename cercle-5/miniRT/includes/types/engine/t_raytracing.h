@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:55:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,19 @@ typedef struct s_bvh_tmp_node
 	size_t				num_refs;
 }						t_bvh_tmp_node;
 
+typedef struct s_bvh_node4
+{
+	float				min_x[4];
+	float				min_y[4];
+	float				min_z[4];
+	float				max_x[4];
+	float				max_y[4];
+	float				max_z[4];
+	size_t				child[4];
+	size_t				count[4];
+	size_t				n_children;
+}						t_bvh_node4;
+
 typedef struct s_bvh
 {
 	struct s_scene		*scene;
@@ -86,7 +99,16 @@ typedef struct s_bvh
 	t_bvh_ref			*refs;
 	size_t				num_nodes;
 	size_t				num_refs;
+	t_bvh_node4			*nodes4;
+	size_t				num_nodes4;
 }						t_bvh;
+
+typedef struct s_mbvh_stk
+{
+	size_t				st[64];
+	size_t				top;
+	bool				any;
+}						t_mbvh_stk;
 
 typedef struct s_shading
 {

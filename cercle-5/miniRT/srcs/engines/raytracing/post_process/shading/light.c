@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 19:57:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ t_vec3	calc_light(t_shading *sha, t_light light)
 		return (vec3(0, 0, 0));
 	c.norm = vec3_scale(c.ld, 1.0 / c.dist);
 	c.ndotl = vec3_dot(sha->hit->normal, c.norm);
-	if (c.ndotl < 0.02)
+	if (light.brightness * c.ndotl < 0.004)
 		return (vec3(0, 0, 0));
 	if (!light_visible(sha, light, &c))
 		return (vec3(0, 0, 0));

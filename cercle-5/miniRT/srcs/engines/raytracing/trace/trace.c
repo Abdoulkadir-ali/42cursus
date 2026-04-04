@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 10:28:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
 	hit.t = 1e30;
 	hit.ref.type = TYPE_NONE;
 	hit.ref.index = -1;
-	hit_any = bvh_intersect(bvh, ray, &hit);
+	hit_any = bvh_intersect4(bvh, ray, &hit);
 	if (!hit_any)
 		hit.t = 1e30;
 	check_planes(ray, sc, &hit, &hit_any);

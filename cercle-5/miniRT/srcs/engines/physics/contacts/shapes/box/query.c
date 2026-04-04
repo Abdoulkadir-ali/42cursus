@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 19:28:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,9 @@ static void	box_vs_boxes(t_contact_query *qu, t_box *bx, size_t idx)
  */
 size_t	query_box(t_contact_query *qu, size_t idx)
 {
-	t_box		*bx;
-	t_gjk_shape	sa;
+	t_box			*bx;
+	t_gjk_shape		sa;
+	t_bvh_phys_ctx	ctx;
 
 	bx = &qu->engine->scene->boxes[idx];
 	if (bx->phys.is_static)
@@ -64,10 +65,7 @@ size_t	query_box(t_contact_query *qu, size_t idx)
 	box_vs_all_planes(qu, bx);
 	box_vs_boxes(qu, bx, idx);
 	sa = (t_gjk_shape){bx, gjk_support_box, bx->phys.pos};
-	loop_capsules(qu, &sa, &bx->phys, &bx->transform);
-	loop_cylinders(qu, &sa, &bx->phys, &bx->transform);
-	loop_rects(qu, &sa, &bx->phys, &bx->transform);
-	loop_tris(qu, &sa, &bx->phys, &bx->transform);
-	loop_pyramids(qu, &sa, &bx->phys, &bx->transform);
+	ctx = (t_bvh_phys_ctx){qu, &sa, &bx->phys, &bx->transform, TYPE_BOX};
+	bvh_query_shapes(&ctx, box_aabb(bx));
 	return (qu->count);
 }
