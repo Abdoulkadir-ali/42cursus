@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 11:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:03:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:26:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,13 @@ void	threads_destroy(t_thread_pool *pool)
 void	parallel_run(t_thread_pool *pool, size_t count,
 		t_worker_func worker, void *data)
 {
-	if (!pool || count == 0)
+	if (count == 0)
 		return ;
+	if (!pool)
+	{
+		worker(data);
+		return ;
+	}
 	if (!pool->initialized)
 		threads_init(pool);
 	pthread_mutex_lock(&pool->lock);

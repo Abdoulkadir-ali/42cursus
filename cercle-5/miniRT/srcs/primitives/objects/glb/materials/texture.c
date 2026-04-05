@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:31:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:21:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:11:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	load_from_image(t_json_value *json, char *bin, t_material *mat,
 	glb_parse_buffer_view(json, idx.i, &bv);
 	if (load_texture_from_memory(&mat->albedo_map,
 			(unsigned char *)(bin + bv.byte_offset), bv.byte_length))
-		glb_log("GLB: Material texture loaded successfully\n");
+		ft_print_debug("GLB: Material texture loaded successfully\n");
 }
 
 /**

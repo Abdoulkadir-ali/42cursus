@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 13:21:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:11:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void					glb_update_mesh_anim(t_mesh *mesh, t_scene *scene,
 void					vec3_mix(float *out, float *a, float *b, float t);
 void					quat_slerp(float *out, float *a, float *b, float t);
 void					fill_bone_trs(t_bone *bone, t_json_value *node);
-void					glb_log(const char *fmt, ...);
 void					parse_glb_material(t_glb_mat *mat);
 void					load_glb_base_texture(t_json_value *json, char *bin,
 							t_material *mat, t_json_value *pbr);

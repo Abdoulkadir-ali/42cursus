@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:33:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:26:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static void	*rt_mesh_worker(void *ptr)
 		if (i >= t->count)
 			break ;
 		if (t->statuses[i] && t->results[i].type == TYPE_MESH)
-			mesh_build_resource(t->pool, t->results[i].data.mesh_info.path,
+			mesh_build_resource(NULL, t->results[i].data.mesh_info.path,
 				&t->resources[i]);
 	}
 	return (NULL);

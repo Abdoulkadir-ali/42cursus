@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:35:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:23:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:11:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	parse_specgloss(t_glb_mat *mat, size_t s_id, t_json_value *ext)
 	sg = json_get(ext, "KHR_materials_pbrSpecularGlossiness");
 	if (sg)
 	{
-		glb_log("GLB: Material uses Specular-Glossiness extension\n");
+		ft_print_debug("GLB: Material uses Specular-Glossiness extension\n");
 		load_glb_base_texture(mat->json, mat->bin, &mat->out->materials[s_id],
 			sg);
 	}

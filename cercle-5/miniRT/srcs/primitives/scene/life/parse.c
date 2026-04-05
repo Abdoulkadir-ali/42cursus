@@ -54,11 +54,13 @@ t_scene	*parse_file(const char *path, void *mlx)
 		destroy_scene(scene);
 		return (NULL);
 	}
+	ft_print_debug("PARSE: building scene BVH...\n");
 	scene->bvh = bvh_create(scene);
 	if (!scene->bvh)
 	{
 		destroy_scene(scene);
 		return (NULL);
 	}
+	ft_print_debug("PARSE: scene BVH done, startup complete\n");
 	return (scene);
 }
