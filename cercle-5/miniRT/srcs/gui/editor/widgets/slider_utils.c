@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 15:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:45:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:57:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,5 @@ void	end_inline_drag(t_gui *gui)
 	if (gui->slider_state.on_change)
 		gui->slider_state.on_change(gui);
 	gui->slider_state.on_change = NULL;
-	gui->render.mesh_transform_pending = 1;
 	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }

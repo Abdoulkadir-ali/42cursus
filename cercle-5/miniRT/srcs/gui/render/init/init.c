@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 19:12:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:56:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,5 @@ void	gui_destroy(t_gui *gui)
 		mlx_destroy_image(gui->win.mlx, gui->win.disp_imgs[2]);
 	if (gui->win.gui_bg_img)
 		mlx_destroy_image(gui->win.mlx, gui->win.gui_bg_img);
-	pthread_mutex_destroy(&gui->render.job_mutex);
-	pthread_cond_destroy(&gui->render.job_cond);
 	free(gui);
 }

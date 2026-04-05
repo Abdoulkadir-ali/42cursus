@@ -25,9 +25,6 @@ void	map_prev_press(t_gui *gui)
 void	exit_press(t_gui *gui)
 {
 	gui->render.abort_render = 1;
-	pthread_mutex_lock(&gui->render.job_mutex);
-	gui->render.job_stop = 1;
-	pthread_mutex_unlock(&gui->render.job_mutex);
 	mlx_loop_end(gui->win.mlx);
 }
 

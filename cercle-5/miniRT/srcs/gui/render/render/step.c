@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:45:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:56:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 */
 static void	disp_resize_step(t_gui *gui)
 {
-	int	front;
 	int	i;
 
 	if (!gui->render.disp_resize_pending)
@@ -37,8 +36,7 @@ static void	disp_resize_step(t_gui *gui)
 	gui->win.disp_bpp = gui->render.pending_disp_bpp;
 	gui->win.disp_endian = gui->render.pending_disp_endian;
 	gui->win.disp_size = gui->render.pending_disp_size;
-	front = atomic_load(&gui->render.front_idx);
-	gui->render.back_idx = (front + 1) % 3;
+	gui->render.back_idx = 0;
 	gui_recompute_layout(gui);
 	gui->render.dirty = true;
 	gui->render.prev_valid = false;
@@ -83,12 +81,6 @@ void	scene_swap_step(t_gui *gui)
 */
 void	bvh_step(t_gui *gui)
 {
-	if (gui->render.mesh_transform_pending)
-	{
-		gui->render.mesh_transform_pending = 0;
-		mesh_transform_sync(gui);
-		gui->render.bvh_needs_rebuild = 1;
-	}
 	if (!gui->render.bvh_needs_rebuild)
 		return ;
 	rebuild_bvh(gui);
@@ -104,7 +96,6 @@ void	raytrace_step(t_gui *gui, double delta)
 {
 	long long	t0;
 	double		elapsed;
-	int			old_front;
 
 	if (!gui->scene)
 		return ;
@@ -115,11 +106,8 @@ void	raytrace_step(t_gui *gui, double delta)
 	gui->render.snap_fov = gui->scene->camera.fov;
 	gui->render.snap_scale = gui->render.scale;
 	gui->render.snap_delta = delta;
-	gui->render.abort_render = 0;
 	t0 = now_ms();
 	gui_render(gui);
-	if (gui->render.abort_render)
-		return ;
 	upscale_image(gui);
 	optimize_frames(gui, delta);
 	overlay_step(gui);
@@ -127,16 +115,8 @@ void	raytrace_step(t_gui *gui, double delta)
 	if (elapsed > 0)
 		gui->render.render_fps = 0.9 * gui->render.render_fps
 			+ 0.1 * (1.0 / elapsed);
-	old_front = atomic_load(&gui->render.front_idx);
-	__sync_synchronize();
-	atomic_store(&gui->render.front_idx, gui->render.back_idx);
-	atomic_store(&gui->render.blit_img,
-		gui->win.disp_imgs[gui->render.back_idx]);
-	gui->render.back_idx = old_front;
-	if (gui->render.disp_resize_done)
-	{
-		__sync_synchronize();
-		gui->render.disp_destroy_pending = 1;
-		gui->render.disp_resize_done = 0;
-	}
+	mlx_put_image_to_window(gui->win.mlx, gui->win.win,
+		gui->win.disp_imgs[gui->render.back_idx], 0, 0);
+	draw_ui_strings(gui, &gui->cam_ctrl);
+	(void)elapsed;
 }

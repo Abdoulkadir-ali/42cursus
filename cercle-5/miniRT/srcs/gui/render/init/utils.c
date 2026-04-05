@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:56:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,16 +125,10 @@ void	gui_init_render(t_gui *gui)
 	gui->render.reproj_gen = 1;
 	gui->render.prev_valid = false;
 	gui->render.dirty = true;
-	gui->render.front_idx = 0;
-	gui->render.job_requested = 0;
-	gui->render.job_stop = 0;
 	gui->render.abort_render = 0;
 	gui->render.disp_resize_pending = 0;
 	gui->render.disp_destroy_pending = 0;
-	gui->render.back_idx = 1;
-	atomic_store(&gui->render.blit_img, gui->win.disp_imgs[0]);
-	pthread_mutex_init(&gui->render.job_mutex, NULL);
-	pthread_cond_init(&gui->render.job_cond, NULL);
+	gui->render.back_idx = 0;
 	cmd_queue_init(&gui->cmd_queue);
 	optimizations_init(gui);
 	font_load(gui, FONT_PATH);

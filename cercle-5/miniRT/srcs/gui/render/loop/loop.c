@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:51:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:48:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,5 @@ void	gui_loop(t_gui *gui)
 	mlx_hook(gui->win.win, DestroyNotify, 0, gui_window_close, gui);
 	mlx_hook(gui->win.win, 22, (1L << 17), gui_resize_hook, gui);
 	mlx_loop_hook(gui->win.mlx, (int (*)(void *))gui_update, gui);
-	ft_print_debug("DEBUG: Spawning render thread\n");
-	pthread_create(&gui->render.render_thread, NULL, render_thread_func, gui);
-	ft_print_debug("DEBUG: Entering MLX loop\n");
 	mlx_loop(gui->win.mlx);
-	pthread_mutex_lock(&gui->render.job_mutex);
-	gui->render.job_stop = 1;
-	pthread_mutex_unlock(&gui->render.job_mutex);
-	pthread_join(gui->render.render_thread, NULL);
 }

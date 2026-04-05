@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:59:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:51:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void			gui_update_hover(t_gui *gui);
 void			gui_parallel_task_worker(t_gui *gui, t_pool_task type);
 void			process_pixel(t_render *render, t_vec2i pos, char *pixel_addr);
 void			upscale_image(t_gui *gui);
-void			*render_thread_func(void *arg);
 void			fullres_toggle(t_gui *gui);
 void			poll_map_job(t_gui *gui);
 void			clear_selection(t_gui *gui);

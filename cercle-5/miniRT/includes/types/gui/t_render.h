@@ -6,15 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:45:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:56:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPES_GUI_RENDER_H
 # define TYPES_GUI_RENDER_H
 
-# include <pthread.h>
-# include <semaphore.h>
 # include <stdatomic.h>
 # include <stdint.h>
 # include "t_physics.h"
@@ -45,6 +43,7 @@ typedef struct s_optimization_settings
 	bool	frame_interp;     /* frame interpolation  (combo B — planned)    */
 	bool	taa;              /* temporal anti-aliasing (combo D — planned)  */
 }	t_optimization_settings;
+
 typedef struct s_render
 {
 	struct s_gui	*gui;
@@ -117,22 +116,13 @@ typedef struct s_render_state
 	int						pending_disp_bpp;
 	int						pending_disp_endian;
 	/* destroy signal (render→main SPSC) */	/* disp_resize_done: set after buffer swap, cleared after flip+destroy signal */
-	volatile int				disp_resize_done;	volatile int			disp_destroy_pending;
+	volatile int			disp_resize_done;
+	volatile int			disp_destroy_pending;
 	void					*old_disp_imgs[3];
-	/* triple buffer — back_idx is render-thread-private */
+	/* display back buffer index (always 0 in sequential mode) */
 	int						back_idx;
-	/* lock-free blit handle read by main thread */
-	_Atomic void			*blit_img;
-	/* render thread */
-	pthread_t				render_thread;
-	pthread_mutex_t			job_mutex;
-	pthread_cond_t			job_cond;
-	volatile int			job_requested;
-	int						job_stop;
 	volatile int			abort_render;
 	volatile int			bvh_needs_rebuild;
-	volatile int			mesh_transform_pending;
-	_Atomic int				front_idx;
 	t_transform				snap_transform;
 	double					snap_fov;
 	size_t					snap_scale;

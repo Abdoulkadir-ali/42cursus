@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:46:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:48:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	transform_selection_sync(t_gui *gui)
 		cmd_enqueue(gui, cmd);
 	}
 	else if (gui->selection.type == TYPE_MESH)
-		return ;
+		mesh_transform_sync(gui);
 	else if (gui->selection.type == TYPE_LIGHT)
 	{
 		cmd.type = CMD_SET_POS;
