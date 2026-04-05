@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:21:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:21:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:49:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,48 +18,52 @@ static void	build_parent_map(t_json_value *nodes, size_t *parent_map, size_t nc)
 	t_json_value	*children;
 	size_t			i;
 	size_t			k;
-	size_t			child_idx;
 
-	i = -1;
-	while (++i < nc && i < PARSER_BUF_SIZE)
+	i = 0;
+	while (i < nc && i < PARSER_BUF_SIZE)
 	{
 		node = json_at(nodes, i);
 		children = json_get(node, "children");
 		if (children)
 		{
-			k = -1;
-			while (++k < children->u.array.count)
+			k = 0;
+			while (k < children->u.array.count)
 			{
-				child_idx = json_as_number(json_at(children, k));
-				if (child_idx < PARSER_BUF_SIZE)
-					parent_map[child_idx] = i;
+				t_index	rs;
+
+				rs = json_as_t_index(json_at(children, k));
+				if (!rs.error && rs.i < PARSER_BUF_SIZE)
+					parent_map[rs.i] = i;
+				k++;
 			}
 		}
+		i++;
 	}
 }
 
-static int	find_joint_ancestor(t_mesh *mesh, size_t *is_joint,
+static t_index	find_joint_ancestor(t_mesh *mesh, size_t *is_joint,
 				size_t *parent_map, size_t node_idx)
 {
 	size_t	par_idx;
-	size_t	k;
+	t_index	k;
 
 	par_idx = parent_map[node_idx];
 	while (par_idx < PARSER_BUF_SIZE)
 	{
 		if (is_joint[par_idx])
 		{
-			k = -1;
-			while (++k < mesh->bone_count)
+			k = (t_index){0, false};
+			while (k.i < mesh->bone_count)
 			{
-				if (mesh->skeleton[k].node_idx == par_idx)
+				if (mesh->skeleton[k.i].node_idx == par_idx)
 					return (k);
+				k.i++;
 			}
-			return (-1);
+			return ((t_index){0, true});
 		}
 		par_idx = parent_map[par_idx];
 	}
-	return (-1);
+	return ((t_index){0, true});
 }
 
 static void	add_non_joint_bones(t_mesh *mesh, t_json_value *nodes,
@@ -69,8 +73,8 @@ static void	add_non_joint_bones(t_mesh *mesh, t_json_value *nodes,
 	t_json_value	*node;
 	t_bone			*bone;
 
-	i = -1;
-	while (++i < nodes->u.array.count && i < PARSER_BUF_SIZE)
+	i = 0;
+	while (i < nodes->u.array.count && i < PARSER_BUF_SIZE)
 	{
 		node = json_at(nodes, i);
 		if (!is_joint[i] && !json_get_size_t(node, "mesh").error)
@@ -78,11 +82,20 @@ static void	add_non_joint_bones(t_mesh *mesh, t_json_value *nodes,
 			bone = &mesh->skeleton[mesh->bone_count];
 			ft_memset(bone, 0, sizeof(t_bone));
 			bone->node_idx = i;
-			bone->parent = find_joint_ancestor(mesh, is_joint, parent_map, i);
+			{
+				t_index	rs;
+
+				rs = find_joint_ancestor(mesh, is_joint, parent_map, i);
+				if (rs.error)
+					bone->parent = (t_index){0, true};
+				else
+					bone->parent = (t_index){rs.i, false};
+			}
 			fill_bone_trs(bone, node);
 			mesh->bone_matrices[mesh->bone_count] = mat4_identity();
 			mesh->bone_count++;
 		}
+		i++;
 	}
 }
 
@@ -92,17 +105,22 @@ static void	add_non_joint_bones(t_mesh *mesh, t_json_value *nodes,
 static void	prepare_fill_state(size_t *state[2], t_json_value *joints)
 {
 	size_t	i;
-	size_t	idx;
 
-	i = -1;
-	while (++i < PARSER_BUF_SIZE)
-		state[1][i] = -1;
-	i = -1;
-	while (++i < joints->u.array.count)
+	i = 0;
+	while (i < PARSER_BUF_SIZE)
 	{
-		idx = json_as_number(json_at(joints, i));
-		if (idx < PARSER_BUF_SIZE)
-			state[0][idx] = 1;
+		state[1][i] = -1;
+		i++;
+	}
+	i = 0;
+	while (i < joints->u.array.count)
+	{
+		t_index	rs;
+
+		rs = json_as_t_index(json_at(joints, i));
+		if (!rs.error && rs.i < PARSER_BUF_SIZE)
+			state[0][rs.i] = 1;
+		i++;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 22:43:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:51:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ void					read_offsets(int fd, t_fbx_bin_node *node,
 							bool is_64bit);
 void					read_node_header(int fd, t_fbx_bin_node *node,
 							bool is_64bit);
-void					parse_nodes(int fd, uint64_t end_offset, bool is_64,
+void					parse_nodes(int fd, size_t end_offset, bool is_64,
 							t_fbx_data *d);
-t_fbx_bin_node			fbx_bin_node_binary_find(int fd, uint64_t end_offset,
+t_fbx_bin_node			fbx_bin_node_binary_find(int fd, size_t end_offset,
 							bool is_64, const char *target);
 t_vec3					*repack_doubles_to_vec3(double *src, size_t count);
 int						*repack_ints_to_ints(int *src, size_t count);
@@ -55,7 +55,7 @@ char					*resolve_fbx_path(const char *fbx_path,
 void					mesh_free(t_mesh *mesh);
 
 /* FBX Specific (srcs/primitives/objects/parsing/) */
-void					skip_properties(int fd, uint64_t num_props);
+void					skip_properties(int fd, size_t num_props);
 char					*fbx_next(char *p);
 
 /* FBX Scene Addition (srcs/primitives/scene/add/objects/mesh/loaders/) */

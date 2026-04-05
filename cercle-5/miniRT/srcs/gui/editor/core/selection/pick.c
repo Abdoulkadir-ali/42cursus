@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:35:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 21:57:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	pick_at_mouse(t_gui *gui, t_vec2i mouse)
 		return ;
 	compute_pick_ray(gui, mouse, &ray);
 	ft_memset(&hit, 0, sizeof(t_hit));
+	hit.t = 1e30;
 	if (bvh_intersect(gui->scene->bvh, &ray, &hit))
 	{
 		if ((t_type)hit.ref.type == TYPE_MESH)

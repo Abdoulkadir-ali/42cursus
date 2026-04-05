@@ -71,6 +71,13 @@ static t_vec3	sample_bitmap(t_texture *tex, double u, double v)
 */
 t_vec3	sample_texture(t_texture *tex, double u, double v)
 {
+	static int count = 0;
+	if (count < 10)
+	{
+		ft_print_debug("sample_texture: type=%d addr=%p u=%f v=%f\n", 
+			tex->type, tex->addr, u, v);
+		count++;
+	}
 	if (tex->type == TEX_SOLID)
 		return (tex->color_a);
 	if (tex->type == TEX_CHECKER)

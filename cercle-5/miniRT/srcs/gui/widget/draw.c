@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 06:25:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:01:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 10:34:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,39 @@ void	widget_draw_all(t_gui *gui)
 	w = gui->widgets;
 	while (w)
 	{
+		if (w->type == WIDGET_MESSAGE_BOX)
+		{
+			if (w->visible)
+				widget_draw_msgbox(gui, w);
+			w = w->next;
+			continue ;
+		}
+		if (w->draggable)
+		{
+			t_panel	tb;
+			tb = (t_panel){.pos = w->pos, .size = vec2i(w->size.x, WIDGET_TITLE_H),
+				.bg = 0x1A1A2A, .brd = COL_BORDER};
+			draw_panel(gui, tb);
+			if (w->label)
+				gui_draw_string(gui, w->label,
+					vec2i(w->pos.x + 6, w->pos.y + 5), COL_TEXT);
+		}
 		if (w->type == WIDGET_CHECKBOX)
 			widget_draw_checkbox(gui, w);
 		else if (w->type == WIDGET_LABEL)
 			widget_draw_label(gui, w);
 		else if (w->type == WIDGET_SLIDER)
 			widget_draw_slider(gui, w);
+		else if (w->type == WIDGET_INPUT_BOX)
+			widget_draw_input(gui, w);
+		else if (w->type == WIDGET_BUTTON)
+			widget_draw_button(gui, w);
+		else if (w->type == WIDGET_TOGGLE)
+			widget_draw_toggle(gui, w);
+		else if (w->type == WIDGET_PROGRESS_BAR)
+			widget_draw_progress(gui, w);
+		else if (w->type == WIDGET_SEPARATOR)
+			widget_draw_separator(gui, w);
 		w = w->next;
 	}
 }

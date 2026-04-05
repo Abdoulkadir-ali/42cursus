@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 19:57:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:03:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static double	calc_specular(t_shading *sha, t_vec3 ld_norm)
 	ndoth = (float)fmax(0.0, vec3_dot(sha->hit->normal, half));
 	if (ndoth < 0.01f)
 		return (0.0);
+	if (sha->opts && sha->opts->blinn_phong)
+		return ((double)powf(ndoth, (float)sha->mat.shininess));
 	return ((double)(ndoth / (sha->mat.shininess
 				- sha->mat.shininess * ndoth + ndoth)));
 }

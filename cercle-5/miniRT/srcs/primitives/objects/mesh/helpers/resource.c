@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:23:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:17:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,5 @@ void	mesh_resource_free(t_mesh_resource *res)
 	while (i < res->group_count)
 		free(res->groups[i++].name);
 	free(res->groups);
+	free(res->clips);
 }

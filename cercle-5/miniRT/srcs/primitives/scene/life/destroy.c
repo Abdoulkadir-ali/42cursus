@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 09:28:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,6 @@ void	destroy_scene(t_scene *scene)
 		threads_destroy(scene->pool);
 		free(scene->pool);
 	}
+	pthread_rwlock_destroy(&scene->bvh_lock);
 	free(scene);
 }

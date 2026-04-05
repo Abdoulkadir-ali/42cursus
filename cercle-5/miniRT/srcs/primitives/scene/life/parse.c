@@ -21,6 +21,7 @@ static bool	is_rt_ext(const char *ext)
 bool	load_scene(t_scene *scene, const char *path)
 {
 	const char	*ext;
+	size_t		start;
 
 	if (!scene || !path)
 		return (false);
@@ -33,7 +34,11 @@ bool	load_scene(t_scene *scene, const char *path)
 	if (is_rt_ext(ext))
 		return (parse_rt_worker(path, scene));
 	setup_default_scene(scene);
-	return (scene_add_objects(scene, path));
+	start = scene->mesh_count;
+	if (!scene_add_objects(scene, path))
+		return (false);
+	align_and_frame_meshes(scene, start);
+	return (true);
 }
 
 t_scene	*parse_file(const char *path, void *mlx)

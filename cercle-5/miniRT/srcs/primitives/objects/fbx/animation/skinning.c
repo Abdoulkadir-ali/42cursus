@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:26:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:25:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ void	update_skeleton_hierarchy(t_skinned_mesh *mesh)
 	while (i < mesh->bone_count)
 	{
 		bone = &mesh->skeleton[i];
-		if (bone->parent != 0)
-			mesh->bone_matrices[i] = mat4_mul(mesh->bone_matrices[bone->parent],
+		if (!bone->parent.error)
+			mesh->bone_matrices[i] = mat4_mul(mesh->bone_matrices[bone->parent.i],
 					bone->local_transform);
 		else
 			mesh->bone_matrices[i] = bone->local_transform;

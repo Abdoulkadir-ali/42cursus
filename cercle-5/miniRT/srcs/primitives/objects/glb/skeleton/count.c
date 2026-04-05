@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:21:25 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:12:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:49:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,15 @@
 static void	mark_joints(t_json_value *joints, size_t *is_joint)
 {
 	size_t	i;
-	size_t	idx;
 
 	i = 0;
 	while (i < joints->u.array.count)
 	{
-		idx = json_as_number(json_at(joints, i));
-		if (idx < PARSER_BUF_SIZE)
-			is_joint[idx] = 1;
+		t_index	rs;
+
+		rs = json_as_t_index(json_at(joints, i));
+		if (!rs.error && rs.i < PARSER_BUF_SIZE)
+			is_joint[rs.i] = 1;
 		i++;
 	}
 }

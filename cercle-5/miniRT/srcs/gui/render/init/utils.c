@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 09:54:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 19:41:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,20 @@ bool	init_window(t_gui *gui)
 	gui->win.line_len = gui->win.size.x * 4;
 	gui->win.endian = 0;
 	gui->win.disp_size = gui->win.size;
-	gui->win.disp_img = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
+	gui->win.disp_imgs[0] = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
 			gui->win.disp_size.y);
-	gui->win.disp_addr = mlx_get_data_addr(gui->win.disp_img,
+	gui->win.disp_addrs[0] = mlx_get_data_addr(gui->win.disp_imgs[0],
+			&gui->win.disp_bpp, &gui->win.disp_line_len, &gui->win.disp_endian);
+	gui->win.disp_imgs[1] = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
+			gui->win.disp_size.y);
+	gui->win.disp_addrs[1] = mlx_get_data_addr(gui->win.disp_imgs[1],
 			&gui->win.disp_bpp, &gui->win.disp_line_len, &gui->win.disp_endian);
 	gui->win.gui_bg_img = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
 			gui->win.disp_size.y);
 	gui->win.gui_bg_addr = mlx_get_data_addr(gui->win.gui_bg_img,
 			&gui->win.gui_bg_bpp, &gui->win.gui_bg_line_len,
 			&gui->win.gui_bg_endian);
+	pthread_mutex_init(&gui->win.disp_mutex, NULL);
 	return (true);
 }
 
@@ -70,7 +75,7 @@ void	init_camera(t_gui *gui)
 	gui->cam_ctrl.last_mouse = vec2i(0, 0);
 	gui->cam_ctrl.transform.rotation.yaw = gui->cam_ctrl.target_rot.yaw;
 	gui->cam_ctrl.transform.rotation.pitch = gui->cam_ctrl.target_rot.pitch;
-	gui->render.scale = 2;
+	gui->render.scale = 4;
 	gui->win.size.x = gui->win.disp_size.x / (int)gui->render.scale;
 	gui->win.size.y = gui->win.disp_size.y / (int)gui->render.scale;
 	gui->win.line_len = gui->win.size.x * 4;
@@ -98,6 +103,12 @@ void	gui_init_physics(t_gui *gui)
 	gui->phys_engine.pool.initialized = 0;
 }
 
+void	gui_init_anim(t_gui *gui)
+{
+	gui->anim_engine.enabled = true;
+	gui->anim_engine.time_scale = 1.0;
+}
+
 void	gui_init_render(t_gui *gui)
 {
 	size_t	n;
@@ -110,6 +121,14 @@ void	gui_init_render(t_gui *gui)
 	gui->render.reproj_tag = ft_calloc(n, sizeof(size_t));
 	gui->render.reproj_gen = 1;
 	gui->render.prev_valid = false;
+	gui->render.dirty = true;
+	gui->render.front_idx = 0;
+	gui->render.job_requested = 0;
+	gui->render.job_stop = 0;
+	gui->render.abort_render = 0;
+	pthread_mutex_init(&gui->render.job_mutex, NULL);
+	pthread_cond_init(&gui->render.job_cond, NULL);
+	cmd_queue_init(&gui->cmd_queue);
 	optimizations_init(gui);
 	font_load(gui, FONT_PATH);
 }

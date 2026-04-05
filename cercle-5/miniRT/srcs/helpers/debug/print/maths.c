@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh.c                                             :+:      :+:    :+:   */
+/*   maths.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 12:49:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/10 12:49:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 15:26:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ void	print_vec2(t_vec2 *v)
 {
 	if (!v)
 		return ;
-	printf("vec2(%.4f, %.4f)", v->x, v->y);
+	ft_print_debug("vec2(%.4f, %.4f)", v->x, v->y);
 }
 
 void	print_vec3(t_vec3 *v)
 {
 	if (!v)
 		return ;
-	printf("vec3(%.4f, %.4f, %.4f, w: %.4f)", v->x, v->y, v->z, v->w);
+	ft_print_debug("vec3(%.4f, %.4f, %.4f, w: %.4f)", v->x, v->y, v->z, v->w);
 }
 
 void	print_mat4(t_mat4 *m)
@@ -33,52 +33,52 @@ void	print_mat4(t_mat4 *m)
 
 	if (!m)
 		return ;
-	printf("mat4(\n");
+	ft_print_debug("mat4(\n");
 	i = 0;
 	while (i < 4)
 	{
-		printf("  [ ");
+		ft_print_debug("  [ ");
 		j = 0;
 		while (j < 4)
 		{
-			printf("%.4f", m->m[i][j]);
+			ft_print_debug("%.4f", m->m[i][j]);
 			if (j < 3)
-				printf(", ");
+				ft_print_debug(", ");
 			j++;
 		}
-		printf(" ]\n");
+		ft_print_debug(" ]\n");
 		i++;
 	}
-	printf(")");
+	ft_print_debug(")");
 }
 
 void	print_transform(t_transform *t)
 {
 	if (!t)
 		return ;
-	printf("transform(\n");
-	printf("  pos: ");
+	ft_print_debug("transform(\n");
+	ft_print_debug("  pos: ");
 	print_vec3(&t->pos);
-	printf("\n  rot: pitch: %.4f, ", t->rotation.pitch);
-	printf("yaw: %.4f, roll: %.4f", t->rotation.yaw, t->rotation.roll);
-	printf("\n  scale: ");
+	ft_print_debug("\n  rot: pitch: %.4f, ", t->rotation.pitch);
+	ft_print_debug("yaw: %.4f, roll: %.4f", t->rotation.yaw, t->rotation.roll);
+	ft_print_debug("\n  scale: ");
 	print_vec3(&t->scale);
-	printf("\n  forward: ");
+	ft_print_debug("\n  forward: ");
 	print_vec3(&t->forward);
-	printf("\n  right: ");
+	ft_print_debug("\n  right: ");
 	print_vec3(&t->right);
-	printf("\n  up: ");
+	ft_print_debug("\n  up: ");
 	print_vec3(&t->up);
-	printf("\n)");
+	ft_print_debug("\n)");
 }
 
 void	print_aabb(t_aabb *b)
 {
 	if (!b)
 		return ;
-	printf("aabb(\n  min: ");
+	ft_print_debug("aabb(\n  min: ");
 	print_vec3(&b->min);
-	printf("\n  max: ");
+	ft_print_debug("\n  max: ");
 	print_vec3(&b->max);
-	printf("\n)");
+	ft_print_debug("\n)");
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:46:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 22:45:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 	size_t	i;
 
 	i = 0;
+	trace->tri_count += node->count;
 	while (i < node->count)
 	{
 		PROF_INC(g_mesh_tri_tests);
@@ -29,7 +30,7 @@ void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 			&& leaf.t < trace->best_t)
 		{
 			trace->best_t = leaf.t;
-			trace->best_tri = leaf.tri;
+			trace->best_tri = (t_index){leaf.tri, false};
 			trace->best_uv = leaf.uv;
 		}
 		i++;

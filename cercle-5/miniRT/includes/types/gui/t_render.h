@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 08:50:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:10:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 
 # include <pthread.h>
 # include <semaphore.h>
+# include <stdatomic.h>
 # include <stdint.h>
 # include "t_physics.h"
+# include "t_raytracing.h"
 # include "t_maths.h"
 
 # define RENDER_POOL_MAX 128
@@ -81,6 +83,8 @@ typedef struct s_render_state
 	bool					force_fullres;
 	double					fps;
 	long long				last_time;
+	double					render_fps;
+	long long				render_last_time;
 	long long				scale_last_change;
 	bool					last_dirty;
 	int						*prev_buf;
@@ -99,6 +103,24 @@ typedef struct s_render_state
 	bool					prev_valid;
 	t_vec2i					prev_render_size;
 	t_optimization_settings	opts;
+	/* scene swap — render thread drains this at frame start */
+	volatile int			scene_swap_pending;
+	struct s_scene			*next_scene;
+	struct s_map_entry		*next_entry;
+	/* render thread */
+	pthread_t				render_thread;
+	pthread_mutex_t			job_mutex;
+	pthread_cond_t			job_cond;
+	volatile int			job_requested;
+	int						job_stop;
+	volatile int			abort_render;
+	volatile int			bvh_needs_rebuild;
+	_Atomic int				front_idx;
+	int						ui_buf_idx;	/* camera snapshot taken at job submission */
+	t_transform				snap_transform;
+	double					snap_fov;
+	size_t					snap_scale;
+	double					snap_delta;
 }	t_render_state;
 
 typedef struct s_tile

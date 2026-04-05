@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:24:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 16:15:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	apply_skin_vertex(t_mesh *m, int i, t_vec3 *pos, t_vec3 *norm)
 		mat = get_joint_matrix(m, bw->bone_indices[k]);
 		if (!mat || bw->weights[k] <= 0.0f)
 			continue ;
-		p = mat4_mul_dir(*mat, m->base_geometry.vertices[i]);
+		p = mat4_mul_pos(*mat, m->base_geometry.vertices[i]);
 		pos->x += p.x * bw->weights[k];
 		pos->y += p.y * bw->weights[k];
 		pos->z += p.z * bw->weights[k];

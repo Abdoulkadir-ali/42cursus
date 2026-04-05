@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:03:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 14:52:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,7 @@ void	poll_map_job(t_gui *gui)
 	job->active = false;
 	if (!job->entry || !job->entry->scene)
 		return ;
-	gui->map_info.current = job->entry;
-	gui->scene = job->entry->scene;
-	scene_snap_take(&job->entry->snap, gui);
-	gui->cam_ctrl.camera = &gui->scene->camera;
-	reset_camera_view(gui);
-	clear_selection(gui);
-	gui->render.dirty = true;
+	gui->render.next_scene = job->entry->scene;
+	gui->render.next_entry = job->entry;
+	gui->render.scene_swap_pending = 1;
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:20:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 11:20:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ void	draw_settings_window_tab(t_gui *gui, t_vec2i o)
 		&gui->settings.render_scale, on_scale_change};
 	draw_slider_row(gui, vec2i(o.x + 8, y), sl);
 	y += 36;
-	snprintf(buf, sizeof(buf), "active: %zu x    FPS: %.0f",
-		gui->render.scale, gui->render.fps);
+	snprintf(buf, sizeof(buf), "active: %zu x    GUI: %.0f fps    RT: %.0f fps",
+		gui->render.scale, gui->render.fps, gui->render.render_fps);
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		o.x + 8, y, 0x606070, buf);
 }

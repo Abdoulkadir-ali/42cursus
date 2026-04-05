@@ -32,8 +32,7 @@ void	editor_add_tri(t_gui *gui)
 	tr.normal = vec3_norm(vec3_cross(e1, e2));
 	scene_add_tri(gui->scene, tr);
 	select_object(gui, TYPE_TRI, gui->scene->tri_count - 1);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }
 
 void	editor_add_rect(t_gui *gui)
@@ -60,8 +59,7 @@ void	editor_add_rect(t_gui *gui)
 	rc.temp_color = vec3(0.6, 0.8, 0.5);
 	scene_add_rect(gui->scene, rc);
 	select_object(gui, TYPE_RECT, gui->scene->rect_count - 1);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }
 
 void	editor_add_pyramid(t_gui *gui)
@@ -84,8 +82,7 @@ void	editor_add_pyramid(t_gui *gui)
 	py.temp_color = vec3(0.9, 0.6, 0.3);
 	scene_add_pyramid(gui->scene, py);
 	select_object(gui, TYPE_PYRAMID, gui->scene->pyramid_count - 1);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }
 
 void	editor_add_box(t_gui *gui)
@@ -107,8 +104,7 @@ void	editor_add_box(t_gui *gui)
 	bx.temp_color = vec3(0.4, 0.7, 0.9);
 	scene_add_box(gui->scene, bx);
 	select_object(gui, TYPE_BOX, gui->scene->box_count - 1);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }
 
 void	editor_add_capsule(t_gui *gui)
@@ -131,6 +127,5 @@ void	editor_add_capsule(t_gui *gui)
 	cap.temp_color = vec3(0.8, 0.4, 0.7);
 	scene_add_capsule(gui->scene, cap);
 	select_object(gui, TYPE_CAPSULE, gui->scene->capsule_count - 1);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }

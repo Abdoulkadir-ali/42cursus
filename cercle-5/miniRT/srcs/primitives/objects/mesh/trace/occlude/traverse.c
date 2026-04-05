@@ -22,7 +22,7 @@ static size_t	process_occ_node(t_mesh *mesh, size_t node_idx,
 	if (node->count > 0)
 	{
 		if (leaf_occluded(mesh, node, ray, occ->dist))
-			return (0);
+			return ((size_t)-1);
 		if (occ->top == 0)
 			return (0);
 		return (occ->stack[--occ->top]);
@@ -38,18 +38,27 @@ bool	traverse_occlude(t_mesh *mesh, const t_ray *ray, double dist)
 {
 	t_occ	occ;
 	size_t	node_idx;
+	static int	_occ_logged = 0;
 
+	if (!_occ_logged)
+	{
+		ft_print_debug("[OCC] traverse_occlude first call, tri_count=%zu\n",
+			mesh->tri_count);
+		fflush(stdout);
+		_occ_logged = 1;
+	}
 	occ.top = 0;
 	occ.dist = dist;
 	node_idx = 1;
 	while (node_idx != 0)
 	{
 		node_idx = process_occ_node(mesh, node_idx - 1, ray, &occ);
+		if (node_idx == (size_t)-1)
+			return (true);
+		if (node_idx != 0)
+			node_idx++;
 		if (node_idx == 0 && occ.top == 0)
-		{
-			if (leaf_occluded(mesh, &mesh->bvh_nodes[0], ray, dist))
-				return (true);
-		}
+			break ;
 	}
 	return (false);
 }

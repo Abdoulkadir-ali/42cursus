@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:20:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:10:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include "t_input.h"
 # include "t_map.h"
 # include "t_render.h"
+# include "t_cmd.h"
 # include "t_scene.h"
 # include "t_widget.h"
 # include "t_window.h"
@@ -38,6 +39,8 @@ typedef struct s_gui
 	t_input				input;
 	t_map				map_info;
 	t_widget			*widgets;
+	t_widget			*focused_widget;
+	t_widget			*dragging_widget;
 	bool				physics_enabled;
 	double				phys_accumulator;
 	double				phys_fixed_dt;
@@ -52,6 +55,12 @@ typedef struct s_gui
 	t_crud_ui			crud;
 	t_hover_cache		hover;
 	t_transform			transform;
-	t_physic_engine		phys_engine;	t_settings_panel	settings;	unsigned char		font[95][8];}						t_gui;
+	t_physic_engine		phys_engine;
+	t_anim_engine		anim_engine;
+	t_raytracer_engine	rt_engine;
+	t_settings_panel	settings;
+	t_cmd_queue			cmd_queue;
+	unsigned char		font[95][8];
+}						t_gui;
 
 #endif

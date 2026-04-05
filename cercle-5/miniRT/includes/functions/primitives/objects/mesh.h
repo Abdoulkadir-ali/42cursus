@@ -33,7 +33,7 @@ void					mesh_apply_transform(t_mesh *mesh,
 /* BVH Build Internal (srcs/objects/mesh/bvh/) */
 bool					bvh_prepare(t_mbvh *bvh, t_mesh *mesh);
 size_t					build_mesh_recursive(t_mbvh *bvh, size_t first,
-							size_t count);
+							size_t count, size_t depth);
 void					bvh_copy_indices(t_mesh *mesh, t_mbvh *bvh);
 void					mesh_build_tri_cache(t_mesh *mesh);
 void					debug_print_bvh_build(size_t tri_count, size_t depth,

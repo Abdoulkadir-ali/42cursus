@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:43:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:12:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ bool	scene_add_group_for_subs(t_scene *scene, const char *path,
 		return (false);
 	g.mesh_start = start_mesh;
 	g.mesh_count = scene->mesh_count - start_mesh;
+	g.start = start_mesh;
+	g.sub_count = scene->mesh_count - start_mesh;
 	g.transform.scale = vec3(1, 1, 1);
 	return (scene_add_group(scene, g));
 }

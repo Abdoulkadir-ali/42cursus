@@ -28,7 +28,7 @@ void	parser_skip_spaces(t_parser *p)
 			count++;
 			if (count > 1000000)
 			{
-				printf("CRITICAL ERROR: parser_skip_spaces loop\n");
+				ft_print_debug("CRITICAL ERROR: parser_skip_spaces loop\n");
 				fflush(stdout);
 				break ;
 			}

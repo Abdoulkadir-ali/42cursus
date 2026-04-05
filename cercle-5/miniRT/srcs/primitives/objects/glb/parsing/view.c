@@ -31,4 +31,6 @@ void	glb_parse_buffer_view(t_json_value *json, int idx, t_buffer_view *out)
 	out->byte_offset = val.i;
 	val = json_get_size_t(bv, "byteLength");
 	out->byte_length = val.i;
+	val = json_get_size_t(bv, "byteStride");
+	out->byte_stride = val.i;
 }

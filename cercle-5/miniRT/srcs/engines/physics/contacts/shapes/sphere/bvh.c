@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 08:14:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,12 @@ void	traverse_sphere_bvh(t_contact_query *qu, size_t idx, t_sphere *sp)
 	t_scene				*s;
 
 	s = qu->engine->scene;
+	pthread_rwlock_rdlock(&s->bvh_lock);
+	if (!s->bvh)
+	{
+		pthread_rwlock_unlock(&s->bvh_lock);
+		return ;
+	}
 	top = 0;
 	st[top++] = 0;
 	while (top > 0 && qu->count < qu->max)
@@ -60,4 +66,5 @@ void	traverse_sphere_bvh(t_contact_query *qu, size_t idx, t_sphere *sp)
 				st[top++] = nd->left_or_first;
 		}
 	}
+	pthread_rwlock_unlock(&s->bvh_lock);
 }

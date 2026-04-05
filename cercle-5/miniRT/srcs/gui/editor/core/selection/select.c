@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:41:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,17 @@
 
 void	rebuild_bvh(t_gui *gui)
 {
-	if (gui->scene->bvh)
-		bvh_destroy(gui->scene->bvh);
-	gui->scene->bvh = bvh_create(gui->scene);
+	t_bvh	*old;
+
+	pthread_rwlock_wrlock(&gui->scene->bvh_lock);
+	old = gui->scene->bvh;
+	gui->scene->bvh = NULL;
+	pthread_rwlock_unlock(&gui->scene->bvh_lock);
+	bvh_destroy(old);
+	old = bvh_create(gui->scene);
+	pthread_rwlock_wrlock(&gui->scene->bvh_lock);
+	gui->scene->bvh = old;
+	pthread_rwlock_unlock(&gui->scene->bvh_lock);
 }
 
 static void	set_selection_bbox(t_gui *gui, t_type type, size_t index)
@@ -62,4 +70,5 @@ void	select_object(t_gui *gui, t_type type, size_t index)
 	gui->selection.active = true;
 	set_selection_bbox(gui, type, index);
 	set_inspector_tab(gui, type);
+	transform_panel_sync(gui);
 }

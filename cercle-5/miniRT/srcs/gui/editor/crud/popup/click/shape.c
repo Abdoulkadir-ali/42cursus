@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   click.c                                            :+:      :+:    :+:   */
+/*   shape.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:07:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 19:31:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,17 @@ static t_type	idx_to_type(int i)
 
 static bool	click_item(t_gui *gui, t_vec2i mouse, t_vec2i o, t_vec2i s)
 {
+	t_vec2i	d;
 	int		i;
 	t_type	type;
 	t_vec2i	p;
 
+	d = gui->win.disp_size;
 	i = 0;
 	while (i < 11)
 	{
-		p.x = o.x + POPUP_PAD + (i % 3) * (s.x + POPUP_PAD);
-		p.y = o.y + 36 + POPUP_PAD + (i / 3) * (s.y + 8);
+		p.x = o.x + ui_sx(POPUP_PAD, d) + (i % 3) * (s.x + ui_sx(POPUP_PAD, d));
+		p.y = o.y + ui_sy(36 + POPUP_PAD, d) + (i / 3) * (s.y + ui_sy(8, d));
 		if (phit(mouse, p, s))
 		{
 			type = idx_to_type(i);
@@ -79,14 +81,16 @@ static bool	click_item(t_gui *gui, t_vec2i mouse, t_vec2i o, t_vec2i s)
 
 static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 {
+	t_vec2i	d;
 	t_vec2i	o;
 	t_vec2i	s;
 	int		modal_h;
 
-	modal_h = POPUP_PAD * 2 + 36 + 4 * (POPUP_ITEM_H + 8) + 40;
-	o = vec2i((gui->win.disp_size.x - POPUP_W) / 2,
-			(gui->win.disp_size.y - modal_h) / 2);
-	s = vec2i((POPUP_W - POPUP_PAD * 4) / 3, POPUP_ITEM_H);
+	d = gui->win.disp_size;
+	modal_h = ui_sy(POPUP_PAD * 2 + 36 + 4 * (POPUP_ITEM_H + 8) + 40, d);
+	o = vec2i((d.x - ui_sx(POPUP_W, d)) / 2,
+			(d.y - modal_h) / 2);
+	s = vec2i(ui_sx((POPUP_W - POPUP_PAD * 4) / 3, d), ui_sy(POPUP_ITEM_H, d));
 	return (click_item(gui, mouse, o, s));
 }
 

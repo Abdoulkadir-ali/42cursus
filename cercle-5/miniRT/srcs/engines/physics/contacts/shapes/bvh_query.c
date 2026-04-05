@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,13 @@ void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
 	const t_bvh_node	*nd;
 	const t_bvh			*bvh;
 
+	pthread_rwlock_rdlock(&c->qu->engine->scene->bvh_lock);
 	bvh = c->qu->engine->scene->bvh;
 	if (!bvh)
+	{
+		pthread_rwlock_unlock(&c->qu->engine->scene->bvh_lock);
 		return ;
+	}
 	top = 0;
 	st[top++] = 0;
 	while (top > 0 && c->qu->count < c->qu->max)
@@ -74,4 +78,5 @@ void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
 				st[top++] = nd->left_or_first;
 		}
 	}
+	pthread_rwlock_unlock(&c->qu->engine->scene->bvh_lock);
 }

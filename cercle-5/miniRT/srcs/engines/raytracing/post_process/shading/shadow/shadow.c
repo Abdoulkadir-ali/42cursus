@@ -60,7 +60,7 @@ bool	is_in_shadow(const t_bvh *bvh, t_vec3 p, t_vec3 ldir_norm, double dist)
 	t_ray	sray;
 
 	shadow_ray_init(&sray, p, ldir_norm);
-	if (bvh_occluded4(bvh, &sray, dist))
+	if (bvh_occluded(bvh, &sray, dist))
 		return (true);
 	return (plane_shadows(bvh, &sray, dist));
 }

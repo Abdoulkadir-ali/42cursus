@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:32:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:39:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:33:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,22 @@ void	sample_channel(t_anim_sampler *s, float time, float *res, int stride)
 		return ;
 	if (time <= s->inputs[0])
 	{
-		i = -1;
-		while (++i < stride)
+		i = 0;
+		while (i < stride)
+		{
 			res[i] = s->outputs[i];
+			i++;
+		}
 		return ;
 	}
 	if (time >= s->inputs[s->count - 1])
 	{
-		i = -1;
-		while (++i < stride)
+		i = 0;
+		while (i < stride)
+		{
 			res[i] = s->outputs[(s->count - 1) * stride + i];
+			i++;
+		}
 		return ;
 	}
 	apply_interpolation(s, time, res, stride);

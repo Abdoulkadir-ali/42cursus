@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh.c                                             :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 15:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 15:26:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ void	print_parser(t_parser *p)
 	eof_str = "false";
 	if (p->eof)
 		eof_str = "true";
-	printf("parser(\n  fd: %d\n  cursor: %zu\n", p->fd, p->cursor);
-	printf("  bytes_read: %zu\n  eof: %s\n)", p->bytes_read, eof_str);
+	ft_print_debug("parser(\n  fd: %d\n  cursor: %zu\n", p->fd, p->cursor);
+	ft_print_debug("  bytes_read: %zu\n  eof: %s\n)", p->bytes_read, eof_str);
 }

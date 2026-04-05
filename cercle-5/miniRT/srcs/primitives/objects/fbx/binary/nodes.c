@@ -12,7 +12,7 @@
 
 #include "fbx.h"
 
-static void	parse_nodes_depth(t_fbx_parse *fbx, uint64_t end_offset,
+static void	parse_nodes_depth(t_fbx_parse *fbx, size_t end_offset,
 				int depth);
 
 static void	parse_array_bin(t_fbx_parse *fbx, t_fbx_array_req *req,
@@ -51,21 +51,21 @@ static void	parse_node_data(t_fbx_parse *fbx, t_fbx_bin_node *n, int depth)
 	else
 	{
 		skip_properties(fbx->fd, n->num_properties);
-		if ((uint64_t)lseek(fbx->fd, 0, SEEK_CUR) < n->end_offset)
+		if ((size_t)lseek(fbx->fd, 0, SEEK_CUR) < n->end_offset)
 			parse_nodes_depth(fbx, n->end_offset, depth + 1);
 		return ;
 	}
 	parse_array_bin(fbx, &req, depth);
 }
 
-static void	parse_nodes_depth(t_fbx_parse *fbx, uint64_t end_offset,
+static void	parse_nodes_depth(t_fbx_parse *fbx, size_t end_offset,
 		int depth)
 {
 	t_fbx_bin_node	n;
 
 	if (depth > 20)
 		return ;
-	while ((uint64_t)lseek(fbx->fd, 0, SEEK_CUR) < end_offset)
+	while ((size_t)lseek(fbx->fd, 0, SEEK_CUR) < end_offset)
 	{
 		read_node_header(fbx->fd, &n, fbx->is_64);
 		if (n.end_offset == 0)
@@ -76,7 +76,7 @@ static void	parse_nodes_depth(t_fbx_parse *fbx, uint64_t end_offset,
 	}
 }
 
-void	parse_nodes(int fd, uint64_t end_offset, bool is_64, t_fbx_data *d)
+void	parse_nodes(int fd, size_t end_offset, bool is_64, t_fbx_data *d)
 {
 	t_fbx_parse	fbx;
 

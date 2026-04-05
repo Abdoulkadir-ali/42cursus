@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:27:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 14:59:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,16 @@ void	sync_group_materials(t_gui *gui)
 	si = 0;
 	while (++si < g->sub_count)
 	{
+		t_cmd	_c;
+
 		mat_id = gui->scene->meshes[g->start + si].mat_id;
 		if (mat_id < gui->scene->mat_count)
-			gui->scene->materials[mat_id] = *lead;
+		{
+			ft_memset(&_c, 0, sizeof(_c));
+			_c.type = CMD_SET_MATERIAL;
+			_c.data.material.mat_id = mat_id;
+			_c.data.material.material = *lead;
+			cmd_enqueue(gui, _c);
+		}
 	}
 }

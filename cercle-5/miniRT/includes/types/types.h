@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:20:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:52:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 /* engine */
 # include "t_physics.h"
 # include "t_raytracing.h"
+# include "t_animation.h"
 
 /* gui */
 # include "t_window.h"

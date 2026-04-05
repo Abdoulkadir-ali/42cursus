@@ -20,6 +20,7 @@ static size_t	process_node(t_mesh *mesh, size_t node_idx, const t_ray *ray,
 	t_index		idx;
 
 	PROF_INC(g_mesh_aabb_tests);
+	trace->node_count++;
 	node = &mesh->bvh_nodes[node_idx];
 	if (node->count > 0)
 	{

@@ -6,21 +6,86 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 08:50:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
-static int	pack_color(t_vec3 color)
+/*
+** apply_brightness: bias by (brightness-50)/50 * 255 additive.
+** apply_contrast:   S-curve around midpoint 0.5; factor = contrast/50.
+** apply_saturation: lerp each channel toward luminance; factor = sat/50.
+** apply_gamma:      gamma = 50/gamma_val (neutral=50 → exponent 1.0).
+**                   Uses fast sqrt chains to avoid powf when possible.
+*/
+static void	apply_saturation(float ch[3], double sat)
 {
+	float	luma;
+	float	f;
+
+	f = (float)(sat / 50.0);
+	luma = 0.299f * ch[0] + 0.587f * ch[1] + 0.114f * ch[2];
+	ch[0] = luma + f * (ch[0] - luma);
+	ch[1] = luma + f * (ch[1] - luma);
+	ch[2] = luma + f * (ch[2] - luma);
+}
+
+static float	apply_gamma_ch(float c, double gamma_val)
+{
+	float	x;
+	float	exp;
+
+	if (c <= 0.0f)
+		return (0.0f);
+	x = c / 255.0f;
+	exp = (float)(50.0 / gamma_val);
+	/* fast path for common exponents */
+	if (exp >= 0.49f && exp <= 0.51f)
+		x = sqrtf(x);
+	else if (exp >= 0.44f && exp <= 0.46f)
+		x = sqrtf(sqrtf(x)) * sqrtf(sqrtf(sqrtf(x)));
+	else
+		x = powf(x, exp);
+	return (x * 255.0f);
+}
+
+static int	pack_color(t_vec3 color, const t_raytracer_settings *opts)
+{
+	float			ch[3];
+	float			bfac;
+	float			cfac;
 	unsigned int	r;
 	unsigned int	g;
 	unsigned int	b;
+	int				i;
 
-	r = ((unsigned int)color.x & 0xFF) << 16;
-	g = ((unsigned int)color.y & 0xFF) << 8;
-	b = (unsigned int)color.z & 0xFF;
+	ch[0] = (float)color.x;
+	ch[1] = (float)color.y;
+	ch[2] = (float)color.z;
+	/* brightness: additive offset, neutral=50 → 0 */
+	bfac = (float)((opts->brightness - 50.0) / 50.0) * 255.0f;
+	/* contrast: scale around midpoint, neutral=50 → factor 1.0 */
+	cfac = (float)(opts->contrast / 50.0);
+	i = 0;
+	while (i < 3)
+	{
+		ch[i] += bfac;
+		ch[i] = (ch[i] / 255.0f - 0.5f) * cfac * 255.0f + 127.5f;
+		i++;
+	}
+	apply_saturation(ch, opts->saturation);
+	i = 0;
+	while (i < 3)
+	{
+		if (opts->gamma > 0.5)
+			ch[i] = apply_gamma_ch(ch[i], opts->gamma);
+		ch[i] = fminf(fmaxf(ch[i], 0.0f), 255.0f);
+		i++;
+	}
+	r = ((unsigned int)(uint8_t)ch[0]) << 16;
+	g = ((unsigned int)(uint8_t)ch[1]) << 8;
+	b = (unsigned int)(uint8_t)ch[2];
 	return ((int)(r | g | b));
 }
 
@@ -52,5 +117,6 @@ void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 	idx = pos.y * render->gui->win.size.x + pos.x;
 	if (render->gui->render.depth_buf)
 		render->gui->render.depth_buf[idx] = out_t;
-	((uint32_t *)pixel_addr)[0] = (uint32_t)pack_color(color);
+	((uint32_t *)pixel_addr)[0] = (uint32_t)pack_color(color,
+			&render->gui->rt_engine.settings);
 }

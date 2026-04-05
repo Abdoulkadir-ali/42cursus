@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:21:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 17:48:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 16:34:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,28 @@ static void	link_glb_parents(t_mesh *mesh, t_json_value *joints,
 	v[0] = 0;
 	while (v[0] < joints->u.array.count)
 	{
-		v[1] = json_as_number(json_at(joints, v[0]));
+		t_index	rs;
+
+		rs = json_as_t_index(json_at(joints, v[0]));
+		if (rs.error)
+		{
+			v[0]++;
+			continue ;
+		}
+		v[1] = rs.i;
 		children = json_get(json_at(nodes, v[1]), "children");
 		if (children)
 		{
 			v[2] = 0;
 			while (v[2] < children->u.array.count)
 			{
-				v[1] = json_as_number(json_at(children, v[2]));
-				if (v[1] != 0 && v[2] < PARSER_BUF_SIZE
-					&& node_map[v[1]] != 0)
-					mesh->skeleton[node_map[v[1]]].parent = v[0];
+				t_index	rs2;
+
+				rs2 = json_as_t_index(json_at(children, v[2]));
+				if (!rs2.error && rs2.i != 0
+					&& v[2] < PARSER_BUF_SIZE
+					&& node_map[rs2.i] != 0)
+					mesh->skeleton[node_map[rs2.i]].parent = (t_index){v[0], false};
 				v[2]++;
 			}
 		}
@@ -50,11 +61,19 @@ static void	init_bone_data(t_mesh *mesh, t_json_value *joints,
 	v[0] = 0;
 	while (v[0] < mesh->bone_count)
 	{
-		v[1] = json_as_number(json_at(joints, v[0]));
+		t_index	rs;
+
+		rs = json_as_t_index(json_at(joints, v[0]));
+		if (rs.error)
+		{
+			v[0]++;
+			continue ;
+		}
+		v[1] = rs.i;
 		node_map[v[1]] = v[0];
 		b = &mesh->skeleton[v[0]];
 		b->node_idx = v[1];
-		b->parent = 0;
+		b->parent = (t_index){0, true};
 		mesh->bone_matrices[v[0]] = mat4_identity();
 		fill_bone_trs(b, json_at(nodes, v[1]));
 		v[0]++;
@@ -110,9 +129,12 @@ void	glb_load_skeleton(t_mesh *mesh, t_json_value *json, char *bin,
 		return ;
 	idx = json_get_size_t(skin, "inverseBindMatrices");
 	load_ibms(json, bin, idx.i, ibms);
-	i = -1;
-	while (++i < mesh->bone_count)
-		mesh->skeleton[i].inv_bind_pose = ibms[i];
-	free(ibms);
 	load_skeleton_data(mesh, js);
+	i = 0;
+	while (i < mesh->bone_count)
+	{
+		mesh->skeleton[i].inv_bind_pose = ibms[i];
+		i++;
+	}
+	free(ibms);
 }

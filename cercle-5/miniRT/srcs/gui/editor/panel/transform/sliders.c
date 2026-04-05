@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:17:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 19:15:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,61 @@
 
 static void	build_pos_sliders(t_gui *gui, t_vec3 *v, t_vec2i *p)
 {
+	t_vec2i		d;
 	t_islider	sl;
 
-	gui_label(gui, "Position", (t_vec2i){p->x, p->y += 25});
-	sl = (t_islider){"X", -100, 100, &v->x, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 25}, sl);
-	sl = (t_islider){"Y", -100, 100, &v->y, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 30}, sl);
-	sl = (t_islider){"Z", -100, 100, &v->z, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 30}, sl);
+	d = gui->win.disp_size;
+	draw_insp_header(gui, (t_vec2i){p->x, p->y}, "Position");
+	p->y += ui_sy(INSP_HDR_STEP, d);
+	sl = (t_islider){"X", SL_POS_MIN, SL_POS_MAX, &v->x, transform_selection_sync};
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
+	sl = (t_islider){"Y", SL_POS_MIN, SL_POS_MAX, &v->y, transform_selection_sync};
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
+	sl = (t_islider){"Z", SL_POS_MIN, SL_POS_MAX, &v->z, transform_selection_sync};
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
 }
 
 static void	build_rot_sliders(t_gui *gui, t_rotator *r, t_vec2i *p)
 {
+	t_vec2i		d;
 	t_islider	sl;
 
-	gui_label(gui, "Rotation", (t_vec2i){p->x, p->y += 35});
-	sl = (t_islider){"Pitch", -PI, PI, &r->pitch, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 25}, sl);
-	sl = (t_islider){"Yaw", -PI, PI, &r->yaw, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 30}, sl);
-	sl = (t_islider){"Roll", -PI, PI, &r->roll, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 30}, sl);
+	d = gui->win.disp_size;
+	p->y += ui_sy(6, d);
+	draw_insp_header(gui, (t_vec2i){p->x, p->y}, "Rotation");
+	p->y += ui_sy(INSP_HDR_STEP, d);
+	sl = (t_islider){"Pitch", -180.0, 180.0, &r->pitch, transform_selection_sync};
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
+	sl = (t_islider){"Yaw", -180.0, 180.0, &r->yaw, transform_selection_sync};
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
+	sl = (t_islider){"Roll", -180.0, 180.0, &r->roll, transform_selection_sync};
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
 }
 
 static void	build_scale_sliders(t_gui *gui, t_vec3 *v, float max_s, t_vec2i *p)
 {
+	t_vec2i		d;
 	t_islider	sl;
 
-	gui_label(gui, "Scale", (t_vec2i){p->x, p->y += 35});
+	d = gui->win.disp_size;
+	p->y += ui_sy(6, d);
+	draw_insp_header(gui, (t_vec2i){p->x, p->y}, "Scale");
+	p->y += ui_sy(INSP_HDR_STEP, d);
 	sl = (t_islider){"SX", 0.01, max_s, &v->x, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 25}, sl);
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
 	sl = (t_islider){"SY", 0.01, max_s, &v->y, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 30}, sl);
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
 	sl = (t_islider){"SZ", 0.01, max_s, &v->z, transform_selection_sync};
-	draw_slider_row(gui, (t_vec2i){p->x + 8, p->y += 30}, sl);
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
 }
 
 void	build_tr_sliders(t_gui *gui, int type, t_vec2i *p)
@@ -62,3 +82,4 @@ void	build_tr_sliders(t_gui *gui, int type, t_vec2i *p)
 	build_rot_sliders(gui, &gui->transform.rotation, p);
 	build_scale_sliders(gui, &gui->transform.scale, max_s, p);
 }
+

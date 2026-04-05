@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 13:21:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,13 @@ void					load_glb_base_texture(t_json_value *json, char *bin,
 t_mat4					quat_to_mat4(t_vec4 q);
 void					*glb_read_file(const char *path, size_t *size);
 
+t_mat4					glb_node_transform(t_json_value *node);
+t_mat4					glb_compute_world_transform(t_json_value *json,
+							size_t node_idx);
 void					glb_load_mesh(t_mesh *mesh, t_json_value *json,
 							char *bin, size_t mesh_idx);
-t_index					*glb_load_materials(t_mesh_resource *out, void *mlx_ptr,
-							t_json_value *json, char *bin);
+void					glb_finalize_mesh(t_mesh *m);
+t_index					*glb_load_materials(t_mesh_resource *out, void *mlx_ptr, t_json_value *json, char *bin);
 void					glb_load_skeleton(t_mesh *mesh, t_json_value *json,
 							char *bin, size_t extra_count);
 int						glb_count_extra_anim_nodes(t_json_value *json);

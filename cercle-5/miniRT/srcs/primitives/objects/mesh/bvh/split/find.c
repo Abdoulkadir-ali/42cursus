@@ -16,7 +16,7 @@ static void	init_find(t_bvh_find *f, t_bvh_eval *eval)
 {
 	bvh_centroid_bounds(f->bvh, f->first, f->count, &f->s.centroid_bounds);
 	f->s.best_axis = -1;
-	f->s.best_cost = (double)f->count;
+	f->s.best_cost = (double)f->count * 2.0;
 	f->s.split_pos = 0;
 	eval->bvh = f->bvh;
 	eval->node = f->node;

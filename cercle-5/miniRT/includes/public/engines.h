@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:18:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 11:38:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,5 +15,6 @@
 
 # include "physics.h"
 # include "raytracing.h"
+# include "animations.h"
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:42:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 19:14:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 static void	draw_inspector_header(t_gui *gui, t_vec2i pos)
 {
+	t_vec2i	d;
 	char	buf[64];
 
+	d = gui->win.disp_size;
 	snprintf(buf, sizeof(buf), "%s  #%zu",
 		type_name_str(gui->selection.type), gui->selection.index);
-	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + 8, 50, COL_ACCENT, buf);
+	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d), ui_sy(50, d), COL_ACCENT, buf);
 }
 
 void	draw_inspector_bg(t_gui *gui)

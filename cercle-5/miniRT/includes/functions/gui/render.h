@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:21:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:59:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,14 @@
 # include "mlx.h"
 # include "physics.h"
 # include "raytracing.h"
+# include "animations.h"
 # include "types.h"
 # include "optimizations.h"
 # include "settings.h"
 # include <pthread.h>
 # include <sys/time.h>
+#include <stdatomic.h>
+
 
 # define TILE_SIZE 32
 # define FONT_PATH "maps/font/font8.font"
@@ -32,6 +35,7 @@ void			gui_destroy(t_gui *gui);
 bool			init_window(t_gui *gui);
 void			init_camera(t_gui *gui);
 void			gui_init_physics(t_gui *gui);
+void			gui_init_anim(t_gui *gui);
 void			gui_init_render(t_gui *gui);
 void			gui_render(t_gui *gui);
 unsigned int	color_blend(unsigned int dst, int src, float alpha);
@@ -41,12 +45,20 @@ void			gui_update_hover(t_gui *gui);
 void			gui_parallel_task_worker(t_gui *gui, t_pool_task type);
 void			process_pixel(t_render *render, t_vec2i pos, char *pixel_addr);
 void			upscale_image(t_gui *gui);
+void			*render_thread_func(void *arg);
 void			fullres_toggle(t_gui *gui);
 void			poll_map_job(t_gui *gui);
 void			clear_selection(t_gui *gui);
 double			update_delta(t_gui *gui);
-void			update_animations(t_gui *gui, double dt);
-void			update_physics_step(t_gui *gui, double dt);
+void			anim_step(t_gui *gui, double delta);
+void			physics_step(t_gui *gui, double delta);
+void			scene_swap_step(t_gui *gui);
+void			bvh_step(t_gui *gui);
+void			cmd_queue_init(t_cmd_queue *q);
+void			cmd_queue_destroy(t_cmd_queue *q);
+void			cmd_enqueue(t_gui *gui, t_cmd cmd);
+void			cmd_drain(t_gui *gui);
+void			raytrace_step(t_gui *gui, double delta);
 void			update_autorefresh(t_gui *gui);
 void			update_ambient(t_gui *gui);
 const char		*mesh_name(t_mesh *mesh);

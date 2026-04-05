@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:29:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 22:22:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static bool	snap_alloc_geo(t_cache_snap *s, const t_mesh *m)
 {
-	s->vertices = malloc(sizeof(t_vec3) * m->vertex_count);
+	s->vertices = malloc(sizeof(t_vertex) * m->vertex_count);
 	if (!s->vertices)
 		return (false);
 	s->indices = malloc(sizeof(size_t) * m->tri_count * 3);
@@ -39,7 +39,7 @@ static bool	snap_one_copy(t_cache_snap *s, const t_mesh *m)
 {
 	if (!s->name || !snap_alloc_geo(s, m))
 		return (false);
-	ft_memcpy(s->vertices, m->vertices, sizeof(t_vec3) * m->vertex_count);
+	ft_memcpy(s->vertices, m->vertices, sizeof(t_vertex) * m->vertex_count);
 	ft_memcpy(s->indices, m->indices, sizeof(size_t) * m->tri_count * 3);
 	if (m->normals)
 		ft_memcpy(s->normals, m->normals, sizeof(t_vec3) * m->vertex_count);

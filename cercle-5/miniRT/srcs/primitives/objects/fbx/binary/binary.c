@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:51:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static bool	fbx_bin_open(t_fbx_bin *fbx, const char *path)
 static bool	fbx_bin_parse(t_fbx_bin *fbx)
 {
 	ft_print_debug("DEBUG: starting parse_nodes recursion\n");
-	parse_nodes(fbx->fd, (uint64_t)-1, fbx->version >= 7500, &fbx->data);
+	parse_nodes(fbx->fd, (size_t)-1, fbx->version >= 7500, &fbx->data);
 	close(fbx->fd);
 	fbx->fd = -1;
 	ft_print_debug("DEBUG: parse_nodes finished. counts: vc=%zu nc=%zu\n",

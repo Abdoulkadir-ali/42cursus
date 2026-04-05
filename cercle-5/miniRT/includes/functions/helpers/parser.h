@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:10:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:49:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ double					json_as_number(t_json_value *value);
 bool					json_as_bool(t_json_value *value);
 int						json_get_int(t_json_value *obj, const char *key);
 t_index					json_get_size_t(t_json_value *obj, const char *key);
+t_index					json_as_t_index(t_json_value *value);
 void					*json_realloc(void *ptr, size_t old_size,
 							size_t new_size);
 void					*json_malloc(size_t size);

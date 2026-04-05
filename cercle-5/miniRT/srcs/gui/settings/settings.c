@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:23:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ void	settings_init(t_gui *gui)
 	gui->settings.render_scale = (double)gui->render.scale;
 	gui->settings.solver_iters
 		= (double)gui->phys_engine.settings.solver_iterations;
+	gui->settings.pos = vec2i(
+			(int)gui->win.disp_size.x - SETTINGS_W - 16, 30);
+	gui->settings.dragging = false;
 }
 
 void	settings_open(t_gui *gui)
@@ -42,9 +45,7 @@ void	settings_close(t_gui *gui)
 
 static t_vec2i	settings_origin(t_gui *gui)
 {
-	return (vec2i(
-			(int)((gui->win.disp_size.x - SETTINGS_W) / 2),
-			(int)((gui->win.disp_size.y - SETTINGS_H) / 2)));
+	return (gui->settings.pos);
 }
 
 static void	draw_settings_btn(t_gui *gui)
@@ -205,9 +206,49 @@ bool	settings_handle_click(t_gui *gui, t_vec2i mouse)
 		settings_close(gui);
 		return (true);
 	}
+	/* start drag if click is inside the title header */
+	if ((int)mouse.y < (int)o.y + SETTINGS_HDR_H
+		&& (int)mouse.x < (int)o.x + SETTINGS_W - 32)
+	{
+		gui->settings.dragging = true;
+		gui->settings.drag_offset = vec2i(
+				(int)mouse.x - (int)o.x,
+				(int)mouse.y - (int)o.y);
+		return (true);
+	}
 	if (click_close_btn(gui, mouse, o))
 		return (true);
 	if (click_tab_bar(gui, mouse, o))
 		return (true);
 	return (click_content(gui, mouse, o));
+}
+
+void	settings_handle_drag(t_gui *gui, t_vec2i mouse)
+{
+	int	nx;
+	int	ny;
+	int	max_x;
+	int	max_y;
+
+	if (!gui->settings.dragging)
+		return ;
+	nx = (int)mouse.x - (int)gui->settings.drag_offset.x;
+	ny = (int)mouse.y - (int)gui->settings.drag_offset.y;
+	max_x = (int)gui->win.disp_size.x - SETTINGS_W;
+	max_y = (int)gui->win.disp_size.y - SETTINGS_H;
+	if (nx < 0)
+		nx = 0;
+	if (ny < 0)
+		ny = 0;
+	if (nx > max_x)
+		nx = max_x;
+	if (ny > max_y)
+		ny = max_y;
+	gui->settings.pos = vec2i(nx, ny);
+	gui->render.dirty = true;
+}
+
+void	settings_end_drag(t_gui *gui)
+{
+	gui->settings.dragging = false;
 }

@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 22:52:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 00:30:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
 #define SCALE_MIN			1
-#define SCALE_MAX			3
+#define SCALE_MAX			8
 #define SCALE_FPS_LOW		22.0
 #define SCALE_FPS_HIGH		35.0
 #define SCALE_COOLDOWN_MS	2000

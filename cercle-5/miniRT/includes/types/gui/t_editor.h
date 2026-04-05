@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:18:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:12:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,21 @@ typedef struct s_crud_ui
 # define COL_SLIDER_BG 0x1A1A20
 # define COL_SLIDER_FG 0xE0A820
 
+/* --- Inspector Combo-Row Layout --- */
+# define INSP_LBL_W	80
+# define INSP_SL_OFF	84
+# define INSP_SL_W	106
+# define INSP_IN_OFF	194
+# define INSP_IN_W	62
+# define INSP_ROW_H	18
+# define INSP_ROW_STEP	24
+# define INSP_HDR_STEP	20
+
 /* --- Editor Layout Constants --- */
 # define INSPECTOR_W 280
 # define SCENE_PANEL_W 220
 # define ROW_H 24
-# define CRUD_PANEL_H 36
+# define CRUD_PANEL_H 120
 # define CRUD_BTN_H 24
 # define CRUD_BTN_W 52
 # define CRUD_ADD_W 90
@@ -145,6 +155,17 @@ typedef struct s_islider
 	void			(*on_change)(struct s_gui *);
 }					t_islider;
 
+typedef struct s_insp_edit
+{
+	bool			active;
+	double			*value_ptr;
+	char			buf[32];
+	int				cursor;
+	double			dmin;
+	double			dmax;
+	void			(*on_change)(struct s_gui *gui);
+}					t_insp_edit;
+
 typedef struct s_slider_state
 {
 	bool			dragging;
@@ -157,6 +178,7 @@ typedef struct s_slider_state
 	int				track_w;
 	void			(*on_change)(struct s_gui *gui);
 	struct s_widget	*target;
+	t_insp_edit		insp_edit;
 }					t_slider_state;
 
 /* srcs/gui/editor/scene_reset.c */

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:33:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 19:14:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,17 @@
 
 static bool	handle_tab_click(t_gui *gui, t_vec2i mouse, int x)
 {
+	t_vec2i			d;
 	t_inspect_tab	tabs[4];
 	const char		*labels[4];
 	int				n;
 	int				step;
 	int				idx;
 
+	d = gui->win.disp_size;
 	n = get_tabs(gui->selection.type, tabs, labels);
-	step = INSPECTOR_W / n;
-	if (mouse.y >= 60 && mouse.y <= 84)
+	step = (int)gui->inspector.width / n;
+	if (mouse.y >= (size_t)ui_sy(60, d) && mouse.y <= (size_t)ui_sy(84, d))
 	{
 		idx = (mouse.x - x) / step;
 		if (idx >= 0 && idx < n)
@@ -56,5 +58,7 @@ bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 	}
 	else if (gui->inspector.tab == TAB_LIGHT)
 		light_panel_handle_click(gui, mouse);
+	else if (gui->inspector.tab == TAB_INFO)
+		info_panel_handle_click(gui, mouse);
 	return (true);
 }

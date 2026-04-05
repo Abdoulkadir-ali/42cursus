@@ -50,6 +50,4 @@ void	gui_update_input(t_gui *gui)
 	update_fov(gui, ctrl);
 	if (gui->render.force_fullres)
 		gui->render.scale = 1;
-	else
-		gui->render.scale = 2;
 }

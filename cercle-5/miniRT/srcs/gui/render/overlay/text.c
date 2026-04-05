@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:36:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:46:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,41 +21,16 @@ const char	*mesh_name(t_mesh *mesh)
 
 void	draw_ui_help(t_gui *gui, int *y)
 {
-	int	ox;
-
-	ox = 220 + 16;
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, 0xE0A820, "miniRT");
-	*y += 24;
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, 0xD0D0D8,
-		"WASD  Move   SPACE/SHIFT  Up/Down");
-	*y += 20;
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, 0xD0D0D8,
-		"LMB   Look   MMB  Zoom");
-	*y += 20;
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, 0xD0D0D8,
-		"+/-   Speed  N/P  Maps  X  Physics");
-	*y += 20;
+	/* keybinds and title are now drawn in the scene panel header */
+	(void)gui;
+	(void)y;
 }
 
 void	draw_ui_status(t_gui *gui, int *y)
 {
-	int		ox;
-	int		color;
-	char	buf[64];
-
-	ox = 220 + 16;
-	if (gui->physics_enabled)
-	{
-		color = 0x44FF44;
-		snprintf(buf, sizeof(buf), "[ X ]  PHYSICS  ON");
-	}
-	else
-	{
-		color = 0xFF4444;
-		snprintf(buf, sizeof(buf), "[   ]  PHYSICS  OFF");
-	}
-	mlx_string_put(gui->win.mlx, gui->win.win, ox, *y, color, buf);
-	*y += 20;
+	/* physics status moved to scene panel header */
+	(void)gui;
+	(void)y;
 }
 
 void	draw_ui_object(t_gui *gui)

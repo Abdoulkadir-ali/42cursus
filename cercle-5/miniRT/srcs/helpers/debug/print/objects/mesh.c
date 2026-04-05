@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 15:10:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 15:26:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ void	print_mesh(t_mesh *m)
 	name = "NULL";
 	if (m->name)
 		name = m->name;
-	printf("mesh(\n  name: %s\n", name);
-	printf("  tri_count: %zu\n  mat_id: %zu\n  bbox: ",
+	ft_print_debug("mesh(\n  name: %s\n", name);
+	ft_print_debug("  tri_count: %zu\n  mat_id: %zu\n  bbox: ",
 		m->tri_count, m->mat_id);
 	print_aabb(&m->bbox);
-	printf("\n  transform: ");
+	ft_print_debug("\n  transform: ");
 	print_transform(&m->transform);
-	printf("\n)");
+	ft_print_debug("\n)");
 }

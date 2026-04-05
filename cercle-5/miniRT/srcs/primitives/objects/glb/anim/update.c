@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:15 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:26:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 16:36:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@ static void	apply_anim_channel(t_bone *bone, t_anim_channel *chan,
 				t_anim_sampler *s, float time)
 {
 	float	res[4];
+
+	res[0] = 0.0f;
+	res[1] = 0.0f;
+	res[2] = 0.0f;
+	res[3] = 1.0f;
 
 	if (chan->path == PATH_TRANSLATION)
 	{
@@ -51,7 +56,8 @@ static void	update_bone_recursive(t_mesh *mesh, int bone_idx, t_mat4 parent_mat)
 	i = 0;
 	while (i < mesh->bone_count)
 	{
-		if (mesh->skeleton[i].parent == (size_t)bone_idx)
+		if (!mesh->skeleton[i].parent.error
+				&& mesh->skeleton[i].parent.i == (size_t)bone_idx)
 			update_bone_recursive(mesh, i, bone->global_transform);
 		i++;
 	}
@@ -99,7 +105,7 @@ void	glb_update_mesh_anim(t_mesh *mesh, t_scene *scene, double dt)
 	i = 0;
 	while (i < mesh->bone_count)
 	{
-		if (mesh->skeleton[i].parent == 0)
+		if (mesh->skeleton[i].parent.error)
 			update_bone_recursive(mesh, i, mat4_identity());
 		i++;
 	}

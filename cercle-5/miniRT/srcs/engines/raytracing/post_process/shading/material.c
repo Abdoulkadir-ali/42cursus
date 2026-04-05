@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 10:33:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 13:21:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,13 @@ static int	dispatch_mat(t_shading *sha, t_hit *h)
 
 void	get_material(t_shading *sha)
 {
-	size_t	mat_id;
+	size_t			mat_id;
+	static size_t	hits = 0;
 
+	hits++;
 	mat_id = dispatch_mat(sha, sha->hit);
+	if (hits++ % 100000 == 0)
+		ft_print_debug("[DEBUG] get_material: type=%d idx=%zu mat_id=%zu\n", sha->hit->ref.type, sha->hit->ref.index, mat_id);
 	if (mat_id >= sha->scene->mat_count)
 		mat_id = 0;
 	sha->mat = sha->scene->materials[mat_id];

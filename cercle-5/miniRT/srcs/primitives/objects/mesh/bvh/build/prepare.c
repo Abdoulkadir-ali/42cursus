@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:15:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:33:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,11 @@ bool	bvh_prepare(t_mbvh *bvh, t_mesh *mesh)
 	bvh->items = malloc(sizeof(t_mesh_build_item) * mesh->tri_count);
 	if (!bvh->items)
 		return (false);
-	i = -1;
-	while (++i < mesh->tri_count)
+	i = 0;
+	while (i < mesh->tri_count)
+	{
 		bvh_get_triangle_info(mesh, i, &bvh->items[i]);
+		i++;
+	}
 	return (bvh_alloc_nodes(bvh, mesh));
 }

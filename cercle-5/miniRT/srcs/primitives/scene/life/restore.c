@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:47:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:51:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 static bool	restore_geo(t_mesh *mesh, const t_cache_snap *snap)
 {
-	mesh->vertices = malloc(sizeof(t_vec3) * snap->vertex_count);
+	mesh->vertices = malloc(sizeof(t_vertex) * snap->vertex_count);
 	if (!mesh->vertices)
 		return (mesh_free(mesh), false);
 	ft_memcpy(mesh->vertices, snap->vertices,
-		sizeof(t_vec3) * snap->vertex_count);
+		sizeof(t_vertex) * snap->vertex_count);
 	mesh->indices = malloc(sizeof(size_t) * snap->tri_count * 3);
 	if (!mesh->indices)
 		return (mesh_free(mesh), false);
@@ -42,7 +42,7 @@ static bool	restore_one(const t_cache_snap *snap, t_scene *scene)
 
 	ft_memset(&mesh, 0, sizeof(t_mesh));
 	mesh.transform.scale = vec3(1, 1, 1);
-	mesh.group_id = -1;
+	mesh.group_id = (t_index){0, true};
 	mesh.vertex_count = snap->vertex_count;
 	mesh.tri_count = snap->tri_count;
 	inst_mat = scene_clone_material(scene, snap->mat_id);

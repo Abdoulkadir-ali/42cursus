@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 19:14:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "widget.h"
 # include "objects.h"
 # include "raytracing.h"
+# include "t_cmd.h"
 
 /* --- Internal scene-panel types --- */
 typedef struct s_scene_row_res
@@ -79,8 +80,13 @@ t_material			*get_selected_material(struct s_gui *gui);
 void				pick_at_mouse(struct s_gui *gui, t_vec2i mouse);
 void				rebuild_bvh(struct s_gui *gui);
 
+/* command queue -- editor enqueues on MLX thread, render thread drains */
+void				cmd_enqueue(struct s_gui *gui, t_cmd cmd);
+void				cmd_drain(struct s_gui *gui);
+
 /* srcs/gui/editor/scene_panel.c */
 void				editor_init(struct s_gui *gui);
+void				gui_recompute_layout(struct s_gui *gui);
 void				draw_scene_panel_bg(struct s_gui *gui);
 void				draw_scene_panel_text(struct s_gui *gui);
 bool				scene_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
@@ -100,13 +106,37 @@ void				build_mat_sliders(t_material *mat, t_islider *sl,
 						int *count);
 void				sync_group_materials(struct s_gui *gui);
 
-/* srcs/gui/editor/utils/slider.c */
+/* srcs/gui/editor/widgets/slider.c + slider_draw.c */
 void				draw_slider_row(struct s_gui *gui, t_vec2i pos,
 						t_islider sl);
 bool				try_islider_click(struct s_gui *gui, t_vec2i mouse,
 						t_vec2i pos, t_islider sl);
 void				update_inline_drag(struct s_gui *gui, t_vec2i mouse);
 void				end_inline_drag(struct s_gui *gui);
+void				fill_rect_row(struct s_gui *gui, t_vec2i pos, int w,
+						unsigned int col);
+void				fill_rect(struct s_gui *gui, t_vec2i pos, t_vec2i size,
+						unsigned int col);
+void				draw_slider_fill(struct s_gui *gui, t_vec2i pos,
+						int fill_w, int total_w);
+
+/* srcs/gui/editor/widgets/insp_row.c */
+void				draw_insp_header(struct s_gui *gui, t_vec2i pos,
+						const char *title);
+void				draw_insp_color_swatch(struct s_gui *gui, t_vec2i pos,
+						double r, double g, double b);
+void				draw_insp_row(struct s_gui *gui, t_vec2i pos, t_islider sl);
+void				draw_insp_toggle_row(struct s_gui *gui, t_vec2i pos,
+						const char *label, bool val);
+void				draw_panel_insp_rows(struct s_gui *gui, t_islider *sl,
+						int count, t_vec2i pos);
+
+/* srcs/gui/editor/widgets/insp_input.c */
+bool				insp_row_click(struct s_gui *gui, t_vec2i mouse,
+						t_vec2i pos, t_islider sl);
+bool				insp_toggle_click(struct s_gui *gui, t_vec2i mouse,
+						t_vec2i pos);
+void				insp_input_key(struct s_gui *gui, int keycode);
 
 /* srcs/gui/editor/crud/add/ */
 void				editor_add_sphere(struct s_gui *gui);
@@ -161,8 +191,9 @@ void				draw_ambient_panel(struct s_gui *gui, t_vec2i pos);
 bool				ambient_panel_handle_click(struct s_gui *gui,
 						t_vec2i mouse);
 
-/* srcs/gui/editor/panel/mesh_info/info.c */
+/* srcs/gui/editor/panel/info/ */
 void				draw_mesh_info_panel(struct s_gui *gui, t_vec2i pos);
+bool				info_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
 
 /* srcs/gui/editor/panel/scene/utils.c */
 size_t				count_mesh_entries(t_scene *sc);

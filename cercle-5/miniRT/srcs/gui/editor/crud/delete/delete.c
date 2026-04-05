@@ -35,6 +35,5 @@ void	editor_delete_selected(t_gui *gui)
 		delete_sel_cy_co(sc, sel);
 	}
 	clear_selection(gui);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }

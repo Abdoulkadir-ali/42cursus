@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:19:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,14 @@ int	mouse_motion(t_vec2i mouse, t_gui *gui)
 	if (!gui)
 		return (0);
 	gui->input.mouse = mouse;
+	widget_handle_motion(gui, mouse);
+	if (gui->settings.dragging)
+	{
+		settings_handle_drag(gui, mouse);
+		return (0);
+	}
+	if (gui->dragging_widget)
+		return (0);
 	if (gui->slider_state.dragging)
 	{
 		update_inline_drag(gui, mouse);

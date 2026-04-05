@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 15:55:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 21:30:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,6 @@ t_scene	*create_scene(const char *name)
 		threads_init(s->pool);
 	s->ambient.brightness = 0;
 	s->ambient.rgb = vec3(0, 0, 0);
-	scene_add_material(s, vec3(200, 160, 255));
+	pthread_rwlock_init(&s->bvh_lock, NULL);
 	return (s);
 }

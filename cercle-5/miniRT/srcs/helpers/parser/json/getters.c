@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/17 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:12:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:49:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,11 @@ t_index	json_get_size_t(t_json_value *obj, const char *key)
 	idx.i = (size_t)val->u.number;
 	idx.error = false;
 	return (idx);
+}
+
+t_index	json_as_t_index(t_json_value *value)
+{
+	if (!value || value->type != JSON_NUMBER)
+		return ((t_index){0, true});
+	return ((t_index){(size_t)value->u.number, false});
 }

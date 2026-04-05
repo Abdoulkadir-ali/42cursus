@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:51:41 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:17:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,22 @@ bool	scene_add_group(t_scene *scene, t_mesh_group g)
 static bool	process_resource_items(t_scene *scene, t_mesh_resource *res)
 {
 	size_t	i;
+	size_t	mat_offset;
 
+	mat_offset = scene->mat_count;
+	i = 0;
+	while (i < res->mat_count)
+	{
+		if (scene_material_allocate_slot(scene).error)
+			return (false);
+		scene->materials[scene->mat_count - 1] = res->materials[i];
+		i++;
+	}
 	i = 0;
 	while (i < res->mesh_count)
 	{
+		if (res->meshes[i].mat_id != (size_t)-1)
+			res->meshes[i].mat_id += mat_offset;
 		if (!scene_add_mesh(scene, res->meshes[i]))
 			return (false);
 		i++;
@@ -58,6 +70,13 @@ static bool	process_resource_items(t_scene *scene, t_mesh_resource *res)
 		if (!scene_add_group(scene, res->groups[i]))
 			return (false);
 		i++;
+	}
+	if (res->clip_count > 0)
+	{
+		glb_ensure_clip_capacity(scene, (int)res->clip_count);
+		ft_memcpy(&scene->clips[scene->clip_count], res->clips,
+			res->clip_count * sizeof(t_animation));
+		scene->clip_count += res->clip_count;
 	}
 	return (true);
 }

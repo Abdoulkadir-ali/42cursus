@@ -6,47 +6,75 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:39:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 14:57:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+#include "render.h"
 
 void	transform_selection_sync(t_gui *gui)
 {
-	t_scene	*sc;
+	t_cmd	cmd;
 
-	sc = gui->scene;
+	ft_memset(&cmd, 0, sizeof(cmd));
 	if (gui->selection.type == TYPE_SPHERE)
 	{
-		sc->spheres[gui->selection.index].transform.pos = gui->transform.pos;
-		sc->spheres[gui->selection.index].phys.pos = gui->transform.pos;
 		sphere_scale_sync(gui);
+		cmd.type = CMD_SET_POS;
+		cmd.data.transform.obj_type = TYPE_SPHERE;
+		cmd.data.transform.index = gui->selection.index;
+		cmd.data.transform.pos = gui->transform.pos;
+		cmd.data.transform.scale = gui->transform.scale;
+		cmd_enqueue(gui, cmd);
 	}
 	else if (gui->selection.type == TYPE_PLANE)
 	{
-		sc->planes[gui->selection.index].transform.pos = gui->transform.pos;
-		sc->planes[gui->selection.index].transform.forward = vec3_norm(
-				mat4_mul_vec3(mat4_rotation(gui->transform.rotation),
-					(t_vec3){0, 1, 0, 0}));
+		cmd.type = CMD_SET_POS;
+		cmd.data.transform.obj_type = TYPE_PLANE;
+		cmd.data.transform.index = gui->selection.index;
+		cmd.data.transform.pos = gui->transform.pos;
+		cmd.data.transform.rot = gui->transform.rotation;
+		cmd_enqueue(gui, cmd);
 	}
 	else if (gui->selection.type == TYPE_MESH)
 		mesh_transform_sync(gui);
 	else if (gui->selection.type == TYPE_LIGHT)
-		sc->lights[gui->selection.index].transform.pos = gui->transform.pos;
+	{
+		cmd.type = CMD_SET_POS;
+		cmd.data.transform.obj_type = TYPE_LIGHT;
+		cmd.data.transform.index = gui->selection.index;
+		cmd.data.transform.pos = gui->transform.pos;
+		cmd_enqueue(gui, cmd);
+	}
 }
 
-void	transform_panel_sync(t_gui *gui)
+static t_transform	*get_sel_transform(t_gui *gui)
 {
 	t_scene	*sc;
 
 	sc = gui->scene;
 	if (gui->selection.type == TYPE_SPHERE)
-		gui->transform.pos = sc->spheres[gui->selection.index].transform.pos;
-	else if (gui->selection.type == TYPE_PLANE)
-		gui->transform.pos = sc->planes[gui->selection.index].transform.pos;
-	else if (gui->selection.type == TYPE_MESH)
-		gui->transform.pos = sc->groups[gui->selection.index].transform.pos;
-	else if (gui->selection.type == TYPE_LIGHT)
-		gui->transform.pos = sc->lights[gui->selection.index].transform.pos;
+		return (&sc->spheres[gui->selection.index].transform);
+	if (gui->selection.type == TYPE_PLANE)
+		return (&sc->planes[gui->selection.index].transform);
+	if (gui->selection.type == TYPE_CYLINDER)
+		return (&sc->cylinders[gui->selection.index].transform);
+	if (gui->selection.type == TYPE_MESH)
+		return (&sc->groups[gui->selection.index].transform);
+	if (gui->selection.type == TYPE_LIGHT)
+		return (&sc->lights[gui->selection.index].transform);
+	return (NULL);
+}
+
+void	transform_panel_sync(t_gui *gui)
+{
+	t_transform	*src;
+
+	src = get_sel_transform(gui);
+	if (!src)
+		return ;
+	gui->transform.pos = src->pos;
+	gui->transform.rotation = src->rotation;
+	gui->transform.scale = src->scale;
 }

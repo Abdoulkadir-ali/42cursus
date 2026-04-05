@@ -39,14 +39,18 @@ static void	load_from_image(t_json_value *json, char *bin, t_material *mat,
 void	load_glb_base_texture(t_json_value *json, char *bin,
 			t_material *mat, t_json_value *pbr)
 {
-	t_json_value	*base_color_tex;
+	t_json_value	*tex_node;
 	t_json_value	*t;
 	t_index			tex_idx;
 
-	base_color_tex = json_get(pbr, "baseColorTexture");
-	if (!base_color_tex)
+	tex_node = json_get(pbr, "baseColorTexture");
+	if (!tex_node)
+		tex_node = json_get(pbr, "diffuseTexture");
+	if (!tex_node)
+		tex_node = json_get(pbr, "albedoTexture");
+	if (!tex_node)
 		return ;
-	tex_idx = json_get_size_t(base_color_tex, "index");
+	tex_idx = json_get_size_t(tex_node, "index");
 	if (tex_idx.error)
 		return ;
 	t = json_at(json_get(json, "textures"), tex_idx.i);

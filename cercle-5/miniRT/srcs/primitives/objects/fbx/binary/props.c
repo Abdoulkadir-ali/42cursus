@@ -46,12 +46,12 @@ static void	skip_array_prop(int fd, char type)
 		return ;
 	}
 	isz = fbx_array_elem_size(type);
-	lseek(fd, (uint64_t)alen * isz, SEEK_CUR);
+	lseek(fd, (size_t)alen * isz, SEEK_CUR);
 }
 
-void	skip_properties(int fd, uint64_t num_props)
+void	skip_properties(int fd, size_t num_props)
 {
-	uint64_t	i;
+	size_t	i;
 	char		type;
 
 	i = 0;

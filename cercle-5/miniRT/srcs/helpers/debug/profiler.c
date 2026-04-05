@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 17:12:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 15:26:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ static void	prof_print_benchmark(int max_frames)
 	}
 	if (g_frame_count > 2)
 		avg /= (g_frame_count - 2);
-	printf("\n=== BENCHMARK (%d frames, skipped first 2) ===\n", max_frames);
-	printf("Avg frame: %.1f ms (%.1f FPS)\n", avg, 1000.0 / avg);
+	ft_print_debug("\n=== BENCHMARK (%d frames, skipped first 2) ===\n", max_frames);
+	ft_print_debug("Avg frame: %.1f ms (%.1f FPS)\n", avg, 1000.0 / avg);
 	fflush(stdout);
 }
 

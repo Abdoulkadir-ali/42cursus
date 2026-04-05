@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 11:06:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 09:33:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:12:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stddef.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include "time.h"
+
 
 typedef void	*(*t_worker_func)(void *);
 

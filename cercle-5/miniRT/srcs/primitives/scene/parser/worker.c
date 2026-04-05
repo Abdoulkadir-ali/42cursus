@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   loader.c                                           :+:      :+:    :+:   */
+/*   worker.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 11:25:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:33:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ static void	inject_results(t_scene *sc, t_rt_line_task *t)
 {
 	size_t	i;
 
-	i = -1;
-	while (++i < t->count)
+	i = 0;
+	while (i < t->count)
 	{
 		if (t->statuses[i])
 		{
@@ -85,7 +85,7 @@ static void	inject_results(t_scene *sc, t_rt_line_task *t)
 			else
 				process_object(sc, t->results[i]);
 		}
-		free(t->lines[i]);
+		free(t->lines[i++]);
 	}
 	free(t->lines);
 	free(t->results);

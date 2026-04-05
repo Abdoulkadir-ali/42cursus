@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   entry.c                                            :+:      :+:    :+:   */
+/*   worker.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 09:28:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 11:47:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,38 @@ static void	*glb_mesh_worker(void *ptr)
 		v[1] = json_at(json_get(json_at(v[0], i), "primitives"), 0);
 		midx = json_get_size_t(v[1], "material");
 		if (!midx.error && task->mat_ids)
+		{
 			task->meshes[i].mat_id = task->mat_ids[midx.i].i;
+			ft_print_debug("GLB Mesh %zu mat_id: %zu\n", i, task->meshes[i].mat_id);
+		}
 		else
+		{
 			task->meshes[i].mat_id = (size_t)-1;
+			ft_print_debug("GLB Mesh %zu has NO material\n", i);
+		}
+		
+		/* Find node that uses this mesh */
+		task->meshes[i].node_idx = (t_index){0, true};
+		task->meshes[i].node_transform = mat4_identity();
+		t_json_value *nodes = json_get(task->json, "nodes");
+		if (nodes && nodes->type == JSON_ARRAY)
+		{
+			size_t k = 0;
+			while (k < nodes->u.array.count)
+			{
+				t_json_value *node = json_at(nodes, k);
+				t_index m_idx_json = json_get_size_t(node, "mesh");
+				if (!m_idx_json.error && m_idx_json.i == i)
+				{
+					task->meshes[i].node_idx = (t_index){k, false};
+					task->meshes[i].node_transform = glb_compute_world_transform(task->json, k);
+					break;
+				}
+				k++;
+			}
+		}
+		ft_print_debug("GLB Mesh Worker: i=%zu, sizeof(t_mesh)=%zu\n", i, sizeof(t_mesh));
+		glb_finalize_mesh(&task->meshes[i]);
 		if (json_get(task->json, "skins"))
 			glb_load_skeleton(&task->meshes[i], task->json, task->bin,
 				glb_count_extra_anim_nodes(task->json));
@@ -80,6 +109,41 @@ static void	load_glb_meshes_into_scene(t_json_value *json, char *bin,
  * Parses the binary header, extracts JSON and binary chunks, and
  * delegates the mesh and animation loading.
  */
+static void	init_mesh_anim_defaults(t_scene *scene)
+{
+	size_t		i;
+	t_mesh		*m;
+	t_mesh_anim	defaults;
+
+	defaults.clip_idx = (scene->clip_count > 0) ? 0 : -1;
+	defaults.time = 0.0;
+	defaults.speed = 1.0;
+	defaults.looping = true;
+	defaults.paused = false;
+	ft_print_debug("[ANIM] init_mesh_anim_defaults: %zu meshes, %zu clips\n",
+		scene->mesh_count, scene->clip_count);
+	i = 0;
+	while (i < scene->mesh_count)
+	{
+		m = &scene->meshes[i];
+		if (m->skeleton && m->bone_count > 0)
+		{
+			m->anim = defaults;
+			ft_print_debug(
+				"[ANIM]   mesh[%zu] '%s': skinned, clip_idx=%d looping=%d\n",
+				i, m->name ? m->name : "?",
+				m->anim.clip_idx, m->anim.looping);
+		}
+		else
+		{
+			ft_memset(&m->anim, 0, sizeof(t_mesh_anim));
+			ft_print_debug("[ANIM]   mesh[%zu] '%s': no skeleton\n",
+				i, m->name ? m->name : "?");
+		}
+		i++;
+	}
+}
+
 bool	parse_glb_worker(const char *path, t_scene *scene)
 {
 	size_t			size;
@@ -118,9 +182,11 @@ bool	parse_glb_worker(const char *path, t_scene *scene)
 	glb_load_animations(scene, json, bin);
 	ft_print_debug("GLB: Animations loaded (%zu clips in scene)\n",
 		scene->clip_count);
+	init_mesh_anim_defaults(scene);
 	free(mat_ids);
 	json_free(json);
 	free(buf);
+	ft_print_debug("GLB: parse_glb_worker: sizeof(t_mesh)=%zu\n", sizeof(t_mesh));
 	ft_print_debug("GLB: '%s' fully loaded\n", path);
 	return (true);
 }

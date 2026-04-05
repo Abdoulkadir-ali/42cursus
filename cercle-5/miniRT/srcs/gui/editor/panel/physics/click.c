@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:16:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 19:31:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,23 @@ bool	physics_panel_handle_click(t_gui *gui, t_vec2i mouse,
 
 	if (!phys)
 		return (false);
-	p.x = gui->win.disp_size.x - gui->inspector.width;
-	p.y = 140;
+	p.x = gui->win.disp_size.x - gui->inspector.width + ui_sx(8, gui->win.disp_size);
+	p.y = ui_sy(90 + INSP_HDR_STEP + 30 + 34 + INSP_HDR_STEP, gui->win.disp_size);
 	get_phys_sliders(phys, sl);
 	i = 0;
 	while (i < 3)
 	{
-		if (try_islider_click(gui, mouse, (t_vec2i){p.x + 8, p.y}, sl[i]))
+		if (insp_row_click(gui, mouse, p, sl[i]))
 			return (true);
-		p.y += 30;
+		p.y += ui_sy(INSP_ROW_STEP, gui->win.disp_size);
 		i++;
+	}
+	if (insp_toggle_click(gui, mouse, p))
+	{
+		phys->is_static = !phys->is_static;
+		gui->render.dirty = true;
+		return (true);
 	}
 	return (false);
 }
+

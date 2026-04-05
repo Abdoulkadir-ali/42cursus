@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 10:34:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:33:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,15 @@ static void	get_best(t_cap_calc *c)
 
 	c->best = 1e30;
 	c->type = -1;
-	i = -1;
-	while (++i < 3)
+	i = 0;
+	while (i < 3)
 	{
 		if (c->hit[i] && c->t[i] < c->best)
 		{
 			c->best = c->t[i];
 			c->type = i;
 		}
+		i++;
 	}
 }
 

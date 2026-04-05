@@ -1,0 +1,61 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   slider_draw.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/05 11:09:34 by abdoali          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "editor.h"
+
+void	fill_rect_row(t_gui *gui, t_vec2i pos, int w, unsigned int col)
+{
+	char	*dst;
+	int		i;
+
+	if (pos.y >= gui->win.disp_size.y)
+		return ;
+	i = 0;
+	while (i < w)
+	{
+		if ((size_t)(pos.x + i) < gui->win.disp_size.x)
+		{
+			dst = gui->win.disp_addrs[gui->render.ui_buf_idx]
+				+ (pos.y * gui->win.disp_line_len + (pos.x + i) * 4);
+			*(unsigned int *)dst = col;
+		}
+		i++;
+	}
+}
+
+void	fill_rect(t_gui *gui, t_vec2i pos, t_vec2i size, unsigned int col)
+{
+	size_t	j;
+
+	j = 0;
+	while (j < (size_t)size.y)
+	{
+		fill_rect_row(gui, vec2i(pos.x, pos.y + (int)j), size.x, col);
+		j++;
+	}
+}
+
+void	draw_slider_fill(t_gui *gui, t_vec2i pos, int fill_w, int total_w)
+{
+	int	knob_x;
+
+	fill_rect(gui, pos, vec2i(total_w, 8), (unsigned int)COL_SLIDER_BG);
+	fill_rect(gui, pos, vec2i(total_w, 1), (unsigned int)COL_BORDER);
+	fill_rect(gui, vec2i(pos.x, pos.y + 7), vec2i(total_w, 1),
+		(unsigned int)COL_BORDER);
+	if (fill_w > 0)
+		fill_rect(gui, pos, vec2i(fill_w, 8), (unsigned int)COL_SLIDER_FG);
+	knob_x = pos.x + fill_w - 1;
+	if (knob_x < (int)pos.x)
+		knob_x = pos.x;
+	fill_rect(gui, vec2i(knob_x, pos.y - 2), vec2i(3, 12), 0xE0E0E0U);
+}

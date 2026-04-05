@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:24:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:44:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "t_meshes.h"
 # include "t_surface.h"
 # include "thread.h"
+# include "t_raytracing.h"
 
 # define MAX_MODEL_CACHE 64
 
@@ -115,11 +116,13 @@ typedef struct s_scene
 	size_t				clip_cap;
 
 	struct s_bvh		*bvh;
+	pthread_rwlock_t	bvh_lock;
 	t_emissive_ref		*emissive_cache;
 	size_t				emissive_n;
 	t_model_cache		cache[MAX_MODEL_CACHE];
 	size_t				cache_count;
 	t_thread_pool		*pool;
+	const t_raytracer_settings	*opts;
 }						t_scene;
 
 #endif

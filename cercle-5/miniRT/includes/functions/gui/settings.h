@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "editor.h"
 
 # define SETTINGS_W			400
-# define SETTINGS_H			490
+# define SETTINGS_H			580
 # define SETTINGS_BTN_W		88
 # define SETTINGS_BTN_H		22
 # define SETTINGS_TAB_COUNT	3
@@ -39,6 +39,8 @@ void	settings_open(struct s_gui *gui);
 void	settings_close(struct s_gui *gui);
 void	draw_settings(struct s_gui *gui);
 bool	settings_handle_click(struct s_gui *gui, t_vec2i mouse);
+void	settings_handle_drag(struct s_gui *gui, t_vec2i mouse);
+void	settings_end_drag(struct s_gui *gui);
 
 /* srcs/gui/settings/utils.c */
 void	draw_radio_row(struct s_gui *gui, t_vec2i pos, t_iradio r, size_t w);

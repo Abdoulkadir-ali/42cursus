@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 15:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 15:26:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 static void	print_node_info(const t_bvh_node *n, size_t idx)
 {
 	if (n->count > 0)
-		printf("leaf(refs[%zu..%zu], bbox: ", n->left_or_first,
+		ft_print_debug("leaf(refs[%zu..%zu], bbox: ", n->left_or_first,
 			n->left_or_first + n->count - 1);
 	else
-		printf("internal(left=%zu, right=%zu, bbox: ", idx + 1,
+		ft_print_debug("internal(left=%zu, right=%zu, bbox: ", idx + 1,
 			n->left_or_first);
 	print_vec3((t_vec3 *)&n->bbox.min);
-	printf(" to ");
+	ft_print_debug(" to ");
 	print_vec3((t_vec3 *)&n->bbox.max);
-	printf(")\n");
+	ft_print_debug(")\n");
 }
 
 void	print_bvh_node(const t_bvh *b, size_t idx, size_t depth)
@@ -37,7 +37,7 @@ void	print_bvh_node(const t_bvh *b, size_t idx, size_t depth)
 	i = 0;
 	while (i < depth)
 	{
-		printf("  ");
+		ft_print_debug("  ");
 		i++;
 	}
 	print_node_info(n, idx);
@@ -52,10 +52,10 @@ void	print_bvh(t_bvh *b)
 {
 	if (!b)
 		return ;
-	printf("bvh(nodes=%zu, refs=%zu\n", b->num_nodes, b->num_refs);
+	ft_print_debug("bvh(nodes=%zu, refs=%zu\n", b->num_nodes, b->num_refs);
 	if (b->num_nodes > 0)
 		print_bvh_node(b, 0, 1);
 	else
-		printf("  empty\n");
-	printf(")\n");
+		ft_print_debug("  empty\n");
+	ft_print_debug(")\n");
 }

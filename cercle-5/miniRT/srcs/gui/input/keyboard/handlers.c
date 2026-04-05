@@ -65,6 +65,20 @@ int	key_press(int keycode, t_gui *gui)
 		return (0);
 	if (keycode == XK_Shift_L || keycode == XK_Shift_R)
 		gui->crud.shift_held = true;
+	/* inspector text edit captures keys when active */
+	if (gui->slider_state.insp_edit.active)
+	{
+		insp_input_key(gui, keycode);
+		if (keycode != XK_Escape)
+			return (0);
+	}
+	/* input box captures all keys when focused */
+	if (gui->focused_widget)
+	{
+		widget_handle_key(gui, keycode);
+		if (keycode != XK_Escape)
+			return (0);
+	}
 	if (popup_handle_key(gui, keycode))
 		return (0);
 	handle_misc_keys(keycode, gui);

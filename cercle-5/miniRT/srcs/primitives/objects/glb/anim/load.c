@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:32:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 17:48:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:34:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 		return ;
 	anim->channel_count = json_get(anim_json, "channels")->u.array.count;
 	anim->channels = malloc(sizeof(t_anim_channel) * anim->channel_count);
-	i = -1;
-	while (++i < anim->channel_count)
+	i = 0;
+	while (i < anim->channel_count)
 	{
 		ch = json_at(json_get(anim_json, "channels"), i);
 		tgt = json_get(ch, "target");
@@ -38,6 +38,7 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 			anim->channels[i].path = PATH_ROTATION;
 		else if (path && !strcmp(path, "scale"))
 			anim->channels[i].path = PATH_SCALE;
+		i++;
 	}
 }
 
@@ -84,8 +85,8 @@ void	glb_load_animations(t_scene *scene, t_json_value *json, char *bin)
 	ft_print_debug("GLB: Parsing %zu animation clip(s)...\n",
 		anims->u.array.count);
 	glb_ensure_clip_capacity(scene, anims->u.array.count);
-	i = -1;
-	while (++i < anims->u.array.count)
+	i = 0;
+	while (i < anims->u.array.count)
 	{
 		clip = &scene->clips[scene->clip_count + i];
 		assign_anim_data(clip, json_at(anims, i));
@@ -101,6 +102,7 @@ void	glb_load_animations(t_scene *scene, t_json_value *json, char *bin)
 		load_channels(json_at(anims, i), clip);
 		ft_print_debug("GLB: Anim %zu: %zu channels loaded\n",
 			i + 1, clip->channel_count);
+		i++;
 	}
 	scene->clip_count += anims->u.array.count;
 }

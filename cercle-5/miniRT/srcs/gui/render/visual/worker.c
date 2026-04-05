@@ -6,26 +6,41 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 12:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:02:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "optimizations.h"
 #include "thread.h"
+#include <sys/time.h>
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 static void	process_worker_tiles(t_render *render)
 {
-	size_t	id;
+	size_t		id;
+	long long	start;
+	long long	duration;
 
 	while (1)
 	{
 		id = __sync_fetch_and_add(&render->next_tile_id, 1);
 		if (id >= render->total_tiles)
 			break ;
+		if (__sync_fetch_and_add(&render->gui->render.abort_render, 0))
+			return ;
+		start = now_ms();
 		render_tile(render, id);
+		duration = now_ms() - start;
+		if (id == 0 || id % 50 == 0 || duration > 10)
+		{
+			ft_print_debug("[TILE %zu] Done in %lld ms | Total %zu/%zu (%.1f%%)%s\n",
+				id, duration, id, render->total_tiles,
+				100.0 * id / (double)render->total_tiles,
+				duration > 50 ? " <--- SLOW" : "");
+			fflush(stdout);
+		}
 	}
 }
 
@@ -67,14 +82,19 @@ void	render_tiles_worker(t_render *render)
 {
 	t_render_task	task;
 	t_scene			*sc;
+	long long		start;
 
 	sc = render->gui->scene;
 	if (!sc || !sc->pool)
 		return ;
+	sc->opts = &render->gui->rt_engine.settings;
 	task.gui = render->gui;
 	task.render = render;
 	task.type = TASK_RENDER;
+	start = now_ms();
+	ft_print_debug("[RENDER] Started tiled rendering...\n");
 	parallel_run(sc->pool, sc->pool->count, gui_worker, &task);
+	ft_print_debug("[RENDER] Total tiled rendering took %lld ms\n", now_ms() - start);
 }
 
 void	gui_parallel_task_worker(t_gui *gui, t_pool_task type)

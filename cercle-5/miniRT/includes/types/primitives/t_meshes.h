@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 08:35:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:51:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ typedef struct s_mesh_group
 typedef struct s_bone
 {
 	char				*name;
-	size_t				parent;
+	t_index				parent;
 	size_t				node_idx;
 	t_mat4				offset_matrix;
 	t_mat4				local_transform;
@@ -93,6 +93,7 @@ typedef struct s_mbvh_node
 	size_t				left_or_first;
 	size_t				count;
 	int					axis;
+	size_t				depth;
 }						t_mbvh_node;
 
 typedef struct s_bin
@@ -176,7 +177,17 @@ typedef struct s_mbvh
 	t_mesh_build_item	*items;
 	t_mbvh_node			*nodes;
 	size_t				node_count;
+	size_t				max_depth;
 }						t_mbvh;
+
+typedef struct s_mesh_anim
+{
+	int		clip_idx;
+	double	time;
+	double	speed;
+	bool	looping;
+	bool	paused;
+}						t_mesh_anim;
 
 typedef struct s_mesh
 {
@@ -200,6 +211,7 @@ typedef struct s_mesh
 	t_bone_weight		*weights;
 	size_t				bone_count;
 	t_mat4				*bone_matrices;
+	t_mesh_anim			anim;
 
 	/* Physics and Intersection (BVH) */
 	struct s_mbvh_node	*bvh_nodes;
@@ -207,10 +219,12 @@ typedef struct s_mesh
 	size_t				bvh_node_count;
 	struct s_collider	collider;
 	size_t				mat_id;
-	size_t				group_id;
+	t_index					group_id;
 	t_aabb				bbox;
 	struct s_bvh		*bvh;
 	char				*name;
+	t_index				node_idx;
+	t_mat4				node_transform;
 	t_vec3				color;
 	void				*extra;
 	t_physics_body		phys;
@@ -218,6 +232,7 @@ typedef struct s_mesh
 	t_mat4				scene_mat;
 	t_mat4				scene_rot_mat;
 	bool				has_scene_transform;
+	bool				bvh_dirty;
 	t_transform			transform;
 	t_mat4				scene_transform;
 }						t_mesh;
@@ -246,6 +261,9 @@ typedef struct s_mesh_resource
 	size_t				mat_count;
 	size_t				mat_cap;
 	struct s_material	*materials;
+	size_t				clip_count;
+	size_t				clip_cap;
+	struct s_animation	*clips;
 }						t_mesh_resource;
 
 typedef struct s_mesh_info
@@ -334,9 +352,9 @@ typedef struct s_child
 
 typedef struct s_fbx_bin_node
 {
-	uint64_t			end_offset;
-	uint64_t			num_properties;
-	uint64_t			property_list_len;
+	size_t			end_offset;
+	size_t			num_properties;
+	size_t			property_list_len;
 	uint8_t				name_len;
 	char				name[1024];
 }						t_fbx_bin_node;

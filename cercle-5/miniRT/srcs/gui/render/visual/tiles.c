@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:50:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 18:01:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,24 @@ void	render_tile(t_render *render, size_t id)
 		+ (v.tile.x * (render->gui->win.bpp / 8));
 	v.bpp_step = (render->gui->win.bpp / 8) * render->step;
 	v.row_step = render->gui->win.line_len * render->step;
+	long long	row_start;
+	int			row_count = 0;
+
+	if (id == 0)
+	{
+		ft_print_debug("[TILE %zu] STARTING AT (%zu, %zu)\n", id, v.tile.x, v.tile.y);
+		fflush(stdout);
+	}
 	while (v.p_pos.y < v.tile.y + TILE_SIZE
 		&& v.p_pos.y < render->gui->win.size.y)
 	{
+		row_start = now_ms();
 		process_tile_row(render, &v);
+		if (id == 0)
+		{
+			ft_print_debug("[TILE %zu] Row %d done in %lld ms\n", id, row_count++, now_ms() - row_start);
+			fflush(stdout);
+		}
 		v.p_pos.y += render->step;
 		v.row_ptr += v.row_step;
 	}

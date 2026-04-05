@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 21:36:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,13 @@ static bool	occlude_cy_cap(const t_ray *ray, t_cylinder *cy,
  */
 bool	occlude_cylinder(const t_ray *ray, t_cylinder *cy, double max_t)
 {
+	t_vec3	top;
+
 	if (occlude_cy_body(ray, cy, max_t))
 		return (true);
 	if (occlude_cy_cap(ray, cy, cy->transform.pos, max_t))
 		return (true);
-	return (occlude_cy_cap(ray, cy, cy->top, max_t));
+	top = vec3_add(cy->transform.pos, vec3_scale(cy->transform.forward,
+				cy->transform.scale.y));
+	return (occlude_cy_cap(ray, cy, top, max_t));
 }

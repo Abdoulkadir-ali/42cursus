@@ -39,6 +39,8 @@ size_t	pick_occ_children(t_mesh *mesh, t_index node_idx, const t_ray *ray,
 		c.hit_r = false;
 	if (c.hit_l && c.hit_r)
 	{
+		if (occ->top >= 64)
+			return (c.left_idx);
 		if (c.tl_min > c.tr_min)
 		{
 			occ->stack[occ->top++] = c.left_idx;

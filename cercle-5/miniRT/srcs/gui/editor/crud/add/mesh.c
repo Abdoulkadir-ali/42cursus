@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 10:00:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:51:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void	glb_load_logic(t_gui *gui, size_t mesh_start, const char *path)
 			return ;
 		i = mesh_start;
 		while (i < gui->scene->mesh_count)
-			gui->scene->meshes[i++].group_id = gui->scene->group_count;
+			gui->scene->meshes[i++].group_id = (t_index){gui->scene->group_count, false};
 		gui->scene->group_count++;
 	}
 	else
@@ -67,8 +67,7 @@ void	editor_add_obj(t_gui *gui, const char *path)
 	if (!scene_parse_obj_worker(path, gui->scene))
 		return ;
 	glb_post_process(gui, mesh_start, path);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }
 
 void	editor_add_glb(t_gui *gui, const char *path)
@@ -80,6 +79,5 @@ void	editor_add_glb(t_gui *gui, const char *path)
 	mesh_start = gui->scene->mesh_count;
 	glb_load_logic(gui, mesh_start, path);
 	glb_post_process(gui, mesh_start, path);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/04 21:36:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,13 @@ bool	check_bottom_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 */
 bool	check_top_cap(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit)
 {
+	t_vec3		top;
 	t_ray_query	q;
 
 	q.ray = ray;
 	q.tm = tm;
 	q.hit = hit;
-	return (check_cap(&q, cy, cy->top, 1.0));
+	top = vec3_add(cy->transform.pos, vec3_scale(cy->transform.forward,
+				cy->transform.scale.y));
+	return (check_cap(&q, cy, top, 1.0));
 }

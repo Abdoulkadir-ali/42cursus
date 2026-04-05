@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 11:05:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 15:26:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static int	run_app(const char *path)
 	t_gui	*gui;
 	void	*mlx;
 
-	printf("RUN_APP_START: path='%s'\n", path);
+	ft_print_debug("RUN_APP_START: path='%s'\n", path);
 	fflush(stdout);
 	ft_print_debug("DEBUG: Initializing MLX\n");
 	mlx = mlx_init();
@@ -93,7 +93,7 @@ int	main(int ac, char **av)
 {
 	const char	*path;
 
-	printf("---= MINIRT STARTUP =---\n");
+	ft_print_debug("---= MINIRT STARTUP =---\n");
 	fflush(stdout);
 	setlocale(LC_NUMERIC, "C");
 	path = "maps/rt/test2.rt";

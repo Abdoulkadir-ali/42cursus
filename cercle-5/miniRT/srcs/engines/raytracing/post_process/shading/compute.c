@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:33:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:05:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void	setup_shading(t_shading *sha, t_hit *hit, t_scene *scene,
 	sha->hit = hit;
 	sha->scene = scene;
 	sha->bvh = bvh;
+	sha->opts = scene->opts;
 	get_material(sha);
 	sha->albedo = sample_texture(&sha->mat.albedo_map, hit->u, hit->v);
 	if (sha->mat.roughness_map.type == TEX_BITMAP)

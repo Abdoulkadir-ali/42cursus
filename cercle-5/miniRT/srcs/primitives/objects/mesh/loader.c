@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:48:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 20:53:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 12:17:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ bool	mesh_build_resource(t_thread_pool *pool, const char *path,
 		res->groups = tmp.groups;
 		res->group_count = tmp.group_count;
 		res->group_cap = tmp.group_cap;
+		res->clips = tmp.clips;
+		res->clip_count = tmp.clip_count;
+		res->clip_cap = tmp.clip_cap;
 	}
 	return (ret);
 }

@@ -43,8 +43,7 @@ void	editor_add_sphere(t_gui *gui)
 	sp.inv_scale = vec3(1, 1, 1);
 	scene_add_sphere(gui->scene, sp);
 	select_object(gui, TYPE_SPHERE, gui->scene->sphere_count - 1);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }
 
 void	editor_add_plane(t_gui *gui)
@@ -59,6 +58,5 @@ void	editor_add_plane(t_gui *gui)
 	pl.temp_color = vec3(0.5, 0.5, 0.55);
 	scene_add_plane(gui->scene, pl);
 	select_object(gui, TYPE_PLANE, gui->scene->plane_count - 1);
-	rebuild_bvh(gui);
-	gui->render.dirty = true;
+	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
 }

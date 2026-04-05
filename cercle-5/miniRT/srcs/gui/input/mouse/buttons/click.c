@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:21:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:19:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ int	mouse_release(int button, t_gui *gui)
 	ft_print_debug("RELEASE: btn=%d\n", button);
 	if (button == BUTTON_LEFT)
 	{
+		widget_handle_release(gui);
 		end_inline_drag(gui);
+		settings_end_drag(gui);
 		gui->cam_ctrl.mouse_left_pressed = false;
 	}
 	else if (button == BUTTON_MIDDLE)

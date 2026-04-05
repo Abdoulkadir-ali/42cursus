@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:29:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@
 
 void	optimize_frames(t_gui *gui, double delta)
 {
-	if (gui->render.opts.adaptive_scale)
-		adaptive_scale(gui);
 	if (gui->render.opts.reprojection)
 		reproject_frame(gui);
 	if (gui->render.opts.temporal_blend)
@@ -49,4 +47,10 @@ void	optimizations_init(t_gui *gui)
 	gui->render.opts.temporal_blend = false;
 	gui->render.opts.frame_interp = false;
 	gui->render.opts.taa = false;
+	gui->rt_engine.settings.blinn_phong = true;
+	gui->rt_engine.settings.brightness = 50.0;
+	gui->rt_engine.settings.contrast = 50.0;
+	gui->rt_engine.settings.saturation = 50.0;
+	gui->rt_engine.settings.gamma = 50.0;
+	gui->rt_engine.settings.preset = RT_PRESET_NATURAL;
 }

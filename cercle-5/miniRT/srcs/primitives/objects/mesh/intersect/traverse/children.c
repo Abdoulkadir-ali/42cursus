@@ -27,6 +27,8 @@ size_t	select_child(t_child *c, t_trace *trace)
 {
 	if (c->hit_l && c->hit_r)
 	{
+		if (trace->top >= 64)
+			return (c->left_idx);
 		if (c->tl_min > c->tr_min)
 		{
 			trace->stack[trace->top++] = c->left_idx;

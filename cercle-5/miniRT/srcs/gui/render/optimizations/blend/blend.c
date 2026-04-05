@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 10:14:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	blend_temporal(t_gui *gui, double dt)
 	if (!gui->render.prev_buf)
 		return ;
 	alpha = calc_alpha(dt);
-	disp = (uint32_t *)gui->win.disp_addr;
+	disp = (uint32_t *)gui->win.disp_addrs[1 - gui->render.front_idx];
 	prev = gui->render.prev_buf;
 	n = (size_t)gui->win.disp_size.x * gui->win.disp_size.y;
 	i = 0;
