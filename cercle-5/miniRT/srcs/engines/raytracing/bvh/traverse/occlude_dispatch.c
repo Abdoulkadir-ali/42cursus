@@ -15,22 +15,18 @@
 static bool	occ_sphere(const t_ray *ray, t_sphere *sp, double max_t)
 {
 	t_vec3	oc;
-	double	hb;
-	double	c;
+	double	b;
 	double	disc;
-	double	sq;
 	double	t;
 
 	oc = vec3_sub(ray->origin, sp->transform.pos);
-	hb = vec3_dot(oc, ray->direction);
-	c = vec3_dot(oc, oc) - sp->radius_sq;
-	disc = hb * hb - c;
+	b = vec3_dot(oc, ray->direction);
+	disc = b * b - (vec3_dot(oc, oc) - sp->radius_sq);
 	if (disc < 0.0)
 		return (false);
-	sq = sqrt(disc);
-	t = -hb - sq;
+	t = -b - sqrt(disc);
 	if (t < EPSILON)
-		t = -hb + sq;
+		t = -b + sqrt(disc);
 	return (t > EPSILON && t < max_t);
 }
 

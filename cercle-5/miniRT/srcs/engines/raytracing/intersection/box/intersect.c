@@ -69,13 +69,10 @@ bool	intersect_box(const t_ray *ray, t_box *bx, t_hit *hit)
 	mm[0] = -1e30;
 	mm[1] = 1e30;
 	face = 0;
-	i = 0;
-	while (i < 3)
-	{
+	i = -1;
+	while (++i < 3)
 		if (!test_axis(&c, i, mm, &face))
 			return (false);
-		i++;
-	}
 	if (mm[0] < 1e-6)
 		return (false);
 	hit->t = mm[0];

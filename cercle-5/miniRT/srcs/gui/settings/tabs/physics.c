@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:20:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:20:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	draw_settings_physics_tab(t_gui *gui, t_vec2i o)
 	i = 0;
 	while (i < 3)
 	{
-		draw_slider_row(gui, vec2i(o.x + 8, y), sl[i]);
+			draw_settings_slider(gui, vec2i(o.x + 8, y), sl[i]);
 		y += SETTINGS_ROW_H + 4;
 		i++;
 	}
@@ -72,7 +72,7 @@ bool	click_settings_physics_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 	i = 0;
 	while (i < 3)
 	{
-		if (try_islider_click(gui, mouse, vec2i(o.x + 8, y), sl[i]))
+			if (try_settings_slider_click(gui, mouse, vec2i(o.x + 8, y), sl[i]))
 			return (true);
 		y += SETTINGS_ROW_H + 4;
 		i++;

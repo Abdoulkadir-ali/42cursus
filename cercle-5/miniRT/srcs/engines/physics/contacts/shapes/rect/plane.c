@@ -59,7 +59,7 @@ size_t	rect_vs_all_planes(t_contact_query *qu, t_rect *rc)
 		i = 0;
 		while (i < 4 && qu->count < qu->max)
 		{
-				check_rect_vert(qu, rc, &qu->engine->scene->planes[p], i);
+			check_rect_vert(qu, rc, &qu->engine->scene->planes[p], i);
 			i++;
 		}
 		p++;

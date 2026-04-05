@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:38:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:18:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 	i = 0;
 	while (i < 4)
 	{
-		draw_slider_row(gui, vec2i(o.x + 8, y), sl[i]);
+		draw_settings_slider(gui, vec2i(o.x + 8, y), sl[i]);
 		y += 36;
 		i++;
 	}
@@ -159,7 +159,7 @@ bool	click_settings_raytracer_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 	i = 0;
 	while (i < 4)
 	{
-		if (try_islider_click(gui, mouse, vec2i(o.x + 8, y), sl[i]))
+		if (try_settings_slider_click(gui, mouse, vec2i(o.x + 8, y), sl[i]))
 			return (true);
 		y += 36;
 		i++;

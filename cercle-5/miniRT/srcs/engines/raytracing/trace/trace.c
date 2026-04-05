@@ -10,35 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+/* ************************************************************************** */
+
 #include "raytracing.h"
-
-static inline double	safe_rcp(double d)
-{
-	double	ad;
-
-	ad = __builtin_fabs(d);
-	if (__builtin_expect(ad < 1e-20, 0))
-		d = __builtin_copysign(1e-20, d);
-	return (1.0 / d);
-}
-
-static inline void	ray_compute_inv(t_ray *ray)
-{
-	ray->inv_dir = vec3(safe_rcp(ray->direction.x),
-			safe_rcp(ray->direction.y), safe_rcp(ray->direction.z));
-	ray->sign[0] = (ray->inv_dir.x < 0);
-	ray->sign[1] = (ray->inv_dir.y < 0);
-	ray->sign[2] = (ray->inv_dir.z < 0);
-}
-
-void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction)
-{
-	ray->origin = origin;
-	ray->direction = direction;
-	ray->depth = 0;
-	ray->weight = 1.0;
-	ray_compute_inv(ray);
-}
 
 static void	check_planes(const t_ray *ray, t_scene *sc, t_hit *hit, bool *any)
 {
@@ -89,7 +63,8 @@ t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *sc)
 	return (do_trace(bvh, ray, sc, NULL));
 }
 
-t_vec3	trace_ray_ex(const t_bvh *bvh, const t_ray *ray, t_scene *sc, float *out_t)
+t_vec3	trace_ray_ex(const t_bvh *bvh, const t_ray *ray, t_scene *sc,
+		float *out_t)
 {
 	return (do_trace(bvh, ray, sc, out_t));
 }

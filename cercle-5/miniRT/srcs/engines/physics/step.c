@@ -26,7 +26,10 @@ void	physics_step(t_gui *gui, double delta)
 
 	if (!gui->scene || !gui->physics_enabled)
 		return ;
-	fixed_dt = (gui->phys_fixed_dt > 0.0) ? gui->phys_fixed_dt : (1.0 / 60.0);
+	if (gui->phys_fixed_dt > 0.0)
+		fixed_dt = gui->phys_fixed_dt;
+	else
+		fixed_dt = 1.0 / 60.0;
 	if (delta > fixed_dt * 3.0)
 		delta = fixed_dt * 3.0;
 	gui->phys_accumulator += delta;

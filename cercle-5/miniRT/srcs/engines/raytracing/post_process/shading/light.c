@@ -48,7 +48,7 @@ static double	calc_specular(t_shading *sha, t_vec3 ld_norm)
 	if (sha->opts && sha->opts->blinn_phong)
 		return ((double)powf(ndoth, (float)sha->mat.shininess));
 	return ((double)(ndoth / (sha->mat.shininess
-				- sha->mat.shininess * ndoth + ndoth)));
+			- sha->mat.shininess * ndoth + ndoth)));
 }
 
 /*

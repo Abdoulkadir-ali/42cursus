@@ -32,89 +32,72 @@ static void	process_leaf(const t_bvh *bvh, size_t node_idx, const t_ray *r,
 	}
 }
 
-static void	push_children(size_t *stack, size_t *top, const t_bvh *bvh,
-		double *stk_t, const t_ray *ray, size_t node_idx, double cur_t)
+static void	push_to_trav(t_bvh_trav *v, size_t idx, double t)
 {
-	size_t	left;
-	size_t	right;
-	double	tl;
-	double	tl_max;
-	double	tr;
-	double	tr_max;
-	bool	hl;
-	bool	hr;
+	v->stack[*v->top] = idx;
+	v->stk_t[(*v->top)++] = t;
+}
 
-	left = bvh->nodes[node_idx].left_or_first;
-	right = node_idx + 1;
-	tl = 0.0;
-	tr = 0.0;
-	hl = aabb_intersect_fast(&bvh->nodes[left].bbox, ray, &tl, &tl_max);
-	hr = aabb_intersect_fast(&bvh->nodes[right].bbox, ray, &tr, &tr_max);
-	if (tl < 0.0)
-		tl = 0.0;
-	if (tr < 0.0)
-		tr = 0.0;
-	if (hl && tl >= cur_t)
-		hl = false;
-	if (hr && tr >= cur_t)
-		hr = false;
-	if (hl && hr)
+static void	push_sort(t_bvh_trav *v, double t[2], size_t l, size_t r)
+{
+	if (t[0] <= t[1])
 	{
-		if (tl <= tr)
-		{
-			stack[(*top)] = right; stk_t[(*top)++] = tr;
-			stack[(*top)] = left;  stk_t[(*top)++] = tl;
-		}
-		else
-		{
-			stack[(*top)] = left;  stk_t[(*top)++] = tl;
-			stack[(*top)] = right; stk_t[(*top)++] = tr;
-		}
+		push_to_trav(v, r, t[1]);
+		push_to_trav(v, l, t[0]);
 	}
-	else if (hl)
+	else
 	{
-		stack[(*top)] = left;
-		stk_t[(*top)++] = tl;
+		push_to_trav(v, l, t[0]);
+		push_to_trav(v, r, t[1]);
 	}
-	else if (hr)
-	{
-		stack[(*top)] = right;
-		stk_t[(*top)++] = tr;
-	}
+}
+
+static void	push_children(t_bvh_trav *v, size_t idx, double cur_t)
+{
+	size_t	l;
+	double	t[2][2];
+	bool	hit[2];
+
+	l = v->bvh->nodes[idx].left_or_first;
+	hit[0] = aabb_intersect_fast(&v->bvh->nodes[l].bbox, v->ray,
+			&t[0][0], &t[0][1]);
+	hit[1] = aabb_intersect_fast(&v->bvh->nodes[idx + 1].bbox, v->ray,
+			&t[1][0], &t[1][1]);
+	hit[0] = hit[0] && (t[0][0] < cur_t);
+	hit[1] = hit[1] && (t[1][0] < cur_t);
+	if (hit[0] && hit[1])
+		push_sort(v, (double [2]){fmax(0, t[0][0]), fmax(0, t[1][0])},
+			l, idx + 1);
+	else if (hit[0])
+		push_to_trav(v, l, fmax(0, t[0][0]));
+	else if (hit[1])
+		push_to_trav(v, idx + 1, fmax(0, t[1][0]));
 }
 
 bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 {
-	size_t	stack[128];
-	double	stk_t[128];
-	size_t	top;
-	size_t	node_idx;
-	double	tmin;
-	double	tmax;
+	t_bvh_trav	v;
+	size_t		stack[128];
+	double		stk_t[128];
+	size_t		top;
+	double		tm[2];
 
-	if (!bvh || !bvh->nodes)
-		return (false);
-	tmin = 0.0;
-	tmax = hit->t;
-	if (!aabb_intersect_fast(&bvh->nodes[0].bbox, ray, &tmin, &tmax))
-		return (false);
-	if (tmin < 0.0)
-		tmin = 0.0;
-	if (tmin >= hit->t)
+	if (!bvh || !bvh->nodes || !aabb_intersect_fast(&bvh->nodes[0].bbox, ray,
+			&tm[0], &tm[1]) || (tm[0] >= hit->t))
 		return (false);
 	top = 0;
-	stack[top] = 0;
-	stk_t[top++] = tmin;
+	v = (t_bvh_trav){stack, stk_t, &top, bvh, ray};
+	push_to_trav(&v, 0, fmax(0.0, tm[0]));
 	while (top > 0)
 	{
-		node_idx = stack[--top];
-		tmin = stk_t[top];
-		if (tmin >= hit->t)
-			continue ;
-		if (bvh->nodes[node_idx].count > 0)
-			process_leaf(bvh, node_idx, ray, hit);
-		else if (top < 124)
-			push_children(stack, &top, bvh, stk_t, ray, node_idx, hit->t);
+		tm[0] = stk_t[--top];
+		if (tm[0] < hit->t)
+		{
+			if (bvh->nodes[stack[top]].count > 0)
+				process_leaf(bvh, stack[top], ray, hit);
+			else if (top < 124)
+				push_children(&v, stack[top], hit->t);
+		}
 	}
 	return (hit->t < 1e29);
 }

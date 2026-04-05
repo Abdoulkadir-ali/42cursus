@@ -58,6 +58,25 @@ typedef struct s_cap_calc
 	int		type;
 }	t_cap_calc;
 
+typedef struct s_bvh_trav
+{
+	size_t			*stack;
+	double			*stk_t;
+	size_t			*top;
+	const t_bvh		*bvh;
+	const t_ray		*ray;
+}	t_bvh_trav;
+
+typedef struct s_add_task
+{
+	t_scene			*sc;
+	t_build_item	*items;
+	size_t			*k;
+	int				type;
+	size_t			next;
+	size_t			start_k;
+}	t_add_task;
+
 
 /* Private sweep context used only by the BVH split implementation */
 typedef struct s_sweep

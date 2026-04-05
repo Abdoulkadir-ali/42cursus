@@ -15,7 +15,7 @@
  * @brief Updates rotation and deformation for a sphere based on its velocity.
  */
 /**
- * @brief Caches 1/scale for each axis so intersect_sphere avoids per-ray divisions.
+ * @brief Caches 1/scale for each axis for fast intersection.
  */
 static void	cache_inv_scale(t_sphere *sp)
 {
@@ -39,7 +39,7 @@ static void	update_state(t_sphere *sp, double dt)
 	if (vec3_mag(sp->phys.velocity) > 0.1)
 	{
 		sp->transform.scale = vec3(1.0 + fmin(vec3_mag(sp->phys.velocity)
-						* 0.05, 0.3), 1.0, 1.0);
+					* 0.05, 0.3), 1.0, 1.0);
 		sp->is_deformed = true;
 	}
 	else

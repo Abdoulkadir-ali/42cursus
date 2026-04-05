@@ -12,61 +12,74 @@
 
 #include "physics.h"
 
-static void	sphere_leaf(size_t idx, t_sphere *sp, t_contact_query *q,
-				const t_bvh *bvh, const t_bvh_node *node)
+static void	sphere_leaf(t_contact_query *q, size_t idx, t_sphere *sp,
+				const t_bvh_node *node)
 {
 	size_t		j;
 	t_bvh_ref	ref;
 	t_scene		*s;
+	const t_bvh	*bvh;
 
 	s = q->engine->scene;
-	j = 0;
-	while (j < node->count && q->count < q->max)
+	bvh = s->bvh;
+	j = -1;
+	while (++j < node->count && q->count < q->max)
 	{
 		ref = bvh->refs[node->left_or_first + j];
 		if (ref.type == TYPE_SPHERE && ref.index > idx)
 			sphere_vs_sphere(sp, &s->spheres[ref.index], q);
 		else if (ref.type == TYPE_MESH)
 			sphere_vs_mesh(sp, &s->meshes[ref.index], q);
-		j++;
 	}
 }
 
-/**
- * @brief Traverses the scene BVH to find collisions with a sphere.
- */
-void	traverse_sphere_bvh(t_contact_query *qu, size_t idx, t_sphere *sp)
+static const t_bvh	*get_locked_bvh(t_scene *s)
+{
+	const t_bvh	*v;
+
+	pthread_rwlock_rdlock(&s->bvh_lock);
+	v = s->bvh;
+	if (!v || !v->nodes || !v->refs)
+	{
+		pthread_rwlock_unlock(&s->bvh_lock);
+		return (NULL);
+	}
+	return (v);
+}
+
+static void	push_sphere_children(const t_bvh *v, const t_bvh_node *nd,
+				t_sphere *sp, size_t *st, size_t *top)
+{
+	double	r;
+
+	r = sqrt(sp->radius_sq);
+	if (aabb_v_sphere(v->nodes[nd->left_or_first + 1].bbox,
+			sp->phys.pos, r))
+		st[(*top)++] = nd->left_or_first + 1;
+	if (aabb_v_sphere(v->nodes[nd->left_or_first].bbox,
+			sp->phys.pos, r))
+		st[(*top)++] = nd->left_or_first;
+}
+
+void	traverse_sphere_bvh(t_contact_query *q, size_t idx, t_sphere *sp)
 {
 	size_t				st[128];
 	size_t				top;
 	const t_bvh_node	*nd;
-	const t_bvh			*bvh;
-	t_scene				*s;
+	const t_bvh			*v;
 
-	s = qu->engine->scene;
-	pthread_rwlock_rdlock(&s->bvh_lock);
-	bvh = s->bvh;
-	if (!bvh || !bvh->nodes || !bvh->refs)
-	{
-		pthread_rwlock_unlock(&s->bvh_lock);
+	v = get_locked_bvh(q->engine->scene);
+	if (!v)
 		return ;
-	}
 	top = 0;
 	st[top++] = 0;
-	while (top > 0 && qu->count < qu->max)
+	while (top > 0 && q->count < q->max)
 	{
-		nd = &bvh->nodes[st[--top]];
+		nd = &v->nodes[st[--top]];
 		if (nd->count > 0)
-			sphere_leaf(idx, sp, qu, bvh, nd);
+			sphere_leaf(q, idx, sp, nd);
 		else if (top < 126)
-		{
-			if (aabb_v_sphere(bvh->nodes[nd->left_or_first + 1].bbox,
-					sp->phys.pos, sqrt(sp->radius_sq)))
-				st[top++] = nd->left_or_first + 1;
-			if (aabb_v_sphere(bvh->nodes[nd->left_or_first].bbox,
-					sp->phys.pos, sqrt(sp->radius_sq)))
-				st[top++] = nd->left_or_first;
-		}
+			push_sphere_children(v, nd, sp, st, &top);
 	}
-	pthread_rwlock_unlock(&s->bvh_lock);
+	pthread_rwlock_unlock(&q->engine->scene->bvh_lock);
 }

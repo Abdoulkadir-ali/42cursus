@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:24:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ void	settings_end_drag(struct s_gui *gui);
 void	draw_radio_row(struct s_gui *gui, t_vec2i pos, t_iradio r, size_t w);
 bool	try_radio_click(struct s_gui *gui, t_vec2i mouse, t_vec2i pos,
 			t_iradio r, size_t w);
+void	draw_settings_slider(struct s_gui *gui, t_vec2i pos, t_islider sl);
+bool	try_settings_slider_click(struct s_gui *gui, t_vec2i mouse,
+					t_vec2i pos, t_islider sl);
 
 /* srcs/gui/settings/tabs/window.c */
 void	draw_settings_window_tab(struct s_gui *gui, t_vec2i o);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:17:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 
 typedef enum e_settings_tab
 {
-	STAB_WINDOW,
+	STAB_RAYTRACER,
 	STAB_PHYSICS,
-	STAB_RAYTRACER
+	STAB_WINDOW
 }	t_settings_tab;
 
 typedef struct s_settings_panel

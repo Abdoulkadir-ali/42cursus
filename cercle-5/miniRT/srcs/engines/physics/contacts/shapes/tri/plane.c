@@ -58,7 +58,7 @@ size_t	tri_vs_all_planes(t_contact_query *qu, t_tri_shape *tr)
 		i = 0;
 		while (i < 3 && qu->count < qu->max)
 		{
-				check_tri_vert(qu, tr, &qu->engine->scene->planes[p], i);
+			check_tri_vert(qu, tr, &qu->engine->scene->planes[p], i);
 			i++;
 		}
 		p++;

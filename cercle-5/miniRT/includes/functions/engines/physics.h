@@ -9,7 +9,22 @@
 /* Forward declarations */
 typedef struct s_collision t_collision;
 
-/* ── Mesh Collision ─────────────────────────────────────────────────────── */
+typedef enum e_int_type
+{
+	INT_SPH,
+	INT_BOX,
+	INT_TRI,
+	INT_CYL
+}	t_int_type;
+
+typedef struct s_int_task
+{
+	t_scene				*sc;
+	double				dt;
+	t_physics_settings	*s;
+	size_t				next;
+	t_int_type			type;
+}	t_int_task;
 
 bool	test_sphere_triangle(const t_sphere *s, t_vec3 v[3], t_collision *col);
 t_vec3	closest_point_on_triangle(t_vec3 p, t_vec3 a, t_vec3 b, t_vec3 c);

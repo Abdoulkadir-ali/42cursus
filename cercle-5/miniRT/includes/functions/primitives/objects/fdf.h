@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:59:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 09:10:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:30:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,14 @@
 # include "mesh.h"
 # include "t_fdf.h"
 # include "thread.h"
+
+typedef struct s_fdf_uv_task
+{
+	t_mesh	*mesh;
+	int		w;
+	int		h;
+	size_t	next_idx;
+}	t_fdf_uv_task;
 
 /* Prototypes */
 bool					fdf_get_dimensions(const char *path, int *w, int *h);

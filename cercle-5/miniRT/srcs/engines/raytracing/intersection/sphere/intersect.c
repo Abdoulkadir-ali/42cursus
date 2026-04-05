@@ -67,7 +67,7 @@ static bool	solve_deformed(const t_ray *ray, t_sphere *sp, t_hit *hit)
 	if (!select_sphere_t(roots, &hit->t))
 		return (false);
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
-		scale_normal(hit, sp->inv_scale,
+	scale_normal(hit, sp->inv_scale,
 		vec3_norm(vec3_add(lo, vec3_scale(ld, hit->t))), sp->needs_uv);
 	return (true);
 }
@@ -75,27 +75,23 @@ static bool	solve_deformed(const t_ray *ray, t_sphere *sp, t_hit *hit)
 bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit)
 {
 	t_vec3	oc;
-	double	hb;
-	double	c;
+	double	b;
 	double	disc;
 	double	sq;
 
 	if (sp->is_deformed)
 		return (solve_deformed(ray, sp, hit));
 	oc = vec3_sub(ray->origin, sp->transform.pos);
-	hb = vec3_dot(oc, ray->direction);
-	c = vec3_dot(oc, oc) - sp->radius_sq;
-	disc = hb * hb - c;
+	b = vec3_dot(oc, ray->direction);
+	disc = b * b - (vec3_dot(oc, oc) - sp->radius_sq);
 	if (disc < 0.0)
 		return (false);
 	sq = sqrt(disc);
-	hit->t = -hb - sq;
+	hit->t = -b - sq;
 	if (hit->t <= EPSILON)
-	{
-		hit->t = -hb + sq;
-		if (hit->t <= EPSILON)
-			return (false);
-	}
+		hit->t = -b + sq;
+	if (hit->t <= EPSILON)
+		return (false);
 	set_sphere_hit_data(ray, sp, hit);
 	return (true);
 }

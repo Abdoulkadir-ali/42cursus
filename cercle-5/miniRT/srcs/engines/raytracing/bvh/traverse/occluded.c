@@ -30,81 +30,59 @@ static bool	check_leaf_occlusion(const t_bvh *bvh, size_t node_idx,
 	return (false);
 }
 
-static void	push_occ_children(size_t *stack, size_t *top, const t_bvh *bvh,
-		const t_ray *ray, size_t node_idx, double max_t)
+static void	push_occ_children(t_bvh_trav *v, size_t idx, double max_t)
 {
-	size_t	left;
-	size_t	right;
-	double	tl;
-	double	tl_max;
-	double	tr;
-	double	tr_max;
-	bool	hl;
-	bool	hr;
+	size_t	l;
+	double	t[2][2];
+	bool	h[2];
 
-	left = bvh->nodes[node_idx].left_or_first;
-	right = node_idx + 1;
-	tl = 0.0;
-	tr = 0.0;
-	hl = aabb_intersect_fast(&bvh->nodes[left].bbox, ray, &tl, &tl_max);
-	hr = aabb_intersect_fast(&bvh->nodes[right].bbox, ray, &tr, &tr_max);
-	if (tl < 0.0)
-		tl = 0.0;
-	if (tr < 0.0)
-		tr = 0.0;
-	if (hl && tl >= max_t)
-		hl = false;
-	if (hr && tr >= max_t)
-		hr = false;
-	if (hl && hr)
+	l = v->bvh->nodes[idx].left_or_first;
+	h[0] = aabb_intersect_fast(&v->bvh->nodes[l].bbox, v->ray,
+			&t[0][0], &t[0][1]);
+	h[1] = aabb_intersect_fast(&v->bvh->nodes[idx + 1].bbox, v->ray,
+			&t[1][0], &t[1][1]);
+	h[0] = h[0] && (t[0][0] < max_t);
+	h[1] = h[1] && (t[1][0] < max_t);
+	if (h[0] && h[1] && t[0][0] <= t[1][0])
 	{
-		if (tl <= tr)
-		{
-			stack[(*top)++] = right;
-			stack[(*top)++] = left;
-		}
-		else
-		{
-			stack[(*top)++] = left;
-			stack[(*top)++] = right;
-		}
+		v->stack[(*v->top)++] = idx + 1;
+		v->stack[(*v->top)++] = l;
 	}
-	else if (hl)
-		stack[(*top)++] = left;
-	else if (hr)
-		stack[(*top)++] = right;
+	else if (h[0] && h[1])
+	{
+		v->stack[(*v->top)++] = l;
+		v->stack[(*v->top)++] = idx + 1;
+	}
+	else if (h[0])
+		v->stack[(*v->top)++] = l;
+	else if (h[1])
+		v->stack[(*v->top)++] = idx + 1;
 }
 
 bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 {
-	size_t	stack[128];
-	size_t	top;
-	size_t	node_idx;
-	double	tmin;
-	double	tmax;
+	t_bvh_trav	v;
+	size_t		stack[128];
+	size_t		top;
+	double		tm[2];
 
-	if (!bvh || !bvh->nodes)
-		return (false);
-	tmin = 0.0;
-	tmax = max_t;
-	if (!aabb_intersect_fast(&bvh->nodes[0].bbox, ray, &tmin, &tmax))
-		return (false);
-	if (tmin < 0.0)
-		tmin = 0.0;
-	if (tmin >= max_t)
+	if (!bvh || !bvh->nodes || !aabb_intersect_fast(&bvh->nodes[0].bbox, ray,
+			&tm[0], &tm[1]) || tm[0] >= max_t)
 		return (false);
 	top = 0;
 	stack[top++] = 0;
+	v = (t_bvh_trav){stack, NULL, &top, bvh, ray};
 	while (top > 0)
 	{
-		node_idx = stack[--top];
-		if (bvh->nodes[node_idx].count > 0)
+		if (bvh->nodes[stack[top - 1]].count > 0)
 		{
-			if (check_leaf_occlusion(bvh, node_idx, ray, max_t))
+			if (check_leaf_occlusion(bvh, stack[--top], ray, max_t))
 				return (true);
 		}
 		else if (top < 126)
-			push_occ_children(stack, &top, bvh, ray, node_idx, max_t);
+			push_occ_children(&v, stack[--top], max_t);
+		else
+			top--;
 	}
 	return (false);
 }

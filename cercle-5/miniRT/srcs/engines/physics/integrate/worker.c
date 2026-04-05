@@ -13,66 +13,25 @@
 #include "physics.h"
 #include "thread.h"
 
-typedef struct s_int_task
+static void	*universal_worker(void *p)
 {
-	t_scene				*sc;
-	double				dt;
-	t_physics_settings	*s;
-	size_t				next;
-}	t_int_task;
-
-static void	*sph_worker(void *p)
-{
-	t_int_task	*t = p;
+	t_int_task	*t;
 	size_t		i;
 
+	t = p;
 	while (1)
 	{
 		i = __sync_fetch_and_add(&t->next, 1);
-		if (i >= t->sc->sphere_count) break ;
-		integrate_sphere(&t->sc->spheres[i], t->dt, t->s);
-	}
-	return (NULL);
-}
-
-static void	*box_worker(void *p)
-{
-	t_int_task	*t = p;
-	size_t		i;
-
-	while (1)
-	{
-		i = __sync_fetch_and_add(&t->next, 1);
-		if (i >= t->sc->box_count) break ;
-		integrate_box(&t->sc->boxes[i], t->dt, t->s);
-	}
-	return (NULL);
-}
-
-static void	*tri_worker(void *p)
-{
-	t_int_task	*t = p;
-	size_t		i;
-
-	while (1)
-	{
-		i = __sync_fetch_and_add(&t->next, 1);
-		if (i >= t->sc->tri_count) break ;
-		integrate_tri(&t->sc->tris[i], t->dt, t->s);
-	}
-	return (NULL);
-}
-
-static void	*cyl_worker(void *p)
-{
-	t_int_task	*t = p;
-	size_t		i;
-
-	while (1)
-	{
-		i = __sync_fetch_and_add(&t->next, 1);
-		if (i >= t->sc->cylinder_count) break ;
-		integrate_cylinder(&t->sc->cylinders[i], t->dt, t->s);
+		if (t->type == INT_SPH && i < t->sc->sphere_count)
+			integrate_sphere(&t->sc->spheres[i], t->dt, t->s);
+		else if (t->type == INT_BOX && i < t->sc->box_count)
+			integrate_box(&t->sc->boxes[i], t->dt, t->s);
+		else if (t->type == INT_TRI && i < t->sc->tri_count)
+			integrate_tri(&t->sc->tris[i], t->dt, t->s);
+		else if (t->type == INT_CYL && i < t->sc->cylinder_count)
+			integrate_cylinder(&t->sc->cylinders[i], t->dt, t->s);
+		else
+			break ;
 	}
 	return (NULL);
 }
@@ -83,24 +42,27 @@ static void	*cyl_worker(void *p)
 void	integrate_bodies_worker(t_scene *se, t_physic_engine *en, double dt)
 {
 	t_int_task	t;
-	size_t i;
+	size_t		i;
 
 	if (!se || !en)
 		return ;
-	t = (t_int_task){se, dt, &en->settings, 0};
-	parallel_run(se->pool, se->sphere_count, sph_worker, &t);
+	t = (t_int_task){se, dt, &en->settings, 0, INT_SPH};
+	parallel_run(se->pool, se->sphere_count, universal_worker, &t);
 	t.next = 0;
-	parallel_run(se->pool, se->box_count, box_worker, &t);
+	t.type = INT_BOX;
+	parallel_run(se->pool, se->box_count, universal_worker, &t);
 	t.next = 0;
-	parallel_run(se->pool, se->tri_count, tri_worker, &t);
+	t.type = INT_TRI;
+	parallel_run(se->pool, se->tri_count, universal_worker, &t);
 	t.next = 0;
-	parallel_run(se->pool, se->cylinder_count, cyl_worker, &t);
-	i = 0;
-	while (i < se->pyramid_count)
-		integrate_pyramid(&se->pyramids[i++], dt, t.s);
-	i = 0;
-	while (i < se->rect_count)
-		integrate_rect(&se->rects[i++], dt, t.s);
+	t.type = INT_CYL;
+	parallel_run(se->pool, se->cylinder_count, universal_worker, &t);
+	i = -1;
+	while (++i < se->pyramid_count)
+		integrate_pyramid(&se->pyramids[i], dt, t.s);
+	i = -1;
+	while (++i < se->rect_count)
+		integrate_rect(&se->rects[i], dt, t.s);
 }
 
 /**

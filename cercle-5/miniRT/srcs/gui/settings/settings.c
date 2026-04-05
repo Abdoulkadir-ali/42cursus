@@ -6,20 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:17:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "settings.h"
 
 static const char	*s_tab_labels[SETTINGS_TAB_COUNT] = {
-	"Window", "Physics", "Raytracer"
+	"Raytracer", "Physics", "Window"
 };
 
 void	settings_init(t_gui *gui)
 {
 	gui->settings.visible = false;
-	gui->settings.tab = STAB_WINDOW;
+	gui->settings.tab = STAB_RAYTRACER;
 	gui->settings.render_scale = (double)gui->render.scale;
 	gui->settings.solver_iters
 		= (double)gui->phys_engine.settings.solver_iterations;

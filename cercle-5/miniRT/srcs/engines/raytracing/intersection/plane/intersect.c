@@ -18,29 +18,24 @@
 bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
 {
 	double	denom;
-	double	t;
-	double	uv_s;
 
 	denom = vec3_dot(pl->transform.forward, ray->direction);
 	if (fabs(denom) < 1e-6)
 		return (false);
-	t = vec3_dot(vec3_sub(pl->transform.pos, ray->origin),
+	hit->t = vec3_dot(vec3_sub(pl->transform.pos, ray->origin),
 			pl->transform.forward) / denom;
-	if (t < EPSILON)
+	if (hit->t < EPSILON)
 		return (false);
-	hit->t = t;
-	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
+	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
 	hit->normal = pl->transform.forward;
 	if (vec3_dot(ray->direction, hit->normal) > 0)
 		hit->normal = vec3_scale(hit->normal, -1.0);
 	if (pl->needs_uv)
 	{
 		get_plane_uv(hit->point, pl->transform.forward, hit);
-		uv_s = pl->transform.scale.x;
-		if (uv_s <= 1e-6)
-			uv_s = 1.0;
-		hit->u /= uv_s;
-		hit->v /= uv_s;
+		denom = fmax(1e-6, pl->transform.scale.x);
+		hit->u /= denom;
+		hit->v /= denom;
 	}
 	return (true);
 }

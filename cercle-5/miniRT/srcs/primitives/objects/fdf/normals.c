@@ -67,4 +67,3 @@ void	fdf_compute_normals(t_thread_pool *pool, t_mesh *mesh, int w, int h)
 	task.next_row = 0;
 	parallel_run(pool, task.h, fdf_normals_worker, &task);
 }
-

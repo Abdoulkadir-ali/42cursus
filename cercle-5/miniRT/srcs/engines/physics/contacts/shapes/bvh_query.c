@@ -48,32 +48,42 @@ static void	process_leaf(t_bvh_phys_ctx *c, const t_bvh *bvh,
 /**
  * @brief Traverses the scene BVH to find cross-type collisions.
  */
+static const t_bvh	*get_locked_bvh(t_scene *s)
+{
+	const t_bvh	*v;
+
+	pthread_rwlock_rdlock(&s->bvh_lock);
+	v = s->bvh;
+	if (!v || !v->nodes || !v->refs)
+	{
+		pthread_rwlock_unlock(&s->bvh_lock);
+		return (NULL);
+	}
+	return (v);
+}
+
 void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
 {
 	size_t				st[128];
 	size_t				top;
 	const t_bvh_node	*nd;
-	const t_bvh			*bvh;
+	const t_bvh			*v;
 
-	pthread_rwlock_rdlock(&c->qu->engine->scene->bvh_lock);
-	bvh = c->qu->engine->scene->bvh;
-	if (!bvh || !bvh->nodes || !bvh->refs)
-	{
-		pthread_rwlock_unlock(&c->qu->engine->scene->bvh_lock);
+	v = get_locked_bvh(c->qu->engine->scene);
+	if (!v)
 		return ;
-	}
 	top = 0;
 	st[top++] = 0;
 	while (top > 0 && c->qu->count < c->qu->max)
 	{
-		nd = &bvh->nodes[st[--top]];
+		nd = &v->nodes[st[--top]];
 		if (nd->count > 0)
-			process_leaf(c, bvh, nd);
+			process_leaf(c, v, nd);
 		else if (top < 126)
 		{
-			if (aabb_overlap(bvh->nodes[nd->left_or_first + 1].bbox, qa))
+			if (aabb_overlap(v->nodes[nd->left_or_first + 1].bbox, qa))
 				st[top++] = nd->left_or_first + 1;
-			if (aabb_overlap(bvh->nodes[nd->left_or_first].bbox, qa))
+			if (aabb_overlap(v->nodes[nd->left_or_first].bbox, qa))
 				st[top++] = nd->left_or_first;
 		}
 	}
