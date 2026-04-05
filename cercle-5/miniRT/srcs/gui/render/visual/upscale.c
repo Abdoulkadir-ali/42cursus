@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:41:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 		depy1 = dep + y1 * rw;
 		srcy0 = src + y0 * rw;
 		srcy1 = src + y1 * rw;
-		dst = (uint32_t *)(gui->win.disp_addrs[1 - gui->render.front_idx]
+		dst = (uint32_t *)(gui->win.disp_addrs[gui->render.back_idx]
 				+ dy * gui->win.disp_line_len);
 		rx = 0.5f * step_x - 0.5f;
 		dx = 0;
@@ -143,16 +143,13 @@ void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 
 void	upscale_image(t_gui *gui)
 {
-	pthread_mutex_lock(&gui->win.disp_mutex);
 	if (gui->win.size.x == gui->win.disp_size.x
 		&& gui->win.size.y == gui->win.disp_size.y)
 	{
-		ft_memcpy(gui->win.disp_addrs[1 - gui->render.front_idx], gui->win.addr,
+		ft_memcpy(gui->win.disp_addrs[gui->render.back_idx], gui->win.addr,
 				(size_t)gui->win.disp_size.y
 			* gui->win.disp_line_len);
-		pthread_mutex_unlock(&gui->win.disp_mutex);
 		return ;
 	}
 	gui_parallel_task_worker(gui, TASK_UPSCALE);
-	pthread_mutex_unlock(&gui->win.disp_mutex);
 }

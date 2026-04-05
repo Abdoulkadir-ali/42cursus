@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 13:05:22 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 10:33:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	draw_glyph_pixel(t_gui *gui, t_vec2i screen, unsigned int color)
 		return ;
 	if (screen.y >= gui->win.disp_size.y)
 		return ;
-	px = (unsigned int *)(gui->win.disp_addrs[gui->render.ui_buf_idx]
+	px = (unsigned int *)(gui->win.disp_addrs[gui->render.back_idx]
 			+ screen.y * gui->win.disp_line_len
 			+ screen.x * (gui->win.disp_bpp / 8));
 	*px = color;

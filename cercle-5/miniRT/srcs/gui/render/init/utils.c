@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:41:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,15 @@ bool	init_window(t_gui *gui)
 			gui->win.disp_size.y);
 	gui->win.disp_addrs[1] = mlx_get_data_addr(gui->win.disp_imgs[1],
 			&gui->win.disp_bpp, &gui->win.disp_line_len, &gui->win.disp_endian);
+	gui->win.disp_imgs[2] = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
+			gui->win.disp_size.y);
+	gui->win.disp_addrs[2] = mlx_get_data_addr(gui->win.disp_imgs[2],
+			&gui->win.disp_bpp, &gui->win.disp_line_len, &gui->win.disp_endian);
 	gui->win.gui_bg_img = mlx_new_image(gui->win.mlx, gui->win.disp_size.x,
 			gui->win.disp_size.y);
 	gui->win.gui_bg_addr = mlx_get_data_addr(gui->win.gui_bg_img,
 			&gui->win.gui_bg_bpp, &gui->win.gui_bg_line_len,
 			&gui->win.gui_bg_endian);
-	pthread_mutex_init(&gui->win.disp_mutex, NULL);
 	return (true);
 }
 
@@ -126,6 +129,10 @@ void	gui_init_render(t_gui *gui)
 	gui->render.job_requested = 0;
 	gui->render.job_stop = 0;
 	gui->render.abort_render = 0;
+	gui->render.disp_resize_pending = 0;
+	gui->render.disp_destroy_pending = 0;
+	gui->render.back_idx = 1;
+	atomic_store(&gui->render.blit_img, gui->win.disp_imgs[0]);
 	pthread_mutex_init(&gui->render.job_mutex, NULL);
 	pthread_cond_init(&gui->render.job_cond, NULL);
 	cmd_queue_init(&gui->cmd_queue);

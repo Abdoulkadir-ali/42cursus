@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:02:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,31 +50,30 @@ static void	*gui_worker(void *ptr)
 	t_gui			*gui;
 	size_t			h;
 	size_t			band;
-	static size_t	idx = 0;
 	size_t			my_idx;
+	size_t			count;
 
 	task = (t_render_task *)ptr;
 	gui = task->gui;
 	if (task->type == TASK_RENDER)
-		process_worker_tiles(task->render);
-	else
 	{
-		my_idx = __sync_fetch_and_add(&idx, 1) % gui->scene->pool->count;
-		if (task->type == TASK_SCATTER)
-			h = (size_t)gui->render.prev_render_size.y;
-		else
-			h = (size_t)gui->win.disp_size.y;
-		band = (h + gui->scene->pool->count - 1) / gui->scene->pool->count;
-		if (task->type == TASK_SCATTER)
-			scatter_band(gui, my_idx * band, MIN((my_idx + 1) * band, h));
-		else if (task->type == TASK_APPLY)
-			apply_reproj_band(gui, my_idx * band, MIN((my_idx + 1) * band, h));
-		else if (task->type == TASK_UPSCALE)
-			upscale_band(gui, (my_idx * gui->win.disp_size.y) / gui->scene->pool->count,
-				((my_idx + 1) * gui->win.disp_size.y) / gui->scene->pool->count);
-		if (my_idx == gui->scene->pool->count - 1)
-			idx = 0;
+		process_worker_tiles(task->render);
+		return (NULL);
 	}
+	count = gui->scene->pool->count;
+	my_idx = atomic_fetch_add(&task->worker_idx, 1) % count;
+	if (task->type == TASK_SCATTER)
+		h = (size_t)gui->render.prev_render_size.y;
+	else
+		h = (size_t)gui->win.disp_size.y;
+	band = (h + count - 1) / count;
+	if (task->type == TASK_SCATTER)
+		scatter_band(gui, my_idx * band, MIN((my_idx + 1) * band, h));
+	else if (task->type == TASK_APPLY)
+		apply_reproj_band(gui, my_idx * band, MIN((my_idx + 1) * band, h));
+	else if (task->type == TASK_UPSCALE)
+		upscale_band(gui, (my_idx * h) / count,
+			((my_idx + 1) * h) / count);
 	return (NULL);
 }
 
@@ -108,5 +107,6 @@ void	gui_parallel_task_worker(t_gui *gui, t_pool_task type)
 	task.gui = gui;
 	task.render = NULL;
 	task.type = type;
+	atomic_store(&task.worker_idx, 0);
 	parallel_run(sc->pool, sc->pool->count, gui_worker, &task);
 }

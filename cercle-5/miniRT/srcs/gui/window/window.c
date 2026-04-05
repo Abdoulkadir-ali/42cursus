@@ -12,6 +12,7 @@
 
 #include "window.h"
 #include "editor.h"
+#include <stdatomic.h>
 
 /*
 ** Handles window resize events.
@@ -20,38 +21,50 @@
 */
 int	gui_window_resize(t_vec2i size, t_gui *gui)
 {
-	void	*new_img0;
-	void	*new_img1;
+	void	*imgs[3];
+	char	*addrs[3];
+	int		line_len;
+	int		bpp;
+	int		endian;
+	int		i;
 
 	if (size.x < 200 || size.y < 150)
 		return (0);
 	if (size.x == gui->win.disp_size.x && size.y == gui->win.disp_size.y)
 		return (0);
-	new_img0 = mlx_new_image(gui->win.mlx, size.x, size.y);
-	if (!new_img0)
-		return (0);
-	new_img1 = mlx_new_image(gui->win.mlx, size.x, size.y);
-	if (!new_img1)
+	i = 0;
+	while (i < 3)
 	{
-		mlx_destroy_image(gui->win.mlx, new_img0);
-		return (0);
+		imgs[i] = mlx_new_image(gui->win.mlx, size.x, size.y);
+		if (!imgs[i])
+		{
+			while (--i >= 0)
+				mlx_destroy_image(gui->win.mlx, imgs[i]);
+			return (0);
+		}
+		i++;
 	}
-	pthread_mutex_lock(&gui->win.disp_mutex);
-	if (gui->win.disp_imgs[0])
-		mlx_destroy_image(gui->win.mlx, gui->win.disp_imgs[0]);
-	if (gui->win.disp_imgs[1])
-		mlx_destroy_image(gui->win.mlx, gui->win.disp_imgs[1]);
-	gui->win.disp_size = size;
-	gui->win.disp_imgs[0] = new_img0;
-	gui->win.disp_addrs[0] = mlx_get_data_addr(gui->win.disp_imgs[0],
-			&gui->win.disp_bpp, &gui->win.disp_line_len,
-			&gui->win.disp_endian);
-	gui->win.disp_imgs[1] = new_img1;
-	gui->win.disp_addrs[1] = mlx_get_data_addr(gui->win.disp_imgs[1],
-			&gui->win.disp_bpp, &gui->win.disp_line_len,
-			&gui->win.disp_endian);
-	pthread_mutex_unlock(&gui->win.disp_mutex);
-	gui_recompute_layout(gui);
+	addrs[0] = mlx_get_data_addr(imgs[0], &bpp, &line_len, &endian);
+	addrs[1] = mlx_get_data_addr(imgs[1], &bpp, &line_len, &endian);
+	addrs[2] = mlx_get_data_addr(imgs[2], &bpp, &line_len, &endian);
+	if (gui->render.disp_resize_pending)
+	{
+		mlx_destroy_image(gui->win.mlx, gui->render.pending_disp_imgs[0]);
+		mlx_destroy_image(gui->win.mlx, gui->render.pending_disp_imgs[1]);
+		mlx_destroy_image(gui->win.mlx, gui->render.pending_disp_imgs[2]);
+	}
+	gui->render.pending_disp_size = size;
+	gui->render.pending_disp_imgs[0] = imgs[0];
+	gui->render.pending_disp_imgs[1] = imgs[1];
+	gui->render.pending_disp_imgs[2] = imgs[2];
+	gui->render.pending_disp_addrs[0] = addrs[0];
+	gui->render.pending_disp_addrs[1] = addrs[1];
+	gui->render.pending_disp_addrs[2] = addrs[2];
+	gui->render.pending_disp_line_len = line_len;
+	gui->render.pending_disp_bpp = bpp;
+	gui->render.pending_disp_endian = endian;
+	__sync_synchronize();
+	gui->render.disp_resize_pending = 1;
 	gui->render.dirty = true;
 	return (0);
 }

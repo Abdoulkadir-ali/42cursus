@@ -11,7 +11,7 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 CC          = cc
 INCLUDES_DIRS = $(shell find includes -type d)
 INCLUDES    = $(addprefix -I,$(INCLUDES_DIRS))
-CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -Ipackages -DDEBUG_EXTENDER -DDEBUG -MMD -MP
+CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -flto -g3 -pthread $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -Ipackages -DDEBUG_EXTENDER -MMD -MP
 RM          = rm -f
 SRCS_DIR    = srcs
 # Exclude old physics.c if it still exists (handled by file deletion)

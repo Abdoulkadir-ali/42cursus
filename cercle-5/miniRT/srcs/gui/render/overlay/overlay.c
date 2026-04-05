@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:51:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void	orient_put_pixel(t_gui *gui, t_vec2i p, int col)
 	h = gui->win.disp_size.y;
 	if (p.x >= w || p.y >= h)
 		return ;
-	dst = (size_t *)(gui->win.disp_addrs[gui->render.ui_buf_idx]
+	dst = (size_t *)(gui->win.disp_addrs[gui->render.back_idx]
 			+ (p.y * gui->win.disp_line_len
 				+ p.x * (gui->win.disp_bpp / 8)));
 	*dst = color_blend(*dst, col, 0.9f);
@@ -117,19 +117,31 @@ static void	draw_ui_orient(t_gui *gui)
 	orient_axis(gui, c, gui->cam_ctrl.transform.forward, AXIS_COL_Z);
 }
 
-void	draw_ui_text(t_gui *gui, t_camera_controller *ctrl)
+/*
+** Pixel-based UI: composited into the back buffer by the render thread
+** before the triple-buffer flip.  back_idx is render-thread-private.
+*/
+void	draw_ui_pixels(t_gui *gui)
+{
+	draw_inspector_bg(gui);
+	draw_scene_panel_bg(gui);
+	draw_ui_orient(gui);
+}
+
+/*
+** String-based UI: uses mlx_string_put which writes directly to X11.
+** Called from gui_update on the main thread after the blit.
+*/
+void	draw_ui_strings(t_gui *gui, t_camera_controller *ctrl)
 {
 	int	y;
 
-	draw_inspector_bg(gui);
 	y = 38;
 	draw_ui_help(gui, &y);
 	draw_ui_status(gui, &y);
 	draw_ui_object(gui);
 	draw_ui_text_footer(gui, ctrl, 0xD0D0D8);
 	draw_ui_fps(gui);
-	draw_ui_orient(gui);
-	draw_scene_panel_bg(gui);
 	draw_scene_panel_text(gui);
 	draw_inspector_text(gui);
 	draw_settings(gui);

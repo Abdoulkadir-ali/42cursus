@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:52:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,11 @@ void			gui_draw_string(t_gui *gui, const char *str, t_vec2i pos,
 					unsigned int color);
 void			draw_panel(t_gui *gui, t_panel panel);
 void			draw_ui_panels(t_gui *gui);
+void			draw_ui_pixels(t_gui *gui);
+void			draw_ui_strings(t_gui *gui, t_camera_controller *ctrl);
 void			draw_ui_help(t_gui *gui, int *y);
 void			draw_ui_status(t_gui *gui, int *y);
 void			draw_ui_object(t_gui *gui);
-void			draw_ui_text(t_gui *gui, t_camera_controller *ctrl);
-void			draw_hover_text(t_gui *gui);
+
 
 #endif

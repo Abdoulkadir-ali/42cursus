@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:10:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 21:06:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,10 @@ typedef enum e_pool_task
 
 typedef struct s_render_task
 {
-	struct s_gui	*gui;
+	struct s_gui		*gui;
 	t_render		*render;
 	t_pool_task		type;
+	_Atomic size_t	worker_idx;
 }	t_render_task;
 
 typedef struct s_render_state
@@ -107,6 +108,21 @@ typedef struct s_render_state
 	volatile int			scene_swap_pending;
 	struct s_scene			*next_scene;
 	struct s_map_entry		*next_entry;
+	/* deferred display resize (main→render SPSC) */
+	volatile int			disp_resize_pending;
+	t_vec2i					pending_disp_size;
+	void					*pending_disp_imgs[3];
+	char					*pending_disp_addrs[3];
+	int						pending_disp_line_len;
+	int						pending_disp_bpp;
+	int						pending_disp_endian;
+	/* destroy signal (render→main SPSC) */	/* disp_resize_done: set after buffer swap, cleared after flip+destroy signal */
+	volatile int				disp_resize_done;	volatile int			disp_destroy_pending;
+	void					*old_disp_imgs[3];
+	/* triple buffer — back_idx is render-thread-private */
+	int						back_idx;
+	/* lock-free blit handle read by main thread */
+	_Atomic void			*blit_img;
 	/* render thread */
 	pthread_t				render_thread;
 	pthread_mutex_t			job_mutex;
@@ -116,7 +132,6 @@ typedef struct s_render_state
 	volatile int			abort_render;
 	volatile int			bvh_needs_rebuild;
 	_Atomic int				front_idx;
-	int						ui_buf_idx;	/* camera snapshot taken at job submission */
 	t_transform				snap_transform;
 	double					snap_fov;
 	size_t					snap_scale;

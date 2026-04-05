@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 10:33:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	draw_panel_pixel(t_gui *gui, t_panel panel, t_vec2i pos)
 	col = panel_color(panel, pos);
 	if (col == -1)
 		return ;
-	dst = (size_t *)(gui->win.disp_addrs[gui->render.ui_buf_idx]
+	dst = (size_t *)(gui->win.disp_addrs[gui->render.back_idx]
 			+ (pos.y * gui->win.disp_line_len
 				+ pos.x * (gui->win.disp_bpp / 8)));
 	*dst = color_blend(*dst, col, 0.85f);

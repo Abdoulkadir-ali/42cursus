@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 11:09:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	fill_rect_row(t_gui *gui, t_vec2i pos, int w, unsigned int col)
 	{
 		if ((size_t)(pos.x + i) < gui->win.disp_size.x)
 		{
-			dst = gui->win.disp_addrs[gui->render.ui_buf_idx]
+			dst = gui->win.disp_addrs[gui->render.back_idx]
 				+ (pos.y * gui->win.disp_line_len + (pos.x + i) * 4);
 			*(unsigned int *)dst = col;
 		}

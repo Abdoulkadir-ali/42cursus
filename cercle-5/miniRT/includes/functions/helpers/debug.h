@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:50:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 15:25:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 21:08:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # if DEBUG
 #  define ft_print_debug(fmt, ...) do { printf("[DEBUG] " fmt, ##__VA_ARGS__); fflush(stdout); } while (0)
 # else
-#  define ft_print_debug(...) ((void)0)
+#  define ft_print_debug(fmt, ...) do { if (0) printf(fmt, ##__VA_ARGS__); } while (0)
 # endif
 
 /* Maths-level Debug */

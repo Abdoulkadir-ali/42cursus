@@ -14,17 +14,18 @@
 
 void	rebuild_bvh(t_gui *gui)
 {
+	t_bvh	*new_bvh;
 	t_bvh	*old;
 
+	new_bvh = bvh_create(gui->scene);
+	if (!new_bvh)
+		return ;
 	pthread_rwlock_wrlock(&gui->scene->bvh_lock);
 	old = gui->scene->bvh;
-	gui->scene->bvh = NULL;
+	gui->scene->bvh = new_bvh;
 	pthread_rwlock_unlock(&gui->scene->bvh_lock);
-	bvh_destroy(old);
-	old = bvh_create(gui->scene);
-	pthread_rwlock_wrlock(&gui->scene->bvh_lock);
-	gui->scene->bvh = old;
-	pthread_rwlock_unlock(&gui->scene->bvh_lock);
+	if (old)
+		bvh_destroy(old);
 }
 
 static void	set_selection_bbox(t_gui *gui, t_type type, size_t index)

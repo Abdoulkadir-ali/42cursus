@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 21:30:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,7 @@ static int	pack_color(t_vec3 color, const t_raytracer_settings *opts)
 	ch[0] = (float)color.x;
 	ch[1] = (float)color.y;
 	ch[2] = (float)color.z;
-	/* brightness: additive offset, neutral=50 → 0 */
 	bfac = (float)((opts->brightness - 50.0) / 50.0) * 255.0f;
-	/* contrast: scale around midpoint, neutral=50 → factor 1.0 */
 	cfac = (float)(opts->contrast / 50.0);
 	i = 0;
 	while (i < 3)

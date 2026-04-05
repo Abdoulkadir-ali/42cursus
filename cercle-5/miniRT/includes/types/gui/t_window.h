@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:41:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 20:30:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include "t_physics.h"
 # include "t_maths.h"
-# include <pthread.h>
 # define PANEL_RADIUS 6
 # define COL_BG 0x0A0A12
 # define COL_ACCENT 0xE0A820
@@ -38,8 +37,8 @@ typedef struct s_window
 	int		line_len;
 	int		endian;
 	t_vec2i	size;
-	void	*disp_imgs[2];
-	char	*disp_addrs[2];
+	void	*disp_imgs[3];
+	char	*disp_addrs[3];
 	int		disp_bpp;
 	int		disp_line_len;
 	int		disp_endian;
@@ -49,7 +48,6 @@ typedef struct s_window
 	int		gui_bg_line_len;
 	int		gui_bg_bpp;
 	int		gui_bg_endian;
-	pthread_mutex_t	disp_mutex;
 }	t_window;
 
 typedef struct s_panel
