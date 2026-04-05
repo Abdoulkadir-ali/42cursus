@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 22:02:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:45:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+#include "editor.h"
 
 /*
 ** Drains a pending display resize posted by gui_window_resize (main thread).
@@ -82,6 +83,12 @@ void	scene_swap_step(t_gui *gui)
 */
 void	bvh_step(t_gui *gui)
 {
+	if (gui->render.mesh_transform_pending)
+	{
+		gui->render.mesh_transform_pending = 0;
+		mesh_transform_sync(gui);
+		gui->render.bvh_needs_rebuild = 1;
+	}
 	if (!gui->render.bvh_needs_rebuild)
 		return ;
 	rebuild_bvh(gui);

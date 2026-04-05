@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:14:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:57:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void				build_tr_sliders(t_gui *gui, int type, t_vec2i *pos);
 
 /* srcs/gui/editor/panel/transform/mesh.c */
 void				mesh_transform_sync(t_gui *gui);
+void				mesh_transform_commit(t_gui *gui);
 
 /* srcs/gui/editor/panel/transform/sphere.c */
 void				sphere_scale_sync(t_gui *gui);

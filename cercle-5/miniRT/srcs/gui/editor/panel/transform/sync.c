@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 14:57:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:46:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	transform_selection_sync(t_gui *gui)
 		cmd_enqueue(gui, cmd);
 	}
 	else if (gui->selection.type == TYPE_MESH)
-		mesh_transform_sync(gui);
+		return ;
 	else if (gui->selection.type == TYPE_LIGHT)
 	{
 		cmd.type = CMD_SET_POS;
@@ -70,6 +70,7 @@ static t_transform	*get_sel_transform(t_gui *gui)
 void	transform_panel_sync(t_gui *gui)
 {
 	t_transform	*src;
+	double		r;
 
 	src = get_sel_transform(gui);
 	if (!src)
@@ -77,4 +78,16 @@ void	transform_panel_sync(t_gui *gui)
 	gui->transform.pos = src->pos;
 	gui->transform.rotation = src->rotation;
 	gui->transform.scale = src->scale;
+	if (gui->selection.type == TYPE_SPHERE
+		&& gui->selection.index < gui->scene->sphere_count)
+	{
+		r = sqrt(gui->scene->spheres[gui->selection.index].radius_sq);
+		gui->transform.scale = vec3(r, r, r);
+	}
+	else if (gui->selection.type == TYPE_CYLINDER
+		&& gui->selection.index < gui->scene->cylinder_count)
+	{
+		r = sqrt(gui->scene->cylinders[gui->selection.index].radius_sq);
+		gui->transform.scale = vec3(r, r, gui->transform.scale.z);
+	}
 }

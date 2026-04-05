@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:46:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:13:36 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	refresh_mesh_snaps(t_scene *scene, size_t start_idx)
 		m = &scene->meshes[i];
 		if (m->edit_snap_verts)
 			ft_memcpy(m->edit_snap_verts, m->vertices,
-				sizeof(t_vec3) * m->vertex_count);
+				sizeof(t_vertex) * m->vertex_count);
 		if (m->normals && m->edit_snap_norms)
 			ft_memcpy(m->edit_snap_norms, m->normals,
 				sizeof(t_vec3) * m->vertex_count);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 21:30:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:22:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,4 @@ void	transform_panel(t_gui *gui)
 		return ;
 	}
 	build_tr_sliders(gui, gui->selection.type, &p);
-	transform_selection_sync(gui);
 }

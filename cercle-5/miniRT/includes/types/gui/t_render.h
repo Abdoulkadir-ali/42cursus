@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 21:06:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 23:45:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ typedef struct s_render_state
 	int						job_stop;
 	volatile int			abort_render;
 	volatile int			bvh_needs_rebuild;
+	volatile int			mesh_transform_pending;
 	_Atomic int				front_idx;
 	t_transform				snap_transform;
 	double					snap_fov;
