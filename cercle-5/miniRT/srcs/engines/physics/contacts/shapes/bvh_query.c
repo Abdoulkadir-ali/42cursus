@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:02:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,12 @@ static void	test_one_ref(t_bvh_phys_ctx *c, t_bvh_ref ref)
 		c->qu->count++;
 }
 
-static void	process_leaf(t_bvh_phys_ctx *c, const t_bvh_node *nd)
+static void	process_leaf(t_bvh_phys_ctx *c, const t_bvh *bvh,
+				const t_bvh_node *nd)
 {
 	size_t		j;
 	t_bvh_ref	ref;
-	const t_bvh	*bvh;
 
-	bvh = c->qu->engine->scene->bvh;
 	j = 0;
 	while (j < nd->count && c->qu->count < c->qu->max)
 	{
@@ -58,7 +57,7 @@ void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
 
 	pthread_rwlock_rdlock(&c->qu->engine->scene->bvh_lock);
 	bvh = c->qu->engine->scene->bvh;
-	if (!bvh)
+	if (!bvh || !bvh->nodes || !bvh->refs)
 	{
 		pthread_rwlock_unlock(&c->qu->engine->scene->bvh_lock);
 		return ;
@@ -69,7 +68,7 @@ void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
 	{
 		nd = &bvh->nodes[st[--top]];
 		if (nd->count > 0)
-			process_leaf(c, nd);
+			process_leaf(c, bvh, nd);
 		else if (top < 126)
 		{
 			if (aabb_overlap(bvh->nodes[nd->left_or_first + 1].bbox, qa))

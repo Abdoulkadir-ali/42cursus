@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 21:06:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:02:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static void	disp_resize_step(t_gui *gui)
 	gui->render.back_idx = (front + 1) % 3;
 	gui_recompute_layout(gui);
 	gui->render.dirty = true;
+	gui->render.prev_valid = false;
 	gui->render.disp_resize_pending = 0;
 	gui->render.disp_resize_done = 1;
 }

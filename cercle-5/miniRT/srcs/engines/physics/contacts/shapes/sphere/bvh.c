@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 22:02:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
 static void	sphere_leaf(size_t idx, t_sphere *sp, t_contact_query *q,
-				const t_bvh_node *node)
+				const t_bvh *bvh, const t_bvh_node *node)
 {
 	size_t		j;
 	t_bvh_ref	ref;
@@ -23,7 +23,7 @@ static void	sphere_leaf(size_t idx, t_sphere *sp, t_contact_query *q,
 	j = 0;
 	while (j < node->count && q->count < q->max)
 	{
-		ref = s->bvh->refs[node->left_or_first + j];
+		ref = bvh->refs[node->left_or_first + j];
 		if (ref.type == TYPE_SPHERE && ref.index > idx)
 			sphere_vs_sphere(sp, &s->spheres[ref.index], q);
 		else if (ref.type == TYPE_MESH)
@@ -40,11 +40,13 @@ void	traverse_sphere_bvh(t_contact_query *qu, size_t idx, t_sphere *sp)
 	size_t				st[128];
 	size_t				top;
 	const t_bvh_node	*nd;
+	const t_bvh			*bvh;
 	t_scene				*s;
 
 	s = qu->engine->scene;
 	pthread_rwlock_rdlock(&s->bvh_lock);
-	if (!s->bvh)
+	bvh = s->bvh;
+	if (!bvh || !bvh->nodes || !bvh->refs)
 	{
 		pthread_rwlock_unlock(&s->bvh_lock);
 		return ;
@@ -53,15 +55,15 @@ void	traverse_sphere_bvh(t_contact_query *qu, size_t idx, t_sphere *sp)
 	st[top++] = 0;
 	while (top > 0 && qu->count < qu->max)
 	{
-		nd = &s->bvh->nodes[st[--top]];
+		nd = &bvh->nodes[st[--top]];
 		if (nd->count > 0)
-			sphere_leaf(idx, sp, qu, nd);
+			sphere_leaf(idx, sp, qu, bvh, nd);
 		else if (top < 126)
 		{
-			if (aabb_v_sphere(s->bvh->nodes[nd->left_or_first + 1].bbox,
+			if (aabb_v_sphere(bvh->nodes[nd->left_or_first + 1].bbox,
 					sp->phys.pos, sqrt(sp->radius_sq)))
 				st[top++] = nd->left_or_first + 1;
-			if (aabb_v_sphere(s->bvh->nodes[nd->left_or_first].bbox,
+			if (aabb_v_sphere(bvh->nodes[nd->left_or_first].bbox,
 					sp->phys.pos, sqrt(sp->radius_sq)))
 				st[top++] = nd->left_or_first;
 		}
