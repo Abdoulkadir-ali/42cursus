@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:51:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:03:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@
 
 # define TILE_SIZE 32
 # define FONT_PATH "maps/font/font8.font"
+
+
+
 
 int				gui_update(t_gui *gui);
 t_gui			*gui_init(t_scene *scene, void *mlx);
@@ -53,10 +56,6 @@ void			anim_step(t_gui *gui, double delta);
 void			physics_step(t_gui *gui, double delta);
 void			scene_swap_step(t_gui *gui);
 void			bvh_step(t_gui *gui);
-void			cmd_queue_init(t_cmd_queue *q);
-void			cmd_queue_destroy(t_cmd_queue *q);
-void			cmd_enqueue(t_gui *gui, t_cmd cmd);
-void			cmd_drain(t_gui *gui);
 void			raytrace_step(t_gui *gui, double delta);
 void			update_autorefresh(t_gui *gui);
 void			update_ambient(t_gui *gui);

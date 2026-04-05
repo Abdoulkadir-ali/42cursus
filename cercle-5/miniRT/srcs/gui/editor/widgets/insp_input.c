@@ -87,7 +87,7 @@ static void	insp_input_commit(t_gui *gui)
 	if (e->on_change)
 		e->on_change(gui);
 	gui->render.dirty = true;
-	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
+	gui->render.bvh_needs_rebuild = 1;
 	e->active = false;
 	e->value_ptr = NULL;
 }

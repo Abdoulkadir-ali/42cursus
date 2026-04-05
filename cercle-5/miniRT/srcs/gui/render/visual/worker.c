@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:36:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	process_worker_tiles(t_render *render)
 		id = __sync_fetch_and_add(&render->next_tile_id, 1);
 		if (id >= render->total_tiles)
 			break ;
-		if (__sync_fetch_and_add(&render->gui->render.abort_render, 0))
+		if (render->gui->render.abort_render)
 			return ;
 		start = now_ms();
 		render_tile(render, id);
@@ -49,7 +49,6 @@ static void	*gui_worker(void *ptr)
 	t_render_task	*task;
 	t_gui			*gui;
 	size_t			h;
-	size_t			band;
 	size_t			my_idx;
 	size_t			count;
 
@@ -63,17 +62,35 @@ static void	*gui_worker(void *ptr)
 	count = gui->scene->pool->count;
 	my_idx = atomic_fetch_add(&task->worker_idx, 1) % count;
 	if (task->type == TASK_SCATTER)
-		h = (size_t)gui->render.prev_render_size.y;
-	else
-		h = (size_t)gui->win.disp_size.y;
-	band = (h + count - 1) / count;
-	if (task->type == TASK_SCATTER)
-		scatter_band(gui, my_idx * band, MIN((my_idx + 1) * band, h));
+	{
+		h = (size_t)gui->opts.prev_render_size.y;
+		scatter_band(gui, (my_idx * h) / count,
+			((my_idx + 1) * h) / count);
+	}
 	else if (task->type == TASK_APPLY)
-		apply_reproj_band(gui, my_idx * band, MIN((my_idx + 1) * band, h));
-	else if (task->type == TASK_UPSCALE)
+	{
+		h = (size_t)gui->win.disp_size.y;
+		apply_reproj_band(gui, (my_idx * h) / count,
+			((my_idx + 1) * h) / count);
+	}
+	else if (task->type == TASK_INTERP)
+	{
+		h = (size_t)gui->opts.prev_render_size.y;
+		interp_band(gui, (my_idx * h) / count,
+			((my_idx + 1) * h) / count);
+	}
+	else if (task->type == TASK_TAA)
+	{
+		h = (size_t)gui->win.size.y;
+		taa_band(gui, (my_idx * h) / count,
+			((my_idx + 1) * h) / count);
+	}
+	else
+	{
+		h = (size_t)gui->win.disp_size.y;
 		upscale_band(gui, (my_idx * h) / count,
 			((my_idx + 1) * h) / count);
+	}
 	return (NULL);
 }
 

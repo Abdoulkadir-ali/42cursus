@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:56:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:45:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,22 +114,9 @@ void	gui_init_anim(t_gui *gui)
 
 void	gui_init_render(t_gui *gui)
 {
-	size_t	n;
-
-	n = (size_t)gui->win.disp_size.x * (size_t)gui->win.disp_size.y;
-	gui->render.prev_buf = ft_calloc(n, sizeof(uint32_t));
-	gui->render.depth_buf = ft_calloc(n, sizeof(float));
-	gui->render.prev_depth = ft_calloc(n, sizeof(float));
-	gui->render.reproj_buf = ft_calloc(n, sizeof(uint32_t));
-	gui->render.reproj_tag = ft_calloc(n, sizeof(size_t));
-	gui->render.reproj_gen = 1;
-	gui->render.prev_valid = false;
 	gui->render.dirty = true;
-	gui->render.abort_render = 0;
-	gui->render.disp_resize_pending = 0;
-	gui->render.disp_destroy_pending = 0;
+	gui->render.abort_render = false;
 	gui->render.back_idx = 0;
-	cmd_queue_init(&gui->cmd_queue);
 	optimizations_init(gui);
 	font_load(gui, FONT_PATH);
 }

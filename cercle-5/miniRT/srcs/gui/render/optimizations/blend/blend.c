@@ -5,31 +5,18 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 21:38:46 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/06 01:05:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "render.h"
+#include "optimizations.h"
 
-#define BLEND_TARGET_DT		0.04
-#define BLEND_ALPHA_MIN		0.15f
-
-static int	blend_pixel(int nc, int oc, int a)
-{
-	int	ia;
-	int	r;
-	int	g;
-	int	b;
-
-	ia = 256 - a;
-	r = (a * ((nc >> 16) & 0xFF) + ia * ((oc >> 16) & 0xFF)) >> 8;
-	g = (a * ((nc >> 8) & 0xFF) + ia * ((oc >> 8) & 0xFF)) >> 8;
-	b = (a * (nc & 0xFF) + ia * (oc & 0xFF)) >> 8;
-	return ((r << 16) | (g << 8) | b);
-}
-
-static int	calc_alpha(double dt)
+/*
+** Computes a blend weight in [0,256] based on frame delta time.
+** Slower frames blend less (more new), faster frames blend more (more prev).
+*/
+static size_t	calc_alpha(double dt)
 {
 	float	alpha;
 
@@ -40,34 +27,45 @@ static int	calc_alpha(double dt)
 		alpha = 1.0f;
 	if (alpha < BLEND_ALPHA_MIN)
 		alpha = BLEND_ALPHA_MIN;
-	return ((int)(alpha * 256));
+	return ((size_t)(alpha * 256));
 }
 
+/*
+** Blends one pixel: alpha/256 of prev, (256-alpha)/256 of new.
+*/
+static uint32_t	blend_pixel(uint32_t nc, uint32_t oc, size_t a)
+{
+	size_t	ia;
+
+	ia = 256 - a;
+	return ((uint32_t)(
+		((a * ((oc >> 16) & 0xFF) + ia * ((nc >> 16) & 0xFF)) >> 8) << 16
+		| ((a * ((oc >> 8) & 0xFF) + ia * ((nc >> 8) & 0xFF)) >> 8) << 8
+		| (a * (oc & 0xFF) + ia * (nc & 0xFF)) >> 8));
+}
+
+/*
+** Blends the current display buffer against the previous frame.
+** prev_color is updated in-place for the next frame.
+*/
 void	blend_temporal(t_gui *gui, double dt)
 {
-	uint32_t	*disp;
-	int			*prev;
-	size_t		n;
-	int			alpha;
-	size_t		i;
+	t_optimizations	*o;
+	uint32_t		*disp;
+	size_t			n;
+	size_t			alpha;
+	size_t			i;
 
-	if (!gui->render.prev_buf)
+	o = &gui->opts;
+	if (!o->prev_color || !o->prev_valid)
 		return ;
 	alpha = calc_alpha(dt);
-	disp = (uint32_t *)gui->win.disp_addrs[gui->render.back_idx];
-	prev = gui->render.prev_buf;
-	n = (size_t)gui->win.disp_size.x * gui->win.disp_size.y;
+	disp = (uint32_t *)gui->win.addr;
+	n = (size_t)gui->win.size.x * (size_t)gui->win.size.y;
 	i = 0;
 	while (i < n)
 	{
-		disp[i] = (uint32_t)blend_pixel((int)disp[i], (int)prev[i], alpha);
-		prev[i] = disp[i];
+		disp[i] = blend_pixel(disp[i], o->prev_color[i], alpha);
 		i++;
 	}
-}
-
-void	blend_free(t_gui *gui)
-{
-	free(gui->render.prev_buf);
-	gui->render.prev_buf = NULL;
 }

@@ -44,5 +44,5 @@ void	scene_reset(t_gui *gui)
 	gui->ambient_intensity = snap->ambient_intensity;
 	reset_cam_ctrl(gui);
 	clear_selection(gui);
-	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
+	gui->render.bvh_needs_rebuild = 1;
 }

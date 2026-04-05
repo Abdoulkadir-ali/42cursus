@@ -6,51 +6,57 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:30:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:06:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "render.h"
+#include "optimizations.h"
 
 /*
-** optimize_frames — central dispatcher for all post-render optimizations.
-**
-** Each optimization is gated solely by its runtime boolean in
-** gui->render.opts (t_optimization_settings).  Flip any flag from
-** anywhere at runtime — keybinding, settings panel, debug console.
-**
-** Pipeline order:
-**   adaptive_scale  — adjusts render.scale to target FPS (no pixel write)
-**   reprojection    — warps previous frame to new camera position
-**   temporal_blend  — legacy blend with prev_buf (disabled by default)
-**   frame_interp    — synthetic in-between frame   (combo B — planned)
-**   taa             — temporal anti-aliasing        (combo D — planned)
+** Allocates all buffers owned by t_optimizations and sets default flags.
 */
-
-void	optimize_frames(t_gui *gui, double delta)
-{
-	if (gui->render.opts.reprojection)
-		reproject_frame(gui);
-	if (gui->render.opts.temporal_blend)
-		blend_temporal(gui, delta);
-	if (gui->render.opts.frame_interp)
-		(void)delta; /* frame_interp(gui, delta); — combo B, planned */
-	if (gui->render.opts.taa)
-		(void)delta; /* taa_frame(gui); — combo D, planned */
-	(void)delta;
-}
-
 void	optimizations_init(t_gui *gui)
 {
-	gui->render.opts.adaptive_scale = true;
-	gui->render.opts.reprojection = true;
-	gui->render.opts.temporal_blend = false;
-	gui->render.opts.frame_interp = false;
-	gui->render.opts.taa = false;
+	size_t	rn;
+	size_t	dn;
+
+	rn = (size_t)gui->win.disp_size.x * (size_t)gui->win.disp_size.y;
+	dn = (size_t)gui->win.disp_size.x * (size_t)gui->win.disp_size.y;
+	gui->opts.depth_buf = ft_calloc(rn, sizeof(float));
+	gui->opts.prev_depth = ft_calloc(rn, sizeof(float));
+	gui->opts.prev_color = ft_calloc(rn, sizeof(uint32_t));
+	gui->opts.reproj_buf = ft_calloc(dn, sizeof(uint32_t));
+	gui->opts.reproj_tag = ft_calloc(dn, sizeof(size_t));
+	gui->opts.reproj_gen = 1;
+	gui->opts.prev_valid = false;
+	gui->opts.interp_buf = ft_calloc(dn, sizeof(uint32_t));
+	gui->opts.interp_alpha = 0.5f;
+	gui->opts.taa_buf = ft_calloc(rn, sizeof(uint32_t));
+	gui->opts.taa_frame = 0;
+	gui->opts.taa_jitter_x = 0.0;
+	gui->opts.taa_jitter_y = 0.0;
+	gui->opts.adaptive_scale = true;
+	gui->opts.reprojection = true;
+	gui->opts.temporal_blend = false;
+	gui->opts.frame_interp = false;
+	gui->opts.taa = false;
 	gui->rt_engine.settings.blinn_phong = true;
 	gui->rt_engine.settings.brightness = 50.0;
 	gui->rt_engine.settings.contrast = 50.0;
 	gui->rt_engine.settings.saturation = 50.0;
 	gui->rt_engine.settings.gamma = 50.0;
 	gui->rt_engine.settings.preset = RT_PRESET_NATURAL;
+}
+
+
+/*
+** Central dispatcher — called once per rendered frame after upscale.
+** Pipeline: reprojection → temporal_blend.
+** adaptive_scale is called before rendering in raytrace_step.
+*/
+void	optimize_frames(t_gui *gui, double delta)
+{
+	(void)delta;
+	if (gui->opts.reprojection)
+		reproject_frame(gui);
 }

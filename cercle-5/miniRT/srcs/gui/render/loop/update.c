@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:48:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:45:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	gui_update(t_gui *gui)
 		mlx_loop_end(gui->win.mlx);
 #endif
 	delta = update_delta(gui);
-	cmd_drain(gui);
 	scene_swap_step(gui);
 	physics_step(gui, delta);
 	anim_step(gui, delta);

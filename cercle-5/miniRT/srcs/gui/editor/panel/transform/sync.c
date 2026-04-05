@@ -6,47 +6,39 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:48:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:44:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
-#include "render.h"
 
 void	transform_selection_sync(t_gui *gui)
 {
-	t_cmd	cmd;
+	t_scene	*sc;
+	size_t	idx;
 
-	ft_memset(&cmd, 0, sizeof(cmd));
-	if (gui->selection.type == TYPE_SPHERE)
+	sc = gui->scene;
+	idx = gui->selection.index;
+	if (gui->selection.type == TYPE_SPHERE && idx < sc->sphere_count)
 	{
 		sphere_scale_sync(gui);
-		cmd.type = CMD_SET_POS;
-		cmd.data.transform.obj_type = TYPE_SPHERE;
-		cmd.data.transform.index = gui->selection.index;
-		cmd.data.transform.pos = gui->transform.pos;
-		cmd.data.transform.scale = gui->transform.scale;
-		cmd_enqueue(gui, cmd);
+		sc->spheres[idx].transform.pos = gui->transform.pos;
+		sc->spheres[idx].phys.pos = gui->transform.pos;
+		sc->spheres[idx].transform.scale = gui->transform.scale;
 	}
-	else if (gui->selection.type == TYPE_PLANE)
+	else if (gui->selection.type == TYPE_PLANE && idx < sc->plane_count)
 	{
-		cmd.type = CMD_SET_POS;
-		cmd.data.transform.obj_type = TYPE_PLANE;
-		cmd.data.transform.index = gui->selection.index;
-		cmd.data.transform.pos = gui->transform.pos;
-		cmd.data.transform.rot = gui->transform.rotation;
-		cmd_enqueue(gui, cmd);
+		sc->planes[idx].transform.pos = gui->transform.pos;
+		sc->planes[idx].transform.rotation = gui->transform.rotation;
+		sc->planes[idx].transform.forward = vec3_norm(
+				mat4_mul_vec3(mat4_rotation(gui->transform.rotation),
+					vec3(0, 0, -1)));
 	}
 	else if (gui->selection.type == TYPE_MESH)
 		mesh_transform_sync(gui);
-	else if (gui->selection.type == TYPE_LIGHT)
-	{
-		cmd.type = CMD_SET_POS;
-		cmd.data.transform.obj_type = TYPE_LIGHT;
-		cmd.data.transform.index = gui->selection.index;
-		cmd.data.transform.pos = gui->transform.pos;
-		cmd_enqueue(gui, cmd);
-	}
+	else if (gui->selection.type == TYPE_LIGHT && idx < sc->light_count)
+		sc->lights[idx].transform.pos = gui->transform.pos;
+	gui->render.bvh_needs_rebuild = 1;
 }
 
 static t_transform	*get_sel_transform(t_gui *gui)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 22:57:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:45:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include "widget.h"
 # include "objects.h"
 # include "raytracing.h"
-# include "t_cmd.h"
 
 /* --- Internal scene-panel types --- */
 typedef struct s_scene_row_res
@@ -81,9 +80,6 @@ t_material			*get_selected_material(struct s_gui *gui);
 void				pick_at_mouse(struct s_gui *gui, t_vec2i mouse);
 void				rebuild_bvh(struct s_gui *gui);
 
-/* command queue -- editor enqueues on MLX thread, render thread drains */
-void				cmd_enqueue(struct s_gui *gui, t_cmd cmd);
-void				cmd_drain(struct s_gui *gui);
 
 /* srcs/gui/editor/scene_panel.c */
 void				editor_init(struct s_gui *gui);

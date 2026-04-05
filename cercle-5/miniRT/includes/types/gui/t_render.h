@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:56:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:35:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,10 @@
 # ifndef GUI_AUTOREFRESH_SCALE
 #  define GUI_AUTOREFRESH_SCALE 2
 # endif
-/*
-** Runtime optimization settings — flip any field at runtime to
-** enable / disable an optimization without recompiling.
-** Add new fields here as new techniques are implemented.
-*/
-typedef struct s_optimization_settings
-{
-	bool	adaptive_scale;   /* auto-adjust render.scale to hit target FPS  */
-	bool	reprojection;     /* camera reprojection (combo A)               */
-	bool	temporal_blend;   /* legacy temporal blend (disabled by default) */
-	bool	frame_interp;     /* frame interpolation  (combo B — planned)    */
-	bool	taa;              /* temporal anti-aliasing (combo D — planned)  */
-}	t_optimization_settings;
 
+/*
+** t_render — per-tile worker context, allocated on the stack each frame.
+*/
 typedef struct s_render
 {
 	struct s_gui	*gui;
@@ -65,68 +55,73 @@ typedef enum e_pool_task
 	TASK_RENDER,
 	TASK_SCATTER,
 	TASK_APPLY,
+	TASK_INTERP,
+	TASK_TAA,
 	TASK_UPSCALE
 }	t_pool_task;
 
 typedef struct s_render_task
 {
 	struct s_gui		*gui;
-	t_render		*render;
-	t_pool_task		type;
-	_Atomic size_t	worker_idx;
+	t_render			*render;
+	t_pool_task			type;
+	_Atomic size_t		worker_idx;
 }	t_render_task;
 
+/*
+** t_optimizations — owns ALL state for post-render optimizations.
+** Lives in t_gui as `gui->opts`. Never touches t_render_state.
+*/
+typedef struct s_optimizations
+{
+	bool		adaptive_scale;
+	bool		reprojection;
+	bool		temporal_blend;
+	float		*depth_buf;
+	uint32_t	*prev_color;
+	float		*prev_depth;
+	uint32_t	*reproj_buf;
+	size_t		*reproj_tag;
+	size_t		reproj_gen;
+	t_transform	cur_cam;
+	double		cur_half_w;
+	double		cur_half_h;
+	t_transform	prev_cam;
+	double		prev_half_w;
+	double		prev_half_h;
+	t_vec2i		prev_render_size;
+	bool		prev_valid;
+	bool		frame_interp;
+	uint32_t	*interp_buf;
+	float		interp_alpha;
+	bool		taa;
+	uint32_t	*taa_buf;
+	size_t		taa_frame;
+	double		taa_jitter_x;
+	double		taa_jitter_y;
+}	t_optimizations;
+
+/*
+** t_render_state — frame loop bookkeeping only.
+** All optimization state lives in t_optimizations (gui->opts).
+*/
 typedef struct s_render_state
 {
-	size_t					scale;
-	bool					dirty;
-	bool					force_fullres;
-	double					fps;
-	long long				last_time;
-	double					render_fps;
-	long long				render_last_time;
-	long long				scale_last_change;
-	bool					last_dirty;
-	int						*prev_buf;
-	float					*depth_buf;
-	float					*prev_depth;
-	uint32_t				*reproj_buf;
-	size_t					*reproj_tag;
-	size_t					reproj_gen;
-	t_transform				cur_cam;
-	double					cur_half_w;
-	double					cur_half_h;
-	t_transform				prev_cam;
-	double					prev_half_w;
-	double					prev_half_h;
-	size_t					prev_step;
-	bool					prev_valid;
-	t_vec2i					prev_render_size;
-	t_optimization_settings	opts;
-	/* scene swap — render thread drains this at frame start */
-	volatile int			scene_swap_pending;
-	struct s_scene			*next_scene;
-	struct s_map_entry		*next_entry;
-	/* deferred display resize (main→render SPSC) */
-	volatile int			disp_resize_pending;
-	t_vec2i					pending_disp_size;
-	void					*pending_disp_imgs[3];
-	char					*pending_disp_addrs[3];
-	int						pending_disp_line_len;
-	int						pending_disp_bpp;
-	int						pending_disp_endian;
-	/* destroy signal (render→main SPSC) */	/* disp_resize_done: set after buffer swap, cleared after flip+destroy signal */
-	volatile int			disp_resize_done;
-	volatile int			disp_destroy_pending;
-	void					*old_disp_imgs[3];
-	/* display back buffer index (always 0 in sequential mode) */
-	int						back_idx;
-	volatile int			abort_render;
-	volatile int			bvh_needs_rebuild;
-	t_transform				snap_transform;
-	double					snap_fov;
-	size_t					snap_scale;
-	double					snap_delta;
+	size_t				scale;
+	bool				dirty;
+	bool				force_fullres;
+	double				fps;
+	long long			last_time;
+	double				render_fps;
+	long long			render_last_time;
+	long long			scale_last_change;
+	bool				last_dirty;
+	int					bvh_needs_rebuild;
+	int					scene_swap_pending;
+	struct s_scene		*next_scene;
+	struct s_map_entry	*next_entry;
+	int					back_idx;
+	volatile bool		abort_render;
 }	t_render_state;
 
 typedef struct s_tile

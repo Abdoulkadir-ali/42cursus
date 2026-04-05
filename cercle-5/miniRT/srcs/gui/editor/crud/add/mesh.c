@@ -67,7 +67,7 @@ void	editor_add_obj(t_gui *gui, const char *path)
 	if (!scene_parse_obj_worker(path, gui->scene))
 		return ;
 	glb_post_process(gui, mesh_start, path);
-	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
+	gui->render.bvh_needs_rebuild = 1;
 }
 
 void	editor_add_glb(t_gui *gui, const char *path)
@@ -79,5 +79,5 @@ void	editor_add_glb(t_gui *gui, const char *path)
 	mesh_start = gui->scene->mesh_count;
 	glb_load_logic(gui, mesh_start, path);
 	glb_post_process(gui, mesh_start, path);
-	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
+	gui->render.bvh_needs_rebuild = 1;
 }

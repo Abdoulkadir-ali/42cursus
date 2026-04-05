@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:49:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:58:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:25:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,23 +26,23 @@ static void	setup_render_geometry(t_gui *gui, t_render *r, t_raytracer_engine *r
 	r->tiles_count.y = (gui->win.size.y + TILE_SIZE - 1) / TILE_SIZE;
 	r->total_tiles = ((r->tiles_count.x + 3) / 4)
 		* ((r->tiles_count.y + 3) / 4) * 16;
-	r->transform = gui->render.snap_transform;
+	r->transform = gui->scene->camera.transform;
 	r->aspect_ratio = (double)gui->win.size.x / (double)gui->win.size.y;
-	if (gui->render.snap_fov == rt->cache.fov
+	if (gui->scene->camera.fov == rt->cache.fov
 		&& (size_t)gui->win.size.x == rt->cache.res.x
 		&& (size_t)gui->win.size.y == rt->cache.res.y)
 		r->half_height = rt->cache.half_h;
 	else
 	{
-		r->half_height = tan(gui->render.snap_fov * 0.5 * 3.14159 / 180.0);
+		r->half_height = tan(gui->scene->camera.fov * 0.5 * 3.14159 / 180.0);
 		rt->cache.half_h = r->half_height;
-		rt->cache.fov = gui->render.snap_fov;
+		rt->cache.fov = gui->scene->camera.fov;
 		rt->cache.res = vec2i((int)gui->win.size.x, (int)gui->win.size.y);
 	}
 	r->half_width = r->half_height * r->aspect_ratio;
-	gui->render.cur_cam = gui->render.snap_transform;
-	gui->render.cur_half_w = r->half_width;
-	gui->render.cur_half_h = r->half_height;
+	gui->opts.cur_cam = r->transform;
+	gui->opts.cur_half_w = r->half_width;
+	gui->opts.cur_half_h = r->half_height;
 }
 
 static void	update_rt_stats(t_gui *gui, t_raytracer_engine *rt, long long start)
@@ -67,10 +67,11 @@ void	gui_render(t_gui *gui)
 	if (!gui || !gui->scene)
 		return ;
 	rt = &gui->rt_engine;
-	s = gui->render.snap_scale;
+	s = gui->render.scale;
 	if (s < 1)
 		s = 1;
 	setup_render_size(gui, s);
+	gui->opts.prev_render_size = gui->win.size;
 	render.gui = gui;
 	render.next_tile_id = 0;
 	render.step = 1;

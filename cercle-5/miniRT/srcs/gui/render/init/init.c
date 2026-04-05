@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 19:12:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:56:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:25:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+#include "optimizations.h"
 
 t_gui	*gui_init(t_scene *scene, void *mlx)
 {
@@ -43,8 +44,6 @@ void	gui_destroy(t_gui *gui)
 	if (!gui)
 		return ;
 	map_manager_destroy(gui);
-	blend_free(gui);
-	reproject_free(gui);
 	if (gui->win.render_pixels)
 		free(gui->win.render_pixels);
 	if (gui->win.win)
@@ -59,5 +58,6 @@ void	gui_destroy(t_gui *gui)
 		mlx_destroy_image(gui->win.mlx, gui->win.disp_imgs[2]);
 	if (gui->win.gui_bg_img)
 		mlx_destroy_image(gui->win.mlx, gui->win.gui_bg_img);
+	opts_free(gui);
 	free(gui);
 }

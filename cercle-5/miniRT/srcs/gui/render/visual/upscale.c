@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:25:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 **   - ify = 1-fy and inv_wt = 1/wt remove per-pixel division
 **   - bilerp_colors is inlined (no function-call overhead, better auto-vec)
 */
+
+# define DEPTH_THRESH 0.15f
 
 static uint32_t	bilerp_pixel(uint32_t c00, uint32_t c10,
 	uint32_t c01, uint32_t c11,
@@ -66,23 +68,21 @@ void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 	int			x0;
 	int			x1;
 	float		fx;
-	float		dref;
-	float		thresh;
 	float		ify;
-	float		*depy0;
-	float		*depy1;
 	uint32_t	*srcy0;
 	uint32_t	*srcy1;
 	uint32_t	*dst;
 	uint32_t	*src;
-	float		*dep;
 	float		ifx;
-	float		m10;
-	float		m01;
-	float		m11;
+	float		*db;
+	float		d00;
+	float		w00;
+	float		w10;
+	float		w01;
+	float		w11;
 
+	db = gui->opts.depth_buf;
 	src = (uint32_t *)gui->win.addr;
-	dep = gui->render.depth_buf;
 	rw = (size_t)gui->win.size.x;
 	rh = (size_t)gui->win.size.y;
 	dw = (size_t)gui->win.disp_size.x;
@@ -104,8 +104,6 @@ void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 		if (fy < 0.0f)
 			fy = 0.0f;
 		ify = 1.0f - fy;
-		depy0 = dep + y0 * rw;
-		depy1 = dep + y1 * rw;
 		srcy0 = src + y0 * rw;
 		srcy1 = src + y1 * rw;
 		dst = (uint32_t *)(gui->win.disp_addrs[gui->render.back_idx]
@@ -125,14 +123,29 @@ void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 			fx = rx - (float)x0;
 			if (fx < 0.0f)
 				fx = 0.0f;
-			dref = depy0[x0];
-			thresh = (dref < 1e28f ? fmaxf(dref * 0.15f, 0.5f) : 1e30f);
 			ifx = 1.0f - fx;
-			m10 = (float)(fabsf(depy0[x1] - dref) < thresh);
-			m01 = (float)(fabsf(depy1[x0] - dref) < thresh);
-			m11 = (float)(fabsf(depy1[x1] - dref) < thresh);
+			w00 = ifx * ify;
+			w10 = fx * ify;
+			w01 = ifx * fy;
+			w11 = fx * fy;
+			if (db)
+			{
+				d00 = db[(size_t)y0 * rw + (size_t)x0];
+				if (d00 > 0.0f)
+				{
+					if (fabsf(db[(size_t)y0 * rw + (size_t)x1] - d00)
+						/ d00 > DEPTH_THRESH)
+						w10 = 0.0f;
+					if (fabsf(db[(size_t)y1 * rw + (size_t)x0] - d00)
+						/ d00 > DEPTH_THRESH)
+						w01 = 0.0f;
+					if (fabsf(db[(size_t)y1 * rw + (size_t)x1] - d00)
+						/ d00 > DEPTH_THRESH)
+						w11 = 0.0f;
+				}
+			}
 			dst[dx] = bilerp_pixel(srcy0[x0], srcy0[x1], srcy1[x0], srcy1[x1],
-					ifx * ify, fx * ify * m10, ifx * fy * m01, fx * fy * m11);
+					w00, w10, w01, w11);
 			rx += step_x;
 			dx++;
 		}

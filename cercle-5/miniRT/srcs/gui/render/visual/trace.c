@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 21:30:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:38:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+#include "optimizations.h"
 
 /*
 ** apply_brightness: bias by (brightness-50)/50 * 255 additive.
@@ -93,9 +94,17 @@ static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 	double	px;
 	double	py;
 	t_vec3	dir;
+	double	jx;
+	double	jy;
 
-	px = (2.0 * (x + 0.5) / render->gui->win.size.x - 1.0) * render->half_width;
-	py = (1.0 - 2.0 * (y + 0.5) / render->gui->win.size.y) * render->half_height;
+	jx = 0.0;
+	jy = 0.0;
+	if (render->gui->opts.taa)
+		taa_get_jitter(render->gui->opts.taa_frame, &jx, &jy);
+	px = (2.0 * (x + 0.5 + jx) / render->gui->win.size.x - 1.0)
+		* render->half_width;
+	py = (1.0 - 2.0 * (y + 0.5 + jy) / render->gui->win.size.y)
+		* render->half_height;
 	dir = vec3_norm(vec3_add(render->transform.forward,
 				vec3_add(vec3_scale(render->transform.right, px),
 					vec3_scale(render->transform.up, py))));
@@ -104,17 +113,21 @@ static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 
 void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 {
-	t_ray	ray;
-	t_vec3	color;
-	float	out_t;
-	int		idx;
+	t_ray		ray;
+	t_vec3		color;
+	int			color_packed;
+	float		out_t;
+	size_t		idx;
 
 	make_camera_ray(render, (double)pos.x, (double)pos.y, &ray);
+	out_t = 0.0f;
 	color = trace_ray_ex(render->gui->scene->bvh, &ray,
 			render->gui->scene, &out_t);
-	idx = pos.y * render->gui->win.size.x + pos.x;
-	if (render->gui->render.depth_buf)
-		render->gui->render.depth_buf[idx] = out_t;
-	((uint32_t *)pixel_addr)[0] = (uint32_t)pack_color(color,
-			&render->gui->rt_engine.settings);
+	color_packed = (int)pack_color(color, &render->gui->rt_engine.settings);
+	((uint32_t *)pixel_addr)[0] = (uint32_t)color_packed;
+	if (render->gui->opts.depth_buf)
+	{
+		idx = (size_t)pos.y * (size_t)render->gui->win.size.x + (size_t)pos.x;
+		render->gui->opts.depth_buf[idx] = out_t;
+	}
 }

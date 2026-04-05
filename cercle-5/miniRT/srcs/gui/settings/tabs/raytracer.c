@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:35:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 00:38:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	draw_preset_row(t_gui *gui, t_vec2i o, int y)
 
 void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 {
-	t_iradio	r[4];
+	t_iradio	r[5];
 	t_islider	sl[4];
 	int			y;
 	int			i;
@@ -71,13 +71,17 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 		o.x + 8, y, COL_HOVER, "OPTIMIZATIONS");
 	y += 24;
 	r[0] = (t_iradio){"Adaptive Scale",
-		&gui->render.opts.adaptive_scale, NULL};
+		&gui->opts.adaptive_scale, NULL};
 	r[1] = (t_iradio){"Reprojection",
-		&gui->render.opts.reprojection, NULL};
+		&gui->opts.reprojection, NULL};
 	r[2] = (t_iradio){"Temporal Blend",
-		&gui->render.opts.temporal_blend, NULL};
+		&gui->opts.temporal_blend, NULL};
+	r[3] = (t_iradio){"Frame Interp",
+		&gui->opts.frame_interp, NULL};
+	r[4] = (t_iradio){"TAA",
+		&gui->opts.taa, NULL};
 	i = 0;
-	while (i < 3)
+	while (i < 5)
 	{
 		draw_radio_row(gui, vec2i(o.x, y), r[i], SETTINGS_W - 16);
 		y += SETTINGS_ROW_H + 4;
@@ -112,7 +116,7 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 
 bool	click_settings_raytracer_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 {
-	t_iradio	r[4];
+	t_iradio	r[5];
 	t_islider	sl[4];
 	int			y;
 	int			i;
@@ -121,13 +125,17 @@ bool	click_settings_raytracer_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 
 	y = o.y + 12 + 24;
 	r[0] = (t_iradio){"Adaptive Scale",
-		&gui->render.opts.adaptive_scale, NULL};
+		&gui->opts.adaptive_scale, NULL};
 	r[1] = (t_iradio){"Reprojection",
-		&gui->render.opts.reprojection, NULL};
+		&gui->opts.reprojection, NULL};
 	r[2] = (t_iradio){"Temporal Blend",
-		&gui->render.opts.temporal_blend, NULL};
+		&gui->opts.temporal_blend, NULL};
+	r[3] = (t_iradio){"Frame Interp",
+		&gui->opts.frame_interp, NULL};
+	r[4] = (t_iradio){"TAA",
+		&gui->opts.taa, NULL};
 	i = 0;
-	while (i < 3)
+	while (i < 5)
 	{
 		if (try_radio_click(gui, mouse, vec2i(o.x, y), r[i], SETTINGS_W - 16))
 			return (true);

@@ -12,12 +12,11 @@
 
 #include "window.h"
 #include "editor.h"
-#include <stdatomic.h>
 
 /*
-** Handles window resize events.
-** Recreates only the display image to match the new window dimensions.
-** The render image stays at the fixed render resolution.
+** Handles window resize events synchronously.
+** Destroys old display images and creates new ones at the new size,
+** then recomputes layout and marks the frame dirty.
 */
 int	gui_window_resize(t_vec2i size, t_gui *gui)
 {
@@ -47,24 +46,19 @@ int	gui_window_resize(t_vec2i size, t_gui *gui)
 	addrs[0] = mlx_get_data_addr(imgs[0], &bpp, &line_len, &endian);
 	addrs[1] = mlx_get_data_addr(imgs[1], &bpp, &line_len, &endian);
 	addrs[2] = mlx_get_data_addr(imgs[2], &bpp, &line_len, &endian);
-	if (gui->render.disp_resize_pending)
+	i = 0;
+	while (i < 3)
 	{
-		mlx_destroy_image(gui->win.mlx, gui->render.pending_disp_imgs[0]);
-		mlx_destroy_image(gui->win.mlx, gui->render.pending_disp_imgs[1]);
-		mlx_destroy_image(gui->win.mlx, gui->render.pending_disp_imgs[2]);
+		mlx_destroy_image(gui->win.mlx, gui->win.disp_imgs[i]);
+		gui->win.disp_imgs[i] = imgs[i];
+		gui->win.disp_addrs[i] = addrs[i];
+		i++;
 	}
-	gui->render.pending_disp_size = size;
-	gui->render.pending_disp_imgs[0] = imgs[0];
-	gui->render.pending_disp_imgs[1] = imgs[1];
-	gui->render.pending_disp_imgs[2] = imgs[2];
-	gui->render.pending_disp_addrs[0] = addrs[0];
-	gui->render.pending_disp_addrs[1] = addrs[1];
-	gui->render.pending_disp_addrs[2] = addrs[2];
-	gui->render.pending_disp_line_len = line_len;
-	gui->render.pending_disp_bpp = bpp;
-	gui->render.pending_disp_endian = endian;
-	__sync_synchronize();
-	gui->render.disp_resize_pending = 1;
+	gui->win.disp_line_len = line_len;
+	gui->win.disp_bpp = bpp;
+	gui->win.disp_endian = endian;
+	gui->win.disp_size = size;
+	gui_recompute_layout(gui);
 	gui->render.dirty = true;
 	return (0);
 }

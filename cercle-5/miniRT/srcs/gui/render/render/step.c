@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:56:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:02:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,7 @@
 #include "editor.h"
 
 /*
-** Drains a pending display resize posted by gui_window_resize (main thread).
-** Installs new triple-buffer images, hands old images back for destruction,
-** and recomputes UI layout — all before any worker is dispatched this frame.
-*/
-static void	disp_resize_step(t_gui *gui)
-{
-	int	i;
-
-	if (!gui->render.disp_resize_pending)
-		return ;
-	i = 0;
-	while (i < 3)
-	{
-		gui->render.old_disp_imgs[i] = gui->win.disp_imgs[i];
-		gui->win.disp_imgs[i] = gui->render.pending_disp_imgs[i];
-		gui->win.disp_addrs[i] = gui->render.pending_disp_addrs[i];
-		i++;
-	}
-	gui->win.disp_line_len = gui->render.pending_disp_line_len;
-	gui->win.disp_bpp = gui->render.pending_disp_bpp;
-	gui->win.disp_endian = gui->render.pending_disp_endian;
-	gui->win.disp_size = gui->render.pending_disp_size;
-	gui->render.back_idx = 0;
-	gui_recompute_layout(gui);
-	gui->render.dirty = true;
-	gui->render.prev_valid = false;
-	gui->render.disp_resize_pending = 0;
-	gui->render.disp_resize_done = 1;
-}
-
-/*
-** Composites pixel-based UI (panels, orientation gizmo) into the back
-** buffer while the render thread owns it exclusively — no race possible.
-** String-based text stays on the main thread (mlx_string_put is X11-direct).
+** Composites pixel-based UI (panels, orientation gizmo) into the back buffer.
 */
 static void	overlay_step(t_gui *gui)
 {
@@ -99,15 +66,13 @@ void	raytrace_step(t_gui *gui, double delta)
 
 	if (!gui->scene)
 		return ;
-	disp_resize_step(gui);
-	if (gui->render.opts.adaptive_scale)
+	if (gui->opts.adaptive_scale)
 		adaptive_scale(gui);
-	gui->render.snap_transform = gui->scene->camera.transform;
-	gui->render.snap_fov = gui->scene->camera.fov;
-	gui->render.snap_scale = gui->render.scale;
-	gui->render.snap_delta = delta;
 	t0 = now_ms();
 	gui_render(gui);
+	save_frame(gui);
+	if (gui->opts.temporal_blend)
+		blend_temporal(gui, delta);
 	upscale_image(gui);
 	optimize_frames(gui, delta);
 	overlay_step(gui);

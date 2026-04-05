@@ -26,7 +26,7 @@ void	editor_add_cylinder(t_gui *gui)
 	cy.temp_color = vec3(0.9, 0.7, 0.4);
 	scene_add_cylinder(gui->scene, cy);
 	select_object(gui, TYPE_CYLINDER, gui->scene->cylinder_count - 1);
-	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
+	gui->render.bvh_needs_rebuild = 1;
 }
 
 void	editor_add_cone(t_gui *gui)
@@ -41,7 +41,7 @@ void	editor_add_cone(t_gui *gui)
 	co.temp_color = vec3(0.9, 0.5, 0.3);
 	scene_add_cone(gui->scene, co);
 	select_object(gui, TYPE_CONE, gui->scene->cone_count - 1);
-	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
+	gui->render.bvh_needs_rebuild = 1;
 }
 
 void	editor_add_light(t_gui *gui)
@@ -59,5 +59,5 @@ void	editor_add_light(t_gui *gui)
 	lt.type = LIGHT_POINT;
 	scene_add_light(gui->scene, lt);
 	select_object(gui, TYPE_LIGHT, gui->scene->light_count - 1);
-	{ t_cmd _c; ft_memset(&_c, 0, sizeof(_c)); _c.type = CMD_REBUILD_BVH; cmd_enqueue(gui, _c); }
+	gui->render.bvh_needs_rebuild = 1;
 }
