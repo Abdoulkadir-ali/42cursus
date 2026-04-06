@@ -23,6 +23,11 @@ bool	scene_add_capsule(t_scene *scene, t_capsule cap)
 	if (!DYNARRAY_ENSURE_INT(&scene->capsules, &scene->capsule_count,
 			&scene->capsule_cap, sizeof(t_capsule)))
 		return (false);
+cap.mat_slots[0] = cap.mat_id;
+cap.mat_slots[1] = scene->mat_slot_checker;
+cap.mat_slots[2] = scene->mat_slot_solid;
+cap.mat_slots[3] = 0;
+cap.active_slot = 0;
 	scene->capsules[scene->capsule_count++] = cap;
 	return (true);
 }

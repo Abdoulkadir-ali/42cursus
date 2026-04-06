@@ -45,12 +45,24 @@ bool	rt_parse_entry(t_scene *scene, t_rt *rt)
 	rt->obj = dispatch_scan(rt->parser, rt->id);
 	if (rt->obj.type == TYPE_NONE)
 	{
+		fprintf(stderr, "Warning: unknown keyword '%s' (line %d)\n",
+			rt->id, rt->line_num);
 		handle_unknown(rt->parser);
 		rt->status = false;
 		return (true);
 	}
+	if (rt->obj.type == TYPE_MAT_MOD)
+	{
+		apply_mat_mod_to_last(scene, rt, &rt->obj.data.mat_mod);
+		return (true);
+	}
 	if (!process_object(scene, rt->obj))
 		rt->status = false;
+	else
+	{
+		rt->last_type = rt->obj.type;
+		rt->last_mat_cloned = false;
+	}
 	return (true);
 }
 

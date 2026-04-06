@@ -1,0 +1,212 @@
+# ============================================================
+# test_all.rt  — comprehensive test map
+# Tests: checker (many color combos), solid PBR, glass/refraction,
+#        mirror, emissive, metal, texture, plane checker,
+#        cylinder, box, capsule, pyramid, triangle
+# ============================================================
+
+A 0.02 255,255,255
+
+# Camera: slightly elevated, looking forward-down
+C 0,10,34 0,-0.18,-1 72
+
+# Key light (warm sun)
+L 8,28,12 0.35 255,240,210
+# Fill light (cool blue)
+L -18,14,0 0.12 160,185,255
+# Back light (rim)
+L 0,12,-18 0.08 255,200,130
+
+# ============================================================
+# CHECKER FLOOR — white / dark grey
+# ============================================================
+pl 0,-1,0 0,1,0 200,200,200
+mat c 180,180,180 35,35,35 3.0
+rough 0.9
+metal 0.0
+name floor_checker
+
+# ============================================================
+# BACK WALL — subtle blue-grey checker to see sphere shadows
+# ============================================================
+pl 0,0,-18 0,0,1 100,110,130
+mat c 90,100,120 55,60,70 4.0
+rough 1.0
+metal 0.0
+name back_wall
+
+# ============================================================
+# ROW 1 — CHECKER SPHERES (various color combos)   z = 0
+# ============================================================
+
+# 1a  Classic black & white
+sp -14,3,0 3.5 255,255,255
+mat c 255,255,255 10,10,10 2.0
+rough 0.7
+metal 0.0
+name checker_bw
+
+# 1b  Red & yellow
+sp -7,3,0 3.5 255,0,0
+mat c 230,50,30 255,210,0 2.0
+rough 0.65
+metal 0.0
+name checker_red_yellow
+
+# 1c  Blue & white
+sp 0,3,0 3.5 0,80,220
+mat c 20,90,230 240,240,255 2.0
+rough 0.6
+metal 0.0
+name checker_blue_white
+
+# 1d  Green & black
+sp 7,3,0 3.5 0,180,60
+mat c 30,200,70 5,20,5 2.0
+rough 0.75
+metal 0.0
+name checker_green_black
+
+# 1e  Orange & dark blue
+sp 14,3,0 3.5 255,120,0
+mat c 255,130,20 15,20,100 2.0
+rough 0.55
+metal 0.0
+name checker_orange_navy
+
+# ============================================================
+# ROW 2 — CHECKER SPHERES (fine / coarse / colourful)  z = -8
+# ============================================================
+
+# 2a  Fine tile (scale 0.5) — pink & purple
+sp -14,3,-8 3.5 200,50,200
+mat c 230,80,220 80,20,140 0.6
+rough 0.8
+metal 0.0
+name checker_fine_purple
+
+# 2b  Coarse tile (scale 5) — teal & coral  
+sp -7,3,-8 3.5 0,200,180
+mat c 10,210,190 240,90,90 5.0
+rough 0.7
+metal 0.0
+name checker_coarse_teal
+
+# 2c  Gold & dark — metallic checker look
+sp 0,3,-8 3.5 220,170,30
+mat c 220,180,40 60,40,0 1.5
+rough 0.25
+metal 0.75
+refl 0.35
+name checker_gold_metal
+
+# 2d  Cyan & magenta — vivid psychedelic
+sp 7,3,-8 3.5 0,230,230
+mat c 0,230,230 230,0,230 2.5
+rough 0.6
+metal 0.0
+name checker_cyan_magenta
+
+# 2e  White & transparent-look gray (will compare with glass sphere)
+sp 14,3,-8 3.5 200,220,255
+mat c 200,215,250 120,140,180 1.8
+rough 0.4
+metal 0.0
+name checker_icy
+
+# ============================================================
+# ROW 3 — PBR / SPECIAL MATERIAL SPHERES  z = -16
+# ============================================================
+
+# 3a  Mirror (perfect reflector)
+sp -14,3,-16 3.5 200,200,200
+mat s 200,200,200
+rough 0.02
+metal 1.0
+refl 0.98
+name mirror
+
+# 3b  Glass (refraction)
+sp -7,3,-16 3.5 200,230,255
+mat s 200,235,255
+rough 0.02
+metal 0.0
+opac 0.06
+ior 1.52
+refl 0.07
+name glass
+
+# 3c  Matte diffuse red
+sp 0,3,-16 3.5 220,60,60
+mat s 220,60,60
+rough 0.95
+metal 0.0
+name matte_red
+
+# 3d  Brushed metal (rougher reflection)
+sp 7,3,-16 3.5 180,180,200
+mat s 180,185,210
+rough 0.35
+metal 0.9
+refl 0.6
+name brushed_metal
+
+# 3e  Emissive warm — subtle glow only
+sp 14,3,-16 3.5 255,200,50
+mat s 255,210,60
+rough 1.0
+metal 0.0
+emit 80,65,15
+emit_power 0.3
+name emissive_sun
+
+# ============================================================
+# FOREGROUND SHAPES — mixed objects testing other primitives
+# ============================================================
+
+# Cylinder (brushed chrome column) — left foreground
+cy -10,0,10 0,1,0 1.2 6.0 160,170,185
+mat s 160,170,190
+rough 0.15
+metal 0.95
+refl 0.7
+name chrome_column
+
+# Box (checker crate) — centre-left foreground
+bx -4,0,10 1,0,0 2.0,2.0,2.0 180,140,90
+mat c 180,140,90 80,55,20 1.0
+rough 0.85
+metal 0.0
+name crate_checker
+
+# Pyramid (gold metal) — centre-right foreground
+py 3,-1,10 0,1,0 3 4 220,170,40
+mat s 220,180,50
+rough 0.2
+metal 0.85
+refl 0.5
+name gold_pyramid
+
+# Capsule (glass rod) — right foreground
+ca 10,0,10 0,1,0 0.9 4.5 180,220,255
+mat s 185,225,255
+rough 0.03
+metal 0.0
+opac 0.08
+ior 1.50
+refl 0.07
+name glass_rod
+
+# Triangle (vivid accent) — scattered
+tr -6,-1,14 -3,-1,14 -4.5,2.5,14 60,200,120
+mat s 60,200,120
+rough 0.8
+metal 0.0
+name green_triangle
+
+tr 5,-1,14 8,-1,14 6.5,2.5,14 200,80,200
+mat s 200,80,200
+rough 0.3
+metal 0.4
+refl 0.3
+name purple_triangle

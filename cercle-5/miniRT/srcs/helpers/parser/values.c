@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   types.h                                            :+:      :+:    :+:   */
+/*   values.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 19:08:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,13 @@ bool	parse_vec3(t_parser *p, t_vec3 *out)
 
 	ft_memset(&v, 0, sizeof(t_vec3));
 	v.x = parse_double(p);
-	parser_skip_spaces(p);
+	parser_skip_horizontal_spaces(p);
 	if (parser_peek(p) == ',')
 		parser_advance(p);
 	else
 		return (false);
 	v.y = parse_double(p);
-	parser_skip_spaces(p);
+	parser_skip_horizontal_spaces(p);
 	if (parser_peek(p) == ',')
 		parser_advance(p);
 	else

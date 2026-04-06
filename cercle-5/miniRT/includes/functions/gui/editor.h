@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 21:07:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,31 @@ bool				material_panel_handle_click(struct s_gui *gui,
 void				build_mat_sliders(t_material *mat, t_islider *sl,
 						int *count);
 void				sync_group_materials(struct s_gui *gui);
+int					get_selected_group_slot(struct s_gui *gui);
+void				set_selected_group_slot(struct s_gui *gui, int slot);
+t_mesh				*get_selected_fdf_mesh(struct s_gui *gui);
+size_t				get_selected_tex_slot(struct s_gui *gui);
+void				set_selected_tex_slot(struct s_gui *gui, size_t mat_id);
+size_t				slot_get_mat(struct s_gui *gui, int slot);
+void				slot_set_mat(struct s_gui *gui, int slot, size_t mat_id);
+/* srcs/gui/editor/panel/material/click/ */
+bool				mat_hit_btn(struct s_gui *gui, t_vec2i mouse,
+						t_vec2i pos, t_vec2s size);
+bool				click_fdf_row(struct s_gui *gui, t_vec2i mouse,
+						t_vec2i *p);
+bool				click_mat_slots(struct s_gui *gui, t_vec2i mouse,
+						t_vec2i *p);
+bool				click_mat_surface(struct s_gui *gui, t_vec2i mouse,
+						t_material *mat, t_vec2i *p);
+bool				click_mat_albedo(struct s_gui *gui, t_vec2i mouse,
+						t_material *mat, t_vec2i *p);
+bool				click_mat_emission(struct s_gui *gui, t_vec2i mouse,
+						t_material *mat, t_vec2i *p);
+void				tex_apply_from_path(struct s_gui *gui, const char *path);
+void				tex_apply_callback(t_widget *w, struct s_gui *gui);
+void				tex_popup_init(struct s_gui *gui);
+void				draw_tex_preview(struct s_gui *gui, t_vec2i pos,
+						t_vec2s size, t_texture *tex);
 
 /* srcs/gui/editor/widgets/slider.c + slider_draw.c */
 void				draw_slider_row(struct s_gui *gui, t_vec2i pos,
@@ -179,10 +204,17 @@ void				draw_popup(struct s_gui *gui);
 void				draw_popup_shape(struct s_gui *gui);
 void				draw_popup_mesh_fmt(struct s_gui *gui);
 void				draw_popup_mesh_path(struct s_gui *gui);
+void				draw_popup_tex_path(struct s_gui *gui);
 void				draw_path_field(struct s_gui *gui, t_vec2i o,
 					size_t modal_h);
 
 /* srcs/gui/editor/crud/popup.c */
+void				popup_load_mesh(struct s_gui *gui);
+void				popup_submit_tex(struct s_gui *gui);
+
+/* srcs/gui/editor/crud/popup/click/ */
+bool				click_popup_mesh_path(struct s_gui *gui, t_vec2i mouse);
+bool				click_popup_tex_path(struct s_gui *gui, t_vec2i mouse);
 
 /* srcs/gui/editor/panel/physics/physics.c */
 void				draw_physics_panel(struct s_gui *gui, t_physics_body *phys,

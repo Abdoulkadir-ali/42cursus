@@ -1,0 +1,257 @@
+# ============================================================
+# shapes_showcase.rt
+# All shape types in a row, 4 material variants:
+#   Row 1 — Texture (garen.jpg)
+#   Row 2 — Emissive light
+#   Row 3 — Checker (coloured)
+#   Row 4 — Solid PBR
+# Shapes: sp  cy  bx  ca  py  tr  rc  (pl as floor)
+# ============================================================
+
+A 0.04 255,255,255
+
+# Camera: wide view, slightly elevated
+C 0,14,52 0,-0.18,-1 80
+
+# Key light (warm sun — high)
+L 12,40,20 0.8 255,240,200
+
+
+
+# ── Floor ──────────────────────────────────────────────────
+pl 0,-1,0 0,1,0 180,180,180
+mat c 170,170,170 40,40,40 2.5
+rough 0.9
+metal 0.0
+name floor
+
+
+# ============================================================
+# ROW 1 — TEXTURE (garen.jpg)     z = 0
+# ============================================================
+
+# Sphere
+sp -24,3,0 3.0 255,255,255
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.5
+metal 0.0
+name tex_sphere
+
+# Cylinder
+cy -16,0,0 0,1,0 1.5 6.0 255,255,255
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.5
+metal 0.0
+name tex_cylinder
+
+# Box
+bx -8,0,0 2.8,3.0,2.8 255,255,255
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.5
+metal 0.0
+name tex_box
+
+# Capsule
+ca 0,0,0 0,1,0 1.5 5.0 255,255,255
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.5
+metal 0.0
+name tex_capsule
+
+# Pyramid
+py 10,-1,0 0,1,0 5 8 255,255,255
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.5
+metal 0.0
+name tex_pyramid
+d
+# Triangle
+tr 14,-1,0 18,-1,0 16,5,0 255,255,255
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.5
+metal 0.0
+name tex_triangle
+
+# Rectangle (standing panel)
+rc 20,0,-1 24,0,-1 24,6,-1 20,6,-1 255,255,255
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.5
+metal 0.0
+name tex_rect
+
+# ============================================================
+# ROW 2 — EMISSIVE     z = -10
+# ============================================================
+
+# Sphere — hot orange glow
+sp -24,3,-10 3.0 255,140,20
+mat s 255,150,30
+rough 0.8
+metal 0.0
+emit 255,130,20
+emit_power 0.01
+name emit_sphere
+
+# Cylinder — cyan glow
+cy -16,0,-10 0,1,0 1.5 6.0 20,230,200
+mat s 20,230,200
+rough 0.8
+metal 0.0
+emit 20,220,190
+emit_power 0.01
+name emit_cylinder
+
+# Box — purple glow
+bx -8,0,-10 2.8,3.0,2.8 180,40,240
+mat s 180,50,240
+rough 0.8
+metal 0.0
+emit 170,30,230
+emit_power 0.01
+name emit_box
+
+# Capsule — green glow
+ca 0,0,-10 0,1,0 1.5 5.0 60,255,80
+mat s 60,255,80
+rough 0.8
+metal 0.0
+emit 50,240,70
+emit_power 0.01
+name emit_capsule
+
+# Pyramid — red glow
+py 10,-1,-10 0,1,0 5 8 255,50,50
+mat s 255,60,60
+rough 0.8
+metal 0.0
+emit 240,40,40
+emit_power 0.01
+name emit_pyramid
+
+# Triangle — yellow glow
+tr 14,-1,-10 18,-1,-10 16,5,-10 255,230,30
+mat s 255,235,40
+rough 0.8
+metal 0.0
+emit 245,220,20
+emit_power 0.01
+name emit_triangle
+
+# Rectangle — blue glow panel
+rc 20,0,-11 24,0,-11 24,6,-11 20,6,-11 40,120,255
+mat s 40,130,255
+rough 0.8
+metal 0.0
+emit 30,110,245
+emit_power 0.01
+name emit_rect
+
+# ============================================================
+# ROW 3 — CHECKER (coloured)     z = -20
+# ============================================================
+
+# Sphere — red & gold
+sp -24,3,-20 3.0 220,60,30
+mat c 220,60,30 255,200,20 2.0
+rough 0.65
+metal 0.0
+name check_sphere
+
+# Cylinder — teal & white
+cy -16,0,-20 0,1,0 1.5 6.0 0,180,160
+mat c 0,190,170 240,240,240 1.5
+rough 0.7
+metal 0.0
+name check_cylinder
+
+# Box — blue & orange
+bx -8,0,-20 2.8,3.0,2.8 30,80,220
+mat c 30,80,220 240,120,20 1.0
+rough 0.75
+metal 0.0
+name check_box
+
+# Capsule — purple & lime
+ca 0,0,-20 0,1,0 1.5 5.0 160,40,220
+mat c 160,40,220 120,230,40 1.5
+rough 0.7
+metal 0.0
+name check_capsule
+
+# Pyramid — magenta & dark
+py 10,-1,-20 0,1,0 5 8 220,30,180
+mat c 220,30,180 30,10,50 1.0
+rough 0.65
+metal 0.0
+name check_pyramid
+
+# Triangle — green & white
+tr 14,-1,-20 18,-1,-20 16,5,-20 40,200,80
+mat c 40,200,80 240,250,240 2.5
+rough 0.7
+metal 0.0
+name check_triangle
+
+# Rectangle — checker panel warm
+rc 20,0,-21 24,0,-21 24,6,-21 20,6,-21 200,140,60
+mat c 200,140,60 70,40,10 1.0
+rough 0.75
+metal 0.0
+name check_rect
+
+# ============================================================
+# ROW 4 — SOLID PBR     z = -30
+# ============================================================
+
+# Sphere — brushed silver
+sp -24,3,-30 3.0 190,195,210
+mat s 190,195,210
+rough 0.3
+metal 0.85
+refl 0.6
+name solid_sphere
+
+# Cylinder — matte terracotta
+cy -16,0,-30 0,1,0 1.5 6.0 200,100,70
+mat s 200,100,70
+rough 0.9
+metal 0.0
+name solid_cylinder
+
+# Box — dark navy satin
+bx -8,0,-30 2.8,3.0,2.8 25,40,90
+mat s 25,40,90
+rough 0.45
+metal 0.15
+refl 0.2
+name solid_box
+
+# Capsule — ivory matte
+ca 0,0,-30 0,1,0 1.5 5.0 235,225,205
+mat s 235,225,205
+rough 0.85
+metal 0.0
+name solid_capsule
+
+# Pyramid — gold metal
+py 10,-1,-30 0,1,0 5 8 210,165,30
+mat s 210,165,30
+rough 0.25
+metal 0.9
+refl 0.55
+name solid_pyramid
+
+# Triangle — rose plastic
+tr 14,-1,-30 18,-1,-30 16,5,-30 230,80,110
+mat s 230,80,110
+rough 0.7
+metal 0.0
+name solid_triangle
+
+# Rectangle — mirror panel
+rc 20,0,-31 24,0,-31 24,6,-31 20,6,-31 200,205,215
+mat s 200,205,215
+rough 0.04
+metal 1.0
+refl 0.95
+name solid_rect_mirror

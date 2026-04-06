@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:24:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 17:41:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ typedef struct s_scene
 	t_material			*materials;
 	size_t				mat_count;
 	size_t				mat_cap;
+	size_t				mat_slot_checker;
+	size_t				mat_slot_solid;
 
 	t_ambient			ambient;
 	t_camera			camera;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:45:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 20:38:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ typedef struct s_gui
 	t_anim_engine		anim_engine;
 	t_raytracer_engine	rt_engine;
 	t_optimizations		opts;
-	t_settings_panel	settings;
+	t_settings_panel	settings;	t_widget			*tex_popup_input;
+	bool					tex_popup_open;	int					tex_status;
+	char				tex_status_msg[64];
 	unsigned char		font[95][8];
 }						t_gui;
 

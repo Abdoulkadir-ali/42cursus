@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 21:49:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ static t_bvh_tmp_node	*build_tmp_tree(t_scene *scene, size_t total, size_t *k)
 	i = 0;
 	while (i < scene->cylinder_count)
 		cylinder_precompute(&scene->cylinders[i++]);
+	i = 0;
+	while (i < scene->pyramid_count)
+		pyramid_cache_verts(&scene->pyramids[i++]);
 	items = ft_calloc(total, sizeof(t_build_item));
 	if (!items)
 		return (NULL);

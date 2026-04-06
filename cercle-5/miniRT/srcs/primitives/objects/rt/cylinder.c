@@ -27,6 +27,11 @@ bool	scene_add_cylinder(t_scene *scene, t_cylinder cylinder)
 	if (!DYNARRAY_ENSURE_INT(&scene->cylinders, &scene->cylinder_count,
 			&scene->cylinder_cap, sizeof(t_cylinder)))
 		return (false);
+cylinder.mat_slots[0] = cylinder.mat_id;
+cylinder.mat_slots[1] = scene->mat_slot_checker;
+cylinder.mat_slots[2] = scene->mat_slot_solid;
+cylinder.mat_slots[3] = 0;
+cylinder.active_slot = 0;
 	if (vec3_mag_sq(cylinder.transform.scale) < 1e-6)
 		cylinder.transform.scale = vec3(1, 1, 1);
 	scene->cylinders[scene->cylinder_count++] = cylinder;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 13:21:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 18:19:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,38 @@
 static int	dispatch_mat(t_shading *sha, t_hit *h)
 {
 	if (h->ref.type == TYPE_SPHERE)
-		return (sha->scene->spheres[h->ref.index].mat_id);
+		return (sha->scene->spheres[h->ref.index].mat_slots[
+			sha->scene->spheres[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_PLANE)
-		return (sha->scene->planes[h->ref.index].mat_id);
+		return (sha->scene->planes[h->ref.index].mat_slots[
+			sha->scene->planes[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_CYLINDER)
-		return (sha->scene->cylinders[h->ref.index].mat_id);
+		return (sha->scene->cylinders[h->ref.index].mat_slots[
+			sha->scene->cylinders[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_CONE)
-		return (sha->scene->cones[h->ref.index].mat_id);
+		return (sha->scene->cones[h->ref.index].mat_slots[
+			sha->scene->cones[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_TRI)
-		return (sha->scene->tris[h->ref.index].mat_id);
+		return (sha->scene->tris[h->ref.index].mat_slots[
+			sha->scene->tris[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_RECT)
-		return (sha->scene->rects[h->ref.index].mat_id);
+		return (sha->scene->rects[h->ref.index].mat_slots[
+			sha->scene->rects[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_PYRAMID)
-		return (sha->scene->pyramids[h->ref.index].mat_id);
+		return (sha->scene->pyramids[h->ref.index].mat_slots[
+			sha->scene->pyramids[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_BOX)
-		return (sha->scene->boxes[h->ref.index].mat_id);
+		return (sha->scene->boxes[h->ref.index].mat_slots[
+			sha->scene->boxes[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_CAPSULE)
-		return (sha->scene->capsules[h->ref.index].mat_id);
+		return (sha->scene->capsules[h->ref.index].mat_slots[
+			sha->scene->capsules[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_MESH)
-		return (sha->scene->meshes[h->ref.index].mat_id);
+		return (sha->scene->meshes[h->ref.index].mat_slots[
+			sha->scene->meshes[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_ANIM)
-		return (sha->scene->animated[h->ref.index].base.mat_id);
+		return (sha->scene->animated[h->ref.index].base.mat_slots[
+			sha->scene->animated[h->ref.index].base.active_slot]);
 	return (0);
 }
 

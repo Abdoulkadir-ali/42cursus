@@ -27,6 +27,11 @@ bool	scene_add_plane(t_scene *scene, t_plane plane)
 	if (scene_allocate_object_slot((void **)&scene->planes, &scene->plane_count,
 			&scene->plane_cap, sizeof(t_plane)).error)
 		return (false);
+plane.mat_slots[0] = plane.mat_id;
+plane.mat_slots[1] = scene->mat_slot_checker;
+plane.mat_slots[2] = scene->mat_slot_solid;
+plane.mat_slots[3] = 0;
+plane.active_slot = 0;
 	if (vec3_mag_sq(plane.transform.scale) < 1e-6)
 		plane.transform.scale = vec3(1, 1, 1);
 	scene->planes[scene->plane_count - 1] = plane;

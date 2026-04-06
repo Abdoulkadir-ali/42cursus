@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:07:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 21:07:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,5 +102,9 @@ bool	popup_handle_click(t_gui *gui, t_vec2i mouse)
 		return (click_popup_shape(gui, mouse));
 	if (gui->crud.popup == POPUP_MESH_FMT)
 		return (click_popup_mesh_fmt(gui, mouse));
+	if (gui->crud.popup == POPUP_MESH_PATH)
+		return (click_popup_mesh_path(gui, mouse));
+	if (gui->crud.popup == POPUP_TEX_PATH)
+		return (click_popup_tex_path(gui, mouse));
 	return (true);
 }

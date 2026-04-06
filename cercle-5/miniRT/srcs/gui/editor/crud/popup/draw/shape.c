@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:10:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 21:07:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,6 @@ void	draw_popup(t_gui *gui)
 		draw_popup_mesh_fmt(gui);
 	else if (gui->crud.popup == POPUP_MESH_PATH)
 		draw_popup_mesh_path(gui);
+	else if (gui->crud.popup == POPUP_TEX_PATH)
+		draw_popup_tex_path(gui);
 }

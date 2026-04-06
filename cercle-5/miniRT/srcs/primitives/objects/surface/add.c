@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 11:05:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 19:55:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,20 +112,23 @@ static bool	mat_needs_uv(t_material *m)
 
 void	scene_init_uv_flags(t_scene *scene)
 {
-	size_t	i;
+	size_t		i;
+	t_material	*m;
 
 	i = 0;
 	while (i < scene->sphere_count)
 	{
-		scene->spheres[i].needs_uv = mat_needs_uv(
-				&scene->materials[scene->spheres[i].mat_id]);
+		m = &scene->materials[scene->spheres[i].mat_slots[
+			scene->spheres[i].active_slot]];
+		scene->spheres[i].needs_uv = mat_needs_uv(m);
 		i++;
 	}
 	i = 0;
 	while (i < scene->plane_count)
 	{
-		scene->planes[i].needs_uv = mat_needs_uv(
-				&scene->materials[scene->planes[i].mat_id]);
+		m = &scene->materials[scene->planes[i].mat_slots[
+			scene->planes[i].active_slot]];
+		scene->planes[i].needs_uv = mat_needs_uv(m);
 		i++;
 	}
 }

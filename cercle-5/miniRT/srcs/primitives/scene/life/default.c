@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:39:21 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 21:57:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 17:41:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@ static void	add_ground_plane(t_scene *scene)
 
 void	setup_default_scene(t_scene *scene)
 {
+	scene->mat_slot_checker = scene_add_checker_material(scene,
+			vec3(20, 20, 20), vec3(230, 230, 230), 1.0);
+	scene->mat_slot_solid = scene_add_material(scene,
+			vec3(200, 200, 200)).i;
 	scene->ambient.brightness = 0.3;
 	scene->ambient.rgb = vec3(255, 255, 255);
 	scene->camera.fov = 70.0;

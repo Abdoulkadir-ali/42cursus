@@ -33,7 +33,8 @@ typedef enum e_type
 	TYPE_RECT,
 	TYPE_PYRAMID,
 	TYPE_BOX,
-	TYPE_CAPSULE
+	TYPE_CAPSULE,
+	TYPE_MAT_MOD
 }	t_type;
 
 typedef enum e_light_type
@@ -53,6 +54,8 @@ typedef struct s_sphere
 	bool				is_deformed;
 	bool				needs_uv;
 	t_vec3					inv_scale;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_sphere;
 
 typedef struct s_plane
@@ -62,6 +65,8 @@ typedef struct s_plane
 	t_vec3				temp_color;
 	t_physics_body		phys;
 	bool				needs_uv;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_plane;
 
 typedef struct s_cylinder
@@ -74,6 +79,8 @@ typedef struct s_cylinder
 	t_vec3				top;
 	t_vec3				local_u;
 	t_vec3				local_v;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_cylinder;
 
 typedef struct s_cone
@@ -82,6 +89,8 @@ typedef struct s_cone
 	size_t				mat_id;
 	t_vec3				temp_color;
 	t_physics_body		phys;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_cone;
 
 typedef struct s_tri_shape
@@ -92,6 +101,8 @@ typedef struct s_tri_shape
 	t_vec3				normal;
 	size_t				mat_id;
 	t_vec3				temp_color;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_tri_shape;
 
 typedef struct s_rect
@@ -102,6 +113,8 @@ typedef struct s_rect
 	t_vec3				normal;
 	size_t				mat_id;
 	t_vec3				temp_color;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_rect;
 
 typedef struct s_pyramid
@@ -115,6 +128,8 @@ typedef struct s_pyramid
 	t_vec3				temp_color;
 	t_vec3				c[4];
 	t_vec3				apex;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_pyramid;
 
 typedef struct s_box
@@ -124,6 +139,8 @@ typedef struct s_box
 	t_vec3				half_extents;
 	size_t				mat_id;
 	t_vec3				temp_color;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_box;
 
 typedef struct s_capsule
@@ -135,6 +152,8 @@ typedef struct s_capsule
 	double				half_height;
 	size_t				mat_id;
 	t_vec3				temp_color;
+	size_t				mat_slots[4];
+	int					active_slot;
 }						t_capsule;
 
 typedef struct s_light

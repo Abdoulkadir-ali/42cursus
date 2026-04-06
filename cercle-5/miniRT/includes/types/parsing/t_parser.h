@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:17:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 19:08:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,34 +41,70 @@ typedef struct s_parser
 	bool				eof;
 }						t_parser;
 
+typedef enum e_mat_mod_kind
+{
+	MAT_MOD_SOLID,
+	MAT_MOD_CHECKER,
+	MAT_MOD_TEXTURE,
+	MAT_MOD_ROUGHNESS,
+	MAT_MOD_METALLIC,
+	MAT_MOD_EMISSION,
+	MAT_MOD_OPACITY,
+	MAT_MOD_REFLECTIVITY,
+	MAT_MOD_IOR,
+	MAT_MOD_SHININESS,
+	MAT_MOD_UV_SCALE,
+	MAT_MOD_EMIT_POWER,
+	MAT_MOD_BUMP,
+	MAT_MOD_NAME,
+	MAT_MOD_PHYS_MASS,
+	MAT_MOD_PHYS_STATIC,
+	MAT_MOD_PHYS_ELAST,
+	MAT_MOD_PHYS_FRIC
+}							t_mat_mod_kind;
+
+typedef struct s_mat_mod
+{
+	t_mat_mod_kind			kind;
+	t_vec3					color_a;
+	t_vec3					color_b;
+	double					val;
+	double					scale;
+	char					path[512];
+}							t_mat_mod;
+
 typedef struct s_parse_obj
 {
-	t_type				type;
+	t_type					type;
 	union
 	{
-		t_sphere		sphere;
-		t_plane			plane;
-		t_cylinder		cylinder;
-		t_cone			cone;
-		t_tri_shape		tri_shape;
-		t_rect			rect;
-		t_pyramid		pyramid;
-		t_box			box;
-		t_capsule		capsule;
-		t_light			light;
-		t_camera		camera;
-		t_ambient		ambient;
-		t_mesh_info		mesh_info;
+		t_sphere			sphere;
+		t_plane				plane;
+		t_cylinder			cylinder;
+		t_cone				cone;
+		t_tri_shape			tri_shape;
+		t_rect				rect;
+		t_pyramid			pyramid;
+		t_box				box;
+		t_capsule			capsule;
+		t_light				light;
+		t_camera			camera;
+		t_ambient			ambient;
+		t_mesh_info			mesh_info;
+		t_mat_mod			mat_mod;
 	}					data;
 }						t_parse_obj;
 
 typedef struct s_rt
 {
-	t_parser			*parser;
-	int					fd;
-	char				id[16];
-	t_parse_obj			obj;
-	bool				status;
-}						t_rt;
+	t_parser				*parser;
+	int						fd;
+	char					id[16];
+	t_parse_obj				obj;
+	bool					status;
+	t_type					last_type;
+	bool					last_mat_cloned;
+	int						line_num;
+}							t_rt;
 
 #endif

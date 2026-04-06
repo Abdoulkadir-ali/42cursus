@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 19:13:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	widget_draw_input(t_gui *gui, t_widget *w)
 	t_vec2i	tpos;
 	int		brd;
 
+	if (!w->visible)
+		return ;
 	brd = COL_BORDER;
 	if (w->focused)
 		brd = COL_ACCENT;

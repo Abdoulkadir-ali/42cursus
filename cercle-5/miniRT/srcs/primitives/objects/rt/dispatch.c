@@ -71,6 +71,37 @@ static t_parse_obj	dispatch_meshes(t_parser *p, char *id)
 	return (init_none());
 }
 
+static t_parse_obj	dispatch_modifiers(t_parser *p, char *id)
+{
+	if (id[0] == 'm' && id[1] == 'a' && id[2] == 't' && id[3] == '\0')
+		return (parse_mat_mod(p));
+	if (ft_strcmp(id, "rough") == 0)
+		return (parse_prop_mod(p, MAT_MOD_ROUGHNESS));
+	if (ft_strcmp(id, "metal") == 0)
+		return (parse_prop_mod(p, MAT_MOD_METALLIC));
+	if (ft_strcmp(id, "emit") == 0)
+		return (parse_prop_mod(p, MAT_MOD_EMISSION));
+	if (ft_strcmp(id, "opac") == 0)
+		return (parse_prop_mod(p, MAT_MOD_OPACITY));
+	if (ft_strcmp(id, "refl") == 0)
+		return (parse_prop_mod(p, MAT_MOD_REFLECTIVITY));
+	if (ft_strcmp(id, "ior") == 0)
+		return (parse_prop_mod(p, MAT_MOD_IOR));
+	if (ft_strcmp(id, "shine") == 0)
+		return (parse_prop_mod(p, MAT_MOD_SHININESS));
+	if (ft_strcmp(id, "uv_scale") == 0)
+		return (parse_prop_mod(p, MAT_MOD_UV_SCALE));
+	if (ft_strcmp(id, "emit_power") == 0)
+		return (parse_prop_mod(p, MAT_MOD_EMIT_POWER));
+	if (ft_strcmp(id, "bump") == 0)
+		return (parse_bump_mod(p));
+	if (ft_strcmp(id, "name") == 0)
+		return (parse_name_mod(p));
+	if (ft_strcmp(id, "phys") == 0)
+		return (parse_phys_mod(p));
+	return (init_none());
+}
+
 t_parse_obj	dispatch_scan(t_parser *p, char *id)
 {
 	t_parse_obj	obj;
@@ -83,5 +114,8 @@ t_parse_obj	dispatch_scan(t_parser *p, char *id)
 	obj = dispatch_shapes(p, id);
 	if (obj.type != TYPE_NONE)
 		return (obj);
-	return (dispatch_meshes(p, id));
+	obj = dispatch_meshes(p, id);
+	if (obj.type != TYPE_NONE)
+		return (obj);
+	return (dispatch_modifiers(p, id));
 }

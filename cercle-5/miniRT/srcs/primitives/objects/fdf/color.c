@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 15:46:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 19:55:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,22 +158,22 @@ static char	*build_picture_bitmap(unsigned int *colors, size_t w, size_t h)
 ** Picture mode: flatten all vertices to Y=0, build a W×H texture from the
 ** parsed hex colors in fdf->colors, and set grid UV coordinates per vertex.
 */
-static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2s dims)
+static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2s dims,
+		unsigned int *colors)
 {
 	size_t			i;
 	size_t			w;
 	size_t			h;
-	unsigned int	*colors;
 	t_material		*mat;
 	char			*bitmap;
 
 	w = dims.x;
 	h = dims.y;
-	colors = (unsigned int *)mesh->extra;
 	i = 0;
 	while (i < mesh->vertex_count)
 	{
 		mesh->vertices[i].pos.y = 0.0;
+		mesh->vertices[i].normal = vec3(0, 1, 0);
 		i++;
 	}
 	bitmap = build_picture_bitmap(colors, w, h);
@@ -181,6 +181,7 @@ static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2s dims)
 		return ;
 	mat = &scene->materials[mesh->mat_id];
 	init_texture_props(&mat->albedo_map, w, h, bitmap);
+	free(mesh->uvs);
 	mesh->uvs = malloc(sizeof(t_vec2) * mesh->vertex_count);
 	if (!mesh->uvs)
 		return ;
@@ -200,15 +201,12 @@ static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2s dims)
  * Frees mesh->extra (raw color buffer) when done.
  */
 void	fdf_apply_mode(t_mesh *mesh, t_scene *scene,
-	t_vec2s dims, t_fdf_mode mode)
+	t_vec2s dims, t_fdf_mode mode, unsigned int *colors)
 {
+	free(mesh->uvs);
+	mesh->uvs = NULL;
 	if (mode == FDF_MODE_HEIGHT_GRADIENT)
 		apply_height_gradient(mesh, scene);
 	else if (mode == FDF_MODE_PICTURE)
-		apply_picture(mesh, scene, dims);
-	if (mesh->extra)
-	{
-		free(mesh->extra);
-		mesh->extra = NULL;
-	}
+		apply_picture(mesh, scene, dims, colors);
 }

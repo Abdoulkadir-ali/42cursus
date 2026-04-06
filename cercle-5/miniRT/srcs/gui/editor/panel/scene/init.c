@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 18:29:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,5 @@ void	editor_init(t_gui *gui)
 	gui->selection.type = TYPE_NONE;
 	gui->selection.index = init_index(0, true);
 	gui_recompute_layout(gui);
+	tex_popup_init(gui);
 }

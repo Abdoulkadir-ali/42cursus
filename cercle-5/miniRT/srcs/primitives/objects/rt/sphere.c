@@ -26,6 +26,11 @@ bool	scene_add_sphere(t_scene *scene, t_sphere sphere)
 	if (scene_allocate_object_slot((void **)&scene->spheres,
 			&scene->sphere_count, &scene->sphere_cap, sizeof(t_sphere)).error)
 		return (false);
+sphere.mat_slots[0] = sphere.mat_id;
+sphere.mat_slots[1] = scene->mat_slot_checker;
+sphere.mat_slots[2] = scene->mat_slot_solid;
+sphere.mat_slots[3] = 0;
+sphere.active_slot = 0;
 	if (vec3_mag_sq(sphere.transform.scale) < 1e-6)
 		sphere.transform.scale = vec3(1, 1, 1);
 	scene->spheres[scene->sphere_count - 1] = sphere;

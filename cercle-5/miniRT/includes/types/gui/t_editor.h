@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 21:07:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ typedef enum e_popup
 	POPUP_NONE,
 	POPUP_SHAPE,
 	POPUP_MESH_FMT,
-	POPUP_MESH_PATH
+	POPUP_MESH_PATH,
+	POPUP_TEX_PATH
 }	t_popup;
 
 typedef enum e_mesh_fmt
@@ -92,6 +93,10 @@ typedef struct s_crud_ui
 # define SL_REFL_MAX 1.0
 # define SL_IOR_MIN 0.0
 # define SL_IOR_MAX 180.0
+# define SL_SHINE_MIN 1.0
+# define SL_SHINE_MAX 256.0
+# define SL_TILE_MIN 0.1
+# define SL_TILE_MAX 50.0
 # define SL_COL_MIN 0.0
 # define SL_COL_MAX 255.0
 # define SL_EMIT_MIN 0.0

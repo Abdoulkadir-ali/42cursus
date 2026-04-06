@@ -23,6 +23,11 @@ bool	scene_add_tri(t_scene *scene, t_tri_shape tri)
 	if (!DYNARRAY_ENSURE_INT(&scene->tris, &scene->tri_count,
 			&scene->tri_cap, sizeof(t_tri_shape)))
 		return (false);
+tri.mat_slots[0] = tri.mat_id;
+tri.mat_slots[1] = scene->mat_slot_checker;
+tri.mat_slots[2] = scene->mat_slot_solid;
+tri.mat_slots[3] = 0;
+tri.active_slot = 0;
 	scene->tris[scene->tri_count++] = tri;
 	return (true);
 }

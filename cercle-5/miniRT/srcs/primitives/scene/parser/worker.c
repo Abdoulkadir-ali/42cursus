@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 22:26:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 19:08:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,17 +73,32 @@ static void	*rt_mesh_worker(void *ptr)
 static void	inject_results(t_scene *sc, t_rt_line_task *t)
 {
 	size_t	i;
+	t_rt	rt;
 
+	ft_memset(&rt, 0, sizeof(rt));
+	rt.last_type = TYPE_NONE;
 	i = 0;
 	while (i < t->count)
 	{
 		if (t->statuses[i])
 		{
-			if (t->results[i].type == TYPE_MESH)
+			if (t->results[i].type == TYPE_MAT_MOD)
+				apply_mat_mod_to_last(sc, &rt, &t->results[i].data.mat_mod);
+			else if (t->results[i].type == TYPE_MESH)
+			{
 				scene_inject_mesh_resource(sc, &t->resources[i],
 					&t->results[i].data.mesh_info);
+				rt.last_type = TYPE_MESH;
+				rt.last_mat_cloned = false;
+			}
 			else
-				process_object(sc, t->results[i]);
+			{
+				if (process_object(sc, t->results[i]))
+				{
+					rt.last_type = t->results[i].type;
+					rt.last_mat_cloned = false;
+				}
+			}
 		}
 		free(t->lines[i++]);
 	}

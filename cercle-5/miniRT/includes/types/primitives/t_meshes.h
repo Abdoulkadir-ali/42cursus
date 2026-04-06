@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 16:32:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 18:19:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,9 @@ typedef struct s_mesh
 	size_t				bvh_node_count;
 	struct s_collider	collider;
 	size_t				mat_id;
+	size_t				mat_slots[4];
+	int					active_slot;
+	bool					is_fdf;
 	t_index					group_id;
 	t_aabb				bbox;
 	struct s_bvh		*bvh;

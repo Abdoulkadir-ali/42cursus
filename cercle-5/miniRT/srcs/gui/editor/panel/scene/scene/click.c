@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 19:55:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,10 @@ bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		return (false);
 	if (mouse.x >= (int)gui->scene_panel.width)
 		return (false);
+	if (crud_handle_click(gui, mouse))
+		return (true);
 	if (mouse.y < ui_sy(CRUD_PANEL_H, gui->win.disp_size))
-		return (crud_handle_click(gui, mouse));
+		return (true);
 	row = get_clicked_row(gui, mouse);
 	total = count_scene_rows(gui->scene);
 	if (row < 0 || (size_t)row >= total)

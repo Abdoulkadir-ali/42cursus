@@ -20,11 +20,12 @@
 
 bool	parse_fdf_worker(const char *path, t_scene *scene)
 {
-	t_mesh		mesh;
-	t_vec2s		dims;
-	size_t		v_count;
-	size_t		i_count;
-	t_fdf_mode	mode;
+	t_mesh			mesh;
+	t_vec2s			dims;
+	size_t			v_count;
+	size_t			i_count;
+	t_fdf_mode		mode;
+	t_fdf_state		*state;
 
 	ft_print_debug("FDF: Starting parse for '%s'\n", path);
 	if (!fdf_get_dimensions(path, &dims))
@@ -40,15 +41,26 @@ bool	parse_fdf_worker(const char *path, t_scene *scene)
 		ft_print_debug("FDF: ERROR: Failed to init mesh for %s\n", path);
 		return (false);
 	}
-	ft_print_debug("FDF: Mesh initialized: v=%zu, tri=%zu\n",
-		v_count, mesh.tri_count);
-	mesh.extra = ft_calloc(v_count, sizeof(unsigned int));
+	state = ft_calloc(1, sizeof(t_fdf_state));
+	if (!state)
+		return (false);
+	state->dims = dims;
+	state->colors = ft_calloc(v_count, sizeof(unsigned int));
+	if (!state->colors)
+	{
+		free(state);
+		return (false);
+	}
+	mesh.extra = state->colors;
 	mode = fdf_detect_mode(path);
 	ft_print_debug("FDF: mode=%s\n",
 		mode == FDF_MODE_PICTURE ? "PICTURE" : "HEIGHT_GRADIENT");
 	fdf_fill_data(path, &mesh, dims);
 	ft_print_debug("FDF: Fill done. v[0]=%g v[1]=%g\n",
 		mesh.vertices[0].pos.y, mesh.vertices[1].pos.y);
+	mesh.extra = state;
+	state->mode = mode;
+	mesh.is_fdf = true;
 	fdf_compute_normals(scene->pool, &mesh, dims);
 	fdf_triangulate(scene->pool, &mesh, dims);
 	ft_print_debug("FDF: Triangulation done. idx[0..5]=%zu %zu %zu | %zu %zu %zu\n",
@@ -59,7 +71,7 @@ bool	parse_fdf_worker(const char *path, t_scene *scene)
 		mesh.bvh_node_count,
 		mesh.bbox.min.y, mesh.bbox.max.y);
 	mesh.mat_id = scene_add_material(scene, vec3(200, 200, 200)).i;
-	fdf_apply_mode(&mesh, scene, dims, mode);
+	fdf_apply_mode(&mesh, scene, dims, mode, state->colors);
 	ft_print_debug("FDF: Material assigned: mat_id=%zu\n", mesh.mat_id);
 	if (!scene_add_mesh(scene, mesh))
 	{
@@ -67,6 +79,7 @@ bool	parse_fdf_worker(const char *path, t_scene *scene)
 		mesh_free(&mesh);
 		return (false);
 	}
+	scene_add_group_for_subs(scene, path, scene->mesh_count - 1);
 	ft_print_debug("FDF: Successfully added mesh '%s'\n", path);
 	return (true);
 }

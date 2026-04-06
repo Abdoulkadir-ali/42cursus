@@ -35,12 +35,19 @@ bool	rt_init_parser(t_rt *rt, const char *path)
 
 bool	rt_parse_loop(t_scene *scene, t_rt *rt)
 {
+	rt->line_num = 1;
 	while (true)
 	{
 		parser_skip_spaces(rt->parser);
 		if (rt->parser->eof
 			&& rt->parser->cursor >= rt->parser->bytes_read)
 			break ;
+		if (parser_peek(rt->parser) == '\n')
+		{
+			rt->line_num++;
+			parser_advance(rt->parser);
+			continue ;
+		}
 		if (parser_peek(rt->parser) == '#')
 		{
 			skip_comment(rt->parser);

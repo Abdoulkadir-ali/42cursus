@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:49:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 19:08:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,10 @@ void					parser_advance(t_parser *p);
 void					parser_skip_spaces(t_parser *p);
 void					parser_skip_horizontal_spaces(t_parser *p);
 bool					parser_match(t_parser *p, char expected);
+bool					parser_is_eol(t_parser *p);
 bool					parser_get_line(t_parser *p, char *buf,
 							size_t max_len);
+bool					parse_path_safe(t_parser *p, char *buf, size_t size);
 
 /* Extractors */
 int						parse_int(t_parser *p);

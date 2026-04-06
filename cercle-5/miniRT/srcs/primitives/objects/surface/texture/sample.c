@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 14:52:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 20:19:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,13 @@
 
 static t_vec3	sample_checker(t_texture *tex, double u, double v)
 {
-	int	ch;
+	double	s;
+	double	blend;
 
-	ch = floor(u * tex->scale) + floor(v * tex->scale);
-	ch = ch % 2;
-	if ((u * tex->scale) < 0)
-		ch++;
-	if ((v * tex->scale) < 0)
-		ch++;
-	if (ch % 2)
-		return (tex->color_a);
-	return (tex->color_b);
+	s = sin(u * tex->scale * M_PI) * sin(v * tex->scale * M_PI);
+	blend = 0.5 + 0.5 * s / sqrt(s * s + 0.04);
+	return (vec3_add(vec3_scale(tex->color_a, blend),
+			vec3_scale(tex->color_b, 1.0 - blend)));
 }
 
 static t_vec3	texel_at(t_texture *tex, int x, int y)
