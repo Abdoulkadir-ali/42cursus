@@ -12,15 +12,17 @@
 
 #include "optimizations.h"
 
-static bool	depth_reject(t_optimizations *o, size_t nx, size_t ny, double cz)
+static bool	depth_reject(t_gui *gui, size_t nx, size_t ny, double cz)
 {
-	size_t	rx;
-	size_t	ry;
-	float	cur_d;
+	t_optimizations	*o;
+	size_t			rx;
+	size_t			ry;
+	float			cur_d;
 
-	rx = nx * o->prev_render_size.x / o->prev_render_size.x;
-	ry = ny * o->prev_render_size.y / o->prev_render_size.y;
-	cur_d = o->depth_buf[ry * o->prev_render_size.x + rx];
+	o = &gui->opts;
+	rx = nx * gui->win.size.x / gui->win.disp_size.x;
+	ry = ny * gui->win.size.y / gui->win.disp_size.y;
+	cur_d = o->depth_buf[ry * gui->win.size.x + rx];
 	if (cur_d > 1e29f || (float)cz < 1e-4f)
 		return (false);
 	return (fabsf((float)cz - cur_d) / fmaxf((float)cz, cur_d) > DEPTH_THRESH);
@@ -51,7 +53,7 @@ static void	project_pixel(t_gui *gui, size_t idx, t_vec2i p)
 	r.size = gui->win.disp_size;
 	if (repro_world_to_screen(r, get_wp(o, ndc, idx), &n, &cz))
 	{
-		if (!depth_reject(o, n.x, n.y, cz))
+		if (!depth_reject(gui, n.x, n.y, cz))
 		{
 			o->reproj_buf[n.y * gui->win.disp_size.x + n.x]
 				= o->prev_color[idx];

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 15:15:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 15:46:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@ t_fdf_mode	fdf_detect_mode(const char *path)
 {
 	if (ft_strnstr(path, "generated_maps", ft_strlen(path)))
 		return (FDF_MODE_PICTURE);
-	return (FDF_MODE_HEIGHT_GRADIENT);
+	if (ft_strnstr(path, "gradient", ft_strlen(path)))
+		return (FDF_MODE_HEIGHT_GRADIENT);
+	return (FDF_MODE_HEIGHT);
 }
 
 /*

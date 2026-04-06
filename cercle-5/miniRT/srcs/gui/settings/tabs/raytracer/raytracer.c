@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:08:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 15:46:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,16 @@ static void	draw_preset_row(t_gui *gui, t_vec2i o, int y)
 	char			buf[64];
 
 	name = g_preset_names[gui->rt_engine.settings.preset];
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y, COL_HOVER, "Preset");
+	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y + 14, COL_HOVER, "Preset");
 	snprintf(buf, sizeof(buf), "< %s >", name);
 	mlx_string_put(gui->win.mlx, gui->win.win,
-		o.x + SETTINGS_W / 2 - 30, y, 0xCCCCDD, buf);
+		o.x + SETTINGS_W / 2 - 30, y + 14, 0xCCCCDD, buf);
 }
 
 void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 {
 	t_iradio	r[4];
-	t_islider	sl[2];
+	t_islider	sl[4];
 	int			y;
 	size_t		i;
 
@@ -50,11 +50,17 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 	}
 	sl[0] = (t_islider){"Bright", 0.0, 100.0,
 		&gui->rt_engine.settings.brightness, on_color_change};
-	sl[1] = (t_islider){"Gamma", 1.0, 100.0,
+	sl[1] = (t_islider){"Contrast", 0.0, 100.0,
+		&gui->rt_engine.settings.contrast, on_color_change};
+	sl[2] = (t_islider){"Sat", 0.0, 100.0,
+		&gui->rt_engine.settings.saturation, on_color_change};
+	sl[3] = (t_islider){"Gamma", 1.0, 100.0,
 		&gui->rt_engine.settings.gamma, on_color_change};
 	draw_settings_slider(gui, vec2i(o.x + 8, y + 48), sl[0]);
 	draw_settings_slider(gui, vec2i(o.x + 8, y + 84), sl[1]);
-	draw_preset_row(gui, o, y + 128);
+	draw_settings_slider(gui, vec2i(o.x + 8, y + 120), sl[2]);
+	draw_settings_slider(gui, vec2i(o.x + 8, y + 156), sl[3]);
+	draw_preset_row(gui, o, y + 200);
 }
 
 static bool	click_preset(t_gui *gui, t_vec2i mouse, t_vec2i o, int y)
@@ -106,20 +112,30 @@ static bool	click_rt_radios(t_gui *gui, t_vec2i mouse, t_vec2i o, int *y)
 
 bool	click_settings_raytracer_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 {
-	t_islider	sl[2];
+	t_islider	sl[4];
 	int			y;
 
 	y = o.y + 36;
 	if (click_rt_radios(gui, mouse, o, &y))
 		return (true);
-	y += 48;
+	/* click_rt_radios increments y one extra time after the last radio;
+	   compensate so y aligns with where the first slider was drawn */
+	y += 24;
 	sl[0] = (t_islider){"Bright", 0.0, 100.0,
 		&gui->rt_engine.settings.brightness, on_color_change};
-	sl[1] = (t_islider){"Gamma", 1.0, 100.0,
+	sl[1] = (t_islider){"Contrast", 0.0, 100.0,
+		&gui->rt_engine.settings.contrast, on_color_change};
+	sl[2] = (t_islider){"Sat", 0.0, 100.0,
+		&gui->rt_engine.settings.saturation, on_color_change};
+	sl[3] = (t_islider){"Gamma", 1.0, 100.0,
 		&gui->rt_engine.settings.gamma, on_color_change};
 	if (try_settings_slider_click(gui, mouse, vec2i(o.x + 8, y), sl[0]))
 		return (true);
 	if (try_settings_slider_click(gui, mouse, vec2i(o.x + 8, y + 36), sl[1]))
 		return (true);
-	return (click_preset(gui, mouse, o, y + 72));
+	if (try_settings_slider_click(gui, mouse, vec2i(o.x + 8, y + 72), sl[2]))
+		return (true);
+	if (try_settings_slider_click(gui, mouse, vec2i(o.x + 8, y + 108), sl[3]))
+		return (true);
+	return (click_preset(gui, mouse, o, y + 152));
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 15:46:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	draw_settings_slider(t_gui *gui, t_vec2i pos, t_islider sl)
 	double	frac;
 	int		fill_w;
 	int		track_w;
+	int		knob_x;
 
 	track_w = SETTINGS_W - 32;
 	frac = 0.0;
@@ -75,13 +76,26 @@ void	draw_settings_slider(t_gui *gui, t_vec2i pos, t_islider sl)
 		frac = 0.0;
 	if (frac > 1.0)
 		frac = 1.0;
-	fill_w = (frac * track_w);
+	fill_w = (int)(frac * track_w);
 	snprintf(buf, sizeof(buf), "%.3g", *sl.ptr);
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		pos.x, pos.y, COL_TEXT, (char *)sl.label);
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		pos.x + track_w - 56, pos.y, COL_HOVER, buf);
-	draw_slider_fill(gui, vec2i(pos.x, pos.y + 14), fill_w, track_w);
+	fill_rect(gui, vec2i(pos.x, pos.y + 14),
+		(t_vec2s){track_w, 8}, COL_SLIDER_BG);
+	fill_rect(gui, vec2i(pos.x, pos.y + 14),
+		(t_vec2s){track_w, 1}, COL_BORDER);
+	fill_rect(gui, vec2i(pos.x, pos.y + 21),
+		(t_vec2s){track_w, 1}, COL_BORDER);
+	if (fill_w > 0)
+		fill_rect(gui, vec2i(pos.x, pos.y + 14),
+			(t_vec2s){fill_w, 8}, COL_SLIDER_FG);
+	knob_x = pos.x + fill_w - 1;
+	if (knob_x < pos.x)
+		knob_x = pos.x;
+	fill_rect(gui, vec2i(knob_x, pos.y + 12),
+		(t_vec2s){3, 12}, COL_SLIDER_KNOB);
 }
 
 bool	try_settings_slider_click(t_gui *gui, t_vec2i mouse,

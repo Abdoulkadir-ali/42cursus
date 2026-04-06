@@ -6,13 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 15:26:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "animations.h"
-
-char	*animation_mesh_name(t_mesh *m);
 
 void	anim_engine_free(t_anim_engine *engine)
 {

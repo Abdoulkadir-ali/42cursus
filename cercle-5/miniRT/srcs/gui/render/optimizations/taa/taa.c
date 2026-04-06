@@ -44,21 +44,24 @@ void	taa_band(t_gui *gui, size_t y_start, size_t y_end)
 	int			yend;
 	int			sw;
 
+	uint32_t	*pixels;
+
 	o = &gui->opts;
 	yend = y_end;
 	sw = gui->win.size.x;
+	pixels = (uint32_t *)gui->win.addr;
 	d.y = y_start;
 	while (d.y < yend)
 	{
 		d.x = 0;
 		while (d.x < sw)
 		{
-			cur = gui->win.addr[d.y * gui->win.size.x + d.x];
+			cur = pixels[d.y * sw + d.x];
 			if (o->prev_valid && reproject_taa(gui, d.x, d.y, &out))
-				o->taa_buf[d.y * gui->win.size.x + d.x] = blend_taa(cur,
+				o->taa_buf[d.y * sw + d.x] = blend_taa(cur,
 						o->prev_color[out.y * o->prev_render_size.x + out.x]);
 			else
-				o->taa_buf[d.y * gui->win.size.x + d.x] = cur;
+				o->taa_buf[d.y * sw + d.x] = cur;
 			d.x++;
 		}
 		d.y++;

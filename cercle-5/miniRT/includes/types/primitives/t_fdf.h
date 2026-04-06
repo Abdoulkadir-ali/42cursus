@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 06:41:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 02:57:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 15:45:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 typedef enum e_fdf_mode
 {
+	FDF_MODE_HEIGHT,
 	FDF_MODE_HEIGHT_GRADIENT,
 	FDF_MODE_PICTURE,
 }					t_fdf_mode;
