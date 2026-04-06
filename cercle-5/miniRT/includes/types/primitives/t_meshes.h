@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:51:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 01:43:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,18 +460,7 @@ typedef struct s_fbx_ascii
 	const char			*path;
 }						t_fbx_ascii;
 
-typedef struct s_fdf
-{
-	t_mesh				*mesh;
-	size_t				dims[2];
-	size_t				row;
-}						t_fdf;
-
-typedef struct s_fdf_dim
-{
-	int					w;
-	int					h;
-}						t_fdf_dim;
+/* Removed redundant t_fdf and t_fdf_dim definitions - use t_fdf.h */
 
 typedef struct s_glb_header
 {

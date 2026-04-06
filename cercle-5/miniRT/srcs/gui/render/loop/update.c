@@ -12,16 +12,26 @@
 
 #include "render.h"
 
+#ifdef PROFILE_BUILD
+static void	handle_profile_exit(t_gui *gui)
+{
+	static int	prof_frames = 0;
+
+	if (++prof_frames > 5)
+		mlx_loop_end(gui->win.mlx);
+}
+#else
+static void	handle_profile_exit(t_gui *gui)
+{
+	(void)gui;
+}
+#endif
+
 int	gui_update(t_gui *gui)
 {
 	double	delta;
 
-#ifdef PROFILE_BUILD
-	static int	_prof_frames = 0;
-	if (++_prof_frames > 5)
-		mlx_loop_end(gui->win.mlx);
-#endif
-	delta = update_delta(gui);
+	handle_profile_exit(gui);
 	scene_swap_step(gui);
 	physics_step(gui, delta);
 	anim_step(gui, delta);

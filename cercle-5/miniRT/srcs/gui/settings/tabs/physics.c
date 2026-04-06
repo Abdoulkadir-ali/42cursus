@@ -37,20 +37,21 @@ void	draw_settings_physics_tab(t_gui *gui, t_vec2i o)
 	t_iradio	r;
 	t_islider	sl[3];
 	int			y;
-	int			i;
+	size_t		i;
 
 	y = o.y + 12;
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		o.x + 8, y, COL_HOVER, "PHYSICS");
 	y += 24;
 	r = (t_iradio){"Enabled", &gui->physics_enabled, NULL};
-	draw_radio_row(gui, vec2i(o.x, y), r, SETTINGS_W - 16);
+	draw_radio_row(gui, (t_panel){vec2i(o.x, y), vec2i(SETTINGS_W - 16, 0),
+		0, 0, ""}, r);
 	y += SETTINGS_ROW_H + 4;
 	build_phys_sliders(gui, sl);
 	i = 0;
 	while (i < 3)
 	{
-			draw_settings_slider(gui, vec2i(o.x + 8, y), sl[i]);
+		draw_settings_slider(gui, vec2i(o.x + 8, y), sl[i]);
 		y += SETTINGS_ROW_H + 4;
 		i++;
 	}
@@ -61,18 +62,19 @@ bool	click_settings_physics_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 	t_iradio	r;
 	t_islider	sl[3];
 	int			y;
-	int			i;
+	size_t		i;
 
 	y = o.y + 12 + 24;
 	r = (t_iradio){"Enabled", &gui->physics_enabled, NULL};
-	if (try_radio_click(gui, mouse, vec2i(o.x, y), r, SETTINGS_W - 16))
+	if (try_radio_click(gui, mouse, (t_panel){vec2i(o.x, y),
+			vec2i(SETTINGS_W - 16, 0), 0, 0, ""}, r))
 		return (true);
 	y += SETTINGS_ROW_H + 4;
 	build_phys_sliders(gui, sl);
 	i = 0;
 	while (i < 3)
 	{
-			if (try_settings_slider_click(gui, mouse, vec2i(o.x + 8, y), sl[i]))
+		if (try_settings_slider_click(gui, mouse, vec2i(o.x + 8, y), sl[i]))
 			return (true);
 		y += SETTINGS_ROW_H + 4;
 		i++;

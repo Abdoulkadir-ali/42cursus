@@ -16,14 +16,14 @@
 ** Draws a labeled ON/OFF radio row.
 ** The toggle button is right-aligned inside a band of width w.
 */
-void	draw_radio_row(t_gui *gui, t_vec2i pos, t_iradio r, size_t w)
+void	draw_radio_row(t_gui *gui, t_panel pan, t_iradio r)
 {
 	int			btn_x;
 	int			bg;
 	int			col;
 	const char	*status;
 
-	btn_x = pos.x + (int)w - 44 - 4;
+	btn_x = pan.pos.x + (int)pan.size.x - 44 - 4;
 	bg = 0x2A1616;
 	col = 0x804040;
 	status = "OFF";
@@ -34,23 +34,18 @@ void	draw_radio_row(t_gui *gui, t_vec2i pos, t_iradio r, size_t w)
 		status = "ON";
 	}
 	mlx_string_put(gui->win.mlx, gui->win.win,
-		pos.x + 8, pos.y + 15, COL_TEXT, (char *)r.label);
-	draw_panel(gui, (t_panel){vec2i(btn_x, pos.y + 4),
+		pan.pos.x + 8, pan.pos.y + 15, COL_TEXT, (char *)r.label);
+	draw_panel(gui, (t_panel){vec2i(btn_x, pan.pos.y + 4),
 		vec2i(44, 20), bg, col, ""});
 	mlx_string_put(gui->win.mlx, gui->win.win,
-		btn_x + 10, pos.y + 18, col, (char *)status);
+		btn_x + 10, pan.pos.y + 18, col, (char *)status);
 }
 
-/*
-** Returns true if the mouse hit anywhere on the row and toggles the bool.
-** Entire row is clickable (not just the button) for ergonomics.
-*/
-bool	try_radio_click(t_gui *gui, t_vec2i mouse, t_vec2i pos,
-			t_iradio r, size_t w)
+bool	try_radio_click(t_gui *gui, t_vec2i mouse, t_panel pan, t_iradio r)
 {
-	if (mouse.x < pos.x || mouse.x >= pos.x + w)
+	if (mouse.x < pan.pos.x || mouse.x >= pan.pos.x + pan.size.x)
 		return (false);
-	if (mouse.y < pos.y || mouse.y >= pos.y + (size_t)SETTINGS_ROW_H)
+	if (mouse.y < pan.pos.y || mouse.y >= pan.pos.y + (size_t)SETTINGS_ROW_H)
 		return (false);
 	*r.ptr = !*r.ptr;
 	if (r.on_change)
@@ -58,7 +53,6 @@ bool	try_radio_click(t_gui *gui, t_vec2i mouse, t_vec2i pos,
 	gui->render.dirty = true;
 	return (true);
 }
-
 
 /*
 ** Draws a labeled slider row sized to the settings panel width.

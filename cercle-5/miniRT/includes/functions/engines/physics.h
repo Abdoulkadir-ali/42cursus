@@ -26,6 +26,14 @@ typedef struct s_int_task
 	t_int_type			type;
 }	t_int_task;
 
+typedef struct s_trav
+{
+	const t_bvh	*v;
+	t_sphere	*sp;
+	size_t		*st;
+	size_t		*top;
+}	t_trav;
+
 bool	test_sphere_triangle(const t_sphere *s, t_vec3 v[3], t_collision *col);
 t_vec3	closest_point_on_triangle(t_vec3 p, t_vec3 a, t_vec3 b, t_vec3 c);
 bool	mesh_aabb_overlap(const t_aabb *a, const t_aabb *b);

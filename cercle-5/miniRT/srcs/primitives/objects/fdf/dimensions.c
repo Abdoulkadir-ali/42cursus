@@ -13,63 +13,74 @@
 #include "fdf.h"
 #include "parser.h"
 
-static int	count_columns(char *line)
+static int	count_columns(t_parser *p)
 {
 	int		count;
-	char	*p;
+	char	c;
 
-	if (!line)
-		return (0);
 	count = 0;
-	p = line;
-	while (*p)
+	parser_skip_horizontal_spaces(p);
+	c = parser_peek(p);
+	while (c && c != '\n' && c != '\r')
 	{
-		while (*p && ft_isspace(*p))
-			p++;
-		if (!*p)
-			break ;
-		if (ft_isdigit(*p) || *p == '-' || *p == '+')
+		if (ft_isdigit(c) || c == '-' || c == '+')
+		{
 			count++;
-		while (*p && !ft_isspace(*p))
-			p++;
+			while (parser_peek(p) && !ft_isspace(parser_peek(p)))
+				parser_advance(p);
+		}
+		else
+			parser_advance(p);
+		parser_skip_horizontal_spaces(p);
+		c = parser_peek(p);
 	}
+	if (c == '\r')
+		parser_advance(p);
+	if (parser_peek(p) == '\n')
+		parser_advance(p);
 	return (count);
 }
 
-static bool	update_dimensions(int *w, int *h, int cols)
+static bool	update_dimensions(t_vec2 *dims, int cols)
 {
 	if (cols == 0)
 		return (true);
-	if (*w == -1)
-		*w = cols;
-	else if (*w != cols)
+	if (dims->x == -1)
+		dims->x = cols;
+	else if (dims->x != cols)
 		return (false);
-	(*h)++;
+	dims->y++;
 	return (true);
 }
 
-bool	fdf_get_dimensions(const char *path, int *w, int *h)
+bool	fdf_get_dimensions(const char *path, t_vec2 *dims)
 {
 	int			fd;
 	t_parser	p;
 	int			cols;
-	char		line[PARSER_BUF_SIZE + 1];
+	int			line;
 
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 		return (false);
 	parser_init(&p, fd);
-	*h = 0;
-	*w = -1;
-	while (parser_get_line(&p, line, PARSER_BUF_SIZE + 1))
+	dims->y = 0;
+	dims->x = -1;
+	line = 0;
+	while (parser_peek(&p) != 0)
 	{
-		cols = count_columns(line);
-		if (!update_dimensions(w, h, cols))
+		cols = count_columns(&p);
+		line++;
+		ft_print_debug("FDF: Line %d has %d columns\n", line, cols);
+		if (cols > 0 && !update_dimensions(dims, cols))
 		{
+			ft_print_debug("FDF: ERROR at line %d: mismatch (expected %g, got %d)\n",
+				line, dims->x, cols);
 			close(fd);
 			return (false);
 		}
 	}
 	close(fd);
-	return (*w > 0 && *h > 0);
+	ft_print_debug("FDF: Final dims: %g x %g\n", dims->x, dims->y);
+	return (dims->x > 0 && dims->y > 0);
 }

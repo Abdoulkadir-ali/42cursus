@@ -13,39 +13,44 @@
 #include "window.h"
 #include "editor.h"
 
-/*
-** Handles window resize events synchronously.
-** Destroys old display images and creates new ones at the new size,
-** then recomputes layout and marks the frame dirty.
-*/
-int	gui_window_resize(t_vec2i size, t_gui *gui)
+static bool	create_is(t_gui *gui, t_vec2i sz, void **imgs, char **as)
 {
-	void	*imgs[3];
-	char	*addrs[3];
-	int		line_len;
+	size_t	i;
 	int		bpp;
-	int		endian;
-	int		i;
+	int		ll;
+	int		ed;
 
-	if (size.x < 200 || size.y < 150)
-		return (0);
-	if (size.x == gui->win.disp_size.x && size.y == gui->win.disp_size.y)
-		return (0);
 	i = 0;
 	while (i < 3)
 	{
-		imgs[i] = mlx_new_image(gui->win.mlx, size.x, size.y);
+		imgs[i] = mlx_new_image(gui->win.mlx, sz.x, sz.y);
 		if (!imgs[i])
 		{
-			while (--i >= 0)
+			while (i-- > 0)
 				mlx_destroy_image(gui->win.mlx, imgs[i]);
-			return (0);
+			return (false);
 		}
+		as[i] = mlx_get_data_addr(imgs[i], &bpp, &ll, &ed);
 		i++;
 	}
-	addrs[0] = mlx_get_data_addr(imgs[0], &bpp, &line_len, &endian);
-	addrs[1] = mlx_get_data_addr(imgs[1], &bpp, &line_len, &endian);
-	addrs[2] = mlx_get_data_addr(imgs[2], &bpp, &line_len, &endian);
+	gui->win.disp_bpp = bpp;
+	gui->win.disp_line_len = ll;
+	gui->win.disp_endian = ed;
+	return (true);
+}
+
+int	gui_window_resize(t_vec2i sz, t_gui *gui)
+{
+	void	*imgs[3];
+	char	*addrs[3];
+	size_t	i;
+
+	if (sz.x < 200 || sz.y < 150)
+		return (0);
+	if (sz.x == gui->win.disp_size.x && sz.y == gui->win.disp_size.y)
+		return (0);
+	if (!create_is(gui, sz, imgs, addrs))
+		return (0);
 	i = 0;
 	while (i < 3)
 	{
@@ -54,10 +59,7 @@ int	gui_window_resize(t_vec2i size, t_gui *gui)
 		gui->win.disp_addrs[i] = addrs[i];
 		i++;
 	}
-	gui->win.disp_line_len = line_len;
-	gui->win.disp_bpp = bpp;
-	gui->win.disp_endian = endian;
-	gui->win.disp_size = size;
+	gui->win.disp_size = sz;
 	gui_recompute_layout(gui);
 	gui->render.dirty = true;
 	return (0);

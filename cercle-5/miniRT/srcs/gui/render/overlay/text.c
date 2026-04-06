@@ -19,16 +19,16 @@ const char	*mesh_name(t_mesh *mesh)
 	return ("(unnamed)");
 }
 
+/* keybinds and title are now drawn in the scene panel header */
 void	draw_ui_help(t_gui *gui, int *y)
 {
-	/* keybinds and title are now drawn in the scene panel header */
 	(void)gui;
 	(void)y;
 }
 
+/* physics status moved to scene panel header */
 void	draw_ui_status(t_gui *gui, int *y)
 {
-	/* physics status moved to scene panel header */
 	(void)gui;
 	(void)y;
 }

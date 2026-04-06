@@ -38,6 +38,18 @@ void	parser_skip_spaces(t_parser *p)
 	}
 }
 
+void	parser_skip_horizontal_spaces(t_parser *p)
+{
+	char	c;
+
+	c = parser_peek(p);
+	while (c == ' ' || c == '\t' || c == '\v' || c == '\f')
+	{
+		parser_advance(p);
+		c = parser_peek(p);
+	}
+}
+
 bool	parser_match(t_parser *p, char expected)
 {
 	parser_skip_spaces(p);

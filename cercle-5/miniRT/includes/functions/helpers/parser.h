@@ -66,6 +66,7 @@ void					parser_init(t_parser *p, int fd);
 char					parser_peek(t_parser *p);
 void					parser_advance(t_parser *p);
 void					parser_skip_spaces(t_parser *p);
+void					parser_skip_horizontal_spaces(t_parser *p);
 bool					parser_match(t_parser *p, char expected);
 bool					parser_get_line(t_parser *p, char *buf,
 							size_t max_len);

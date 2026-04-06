@@ -48,7 +48,8 @@ static void	fill_indices(t_anim_engine *eng, t_scene *sc)
 		{
 			eng->mesh_indices[n] = i;
 			ft_print_debug("[ANIM]   indexed mesh[%zu] '%s' bones=%zu\n",
-				i, animation_mesh_name(&sc->meshes[i]), sc->meshes[i].bone_count);
+				i, animation_mesh_name(&sc->meshes[i]),
+				sc->meshes[i].bone_count);
 			n++;
 		}
 		i++;

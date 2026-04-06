@@ -13,27 +13,30 @@
 #include "input.h"
 #include "debug.h"
 
+static void	handle_left_click(t_gui *gui, t_vec2i mouse)
+{
+	if (settings_handle_click(gui, mouse))
+		return ;
+	if (popup_handle_click(gui, mouse))
+		return ;
+	if (!inspector_handle_click(gui, mouse)
+		&& !scene_panel_handle_click(gui, mouse))
+		pick_at_mouse(gui, mouse);
+	if (!gui->slider_state.dragging)
+	{
+		ft_print_debug("ROTATION START\n");
+		gui->cam_ctrl.mouse_left_pressed = true;
+	}
+	gui->cam_ctrl.last_mouse = mouse;
+}
+
 int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 {
 	ft_print_debug("CLICK: btn=%d pos=%zu,%zu\n", button, mouse.x,
 		mouse.y);
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)
-	{
-		if (settings_handle_click(gui, mouse))
-			return (0);
-		if (popup_handle_click(gui, mouse))
-			return (0);
-		if (!inspector_handle_click(gui, mouse)
-			&& !scene_panel_handle_click(gui, mouse))
-			pick_at_mouse(gui, mouse);
-		if (!gui->slider_state.dragging)
-		{
-			ft_print_debug("ROTATION START\n");
-			gui->cam_ctrl.mouse_left_pressed = true;
-		}
-		gui->cam_ctrl.last_mouse = mouse;
-	}
+		handle_left_click(gui, mouse);
 	else if (button == BUTTON_MIDDLE)
 	{
 		ft_print_debug("ZOOM START\n");

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:15:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 23:36:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 02:40:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ void	mesh_build_bvh(t_mesh *mesh)
 	build_mesh_recursive(&bvh, 0, mesh->tri_count, 0);
 	bvh_copy_indices(mesh, &bvh);
 	mesh->bvh_node_count = bvh.node_count;
+	if (bvh.node_count > 0)
+		mesh->bbox = bvh.nodes[0].bbox;
 	mesh_build_tri_cache(mesh);
 	debug_print_bvh_build(mesh->tri_count, bvh.max_depth, false);
 	ft_print_debug("DEBUG: Mesh BVH built: %lu nodes for %lu tris\n",

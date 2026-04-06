@@ -1,39 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_fdf.h                                            :+:      :+:    :+:   */
+/*   motion_hooks.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/04 06:41:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 02:35:23 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/06 02:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/06 02:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TYPES_PRIMITIVES_FDF_H
-# define TYPES_PRIMITIVES_FDF_H
+#include "input.h"
 
-# include "t_meshes.h"
-
-typedef enum e_fdf_mode
+static int	mlx_mouse_motion(int x, int y, void *param)
 {
-	FDF_MODE_HEIGHT_GRADIENT,
-	FDF_MODE_PICTURE,
-}					t_fdf_mode;
+	t_gui	*gui;
 
-typedef struct s_fdf
+	gui = (t_gui *)param;
+	return (mouse_motion(vec2i(x, y), gui));
+}
+
+int	(*mouse_motion_hook(void))(int x, int y, void *param)
 {
-	t_mesh				*mesh;
-	t_vec2				dims;
-	size_t				row;
-}						t_fdf;
-
-typedef struct s_fdf_task
-{
-	t_mesh				*mesh;
-	t_vec2				dims;
-	volatile size_t		next_row;
-	volatile size_t		next_idx;
-}						t_fdf_task;
-
-#endif
+	return (mlx_mouse_motion);
+}

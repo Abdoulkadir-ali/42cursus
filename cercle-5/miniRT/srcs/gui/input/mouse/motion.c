@@ -35,54 +35,42 @@ static void	handle_mouse_zoom_drag(t_gui *gui, ssize_t dy)
 	gui->render.dirty = true;
 }
 
-static int	mlx_mouse_motion(int x, int y, void *param)
+static bool	handle_gui_motion(t_gui *gui, t_vec2i mouse)
 {
-	t_gui	*gui;
-
-	gui = (t_gui *)param;
-	return (mouse_motion(vec2i(x, y), gui));
-}
-
-int	(*mouse_motion_hook(void))(int x, int y, void *param)
-{
-	return (mlx_mouse_motion);
+	gui->input.mouse = mouse;
+	widget_handle_motion(gui, mouse);
+	if (gui->settings.dragging)
+	{
+		settings_handle_drag(gui, mouse);
+		return (true);
+	}
+	if (gui->dragging_widget)
+		return (true);
+	if (gui->slider_state.dragging)
+	{
+		update_inline_drag(gui, mouse);
+		gui->cam_ctrl.last_mouse = mouse;
+		return (true);
+	}
+	return (false);
 }
 
 int	mouse_motion(t_vec2i mouse, t_gui *gui)
 {
 	t_vec2i	delta;
 
-	if (!gui)
+	if (!gui || handle_gui_motion(gui, mouse))
 		return (0);
-	gui->input.mouse = mouse;
-	widget_handle_motion(gui, mouse);
-	if (gui->settings.dragging)
-	{
-		settings_handle_drag(gui, mouse);
-		return (0);
-	}
-	if (gui->dragging_widget)
-		return (0);
-	if (gui->slider_state.dragging)
-	{
-		update_inline_drag(gui, mouse);
-		gui->cam_ctrl.last_mouse = mouse;
-		return (0);
-	}
 	delta = vec2i_sub(mouse, gui->cam_ctrl.last_mouse);
 	if (gui->cam_ctrl.mouse_left_pressed || gui->cam_ctrl.mouse_middle_pressed)
 	{
 		if (delta.x != 0 || delta.y != 0)
-		{
-			ft_print_debug("MOTION: mouse=%zu,%zu last=%zu,%zu delta=%zd,%zd\n",
+			ft_print_debug("MOTION: m=%zu,%zu l=%zu,%zu d=%zd,%zd\n",
 				mouse.x, mouse.y, gui->cam_ctrl.last_mouse.x,
 				gui->cam_ctrl.last_mouse.y, delta.x, delta.y);
-		}
 	}
 	if (gui->cam_ctrl.mouse_left_pressed)
-	{
 		handle_mouse_rotation(gui, delta);
-	}
 	else if (gui->cam_ctrl.mouse_middle_pressed)
 		handle_mouse_zoom_drag(gui, (ssize_t)delta.y);
 	gui->cam_ctrl.last_mouse = mouse;

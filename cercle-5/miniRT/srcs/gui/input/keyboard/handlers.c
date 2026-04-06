@@ -56,29 +56,34 @@ static void	handle_misc_keys(int code, t_gui *gui)
 		scene_reset(gui);
 }
 
+static bool	handle_input_capture(t_gui *gui, int keycode)
+{
+	if (gui->slider_state.insp_edit.active)
+	{
+		insp_input_key(gui, keycode);
+		if (keycode != XK_Escape)
+			return (true);
+	}
+	if (gui->focused_widget)
+	{
+		widget_handle_key(gui, keycode);
+		if (keycode != XK_Escape)
+			return (true);
+	}
+	return (false);
+}
+
 int	key_press(int keycode, t_gui *gui)
 {
 	t_key_action	*keymap;
-	int				i;
+	size_t			i;
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
 	if (keycode == XK_Shift_L || keycode == XK_Shift_R)
 		gui->crud.shift_held = true;
-	/* inspector text edit captures keys when active */
-	if (gui->slider_state.insp_edit.active)
-	{
-		insp_input_key(gui, keycode);
-		if (keycode != XK_Escape)
-			return (0);
-	}
-	/* input box captures all keys when focused */
-	if (gui->focused_widget)
-	{
-		widget_handle_key(gui, keycode);
-		if (keycode != XK_Escape)
-			return (0);
-	}
+	if (handle_input_capture(gui, keycode))
+		return (0);
 	if (popup_handle_key(gui, keycode))
 		return (0);
 	handle_misc_keys(keycode, gui);
@@ -87,10 +92,7 @@ int	key_press(int keycode, t_gui *gui)
 	while (keymap[i].key != 0)
 	{
 		if (keymap[i].key == keycode && keymap[i].press_action)
-		{
-			keymap[i].press_action(gui);
-			return (0);
-		}
+			return (keymap[i].press_action(gui), 0);
 		i++;
 	}
 	return (0);
@@ -99,7 +101,7 @@ int	key_press(int keycode, t_gui *gui)
 int	key_release(int keycode, t_gui *gui)
 {
 	t_key_action	*keymap;
-	int				i;
+	size_t			i;
 
 	if (!gui->cam_ctrl.camera)
 		return (0);
@@ -110,10 +112,7 @@ int	key_release(int keycode, t_gui *gui)
 	while (keymap[i].key != 0)
 	{
 		if (keymap[i].key == keycode && keymap[i].release_action)
-		{
-			keymap[i].release_action(gui);
-			return (0);
-		}
+			return (keymap[i].release_action(gui), 0);
 		i++;
 	}
 	return (0);
