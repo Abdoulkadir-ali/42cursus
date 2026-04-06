@@ -248,7 +248,7 @@ Most projects are self-contained, but some require:
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/abdoulkadir-ali-a00a8614b/)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Abdoulkadir-ali)
-[![42 Profile](https://img.shields.io/badge/42-Profile-000000?style=for-the-badge&logo=42&logoColor=white)]([abdoali](https://profile-v3.intra.42.fr/users/abdoali))
+[![42 Profile](https://img.shields.io/badge/42-Profile-000000?style=for-the-badge&logo=42&logoColor=white)](https://profile-v3.intra.42.fr/users/abdoali)
 
 </div>
 
