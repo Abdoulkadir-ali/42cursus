@@ -55,6 +55,7 @@ t_scene	*parse_file(const char *path, void *mlx)
 		return (NULL);
 	}
 	ft_print_debug("PARSE: building scene BVH...\n");
+	scene_init_uv_flags(scene);
 	scene->bvh = bvh_create(scene);
 	if (!scene->bvh)
 	{

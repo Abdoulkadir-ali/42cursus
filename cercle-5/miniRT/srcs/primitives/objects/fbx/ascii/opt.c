@@ -21,7 +21,7 @@ void	ascii_load_normals(t_fbx_ascii *asc)
 	if (!temp)
 		return ;
 	temp = advance_to_data(temp, asc->end);
-	asc->rn = parse_array(&temp, &asc->nc, sizeof(t_vec3), f_vec3);
+	asc->rn = parse_array(&temp, &asc->nu.x, sizeof(t_vec3), f_vec3);
 }
 
 void	ascii_load_uvs(t_fbx_ascii *asc)
@@ -33,5 +33,5 @@ void	ascii_load_uvs(t_fbx_ascii *asc)
 	if (!temp)
 		return ;
 	temp = advance_to_data(temp, asc->end);
-	asc->ru = parse_array(&temp, &asc->uc, sizeof(t_vec2), f_vec2);
+	asc->ru = parse_array(&temp, &asc->nu.y, sizeof(t_vec2), f_vec2);
 }

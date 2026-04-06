@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 13:52:58 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:52:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:43:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 
 static void	calculate_mesh_bounds(t_scene *scene, size_t start_idx,
-				t_vec3 *min_pt, t_vec3 *max_pt)
+			size_t anim_start, t_vec3 *min_pt, t_vec3 *max_pt)
 {
 	size_t	i;
 
@@ -24,6 +24,13 @@ static void	calculate_mesh_bounds(t_scene *scene, size_t start_idx,
 	{
 		*min_pt = vec3_min(*min_pt, scene->meshes[i].bbox.min);
 		*max_pt = vec3_max(*max_pt, scene->meshes[i].bbox.max);
+		i++;
+	}
+	i = anim_start;
+	while (i < scene->anim_count)
+	{
+		*min_pt = vec3_min(*min_pt, scene->animated[i].base.bbox.min);
+		*max_pt = vec3_max(*max_pt, scene->animated[i].base.bbox.max);
 		i++;
 	}
 }
@@ -63,7 +70,7 @@ void	align_and_frame_meshes(t_scene *scene, size_t start_idx)
 	t_vec3	pts[3];
 	double	sz_off[2];
 
-	calculate_mesh_bounds(scene, start_idx, &pts[0], &pts[1]);
+	calculate_mesh_bounds(scene, start_idx, 0, &pts[0], &pts[1]);
 	sz_off[1] = 0.0;
 	if (pts[0].y < 0)
 		sz_off[1] = -pts[0].y;

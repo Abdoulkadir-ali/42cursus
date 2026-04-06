@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:39:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	reproject_frame(t_gui *gui)
 	t_optimizations	*o;
 
 	o = &gui->opts;
-	if (!o->reproj_buf || !o->prev_depth)
+	if (!o->reproj_buf || !o->prev_depth || !o->depth_buf)
 		return ;
 	o->reproj_gen++;
 	if (o->reproj_gen == 0)

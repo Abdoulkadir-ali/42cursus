@@ -39,16 +39,16 @@ static void	parse_node_data(t_fbx_parse *fbx, t_fbx_bin_node *n, int depth)
 	t_fbx_array_req	req;
 
 	if (ft_strcmp(n->name, "Vertices") == 0 && !fbx->d->v)
-		req = (t_fbx_array_req){"Vertices", (void **)&fbx->d->v, &fbx->d->vc, 8,
+		req = (t_fbx_array_req){"Vertices", (void **)&fbx->d->v, &fbx->d->rv.y, 8,
 			3};
 	else if (ft_strcmp(n->name, "PolygonVertexIndex") == 0 && !fbx->d->ri)
-		req = (t_fbx_array_req){"Indices", (void **)&fbx->d->ri, &fbx->d->rc, 4,
+		req = (t_fbx_array_req){"Indices", (void **)&fbx->d->ri, &fbx->d->rv.x, 4,
 			1};
 	else if (ft_strcmp(n->name, "Normals") == 0 && !fbx->d->vn)
-		req = (t_fbx_array_req){"Normals", (void **)&fbx->d->vn, &fbx->d->nc, 8,
+		req = (t_fbx_array_req){"Normals", (void **)&fbx->d->vn, &fbx->d->nu.x, 8,
 			3};
 	else if (ft_strcmp(n->name, "UV") == 0 && !fbx->d->vu)
-		req = (t_fbx_array_req){"UVs", (void **)&fbx->d->vu, &fbx->d->uc, 8, 2};
+		req = (t_fbx_array_req){"UVs", (void **)&fbx->d->vu, &fbx->d->nu.y, 8, 2};
 	else
 	{
 		skip_properties(fbx->fd, n->num_properties);

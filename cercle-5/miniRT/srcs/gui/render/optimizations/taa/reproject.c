@@ -20,7 +20,7 @@ static t_vec3	get_wp_taa(t_gui *gui, size_t dx, size_t dy)
 	size_t			pw;
 
 	o = &gui->opts;
-	pw = o->prev_render_size.x;
+	pw = gui->win.size.x;
 	ndc = repro_get_ndc(vec2i(dx, dy), gui->win.size,
 			vec2(o->cur_half_w, o->cur_half_h));
 	dir = repro_get_dir(o->cur_cam, ndc);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:39:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,12 @@ static bool	depth_reject(t_gui *gui, size_t nx, size_t ny, double cz)
 	float			cur_d;
 
 	o = &gui->opts;
+	if (!o->depth_buf)
+		return (false);
 	rx = nx * gui->win.size.x / gui->win.disp_size.x;
 	ry = ny * gui->win.size.y / gui->win.disp_size.y;
+	if (rx >= gui->win.size.x || ry >= gui->win.size.y)
+		return (false);
 	cur_d = o->depth_buf[ry * gui->win.size.x + rx];
 	if (cur_d > 1e29f || (float)cz < 1e-4f)
 		return (false);

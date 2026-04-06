@@ -6,20 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 15:19:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:15:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fbx.h"
 
-static size_t	fbx_count_tris(size_t *raw, size_t raw_c)
+static size_t	fbx_count_tris(int *raw, size_t raw_c)
 {
 	size_t	ps;
 	int		vn;
 	int		idx;
 	int		tc;
 
-	ft_print_debug("[COUNT_TRIS] raw=%p raw_c=%zu raw[0]=%zu\n",
+	ft_print_debug("[COUNT_TRIS] raw=%p raw_c=%zu raw[0]=%d\n",
 		(void *)raw, raw_c, raw_c > 0 ? raw[0] : 0);
 	ps = 0;
 	tc = 0;
@@ -45,13 +45,13 @@ static void	fbx_init_build(t_fbx_build *b, t_mesh *m, t_fbx_flat_params *p)
 	ft_memset(b, 0, sizeof(*b));
 	b->m = m;
 	b->raw = p->raw;
-	b->raw_c = p->raw_c;
+	b->rv.x = p->rv.x;
 	b->n = p->n;
-	b->nc = p->nc;
+	b->nu.x = p->nu.x;
 	b->u = p->u;
-	b->uc = p->uc;
-	b->vc = p->vc;
-	b->tc = fbx_count_tris(b->raw, b->raw_c);
+	b->nu.y = p->nu.y;
+	b->rv.y = p->rv.y;
+	b->tc = fbx_count_tris(b->raw, b->rv.x);
 	b->m->tri_count = b->tc;
 }
 
@@ -59,7 +59,7 @@ static bool	fbx_alloc_buffers(t_fbx_build *b)
 {
 	b->vertices = ft_calloc(b->tc * 3, sizeof(t_vertex));
 	b->triangles = ft_calloc(b->tc, sizeof(t_triangle));
-	b->v = malloc(sizeof(*b->v) * (b->raw_c + 1));
+	b->v = malloc(sizeof(*b->v) * (b->rv.x + 1));
 	if (!b->vertices || !b->triangles || !b->v)
 		return (false);
 	return (true);
@@ -67,9 +67,9 @@ static bool	fbx_alloc_buffers(t_fbx_build *b)
 
 static void	fbx_set_usage(t_fbx_build *b)
 {
-	if (b->n && b->nc > 0 && b->nc < b->tc * 3)
+	if (b->n && b->nu.x > 0 && b->nu.x < b->tc * 3)
 		b->use_v_n = 1;
-	if (b->u && b->uc > 0 && b->uc < b->tc * 3)
+	if (b->u && b->nu.y > 0 && b->nu.y < b->tc * 3)
 		b->use_v_u = 1;
 }
 

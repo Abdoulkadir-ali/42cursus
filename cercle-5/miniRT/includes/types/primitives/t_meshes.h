@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:38:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:32:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,6 +264,9 @@ typedef struct s_mesh_resource
 	size_t				clip_count;
 	size_t				clip_cap;
 	struct s_animation	*clips;
+	size_t				anim_count;
+	size_t				anim_cap;
+	t_skinned_mesh		*animated;
 }						t_mesh_resource;
 
 typedef struct s_mesh_info
@@ -363,42 +366,35 @@ typedef struct s_fbx_bin_node
 typedef struct s_fbx_data
 {
 	t_vec3				*v;
-	size_t			vc;
-	size_t				*ri;
-	size_t			rc;
 	t_vec3				*vn;
-	size_t			nc;
 	t_vec2				*vu;
-	size_t			uc;
+	int					*ri;
+	t_vec2s				rv;			/* x=rc (raw index count), y=vc (vertex count) */
+	t_vec2s				nu;			/* x=nc (normal count),    y=uc (uv count)     */
 }						t_fbx_data;
 
 typedef struct s_fbx_flat_params
 {
-	size_t				*raw;
-	size_t				raw_c;
+	int					*raw;
 	t_vec3				*n;
-	size_t				nc;
 	t_vec2				*u;
-	size_t				uc;
-	size_t				vc;
+	t_vec2s				rv;			/* x=raw_c (raw index count), y=vc (vertex count) */
+	t_vec2s				nu;			/* x=nc (normal count),       y=uc (uv count)     */
 }						t_fbx_flat_params;
 
 typedef struct s_fbx_build
 {
 	t_mesh				*m;
-	size_t				*raw;
-	size_t				raw_c;
+	int					*raw;
 	t_vec3				*n;
-	size_t				nc;
 	t_vec2				*u;
-	size_t				uc;
-	size_t				vc;
-	size_t				tc;
 	t_vertex			*vertices;
 	t_triangle			*triangles;
 	size_t				*v;
-	size_t				vp;
-	size_t				ps;
+	size_t				tc;
+	t_vec2s				rv;			/* x=raw_c (raw index count), y=vc (vertex count) */
+	t_vec2s				nu;			/* x=nc (normal count),       y=uc (uv count)     */
+	t_vec2s				cur;		/* x=vp (output vertex pos),  y=ps (parse pos)   */
 	bool				use_v_n;
 	bool				use_v_u;
 }						t_fbx_build;
@@ -448,11 +444,9 @@ typedef struct s_fbx_ascii
 	t_skinned_mesh		mesh;
 	t_vec3				*rn;
 	t_vec2				*ru;
-	size_t				*ri;
-	size_t				rc;
-	size_t				vc;
-	size_t				nc;
-	size_t				uc;
+	int					*ri;
+	t_vec2s				rv;			/* x=rc (raw index count), y=vc (vertex count) */
+	t_vec2s				nu;			/* x=nc (normal count),    y=uc (uv count)     */
 	char				*buf;
 	char				*p;
 	char				*end;

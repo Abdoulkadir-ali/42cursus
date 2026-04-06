@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:15:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:55:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:20:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,36 @@ static bool	bvh_alloc_nodes(t_mbvh *bvh, t_mesh *mesh)
 	return (true);
 }
 
+static bool	bvh_init_indices(t_mesh *mesh)
+{
+	size_t	i;
+
+	if (mesh->indices || !mesh->triangles)
+		return (true);
+	mesh->indices = malloc(sizeof(size_t) * mesh->tri_count * 3);
+	if (!mesh->indices)
+		return (false);
+	i = 0;
+	while (i < mesh->tri_count)
+	{
+		mesh->indices[i * 3 + 0] = mesh->triangles[i].v[0];
+		mesh->indices[i * 3 + 1] = mesh->triangles[i].v[1];
+		mesh->indices[i * 3 + 2] = mesh->triangles[i].v[2];
+		i++;
+	}
+	return (true);
+}
+
 /**
- * Prepares the BVH build context, including temporary storage for 
+ * Prepares the BVH build context, including temporary storage for
  * triangle centroids and final spatial node allocation.
  */
 bool	bvh_prepare(t_mbvh *bvh, t_mesh *mesh)
 {
 	size_t	i;
 
+	if (!bvh_init_indices(mesh))
+		return (false);
 	bvh->items = malloc(sizeof(t_mesh_build_item) * mesh->tri_count);
 	if (!bvh->items)
 		return (false);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:50:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 14:55:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:16:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "objects.h"
 
 # ifndef DEBUG
-#  define DEBUG 0
+#  define DEBUG 1
 # endif
 
 /* Debug print: only active when compiled with -DDEBUG or DEBUG 1 */

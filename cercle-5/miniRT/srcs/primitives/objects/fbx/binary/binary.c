@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:48:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:48:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,16 @@ static bool	fbx_bin_parse(t_fbx_bin *fbx)
 	close(fbx->fd);
 	fbx->fd = -1;
 	ft_print_debug("DEBUG: parse_nodes finished. counts: vc=%zu nc=%zu\n",
-		fbx->data.vc, fbx->data.nc);
+		fbx->data.rv.y, fbx->data.nu.x);
 	if (!fbx->data.v || !fbx->data.ri)
 	{
 		fprintf(stderr, "Error: FBX missing critical data\n");
 		return (false);
 	}
-	if (fbx->data.vc > 1000000)
+	if (fbx->data.rv.y > 1000000)
 	{
 		fprintf(stderr, "Error: FBX mesh too large (%zu vertices, limit 1M)\n",
-			fbx->data.vc);
+			fbx->data.rv.y);
 		return (false);
 	}
 	return (true);
@@ -96,6 +96,25 @@ bool	parse_fbx_binary(const char *path, t_skinned_mesh *out)
 		return (false);
 	}
 	ft_print_debug("FBX Binary: %zu tris built\n", fbx.mesh.base.tri_count);
+	ft_print_debug("[MESH_DUMP] name='%s'\n", fbx.mesh.base.name ? fbx.mesh.base.name : "(null)");
+	ft_print_debug("[MESH_DUMP] vertex_count=%zu  tri_count=%zu\n",
+		fbx.mesh.base.vertex_count, fbx.mesh.base.tri_count);
+	ft_print_debug("[MESH_DUMP] vertices=%p  triangles=%p  indices=%p\n",
+		(void *)fbx.mesh.base.vertices,
+		(void *)fbx.mesh.base.triangles,
+		(void *)fbx.mesh.base.indices);
+	ft_print_debug("[MESH_DUMP] bbox min=(%.3f,%.3f,%.3f) max=(%.3f,%.3f,%.3f)\n",
+		fbx.mesh.base.bbox.min.x, fbx.mesh.base.bbox.min.y,
+		fbx.mesh.base.bbox.min.z,
+		fbx.mesh.base.bbox.max.x, fbx.mesh.base.bbox.max.y,
+		fbx.mesh.base.bbox.max.z);
+	ft_print_debug("[MESH_DUMP] bvh_nodes=%p  bvh_node_count=%zu\n",
+		(void *)fbx.mesh.base.bvh_nodes, fbx.mesh.base.bvh_node_count);
+	if (fbx.mesh.base.vertices && fbx.mesh.base.vertex_count > 0)
+		ft_print_debug("[MESH_DUMP] v[0]=(%.3f,%.3f,%.3f)\n",
+			fbx.mesh.base.vertices[0].pos.x,
+			fbx.mesh.base.vertices[0].pos.y,
+			fbx.mesh.base.vertices[0].pos.z);
 	*out = fbx.mesh;
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:48:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 16:15:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static bool	ascii_parse_mesh(t_fbx_ascii *asc)
 	if (!temp)
 		return (false);
 	temp = advance_to_data(temp, asc->end);
-	asc->mesh.base.vertices = parse_array(&temp, &asc->vc, sizeof(t_vec3),
+	asc->mesh.base.vertices = parse_array(&temp, &asc->rv.y, sizeof(t_vec3),
 			f_vec3);
 	if (!asc->mesh.base.vertices)
 		return (false);
@@ -28,7 +28,7 @@ static bool	ascii_parse_mesh(t_fbx_ascii *asc)
 	if (!temp)
 		return (false);
 	temp = advance_to_data(temp, asc->end);
-	asc->ri = parse_array(&temp, &asc->rc, sizeof(int), f_int);
+	asc->ri = parse_array(&temp, &asc->rv.x, sizeof(int), f_int);
 	if (!asc->ri)
 		return (false);
 	ascii_load_normals(asc);
@@ -42,12 +42,12 @@ static bool	ascii_build_mesh(t_fbx_ascii *asc, t_scene *scene,
 	t_fbx_flat_params	p;
 
 	p.raw = asc->ri;
-	p.raw_c = asc->rc;
+	p.rv.x = asc->rv.x;
 	p.n = asc->rn;
-	p.nc = asc->nc;
+	p.nu.x = asc->nu.x;
 	p.u = asc->ru;
-	p.uc = asc->uc;
-	p.vc = asc->vc;
+	p.nu.y = asc->nu.y;
+	p.rv.y = asc->rv.y;
 	fbx_build_flat(&asc->mesh.base, &p);
 	if (asc->mesh.base.tri_count == 0)
 		return (false);
