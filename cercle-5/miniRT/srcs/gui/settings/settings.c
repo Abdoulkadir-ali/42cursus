@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,23 @@ void	settings_handle_drag(t_gui *gui, t_vec2i mouse)
 {
 	t_vec2i	p;
 
+	int		p_x_max;
+	int		p_y_max;
+
 	if (!gui->settings.dragging)
 		return ;
+	p_x_max = gui->win.disp_size.x - SETTINGS_W;
+	p_y_max = gui->win.disp_size.y - SETTINGS_H;
 	p.x = mouse.x - gui->settings.drag_offset.x;
 	p.y = mouse.y - gui->settings.drag_offset.y;
 	if (p.x < 0)
 		p.x = 0;
 	if (p.y < 0)
 		p.y = 0;
-	if (p.x > gui->win.disp_size.x - SETTINGS_W)
-		p.x = gui->win.disp_size.x - SETTINGS_W;
-	if (p.y > gui->win.disp_size.y - SETTINGS_H)
-		p.y = gui->win.disp_size.y - SETTINGS_H;
+	if (p.x > p_x_max)
+		p.x = p_x_max;
+	if (p.y > p_y_max)
+		p.y = p_y_max;
 	gui->settings.pos = p;
 	gui->render.dirty = true;
 }

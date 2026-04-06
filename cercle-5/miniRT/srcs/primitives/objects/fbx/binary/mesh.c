@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:29:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 15:19:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,18 @@ bool	fbx_bin_build_mesh(t_fbx_bin *fbx)
 		return (false);
 	fbx_bin_set_normals(fbx);
 	fbx_bin_fill_params(&p, &fbx->data);
+	ft_print_debug("[MESH] vc=%zu rc=%zu nc=%zu uc=%zu\n",
+		fbx->data.vc, fbx->data.rc, fbx->data.nc, fbx->data.uc);
+	if (fbx->data.ri)
+	{
+		int		*ri32 = (int *)fbx->data.ri;
+		ft_print_debug("[MESH] ri[0..7] as int32: %d %d %d %d %d %d %d %d\n",
+			ri32[0], ri32[1], ri32[2], ri32[3],
+			ri32[4], ri32[5], ri32[6], ri32[7]);
+		ft_print_debug("[MESH] ri[0..3] as size_t: %zu %zu %zu %zu\n",
+			fbx->data.ri[0], fbx->data.ri[1],
+			fbx->data.ri[2], fbx->data.ri[3]);
+	}
 	ft_print_debug("DEBUG: calling fbx_build_flat\n");
 	fbx_build_flat(&fbx->mesh.base, &p);
 	ft_print_debug("DEBUG: fbx_build_flat finished\n");

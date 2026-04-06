@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:51:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:48:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,9 @@ char					*fbx_next(char *p);
 
 /* FBX Scene Addition (srcs/primitives/scene/add/objects/mesh/loaders/) */
 bool					parse_fbx_worker(const char *path, t_scene *scene);
-bool					parse_fbx_binary(const char *path, t_scene *scene);
-bool					parse_fbx_ascii(const char *path, t_scene *scene);
+bool					parse_fbx_binary(const char *path,
+							t_skinned_mesh *out);
+bool					parse_fbx_ascii(const char *path, t_scene *scene,
+							t_skinned_mesh *out);
 
 #endif

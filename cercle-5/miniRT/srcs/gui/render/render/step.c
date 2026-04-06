@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:02:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 14:53:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,4 @@ void	raytrace_step(t_gui *gui, double delta)
 	mlx_put_image_to_window(gui->win.mlx, gui->win.win,
 		gui->win.disp_imgs[gui->render.back_idx], 0, 0);
 	draw_ui_strings(gui, &gui->cam_ctrl);
-	(void)elapsed;
 }

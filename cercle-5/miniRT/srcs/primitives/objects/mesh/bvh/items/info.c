@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:14:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:40:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:37:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	bvh_get_triangle_info(t_mesh *mesh, size_t tri_idx,
 	t_vec3	v1;
 	t_vec3	v2;
 
-	idx = (size_t *)&mesh->indices[tri_idx * 3];
+	idx = &mesh->indices[tri_idx * 3];
 	v0 = mesh->vertices[idx[0]].pos;
 	v1 = mesh->vertices[idx[1]].pos;
 	v2 = mesh->vertices[idx[2]].pos;

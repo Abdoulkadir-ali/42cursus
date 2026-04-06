@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:09:41 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static t_aabb	compute_bbox(t_build_item *items, size_t count)
 	return (bbox);
 }
 
-static void	sort_items_by_axis(t_build_item *items, size_t count, int axis)
+static void	sort_items_by_axis(t_build_item *items, size_t count, size_t axis)
 {
 	if (axis == 0)
 		qsort(items, count, sizeof(t_build_item), compare_x);
@@ -39,7 +39,7 @@ static void	sort_items_by_axis(t_build_item *items, size_t count, int axis)
 static int	build_children(t_bvh_tmp_node *node, t_build_item *items,
 		t_split_info info, size_t count)
 {
-	sort_items_by_axis(items, count, info.axis);
+	sort_items_by_axis(items, count, info.axis.i);
 	node->left = build_recursive(items, info.split);
 	if (!node->left)
 		return (0);

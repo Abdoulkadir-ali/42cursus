@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	draw_settings_physics_tab(t_gui *gui, t_vec2i o)
 		o.x + 8, y, COL_HOVER, "PHYSICS");
 	y += 24;
 	r = init_iradio("Enabled", &gui->physics_enabled, NULL);
-	draw_radio_row(gui, (t_panel){vec2i(o.x, y), vec2i(SETTINGS_W - 16, 0),
+	draw_radio_row(gui, (t_panel){vec2i(o.x, y), vec2s(SETTINGS_W - 16, 0),
 		0, 0, ""}, r);
 	y += SETTINGS_ROW_H + 4;
 	build_phys_sliders(gui, sl);
@@ -67,7 +67,7 @@ bool	click_settings_physics_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 	y = o.y + 12 + 24;
 	r = init_iradio("Enabled", &gui->physics_enabled, NULL);
 	if (try_radio_click(gui, mouse, (t_panel){vec2i(o.x, y),
-			vec2i(SETTINGS_W - 16, 0), 0, 0, ""}, r))
+				vec2s(SETTINGS_W - 16, 0), 0, 0, ""}, r))
 		return (true);
 	y += SETTINGS_ROW_H + 4;
 	build_phys_sliders(gui, sl);

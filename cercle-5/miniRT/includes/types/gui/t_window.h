@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 20:30:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ typedef struct s_panel
 	t_vec2s		size;
 	int			bg;
 	int			brd;
-	char		*lbl;
+	const char		*lbl;
 }	t_panel;
 
 #endif

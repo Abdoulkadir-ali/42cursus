@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:14:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:25:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:55:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mesh.h"
 
-static double	bvh_item_centroid(t_mesh_build_item *items, int idx, int axis)
+static double	bvh_item_centroid(t_mesh_build_item *items, size_t idx, size_t axis)
 {
 	if (axis == 0)
 		return (items[idx].centroid.x);
@@ -21,7 +21,7 @@ static double	bvh_item_centroid(t_mesh_build_item *items, int idx, int axis)
 	return (items[idx].centroid.z);
 }
 
-static void	bvh_swap_item(t_mesh_build_item *items, int left, int right)
+static void	bvh_swap_item(t_mesh_build_item *items, size_t left, size_t right)
 {
 	t_mesh_build_item	tmp;
 
@@ -35,7 +35,7 @@ static void	bvh_swap_item(t_mesh_build_item *items, int left, int right)
  * specified axis. Returns the index of the first item in the right 
  * partition.
  */
-size_t	bvh_partition_items(t_mesh_build_item *items, size_t count, int axis,
+size_t	bvh_partition_items(t_mesh_build_item *items, size_t count, size_t axis,
 		double split_val)
 {
 	size_t	left;

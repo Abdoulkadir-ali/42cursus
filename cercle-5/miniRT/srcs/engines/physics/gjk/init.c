@@ -42,3 +42,4 @@ t_edge	init_edge(size_t a, size_t b)
 	e.a = a;
 	e.b = b;
 	return (e);
+}

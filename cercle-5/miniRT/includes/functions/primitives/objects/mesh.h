@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:36:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:54:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,18 @@ void					bvh_update_node_bounds(t_mbvh_node *node, t_mbvh *bvh,
 							size_t first, size_t count);
 void					bvh_get_triangle_info(t_mesh *mesh, size_t tri_idx,
 							t_mesh_build_item *out);
-void					bvh_axis_min_max(t_aabb *bounds, int axis,
+void							bvh_axis_min_max(t_aabb *bounds, size_t axis,
 							double *min, double *max);
 void					bvh_bins_init(t_bin *bins);
 void					bvh_fill_bins(t_bvh_bins *b);
 void					bvh_sweep_left(t_bin *bins, double *left_area,
 							size_t *left_counts);
-void					bvh_sweep_right(t_bvh_split *s, int axis);
+void					bvh_sweep_right(t_bvh_split *s, size_t axis);
 bool					bvh_find_split(t_bvh_find *f);
 size_t					bvh_make_leaf(t_mbvh_node *node, size_t first,
 							size_t count, t_index idx);
 size_t					bvh_partition_items(t_mesh_build_item *items,
-							size_t count, int axis, double split_val);
+										size_t count, size_t axis, double split_val);
 bool					bvh_try_split(t_bvh_try *bvh);
 void					bvh_eval_axis(t_bvh_eval *e);
 void					bvh_centroid_bounds(t_mbvh *bvh, int first, int count,

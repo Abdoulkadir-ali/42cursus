@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:02:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,9 @@ bool				try_islider_click(struct s_gui *gui, t_vec2i mouse,
 						t_vec2i pos, t_islider sl);
 void				update_inline_drag(struct s_gui *gui, t_vec2i mouse);
 void				end_inline_drag(struct s_gui *gui);
-void				fill_rect_row(struct s_gui *gui, t_vec2i pos, int w,
-						unsigned int col);
-void				fill_rect(struct s_gui *gui, t_vec2i pos, t_vec2i size,
+void				fill_rect_row(struct s_gui *gui, t_vec2i pos, size_t w,
+								unsigned int col);
+void				fill_rect(struct s_gui *gui, t_vec2i pos, t_vec2s size,
 						unsigned int col);
 void				draw_slider_fill(struct s_gui *gui, t_vec2i pos,
 						int fill_w, int total_w);
@@ -128,8 +128,7 @@ void				draw_insp_row(struct s_gui *gui, t_vec2i pos, t_islider sl);
 void				draw_insp_toggle_row(struct s_gui *gui, t_vec2i pos,
 						const char *label, bool val);
 void				draw_panel_insp_rows(struct s_gui *gui, t_islider *sl,
-						int count, t_vec2i pos);
-
+								size_t count, t_vec2i pos);
 /* srcs/gui/editor/widgets/insp_input.c */
 bool				insp_row_click(struct s_gui *gui, t_vec2i mouse,
 						t_vec2i pos, t_islider sl);
@@ -138,7 +137,8 @@ bool				insp_toggle_click(struct s_gui *gui, t_vec2i mouse,
 void				insp_input_key(struct s_gui *gui, int keycode);
 void				insp_input_commit(struct s_gui *gui);
 bool				insp_input_nav(t_insp_edit *e, int keycode);
-void				set_insp_drag(struct s_gui *gui, t_islider sl, t_vec3i p);
+void				set_insp_drag(struct s_gui *gui, t_islider sl, int mouse_x,
+								int tx, int tw);
 void				set_insp_edit(struct s_gui *gui, t_islider sl);
 
 /* srcs/gui/editor/crud/add/ */
@@ -204,6 +204,7 @@ bool				info_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
 /* srcs/gui/editor/panel/scene/utils.c */
 size_t				mesh_row_to_idx(size_t r);
 size_t				count_scene_rows(t_scene *sc);
+size_t				count_mesh_entries(t_scene *sc);
 int					row_strip(size_t *r, size_t count, t_type t,
 						t_scene_row_res *res);
 void				row_to_object(struct s_gui *gui, size_t r, t_type *ty,
@@ -222,13 +223,12 @@ void				draw_panel_sliders(struct s_gui *gui, t_islider *sl,
 
 /* srcs/gui/editor/panel/mesh_info/utils.c */
 void				draw_info_row(struct s_gui *gui, t_vec2i pos,
-						const char *label, const char *val);
-
+								char *label, char *val);
 /* srcs/gui/editor/panel/physics/utils.c */
 void				draw_vec3_label(struct s_gui *gui, t_vec2i pos,
-						const char *label, t_vec3 v);
+								char *label, t_vec3 v);
 void				draw_bool_label(struct s_gui *gui, t_vec2i pos,
-						const char *label, bool val);
+								char *label, bool val);
 void				get_phys_sliders(t_physics_body *phys, t_islider sl[3]);
 
 /* srcs/gui/editor/crud/popup/click/ */

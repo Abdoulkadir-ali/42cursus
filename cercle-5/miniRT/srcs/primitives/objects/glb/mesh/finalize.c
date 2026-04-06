@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 10:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:50:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ static bool	build_triangles(t_mesh *m)
 
 	count = m->base_geometry.index_count;
 	n = count / 3;
-	m->indices = malloc(sizeof * count);
+	m->indices = malloc(sizeof(*m->indices) * count);
 	if (!m->indices)
 		return (false);
-	ft_memcpy(m->indices, m->base_geometry.indices, sizeof * count);
+	ft_memcpy(m->indices, m->base_geometry.indices, sizeof(*m->indices) * count);
 	m->tri_count = n;
 	return (true);
 }

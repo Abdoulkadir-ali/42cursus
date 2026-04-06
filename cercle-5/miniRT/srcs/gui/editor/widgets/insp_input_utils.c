@@ -63,18 +63,18 @@ bool	insp_input_nav(t_insp_edit *e, int keycode)
 {
 	if (keycode == XK_Left)
 	{
-		if (e->cursor > 0)
-			e->cursor--;
+		if (e->i > 0)
+			e->i--;
 	}
 	else if (keycode == XK_Right)
 	{
-		if (e->cursor < ft_strlen(e->buf))
-			e->cursor++;
+		if (e->i < ft_strlen(e->buf))
+			e->i++;
 	}
 	else if (keycode == XK_Home)
-		e->cursor = 0;
+		e->i = 0;
 	else if (keycode == XK_End)
-		e->cursor = ft_strlen(e->buf);
+		e->i = ft_strlen(e->buf);
 	else
 		return (false);
 	return (true);

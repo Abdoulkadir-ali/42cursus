@@ -13,7 +13,7 @@
 #include "window.h"
 #include "editor.h"
 
-static bool	create_is(t_gui *gui, t_vec2i sz, void **imgs, char **as)
+static bool	create_is(t_gui *gui, t_vec2s sz, void **imgs, char **as)
 {
 	size_t	i;
 	int		bpp;
@@ -39,7 +39,7 @@ static bool	create_is(t_gui *gui, t_vec2i sz, void **imgs, char **as)
 	return (true);
 }
 
-int	gui_window_resize(t_vec2i sz, t_gui *gui)
+int	gui_window_resize(t_vec2s sz, t_gui *gui)
 {
 	void	*imgs[3];
 	char	*addrs[3];
@@ -75,7 +75,7 @@ int	gui_resize_hook(t_gui *gui)
 	xwin = *(Window *)gui->win.win;
 	if (!XGetWindowAttributes(dpy, xwin, &a))
 		return (0);
-	gui_window_resize(vec2i(a.width, a.height), gui);
+	gui_window_resize(vec2s(a.width, a.height), gui);
 	return (0);
 }
 

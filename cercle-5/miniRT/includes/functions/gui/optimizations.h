@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 03:04:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_reproj
 {
 	t_transform	cam;
 	t_vec2		half;
-	t_vec2i		size;
+	t_vec2s		size;
 }	t_reproj;
 
 
@@ -63,7 +63,7 @@ void	apply_reproj_band(t_gui *gui, size_t y_start, size_t y_end);
 void	opts_free(t_gui *gui);
 
 
-t_vec2		repro_get_ndc(t_vec2i p, t_vec2i size, t_vec2 half);
+t_vec2			repro_get_ndc(t_vec2i p, t_vec2s size, t_vec2 half);
 t_vec3		repro_get_dir(t_transform cam, t_vec2 ndc);
 bool		repro_world_to_screen(t_reproj repro, t_vec3 wp, t_vec2i *out_n,
 				double *out_cz);

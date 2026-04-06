@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:35:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ typedef struct s_optimizations
 	t_transform	prev_cam;
 	double		prev_half_w;
 	double		prev_half_h;
-	t_vec2i		prev_render_size;
+	t_vec2s		prev_render_size;
 	bool		prev_valid;
 	bool		frame_interp;
 	size_t		*interp_buf;

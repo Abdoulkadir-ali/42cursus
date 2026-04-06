@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 14:09:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 static void	draw_panel_pixel(t_gui *gui, t_panel panel, t_vec2i pos)
 {
-	int		col;
-	size_t	*dst;
+	int			col;
+	uint32_t	*dst;
 
 	col = panel_color(panel, pos);
 	if (col == -1)
 		return ;
-	dst = (size_t *)(gui->win.disp_addrs[gui->render.back_idx]
+	dst = (uint32_t *)(gui->win.disp_addrs[gui->render.back_idx]
 			+ (pos.y * gui->win.disp_line_len
 				+ pos.x * (gui->win.disp_bpp / 8)));
 	*dst = color_blend(*dst, col, 0.85f);
@@ -30,11 +30,16 @@ void	draw_panel(t_gui *gui, t_panel panel)
 {
 	t_vec2i	pos;
 
+	int	end_x;
+	int	end_y;
+
+	end_x = panel.pos.x + panel.size.x;
+	end_y = panel.pos.y + panel.size.y;
 	pos.y = panel.pos.y;
-	while (pos.y < panel.pos.y + panel.size.y)
+	while (pos.y < end_y)
 	{
 		pos.x = panel.pos.x;
-		while (pos.x < panel.pos.x + panel.size.x)
+		while (pos.x < end_x)
 		{
 			draw_panel_pixel(gui, panel, pos);
 			pos.x++;

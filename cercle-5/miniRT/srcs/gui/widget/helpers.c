@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 17:41:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	gui_label(struct s_gui *gui, const char *text, t_vec2i pos)
 	gui_draw_string(gui, text, pos, COL_TEXT);
 }
 
-void	gui_panel(struct s_gui *gui, t_vec2i pos, t_vec2i size,
+void	gui_panel(struct s_gui *gui, t_vec2i pos, t_vec2s size,
 			const char *title)
 {
 	t_panel	p;

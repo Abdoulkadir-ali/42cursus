@@ -6,24 +6,24 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 14:52:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
-static void	upscale_row(t_gui *gui, size_t dy, double ry)
+static void	upscale_row(t_gui *gui, t_vec2i dst, double ry)
 {
-	t_vec2i	dst;
 	t_vec2	src;
 	double	step_x;
+	int		dsw;
 
-	dst.y = dy;
 	src.y = ry;
 	step_x = (double)gui->win.size.x / (double)gui->win.disp_size.x;
+	dsw = gui->win.disp_size.x;
 	src.x = 0;
 	dst.x = 0;
-	while (dst.x < gui->win.disp_size.x)
+	while (dst.x < dsw)
 	{
 		upscale_pixel(gui, dst, src);
 		src.x += step_x;
@@ -33,18 +33,19 @@ static void	upscale_row(t_gui *gui, size_t dy, double ry)
 
 void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 {
-	size_t	dy;
+	t_vec2i	dst;
 	double	ry;
 	double	step_y;
 
 	step_y = (double)gui->win.size.y / (double)gui->win.disp_size.y;
 	ry = (double)y_start * step_y;
-	dy = y_start;
-	while (dy < y_end)
+	dst.y = y_start;
+	dst.x = 0;
+	while ((size_t)dst.y < y_end)
 	{
-		upscale_row(gui, dy, ry);
+		upscale_row(gui, dst, ry);
 		ry += step_y;
-		dy++;
+		dst.y++;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ static bool	restore_geo(t_mesh *mesh, const t_cache_snap *snap)
 		return (mesh_free(mesh), false);
 	ft_memcpy(mesh->vertices, snap->vertices,
 		sizeof(t_vertex) * snap->vertex_count);
-	mesh->indices = malloc(sizeof * snap->tri_count * 3);
+	mesh->indices = malloc(sizeof(*mesh->indices) * snap->tri_count * 3);
 	if (!mesh->indices)
 		return (mesh_free(mesh), false);
 	ft_memcpy(mesh->indices, snap->indices,
-		sizeof * snap->tri_count * 3);
+			sizeof(*mesh->indices) * snap->tri_count * 3);
 	if (snap->normals)
 	{
 		mesh->normals = malloc(sizeof(t_vec3) * snap->vertex_count);

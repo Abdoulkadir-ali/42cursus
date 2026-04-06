@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "optimizations.h"
 
-t_vec2	repro_get_ndc(t_vec2i p, t_vec2i size, t_vec2 half)
+t_vec2	repro_get_ndc(t_vec2i p, t_vec2s size, t_vec2 half)
 {
 	t_vec2	ndc;
 
@@ -36,6 +36,8 @@ bool	repro_world_to_screen(t_reproj r, t_vec3 wp, t_vec2i *out_n,
 {
 	t_vec3	rel;
 	double	cz;
+	int		sw;
+	int		sh;
 
 	rel = vec3_sub(wp, r.cam.pos);
 	cz = vec3_dot(rel, r.cam.forward);
@@ -47,5 +49,7 @@ bool	repro_world_to_screen(t_reproj r, t_vec3 wp, t_vec2i *out_n,
 			* r.size.y * 0.5);
 	if (out_cz)
 		*out_cz = cz;
-	return (out_n->x < r.size.x && out_n->y < r.size.y);
+	sw = r.size.x;
+	sh = r.size.y;
+	return (out_n->x < sw && out_n->y < sh);
 }

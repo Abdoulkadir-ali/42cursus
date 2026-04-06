@@ -15,7 +15,7 @@
 /**
  * @brief Performs a full check of a single shape vs all objects.
  */
-size_t	query_shapes(t_contct_query *qu, t_gjk_shape *sa, t_physics_body *pb,
+size_t	query_shapes(t_contact_query *qu, t_gjk_shape *sa, t_physics_body *pb,
 		t_transform *t)
 {
 	loop_boxes(qu, sa, pb, t);

@@ -6,14 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:48:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fbx.h"
 #include "helpers.h"
 #include "types.h"
-#include "functions/primitives/scene.h"
 
 static void	fbx_bin_free_data(t_fbx_bin *fbx)
 {
@@ -75,16 +74,16 @@ static bool	fbx_bin_parse(t_fbx_bin *fbx)
 	return (true);
 }
 
-bool	parse_fbx_binary(const char *path, t_scene *scene)
+bool	parse_fbx_binary(const char *path, t_skinned_mesh *out)
 {
 	t_fbx_bin	fbx;
 
-	ft_print_debug("DEBUG: parse_fbx_binary starting for %s\n", path);
+	ft_print_debug("FBX Binary: parsing '%s'\n", path);
 	ft_memset(&fbx, 0, sizeof(fbx));
 	fbx.fd = -1;
 	if (!fbx_bin_open(&fbx, path))
 		return (false);
-	ft_print_debug("DEBUG: FBX Binary Version: %zu\n", fbx.version);
+	ft_print_debug("FBX Binary: version %zu\n", fbx.version);
 	if (!fbx_bin_parse(&fbx))
 	{
 		fbx_bin_free_data(&fbx);
@@ -96,7 +95,7 @@ bool	parse_fbx_binary(const char *path, t_scene *scene)
 		mesh_free(&fbx.mesh.base);
 		return (false);
 	}
-	ft_print_debug("FBX Binary Loaded: %s (%zu tris)\n", path,
-		fbx.mesh.base.tri_count);
-	return (scene_add_animated(scene, fbx.mesh));
+	ft_print_debug("FBX Binary: %zu tris built\n", fbx.mesh.base.tri_count);
+	*out = fbx.mesh;
+	return (true);
 }

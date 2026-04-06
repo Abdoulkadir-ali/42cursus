@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:04:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,23 @@ unsigned int	color_blend(unsigned int dst, int src, float alpha)
 static t_vec2i	corner_delta(t_panel p, t_vec2i pos)
 {
 	int		r;
+	int			sz_x;
+	int			sz_y;
 	t_vec2i	d;
 
 	r = PANEL_RADIUS;
+	sz_x = p.size.x;
+	sz_y = p.size.y;
 	d = vec2i(0, 0);
 	if (pos.x < p.pos.x + r && pos.y < p.pos.y + r)
 		d = vec2i(p.pos.x + r - pos.x, p.pos.y + r - pos.y);
-	else if (pos.x >= p.pos.x + p.size.x - r && pos.y < p.pos.y + r)
-		d = vec2i(pos.x - (p.pos.x + p.size.x - r - 1), p.pos.y + r - pos.y);
-	else if (pos.x < p.pos.x + r && pos.y >= p.pos.y + p.size.y - r)
-		d = vec2i(p.pos.x + r - pos.x, pos.y - (p.pos.y + p.size.y - r - 1));
-	else if (pos.x >= p.pos.x + p.size.x - r && pos.y >= p.pos.y + p.size.y - r)
-		d = vec2i(pos.x - (p.pos.x + p.size.x - r - 1), pos.y - (p.pos.y
-					+ p.size.y - r - 1));
+	else if (pos.x >= p.pos.x + sz_x - r && pos.y < p.pos.y + r)
+		d = vec2i(pos.x - (p.pos.x + sz_x - r - 1), p.pos.y + r - pos.y);
+	else if (pos.x < p.pos.x + r && pos.y >= p.pos.y + sz_y - r)
+		d = vec2i(p.pos.x + r - pos.x, pos.y - (p.pos.y + sz_y - r - 1));
+	else if (pos.x >= p.pos.x + sz_x - r && pos.y >= p.pos.y + sz_y - r)
+		d = vec2i(pos.x - (p.pos.x + sz_x - r - 1), pos.y - (p.pos.y
+						+ sz_y - r - 1));
 	return (d);
 }
 
@@ -56,10 +60,15 @@ static bool	is_rounded_corner(t_panel p, t_vec2i pos)
 
 int	panel_color(t_panel panel, t_vec2i pos)
 {
+	int	sz_x;
+	int	sz_y;
+
 	if (is_rounded_corner(panel, pos))
 		return (-1);
-	if (pos.x <= panel.pos.x + 1 || pos.x >= panel.pos.x + panel.size.x - 2
-		|| pos.y <= panel.pos.y + 1 || pos.y >= panel.pos.y + panel.size.y - 2)
+	sz_x = panel.size.x;
+	sz_y = panel.size.y;
+	if (pos.x <= panel.pos.x + 1 || pos.x >= panel.pos.x + sz_x - 2
+			|| pos.y <= panel.pos.y + 1 || pos.y >= panel.pos.y + sz_y - 2)
 		return (panel.brd);
 	return (panel.bg);
 }

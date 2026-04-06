@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:56:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_entry_point
 typedef struct s_bvh_ref
 {
 	uint8_t				type;
-	t_index				index;
+	size_t				index;
 }						t_bvh_ref;
 
 typedef struct s_hit
@@ -144,7 +144,7 @@ typedef struct s_raytracer_cache
 {
 	double		half_h;			  /* tan(fov/2) at last cache          */
 	double		fov;			  /* FOV (degrees) at last cache       */
-	t_vec2i		res;			  /* render resolution at last cache   */
+	t_vec2s		res;			  /* render resolution at last cache   */
 }					t_raytracer_cache;
 
 typedef struct s_raytracer_engine

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 06:25:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 10:34:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void	draw_widget_title(t_gui *gui, t_widget *w)
 	if (!w->draggable)
 		return ;
 	tb.pos = w->pos;
-	tb.size = vec2i(w->size.x, WIDGET_TITLE_H);
+	tb.size = vec2s(w->size.x, WIDGET_TITLE_H);
 	tb.bg = 0x1A1A2A;
 	tb.brd = COL_BORDER;
 	draw_panel(gui, tb);

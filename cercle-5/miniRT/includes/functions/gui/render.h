@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:30:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ t_vec3f			rt_unpack_color(size_t c);
 t_vec3i			rt_unpack_color_v(size_t c);
 size_t			rt_pack_color(t_vec3f v);
 size_t			rt_pack_color_v(t_vec3i v);
-void			apply_bcg(float ch[3], const t_raytracer_settings *opts);
+void			apply_bcg(t_vec3f *ch, const t_raytracer_settings *opts);
 size_t			bilerp_pixel(size_t c[4], t_vec4f w);
 void			get_weights(t_vec4f *w, t_vec2f f, float *db[2]);
 #endif

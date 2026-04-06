@@ -43,7 +43,7 @@ void	bvh_centroid_bounds(t_mbvh *bvh, int first, int count, t_aabb *out)
 	*out = bounds;
 }
 
-void	bvh_axis_min_max(t_aabb *bounds, int axis, double *min_val,
+void	bvh_axis_min_max(t_aabb *bounds, size_t axis, double *min_val,
 		double *max_val)
 {
 	if (axis == 0)

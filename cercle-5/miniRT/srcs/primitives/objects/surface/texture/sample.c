@@ -6,17 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 14:52:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "functions/primitives/objects/surface.h"
+#include "surface.h"
 
 static t_vec3	sample_checker(t_texture *tex, double u, double v)
 {
 	int	ch;
 
-	ch = (floor(u * tex->scale) + floor(v * tex->scale)) % 2;
+	ch = floor(u * tex->scale) + floor(v * tex->scale);
+	ch = ch % 2;
 	if ((u * tex->scale) < 0)
 		ch++;
 	if ((v * tex->scale) < 0)
@@ -71,13 +72,6 @@ static t_vec3	sample_bitmap(t_texture *tex, double u, double v)
 */
 t_vec3	sample_texture(t_texture *tex, double u, double v)
 {
-	static int count = 0;
-	if (count < 10)
-	{
-		ft_print_debug("sample_texture: type=%d addr=%p u=%f v=%f\n", 
-			tex->type, tex->addr, u, v);
-		count++;
-	}
 	if (tex->type == TEX_SOLID)
 		return (tex->color_a);
 	if (tex->type == TEX_CHECKER)

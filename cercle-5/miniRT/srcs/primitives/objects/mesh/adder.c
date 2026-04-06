@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static bool	process_resource_items(t_scene *scene, t_mesh_resource *res)
 	i = 0;
 	while (i < res->mesh_count)
 	{
-		if (res->meshes[i].mat_id != -1)
+		if (mat_offset > 0)
 			res->meshes[i].mat_id += mat_offset;
 		if (!scene_add_mesh(scene, res->meshes[i]))
 			return (false);

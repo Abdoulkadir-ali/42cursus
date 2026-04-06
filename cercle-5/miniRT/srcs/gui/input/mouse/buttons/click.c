@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:19:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	handle_left_click(t_gui *gui, t_vec2i mouse)
 
 int	mouse_click(int button, t_vec2i mouse, t_gui *gui)
 {
-	ft_print_debug("CLICK: btn=%d pos=%zu,%zu\n", button, mouse.x,
+	ft_print_debug("CLICK: btn=%d pos=%d,%d\n", button, mouse.x,
 		mouse.y);
 	widget_handle_mouse(gui, button, mouse);
 	if (button == BUTTON_LEFT)

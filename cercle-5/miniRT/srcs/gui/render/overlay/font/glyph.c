@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 13:05:22 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,14 @@ static bool	glyph_pixel_on(const unsigned char *glyph, int row, int col)
 static void	draw_glyph_pixel(t_gui *gui, t_vec2i screen, unsigned int color)
 {
 	unsigned int	*px;
+	int				dsw;
+	int				dsh;
 
-	if (screen.x >= gui->win.disp_size.x)
+	dsw = gui->win.disp_size.x;
+	dsh = gui->win.disp_size.y;
+	if (screen.x >= dsw)
 		return ;
-	if (screen.y >= gui->win.disp_size.y)
+	if (screen.y >= dsh)
 		return ;
 	px = (unsigned int *)(gui->win.disp_addrs[gui->render.back_idx]
 			+ screen.y * gui->win.disp_line_len
@@ -44,7 +48,7 @@ void	draw_char(t_gui *gui, unsigned char c, t_vec2i pos, unsigned int color)
 	while (row < 8)
 	{
 		screen.y = pos.y + row;
-		if (screen.y < gui->win.disp_size.y)
+		if (screen.y < (int)gui->win.disp_size.y)
 		{
 			screen.x = pos.x;
 			while (screen.x < pos.x + 8)

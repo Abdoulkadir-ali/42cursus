@@ -36,12 +36,14 @@ static bool	decode_morton(t_render *r, size_t id, t_vec2i *out)
 static void	render_tile_row(t_render *render, t_tile *v, size_t id, int *cnt)
 {
 	long long	st;
+	int			sw;
 
+	sw = render->gui->win.size.x;
 	st = now_ms();
 	v->p_pos.x = v->tile.x;
 	v->pixel_ptr = v->row_ptr;
 	while (v->p_pos.x < v->tile.x + TILE_SIZE
-		&& v->p_pos.x < render->gui->win.size.x)
+			&& v->p_pos.x < sw)
 	{
 		process_pixel(render, vec2i(v->p_pos.x, v->p_pos.y), v->pixel_ptr);
 		v->p_pos.x += render->step;
@@ -60,6 +62,9 @@ void	render_tile(t_render *render, size_t id)
 	t_tile	v;
 	int		cnt;
 
+	int			sh;
+
+	sh = render->gui->win.size.y;
 	if (!decode_morton(render, id, &v.tile))
 		return ;
 	v.tile.x *= TILE_SIZE;
@@ -71,7 +76,7 @@ void	render_tile(t_render *render, size_t id)
 	v.row_step = render->gui->win.line_len * render->step;
 	cnt = 0;
 	while (v.p_pos.y < v.tile.y + TILE_SIZE
-		&& v.p_pos.y < render->gui->win.size.y)
+			&& v.p_pos.y < sh)
 	{
 		render_tile_row(render, &v, id, &cnt);
 		v.p_pos.y += render->step;

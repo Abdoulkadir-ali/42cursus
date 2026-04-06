@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool	insp_row_click(t_gui *gui, t_vec2i mouse, t_vec2i pos, t_islider sl)
 		&& mouse.y >= pos.y
 		&& mouse.y < pos.y + ui_sy(INSP_ROW_STEP, d))
 	{
-		set_insp_drag(gui, sl, (t_vec3i){mouse.x, x_off, w});
+		set_insp_drag(gui, sl, mouse.x, x_off, w);
 		return (true);
 	}
 	if (mouse.x >= ix && mouse.x < ix + ui_sx(INSP_IN_W, d)
@@ -43,18 +43,20 @@ bool	insp_row_click(t_gui *gui, t_vec2i mouse, t_vec2i pos, t_islider sl)
 
 static void	insp_input_char(t_insp_edit *e, int keycode)
 {
-	int	i;
+	int		i;
+	int		ci;
 
 	if (ft_strlen(e->buf) >= 30)
 		return ;
+	ci = e->i;
 	i = ft_strlen(e->buf);
-	while (i >= e->cursor)
+	while (i >= ci)
 	{
 		e->buf[i + 1] = e->buf[i];
 		i--;
 	}
-	e->buf[e->cursor] = (char)keycode;
-	e->cursor++;
+	e->buf[e->i] = (char)keycode;
+	e->i++;
 }
 
 static void	insp_input_edit(t_gui *gui, int keycode)
@@ -63,15 +65,15 @@ static void	insp_input_edit(t_gui *gui, int keycode)
 	int			i;
 
 	e = &gui->slider_state.insp_edit;
-	if (keycode == XK_BackSpace && e->cursor > 0)
+	if (keycode == XK_BackSpace && e->i > 0)
 	{
-		i = e->cursor - 1;
+		i = e->i - 1;
 		while (e->buf[i])
 		{
 			e->buf[i] = e->buf[i + 1];
 			i++;
 		}
-		e->cursor--;
+		e->i--;
 	}
 	else if ((keycode >= '0' && keycode <= '9')
 		|| keycode == '.' || keycode == '-'

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:38:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 12:45:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 14:19:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,11 @@ size_t	collect_objects_worker(t_scene *scene, t_build_item *items)
 	size_t	k;
 
 	k = 0;
-	ft_print_debug("BVH Collect: spheres=%zu, planes=%zu, cylinders=%zu, ",
-		scene->sphere_count, scene->plane_count, scene->cylinder_count);
-	ft_print_debug("cones=%zu, meshes=%zu, anim=%zu\n", scene->cone_count,
-		scene->mesh_count, scene->anim_count);
+	ft_print_debug("BVH Collect: sp=%zu pl=%zu cy=%zu co=%zu ca=%zu tri=%zu ",
+		scene->sphere_count, scene->plane_count, scene->cylinder_count,
+		scene->cone_count, scene->capsule_count, scene->tri_count);
+	ft_print_debug("box=%zu mesh=%zu anim=%zu\n",
+		scene->box_count, scene->mesh_count, scene->anim_count);
 	add_items_worker(items, &k, TYPE_SPHERE, scene);
 	add_items_worker(items, &k, TYPE_CYLINDER, scene);
 	add_items_worker(items, &k, TYPE_CONE, scene);

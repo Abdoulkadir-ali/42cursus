@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:51:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ typedef struct s_sweep
     double  lo;
     double  hi;
     double  inv;
-    int     axis;
+    size_t  axis;
 }   t_sweep;
 
 

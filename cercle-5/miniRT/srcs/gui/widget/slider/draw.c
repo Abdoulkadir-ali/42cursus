@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 21:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ static void	draw_slider_track(t_gui *gui, t_widget *w)
 	fill_w = get_slider_frac(w) * w->size.x;
 	track = (t_panel){
 		.pos = vec2i(w->pos.x, w->pos.y + w->size.y / 2 - 3),
-		.size = vec2i(w->size.x, 6),
+			.size = vec2s(w->size.x, 6),
 		.bg = COL_SLIDER_BG, .brd = COL_BORDER};
 	draw_panel(gui, track);
 	if (fill_w > 0)
 	{
 		fill = (t_panel){
 			.pos = vec2i(w->pos.x, w->pos.y + w->size.y / 2 - 3),
-			.size = vec2i(fill_w, 6),
+			.size = vec2s(fill_w, 6),
 			.bg = COL_SLIDER_FG, .brd = COL_SLIDER_FG};
 		draw_panel(gui, fill);
 	}

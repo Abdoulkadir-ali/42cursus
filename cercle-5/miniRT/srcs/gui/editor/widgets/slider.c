@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ bool	try_islider_click(t_gui *gui, t_vec2i mouse, t_vec2i pos,
 	if (mouse.y < track_y || mouse.y >= (track_y + ui_sy(16, d)))
 		return (false);
 	gui->slider_state.dragging = true;
-	gui->slider_state.drag_start_x = mouse.x;
+	gui->slider_state.drag_start.x = mouse.x;
 	gui->slider_state.drag_start_val = *sl.ptr;
 	gui->slider_state.value_ptr = sl.ptr;
 	gui->slider_state.dmin = sl.min;

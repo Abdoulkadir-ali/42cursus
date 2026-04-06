@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:49:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 14:54:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	setup_render_geometry(t_gui *gui, t_render *r,
 		r->half_height = tan(gui->scene->camera.fov * 0.5 * 3.14159 / 180.0);
 		rt->cache.half_h = r->half_height;
 		rt->cache.fov = gui->scene->camera.fov;
-		rt->cache.res = vec2i(gui->win.size.x, gui->win.size.y);
+		rt->cache.res = vec2s(gui->win.size.x, gui->win.size.y);
 	}
 	r->half_width = r->half_height * r->aspect_ratio;
 	gui->opts.cur_cam = r->transform;
@@ -77,10 +77,6 @@ void	gui_render(t_gui *gui)
 	render.next_tile_id = 0;
 	render.step = 1;
 	setup_render_geometry(gui, &render, rt);
-	ft_print_debug("[RENDER] scale=%zu size=%zux%zu tiles=%zux%zu total=%zu\n",
-		s, gui->win.size.x, gui->win.size.y,
-		render.tiles_count.x, render.tiles_count.y, render.total_tiles);
-	fflush(stdout);
 	start = now_ms();
 	render_tiles_worker(&render);
 	update_rt_stats(gui, rt, start);

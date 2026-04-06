@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 20:37:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@
 t_gui	*gui_init(t_scene *scene, void *mlx);
 void			gui_destroy(t_gui *gui);
 void			gui_loop(t_gui *gui);
-int				gui_window_resize(t_vec2i size, t_gui *gui);
+int						gui_window_resize(t_vec2s size, t_gui *gui);
 int				gui_resize_hook(t_gui *gui);
 int				gui_window_close(t_gui *gui);
 void			gui_draw_string(t_gui *gui, const char *str, t_vec2i pos,

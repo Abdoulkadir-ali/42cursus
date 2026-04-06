@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,17 @@ void	taa_band(t_gui *gui, size_t y_start, size_t y_end)
 	t_vec2i			d;
 	size_t			cur;
 
+	int			yend;
+	int			sw;
+
 	o = &gui->opts;
+	yend = y_end;
+	sw = gui->win.size.x;
 	d.y = y_start;
-	while (d.y < y_end)
+	while (d.y < yend)
 	{
 		d.x = 0;
-		while (d.x < gui->win.size.x)
+		while (d.x < sw)
 		{
 			cur = gui->win.addr[d.y * gui->win.size.x + d.x];
 			if (o->prev_valid && reproject_taa(gui, d.x, d.y, &out))

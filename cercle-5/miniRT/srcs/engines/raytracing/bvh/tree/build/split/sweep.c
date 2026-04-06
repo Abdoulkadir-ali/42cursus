@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:37:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:28:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	eval_split(t_sweep *sw, t_split_info *info, size_t count, size_t b)
 	if (nl > 0 && nl < count && c < info->cost)
 	{
 		info->cost = c;
-		info->axis = sw->axis;
+			info->axis = init_index(sw->axis, false);
 		info->split = nl;
 	}
 }

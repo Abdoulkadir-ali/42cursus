@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,22 @@ void	interp_band(t_gui *gui, size_t y_start, size_t y_end)
 	t_optimizations	*o;
 	t_vec2i			p;
 
+	int			yend;
+	int			pw;
+
 	o = &gui->opts;
 	o->interp_cam = lerp_cam(o, (double)o->interp_alpha);
 	o->interp_half.x = lerp_half(o->prev_half_w, o->cur_half_w,
-			o->interp_alpha);
+				o->interp_alpha);
 	o->interp_half.y = lerp_half(o->prev_half_h, o->cur_half_h,
-			o->interp_alpha);
+				o->interp_alpha);
+	yend = y_end;
+	pw = o->prev_render_size.x;
 	p.y = y_start;
-	while (p.y < y_end)
+	while (p.y < yend)
 	{
 		p.x = 0;
-		while (p.x < o->prev_render_size.x)
+		while (p.x < pw)
 		{
 			interp_pixel(gui, p);
 			p.x++;

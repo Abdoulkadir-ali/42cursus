@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:12:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_crud_ui
 # define COL_ROW_SEL 0x2A3040
 # define COL_SLIDER_BG 0x1A1A20
 # define COL_SLIDER_FG 0xE0A820
+# define COL_SLIDER_KNOB 0xFFFFFF
 
 /* --- Inspector Combo-Row Layout --- */
 # define INSP_LBL_W	80

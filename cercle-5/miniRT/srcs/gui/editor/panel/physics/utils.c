@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:31:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-void	draw_vec3_label(t_gui *gui, t_vec2i pos, const char *label, t_vec3 v)
+void	draw_vec3_label(t_gui *gui, t_vec2i pos, char *label, t_vec3 v)
 {
 	t_vec2s	d;
 	char	buf[80];
@@ -25,7 +25,7 @@ void	draw_vec3_label(t_gui *gui, t_vec2i pos, const char *label, t_vec3 v)
 		buf);
 }
 
-void	draw_bool_label(t_gui *gui, t_vec2i pos, const char *label, bool val)
+void	draw_bool_label(t_gui *gui, t_vec2i pos, char *label, bool val)
 {
 	char	buf[32];
 	char	*status;

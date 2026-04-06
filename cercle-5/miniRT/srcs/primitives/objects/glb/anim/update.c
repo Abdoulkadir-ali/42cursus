@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:15 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:50:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	apply_anim_channel(t_bone *bone, t_anim_channel *chan,
 	}
 }
 
-static void	update_bone_recursive(t_mesh *mesh, int bone_idx, t_mat4 parent_mat)
+static void	update_bone_recursive(t_mesh *mesh, size_t bone_idx, t_mat4 parent_mat)
 {
 	t_bone	*bone;
 	double	s[3];

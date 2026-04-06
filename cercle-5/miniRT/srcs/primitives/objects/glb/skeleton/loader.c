@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:21:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:50:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ static void	load_skeleton_data(t_mesh *mesh, t_json_value *js[2])
 	size_t	*node_map;
 	size_t	i;
 
-	node_map = malloc(sizeof * PARSER_BUF_SIZE);
+	node_map = malloc(sizeof(*node_map) * PARSER_BUF_SIZE);
 	i = 0;
 	while (i < PARSER_BUF_SIZE)
 	{

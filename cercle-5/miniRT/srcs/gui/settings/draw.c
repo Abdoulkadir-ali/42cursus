@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:10:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ static void	draw_settings_tabs(t_gui *gui, t_vec2i o)
 		mlx_string_put(gui->win.mlx, gui->win.win,
 			o.x + tab_w * i + 8,
 			o.y + SETTINGS_HDR_H + SETTINGS_TABS_H / 2 + 4,
-			col, g_tab_labels[i++]);
+			col, g_tab_labels[i]);
+		i++;
 	}
 }
 

@@ -23,7 +23,7 @@ void	widget_init_default(t_gui *gui)
 {
 	t_widget	*cb;
 
-	cb = widget_create(WIDGET_CHECKBOX, vec2i(32, 122), vec2i(180, 20),
+	cb = widget_create(WIDGET_CHECKBOX, vec2i(32, 122), vec2s(180, 20),
 			"Simulate Physics");
 	if (cb)
 	{

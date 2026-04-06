@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,16 @@
 */
 static int	pack_color(t_vec3 color, const t_raytracer_settings *opts)
 {
-	float			ch[3];
+	t_vec3f			ch;
 	unsigned int	rgb[3];
 
-	ch[0] = (float)color.x;
-	ch[1] = (float)color.y;
-	ch[2] = (float)color.z;
-	apply_bcg(ch, opts);
-	rgb[0] = ((unsigned int)(uint8_t)ch[0]) << 16;
-	rgb[1] = ((unsigned int)(uint8_t)ch[1]) << 8;
-	rgb[2] = (unsigned int)(uint8_t)ch[2];
+	ch.x = (float)color.x;
+	ch.y = (float)color.y;
+	ch.z = (float)color.z;
+	apply_bcg(&ch, opts);
+	rgb[0] = ((unsigned int)(uint8_t)ch.x) << 16;
+	rgb[1] = ((unsigned int)(uint8_t)ch.y) << 8;
+	rgb[2] = (unsigned int)(uint8_t)ch.z;
 	return ((rgb[0] | rgb[1] | rgb[2]));
 }
 

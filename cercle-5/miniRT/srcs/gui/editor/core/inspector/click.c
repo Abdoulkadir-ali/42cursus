@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,13 @@ static void	dispatch_tab_click(t_gui *gui, t_vec2i mouse)
 bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 {
 	int	x;
+	int		dw;
 
 	if (!gui->inspector.visible || !gui->selection.active)
 		return (false);
-	x = gui->win.disp_size.x - gui->inspector.width;
-	if (mouse.x < x || mouse.x >= gui->win.disp_size.x)
+	dw = gui->win.disp_size.x;
+	x = dw - gui->inspector.width;
+	if (mouse.x < x || mouse.x >= dw)
 		return (false);
 	if (handle_tab_click(gui, mouse, x))
 		return (true);

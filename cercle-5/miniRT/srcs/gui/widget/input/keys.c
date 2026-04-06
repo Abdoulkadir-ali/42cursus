@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 static void	input_insert_char(t_widget *w, char c)
 {
 	int	i;
-
+	int	cp;
 	if (w->cursor_pos >= WIDGET_INPUT_BUF_SIZE - 2)
 		return ;
 	i = ft_strlen(w->input_buf);
-	while (i >= w->cursor_pos)
+	cp = w->cursor_pos;
+	while (i >= cp)
 	{
 		w->input_buf[i + 1] = w->input_buf[i];
 		i--;

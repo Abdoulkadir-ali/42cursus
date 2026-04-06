@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:50:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:13:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	apply_hover_hit(t_gui *gui, t_hit *hit)
 {
 	gui->selection.active = true;
 	gui->selection.type = hit->ref.type;
-	gui->selection.index = hit->ref.index;
+	gui->selection.index = init_index(hit->ref.index, false);
 }
 
 void	gui_hover(t_gui *gui)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	draw_input_cursor(t_gui *gui, t_widget *w, t_vec2i tpos)
 	cx = tpos.x + w->cursor_pos * 8;
 	cursor = (t_panel){
 		.pos = vec2i(cx, tpos.y - 1),
-		.size = vec2i(1, 10),
+			.size = vec2s(1, 10),
 		.bg = COL_ACCENT, .brd = COL_ACCENT};
 	draw_panel(gui, cursor);
 }

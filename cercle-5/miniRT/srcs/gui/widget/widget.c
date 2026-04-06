@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:07:46 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "widget.h"
 
-void	widget_set_size(t_widget *widget, t_vec2i size)
+void	widget_set_size(t_widget *widget, t_vec2s size)
 {
 	widget->size = size;
 }
@@ -29,7 +29,7 @@ void	widget_add(t_gui *gui, t_widget *widget)
 	gui->widgets = widget;
 }
 
-t_widget	*widget_create(t_widget_type type, t_vec2i pos, t_vec2i size,
+t_widget	*widget_create(t_widget_type type, t_vec2i pos, t_vec2s size,
 		const char *label)
 {
 	t_widget	*widget;

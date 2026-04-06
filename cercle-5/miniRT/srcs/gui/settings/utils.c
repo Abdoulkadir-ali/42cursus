@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,17 @@ void	draw_radio_row(t_gui *gui, t_panel pan, t_iradio r)
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		pan.pos.x + 8, pan.pos.y + 15, COL_TEXT, (char *)r.label);
 	draw_panel(gui, (t_panel){vec2i(btn_x, pan.pos.y + 4),
-		vec2i(44, 20), bg, col, ""});
+			vec2s(44, 20), bg, col, ""});
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		btn_x + 10, pan.pos.y + 18, col, (char *)status);
 }
 
 bool	try_radio_click(t_gui *gui, t_vec2i mouse, t_panel pan, t_iradio r)
 {
-	if (mouse.x < pan.pos.x || mouse.x >= pan.pos.x + pan.size.x)
+	int	ex;
+
+	ex = pan.pos.x + pan.size.x;
+	if (mouse.x < pan.pos.x || mouse.x >= ex)
 		return (false);
 	if (mouse.y < pan.pos.y || mouse.y >= pan.pos.y + SETTINGS_ROW_H)
 		return (false);
@@ -94,7 +97,7 @@ bool	try_settings_slider_click(t_gui *gui, t_vec2i mouse,
 	if (mouse.y < track_y || mouse.y >= (track_y + 16))
 		return (false);
 	gui->slider_state.dragging = true;
-	gui->slider_state.drag_start_x = mouse.x;
+	gui->slider_state.drag_start.x = mouse.x;
 	gui->slider_state.drag_start_val = *sl.ptr;
 	gui->slider_state.value_ptr = sl.ptr;
 	gui->slider_state.dmin = sl.min;

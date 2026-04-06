@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:32:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:51:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ static void	init_mesh_anim_defaults(t_scene *scene)
 	t_mesh		*m;
 	t_mesh_anim	defaults;
 
-	defaults.clip_idx = (scene->clip_count > 0) ? 0 : -1;
+	defaults.idx = init_index(0, scene->clip_count == 0);
 	defaults.time = 0.0;
 	defaults.speed = 1.0;
 	defaults.looping = true;
@@ -127,9 +127,9 @@ static void	init_mesh_anim_defaults(t_scene *scene)
 		{
 			m->anim = defaults;
 			ft_print_debug(
-				"[ANIM]   mesh[%zu] '%s': skinned, clip_idx=%d looping=%d\n",
+				"[ANIM]   mesh[%zu] '%s': skinned, clip=%zu looping=%d\n",
 				i, m->name ? m->name : "?",
-				m->anim.clip_idx, m->anim.looping);
+				m->anim.idx.i, m->anim.looping);
 		}
 		else
 		{

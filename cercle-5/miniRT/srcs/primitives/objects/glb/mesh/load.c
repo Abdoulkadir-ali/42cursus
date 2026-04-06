@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:55:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ static void	load_indices(t_json_value *json, char *bin, t_mesh *m, int acc_idx)
 	glb_parse_accessor(json, acc_idx, &acc);
 	glb_parse_buffer_view(json, acc.buffer_view, &bv);
 	m->base_geometry.index_count = acc.count;
-	m->base_geometry.indices = malloc(sizeof * acc.count);
+	m->base_geometry.indices = malloc(sizeof(*m->base_geometry.indices) * acc.count);
 	if (!m->base_geometry.indices)
 		return ;
-	ft_memset(m->base_geometry.indices, 0, sizeof * acc.count);
+	ft_memset(m->base_geometry.indices, 0, sizeof(*m->base_geometry.indices) * acc.count);
 	src = (unsigned char *)(bin + bv.byte_offset + acc.byte_offset);
 	widen_indices(m->base_geometry.indices, src, acc.count, acc.component_type);
 }

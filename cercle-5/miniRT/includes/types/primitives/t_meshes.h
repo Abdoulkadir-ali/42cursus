@@ -92,7 +92,7 @@ typedef struct s_mbvh_node
 	t_aabb				bbox;
 	size_t				left_or_first;
 	size_t				count;
-	t_index				axis;
+	size_t				axis;
 	size_t				depth;
 }						t_mbvh_node;
 
@@ -107,7 +107,7 @@ typedef struct s_bvh_bins
 	struct s_mbvh		*bvh;
 	size_t				first;
 	size_t				count;
-	t_index				axis;
+	size_t				axis;
 	double				min_val;
 	double				scale;
 	t_bin				*bins;
@@ -123,7 +123,7 @@ typedef struct s_bvh_split
 	t_bin				bins[BVH_BINS];
 	double				left_area[BVH_BINS];
 	size_t				left_counts[BVH_BINS];
-	t_index				axis;
+	size_t				axis;
 	double				pos;
 	double				best_cost;
 	size_t				i;
@@ -140,7 +140,7 @@ typedef struct s_bvh_eval
 	struct s_bvh_split	*s;
 	size_t				first;
 	size_t				count;
-	t_index				axis;
+	size_t				axis;
 }						t_bvh_eval;
 
 typedef struct s_bvh_find
@@ -168,7 +168,7 @@ typedef struct s_mesh_build_item
 {
 	t_aabb				bbox;
 	t_vec3				centroid;
-	t_index				index;
+	size_t				index;
 }						t_mesh_build_item;
 
 typedef struct s_mbvh

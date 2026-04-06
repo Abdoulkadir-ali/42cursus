@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	draw_progress_fill(t_gui *gui, t_widget *w, double frac)
 	fill_w = (frac * w->size.x);
 	if (fill_w <= 0)
 		return ;
-	fill = (t_panel){.pos = w->pos, .size = vec2i(fill_w, w->size.y),
+	fill = (t_panel){.pos = w->pos, .size = vec2s(fill_w, w->size.y),
 		.bg = COL_ACCENT, .brd = COL_ACCENT};
 	draw_panel(gui, fill);
 }

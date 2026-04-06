@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:15:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/30 22:29:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:55:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static void	init_find(t_bvh_find *f, t_bvh_eval *eval)
 	eval->s = &f->s;
 	eval->axis = 0;
 }
-
 /**
  * Finds the optimal split plane for a BVH node by evaluating all three 
  * axes (X, Y, Z) and selecting the one with the lowest SAH cost.
@@ -42,7 +41,7 @@ bool	bvh_find_split(t_bvh_find *f)
 	}
 	if (f->s.best_axis.error)
 		return (false);
-	f->out->axis = f->s.best_axis;
+	f->out->axis = f->s.best_axis.i;
 	f->out->pos = f->s.split_pos;
 	return (true);
 }

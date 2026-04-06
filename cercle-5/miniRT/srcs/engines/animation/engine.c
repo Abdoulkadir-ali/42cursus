@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:07:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ static void	tick_mesh(t_mesh *mesh, t_scene *scene, double dt)
 	double			new_time;
 
 	ma = &mesh->anim;
-	if (ma->paused || ma->clip_idx < 0
-		|| ma->clip_idx >= scene->clip_count)
+	if (ma->paused || ma->idx.error
+			|| ma->idx.i >= scene->clip_count)
 	{
-		ft_print_debug("[ANIM] tick_mesh '%s': paused or invalid clip=%d\n",
-			animation_mesh_name(mesh), ma->clip_idx);
+		ft_print_debug("[ANIM] tick_mesh '%s': paused or invalid clip\n",
+			animation_mesh_name(mesh));
 		return ;
 	}
-	clip = &scene->clips[ma->clip_idx];
+	clip = &scene->clips[ma->idx.i];
 	new_time = ma->time + dt * ma->speed;
 	if (clip->max_time > 0.0 && new_time > clip->max_time)
 	{

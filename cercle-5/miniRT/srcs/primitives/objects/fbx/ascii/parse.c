@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:48:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ static bool	parse_fbx_ascii_internal(t_fbx_ascii *asc, t_scene *scene,
 		return (false);
 	if (!ascii_build_mesh(asc, scene, path))
 		return (false);
-	ft_print_debug("FBX ASCII Loaded: %s (%zu tris)\n", path,
+	ft_print_debug("FBX ASCII: %zu tris built\n",
 		asc->mesh.base.tri_count);
-	return (scene_add_animated(scene, asc->mesh));
+	return (true);
 }
 
 static bool	setup(t_fbx_ascii *asc, const char *path)
@@ -91,11 +91,11 @@ static bool	setup(t_fbx_ascii *asc, const char *path)
 	return (true);
 }
 
-bool	parse_fbx_ascii(const char *path, t_scene *scene)
+bool	parse_fbx_ascii(const char *path, t_scene *scene, t_skinned_mesh *out)
 {
 	t_fbx_ascii	asc;
 
-	ft_print_debug("DEBUG: parse_fbx_ascii starting for %s\n", path);
+	ft_print_debug("FBX ASCII: parsing '%s'\n", path);
 	if (!setup(&asc, path))
 		return (false);
 	if (!parse_fbx_ascii_internal(&asc, scene, path))
@@ -105,5 +105,6 @@ bool	parse_fbx_ascii(const char *path, t_scene *scene)
 		return (false);
 	}
 	free(asc.buf);
+	*out = asc.mesh;
 	return (true);
 }

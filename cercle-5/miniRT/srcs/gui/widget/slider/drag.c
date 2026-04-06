@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:01:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	slider_begin_drag(t_gui *gui, t_widget *w, int mouse_x)
 {
 	gui->slider_state.dragging = true;
 	gui->slider_state.target = w;
-	gui->slider_state.drag_start_x = mouse_x;
+	gui->slider_state.drag_start.x = mouse_x;
 	gui->slider_state.drag_start_val = w->dvalue;
 }
 
@@ -31,7 +31,7 @@ void	slider_update_drag(t_gui *gui, int mouse_x)
 		return ;
 	w = gui->slider_state.target;
 	range = w->dmax - w->dmin;
-	delta = (double)(mouse_x - gui->slider_state.drag_start_x)
+	delta = (double)(mouse_x - gui->slider_state.drag_start.x)
 		* range / (double)w->size.x;
 	newval = gui->slider_state.drag_start_val + delta;
 	if (newval < w->dmin)

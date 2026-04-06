@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 15:19:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static size_t	fbx_count_tris(size_t *raw, size_t raw_c)
 	int		idx;
 	int		tc;
 
+	ft_print_debug("[COUNT_TRIS] raw=%p raw_c=%zu raw[0]=%zu\n",
+		(void *)raw, raw_c, raw_c > 0 ? raw[0] : 0);
 	ps = 0;
 	tc = 0;
 	while (ps < raw_c)
@@ -34,6 +36,7 @@ static size_t	fbx_count_tris(size_t *raw, size_t raw_c)
 		if (vn >= 3)
 			tc += (vn - 2);
 	}
+	ft_print_debug("[COUNT_TRIS] result tc=%d\n", tc);
 	return (tc);
 }
 
@@ -56,7 +59,7 @@ static bool	fbx_alloc_buffers(t_fbx_build *b)
 {
 	b->vertices = ft_calloc(b->tc * 3, sizeof(t_vertex));
 	b->triangles = ft_calloc(b->tc, sizeof(t_triangle));
-	b->v = malloc(sizeof * (b->raw_c + 1));
+	b->v = malloc(sizeof(*b->v) * (b->raw_c + 1));
 	if (!b->vertices || !b->triangles || !b->v)
 		return (false);
 	return (true);

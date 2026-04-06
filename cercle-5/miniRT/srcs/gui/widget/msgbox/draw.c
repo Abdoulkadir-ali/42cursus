@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	draw_msgbox_btn(t_gui *gui, t_widget *w, t_vec3i p)
 
 	bx = w->pos.x + 8 + p.z * (p.x + 4);
 	btn.pos = vec2i(bx, p.y);
-	btn.size = vec2i(p.x - 4, 22);
+	btn.size = vec2s(p.x - 4, 22);
 	btn.bg = 0x2A2A40;
 	btn.brd = COL_BORDER;
 	draw_panel(gui, btn);
@@ -57,12 +57,15 @@ void	widget_draw_msgbox(t_gui *gui, t_widget *w)
 	t_vec3i	p;
 
 	draw_msgbox_bg(gui, w);
+	int		bc;
+
 	p.x = w->size.x - 16;
 	if (w->btn_count > 0)
 		p.x /= w->btn_count;
 	p.y = w->pos.y + w->size.y - 28;
 	p.z = 0;
-	while (p.z < w->btn_count)
+	bc = w->btn_count;
+	while (p.z < bc)
 	{
 		draw_msgbox_btn(gui, w, p);
 		p.z++;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:55:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static bool	alloc_index_data(t_mesh *mesh, t_mesh_init init)
 {
 	if (init.i_count <= 0)
 		return (true);
-	mesh->indices = malloc(sizeof * init.i_count);
+	mesh->indices = malloc(sizeof(*mesh->indices) * init.i_count);
 	if (!mesh->indices)
 		return (false);
 	return (true);
