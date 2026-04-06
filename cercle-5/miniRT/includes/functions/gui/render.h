@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 03:06:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:30:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void			gui_init_anim(t_gui *gui);
 void			gui_init_render(t_gui *gui);
 void			gui_render(t_gui *gui);
 unsigned int	color_blend(unsigned int dst, int src, float alpha);
-void			apply_bcg(float ch[3], const t_raytracer_settings *opts);
 void			render_tiles_worker(t_render *render);
 void			render_tile(t_render *render, size_t id);
 void			gui_update_hover(t_gui *gui);
@@ -51,8 +50,7 @@ void			*gui_worker(void *ptr);
 void			process_pixel(t_render *render, t_vec2i pos, char *pixel_addr);
 void			upscale_image(t_gui *gui);
 void			upscale_band(t_gui *gui, size_t y_start, size_t y_end);
-void			upscale_pixel(t_gui *gui, t_vec2i dxy, t_vec2 rxy,
-					size_t d[2]);
+void			upscale_pixel(t_gui *gui, t_vec2i dst, t_vec2 src);
 void			fullres_toggle(t_gui *gui);
 void			poll_map_job(t_gui *gui);
 void			clear_selection(t_gui *gui);
@@ -79,10 +77,14 @@ void			draw_ui_pixels(t_gui *gui);
 void			draw_ui_strings(t_gui *gui, t_camera_controller *ctrl);
 bool			font_load(t_gui *gui, const char *path);
 void			*gui_worker(void *ptr);
-t_vec3			rt_unpack_color(uint32_t c);
-uint32_t		rt_pack_color(t_vec3 v);
-t_vec3i			rt_unpack_color_v(uint32_t c);
-uint32_t		rt_pack_color_v(t_vec3i v);
-uint32_t		bilerp_pixel(uint32_t c[4], float w[4]);
-void			get_weights(float w[4], float fx, float fy, float *db[2]);
+
+
+
+t_vec3f			rt_unpack_color(size_t c);
+t_vec3i			rt_unpack_color_v(size_t c);
+size_t			rt_pack_color(t_vec3f v);
+size_t			rt_pack_color_v(t_vec3i v);
+void			apply_bcg(float ch[3], const t_raytracer_settings *opts);
+size_t			bilerp_pixel(size_t c[4], t_vec4f w);
+void			get_weights(t_vec4f *w, t_vec2f f, float *db[2]);
 #endif

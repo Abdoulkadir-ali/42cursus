@@ -36,12 +36,12 @@ static void	box_vs_boxes(t_contact_query *qu, t_box *bx, size_t idx)
 	t_gjk_shape	sb;
 	t_col_pair	pair;
 
-	sa = (t_gjk_shape){bx, gjk_support_box, bx->phys.pos};
+	sa = init_gjk_shape(bx, gjk_support_box, bx->phys.pos);
 	p = idx + 1;
 	while (p < qu->engine->scene->box_count && qu->count < qu->max)
 	{
-		sb = (t_gjk_shape){&qu->engine->scene->boxes[p], gjk_support_box,
-			qu->engine->scene->boxes[p].phys.pos};
+		sb = init_gjk_shape(&qu->engine->scene->boxes[p], gjk_support_box,
+			qu->engine->scene->boxes[p].phys.pos);
 		pair = (t_col_pair){&sa, &sb, &bx->phys,
 			&qu->engine->scene->boxes[p].phys, &bx->transform,
 			&qu->engine->scene->boxes[p].transform};
@@ -64,7 +64,7 @@ size_t	query_box(t_contact_query *qu, size_t idx)
 		return (qu->count);
 	box_vs_all_planes(qu, bx);
 	box_vs_boxes(qu, bx, idx);
-	sa = (t_gjk_shape){bx, gjk_support_box, bx->phys.pos};
+	sa = init_gjk_shape(bx, gjk_support_box, bx->phys.pos);
 	ctx = (t_bvh_phys_ctx){qu, &sa, &bx->phys, &bx->transform, TYPE_BOX};
 	bvh_query_shapes(&ctx, box_aabb(bx));
 	return (qu->count);

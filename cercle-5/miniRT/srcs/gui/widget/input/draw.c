@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 10:46:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	widget_draw_input(t_gui *gui, t_widget *w)
 	draw_panel(gui, bg);
 	if (w->label)
 		gui_draw_string(gui, w->label,
-			vec2i(w->pos.x, (int)w->pos.y - 12), COL_TEXT);
-	tpos = vec2i(w->pos.x + 4, (int)w->pos.y + w->size.y / 2 - 4);
+			vec2i(w->pos.x, w->pos.y - 12), COL_TEXT);
+	tpos = vec2i(w->pos.x + 4, w->pos.y + w->size.y / 2 - 4);
 	gui_draw_string(gui, w->input_buf, tpos, COL_TEXT);
 	if (w->focused)
 		draw_input_cursor(gui, w, tpos);

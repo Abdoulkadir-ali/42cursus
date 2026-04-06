@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ static void	interp_pixel(t_gui *gui, t_vec2i p)
 	ndc = repro_get_ndc(p, o->prev_render_size,
 			vec2(o->prev_half_w, o->prev_half_h));
 	wp = vec3_add(o->prev_cam.pos, vec3_scale(repro_get_dir(o->prev_cam, ndc),
-				(double)o->prev_depth[(size_t)p.y
-				* (size_t)o->prev_render_size.x + (size_t)p.x]));
+				(double)o->prev_depth[p.y
+				* o->prev_render_size.x + p.x]));
 	r.cam = o->interp_cam;
 	r.half = o->interp_half;
 	r.size = gui->win.disp_size;
 	if (repro_world_to_screen(r, wp, &n, NULL))
-		o->interp_buf[(size_t)n.y * (size_t)gui->win.disp_size.x + (size_t)n.x]
-			= o->prev_color[(size_t)p.y * (size_t)o->prev_render_size.x
-			+ (size_t)p.x];
+		o->interp_buf[n.y * gui->win.disp_size.x + n.x]
+			= o->prev_color[p.y * o->prev_render_size.x
+			+ p.x];
 }
 
 void	interp_band(t_gui *gui, size_t y_start, size_t y_end)
@@ -50,7 +50,7 @@ void	interp_band(t_gui *gui, size_t y_start, size_t y_end)
 	while (p.y < y_end)
 	{
 		p.x = 0;
-		while (p.x < (size_t)o->prev_render_size.x)
+		while (p.x < o->prev_render_size.x)
 		{
 			interp_pixel(gui, p);
 			p.x++;
@@ -67,7 +67,7 @@ void	interp_frame(t_gui *gui, double alpha)
 	o = &gui->opts;
 	if (!o->interp_buf || !o->prev_depth || !o->prev_color)
 		return ;
-	dn = (size_t)gui->win.disp_size.x * (size_t)gui->win.disp_size.y;
+	dn = gui->win.disp_size.x * gui->win.disp_size.y;
 	ft_memset(o->interp_buf, 0, dn * sizeof(uint32_t));
 	o->interp_alpha = (float)alpha;
 	gui_parallel_task_worker(gui, TASK_INTERP);

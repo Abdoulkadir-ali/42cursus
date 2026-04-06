@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 03:10:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 ** base 2 for x, base 3 for y — standard TAA choice.
 */
 
-static uint32_t	blend_taa(uint32_t cur, uint32_t hist)
+static size_t	blend_taa(size_t cur, size_t hist)
 {
 	t_vec3i	c;
 	t_vec3i	h;
 	int		a;
 	int		b;
 
-	a = (int)(TAA_ALPHA * 256.0f);
+	a = (TAA_ALPHA * 256.0f);
 	b = 256 - a;
 	c = rt_unpack_color_v(cur);
 	h = rt_unpack_color_v(hist);
@@ -39,7 +39,7 @@ void	taa_band(t_gui *gui, size_t y_start, size_t y_end)
 	t_optimizations	*o;
 	t_vec2i			out;
 	t_vec2i			d;
-	uint32_t		cur;
+	size_t			cur;
 
 	o = &gui->opts;
 	d.y = y_start;
@@ -72,6 +72,6 @@ void	taa_apply(t_gui *gui)
 		return ;
 	gui->opts.taa_frame++;
 	gui_parallel_task_worker(gui, TASK_TAA);
-	n = (size_t)gui->win.size.x * (size_t)gui->win.size.y;
+	n = gui->win.size.x * gui->win.size.y;
 	ft_memcpy(gui->win.addr, gui->opts.taa_buf, n * sizeof(uint32_t));
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 10:46:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 15:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:40:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static t_index	find_parent_node(t_json_value *json, size_t node_idx)
 
 	nodes = json_get(json, "nodes");
 	if (!nodes || nodes->type != JSON_ARRAY)
-		return ((t_index){0, true});
+		return (init_index(0, true));
 	i = 0;
 	while (i < nodes->u.array.count)
 	{
@@ -37,13 +37,13 @@ static t_index	find_parent_node(t_json_value *json, size_t node_idx)
 
 				rs = json_as_t_index(json_at(children, k));
 				if (!rs.error && rs.i == node_idx)
-					return ((t_index){i, false});
+					return (init_index(i, false));
 				k++;
 			}
 		}
 		i++;
 	}
-	return ((t_index){0, true});
+return (init_index(0, true));
 }
 
 t_mat4	make_transform(t_vec3 t, t_vec4 r_quat, double scale[3])

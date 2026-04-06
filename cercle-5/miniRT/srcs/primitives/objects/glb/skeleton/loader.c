@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:21:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 16:34:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	link_glb_parents(t_mesh *mesh, t_json_value *joints,
 				if (!rs2.error && rs2.i != 0
 					&& v[2] < PARSER_BUF_SIZE
 					&& node_map[rs2.i] != 0)
-					mesh->skeleton[node_map[rs2.i]].parent = (t_index){v[0], false};
+					mesh->skeleton[node_map[rs2.i]].parent = init_index(v[0], false);
 				v[2]++;
 			}
 		}
@@ -73,7 +73,7 @@ static void	init_bone_data(t_mesh *mesh, t_json_value *joints,
 		node_map[v[1]] = v[0];
 		b = &mesh->skeleton[v[0]];
 		b->node_idx = v[1];
-		b->parent = (t_index){0, true};
+		b->parent = init_index(0, true);
 		mesh->bone_matrices[v[0]] = mat4_identity();
 		fill_bone_trs(b, json_at(nodes, v[1]));
 		v[0]++;
@@ -95,7 +95,7 @@ static void	load_skeleton_data(t_mesh *mesh, t_json_value *js[2])
 	size_t	*node_map;
 	size_t	i;
 
-	node_map = malloc(sizeof(size_t) * PARSER_BUF_SIZE);
+	node_map = malloc(sizeof * PARSER_BUF_SIZE);
 	i = 0;
 	while (i < PARSER_BUF_SIZE)
 	{

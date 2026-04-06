@@ -21,9 +21,15 @@
 
 typedef struct s_vec2i
 {
+	int								x;
+	int								y;
+}									t_vec2i;
+
+typedef struct s_vec2s
+{
 	size_t							x;
 	size_t							y;
-}									t_vec2i;
+}									t_vec2s;
 
 typedef struct s_vec3i
 {
@@ -32,6 +38,14 @@ typedef struct s_vec3i
 	int								z;
 	int								w;
 }									t_vec3i;
+
+typedef struct s_vec3s
+{
+	size_t							x;
+	size_t							y;
+	size_t							z;
+	size_t							w;
+}									t_vec3s;
 
 typedef struct s_vec2
 {
@@ -54,6 +68,28 @@ typedef struct s_vec4
 	double							z;
 	double							w;
 }									t_vec4;
+
+typedef struct s_vec2f
+{
+	float							x;
+	float							y;
+}									t_vec2f;
+
+typedef struct s_vec3f
+{
+	float							x;
+	float							y;
+	float							z;
+	float							w;
+}									t_vec3f;
+
+typedef struct s_vec4f
+{
+	float							x;
+	float							y;
+	float							z;
+	float							w;
+}									t_vec4f;
 
 typedef struct s_mat4
 {

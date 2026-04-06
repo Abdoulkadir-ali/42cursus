@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:23:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static bool	ascii_parse_mesh(t_fbx_ascii *asc)
 	if (!temp)
 		return (false);
 	temp = advance_to_data(temp, asc->end);
-	asc->ri = parse_array(&temp, &asc->rc, sizeof(size_t), f_int);
+	asc->ri = parse_array(&temp, &asc->rc, sizeof(int), f_int);
 	if (!asc->ri)
 		return (false);
 	ascii_load_normals(asc);

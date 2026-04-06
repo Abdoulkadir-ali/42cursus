@@ -24,14 +24,14 @@ typedef enum e_fdf_mode
 typedef struct s_fdf
 {
 	t_mesh				*mesh;
-	t_vec2				dims;
+	t_vec2s				dims;
 	size_t				row;
 }						t_fdf;
 
 typedef struct s_fdf_task
 {
 	t_mesh				*mesh;
-	t_vec2				dims;
+	t_vec2s				dims;
 	volatile size_t		next_row;
 	volatile size_t		next_idx;
 }						t_fdf_task;

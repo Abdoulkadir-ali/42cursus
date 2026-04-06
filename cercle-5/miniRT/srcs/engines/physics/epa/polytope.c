@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:07:03 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:07:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:58:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@ static void	epa_init_faces(t_epa_poly *p, t_simplex *s)
 {
 	if (s->n == 4)
 	{
-		p->faces[0] = epa_make_face(p, 0, 1, 2);
-		p->faces[1] = epa_make_face(p, 0, 1, 3);
-		p->faces[2] = epa_make_face(p, 0, 2, 3);
-		p->faces[3] = epa_make_face(p, 1, 2, 3);
+		p->faces[0] = epa_make_face(p, vec3s(0, 1, 2));
+		p->faces[1] = epa_make_face(p, vec3s(0, 1, 3));
+		p->faces[2] = epa_make_face(p, vec3s(0, 2, 3));
+		p->faces[3] = epa_make_face(p, vec3s(1, 2, 3));
 		p->n_faces = 4;
 	}
 	else if (s->n == 3)
 	{
-		p->faces[0] = epa_make_face(p, 0, 1, 2);
-		p->faces[1] = epa_make_face(p, 0, 2, 1);
+		p->faces[0] = epa_make_face(p, vec3s(0, 1, 2));
+		p->faces[1] = epa_make_face(p, vec3s(0, 2, 1));
 		p->n_faces = 2;
 	}
 }
@@ -70,7 +70,7 @@ void	epa_expand_poly(t_epa_poly *p, t_vec3 *v, t_edge *e, size_t n_e)
 	i = 0;
 	while (i < n_e && p->n_faces < EPA_MAX_FACES)
 	{
-		p->faces[p->n_faces] = epa_make_face(p, e[i].a, e[i].b, vi);
+		p->faces[p->n_faces] = epa_make_face(p, vec3s(e[i].a, e[i].b, vi));
 		p->n_faces++;
 		i++;
 	}

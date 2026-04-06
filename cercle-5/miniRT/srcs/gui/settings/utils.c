@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:42:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	draw_radio_row(t_gui *gui, t_panel pan, t_iradio r)
 	int			col;
 	const char	*status;
 
-	btn_x = pan.pos.x + (int)pan.size.x - 44 - 4;
+	btn_x = pan.pos.x + pan.size.x - 44 - 4;
 	bg = 0x2A1616;
 	col = 0x804040;
 	status = "OFF";
@@ -45,7 +45,7 @@ bool	try_radio_click(t_gui *gui, t_vec2i mouse, t_panel pan, t_iradio r)
 {
 	if (mouse.x < pan.pos.x || mouse.x >= pan.pos.x + pan.size.x)
 		return (false);
-	if (mouse.y < pan.pos.y || mouse.y >= pan.pos.y + (size_t)SETTINGS_ROW_H)
+	if (mouse.y < pan.pos.y || mouse.y >= pan.pos.y + SETTINGS_ROW_H)
 		return (false);
 	*r.ptr = !*r.ptr;
 	if (r.on_change)
@@ -72,7 +72,7 @@ void	draw_settings_slider(t_gui *gui, t_vec2i pos, t_islider sl)
 		frac = 0.0;
 	if (frac > 1.0)
 		frac = 1.0;
-	fill_w = (int)(frac * track_w);
+	fill_w = (frac * track_w);
 	snprintf(buf, sizeof(buf), "%.3g", *sl.ptr);
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		pos.x, pos.y, COL_TEXT, (char *)sl.label);
@@ -89,9 +89,9 @@ bool	try_settings_slider_click(t_gui *gui, t_vec2i mouse,
 
 	track_w = SETTINGS_W - 32;
 	track_y = pos.y + 10;
-	if (mouse.x < (size_t)pos.x || mouse.x >= (size_t)(pos.x + track_w))
+	if (mouse.x < pos.x || mouse.x >= (pos.x + track_w))
 		return (false);
-	if (mouse.y < (size_t)track_y || mouse.y >= (size_t)(track_y + 16))
+	if (mouse.y < track_y || mouse.y >= (track_y + 16))
 		return (false);
 	gui->slider_state.dragging = true;
 	gui->slider_state.drag_start_x = mouse.x;
@@ -103,4 +103,14 @@ bool	try_settings_slider_click(t_gui *gui, t_vec2i mouse,
 	gui->slider_state.track_w = track_w;
 	gui->slider_state.on_change = sl.on_change;
 	return (true);
+}
+t_iradio	init_iradio(const char *label, bool *ptr,
+		void (*on_change)(t_gui *))
+{
+	t_iradio	r;
+
+	r.label = label;
+	r.ptr = ptr;
+	r.on_change = on_change;
+	return (r);
 }

@@ -14,7 +14,7 @@
 
 void	draw_physics_panel(t_gui *gui, t_physics_body *phys, t_vec2i pos)
 {
-	t_vec2i		d;
+	t_vec2s		d;
 	t_islider	sl[3];
 	t_vec2i		p;
 

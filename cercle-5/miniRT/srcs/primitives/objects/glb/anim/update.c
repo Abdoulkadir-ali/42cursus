@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:15 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 16:36:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void	update_bone_recursive(t_mesh *mesh, int bone_idx, t_mat4 parent_mat)
 	while (i < mesh->bone_count)
 	{
 		if (!mesh->skeleton[i].parent.error
-				&& mesh->skeleton[i].parent.i == (size_t)bone_idx)
+				&& mesh->skeleton[i].parent.i == bone_idx)
 			update_bone_recursive(mesh, i, bone->global_transform);
 		i++;
 	}

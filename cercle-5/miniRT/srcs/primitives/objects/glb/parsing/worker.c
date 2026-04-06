@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 11:47:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:32:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ static void	*glb_mesh_worker(void *ptr)
 		}
 		else
 		{
-			task->meshes[i].mat_id = (size_t)-1;
-			ft_print_debug("GLB Mesh %zu has NO material\n", i);
+			task->meshes[i].mat_id = task->fallback_mat_id;
+			ft_print_debug("GLB Mesh %zu has NO material, assigned fallback\n", i);
 		}
 		
 		/* Find node that uses this mesh */
-		task->meshes[i].node_idx = (t_index){0, true};
+		task->meshes[i].node_idx = init_index(0, true);
 		task->meshes[i].node_transform = mat4_identity();
 		t_json_value *nodes = json_get(task->json, "nodes");
 		if (nodes && nodes->type == JSON_ARRAY)
@@ -59,7 +59,7 @@ static void	*glb_mesh_worker(void *ptr)
 				t_index m_idx_json = json_get_size_t(node, "mesh");
 				if (!m_idx_json.error && m_idx_json.i == i)
 				{
-					task->meshes[i].node_idx = (t_index){k, false};
+					task->meshes[i].node_idx = init_index(k, false);
 					task->meshes[i].node_transform = glb_compute_world_transform(task->json, k);
 					break;
 				}
@@ -92,14 +92,11 @@ static void	load_glb_meshes_into_scene(t_json_value *json, char *bin,
 	task.bin = bin;
 	task.mat_ids = mat_ids;
 	task.scene = scene;
+	task.fallback_mat_id = scene_add_material(scene, vec3(200, 200, 200)).i;
 	parallel_run(scene->pool, task.count, glb_mesh_worker, &task);
 	i = 0;
 	while (i < task.count)
-	{
-		if (task.meshes[i].mat_id == (size_t)-1)
-			task.meshes[i].mat_id = scene_add_material(scene, vec3(200, 200, 200)).i;
 		scene_add_mesh(scene, task.meshes[i++]);
-	}
 	free(task.meshes);
 }
 

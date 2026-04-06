@@ -37,26 +37,32 @@
 # define UI_BASE_W 1920
 # define UI_BASE_H 1080
 
-static inline int	ui_sx(int x, t_vec2i disp)
+static inline int	ui_sx(size_t x, t_vec2s disp)
 {
-	return (x * (int)disp.x / UI_BASE_W);
+	return ((int)(x * disp.x / UI_BASE_W));
 }
 
-static inline int	ui_sy(int y, t_vec2i disp)
+static inline int	ui_sy(size_t y, t_vec2s disp)
 {
-	return (y * (int)disp.y / UI_BASE_H);
+	return ((int)(y * disp.y / UI_BASE_H));
 }
 
-static inline t_vec2i	ui_pos(int x, int y, t_vec2i disp)
+static inline t_vec2i	ui_pos(size_t x, size_t y, t_vec2s disp)
 {
-	return (vec2i(x * (int)disp.x / UI_BASE_W,
-			y * (int)disp.y / UI_BASE_H));
+	return (vec2i(x * disp.x / UI_BASE_W,
+			y * disp.y / UI_BASE_H));
 }
 
-static inline t_vec2i	ui_size(int w, int h, t_vec2i disp)
+static inline t_vec2s	ui_size(size_t w, size_t h, t_vec2s disp)
 {
-	return (vec2i(w * (int)disp.x / UI_BASE_W,
-			h * (int)disp.y / UI_BASE_H));
+	return (vec2s(w * disp.x / UI_BASE_W,
+			h * disp.y / UI_BASE_H));
+}
+
+static inline bool	phit(t_vec2i m, t_vec2i pos, t_vec2s size)
+{
+	return (m.x >= pos.x && m.x < pos.x + (int)size.x
+		&& m.y >= pos.y && m.y < pos.y + (int)size.y);
 }
 
 #endif

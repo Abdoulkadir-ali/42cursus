@@ -59,7 +59,7 @@ bool	obj_parse_mtllib(t_scene *scene, t_obj *obj, t_parser *p,
 	name[i] = 0;
 	full = get_mtl_full_path(name, obj_path);
 	if (obj->first_mtl_id.error)
-		obj->first_mtl_id = (t_index){scene->mat_count, false};
+		obj->first_mtl_id = init_index(scene->mat_count, false);
 	parse_mtl(scene, NULL, full);
 	free(full);
 	return (true);

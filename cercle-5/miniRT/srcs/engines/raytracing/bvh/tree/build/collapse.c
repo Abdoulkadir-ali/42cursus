@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 21:22:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void	bvh_collapse(t_bvh *bvh)
 
 	if (!bvh || bvh->num_nodes == 0)
 		return ;
-	next4 = ((sizeof(t_bvh_node4) * bvh->num_nodes) + 63) & ~(size_t)63;
+	next4 = ((sizeof(t_bvh_node4) * bvh->num_nodes) + 63) & ~63;
 	bvh->nodes4 = aligned_alloc(64, next4);
 	if (!bvh->nodes4)
 		return ;

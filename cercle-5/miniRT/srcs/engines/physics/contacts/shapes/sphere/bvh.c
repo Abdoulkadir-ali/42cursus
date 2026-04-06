@@ -22,14 +22,15 @@ static void	sphere_leaf(t_contact_query *q, size_t idx, t_sphere *sp,
 
 	s = q->engine->scene;
 	bvh = s->bvh;
-	j = -1;
-	while (++j < node->count && q->count < q->max)
+	j = 0;
+	while (j < node->count && q->count < q->max)
 	{
 		ref = bvh->refs[node->left_or_first + j];
 		if (ref.type == TYPE_SPHERE && ref.index > idx)
 			sphere_vs_sphere(sp, &s->spheres[ref.index], q);
 		else if (ref.type == TYPE_MESH)
 			sphere_vs_mesh(sp, &s->meshes[ref.index], q);
+		j++;
 	}
 }
 

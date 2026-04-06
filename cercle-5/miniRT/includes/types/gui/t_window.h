@@ -36,13 +36,13 @@ typedef struct s_window
 	int		bpp;
 	int		line_len;
 	int		endian;
-	t_vec2i	size;
+	t_vec2s	size;
 	void	*disp_imgs[3];
 	char	*disp_addrs[3];
 	int		disp_bpp;
 	int		disp_line_len;
 	int		disp_endian;
-	t_vec2i	disp_size;
+	t_vec2s	disp_size;
 	void	*gui_bg_img;
 	char	*gui_bg_addr;
 	int		gui_bg_line_len;
@@ -53,10 +53,10 @@ typedef struct s_window
 typedef struct s_panel
 {
 	t_vec2i		pos;
-	t_vec2i		size;
+	t_vec2s		size;
 	int			bg;
 	int			brd;
-	const char	*lbl;
+	char		*lbl;
 }	t_panel;
 
 #endif

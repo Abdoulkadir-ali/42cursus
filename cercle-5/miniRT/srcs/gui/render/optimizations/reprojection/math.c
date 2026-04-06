@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ bool	repro_world_to_screen(t_reproj r, t_vec3 wp, t_vec2i *out_n,
 	cz = vec3_dot(rel, r.cam.forward);
 	if (cz < 1e-4)
 		return (false);
-	out_n->x = (size_t)((vec3_dot(rel, r.cam.right) / cz / r.half.x + 1.0)
+	out_n->x = ((vec3_dot(rel, r.cam.right) / cz / r.half.x + 1.0)
 			* r.size.x * 0.5);
-	out_n->y = (size_t)((1.0 - vec3_dot(rel, r.cam.up) / cz / r.half.y)
+	out_n->y = ((1.0 - vec3_dot(rel, r.cam.up) / cz / r.half.y)
 			* r.size.y * 0.5);
 	if (out_cz)
 		*out_cz = cz;

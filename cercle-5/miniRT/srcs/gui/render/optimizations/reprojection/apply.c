@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:04:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	apply_reproj_band(t_gui *gui, size_t y_start, size_t y_end)
 
 	o = &gui->opts;
 	disp = (uint32_t *)gui->win.disp_addrs[gui->render.back_idx];
-	w = (size_t)gui->win.disp_size.x;
+	w = gui->win.disp_size.x;
 	i = y_start * w;
 	while (i < y_end * w)
 	{

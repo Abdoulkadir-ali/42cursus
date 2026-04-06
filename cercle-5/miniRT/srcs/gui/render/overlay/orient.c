@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 02:52:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ static void	orient_line_step(t_vec2i *a, t_vec2i b, t_vec2i s, int *err)
 	int	dx;
 	int	dy;
 
-	dx = abs((int)b.x - (int)a->x);
-	dy = -abs((int)b.y - (int)a->y);
+	dx = abs(b.x - a->x);
+	dy = -abs(b.y - a->y);
 	e2 = 2 * *err;
 	if (e2 >= dy)
 	{
@@ -60,7 +60,7 @@ static void	orient_line(t_gui *gui, t_vec2i a, t_vec2i b, int col)
 	s.y = -1;
 	if (a.y < b.y)
 		s.y = 1;
-	err = abs((int)b.x - (int)a.x) - abs((int)b.y - (int)a.y);
+	err = abs(b.x - a.x) - abs(b.y - a.y);
 	while (1)
 	{
 		orient_put_pixel(gui, a, col);
@@ -77,11 +77,11 @@ static void	orient_axis(t_gui *gui, t_vec2i c, t_vec3 v, int col)
 	int		len;
 	int		tiplen;
 
-	len = (int)(gui->win.disp_size.y / 24);
-	tiplen = (int)(gui->win.disp_size.y / 192);
-	e = vec2i(c.x + (int)(v.x * len), c.y - (int)(v.y * len));
-	tip = vec2i(e.x - (int)(v.x * tiplen) - (int)(v.y * tiplen),
-			e.y + (int)(v.y * tiplen) - (int)(v.x * tiplen));
+	len = (gui->win.disp_size.y / 24);
+	tiplen = (gui->win.disp_size.y / 192);
+	e = vec2i(c.x + (v.x * len), c.y - (v.y * len));
+	tip = vec2i(e.x - (v.x * tiplen) - (v.y * tiplen),
+			e.y + (v.y * tiplen) - (v.x * tiplen));
 	orient_line(gui, c, e, col);
 	orient_line(gui, e, tip, col);
 }
@@ -91,7 +91,7 @@ void	draw_ui_orient(t_gui *gui)
 	t_vec2i	c;
 	int		off;
 
-	off = (int)(gui->win.disp_size.y / 14);
+	off = (gui->win.disp_size.y / 14);
 	c = vec2i(gui->win.disp_size.x - off, gui->win.disp_size.y - off);
 	orient_axis(gui, c, gui->cam_ctrl.transform.right, AXIS_COL_X);
 	orient_axis(gui, c, gui->cam_ctrl.transform.up, AXIS_COL_Y);

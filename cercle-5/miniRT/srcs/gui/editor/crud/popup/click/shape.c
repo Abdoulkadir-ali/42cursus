@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:31:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:07:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ static t_type	idx_to_type(int i)
 	return (map[i]);
 }
 
-static bool	click_item(t_gui *gui, t_vec2i mouse, t_vec2i o, t_vec2i s)
+static bool	click_item(t_gui *gui, t_vec2i mouse, t_vec2i o, t_vec2s s)
 {
-	t_vec2i	d;
-	int		i;
-	t_type	type;
+	t_vec2s	d;
 	t_vec2i	p;
+	t_type	type;
+	size_t	i;
 
 	d = gui->win.disp_size;
 	i = 0;
@@ -81,16 +81,16 @@ static bool	click_item(t_gui *gui, t_vec2i mouse, t_vec2i o, t_vec2i s)
 
 static bool	click_popup_shape(t_gui *gui, t_vec2i mouse)
 {
-	t_vec2i	d;
+	t_vec2s	d;
 	t_vec2i	o;
-	t_vec2i	s;
-	int		modal_h;
+	t_vec2s	s;
+	size_t	modal_h;
 
 	d = gui->win.disp_size;
 	modal_h = ui_sy(POPUP_PAD * 2 + 36 + 4 * (POPUP_ITEM_H + 8) + 40, d);
-	o = vec2i((d.x - ui_sx(POPUP_W, d)) / 2,
-			(d.y - modal_h) / 2);
-	s = vec2i(ui_sx((POPUP_W - POPUP_PAD * 4) / 3, d), ui_sy(POPUP_ITEM_H, d));
+	o.x = (d.x - ui_sx(POPUP_W, d)) / 2;
+	o.y = (d.y - (int)modal_h) / 2;
+	s = ui_size((POPUP_W - POPUP_PAD * 4) / 3, POPUP_ITEM_H, d);
 	return (click_item(gui, mouse, o, s));
 }
 

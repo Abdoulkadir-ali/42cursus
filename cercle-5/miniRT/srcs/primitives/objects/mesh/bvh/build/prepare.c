@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:15:20 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:33:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static bool	bvh_alloc_nodes(t_mbvh *bvh, t_mesh *mesh)
 	if (mesh->bvh_indices)
 		free(mesh->bvh_indices);
 	mesh->bvh_nodes = ft_calloc(mesh->tri_count * 2, sizeof(t_mbvh_node));
-	mesh->bvh_indices = malloc(sizeof(size_t) * mesh->tri_count * 3);
+	mesh->bvh_indices = malloc(sizeof * mesh->tri_count * 3);
 	if (!mesh->bvh_nodes || !mesh->bvh_indices)
 	{
 		free(bvh->items);

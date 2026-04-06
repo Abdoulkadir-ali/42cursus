@@ -30,7 +30,8 @@ static void	parse_array_bin(t_fbx_parse *fbx, t_fbx_array_req *req,
 		*req->count /= req->div;
 		return ;
 	}
-	ft_print_debug("   Depth %d: Got %s: %zu\n", depth, req->label, *req->count);
+	ft_print_debug("   Depth %d: Got %s: %zu\n", depth,
+		req->label, *req->count);
 }
 
 static void	parse_node_data(t_fbx_parse *fbx, t_fbx_bin_node *n, int depth)

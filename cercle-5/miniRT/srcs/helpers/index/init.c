@@ -36,7 +36,7 @@ t_index	*alloc_index(size_t i, bool error)
 {
 	t_index	*idx;
 
-	idx = (t_index *)malloc(sizeof(t_index));
+	idx = ft_calloc(1, sizeof(t_index));
 	if (!idx)
 		return (NULL);
 	idx->i = i;

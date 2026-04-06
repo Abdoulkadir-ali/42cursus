@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:17:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,15 @@ void	get_ambient_sliders(t_scene *scene, t_islider sl[4])
 
 void	draw_panel_sliders(t_gui *gui, t_islider *sl, int count, t_vec2i pos)
 {
-	int	i;
+	int		i;
+	t_vec2s	d;
 
+	d = gui->win.disp_size;
 	i = 0;
 	while (i < count)
 	{
 		draw_slider_row(gui, pos, sl[i]);
-		pos.y += 30;
+		pos.y += ui_sy(INSP_ROW_STEP, d);
 		i++;
 	}
 }

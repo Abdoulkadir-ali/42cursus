@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 15:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:57:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void	update_inline_drag(t_gui *gui, t_vec2i mouse)
 	if (!gui->slider_state.dragging || !gui->slider_state.value_ptr)
 		return ;
 	range = gui->slider_state.dmax - gui->slider_state.dmin;
-	delta = (double)((int)mouse.x - gui->slider_state.drag_start_x)
-		* range / (double)gui->slider_state.track_w;
+	delta = (double)(mouse.x - gui->slider_state.drag_start.x);
+	delta = delta * range / (double)gui->slider_state.track_w;
 	newval = gui->slider_state.drag_start_val + delta;
 	if (newval < gui->slider_state.dmin)
 		newval = gui->slider_state.dmin;

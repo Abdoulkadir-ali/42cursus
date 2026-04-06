@@ -27,7 +27,7 @@ void	test_occ_children(t_mesh *mesh, int node_idx, const t_ray *ray,
 		c->tr_min = 0.0;
 }
 
-size_t	pick_occ_children(t_mesh *mesh, t_index node_idx, const t_ray *ray,
+t_index	pick_occ_children(t_mesh *mesh, t_index node_idx, const t_ray *ray,
 		t_occ *occ)
 {
 	t_occ_child	c;
@@ -40,18 +40,18 @@ size_t	pick_occ_children(t_mesh *mesh, t_index node_idx, const t_ray *ray,
 	if (c.hit_l && c.hit_r)
 	{
 		if (occ->top >= 64)
-			return (c.left_idx);
+			return (init_index(c.left_idx, false));
 		if (c.tl_min > c.tr_min)
 		{
 			occ->stack[occ->top++] = c.left_idx;
-			return (c.right_idx);
+			return (init_index(c.right_idx, false));
 		}
 		occ->stack[occ->top++] = c.right_idx;
-		return (c.left_idx);
+		return (init_index(c.left_idx, false));
 	}
 	if (c.hit_l)
-		return (c.left_idx);
+		return (init_index(c.left_idx, false));
 	if (c.hit_r)
-		return (c.right_idx);
-	return (0);
+		return (init_index(c.right_idx, false));
+	return (init_index(0, true));
 }

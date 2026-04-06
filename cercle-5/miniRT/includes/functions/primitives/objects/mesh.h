@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 09:11:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:36:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,17 +67,17 @@ bool					intersect_triangle_fast(const t_ray *ray,
 void					update_mesh_hit(t_mesh_hit *hit);
 bool					traverse_occlude(t_mesh *mesh, const t_ray *ray,
 							double dist);
-size_t					pick_occ_children(t_mesh *mesh, t_index node_idx,
+t_index					pick_occ_children(t_mesh *mesh, t_index node_idx,
 							const t_ray *ray, t_occ *occ);
 bool					leaf_occluded(t_mesh *mesh, t_mbvh_node *node,
 							const t_ray *ray, double dist);
 void					process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node,
 							const t_ray *ray, t_trace *trace);
-size_t					pick_children(t_mesh *mesh, t_index node_idx,
+t_index					pick_children(t_mesh *mesh, t_index node_idx,
 							const t_ray *ray, t_trace *trace);
 void					test_children(t_mesh *mesh, t_index node_idx,
 							const t_ray *ray, t_child *c);
-size_t					select_child(t_child *c, t_trace *trace);
+t_index					select_child(t_child *c, t_trace *trace);
 void					intersect_init(t_trace *trace, struct s_hit *hit);
 void					intersect_traverse_mesh(t_mesh *mesh, const t_ray *ray,
 							t_trace *trace);

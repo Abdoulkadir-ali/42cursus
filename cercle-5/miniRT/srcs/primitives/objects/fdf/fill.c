@@ -16,9 +16,9 @@
 #include "parser.h"
 #include "debug.h"
 
-bool	fdf_parse_line_row(t_parser *p, t_mesh *mesh, size_t row, t_vec2 dims);
+bool	fdf_parse_line_row(t_parser *p, t_mesh *mesh, size_t row, t_vec2s dims);
 
-static void	parse_rows(t_parser *p, t_mesh *mesh, t_vec2 dims)
+static void	parse_rows(t_parser *p, t_mesh *mesh, t_vec2s dims)
 {
 	size_t	row;
 	size_t	h;
@@ -34,10 +34,10 @@ static void	parse_rows(t_parser *p, t_mesh *mesh, t_vec2 dims)
 		else
 			ft_print_debug("[FDF fill] row %zu returned false\n", row);
 	}
-	ft_print_debug("[FDF fill] parsed rows: %zu / %.0f\n", row, dims.y);
+	ft_print_debug("[FDF fill] parsed rows: %zu / %zu\n", row, dims.y);
 }
 
-void	fdf_fill_data(const char *path, t_mesh *mesh, t_vec2 dims)
+void	fdf_fill_data(const char *path, t_mesh *mesh, t_vec2s dims)
 {
 	int			fd;
 	t_parser	p;

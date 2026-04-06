@@ -43,8 +43,8 @@ void	settings_handle_drag(struct s_gui *gui, t_vec2i mouse);
 void	settings_end_drag(struct s_gui *gui);
 
 /* srcs/gui/settings/utils.c */
-void	draw_radio_row(struct s_gui *gui, t_panel pan, t_iradio r);
-bool	try_radio_click(struct s_gui *gui, t_vec2i mouse, t_panel pan,
+void	draw_radio_row(struct s_gui *gui, t_panel pan, t_iradio r);t_iradio	init_iradio(const char *label, bool *ptr,
+			void (*on_change)(t_gui *));bool	try_radio_click(struct s_gui *gui, t_vec2i mouse, t_panel pan,
 			t_iradio r);
 void	draw_settings_slider(struct s_gui *gui, t_vec2i pos, t_islider sl);
 bool	try_settings_slider_click(struct s_gui *gui, t_vec2i mouse,

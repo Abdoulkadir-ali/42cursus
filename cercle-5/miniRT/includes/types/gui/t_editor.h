@@ -115,7 +115,7 @@ typedef struct s_crud_ui
 typedef struct s_selection
 {
 	t_type			type;
-	size_t			index;
+	t_index			index;
 	bool			active;
 	t_aabb			bbox;
 }					t_selection;
@@ -143,7 +143,7 @@ typedef struct s_scene_panel
 	bool			visible;
 	size_t			width;
 	int				scroll;
-	int				hovered_row;
+	t_index			hovered_row;
 }					t_scene_panel;
 
 typedef struct s_islider
@@ -160,7 +160,7 @@ typedef struct s_insp_edit
 	bool			active;
 	double			*value_ptr;
 	char			buf[32];
-	int				cursor;
+	size_t			i;
 	double			dmin;
 	double			dmax;
 	void			(*on_change)(struct s_gui *gui);
@@ -169,7 +169,7 @@ typedef struct s_insp_edit
 typedef struct s_slider_state
 {
 	bool			dragging;
-	int				drag_start_x;
+	t_vec2i			drag_start;
 	double			drag_start_val;
 	double			*value_ptr;
 	double			dmin;

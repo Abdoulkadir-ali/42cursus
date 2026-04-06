@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 10:47:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	input_insert_char(t_widget *w, char c)
 
 	if (w->cursor_pos >= WIDGET_INPUT_BUF_SIZE - 2)
 		return ;
-	i = (int)ft_strlen(w->input_buf);
+	i = ft_strlen(w->input_buf);
 	while (i >= w->cursor_pos)
 	{
 		w->input_buf[i + 1] = w->input_buf[i];
@@ -54,7 +54,7 @@ static bool	input_nav_key(t_widget *w, int keycode)
 	}
 	if (keycode == XK_Right)
 	{
-		if (w->cursor_pos < (int)ft_strlen(w->input_buf))
+		if (w->cursor_pos < ft_strlen(w->input_buf))
 			w->cursor_pos++;
 		return (true);
 	}
@@ -65,7 +65,7 @@ static bool	input_nav_key(t_widget *w, int keycode)
 	}
 	if (keycode == XK_End)
 	{
-		w->cursor_pos = (int)ft_strlen(w->input_buf);
+		w->cursor_pos = ft_strlen(w->input_buf);
 		return (true);
 	}
 	return (false);

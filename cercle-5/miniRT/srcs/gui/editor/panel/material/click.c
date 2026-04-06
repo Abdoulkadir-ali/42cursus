@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:31:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:08:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 static bool	click_mat_surface(t_gui *gui, t_vec2i mouse, t_material *mat,
 		t_vec2i *p)
 {
-	t_vec2i		d;
+	t_vec2s		d;
 	t_islider	sl[5];
-	int			i;
+	size_t		i;
 
 	d = gui->win.disp_size;
 	sl[0] = (t_islider){"Roughness", SL_ROUGH_MIN, SL_ROUGH_MAX,
@@ -45,9 +45,9 @@ static bool	click_mat_surface(t_gui *gui, t_vec2i mouse, t_material *mat,
 static bool	click_mat_albedo(t_gui *gui, t_vec2i mouse, t_material *mat,
 		t_vec2i *p)
 {
-	t_vec2i		d;
+	t_vec2s		d;
 	t_islider	sl[3];
-	int			i;
+	size_t		i;
 
 	d = gui->win.disp_size;
 	sl[0] = (t_islider){"R", SL_COL_MIN, SL_COL_MAX,
@@ -71,9 +71,9 @@ static bool	click_mat_albedo(t_gui *gui, t_vec2i mouse, t_material *mat,
 static bool	click_mat_emission(t_gui *gui, t_vec2i mouse, t_material *mat,
 		t_vec2i *p)
 {
-	t_vec2i		d;
+	t_vec2s		d;
 	t_islider	sl[3];
-	int			i;
+	size_t		i;
 
 	d = gui->win.disp_size;
 	sl[0] = (t_islider){"R", SL_EMIT_MIN, SL_EMIT_MAX,
@@ -98,12 +98,14 @@ bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 {
 	t_material	*mat;
 	t_vec2i		p;
+	t_vec2s		d;
 
 	mat = get_selected_material(gui);
 	if (!mat)
 		return (false);
-	p.x = gui->win.disp_size.x - gui->inspector.width + ui_sx(8, gui->win.disp_size);
-	p.y = ui_sy(92, gui->win.disp_size);
+	d = gui->win.disp_size;
+	p.x = d.x - gui->inspector.width + ui_sx(8, d);
+	p.y = ui_sy(92, d);
 	if (click_mat_surface(gui, mouse, mat, &p))
 		return (true);
 	if (click_mat_albedo(gui, mouse, mat, &p))
@@ -112,4 +114,3 @@ bool	material_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		return (true);
 	return (false);
 }
-

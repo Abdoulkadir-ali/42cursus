@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	on_solver_change(t_gui *gui)
 {
 	size_t	v;
 
-	v = (size_t)gui->settings.solver_iters;
+	v = gui->settings.solver_iters;
 	if (v < 1)
 		v = 1;
 	gui->phys_engine.settings.solver_iterations = v;
@@ -43,7 +43,7 @@ void	draw_settings_physics_tab(t_gui *gui, t_vec2i o)
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		o.x + 8, y, COL_HOVER, "PHYSICS");
 	y += 24;
-	r = (t_iradio){"Enabled", &gui->physics_enabled, NULL};
+	r = init_iradio("Enabled", &gui->physics_enabled, NULL);
 	draw_radio_row(gui, (t_panel){vec2i(o.x, y), vec2i(SETTINGS_W - 16, 0),
 		0, 0, ""}, r);
 	y += SETTINGS_ROW_H + 4;
@@ -65,7 +65,7 @@ bool	click_settings_physics_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 	size_t		i;
 
 	y = o.y + 12 + 24;
-	r = (t_iradio){"Enabled", &gui->physics_enabled, NULL};
+	r = init_iradio("Enabled", &gui->physics_enabled, NULL);
 	if (try_radio_click(gui, mouse, (t_panel){vec2i(o.x, y),
 			vec2i(SETTINGS_W - 16, 0), 0, 0, ""}, r))
 		return (true);

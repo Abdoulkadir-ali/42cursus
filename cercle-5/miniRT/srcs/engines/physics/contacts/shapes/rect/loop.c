@@ -29,7 +29,7 @@ void	loop_rects(t_contact_query *qu, t_gjk_shape *sa,
 		r = &qu->engine->scene->rects[p++];
 		if (ba == &r->phys)
 			continue ;
-		sb = (t_gjk_shape){r, gjk_support_rect, r->phys.pos};
+		sb = init_gjk_shape(r, gjk_support_rect, r->phys.pos);
 		pair = (t_col_pair){sa, &sb, ba, &r->phys, ta, &r->transform};
 		if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
 			qu->count++;

@@ -27,7 +27,7 @@ typedef struct s_entry_point
 typedef struct s_bvh_ref
 {
 	uint8_t				type;
-	size_t				index;
+	t_index				index;
 }						t_bvh_ref;
 
 typedef struct s_hit
@@ -175,7 +175,7 @@ typedef struct s_build_item
 
 typedef struct s_split_info
 {
-	int					axis;
+	t_index				axis;
 	size_t				split;
 	double				cost;
 }						t_split_info;

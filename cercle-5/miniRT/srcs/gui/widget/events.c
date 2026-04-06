@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 03:05:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ static void	dispatch_click(t_gui *gui, t_widget *w, t_vec2i mouse)
 	{
 		gui->dragging_widget = w;
 		w->being_dragged = true;
-		w->drag_offset = vec2i((int)mouse.x - (int)w->pos.x,
-				(int)mouse.y - (int)w->pos.y);
+		w->drag_offset = vec2i(mouse.x - w->pos.x,
+				mouse.y - w->pos.y);
 	}
 	else if (hit_body(w, mouse))
 		handle_control_click(gui, w, mouse);
@@ -83,8 +83,8 @@ void	widget_handle_motion(struct s_gui *gui, t_vec2i mouse)
 	w = gui->dragging_widget;
 	if (!w || !w->being_dragged)
 		return ;
-	nx = (int)mouse.x - (int)w->drag_offset.x;
-	ny = (int)mouse.y - (int)w->drag_offset.y;
+	nx = mouse.x - w->drag_offset.x;
+	ny = mouse.y - w->drag_offset.y;
 	if (nx < 0)
 		nx = 0;
 	if (ny < 0)

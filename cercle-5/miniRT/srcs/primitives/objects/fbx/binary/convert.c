@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   array_convert.c                                    :+:      :+:    :+:   */
+/*   convert.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 04:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:29:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	*fbx_convert_float_to_double(t_fbx_array *a, void *uncomp,
 	void		*final_data;
 	float		*src;
 	double		*dst;
-	size_t	i;
+	size_t		i;
 
 	final_data = malloc(a->arr_len * sizeof(double));
 	if (!final_data)

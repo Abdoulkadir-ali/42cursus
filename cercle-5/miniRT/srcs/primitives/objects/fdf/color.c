@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 02:57:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static char	*build_gradient_bitmap(void)
 	int				i;
 	int				t;
 
-	buf = malloc(256 * 4);
+	buf = ft_calloc(1, 256 * 4);
 	if (!buf)
 		return (NULL);
 	i = 0;
@@ -139,14 +139,14 @@ static char	*build_picture_bitmap(unsigned int *colors, size_t w, size_t h)
 	size_t			i;
 	unsigned int	c;
 
-	buf = malloc(w * h * 4);
+	buf = ft_calloc(1, w * h * 4);
 	if (!buf)
 		return (NULL);
 	i = 0;
 	while (i < w * h)
 	{
 		c = colors[i];
-		write_bgra(buf, (int)i, (c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
+		write_bgra(buf, i, (c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
 		i++;
 	}
 	return ((char *)buf);
@@ -156,7 +156,7 @@ static char	*build_picture_bitmap(unsigned int *colors, size_t w, size_t h)
 ** Picture mode: flatten all vertices to Y=0, build a W×H texture from the
 ** parsed hex colors in fdf->colors, and set grid UV coordinates per vertex.
 */
-static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2 dims)
+static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2s dims)
 {
 	size_t			i;
 	size_t			w;
@@ -165,8 +165,8 @@ static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2 dims)
 	t_material		*mat;
 	char			*bitmap;
 
-	w = (size_t)dims.x;
-	h = (size_t)dims.y;
+	w = dims.x;
+	h = dims.y;
 	colors = (unsigned int *)mesh->extra;
 	i = 0;
 	while (i < mesh->vertex_count)
@@ -178,7 +178,7 @@ static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2 dims)
 	if (!bitmap)
 		return ;
 	mat = &scene->materials[mesh->mat_id];
-	init_texture_props(&mat->albedo_map, (int)w, (int)h, bitmap);
+	init_texture_props(&mat->albedo_map, w, h, bitmap);
 	mesh->uvs = malloc(sizeof(t_vec2) * mesh->vertex_count);
 	if (!mesh->uvs)
 		return ;
@@ -198,7 +198,7 @@ static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2 dims)
  * Frees mesh->extra (raw color buffer) when done.
  */
 void	fdf_apply_mode(t_mesh *mesh, t_scene *scene,
-	t_vec2 dims, t_fdf_mode mode)
+	t_vec2s dims, t_fdf_mode mode)
 {
 	if (mode == FDF_MODE_HEIGHT_GRADIENT)
 		apply_height_gradient(mesh, scene);

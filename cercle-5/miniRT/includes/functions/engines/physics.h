@@ -111,6 +111,12 @@ bool	detect_sphere_mesh_collision(const t_sphere *s, t_mesh *m,
 /* GJK intersection test — fills 'out' simplex for EPA */
 bool	gjk_intersect(t_gjk_shape *a, t_gjk_shape *b, t_simplex *out);
 
+t_gjk_shape		init_gjk_shape(const void *data, t_support_fn support,
+			t_vec3 center);
+t_contact_query	init_contact_query(t_physic_engine *engine,
+			t_contact *contacts, size_t count, size_t max);
+t_edge			init_edge(size_t a, size_t b);
+
 /* GJK Internal Helpers (modular structure) */
 bool	gjk_simplex_line(t_simplex *s, t_vec3 *dir);
 bool	gjk_simplex_triangle(t_simplex *s, t_vec3 *dir);
@@ -122,7 +128,7 @@ void	set_simplex3(t_simplex *s, size_t *i, t_vec3 *p);
 bool	gjk_epa(t_col_pair *p, t_simplex *s, t_epa_res *res);
 
 /* EPA Internal Helpers (modular structure) */
-t_epa_face	epa_make_face(t_epa_poly *p, size_t i0, size_t i1, size_t i2);
+t_epa_face	epa_make_face(t_epa_poly *p, t_vec3s tri);
 size_t		epa_closest_face(t_epa_poly *p);
 void		epa_init_poly(t_epa_poly *p, t_simplex *s);
 void		epa_expand_poly(t_epa_poly *p, t_vec3 *v, t_edge *e, size_t n_e);

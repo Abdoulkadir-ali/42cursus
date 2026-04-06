@@ -30,7 +30,7 @@ static void	check_planes(const t_ray *ray, t_scene *sc, t_hit *hit, bool *any)
 			{
 				*hit = temp;
 				hit->ref.type = TYPE_PLANE;
-				hit->ref.index = i;
+				hit->ref.index = init_index(i, false);
 				*any = true;
 			}
 		}
@@ -46,7 +46,7 @@ static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
 
 	hit.t = 1e30;
 	hit.ref.type = TYPE_NONE;
-	hit.ref.index = -1;
+	hit.ref.index = init_index(0, true);
 	hit_any = bvh_intersect(bvh, ray, &hit);
 	if (!hit_any)
 		hit.t = 1e30;

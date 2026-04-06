@@ -15,11 +15,11 @@
 void	draw_info_row(t_gui *gui, t_vec2i pos, const char *label,
 		const char *val)
 {
-	t_vec2i	d;
+	t_vec2s	d;
 
 	d = gui->win.disp_size;
 	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d), pos.y,
-		COL_HOVER, (char *)label);
+		COL_HOVER, label);
 	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(96, d), pos.y,
-		COL_TEXT, (char *)val);
+		COL_TEXT, val);
 }

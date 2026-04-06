@@ -40,15 +40,15 @@ static bool	strip_primary_objects(t_scene *sc, size_t *r, t_scene_row_res *res)
 	return (false);
 }
 
-void	row_to_object(t_gui *gui, size_t r, t_type *ty, int *idx)
+void	row_to_object(t_gui *gui, size_t r, t_type *ty, size_t *idx)
 {
 	t_scene_row_res		res;
 	size_t				row_i;
 
 	*ty = TYPE_NONE;
-	*idx = -1;
+	*idx = 0;
 	res.type = TYPE_NONE;
-	res.index = -1;
+	res.index = 0;
 	row_i = r;
 	if (strip_primary_objects(gui->scene, &row_i, &res))
 	{

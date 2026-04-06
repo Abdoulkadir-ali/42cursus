@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:29:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	skip_array_prop(int fd, char type)
 	size_t	alen;
 	size_t	enc;
 	size_t	clen;
-	size_t		isz;
+	size_t	isz;
 
 	if (safe_read(fd, &alen, 4) < 4 || safe_read(fd, &enc, 4) < 4
 		|| safe_read(fd, &clen, 4) < 4)
@@ -46,13 +46,13 @@ static void	skip_array_prop(int fd, char type)
 		return ;
 	}
 	isz = fbx_array_elem_size(type);
-	lseek(fd, (size_t)alen * isz, SEEK_CUR);
+	lseek(fd, alen * isz, SEEK_CUR);
 }
 
 void	skip_properties(int fd, size_t num_props)
 {
 	size_t	i;
-	char		type;
+	char	type;
 
 	i = 0;
 	while (i < num_props)

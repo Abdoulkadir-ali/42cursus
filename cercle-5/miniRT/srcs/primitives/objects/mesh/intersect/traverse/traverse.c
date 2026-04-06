@@ -13,7 +13,7 @@
 #include "mesh.h"
 #include "profiler.h"
 
-static size_t	process_node(t_mesh *mesh, size_t node_idx, const t_ray *ray,
+static t_index	process_node(t_mesh *mesh, size_t i, const t_ray *ray,
 		t_trace *trace)
 {
 	t_mbvh_node	*node;
@@ -21,31 +21,28 @@ static size_t	process_node(t_mesh *mesh, size_t node_idx, const t_ray *ray,
 
 	PROF_INC(g_mesh_aabb_tests);
 	trace->node_count++;
-	node = &mesh->bvh_nodes[node_idx];
+	node = &mesh->bvh_nodes[i];
 	if (node->count > 0)
 	{
 		process_mesh_leaf(mesh, node, ray, trace);
 		if (trace->top == 0)
-			return (0);
-		return (trace->stack[--trace->top]);
+			return (init_index(0, true));
+		return (init_index(trace->stack[--trace->top], false));
 	}
-	idx = init_index(node_idx, false);
-	node_idx = pick_children(mesh, idx, ray, trace);
-	if (node_idx == 0 && trace->top > 0)
-		return (trace->stack[--trace->top]);
-	return (node_idx);
+	idx = init_index(i, false);
+	idx = pick_children(mesh, idx, ray, trace);
+	if (idx.error && trace->top > 0)
+		return (init_index(trace->stack[--trace->top], false));
+	return (idx);
 }
 
 void	intersect_traverse_mesh(t_mesh *mesh, const t_ray *ray,
 		t_trace *trace)
 {
-	size_t	node_idx;
+	t_index	idx;
 
-	node_idx = 1;
-	while (node_idx != 0)
+	idx = init_index(0, false);
+	while (!idx.error)
 	{
-		node_idx = process_node(mesh, node_idx - 1, ray, trace);
-		if (node_idx != 0)
-			node_idx++;
-	}
-}
+		idx = process_node(mesh, idx.i, ray, trace);
+	}}

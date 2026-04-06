@@ -44,7 +44,7 @@ static t_bvh_tmp_node	*build_tmp_tree(t_scene *scene, size_t total, size_t *k)
 	i = 0;
 	while (i < scene->cylinder_count)
 		cylinder_precompute(&scene->cylinders[i++]);
-	items = malloc(sizeof(t_build_item) * total);
+	items = ft_calloc(total, sizeof(t_build_item));
 	if (!items)
 		return (NULL);
 	*k = collect_objects_worker(scene, items);
@@ -95,8 +95,8 @@ t_bvh	*bvh_create(t_scene *scene)
 	root = build_tmp_tree(scene, get_scene_total(scene), &k);
 	if (!root || k == 0)
 		return (node_destroy(root), free(bvh), NULL);
-	bvh->nodes = malloc(sizeof(t_bvh_node) * (2 * k + 1));
-	bvh->refs = malloc(sizeof(t_bvh_ref) * (k + 1));
+	bvh->nodes = ft_calloc(2 * k + 1, sizeof(t_bvh_node));
+	bvh->refs = ft_calloc(k + 1, sizeof(t_bvh_ref));
 	if (!bvh->nodes || !bvh->refs)
 	{
 		(free(bvh->nodes), free(bvh->refs), free(bvh));

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 03:01:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:13:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,61 +14,46 @@
 
 bool	hit_titlebar(t_widget *w, t_vec2i m)
 {
-	return (w->draggable
-		&& m.x >= w->pos.x
-		&& m.x < w->pos.x + w->size.x
-		&& m.y >= w->pos.y
-		&& m.y < w->pos.y + WIDGET_TITLE_H);
+	return (w->draggable && phit(m, w->pos, vec2s(w->size.x, WIDGET_TITLE_H)));
 }
 
 bool	hit_body(t_widget *w, t_vec2i m)
 {
-	size_t	top;
+	int	top;
 
 	top = w->pos.y;
 	if (w->draggable)
 		top += WIDGET_TITLE_H;
-	return (m.x >= w->pos.x
-		&& m.x < w->pos.x + w->size.x
-		&& m.y >= top
-		&& m.y < w->pos.y + w->size.y);
-}
-
-static bool	hit_msgbox_btn(t_gui *gui, t_widget *w, t_vec2i m, t_vec3i p)
-{
-	size_t	bx;
-
-	p.z = -1;
-	while (++p.z < w->btn_count)
-	{
-		bx = w->pos.x + 8 + p.z * (p.y + 4);
-		if (m.x >= (size_t)bx && m.x < (size_t)(bx + p.y - 4)
-			&& m.y >= (size_t)p.x && m.y < (size_t)(p.x + 22))
-		{
-			if (w->btn_callbacks[p.z])
-				w->btn_callbacks[p.z](w, gui);
-			return (true);
-		}
-	}
-	return (false);
+	return (phit(m, vec2i(w->pos.x, top),
+			vec2s(w->size.x, w->pos.y + w->size.y - top)));
 }
 
 bool	handle_msgbox_click(t_gui *gui, t_widget *w, t_vec2i m)
 {
-	t_vec3i	p;
-	int		div;
+	size_t	btn_w;
+	t_vec2i	btn_pos;
+	size_t	i;
+	size_t	div;
 
 	if (!w->visible)
 		return (false);
 	div = w->btn_count;
-	if (div <= 0)
+	if (div == 0)
 		div = 1;
-	p.x = w->pos.y + w->size.y - 28;
-	p.y = (w->size.x - 16) / div;
-	if (hit_msgbox_btn(gui, w, m, p))
-		return (true);
-	return (m.x >= w->pos.x
-		&& m.x < w->pos.x + w->size.x
-		&& m.y >= w->pos.y + 24
-		&& m.y < w->pos.y + w->size.y);
+	btn_w = (w->size.x - 16) / div;
+	btn_pos.y = w->pos.y + w->size.y - 28;
+	i = 0;
+	while (i < w->btn_count)
+	{
+		btn_pos.x = w->pos.x + 8 + i * (btn_w + 4);
+		if (phit(m, btn_pos, vec2s(btn_w - 4, 22)))
+		{
+			if (w->btn_callbacks[i])
+				w->btn_callbacks[i](w, gui);
+			return (true);
+		}
+		i++;
+	}
+	return (phit(m, vec2i(w->pos.x, w->pos.y + 24),
+			vec2s(w->size.x, w->size.y - 24)));
 }

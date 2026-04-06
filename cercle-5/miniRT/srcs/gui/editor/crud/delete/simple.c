@@ -16,7 +16,7 @@ void	delete_sel_sp_pl(t_scene *sc, t_selection *sel)
 {
 	size_t	i;
 
-	i = sel->index;
+	i = sel->index.i;
 	if (sel->type == TYPE_SPHERE && i < sc->sphere_count)
 	{
 		ft_memmove(sc->spheres + i, sc->spheres + i + 1,

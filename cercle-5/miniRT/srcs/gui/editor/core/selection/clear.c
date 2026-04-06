@@ -15,7 +15,7 @@
 void	clear_selection(t_gui *gui)
 {
 	gui->selection.active = false;
-	gui->selection.index = -1;
+	gui->selection.index = init_index(0, true);
 	gui->selection.type = TYPE_NONE;
 	gui->inspector.visible = false;
 }

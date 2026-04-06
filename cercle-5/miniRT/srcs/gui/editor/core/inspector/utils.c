@@ -45,20 +45,20 @@ t_physics_body	*get_selected_physics(t_gui *gui)
 
 	sc = gui->scene;
 	if (gui->selection.type == TYPE_SPHERE)
-		return (&sc->spheres[gui->selection.index].phys);
+		return (&sc->spheres[gui->selection.index.i].phys);
 	if (gui->selection.type == TYPE_TRI)
-		return (&sc->tris[gui->selection.index].phys);
+		return (&sc->tris[gui->selection.index.i].phys);
 	if (gui->selection.type == TYPE_CYLINDER)
-		return (&sc->cylinders[gui->selection.index].phys);
+		return (&sc->cylinders[gui->selection.index.i].phys);
 	if (gui->selection.type == TYPE_RECT)
-		return (&sc->rects[gui->selection.index].phys);
+		return (&sc->rects[gui->selection.index.i].phys);
 	if (gui->selection.type == TYPE_PYRAMID)
-		return (&sc->pyramids[gui->selection.index].phys);
+		return (&sc->pyramids[gui->selection.index.i].phys);
 	if (gui->selection.type == TYPE_BOX)
-		return (&sc->boxes[gui->selection.index].phys);
+		return (&sc->boxes[gui->selection.index.i].phys);
 	if (gui->selection.type == TYPE_CAPSULE)
-		return (&sc->capsules[gui->selection.index].phys);
+		return (&sc->capsules[gui->selection.index.i].phys);
 	if (gui->selection.type == TYPE_MESH)
-		return (&sc->groups[gui->selection.index].phys);
+		return (&sc->groups[gui->selection.index.i].phys);
 	return (NULL);
 }

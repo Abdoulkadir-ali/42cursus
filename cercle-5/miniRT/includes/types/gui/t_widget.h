@@ -45,7 +45,7 @@ typedef struct s_widget
 {
 	t_widget_type		type;
 	t_vec2i				pos;
-	t_vec2i				size;
+	t_vec2s				size;
 	char				*label;
 	int					value;
 	int					color;
@@ -67,11 +67,11 @@ typedef struct s_widget
 	bool				visible;
 	/* input box */
 	char				input_buf[WIDGET_INPUT_BUF_SIZE];
-	int					cursor_pos;
+	size_t				cursor_pos;
 	/* message box */
 	char				*msg_text;
-	int					btn_count;
-	const char			*btn_labels[WIDGET_MSG_BTN_MAX];
+	size_t				btn_count;
+	char				*btn_labels[WIDGET_MSG_BTN_MAX];
 	t_widget_callback	btn_callbacks[WIDGET_MSG_BTN_MAX];
 }						t_widget;
 
@@ -84,7 +84,7 @@ typedef struct s_hover_cache
 }						t_hover_cache;
 
 t_widget				*widget_create(t_widget_type type, t_vec2i pos,
-							t_vec2i size, const char *label);
+							t_vec2s size, const char *label);
 void					widget_add(struct s_gui *gui, t_widget *widget);
 void					widget_draw_all(struct s_gui *gui);
 void					widget_handle_mouse(struct s_gui *gui, int button,

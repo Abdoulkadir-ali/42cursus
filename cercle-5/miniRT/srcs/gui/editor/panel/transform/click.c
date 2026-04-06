@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:15:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:42:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static bool	try_tr_pos(t_gui *gui, t_vec2i mouse, t_vec2i *p)
 {
-	t_vec2i		d;
+	t_vec2s		d;
 	t_islider	sl;
 
 	d = gui->win.disp_size;
@@ -38,7 +38,7 @@ static bool	try_tr_pos(t_gui *gui, t_vec2i mouse, t_vec2i *p)
 
 static bool	try_tr_rot(t_gui *gui, t_vec2i mouse, t_vec2i *p)
 {
-	t_vec2i		d;
+	t_vec2s		d;
 	t_islider	sl;
 
 	d = gui->win.disp_size;
@@ -63,7 +63,7 @@ static bool	try_tr_rot(t_gui *gui, t_vec2i mouse, t_vec2i *p)
 
 static bool	try_tr_scale(t_gui *gui, t_vec2i mouse, t_vec2i *p, float max_s)
 {
-	t_vec2i		d;
+	t_vec2s		d;
 	t_islider	sl;
 
 	d = gui->win.disp_size;
@@ -88,6 +88,7 @@ static bool	try_tr_scale(t_gui *gui, t_vec2i mouse, t_vec2i *p, float max_s)
 bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
 {
 	t_vec2i	p;
+	t_vec2s	d;
 	float	max_s;
 
 	if (!gui->selection.active)
@@ -95,8 +96,9 @@ bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	max_s = 100.0f;
 	if (gui->selection.type == TYPE_MESH)
 		max_s = 10.0f;
-	p.x = gui->win.disp_size.x - gui->inspector.width + ui_sx(8, gui->win.disp_size);
-	p.y = ui_sy(92 + INSP_HDR_STEP, gui->win.disp_size);
+	d = gui->win.disp_size;
+	p.x = d.x - gui->inspector.width + ui_sx(8, d);
+	p.y = ui_sy(92 + INSP_HDR_STEP, d);
 	if (try_tr_pos(gui, mouse, &p))
 		return (true);
 	if (try_tr_rot(gui, mouse, &p))
@@ -105,4 +107,3 @@ bool	transform_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		return (true);
 	return (false);
 }
-

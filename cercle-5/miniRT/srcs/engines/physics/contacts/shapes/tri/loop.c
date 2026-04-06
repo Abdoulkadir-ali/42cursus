@@ -29,7 +29,7 @@ void	loop_tris(t_contact_query *qu, t_gjk_shape *sa,
 		tr = &qu->engine->scene->tris[p++];
 		if (ba == &tr->phys)
 			continue ;
-		sb = (t_gjk_shape){tr, gjk_support_tri, tr->phys.pos};
+		sb = init_gjk_shape(tr, gjk_support_tri, tr->phys.pos);
 		pair = (t_col_pair){sa, &sb, ba, &tr->phys, ta, &tr->xform};
 		if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
 			qu->count++;

@@ -52,6 +52,10 @@ int									vec2i_mag_sq(t_vec2i a);
 int									vec2i_mag(t_vec2i a);
 t_vec2i								vec2i_norm(t_vec2i a);
 
+t_vec2s								vec2s(size_t x, size_t y);
+t_vec2s								vec2s_add(t_vec2s a, t_vec2s b);
+t_vec2s								vec2s_sub(t_vec2s a, t_vec2s b);
+
 
 
 t_vec3i								vec3i(int x, int y, int z);
@@ -59,6 +63,8 @@ t_vec3i								vec3i_add(t_vec3i a, t_vec3i b);
 t_vec3i								vec3i_sub(t_vec3i a, t_vec3i b);
 t_vec3i								vec3i_mul(t_vec3i a, t_vec3i b);
 t_vec3i								vec3i_scale(t_vec3i a, int s);
+
+t_vec3s								vec3s(size_t x, size_t y, size_t z);
 int									vec3i_dot(t_vec3i a, t_vec3i b);
 t_vec3i								vec3i_cross(t_vec3i a, t_vec3i b);
 int									vec3i_mag_sq(t_vec3i a);

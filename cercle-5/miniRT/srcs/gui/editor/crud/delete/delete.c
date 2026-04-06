@@ -22,7 +22,7 @@ void	editor_delete_selected(t_gui *gui)
 		return ;
 	sel = &gui->selection;
 	sc = gui->scene;
-	i = sel->index;
+	i = sel->index.i;
 	if (sel->type == TYPE_LIGHT && i < sc->light_count)
 	{
 		ft_memmove(sc->lights + i, sc->lights + i + 1,

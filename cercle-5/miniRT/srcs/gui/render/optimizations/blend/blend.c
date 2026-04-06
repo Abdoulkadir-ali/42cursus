@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:05:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static size_t	calc_alpha(double dt)
 		alpha = 1.0f;
 	if (alpha < BLEND_ALPHA_MIN)
 		alpha = BLEND_ALPHA_MIN;
-	return ((size_t)(alpha * 256));
+	return ((alpha * 256));
 }
 
 /*
@@ -61,7 +61,7 @@ void	blend_temporal(t_gui *gui, double dt)
 		return ;
 	alpha = calc_alpha(dt);
 	disp = (uint32_t *)gui->win.addr;
-	n = (size_t)gui->win.size.x * (size_t)gui->win.size.y;
+	n = gui->win.size.x * gui->win.size.y;
 	i = 0;
 	while (i < n)
 	{

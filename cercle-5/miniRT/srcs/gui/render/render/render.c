@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:49:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:25:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static void	setup_render_size(t_gui *gui, size_t s)
 {
-	gui->win.size.x = gui->win.disp_size.x / (int)s;
-	gui->win.size.y = gui->win.disp_size.y / (int)s;
+	gui->win.size.x = gui->win.disp_size.x / s;
+	gui->win.size.y = gui->win.disp_size.y / s;
 	gui->win.line_len = gui->win.size.x * 4;
 	gui->win.addr = (char *)gui->win.render_pixels;
 }
@@ -30,15 +30,15 @@ static void	setup_render_geometry(t_gui *gui, t_render *r,
 	r->transform = gui->scene->camera.transform;
 	r->aspect_ratio = (double)gui->win.size.x / (double)gui->win.size.y;
 	if (gui->scene->camera.fov == rt->cache.fov
-		&& (size_t)gui->win.size.x == rt->cache.res.x
-		&& (size_t)gui->win.size.y == rt->cache.res.y)
+		&& gui->win.size.x == rt->cache.res.x
+		&& gui->win.size.y == rt->cache.res.y)
 		r->half_height = rt->cache.half_h;
 	else
 	{
 		r->half_height = tan(gui->scene->camera.fov * 0.5 * 3.14159 / 180.0);
 		rt->cache.half_h = r->half_height;
 		rt->cache.fov = gui->scene->camera.fov;
-		rt->cache.res = vec2i((int)gui->win.size.x, (int)gui->win.size.y);
+		rt->cache.res = vec2i(gui->win.size.x, gui->win.size.y);
 	}
 	r->half_width = r->half_height * r->aspect_ratio;
 	gui->opts.cur_cam = r->transform;
@@ -49,7 +49,7 @@ static void	setup_render_geometry(t_gui *gui, t_render *r,
 static void	update_rt_stats(t_gui *gui, t_raytracer_engine *rt, long long start)
 {
 	rt->stats.last_render_ms = (double)(now_ms() - start);
-	rt->stats.rays_frame = (size_t)gui->win.size.x * (size_t)gui->win.size.y;
+	rt->stats.rays_frame = gui->win.size.x * gui->win.size.y;
 	rt->stats.rays_total += rt->stats.rays_frame;
 	rt->stats.frame_count++;
 	ft_print_debug("[RENDER] done \xe2\x80\x94 %.1f ms  %llu Mrays total\n",

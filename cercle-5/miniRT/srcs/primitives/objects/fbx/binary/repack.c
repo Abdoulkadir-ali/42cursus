@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/13 04:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:29:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_vec3	*repack_doubles_to_vec3(double *raw, size_t count)
 {
 	t_vec3		*out;
-	size_t	i;
+	size_t		i;
 
 	out = ft_calloc(count, sizeof(t_vec3));
 	if (!out)

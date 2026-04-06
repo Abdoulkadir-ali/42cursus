@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:04:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static bool	depth_reject(t_optimizations *o, size_t nx, size_t ny, double cz)
 	size_t	ry;
 	float	cur_d;
 
-	rx = nx * (size_t)o->prev_render_size.x / (size_t)o->prev_render_size.x;
-	ry = ny * (size_t)o->prev_render_size.y / (size_t)o->prev_render_size.y;
-	cur_d = o->depth_buf[ry * (size_t)o->prev_render_size.x + rx];
+	rx = nx * o->prev_render_size.x / o->prev_render_size.x;
+	ry = ny * o->prev_render_size.y / o->prev_render_size.y;
+	cur_d = o->depth_buf[ry * o->prev_render_size.x + rx];
 	if (cur_d > 1e29f || (float)cz < 1e-4f)
 		return (false);
 	return (fabsf((float)cz - cur_d) / fmaxf((float)cz, cur_d) > DEPTH_THRESH);
@@ -51,11 +51,11 @@ static void	project_pixel(t_gui *gui, size_t idx, t_vec2i p)
 	r.size = gui->win.disp_size;
 	if (repro_world_to_screen(r, get_wp(o, ndc, idx), &n, &cz))
 	{
-		if (!depth_reject(o, (size_t)n.x, (size_t)n.y, cz))
+		if (!depth_reject(o, n.x, n.y, cz))
 		{
-			o->reproj_buf[(size_t)n.y * gui->win.disp_size.x + (size_t)n.x]
+			o->reproj_buf[n.y * gui->win.disp_size.x + n.x]
 				= o->prev_color[idx];
-			o->reproj_tag[(size_t)n.y * gui->win.disp_size.x + (size_t)n.x]
+			o->reproj_tag[n.y * gui->win.disp_size.x + n.x]
 				= o->reproj_gen;
 		}
 	}
@@ -69,14 +69,14 @@ void	scatter_band(t_gui *gui, size_t y_start, size_t y_end)
 	size_t			py;
 
 	o = &gui->opts;
-	rw = (size_t)o->prev_render_size.x;
+	rw = o->prev_render_size.x;
 	py = y_start;
 	while (py < y_end)
 	{
 		px = 0;
 		while (px < rw)
 		{
-			project_pixel(gui, py * rw + px, vec2i((int)px, (int)py));
+			project_pixel(gui, py * rw + px, vec2i(px, py));
 			px++;
 		}
 		py++;

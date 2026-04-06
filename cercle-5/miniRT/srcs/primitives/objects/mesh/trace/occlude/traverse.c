@@ -12,53 +12,39 @@
 
 #include "mesh.h"
 
-static size_t	process_occ_node(t_mesh *mesh, size_t node_idx,
+static void	process_occ_node(t_mesh *mesh, t_index *idx,
 		const t_ray *ray, t_occ *occ)
 {
 	t_mbvh_node	*node;
-	t_index		idx;
 
-	node = &mesh->bvh_nodes[node_idx];
+	node = &mesh->bvh_nodes[idx->i];
 	if (node->count > 0)
 	{
 		if (leaf_occluded(mesh, node, ray, occ->dist))
-			return ((size_t)-1);
+		{
+			occ->occluded = true;
+			idx->error = true;
+			return ;
+		}
 		if (occ->top == 0)
-			return (0);
-		return (occ->stack[--occ->top]);
+			idx->error = true;
+		else
+			*idx = init_index(occ->stack[--occ->top], false);
+		return ;
 	}
-	idx = init_index(node_idx, false);
-	node_idx = pick_occ_children(mesh, idx, ray, occ);
-	if (node_idx == 0 && occ->top > 0)
-		return (occ->stack[--occ->top]);
-	return (node_idx);
+	*idx = pick_occ_children(mesh, *idx, ray, occ);
+	if (idx->error && occ->top > 0)
+		*idx = init_index(occ->stack[--occ->top], false);
 }
 
 bool	traverse_occlude(t_mesh *mesh, const t_ray *ray, double dist)
 {
 	t_occ	occ;
-	size_t	node_idx;
-	static int	_occ_logged = 0;
+	t_index	idx;
 
-	if (!_occ_logged)
-	{
-		ft_print_debug("[OCC] traverse_occlude first call, tri_count=%zu\n",
-			mesh->tri_count);
-		fflush(stdout);
-		_occ_logged = 1;
-	}
-	occ.top = 0;
-	occ.dist = dist;
-	node_idx = 1;
-	while (node_idx != 0)
-	{
-		node_idx = process_occ_node(mesh, node_idx - 1, ray, &occ);
-		if (node_idx == (size_t)-1)
-			return (true);
-		if (node_idx != 0)
-			node_idx++;
-		if (node_idx == 0 && occ.top == 0)
-			break ;
-	}
-	return (false);
+	occ = (t_occ){.dist = dist};
+	idx = init_index(0, false);
+	while (!idx.error)
+		process_occ_node(mesh, &idx, ray, &occ);
+	return (occ.occluded);
 }

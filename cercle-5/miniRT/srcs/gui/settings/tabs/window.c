@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:20:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	on_scale_change(t_gui *gui)
 {
 	size_t	s;
 
-	s = (size_t)(gui->settings.render_scale + 0.5);
+	s = (gui->settings.render_scale + 0.5);
 	if (s < 1)
 		s = 1;
 	if (s > 8)
@@ -30,11 +30,11 @@ static void	draw_window_stats(t_gui *gui, t_vec2i o, int *y)
 	char	buf[64];
 
 	snprintf(buf, sizeof(buf), "Res: %zu x %zu",
-		(size_t)gui->win.disp_size.x, (size_t)gui->win.disp_size.y);
+		gui->win.disp_size.x, gui->win.disp_size.y);
 	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, *y, COL_TEXT, buf);
 	*y += 20;
 	snprintf(buf, sizeof(buf), "Render: %zu x %zu (%zux)",
-		(size_t)gui->win.size.x, (size_t)gui->win.size.y, gui->render.scale);
+		gui->win.size.x, gui->win.size.y, gui->render.scale);
 	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, *y, 0x606070, buf);
 	*y += 24;
 }

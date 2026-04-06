@@ -12,7 +12,7 @@
 
 #include "editor.h"
 
-static int	mat_id_extra(t_gui *gui)
+static t_index	mat_id_extra(t_gui *gui)
 {
 	t_selection	*sel;
 	t_scene		*sc;
@@ -20,17 +20,18 @@ static int	mat_id_extra(t_gui *gui)
 	sel = &gui->selection;
 	sc = gui->scene;
 	if (sel->type == TYPE_PYRAMID)
-		return (sc->pyramids[sel->index].mat_id);
+		return (init_index(sc->pyramids[sel->index].mat_id, false));
 	if (sel->type == TYPE_BOX)
-		return (sc->boxes[sel->index].mat_id);
+		return (init_index(sc->boxes[sel->index].mat_id, false));
 	if (sel->type == TYPE_CAPSULE)
-		return (sc->capsules[sel->index].mat_id);
+		return (init_index(sc->capsules[sel->index].mat_id, false));
 	if (sel->type == TYPE_MESH && sel->index < sc->group_count)
-		return (sc->meshes[sc->groups[sel->index].start].mat_id);
-	return (-1);
+		return (init_index(sc->meshes[sc->groups[sel->index].mesh_start].mat_id,
+				false));
+	return (init_index(0, true));
 }
 
-static int	mat_id_of_selection(t_gui *gui)
+static t_index	mat_id_of_selection(t_gui *gui)
 {
 	t_selection	*sel;
 	t_scene		*sc;
@@ -38,30 +39,30 @@ static int	mat_id_of_selection(t_gui *gui)
 	sel = &gui->selection;
 	sc = gui->scene;
 	if (sel->type == TYPE_SPHERE)
-		return (sc->spheres[sel->index].mat_id);
+		return (init_index(sc->spheres[sel->index].mat_id, false));
 	if (sel->type == TYPE_PLANE)
-		return (sc->planes[sel->index].mat_id);
+		return (init_index(sc->planes[sel->index].mat_id, false));
 	if (sel->type == TYPE_CYLINDER)
-		return (sc->cylinders[sel->index].mat_id);
+		return (init_index(sc->cylinders[sel->index].mat_id, false));
 	if (sel->type == TYPE_CONE)
-		return (sc->cones[sel->index].mat_id);
+		return (init_index(sc->cones[sel->index].mat_id, false));
 	if (sel->type == TYPE_TRI)
-		return (sc->tris[sel->index].mat_id);
+		return (init_index(sc->tris[sel->index].mat_id, false));
 	if (sel->type == TYPE_RECT)
-		return (sc->rects[sel->index].mat_id);
+		return (init_index(sc->rects[sel->index].mat_id, false));
 	return (mat_id_extra(gui));
 }
 
 t_material	*get_selected_material(t_gui *gui)
 {
 	t_selection	*sel;
-	size_t		mat_id;
+	t_index		idx;
 
 	sel = &gui->selection;
 	if (!sel->active || !gui->scene)
 		return (NULL);
-	mat_id = mat_id_of_selection(gui);
-	if (mat_id >= gui->scene->mat_count)
+	idx = mat_id_of_selection(gui);
+	if (idx.error || idx.i >= gui->scene->mat_count)
 		return (NULL);
-	return (&gui->scene->materials[mat_id]);
+	return (&gui->scene->materials[idx.i]);
 }

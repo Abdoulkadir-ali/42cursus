@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 03:05:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "optimizations.h"
 
-uint32_t	blend_colors(uint32_t c1, uint32_t c2, double alpha)
+size_t	blend_colors(t_vec2s c, double alpha)
 {
 	t_vec3i			rgb;
 	t_vec3i			h;
@@ -21,8 +21,8 @@ uint32_t	blend_colors(uint32_t c1, uint32_t c2, double alpha)
 
 	a = (unsigned int)(alpha * 256.0);
 	b = 256 - a;
-	rgb = rt_unpack_color_v(c1);
-	h = rt_unpack_color_v(c2);
+	rgb = rt_unpack_color_v(c.x);
+	h = rt_unpack_color_v(c.y);
 	rgb.x = (a * rgb.x + b * h.x) >> 8;
 	rgb.y = (a * rgb.y + b * h.y) >> 8;
 	rgb.z = (a * rgb.z + b * h.z) >> 8;
@@ -35,7 +35,7 @@ bool	depth_test(t_gui *gui, t_vec2i n, double cz)
 	float			cur_d;
 
 	o = &gui->opts;
-	cur_d = o->depth_buf[(size_t)n.y * gui->win.size.x + (size_t)n.x];
+	cur_d = o->depth_buf[n.y * gui->win.size.x + n.x];
 	if (cur_d > 1e29f || (float)cz < 1e-4f)
 		return (false);
 	return (fabsf((float)cz - cur_d) / fmaxf((float)cz, cur_d) < DEPTH_THRESH);

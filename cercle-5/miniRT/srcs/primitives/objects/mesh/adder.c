@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:17:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static bool	process_resource_items(t_scene *scene, t_mesh_resource *res)
 	i = 0;
 	while (i < res->mesh_count)
 	{
-		if (res->meshes[i].mat_id != (size_t)-1)
+		if (res->meshes[i].mat_id != -1)
 			res->meshes[i].mat_id += mat_offset;
 		if (!scene_add_mesh(scene, res->meshes[i]))
 			return (false);
@@ -73,7 +73,7 @@ static bool	process_resource_items(t_scene *scene, t_mesh_resource *res)
 	}
 	if (res->clip_count > 0)
 	{
-		glb_ensure_clip_capacity(scene, (int)res->clip_count);
+		glb_ensure_clip_capacity(scene, res->clip_count);
 		ft_memcpy(&scene->clips[scene->clip_count], res->clips,
 			res->clip_count * sizeof(t_animation));
 		scene->clip_count += res->clip_count;

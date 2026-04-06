@@ -26,7 +26,7 @@ t_bvh_tmp_node	*init_leaf_node(t_build_item *items, size_t count)
 		node->bbox = aabb_union(&node->bbox, &items[i++].bbox);
 	node->bbox.min = vec3_sub(node->bbox.min, vec3(1e-5, 1e-5, 1e-5));
 	node->bbox.max = vec3_add(node->bbox.max, vec3(1e-5, 1e-5, 1e-5));
-	node->refs = malloc(sizeof(t_bvh_ref) * count);
+	node->refs = ft_calloc(count, sizeof(t_bvh_ref));
 	if (!node->refs)
 		return (free(node), NULL);
 	i = 0;

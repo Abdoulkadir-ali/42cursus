@@ -29,7 +29,7 @@ void	loop_pyramids(t_contact_query *qu, t_gjk_shape *sa,
 		py = &qu->engine->scene->pyramids[p++];
 		if (ba == &py->phys)
 			continue ;
-		sb = (t_gjk_shape){py, gjk_support_pyramid, py->phys.pos};
+		sb = init_gjk_shape(py, gjk_support_pyramid, py->phys.pos);
 		pair = (t_col_pair){sa, &sb, ba, &py->phys, ta, &py->transform};
 		if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
 			qu->count++;

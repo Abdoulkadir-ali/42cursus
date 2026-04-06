@@ -30,7 +30,7 @@ void	process_mesh_leaf(t_mesh *mesh, t_mbvh_node *node, const t_ray *ray,
 			&& leaf.t < trace->best_t)
 		{
 			trace->best_t = leaf.t;
-			trace->best_tri = (t_index){leaf.tri, false};
+			trace->best_tri = init_index(leaf.tri, false);
 			trace->best_uv = leaf.uv;
 		}
 		i++;

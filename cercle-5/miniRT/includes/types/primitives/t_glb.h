@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 06:34:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 06:34:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:32:03 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_glb_mesh_task
 	t_index			*mat_ids;
 	size_t			count;
 	size_t			next_idx;
+	size_t			fallback_mat_id;
 	t_scene			*scene;
 }	t_glb_mesh_task;
 

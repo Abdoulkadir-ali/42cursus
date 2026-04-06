@@ -27,7 +27,7 @@ static void	capsule_vs_capsules(t_contact_query *qu, t_col_pair *p, size_t idx)
 		if (aabb_overlap(capsule_aabb((t_capsule *)p->sa->data),
 				capsule_aabb(other)))
 		{
-			sb = (t_gjk_shape){other, gjk_support_capsule, other->phys.pos};
+			sb = init_gjk_shape(other, gjk_support_capsule, other->phys.pos);
 			pair = (t_col_pair){p->sa, &sb, p->ba, &other->phys,
 				p->ta, &other->transform};
 			if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
@@ -48,7 +48,7 @@ size_t	query_capsule(t_contact_query *qu, size_t idx)
 	cap = &qu->engine->scene->capsules[idx];
 	if (cap->phys.is_static)
 		return (qu->count);
-	sa = (t_gjk_shape){cap, gjk_support_capsule, cap->phys.pos};
+	sa = init_gjk_shape(cap, gjk_support_capsule, cap->phys.pos);
 	p = (t_col_pair){&sa, NULL, &cap->phys, NULL, &cap->transform, NULL};
 	pi = 0;
 	while (pi < qu->engine->scene->plane_count && qu->count < qu->max)

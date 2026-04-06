@@ -63,9 +63,9 @@ static t_bvh_tmp_node	*build_internal_node(t_build_item *items, size_t count,
 		return (NULL);
 	node->bbox = bbox;
 	ft_memset(&info, 0, sizeof(t_split_info));
-	info.axis = -1;
+	info.axis = init_index(0, true);
 	find_best_split(items, count, &info, &bbox);
-	if (info.axis == -1)
+	if (info.axis.error)
 	{
 		free(node);
 		return (init_leaf_node(items, count));

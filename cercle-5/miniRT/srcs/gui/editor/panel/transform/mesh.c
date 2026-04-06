@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 23:16:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:50:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,75 +36,67 @@ static void	mesh_vertex_preview(t_mesh *m, t_mesh_sync s)
 
 static t_mesh_sync	make_sync(t_mesh_group *g)
 {
-	t_mat4	sr;
+	t_mat4		sr;
+	t_mesh_sync	s;
 
 	sr = mat4_mul(mat4_rotation(g->transform.rotation),
 			mat4_scaling(g->transform.scale));
-	return ((t_mesh_sync){sr,
-			mat4_rotation(g->transform.rotation),
-			g->pivot, g->transform.pos});
+	s.sr = sr;
+	s.r = mat4_rotation(g->transform.rotation);
+	s.piv = g->pivot;
+	s.pos = g->transform.pos;
+	return (s);
+}
+
+static void	apply_group_sync(t_gui *gui, t_scene *sc, t_mesh_group *g)
+{
+	t_mesh_sync	s;
+	size_t		si;
+
+	g->transform.pos = gui->transform.pos;
+	g->transform.rotation = gui->transform.rotation;
+	g->transform.scale = gui->transform.scale;
+	s = make_sync(g);
+	si = 0;
+	while (si < g->sub_count)
+	{
+		if (sc->meshes[g->start + si].edit_snap_verts)
+		{
+			mesh_vertex_preview(&sc->meshes[g->start + si], s);
+			mesh_build_bvh(&sc->meshes[g->start + si]);
+		}
+		si++;
+	}
 }
 
 void	mesh_transform_sync(t_gui *gui)
 {
 	t_mesh_group	*g;
 	t_scene			*sc;
-	t_mesh_sync		s;
-	size_t			si;
 
 	if (!gui->selection.active || gui->selection.type != TYPE_MESH)
 		return ;
 	sc = gui->scene;
-	if (gui->selection.index >= sc->group_count)
+	if (gui->selection.index.i >= sc->group_count)
 		return ;
-	g = &sc->groups[gui->selection.index];
-	if (g->start >= sc->mesh_count
-		|| !sc->meshes[g->start].edit_snap_verts)
+	g = &sc->groups[gui->selection.index.i];
+	if (g->start >= sc->mesh_count || !sc->meshes[g->start].edit_snap_verts)
 		return ;
-	g->transform.pos = gui->transform.pos;
-	g->transform.rotation = gui->transform.rotation;
-	g->transform.scale = gui->transform.scale;
-	s = make_sync(g);
-	si = 0;
-	while (si < g->sub_count)
-	{
-		if (sc->meshes[g->start + si].edit_snap_verts)
-		{
-			mesh_vertex_preview(&sc->meshes[g->start + si], s);
-			mesh_build_bvh(&sc->meshes[g->start + si]);
-		}
-		si++;
-	}
+	apply_group_sync(gui, sc, g);
 }
 
 void	mesh_transform_commit(t_gui *gui)
 {
 	t_mesh_group	*g;
 	t_scene			*sc;
-	t_mesh_sync		s;
-	size_t			si;
 
 	if (!gui->selection.active || gui->selection.type != TYPE_MESH)
 		return ;
 	sc = gui->scene;
-	if (gui->selection.index >= sc->group_count)
+	if (gui->selection.index.i >= sc->group_count)
 		return ;
-	g = &sc->groups[gui->selection.index];
-	if (g->start >= sc->mesh_count
-		|| !sc->meshes[g->start].edit_snap_verts)
+	g = &sc->groups[gui->selection.index.i];
+	if (g->start >= sc->mesh_count || !sc->meshes[g->start].edit_snap_verts)
 		return ;
-	g->transform.pos = gui->transform.pos;
-	g->transform.rotation = gui->transform.rotation;
-	g->transform.scale = gui->transform.scale;
-	s = make_sync(g);
-	si = 0;
-	while (si < g->sub_count)
-	{
-		if (sc->meshes[g->start + si].edit_snap_verts)
-		{
-			mesh_vertex_preview(&sc->meshes[g->start + si], s);
-			mesh_build_bvh(&sc->meshes[g->start + si]);
-		}
-		si++;
-	}
+	apply_group_sync(gui, sc, g);
 }

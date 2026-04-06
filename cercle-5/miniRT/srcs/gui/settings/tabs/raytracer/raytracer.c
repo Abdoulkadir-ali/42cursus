@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:18:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:08:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,16 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 
 	y = o.y + 12;
 	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y, COL_HOVER, "OPTS");
-	r[0] = (t_iradio){"Scale", &gui->opts.adaptive_scale, NULL};
-	r[1] = (t_iradio){"Reproj", &gui->opts.reprojection, NULL};
-	r[2] = (t_iradio){"TAA", &gui->opts.taa, NULL};
-	r[3] = (t_iradio){"Blinn", &gui->rt_engine.settings.blinn_phong, NULL};
-	i = -1;
-	while (++i < 4)
+	r[0] = init_iradio("Scale", &gui->opts.adaptive_scale, NULL);
+	r[1] = init_iradio("Reproj", &gui->opts.reprojection, NULL);
+	r[2] = init_iradio("TAA", &gui->opts.taa, NULL);
+	r[3] = init_iradio("Blinn", &gui->rt_engine.settings.blinn_phong, NULL);
+	i = 0;
+	while (i < 4)
 	{
 		y += 24;
-		draw_radio_row(gui, (t_panel){vec2i(o.x, y), vec2i(SETTINGS_W - 16, 0),
-			0, 0, ""}, r[i]);
+		draw_radio_row(gui, (t_panel){vec2i(o.x, y), vec2s(SETTINGS_W - 16, 0),
+			0, 0, ""}, r[i++]);
 	}
 	sl[0] = (t_islider){"Bright", 0.0, 100.0,
 		&gui->rt_engine.settings.brightness, on_color_change};
@@ -62,7 +62,7 @@ static bool	click_preset(t_gui *gui, t_vec2i mouse, t_vec2i o, int y)
 	t_rt_preset	cur;
 
 	cur = gui->rt_engine.settings.preset;
-	if (mouse.y >= (size_t)y && mouse.y <= (size_t)y + 32)
+	if (mouse.y >= y && mouse.y <= y + 32)
 	{
 		if (mouse.x < o.x + 8 + (SETTINGS_W - 16) / 2)
 		{
@@ -88,17 +88,18 @@ static bool	click_rt_radios(t_gui *gui, t_vec2i mouse, t_vec2i o, int *y)
 	t_iradio	r[4];
 	size_t		i;
 
-	r[0] = (t_iradio){"Scale", &gui->opts.adaptive_scale, NULL};
-	r[1] = (t_iradio){"Reproj", &gui->opts.reprojection, NULL};
-	r[2] = (t_iradio){"TAA", &gui->opts.taa, NULL};
-	r[3] = (t_iradio){"Blinn", &gui->rt_engine.settings.blinn_phong, NULL};
-	i = -1;
-	while (++i < 4)
+	r[0] = init_iradio("Scale", &gui->opts.adaptive_scale, NULL);
+	r[1] = init_iradio("Reproj", &gui->opts.reprojection, NULL);
+	r[2] = init_iradio("TAA", &gui->opts.taa, NULL);
+	r[3] = init_iradio("Blinn", &gui->rt_engine.settings.blinn_phong, NULL);
+	i = 0;
+	while (i < 4)
 	{
 		if (try_radio_click(gui, mouse, (t_panel){vec2i(o.x, *y),
-				vec2i(SETTINGS_W - 16, 0), 0, 0, ""}, r[i]))
+				vec2s(SETTINGS_W - 16, 0), 0, 0, ""}, r[i]))
 			return (true);
 		*y += 24;
+		i++;
 	}
 	return (false);
 }

@@ -66,14 +66,14 @@ static void	set_n(const t_ray *ray, t_capsule *cap, t_hit *hit, t_cap_calc *c)
 	t_vec3	hp;
 	t_vec3	norm;
 
-	if (c->type == 0)
+	if (c->type.i == 0)
 	{
 		hp = vec3_sub(hit->point, cap->transform.pos);
 		norm = vec3_norm(vec3_sub(hp,
 					vec3_scale(cap->axis, vec3_dot(hp, cap->axis))));
 	}
 	else
-		norm = vec3_norm(vec3_sub(hit->point, c->p[c->type - 1]));
+		norm = vec3_norm(vec3_sub(hit->point, c->p[c->type.i - 1]));
 	if (vec3_dot(ray->direction, norm) > 0.0)
 		norm = vec3_scale(norm, -1.0);
 	hit->normal = norm;
@@ -84,14 +84,14 @@ static void	get_best(t_cap_calc *c)
 	int	i;
 
 	c->best = 1e30;
-	c->type = -1;
+	c->type = init_index(0, true);
 	i = 0;
 	while (i < 3)
 	{
 		if (c->hit[i] && c->t[i] < c->best)
 		{
 			c->best = c->t[i];
-			c->type = i;
+			c->type = init_index(i, false);
 		}
 		i++;
 	}
@@ -109,7 +109,7 @@ bool	intersect_capsule(const t_ray *ray, t_capsule *cap, t_hit *hit)
 	c.hit[1] = near_sphere_t(ray, c.p[0], cap->radius, &c.t[1]);
 	c.hit[2] = near_sphere_t(ray, c.p[1], cap->radius, &c.t[2]);
 	get_best(&c);
-	if (c.type == -1)
+	if (c.type.error)
 		return (false);
 	hit->t = c.best;
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, c.best));

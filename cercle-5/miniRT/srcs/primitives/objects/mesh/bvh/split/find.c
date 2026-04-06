@@ -15,7 +15,7 @@
 static void	init_find(t_bvh_find *f, t_bvh_eval *eval)
 {
 	bvh_centroid_bounds(f->bvh, f->first, f->count, &f->s.centroid_bounds);
-	f->s.best_axis = -1;
+	f->s.best_axis = init_index(0, true);
 	f->s.best_cost = (double)f->count * 2.0;
 	f->s.split_pos = 0;
 	eval->bvh = f->bvh;
@@ -40,7 +40,7 @@ bool	bvh_find_split(t_bvh_find *f)
 		bvh_eval_axis(&eval);
 		eval.axis++;
 	}
-	if (f->s.best_axis == -1)
+	if (f->s.best_axis.error)
 		return (false);
 	f->out->axis = f->s.best_axis;
 	f->out->pos = f->s.split_pos;

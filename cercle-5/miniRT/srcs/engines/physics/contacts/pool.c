@@ -21,7 +21,7 @@ static void	run_contact_job(t_gen_job *job)
 	t_contact_query	qu;
 
 	i = 0;
-	qu = (t_contact_query){job->engine, job->out, job->count, job->max_c};
+	qu = init_contact_query(job->engine, job->out, job->count, job->max_c);
 	while (job->type == 0 && i < job->scene->sphere_count)
 		job->count = query_sphere(&qu, i++);
 	while (job->type == 1 && i < job->scene->box_count)

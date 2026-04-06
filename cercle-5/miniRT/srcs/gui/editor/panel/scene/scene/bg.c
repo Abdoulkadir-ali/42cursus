@@ -15,7 +15,7 @@
 void	draw_scene_panel_bg(t_gui *gui)
 {
 	t_panel	p;
-	t_vec2i	s;
+	t_vec2s	s;
 
 	if (!gui->scene_panel.visible)
 		return ;

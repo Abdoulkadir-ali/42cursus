@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 10:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:59:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /**
  * @brief Creates a polytope face with a normal pointing outward from origin.
  */
-t_epa_face	epa_make_face(t_epa_poly *p, size_t i0, size_t i1, size_t i2)
+t_epa_face	epa_make_face(t_epa_poly *p, t_vec3s tri)
 {
 	t_epa_face	f;
 	t_vec3		e0;
@@ -23,17 +23,17 @@ t_epa_face	epa_make_face(t_epa_poly *p, size_t i0, size_t i1, size_t i2)
 	t_vec3		n;
 	double		len;
 
-	f.idx[0] = i0;
-	f.idx[1] = i1;
-	f.idx[2] = i2;
-	e0 = vec3_sub(p->pts[i1], p->pts[i0]);
-	e1 = vec3_sub(p->pts[i2], p->pts[i0]);
+	f.idx[0] = tri.x;
+	f.idx[1] = tri.y;
+	f.idx[2] = tri.z;
+	e0 = vec3_sub(p->pts[tri.y], p->pts[tri.x]);
+	e1 = vec3_sub(p->pts[tri.z], p->pts[tri.x]);
 	n = vec3_cross(e0, e1);
 	len = vec3_mag(n);
 	if (len < 1e-12)
-		return ((t_epa_face){{i0, i1, i2}, vec3(0, 1, 0), 0.0});
+		return ((t_epa_face){{tri.x, tri.y, tri.z}, vec3(0, 1, 0), 0.0});
 	f.normal = vec3_scale(n, 1.0 / len);
-	f.dist = vec3_dot(f.normal, p->pts[i0]);
+	f.dist = vec3_dot(f.normal, p->pts[tri.x]);
 	if (f.dist < 0.0)
 	{
 		f.normal = vec3_scale(f.normal, -1.0);

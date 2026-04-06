@@ -21,9 +21,9 @@ void	sphere_scale_sync(t_gui *gui)
 	if (!gui->selection.active || gui->selection.type != TYPE_SPHERE)
 		return ;
 	sc = gui->scene;
-	if (gui->selection.index >= sc->sphere_count)
+	if (gui->selection.index.i >= sc->sphere_count)
 		return ;
-	s = &sc->spheres[gui->selection.index];
+	s = &sc->spheres[gui->selection.index.i];
 	r = fmax(fmax(gui->transform.scale.x, gui->transform.scale.y),
 			gui->transform.scale.z);
 	if (r < 0.01)

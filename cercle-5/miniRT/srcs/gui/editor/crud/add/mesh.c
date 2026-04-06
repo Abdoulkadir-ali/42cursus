@@ -46,7 +46,10 @@ static void	glb_load_logic(t_gui *gui, size_t mesh_start, const char *path)
 			return ;
 		i = mesh_start;
 		while (i < gui->scene->mesh_count)
-			gui->scene->meshes[i++].group_id = (t_index){gui->scene->group_count, false};
+		{
+			gui->scene->meshes[i].group_id = init_index(gui->scene->group_count, false);
+			i++;
+		}
 		gui->scene->group_count++;
 	}
 	else

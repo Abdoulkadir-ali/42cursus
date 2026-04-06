@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:38:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	pack_color(t_vec3 color, const t_raytracer_settings *opts)
 	rgb[0] = ((unsigned int)(uint8_t)ch[0]) << 16;
 	rgb[1] = ((unsigned int)(uint8_t)ch[1]) << 8;
 	rgb[2] = (unsigned int)(uint8_t)ch[2];
-	return ((int)(rgb[0] | rgb[1] | rgb[2]));
+	return ((rgb[0] | rgb[1] | rgb[2]));
 }
 
 static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
@@ -69,11 +69,11 @@ void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 	out_t = 0.0f;
 	color = trace_ray_ex(render->gui->scene->bvh, &ray,
 			render->gui->scene, &out_t);
-	color_packed = (int)pack_color(color, &render->gui->rt_engine.settings);
+	color_packed = pack_color(color, &render->gui->rt_engine.settings);
 	((uint32_t *)pixel_addr)[0] = (uint32_t)color_packed;
 	if (render->gui->opts.depth_buf)
 	{
-		idx = (size_t)pos.y * (size_t)render->gui->win.size.x + (size_t)pos.x;
+		idx = pos.y * render->gui->win.size.x + pos.x;
 		render->gui->opts.depth_buf[idx] = out_t;
 	}
 }

@@ -14,9 +14,9 @@
 
 void	draw_scene_panel_text(t_gui *gui)
 {
-	t_vec2i	d;
+	t_vec2s	d;
 	char	buf[48];
-	int		total;
+	size_t	total;
 
 	d = gui->win.disp_size;
 	if (!gui->scene_panel.visible)
@@ -24,13 +24,13 @@ void	draw_scene_panel_text(t_gui *gui)
 	total = 0;
 	if (gui->scene)
 		total = count_scene_rows(gui->scene);
-	snprintf(buf, sizeof(buf), "OBJECTS  %d", total);
+	snprintf(buf, sizeof(buf), "OBJECTS  %zu", total);
 	mlx_string_put(gui->win.mlx, gui->win.win, ui_sx(8, d),
 		ui_sy(CRUD_PANEL_H + 8, d), COL_ACCENT, buf);
 	if (!gui->scene || total == 0)
 	{
 		mlx_string_put(gui->win.mlx, gui->win.win,
-			ui_sx(16, d), ui_sy(CRUD_PANEL_H + 24, d), 0x505060, "(empty)");
+			ui_sx(16, d), ui_sy(CRUD_PANEL_H + 24, d), COL_UI_GRAY, "(empty)");
 		draw_crud_buttons(gui);
 		return ;
 	}

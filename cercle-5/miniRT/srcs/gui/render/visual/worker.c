@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:36:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,25 +53,25 @@ static void	gui_worker_task(t_gui *gui, t_render_task *task,
 
 	if (task->type == TASK_SCATTER)
 	{
-		h = (size_t)gui->opts.prev_render_size.y;
+		h = gui->opts.prev_render_size.y;
 		scatter_band(gui, (my * h) / n, ((my + 1) * h) / n);
 	}
 	else if (task->type == TASK_APPLY)
 	{
-		h = (size_t)gui->win.disp_size.y;
+		h = gui->win.disp_size.y;
 		apply_reproj_band(gui, (my * h) / n, ((my + 1) * h) / n);
 	}
 	else if (task->type == TASK_INTERP)
 	{
-		h = (size_t)gui->opts.prev_render_size.y;
+		h = gui->opts.prev_render_size.y;
 		interp_band(gui, (my * h) / n, ((my + 1) * h) / n);
 	}
 	else if (task->type == TASK_TAA)
-		taa_band(gui, (my * (size_t)gui->win.size.y) / n,
-			((my + 1) * (size_t)gui->win.size.y) / n);
+		taa_band(gui, (my * gui->win.size.y) / n,
+			((my + 1) * gui->win.size.y) / n);
 	else
-		upscale_band(gui, (my * (size_t)gui->win.disp_size.y) / n,
-			((my + 1) * (size_t)gui->win.disp_size.y) / n);
+		upscale_band(gui, (my * gui->win.disp_size.y) / n,
+			((my + 1) * gui->win.disp_size.y) / n);
 }
 
 void	*gui_worker(void *ptr)

@@ -6,36 +6,48 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:31:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
+static int	get_clicked_row(t_gui *gui, t_vec2i mouse)
 {
-	t_vec2i	d;
-	int		row;
-	size_t	total;
-	t_type	ty;
-	int		idx;
+	t_vec2s	d;
+	int		y_off;
+	int		row_h;
 
 	d = gui->win.disp_size;
+	y_off = mouse.y - ui_sy(CRUD_PANEL_H, d)
+		+ ui_sy(gui->scene_panel.scroll, d);
+	row_h = ui_sy(ROW_H, d);
+	if (row_h <= 0)
+		return (-1);
+	return (y_off / row_h);
+}
+
+bool	scene_panel_handle_click(t_gui *gui, t_vec2i mouse)
+{
+	t_type	type;
+	size_t	i;
+	size_t	total;
+	int		row;
+
 	if (!gui->scene_panel.visible || !gui->scene)
 		return (false);
-	if (mouse.x >= gui->scene_panel.width)
+	if (mouse.x >= (int)gui->scene_panel.width)
 		return (false);
-	if (mouse.y < (size_t)ui_sy(CRUD_PANEL_H, d))
+	if (mouse.y < ui_sy(CRUD_PANEL_H, gui->win.disp_size))
 		return (crud_handle_click(gui, mouse));
-	row = ((int)mouse.y - ui_sy(CRUD_PANEL_H, d) + ui_sy(gui->scene_panel.scroll, d))
-		/ ui_sy(ROW_H, d);
+	row = get_clicked_row(gui, mouse);
 	total = count_scene_rows(gui->scene);
 	if (row < 0 || (size_t)row >= total)
 		return (false);
-	row_to_object(gui, row, &ty, &idx);
-	if (ty == TYPE_NONE)
+	row_to_object(gui, row, &type, &i);
+	if (type == TYPE_NONE)
 		return (true);
-	select_object(gui, ty, idx);
+	select_object(gui, type, i);
 	gui->render.dirty = true;
 	return (true);
 }

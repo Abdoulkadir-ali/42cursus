@@ -26,16 +26,21 @@ void	load_ibms(t_json_value *json, char *bin, int acc_idx, t_mat4 *dst)
 		return ;
 	glb_extract_data((t_extract){bin, &acc, &bv, tmp, sizeof(float) * 16,
 		sizeof(float) * 16, sizeof(float) * 16, acc.count});
-	v[0] = -1;
-	while (++v[0] < acc.count)
+	v[0] = 0;
+	while (v[0] < acc.count)
 	{
-		v[1] = -1;
-		while (++v[1] < 4)
+		v[1] = 0;
+		while (v[1] < 4)
 		{
-			v[2] = -1;
-			while (++v[2] < 4)
+			v[2] = 0;
+			while (v[2] < 4)
+			{
 				dst[v[0]].m[v[2]][v[1]] = tmp[v[0] * 16 + v[2] * 4 + v[1]];
+				v[2]++;
+			}
+			v[1]++;
 		}
+		v[0]++;
 	}
 	free(tmp);
 }

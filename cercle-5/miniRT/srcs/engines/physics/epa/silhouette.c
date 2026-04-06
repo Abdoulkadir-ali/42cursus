@@ -35,13 +35,14 @@ static bool	check_edge(t_edge *edges, size_t *n, t_edge e)
 static void	add_edges(t_epa_poly *p, size_t f_idx, t_edge *edges, size_t *n)
 {
 	size_t	j;
+	size_t	next;
 	t_edge	e;
 
 	j = 0;
 	while (j < 3)
 	{
-		e = (t_edge){p->faces[f_idx].idx[j],
-			p->faces[f_idx].idx[(j + 1) % 3]};
+		next = p->faces[f_idx].idx[(j + 1) % 3];
+		e = init_edge(p->faces[f_idx].idx[j], next);
 		if (!check_edge(edges, n, e) && *n < EPA_MAX_VERTS * 3)
 			edges[(*n)++] = e;
 		j++;

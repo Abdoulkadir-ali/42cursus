@@ -14,7 +14,7 @@
 
 void	draw_transform_panel(t_gui *gui, t_vec2i pos)
 {
-	t_vec2i	d;
+	t_vec2s	d;
 	t_vec2i	p;
 
 	d = gui->win.disp_size;

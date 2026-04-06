@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:14:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,17 @@ int	get_tabs(t_type type, t_inspect_tab tabs[4], const char *labels[4])
 
 static void	draw_tab_label(t_gui *gui, t_vec2i pos, struct s_tab_draw d, int i)
 {
-	t_vec2i	winsz;
+	t_vec2s	winsz;
 	int		color;
+	int		tx;
 
 	winsz = gui->win.disp_size;
 	color = COL_TEXT;
 	if (gui->inspector.tab == d.tabs[i])
 		color = COL_ACCENT;
-	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + d.step * i + ui_sx(8, winsz),
-		ui_sy(70, winsz), color, (char *)d.labels[i]);
+	tx = pos.x + d.step * i + ui_sx(8, winsz);
+	mlx_string_put(gui->win.mlx, gui->win.win, tx, ui_sy(70, winsz), color,
+		d.labels[i]);
 }
 
 void	draw_inspector_tabs(t_gui *gui, t_vec2i pos)
@@ -83,7 +85,7 @@ void	draw_inspector_tabs(t_gui *gui, t_vec2i pos)
 	int					i;
 
 	n = get_tabs(gui->selection.type, tabs, labels);
-	d = (struct s_tab_draw){tabs, labels, (int)gui->inspector.width / n};
+	d = (struct s_tab_draw){tabs, labels, gui->inspector.width / n};
 	i = 0;
 	while (i < n)
 	{

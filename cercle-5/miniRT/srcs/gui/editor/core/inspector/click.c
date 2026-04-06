@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:14:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,30 @@
 
 static bool	handle_tab_click(t_gui *gui, t_vec2i mouse, int x)
 {
-	t_vec2i			d;
+	t_vec2s			d;
 	t_inspect_tab	tabs[4];
 	const char		*labels[4];
-	int				n;
-	int				step;
+	int				count;
+	int				tab_w;
 	int				idx;
 
 	d = gui->win.disp_size;
-	n = get_tabs(gui->selection.type, tabs, labels);
-	step = (int)gui->inspector.width / n;
-	if (mouse.y >= (size_t)ui_sy(60, d) && mouse.y <= (size_t)ui_sy(84, d))
+	count = get_tabs(gui->selection.type, tabs, labels);
+	tab_w = gui->inspector.width / count;
+	if (mouse.y >= ui_sy(60, d) && mouse.y <= ui_sy(84, d))
 	{
-		idx = (mouse.x - x) / step;
-		if (idx >= 0 && idx < n)
+		idx = (mouse.x - x) / tab_w;
+		if (idx >= 0 && idx < count)
 			gui->inspector.tab = tabs[idx];
 		return (true);
 	}
 	return (false);
 }
 
-bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
+static void	dispatch_tab_click(t_gui *gui, t_vec2i mouse)
 {
-	size_t			x;
 	t_physics_body	*phys;
 
-	if (!gui->inspector.visible || !gui->selection.active)
-		return (false);
-	x = gui->win.disp_size.x - gui->inspector.width;
-	if (mouse.x < x || mouse.x >= gui->win.disp_size.x)
-		return (false);
-	if (handle_tab_click(gui, mouse, x))
-		return (true);
 	if (gui->inspector.tab == TAB_MATERIAL)
 		material_panel_handle_click(gui, mouse);
 	else if (gui->inspector.tab == TAB_TRANSFORM)
@@ -60,5 +52,19 @@ bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
 		light_panel_handle_click(gui, mouse);
 	else if (gui->inspector.tab == TAB_INFO)
 		info_panel_handle_click(gui, mouse);
+}
+
+bool	inspector_handle_click(t_gui *gui, t_vec2i mouse)
+{
+	int	x;
+
+	if (!gui->inspector.visible || !gui->selection.active)
+		return (false);
+	x = gui->win.disp_size.x - gui->inspector.width;
+	if (mouse.x < x || mouse.x >= gui->win.disp_size.x)
+		return (false);
+	if (handle_tab_click(gui, mouse, x))
+		return (true);
+	dispatch_tab_click(gui, mouse);
 	return (true);
 }

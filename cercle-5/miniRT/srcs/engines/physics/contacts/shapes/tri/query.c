@@ -31,12 +31,12 @@ static void	tri_vs_tris(t_contact_query *qu, t_tri_shape *tr, size_t idx)
 	t_col_pair	pair;
 	t_tri_shape	*other;
 
-	sa = (t_gjk_shape){tr, gjk_support_tri, tr->phys.pos};
+	sa = init_gjk_shape(tr, gjk_support_tri, tr->phys.pos);
 	p = idx + 1;
 	while (p < qu->engine->scene->tri_count && qu->count < qu->max)
 	{
 		other = &qu->engine->scene->tris[p];
-		sb = (t_gjk_shape){other, gjk_support_tri, other->phys.pos};
+		sb = init_gjk_shape(other, gjk_support_tri, other->phys.pos);
 		pair = (t_col_pair){&sa, &sb, &tr->phys, &other->phys, &tr->xform,
 			&other->xform};
 		test_tri_pair(qu, &pair);
@@ -55,7 +55,7 @@ size_t	query_tri(t_contact_query *qu, size_t idx)
 		return (qu->count);
 	tri_vs_all_planes(qu, tr);
 	tri_vs_tris(qu, tr, idx);
-	sa = (t_gjk_shape){tr, gjk_support_tri, tr->phys.pos};
+	sa = init_gjk_shape(tr, gjk_support_tri, tr->phys.pos);
 	ctx = (t_bvh_phys_ctx){qu, &sa, &tr->phys, &tr->xform, TYPE_TRI};
 	bvh_query_shapes(&ctx, tri_shape_aabb(tr));
 	return (qu->count);

@@ -50,7 +50,7 @@ static void	*fbx_read_compressed(int fd, t_fbx_array *a, void *uncomp_data,
 	size = a->comp_len;
 	if (size == 0)
 		size = 1;
-	comp_data = malloc(size);
+	comp_data = ft_calloc(1, size);
 	if (!comp_data)
 		return (free(uncomp_data), NULL);
 	if (safe_read(fd, comp_data, a->comp_len) < (ssize_t)a->comp_len)
@@ -71,7 +71,7 @@ static void	*fbx_read_array_payload(int fd, t_fbx_array *a)
 	size = uncomp_len;
 	if (size == 0)
 		size = 1;
-	uncomp_data = malloc(size);
+	uncomp_data = ft_calloc(1, size);
 	if (!uncomp_data)
 		return (NULL);
 	if (a->encoding == 0)

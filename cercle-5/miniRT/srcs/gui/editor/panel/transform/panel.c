@@ -15,9 +15,9 @@
 void	transform_panel(t_gui *gui)
 {
 	t_vec2i	p;
-	t_vec2i	panel_size;
+	t_vec2s	panel_size;
 
-	panel_size = (t_vec2i){200, 300};
+	panel_size = (t_vec2s){200, 300};
 	gui_panel(gui, (t_vec2i){10, 10}, panel_size, "Transform");
 	p.x = 10;
 	p.y = 35;

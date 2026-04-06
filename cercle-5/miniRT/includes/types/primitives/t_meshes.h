@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 02:57:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:38:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ typedef struct s_mbvh_node
 	t_aabb				bbox;
 	size_t				left_or_first;
 	size_t				count;
-	int					axis;
+	t_index				axis;
 	size_t				depth;
 }						t_mbvh_node;
 
@@ -107,7 +107,7 @@ typedef struct s_bvh_bins
 	struct s_mbvh		*bvh;
 	size_t				first;
 	size_t				count;
-	int					axis;
+	t_index				axis;
 	double				min_val;
 	double				scale;
 	t_bin				*bins;
@@ -123,14 +123,14 @@ typedef struct s_bvh_split
 	t_bin				bins[BVH_BINS];
 	double				left_area[BVH_BINS];
 	size_t				left_counts[BVH_BINS];
-	int					axis;
+	t_index				axis;
 	double				pos;
 	double				best_cost;
 	size_t				i;
 	double				split_pos;
 	size_t				right_count;
 	t_aabb				right_box;
-	int					best_axis;
+	t_index				best_axis;
 }						t_bvh_split;
 
 typedef struct s_bvh_eval
@@ -140,7 +140,7 @@ typedef struct s_bvh_eval
 	struct s_bvh_split	*s;
 	size_t				first;
 	size_t				count;
-	int					axis;
+	t_index				axis;
 }						t_bvh_eval;
 
 typedef struct s_bvh_find
@@ -168,7 +168,7 @@ typedef struct s_mesh_build_item
 {
 	t_aabb				bbox;
 	t_vec3				centroid;
-	size_t				index;
+	t_index				index;
 }						t_mesh_build_item;
 
 typedef struct s_mbvh
@@ -182,7 +182,7 @@ typedef struct s_mbvh
 
 typedef struct s_mesh_anim
 {
-	int		clip_idx;
+	t_index	idx;
 	double	time;
 	double	speed;
 	bool	looping;
@@ -287,6 +287,7 @@ typedef struct s_occ
 	double				dist;
 	size_t				top;
 	size_t				stack[64];
+	bool				occluded;
 }						t_occ;
 
 typedef struct s_occ_child

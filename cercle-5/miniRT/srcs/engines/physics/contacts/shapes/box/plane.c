@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:24:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:19:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,23 +37,20 @@ static void	set_box_contact(t_contact *c, t_box *bx, t_plane *pl, t_vec3 cor)
 static t_vec3	get_box_cor(t_box *bx, size_t i, t_vec3 ax[3])
 {
 	t_vec3	he;
-	t_vec2i	s;
-	int		sz;
+	t_vec3	s;
 
 	he = bx->half_extents;
-	s.x = -1;
-	s.y = -1;
-	sz = -1;
+	s = vec3(-1.0, -1.0, -1.0);
 	if (i & 1)
-		s.x = 1;
+		s.x = 1.0;
 	if (i & 2)
-		s.y = 1;
+		s.y = 1.0;
 	if (i & 4)
-		sz = 1;
+		s.z = 1.0;
 	return (vec3_add(bx->phys.pos, vec3_add(vec3_add(
-					vec3_scale(ax[0], (double)s.x * he.x),
-					vec3_scale(ax[1], (double)s.y * he.y)),
-				vec3_scale(ax[2], (double)sz * he.z))));
+					vec3_scale(ax[0], s.x * he.x),
+					vec3_scale(ax[1], s.y * he.y)),
+				vec3_scale(ax[2], s.z * he.z))));
 }
 
 /**
@@ -88,10 +85,7 @@ size_t	box_vs_all_planes(t_contact_query *qu, t_box *bx)
 	{
 		i = 0;
 		while (i < 8 && qu->count < qu->max)
-		{
-			check_corner(qu, bx, &qu->engine->scene->planes[p], i);
-			i++;
-		}
+			check_corner(qu, bx, &qu->engine->scene->planes[p], i++);
 		p++;
 	}
 	return (qu->count);

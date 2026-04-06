@@ -24,31 +24,32 @@ static void	*fdf_tri_worker(void *ptr)
 	while (1)
 	{
 		z = __sync_fetch_and_add(&t->next_row, 1);
-		if (z >= (size_t)t->dims.y - 1)
+		if (z >= t->dims.y - 1)
 			break ;
-		x = -1;
-		while (++x < (size_t)t->dims.x - 1)
+		x = 0;
+		while (x < t->dims.x - 1)
 		{
-			idx = z * (size_t)t->dims.x + x;
-			tri = (z * ((size_t)t->dims.x - 1) + x) * 2;
+			idx = z * t->dims.x + x;
+			tri = (z * (t->dims.x - 1) + x) * 2;
 			t->mesh->indices[tri * 3 + 0] = idx;
-			t->mesh->indices[tri * 3 + 1] = idx + (size_t)t->dims.x;
+			t->mesh->indices[tri * 3 + 1] = idx + t->dims.x;
 			t->mesh->indices[tri * 3 + 2] = idx + 1;
 			t->mesh->indices[(tri + 1) * 3 + 0] = idx + 1;
-			t->mesh->indices[(tri + 1) * 3 + 1] = idx + (size_t)t->dims.x;
-			t->mesh->indices[(tri + 1) * 3 + 2] = idx + (size_t)t->dims.x + 1;
+			t->mesh->indices[(tri + 1) * 3 + 1] = idx + t->dims.x;
+			t->mesh->indices[(tri + 1) * 3 + 2] = idx + t->dims.x + 1;
+			x++;
 		}
 	}
 	return (NULL);
 }
 
-void	fdf_triangulate(t_thread_pool *pool, t_mesh *mesh, t_vec2 dims)
+void	fdf_triangulate(t_thread_pool *pool, t_mesh *mesh, t_vec2s dims)
 {
 	t_fdf_task	task;
 
 	task.mesh = mesh;
 	task.dims = dims;
 	task.next_row = 0;
-	parallel_run(pool, (size_t)dims.y - 1, fdf_tri_worker, &task);
+	parallel_run(pool, dims.y - 1, fdf_tri_worker, &task);
 }
 

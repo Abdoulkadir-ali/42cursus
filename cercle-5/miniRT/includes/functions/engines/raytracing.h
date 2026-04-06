@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:51:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ typedef struct s_cap_calc
 	double	t[3];
 	bool	hit[3];
 	double	best;
-	int		type;
+	t_index	type;
 }	t_cap_calc;
 
 typedef struct s_bvh_trav
@@ -111,6 +111,7 @@ int				compare_x(const void *a, const void *b);
 int				compare_y(const void *a, const void *b);
 int				compare_z(const void *a, const void *b);
 void			build_emissive_cache(t_scene *sc);
+t_emissive_ref	init_emissive_ref(t_type type, size_t index);
 
 /* srcs/raytracing/bvh/bound/ */
 t_aabb	aabb_from_ref(t_scene *s, t_bvh_ref ref);

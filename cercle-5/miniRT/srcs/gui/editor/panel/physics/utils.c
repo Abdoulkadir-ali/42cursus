@@ -14,13 +14,13 @@
 
 void	draw_vec3_label(t_gui *gui, t_vec2i pos, const char *label, t_vec3 v)
 {
-	t_vec2i	d;
+	t_vec2s	d;
 	char	buf[80];
 
 	d = gui->win.disp_size;
 	snprintf(buf, sizeof(buf), "%.2f  %.2f  %.2f", v.x, v.y, v.z);
 	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d), pos.y, COL_HOVER,
-		(char *)label);
+		label);
 	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d), pos.y + ui_sy(14, d), COL_TEXT,
 		buf);
 }
@@ -29,12 +29,14 @@ void	draw_bool_label(t_gui *gui, t_vec2i pos, const char *label, bool val)
 {
 	char	buf[32];
 	char	*status;
+	t_vec2s	d;
 
+	d = gui->win.disp_size;
 	status = "NO";
 	if (val)
 		status = "YES";
 	snprintf(buf, sizeof(buf), "%s [%s]", label, status);
-	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + 8, pos.y, COL_TEXT, buf);
+	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d), pos.y, COL_TEXT, buf);
 }
 
 void	get_phys_sliders(t_physics_body *phys, t_islider sl[3])

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:45:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:15:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,30 +31,6 @@ static void	init_display_buffers(t_gui *gui)
 	gui->win.gui_bg_addr = mlx_get_data_addr(gui->win.gui_bg_img,
 			&gui->win.gui_bg_bpp, &gui->win.gui_bg_line_len,
 			&gui->win.gui_bg_endian);
-}
-
-bool	init_window(t_gui *gui)
-{
-	size_t	max_n;
-
-	if (!gui->win.mlx)
-		return (false);
-	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.size.x,
-			gui->win.size.y, "miniRT");
-	if (!gui->win.win)
-		return (false);
-	max_n = (size_t)gui->win.size.x * (size_t)gui->win.size.y;
-	gui->win.render_pixels = ft_calloc(max_n, sizeof(uint32_t));
-	if (!gui->win.render_pixels)
-		return (false);
-	gui->win.img = NULL;
-	gui->win.addr = (char *)gui->win.render_pixels;
-	gui->win.bpp = 32;
-	gui->win.line_len = gui->win.size.x * 4;
-	gui->win.endian = 0;
-	gui->win.disp_size = gui->win.size;
-	init_display_buffers(gui);
-	return (true);
 }
 
 static void	init_camera_state(t_gui *gui)
@@ -89,9 +65,33 @@ void	init_camera(t_gui *gui)
 	gui->cam_ctrl.transform.rotation.pitch = gui->cam_ctrl.target_rot.pitch;
 	init_camera_state(gui);
 	gui->render.scale = 4;
-	gui->win.size.x = gui->win.disp_size.x / (int)gui->render.scale;
-	gui->win.size.y = gui->win.disp_size.y / (int)gui->render.scale;
+	gui->win.size.x = gui->win.disp_size.x / gui->render.scale;
+	gui->win.size.y = gui->win.disp_size.y / gui->render.scale;
 	gui->win.line_len = gui->win.size.x * 4;
 	gui->render.dirty = true;
 	gui->widgets = NULL;
+}
+
+bool	init_window(t_gui *gui)
+{
+	size_t	max_n;
+
+	if (!gui->win.mlx)
+		return (false);
+	gui->win.win = mlx_new_window(gui->win.mlx, gui->win.size.x,
+			gui->win.size.y, "miniRT");
+	if (!gui->win.win)
+		return (false);
+	max_n = gui->win.size.x * gui->win.size.y;
+	gui->win.render_pixels = ft_calloc(max_n, sizeof(uint32_t));
+	if (!gui->win.render_pixels)
+		return (false);
+	gui->win.img = NULL;
+	gui->win.addr = (char *)gui->win.render_pixels;
+	gui->win.bpp = 32;
+	gui->win.line_len = gui->win.size.x * 4;
+	gui->win.endian = 0;
+	gui->win.disp_size = gui->win.size;
+	init_display_buffers(gui);
+	return (true);
 }

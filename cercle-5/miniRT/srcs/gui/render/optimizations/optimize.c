@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:06:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	optimizations_init(t_gui *gui)
 	size_t	rn;
 	size_t	dn;
 
-	rn = (size_t)gui->win.disp_size.x * (size_t)gui->win.disp_size.y;
-	dn = (size_t)gui->win.disp_size.x * (size_t)gui->win.disp_size.y;
+	rn = gui->win.disp_size.x * gui->win.disp_size.y;
+	dn = gui->win.disp_size.x * gui->win.disp_size.y;
 	gui->opts.depth_buf = ft_calloc(rn, sizeof(float));
 	gui->opts.prev_depth = ft_calloc(rn, sizeof(float));
 	gui->opts.prev_color = ft_calloc(rn, sizeof(uint32_t));

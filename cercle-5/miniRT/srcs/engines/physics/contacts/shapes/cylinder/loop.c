@@ -29,7 +29,7 @@ void	loop_cylinders(t_contact_query *qu, t_gjk_shape *sa,
 		other = &qu->engine->scene->cylinders[p++];
 		if (ba == &other->phys)
 			continue ;
-		sb = (t_gjk_shape){other, gjk_support_cylinder, other->phys.pos};
+		sb = init_gjk_shape(other, gjk_support_cylinder, other->phys.pos);
 		pair = (t_col_pair){sa, &sb, ba, &other->phys, ta, &other->transform};
 		if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
 			qu->count++;

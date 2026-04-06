@@ -67,7 +67,7 @@ static void	set_inspector_tab(t_gui *gui, t_type type)
 void	select_object(t_gui *gui, t_type type, size_t index)
 {
 	gui->selection.type = type;
-	gui->selection.index = index;
+	gui->selection.index = init_index(index, false);
 	gui->selection.active = true;
 	set_selection_bbox(gui, type, index);
 	set_inspector_tab(gui, type);

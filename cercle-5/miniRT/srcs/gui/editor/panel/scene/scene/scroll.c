@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:35:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool	scene_panel_handle_scroll(t_gui *gui, int button)
 		gui->scene_panel.scroll += ROW_H;
 	if (gui->scene_panel.scroll < 0)
 		gui->scene_panel.scroll = 0;
-	if ((size_t)gui->scene_panel.scroll > max_scroll)
+	if (gui->scene_panel.scroll > max_scroll)
 		gui->scene_panel.scroll = max_scroll;
 	return (true);
 }

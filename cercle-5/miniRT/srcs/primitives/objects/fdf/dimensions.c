@@ -41,19 +41,7 @@ static int	count_columns(t_parser *p)
 	return (count);
 }
 
-static bool	update_dimensions(t_vec2 *dims, int cols)
-{
-	if (cols == 0)
-		return (true);
-	if (dims->x == -1)
-		dims->x = cols;
-	else if (dims->x != cols)
-		return (false);
-	dims->y++;
-	return (true);
-}
-
-bool	fdf_get_dimensions(const char *path, t_vec2 *dims)
+bool	fdf_get_dimensions(const char *path, t_vec2s *dims)
 {
 	int			fd;
 	t_parser	p;
@@ -65,22 +53,28 @@ bool	fdf_get_dimensions(const char *path, t_vec2 *dims)
 		return (false);
 	parser_init(&p, fd);
 	dims->y = 0;
-	dims->x = -1;
+	dims->x = 0;
 	line = 0;
 	while (parser_peek(&p) != 0)
 	{
 		cols = count_columns(&p);
 		line++;
 		ft_print_debug("FDF: Line %d has %d columns\n", line, cols);
-		if (cols > 0 && !update_dimensions(dims, cols))
+		if (cols > 0)
 		{
-			ft_print_debug("FDF: ERROR at line %d: mismatch (expected %g, got %d)\n",
-				line, dims->x, cols);
-			close(fd);
-			return (false);
+			if (dims->x == 0)
+				dims->x = (size_t)cols;
+			else if (dims->x != (size_t)cols)
+			{
+				ft_print_debug("FDF: ERROR at line %d: mismatch (expected %zu, got %d)\n",
+					line, dims->x, cols);
+				close(fd);
+				return (false);
+			}
+			dims->y++;
 		}
 	}
 	close(fd);
-	ft_print_debug("FDF: Final dims: %g x %g\n", dims->x, dims->y);
+	ft_print_debug("FDF: Final dims: %zu x %zu\n", dims->x, dims->y);
 	return (dims->x > 0 && dims->y > 0);
 }

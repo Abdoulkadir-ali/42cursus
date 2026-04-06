@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 10:45:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ void	widget_draw_toggle(t_gui *gui, t_widget *w)
 	}
 	p = (t_panel){.pos = w->pos, .size = w->size, .bg = bg, .brd = COL_BORDER};
 	draw_panel(gui, p);
-	lpos = vec2i(w->pos.x + 4, (int)w->pos.y + w->size.y / 2 - 4);
+	lpos = vec2i(w->pos.x + 4, w->pos.y + w->size.y / 2 - 4);
 	if (w->label)
 	{
 		gui_draw_string(gui, w->label, lpos, COL_TEXT);
-		lpos.x += (int)ft_strlen(w->label) * 8 + 8;
+		lpos.x += ft_strlen(w->label) * 8 + 8;
 	}
 	gui_draw_string(gui, state, lpos, state_col);
 }

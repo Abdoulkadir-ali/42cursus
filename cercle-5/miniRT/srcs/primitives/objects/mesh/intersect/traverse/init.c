@@ -16,7 +16,7 @@ void	intersect_init(t_trace *trace, t_hit *hit)
 {
 	trace->top = 0;
 	trace->node_idx = 0;
-	trace->best_tri = (t_index){0, true};
+	trace->best_tri = init_index(0, true);
 	trace->best_uv = (t_vec2){0, 0};
 	trace->best_t = hit->t;
 }

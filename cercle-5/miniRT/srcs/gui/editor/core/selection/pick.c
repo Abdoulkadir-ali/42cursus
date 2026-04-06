@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 21:57:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	find_group_by_mesh(t_scene *sc, size_t mesh_idx)
 	{
 		if (mesh_idx >= sc->groups[gi].start
 			&& mesh_idx < sc->groups[gi].start + sc->groups[gi].sub_count)
-			return ((int)gi);
+			return (gi);
 		gi++;
 	}
 	return (-1);

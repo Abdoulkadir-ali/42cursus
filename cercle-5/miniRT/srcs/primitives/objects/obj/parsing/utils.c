@@ -63,7 +63,7 @@ void	obj_add_vert(t_obj *obj, int vi, int vti, int vni)
 	v_idx = obj_fix_index(vi, obj->v_count);
 	vt_idx = obj_fix_index(vti, obj->vt_count);
 	vn_idx = obj_fix_index(vni, obj->vn_count);
-	obj_set_out_vertex(obj, (size_t)v_idx, (size_t)vt_idx, (size_t)vn_idx);
+	obj_set_out_vertex(obj, v_idx, vt_idx, vn_idx);
 	if (!dynarray_ensure((void **)&obj->out_i, obj->out_i_count,
 			&obj->out_i_cap, sizeof(size_t)))
 		return ;

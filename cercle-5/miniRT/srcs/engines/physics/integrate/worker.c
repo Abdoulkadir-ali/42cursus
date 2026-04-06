@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 12:45:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:08:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@ void	integrate_bodies_worker(t_scene *se, t_physic_engine *en, double dt)
 	t.next = 0;
 	t.type = INT_CYL;
 	parallel_run(se->pool, se->cylinder_count, universal_worker, &t);
-	i = -1;
-	while (++i < se->pyramid_count)
-		integrate_pyramid(&se->pyramids[i], dt, t.s);
-	i = -1;
-	while (++i < se->rect_count)
-		integrate_rect(&se->rects[i], dt, t.s);
+	i = 0;
+	while (i < se->pyramid_count)
+		integrate_pyramid(&se->pyramids[i++], dt, t.s);
+	i = 0;
+	while (i < se->rect_count)
+		integrate_rect(&se->rects[i++], dt, t.s);
 }
 
 /**

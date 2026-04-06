@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:10:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:51:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static bool	alloc_index_data(t_mesh *mesh, t_mesh_init init)
 {
 	if (init.i_count <= 0)
 		return (true);
-	mesh->indices = malloc(sizeof(size_t) * init.i_count);
+	mesh->indices = malloc(sizeof * init.i_count);
 	if (!mesh->indices)
 		return (false);
 	return (true);
@@ -51,7 +51,7 @@ bool	mesh_init(t_mesh *mesh, t_mesh_init init)
 {
 	ft_memset(mesh, 0, sizeof(t_mesh));
 	mesh->transform.scale = vec3(1, 1, 1);
-	mesh->group_id = (t_index){0, true};
+	mesh->group_id = init_index(0, true);
 	mesh->vertex_count = init.v_count;
 	mesh->tri_count = init.i_count / 3;
 	if (!alloc_vertex_data(mesh, init))

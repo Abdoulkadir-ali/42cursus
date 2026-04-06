@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:04:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	save_frame(t_gui *gui)
 	float			*tmp;
 
 	o = &gui->opts;
-	n = (size_t)gui->win.size.x * (size_t)gui->win.size.y;
+	n = gui->win.size.x * gui->win.size.y;
 	ft_memcpy(o->prev_color, gui->win.addr, n * sizeof(uint32_t));
 	tmp = o->prev_depth;
 	o->prev_depth = o->depth_buf;

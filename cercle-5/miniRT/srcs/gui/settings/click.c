@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ static bool	click_tabs(t_gui *gui, t_vec2i mouse, t_vec2i o, int tab_w)
 {
 	int	i;
 
-	if ((int)mouse.y < (int)o.y + SETTINGS_HDR_H
-		|| (int)mouse.y >= (int)o.y + SETTINGS_HDR_H + SETTINGS_TABS_H)
+	if (mouse.y < o.y + SETTINGS_HDR_H
+		|| mouse.y >= o.y + SETTINGS_HDR_H + SETTINGS_TABS_H)
 		return (false);
-	if ((int)mouse.x < (int)o.x || (int)mouse.x >= (int)o.x + SETTINGS_W)
+	if (mouse.x < o.x || mouse.x >= o.x + SETTINGS_W)
 		return (false);
-	i = ((int)mouse.x - (int)o.x) / tab_w;
+	i = (mouse.x - o.x) / tab_w;
 	if (i >= SETTINGS_TAB_COUNT)
 		i = SETTINGS_TAB_COUNT - 1;
 	gui->settings.tab = (t_settings_tab)i;
@@ -34,10 +34,10 @@ static bool	click_top(t_gui *gui, t_vec2i mouse)
 	int	bx;
 	int	by;
 
-	bx = (int)gui->win.disp_size.x - 202;
+	bx = gui->win.disp_size.x - 202;
 	by = 30;
-	if ((int)mouse.x >= bx && (int)mouse.x < bx + SETTINGS_BTN_W
-		&& (int)mouse.y >= by && (int)mouse.y < by + SETTINGS_BTN_H)
+	if (mouse.x >= bx && mouse.x < bx + SETTINGS_BTN_W
+		&& mouse.y >= by && mouse.y < by + SETTINGS_BTN_H)
 	{
 		if (gui->settings.visible)
 			settings_close(gui);
@@ -64,17 +64,17 @@ static bool	click_content(t_gui *gui, t_vec2i mouse, t_vec2i o)
 
 static bool	click_header(t_gui *gui, t_vec2i mouse, t_vec2i o)
 {
-	if ((int)mouse.y >= (int)o.y && (int)mouse.y < (int)o.y + SETTINGS_HDR_H)
+	if (mouse.y >= o.y && mouse.y < o.y + SETTINGS_HDR_H)
 	{
-		if ((int)mouse.x >= (int)o.x + SETTINGS_W - 32)
+		if (mouse.x >= o.x + SETTINGS_W - 32)
 		{
 			settings_close(gui);
 			return (true);
 		}
 		gui->settings.dragging = true;
 		gui->settings.drag_offset = vec2i(
-				(int)mouse.x - (int)o.x,
-				(int)mouse.y - (int)o.y);
+				mouse.x - o.x,
+				mouse.y - o.y);
 		return (true);
 	}
 	return (false);
@@ -89,8 +89,8 @@ bool	settings_handle_click(t_gui *gui, t_vec2i mouse)
 	if (!gui->settings.visible)
 		return (false);
 	o = gui->settings.pos;
-	if ((int)mouse.x < (int)o.x || (int)mouse.x >= (int)o.x + SETTINGS_W
-		|| (int)mouse.y < (int)o.y || (int)mouse.y >= (int)o.y + SETTINGS_H)
+	if (mouse.x < o.x || mouse.x >= o.x + SETTINGS_W
+		|| mouse.y < o.y || mouse.y >= o.y + SETTINGS_H)
 	{
 		settings_close(gui);
 		return (true);

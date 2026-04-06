@@ -27,7 +27,7 @@ typedef struct s_settings_panel
 {
 	bool			visible;
 	t_settings_tab	tab;
-	double			render_scale;	/* proxy for render.scale (size_t)    */
+	double			render_scale;	/* proxy for render.scale             */
 	double			solver_iters;	/* proxy for solver_iterations (size_t) */
 	t_vec2i			pos;			/* top-left corner of the panel         */
 	bool			dragging;		/* header is being dragged              */

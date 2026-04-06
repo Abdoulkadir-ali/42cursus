@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:32:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:08:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,15 @@ bool	intersect_box(const t_ray *ray, t_box *bx, t_hit *hit)
 	t_box_calc	c;
 	double		mm[2];
 	int			face;
-	int			i;
+	size_t		i;
 
 	get_calc(bx, ray, &c);
 	mm[0] = -1e30;
 	mm[1] = 1e30;
 	face = 0;
-	i = -1;
-	while (++i < 3)
-		if (!test_axis(&c, i, mm, &face))
+	i = 0;
+	while (i < 3)
+		if (!test_axis(&c, i++, mm, &face))
 			return (false);
 	if (mm[0] < 1e-6)
 		return (false);

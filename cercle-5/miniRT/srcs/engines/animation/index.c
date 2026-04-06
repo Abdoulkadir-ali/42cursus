@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	anim_engine_rebuild_index(t_anim_engine *eng, t_scene *sc)
 		sc->mesh_count);
 	if (n == 0)
 		return ;
-	eng->mesh_indices = malloc(sizeof(size_t) * n);
+	eng->mesh_indices = ft_calloc(n, sizeof(size_t));
 	if (!eng->mesh_indices)
 		return ;
 	eng->mesh_count = n;

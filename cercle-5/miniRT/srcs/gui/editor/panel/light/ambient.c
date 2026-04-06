@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 11:15:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/05 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,15 @@ void	draw_ambient_panel(t_gui *gui, t_vec2i pos)
 {
 	t_islider	sl[4];
 	t_vec2i		p;
+	t_vec2i		sw_pos;
+	t_vec2s		d;
 
-	p = (t_vec2i){pos.x + 8, 90};
+	d = gui->win.disp_size;
+	p = (t_vec2i){pos.x + ui_sx(8, d), ui_sy(90, d)};
 	draw_insp_header(gui, (t_vec2i){p.x, p.y}, "Ambient Light");
-	draw_insp_color_swatch(gui,
-		vec2i(p.x + INSP_IN_OFF + INSP_IN_W - 18, p.y),
-		gui->scene->ambient.rgb.x,
-		gui->scene->ambient.rgb.y,
-		gui->scene->ambient.rgb.z);
-	p.y += INSP_HDR_STEP;
+	sw_pos = vec2i(p.x + ui_sx(INSP_IN_OFF + INSP_IN_W - 18, d), p.y);
+	draw_insp_color_swatch(gui, sw_pos, gui->scene->ambient.rgb);
+	p.y += ui_sy(INSP_HDR_STEP, d);
 	get_ambient_sliders(gui->scene, sl);
 	draw_panel_insp_rows(gui, sl, 4, p);
 }
-

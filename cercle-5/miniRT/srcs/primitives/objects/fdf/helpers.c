@@ -44,7 +44,7 @@ static unsigned int	parse_hex_color(t_parser *p)
 }
 
 static void	fdf_parse_cell(t_parser *p, t_mesh *mesh, size_t row, size_t col,
-		t_vec2 dims)
+		t_vec2s dims)
 {
 	size_t			w;
 	size_t			h;
@@ -52,8 +52,8 @@ static void	fdf_parse_cell(t_parser *p, t_mesh *mesh, size_t row, size_t col,
 	char			c;
 	unsigned int	*colors;
 
-	w = (size_t)dims.x;
-	h = (size_t)dims.y;
+	w = dims.x;
+	h = dims.y;
 	val = parse_int(p);
 	mesh->vertices[row * w + col].pos = vec3(col - w / 2.0,
 			val * 0.2, row - h / 2.0);
@@ -74,14 +74,14 @@ static void	fdf_parse_cell(t_parser *p, t_mesh *mesh, size_t row, size_t col,
 	}
 }
 
-bool	fdf_parse_line_row(t_parser *p, t_mesh *mesh, size_t row, t_vec2 dims)
+bool	fdf_parse_line_row(t_parser *p, t_mesh *mesh, size_t row, t_vec2s dims)
 {
 	size_t			col;
 	size_t			w;
 	char			c;
 
 	col = 0;
-	w = (size_t)dims.x;
+	w = dims.x;
 	while (col < w)
 	{
 		parser_skip_horizontal_spaces(p);

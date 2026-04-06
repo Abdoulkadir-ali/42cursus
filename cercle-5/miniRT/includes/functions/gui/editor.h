@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:45:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:02:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 # define EDITOR_H
 
 # include "widget.h"
+# include <X11/keysym.h>
 # include "objects.h"
 # include "raytracing.h"
+# include "color.h"
 
 /* --- Internal scene-panel types --- */
 typedef struct s_scene_row_res
 {
 	t_type	type;
-	int		index;
+	size_t	index;
 }	t_scene_row_res;
 
 /* 2. MODULE TYPES */
@@ -121,7 +123,7 @@ void				draw_slider_fill(struct s_gui *gui, t_vec2i pos,
 void				draw_insp_header(struct s_gui *gui, t_vec2i pos,
 						const char *title);
 void				draw_insp_color_swatch(struct s_gui *gui, t_vec2i pos,
-						double r, double g, double b);
+						t_vec3 rgb);
 void				draw_insp_row(struct s_gui *gui, t_vec2i pos, t_islider sl);
 void				draw_insp_toggle_row(struct s_gui *gui, t_vec2i pos,
 						const char *label, bool val);
@@ -134,6 +136,10 @@ bool				insp_row_click(struct s_gui *gui, t_vec2i mouse,
 bool				insp_toggle_click(struct s_gui *gui, t_vec2i mouse,
 						t_vec2i pos);
 void				insp_input_key(struct s_gui *gui, int keycode);
+void				insp_input_commit(struct s_gui *gui);
+bool				insp_input_nav(t_insp_edit *e, int keycode);
+void				set_insp_drag(struct s_gui *gui, t_islider sl, t_vec3i p);
+void				set_insp_edit(struct s_gui *gui, t_islider sl);
 
 /* srcs/gui/editor/crud/add/ */
 void				editor_add_sphere(struct s_gui *gui);
@@ -160,10 +166,12 @@ void				delete_sel_py_bx(t_scene *sc, t_selection *sel);
 /* srcs/gui/editor/crud/ui.c */
 void				draw_crud_buttons(struct s_gui *gui);
 bool				crud_handle_click(struct s_gui *gui, t_vec2i mouse);
+void				draw_crud_btn(struct s_gui *gui, t_panel btn);
+bool				crud_handle_click(struct s_gui *gui, t_vec2i mouse);
+void				draw_crud_btn(struct s_gui *gui, t_panel btn);
 
 /* srcs/gui/editor/crud/popup/utils.c */
-bool				phit(t_vec2i m, t_vec2i pos, t_vec2i size);
-void				draw_modal_bg(struct s_gui *gui, int h, t_vec2i *p);
+void				draw_modal_bg(struct s_gui *gui, size_t h, t_vec2i *p);
 void				draw_popup_btn(struct s_gui *gui, t_panel p);
 
 /* srcs/gui/editor/crud/popup/draw.c */
@@ -171,7 +179,8 @@ void				draw_popup(struct s_gui *gui);
 void				draw_popup_shape(struct s_gui *gui);
 void				draw_popup_mesh_fmt(struct s_gui *gui);
 void				draw_popup_mesh_path(struct s_gui *gui);
-void				draw_path_field(struct s_gui *gui, t_vec2i o, int modal_h);
+void				draw_path_field(struct s_gui *gui, t_vec2i o,
+					size_t modal_h);
 
 /* srcs/gui/editor/crud/popup.c */
 
@@ -193,12 +202,14 @@ void				draw_mesh_info_panel(struct s_gui *gui, t_vec2i pos);
 bool				info_panel_handle_click(struct s_gui *gui, t_vec2i mouse);
 
 /* srcs/gui/editor/panel/scene/utils.c */
-size_t				count_mesh_entries(t_scene *sc);
-int					mesh_row_to_idx(int r);
+size_t				mesh_row_to_idx(size_t r);
 size_t				count_scene_rows(t_scene *sc);
-int						row_strip(size_t *r, size_t count, t_type t,
+int					row_strip(size_t *r, size_t count, t_type t,
 						t_scene_row_res *res);
-void				row_to_object(t_gui *gui, size_t r, t_type *ty, int *idx);
+void				row_to_object(struct s_gui *gui, size_t r, t_type *ty,
+						size_t *idx);
+/* srcs/gui/editor/panel/scene/header.c */
+void				draw_scene_header(struct s_gui *gui);
 
 /* srcs/gui/editor/panel/scene/row.c */
 void				draw_scene_rows(t_gui *gui);

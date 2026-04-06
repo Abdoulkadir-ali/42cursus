@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:40:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 22:43:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 11:29:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static bool	fbx_bin_set_vertices(t_fbx_bin *fbx)
 {
 	t_vec3		*v;
-	size_t	i;
+	size_t		i;
 
 	v = repack_doubles_to_vec3((double *)fbx->data.v, fbx->data.vc);
 	free(fbx->data.v);

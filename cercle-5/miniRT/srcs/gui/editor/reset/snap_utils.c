@@ -17,7 +17,7 @@ void	snap_array(void **dst, void *src, size_t count, size_t sz)
 	*dst = NULL;
 	if (!count)
 		return ;
-	*dst = malloc(count * sz);
+	*dst = ft_calloc(count, sz);
 	if (*dst)
 		ft_memcpy(*dst, src, count * sz);
 }
@@ -30,7 +30,7 @@ void	snap_meshes(t_scene_snap *snap, t_scene *sc)
 	snap->meshes = NULL;
 	if (!sc->mesh_count)
 		return ;
-	snap->meshes = malloc(sc->mesh_count * sizeof(t_mesh_snap));
+	snap->meshes = ft_calloc(sc->mesh_count, sizeof(t_mesh_snap));
 	if (!snap->meshes)
 		return ;
 	i = 0;
@@ -51,7 +51,7 @@ void	snap_groups(t_scene_snap *snap, t_scene *sc)
 	snap->groups = NULL;
 	if (!sc->group_count)
 		return ;
-	snap->groups = malloc(sc->group_count * sizeof(t_group_snap));
+	snap->groups = ft_calloc(sc->group_count, sizeof(t_group_snap));
 	if (!snap->groups)
 		return ;
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:14:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void	draw_slider_row(t_gui *gui, t_vec2i pos, t_islider sl)
 {
-	t_vec2i	d;
+	t_vec2s	d;
 	char	buf[64];
 	double	frac;
 	int		fill_w;
 	int		track_w;
 
 	d = gui->win.disp_size;
-	track_w = (int)gui->inspector.width - ui_sx(24, d);
+	track_w = gui->inspector.width - ui_sx(24, d);
 	frac = 0.0;
 	if (sl.max > sl.min)
 		frac = (*sl.ptr - sl.min) / (sl.max - sl.min);
@@ -32,7 +32,7 @@ void	draw_slider_row(t_gui *gui, t_vec2i pos, t_islider sl)
 	fill_w = frac * track_w;
 	snprintf(buf, sizeof(buf), "%.3f", *sl.ptr);
 	mlx_string_put(gui->win.mlx, gui->win.win,
-		pos.x, pos.y, COL_TEXT, (char *)sl.label);
+		pos.x, pos.y, COL_TEXT, sl.label);
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		pos.x + track_w - ui_sx(46, d), pos.y, COL_HOVER, buf);
 	draw_slider_fill(gui, vec2i(pos.x, pos.y + ui_sy(13, d)), fill_w, track_w);
@@ -41,16 +41,16 @@ void	draw_slider_row(t_gui *gui, t_vec2i pos, t_islider sl)
 bool	try_islider_click(t_gui *gui, t_vec2i mouse, t_vec2i pos,
 		t_islider sl)
 {
-	t_vec2i	d;
+	t_vec2s	d;
 	int		track_w;
 	int		track_y;
 
 	d = gui->win.disp_size;
-	track_w = (int)gui->inspector.width - ui_sx(24, d);
+	track_w = gui->inspector.width - ui_sx(24, d);
 	track_y = pos.y + ui_sy(9, d);
-	if (mouse.x < (size_t)pos.x || mouse.x >= (size_t)(pos.x + track_w))
+	if (mouse.x < pos.x || mouse.x >= (pos.x + track_w))
 		return (false);
-	if (mouse.y < (size_t)track_y || mouse.y >= (size_t)(track_y + 16))
+	if (mouse.y < track_y || mouse.y >= (track_y + ui_sy(16, d)))
 		return (false);
 	gui->slider_state.dragging = true;
 	gui->slider_state.drag_start_x = mouse.x;

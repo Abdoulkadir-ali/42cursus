@@ -62,11 +62,12 @@ static void	load_all_samplers(t_json_value *j, char *bin, t_animation *clip,
 
 	clip->sampler_count = samplers->u.array.count;
 	clip->samplers = malloc(sizeof(t_anim_sampler) * clip->sampler_count);
-	s = -1;
-	while (++s < clip->sampler_count)
+	s = 0;
+	while (s < clip->sampler_count)
 	{
 		load_glb_sampler(j, bin, &clip->samplers[s], json_at(samplers, s));
 		update_max_time(clip, &clip->samplers[s]);
+		s++;
 	}
 }
 

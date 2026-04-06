@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 13:53:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static bool	fbx_alloc_buffers(t_fbx_build *b)
 {
 	b->vertices = ft_calloc(b->tc * 3, sizeof(t_vertex));
 	b->triangles = ft_calloc(b->tc, sizeof(t_triangle));
-	b->v = malloc(sizeof(size_t) * (b->raw_c + 1));
+	b->v = malloc(sizeof * (b->raw_c + 1));
 	if (!b->vertices || !b->triangles || !b->v)
 		return (false);
 	return (true);

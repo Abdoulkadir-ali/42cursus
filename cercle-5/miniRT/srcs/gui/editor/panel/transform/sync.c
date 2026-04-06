@@ -18,7 +18,7 @@ void	transform_selection_sync(t_gui *gui)
 	size_t	idx;
 
 	sc = gui->scene;
-	idx = gui->selection.index;
+	idx = gui->selection.index.i;
 	if (gui->selection.type == TYPE_SPHERE && idx < sc->sphere_count)
 	{
 		sphere_scale_sync(gui);
@@ -47,15 +47,15 @@ static t_transform	*get_sel_transform(t_gui *gui)
 
 	sc = gui->scene;
 	if (gui->selection.type == TYPE_SPHERE)
-		return (&sc->spheres[gui->selection.index].transform);
+		return (&sc->spheres[gui->selection.index.i].transform);
 	if (gui->selection.type == TYPE_PLANE)
-		return (&sc->planes[gui->selection.index].transform);
+		return (&sc->planes[gui->selection.index.i].transform);
 	if (gui->selection.type == TYPE_CYLINDER)
-		return (&sc->cylinders[gui->selection.index].transform);
+		return (&sc->cylinders[gui->selection.index.i].transform);
 	if (gui->selection.type == TYPE_MESH)
-		return (&sc->groups[gui->selection.index].transform);
+		return (&sc->groups[gui->selection.index.i].transform);
 	if (gui->selection.type == TYPE_LIGHT)
-		return (&sc->lights[gui->selection.index].transform);
+		return (&sc->lights[gui->selection.index.i].transform);
 	return (NULL);
 }
 
@@ -71,15 +71,15 @@ void	transform_panel_sync(t_gui *gui)
 	gui->transform.rotation = src->rotation;
 	gui->transform.scale = src->scale;
 	if (gui->selection.type == TYPE_SPHERE
-		&& gui->selection.index < gui->scene->sphere_count)
+		&& gui->selection.index.i < gui->scene->sphere_count)
 	{
-		r = sqrt(gui->scene->spheres[gui->selection.index].radius_sq);
+		r = sqrt(gui->scene->spheres[gui->selection.index.i].radius_sq);
 		gui->transform.scale = vec3(r, r, r);
 	}
 	else if (gui->selection.type == TYPE_CYLINDER
-		&& gui->selection.index < gui->scene->cylinder_count)
+		&& gui->selection.index.i < gui->scene->cylinder_count)
 	{
-		r = sqrt(gui->scene->cylinders[gui->selection.index].radius_sq);
+		r = sqrt(gui->scene->cylinders[gui->selection.index.i].radius_sq);
 		gui->transform.scale = vec3(r, r, gui->transform.scale.z);
 	}
 }

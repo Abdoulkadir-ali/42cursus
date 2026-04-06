@@ -78,9 +78,9 @@ typedef struct s_optimizations
 	bool		reprojection;
 	bool		temporal_blend;
 	float		*depth_buf;
-	uint32_t	*prev_color;
+	size_t		*prev_color;
 	float		*prev_depth;
-	uint32_t	*reproj_buf;
+	size_t		*reproj_buf;
 	size_t		*reproj_tag;
 	size_t		reproj_gen;
 	t_transform	cur_cam;
@@ -92,12 +92,12 @@ typedef struct s_optimizations
 	t_vec2i		prev_render_size;
 	bool		prev_valid;
 	bool		frame_interp;
-	uint32_t	*interp_buf;
+	size_t		*interp_buf;
 	t_transform	interp_cam;
 	t_vec2		interp_half;
 	float		interp_alpha;
 	bool		taa;
-	uint32_t	*taa_buf;
+	size_t		*taa_buf;
 	size_t		taa_frame;
 	double		taa_jitter_x;
 	double		taa_jitter_y;

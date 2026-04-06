@@ -27,10 +27,9 @@ static t_map_entry	*create_node(const char *name)
 {
 	t_map_entry	*node;
 
-	node = malloc(sizeof(t_map_entry));
+	node = ft_calloc(1, sizeof(t_map_entry));
 	if (!node)
 		return (NULL);
-	ft_memset(node, 0, sizeof(*node));
 	node->path = ft_strjoin("maps/rt/", name);
 	if (!node->path)
 	{
@@ -64,12 +63,8 @@ void	fill_map_list(t_gui *gui)
 		return ;
 	tail = &gui->map_info.head;
 	gui->map_info.count = 0;
-	entry = readdir(dir);
-	while (entry != NULL)
-	{
+	while ((entry = readdir(dir)))
 		if (entry->d_type == DT_REG && is_rt_file(entry->d_name))
 			add_map_node(gui, &tail, entry->d_name);
-		entry = readdir(dir);
-	}
 	closedir(dir);
 }

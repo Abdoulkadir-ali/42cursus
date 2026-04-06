@@ -20,7 +20,7 @@ static void	cache_primary_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
 	while (i < sc->sphere_count)
 	{
 		if (is_emissive(sc, sc->spheres[i].mat_id))
-			cache[(*n)++] = (t_emissive_ref){TYPE_SPHERE, i};
+			cache[(*n)++] = init_emissive_ref(TYPE_SPHERE, i);
 		i++;
 	}
 }
@@ -33,14 +33,14 @@ static void	cache_secondary_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
 	while (i < sc->tri_count)
 	{
 		if (is_emissive(sc, sc->tris[i].mat_id))
-			cache[(*n)++] = (t_emissive_ref){TYPE_TRI, i};
+			cache[(*n)++] = init_emissive_ref(TYPE_TRI, i);
 		i++;
 	}
 	i = 0;
 	while (i < sc->rect_count)
 	{
 		if (is_emissive(sc, sc->rects[i].mat_id))
-			cache[(*n)++] = (t_emissive_ref){TYPE_RECT, i};
+			cache[(*n)++] = init_emissive_ref(TYPE_RECT, i);
 		i++;
 	}
 }
@@ -53,7 +53,7 @@ static void	cache_complex_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
 	while (i < sc->mesh_count)
 	{
 		if (is_emissive(sc, sc->meshes[i].mat_id))
-			cache[(*n)++] = (t_emissive_ref){TYPE_MESH, i};
+			cache[(*n)++] = init_emissive_ref(TYPE_MESH, i);
 		i++;
 	}
 }
@@ -68,7 +68,7 @@ void	build_emissive_cache(t_scene *sc)
 	cap += sc->box_count + sc->capsule_count + sc->mesh_count;
 	if (cap == 0)
 		return ;
-	cache = malloc(sizeof(t_emissive_ref) * cap);
+	cache = ft_calloc(cap, sizeof(t_emissive_ref));
 	if (!cache)
 		return ;
 	n = 0;

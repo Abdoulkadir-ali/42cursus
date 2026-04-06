@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 02:57:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,30 +37,31 @@ static void	sync_group_anim(t_gui *gui, t_mesh_group *g)
 static bool	handle_clip_select(t_gui *gui, t_vec2i mouse, int x,
 		t_mesh_anim *ma)
 {
-	t_vec2i	d;
-	int		y_sel;
-	int		clip_count;
+	t_vec2s	d;
+	int		y;
+	size_t	n;
 
 	d = gui->win.disp_size;
-	y_sel = ui_sy(232, d);
-	clip_count = (int)gui->scene->clip_count;
-	if (clip_count == 0)
+	y = ui_sy(232, d);
+	n = gui->scene->clip_count;
+	if (n == 0)
 		return (false);
-	if (mouse.y < (size_t)y_sel || mouse.y > (size_t)(y_sel + ui_sy(14, d)))
+	if (mouse.y < y || mouse.y > (y + ui_sy(14, d)))
 		return (false);
-	if (mouse.x >= (size_t)(x + ui_sx(4, d)) && mouse.x <= (size_t)(x + ui_sx(22, d)))
+	if (mouse.x >= (x + ui_sx(4, d)) && mouse.x <= (x + ui_sx(22, d)))
 	{
-		ma->clip_idx--;
-		if (ma->clip_idx < 0)
-			ma->clip_idx = clip_count - 1;
+		if (ma->idx.i == 0)
+			ma->idx.i = n - 1;
+		else
+			ma->idx.i--;
 		return (true);
 	}
-	if (mouse.x >= (size_t)(x + (int)gui->inspector.width - ui_sx(26, d))
-		&& mouse.x <= (size_t)(x + (int)gui->inspector.width - ui_sx(4, d)))
+	if (mouse.x >= (x + gui->inspector.width - ui_sx(26, d))
+		&& mouse.x <= (x + gui->inspector.width - ui_sx(4, d)))
 	{
-		ma->clip_idx++;
-		if (ma->clip_idx >= clip_count)
-			ma->clip_idx = 0;
+		ma->idx.i++;
+		if (ma->idx.i >= n)
+			ma->idx.i = 0;
 		return (true);
 	}
 	return (false);
@@ -72,7 +73,7 @@ bool	info_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	t_mesh			*mesh;
 	t_islider		speed_sl;
 	t_mesh_anim		*ma;
-	t_vec2i			d;
+	t_vec2s			d;
 	int				x;
 	t_vec2i			p;
 
@@ -80,15 +81,15 @@ bool	info_panel_handle_click(t_gui *gui, t_vec2i mouse)
 	if (!gui->scene)
 		return (false);
 	if (gui->scene->group_count > 0
-		&& gui->selection.index < gui->scene->group_count)
+		&& gui->selection.index.i < gui->scene->group_count)
 	{
-		g = &gui->scene->groups[gui->selection.index];
+		g = &gui->scene->groups[gui->selection.index.i];
 		mesh = &gui->scene->meshes[g->mesh_start];
 	}
-	else if (gui->selection.index < gui->scene->mesh_count)
+	else if (gui->selection.index.i < gui->scene->mesh_count)
 	{
 		g = NULL;
-		mesh = &gui->scene->meshes[gui->selection.index];
+		mesh = &gui->scene->meshes[gui->selection.index.i];
 	}
 	else
 		return (false);
@@ -96,7 +97,7 @@ bool	info_panel_handle_click(t_gui *gui, t_vec2i mouse)
 		|| gui->scene->clip_count == 0)
 		return (false);
 	ma = &mesh->anim;
-	x = (int)gui->win.disp_size.x - (int)gui->inspector.width;
+	x = d.x - gui->inspector.width;
 	if (handle_clip_select(gui, mouse, x, ma))
 	{
 		if (g)

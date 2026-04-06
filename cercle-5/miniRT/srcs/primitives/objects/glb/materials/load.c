@@ -32,7 +32,7 @@ t_index	*glb_load_materials(t_mesh_resource *out, void *mlx_ptr,
 	if (!m_array || m_array->type != JSON_ARRAY)
 		return (NULL);
 	count = m_array->u.array.count;
-	ids = malloc(sizeof(t_index) * count);
+	ids = ft_calloc(count, sizeof(t_index));
 	if (!ids)
 		return (NULL);
 	mat.out_ids = ids;
