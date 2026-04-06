@@ -13,7 +13,7 @@
 *A comprehensive collection of projects showcasing my progression through 42 School's peer-to-peer learning system*
 
 [![42 School](https://img.shields.io/badge/42-School-000000?style=flat-square)](https://42.fr/)
-[![Cursus](https://img.shields.io/badge/Cursus-Complete-4CAF50?style=flat-square)](#)
+[![Cursus](https://img.shields.io/badge/Cursus-Complete-4CAF50?style=flat-square)](https://profile-v3.intra.42.fr/users/abdoali)
 
 </div>
 
@@ -246,11 +246,9 @@ Most projects are self-contained, but some require:
 
 **Let's connect and discuss programming!**
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/your-profile)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-username)
-[![42 Profile](https://img.shields.io/badge/42-Profile-000000?style=for-the-badge&logo=42&logoColor=white)](https://profile.intra.42.fr/users/your-username)
-
-**Email:** your.email@example.com
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/abdoulkadir-ali-a00a8614b/)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Abdoulkadir-ali)
+[![42 Profile](https://img.shields.io/badge/42-Profile-000000?style=for-the-badge&logo=42&logoColor=white)]([abdoali](https://profile-v3.intra.42.fr/users/abdoali))
 
 </div>
 
@@ -262,6 +260,6 @@ Most projects are self-contained, but some require:
 
 *Built with ❤️ during my 42 School journey*
 
-[![42 Cursus](https://img.shields.io/badge/42-Cursus-000000?style=for-the-badge&logo=42&logoColor=white)](#)
+[![42 Cursus](https://img.shields.io/badge/42-Cursus-000000?style=for-the-badge&logo=42&logoColor=white)](https://42.fr/)
 
 </div>
