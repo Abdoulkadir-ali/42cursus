@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 02:40:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 02:57:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,10 +131,9 @@ static void	apply_height_gradient(t_mesh *mesh, t_scene *scene)
 }
 
 /*
-** Builds a W×H bitmap from the raw FDF hex colors stored in mesh->extra.
+** Builds a W×H bitmap from the raw FDF hex colors stored in fdf->colors.
 */
-static char	*build_picture_bitmap(unsigned int *colors,
-	size_t w, size_t h)
+static char	*build_picture_bitmap(unsigned int *colors, size_t w, size_t h)
 {
 	unsigned char	*buf;
 	size_t			i;
@@ -155,7 +154,7 @@ static char	*build_picture_bitmap(unsigned int *colors,
 
 /*
 ** Picture mode: flatten all vertices to Y=0, build a W×H texture from the
-** FDF hex colors, and set grid UV coordinates per vertex.
+** parsed hex colors in fdf->colors, and set grid UV coordinates per vertex.
 */
 static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2 dims)
 {
@@ -186,8 +185,8 @@ static void	apply_picture(t_mesh *mesh, t_scene *scene, t_vec2 dims)
 	i = 0;
 	while (i < mesh->vertex_count)
 	{
-		mesh->uvs[i].x = (double)((i % w)) / (double)(w - 1);
-		mesh->uvs[i].y = (double)((i / w)) / (double)(h - 1);
+		mesh->uvs[i].x = (double)(i % w) / (double)(w - 1);
+		mesh->uvs[i].y = (double)(i / w) / (double)(h - 1);
 		i++;
 	}
 	ft_print_debug("FDF PICTURE: %zux%zu texture applied to mat %zu\n",

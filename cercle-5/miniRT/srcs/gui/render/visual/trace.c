@@ -20,74 +20,20 @@
 ** apply_gamma:      gamma = 50/gamma_val (neutral=50 → exponent 1.0).
 **                   Uses fast sqrt chains to avoid powf when possible.
 */
-static void	apply_saturation(float ch[3], double sat)
-{
-	float	luma;
-	float	f;
-
-	f = (float)(sat / 50.0);
-	luma = 0.299f * ch[0] + 0.587f * ch[1] + 0.114f * ch[2];
-	ch[0] = luma + f * (ch[0] - luma);
-	ch[1] = luma + f * (ch[1] - luma);
-	ch[2] = luma + f * (ch[2] - luma);
-}
-
-static float	apply_gamma_ch(float c, double gamma_val)
-{
-	float	x;
-	float	exp;
-
-	if (c <= 0.0f)
-		return (0.0f);
-	x = c / 255.0f;
-	exp = (float)(50.0 / gamma_val);
-	/* fast path for common exponents */
-	if (exp >= 0.49f && exp <= 0.51f)
-		x = sqrtf(x);
-	else if (exp >= 0.44f && exp <= 0.46f)
-		x = sqrtf(sqrtf(x)) * sqrtf(sqrtf(sqrtf(x)));
-	else
-		x = powf(x, exp);
-	return (x * 255.0f);
-}
-
 static int	pack_color(t_vec3 color, const t_raytracer_settings *opts)
 {
 	float			ch[3];
-	float			bfac;
-	float			cfac;
-	unsigned int	r;
-	unsigned int	g;
-	unsigned int	b;
-	int				i;
+	unsigned int	rgb[3];
 
 	ch[0] = (float)color.x;
 	ch[1] = (float)color.y;
 	ch[2] = (float)color.z;
-	bfac = (float)((opts->brightness - 50.0) / 50.0) * 255.0f;
-	cfac = (float)(opts->contrast / 50.0);
-	i = 0;
-	while (i < 3)
-	{
-		ch[i] += bfac;
-		ch[i] = (ch[i] / 255.0f - 0.5f) * cfac * 255.0f + 127.5f;
-		i++;
-	}
-	apply_saturation(ch, opts->saturation);
-	i = 0;
-	while (i < 3)
-	{
-		if (opts->gamma > 0.5)
-			ch[i] = apply_gamma_ch(ch[i], opts->gamma);
-		ch[i] = fminf(fmaxf(ch[i], 0.0f), 255.0f);
-		i++;
-	}
-	r = ((unsigned int)(uint8_t)ch[0]) << 16;
-	g = ((unsigned int)(uint8_t)ch[1]) << 8;
-	b = (unsigned int)(uint8_t)ch[2];
-	return ((int)(r | g | b));
+	apply_bcg(ch, opts);
+	rgb[0] = ((unsigned int)(uint8_t)ch[0]) << 16;
+	rgb[1] = ((unsigned int)(uint8_t)ch[1]) << 8;
+	rgb[2] = (unsigned int)(uint8_t)ch[2];
+	return ((int)(rgb[0] | rgb[1] | rgb[2]));
 }
-
 
 static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 {

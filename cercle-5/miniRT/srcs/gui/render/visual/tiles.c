@@ -1,22 +1,22 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   tiles.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/03 12:50:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:01:46 by abdoali          ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   tiles.c											:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: abdoali <abdoali@student.42.fr>			+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2026/04/03 12:50:57 by abdoali		   #+#	#+#			 */
+/*   Updated: 2026/04/06 00:00:00 by abdoali		  ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "render.h"
 
 static const uint8_t	g_z4[16][2] = {
-	{0, 0}, {1, 0}, {0, 1}, {1, 1},
-	{2, 0}, {3, 0}, {2, 1}, {3, 1},
-	{0, 2}, {1, 2}, {0, 3}, {1, 3},
-	{2, 2}, {3, 2}, {2, 3}, {3, 3}
+{0, 0}, {1, 0}, {0, 1}, {1, 1},
+{2, 0}, {3, 0}, {2, 1}, {3, 1},
+{0, 2}, {1, 2}, {0, 3}, {1, 3},
+{2, 2}, {3, 2}, {2, 3}, {3, 3}
 };
 
 static bool	decode_morton(t_render *r, size_t id, t_vec2i *out)
@@ -33,8 +33,11 @@ static bool	decode_morton(t_render *r, size_t id, t_vec2i *out)
 	return (out->x < r->tiles_count.x && out->y < r->tiles_count.y);
 }
 
-static void	process_tile_row(t_render *render, t_tile *v)
+static void	render_tile_row(t_render *render, t_tile *v, size_t id, int *cnt)
 {
+	long long	st;
+
+	st = now_ms();
 	v->p_pos.x = v->tile.x;
 	v->pixel_ptr = v->row_ptr;
 	while (v->p_pos.x < v->tile.x + TILE_SIZE
@@ -44,11 +47,18 @@ static void	process_tile_row(t_render *render, t_tile *v)
 		v->p_pos.x += render->step;
 		v->pixel_ptr += v->bpp_step;
 	}
+	if (id == 0)
+	{
+		ft_print_debug("[TILE 0] Row %d done in %lld ms\n", (*cnt)++,
+			now_ms() - st);
+		fflush(stdout);
+	}
 }
 
 void	render_tile(t_render *render, size_t id)
 {
 	t_tile	v;
+	int		cnt;
 
 	if (!decode_morton(render, id, &v.tile))
 		return ;
@@ -59,24 +69,11 @@ void	render_tile(t_render *render, size_t id)
 		+ (v.tile.x * (render->gui->win.bpp / 8));
 	v.bpp_step = (render->gui->win.bpp / 8) * render->step;
 	v.row_step = render->gui->win.line_len * render->step;
-	long long	row_start;
-	int			row_count = 0;
-
-	if (id == 0)
-	{
-		ft_print_debug("[TILE %zu] STARTING AT (%zu, %zu)\n", id, v.tile.x, v.tile.y);
-		fflush(stdout);
-	}
+	cnt = 0;
 	while (v.p_pos.y < v.tile.y + TILE_SIZE
 		&& v.p_pos.y < render->gui->win.size.y)
 	{
-		row_start = now_ms();
-		process_tile_row(render, &v);
-		if (id == 0)
-		{
-			ft_print_debug("[TILE %zu] Row %d done in %lld ms\n", id, row_count++, now_ms() - row_start);
-			fflush(stdout);
-		}
+		render_tile_row(render, &v, id, &cnt);
 		v.p_pos.y += render->step;
 		v.row_ptr += v.row_step;
 	}

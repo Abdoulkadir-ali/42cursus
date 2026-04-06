@@ -14,7 +14,7 @@
 
 static void	draw_panel_pixel(t_gui *gui, t_panel panel, t_vec2i pos)
 {
-	int			col;
+	int		col;
 	size_t	*dst;
 
 	col = panel_color(panel, pos);

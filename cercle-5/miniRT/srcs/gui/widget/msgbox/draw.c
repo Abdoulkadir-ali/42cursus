@@ -17,11 +17,15 @@ static void	draw_msgbox_bg(t_gui *gui, t_widget *w)
 	t_panel	overlay;
 	t_panel	box;
 
-	overlay = (t_panel){.pos = vec2i(0, 0), .size = gui->win.disp_size,
-		.bg = 0x000000, .brd = 0x000000};
+	overlay.pos = vec2i(0, 0);
+	overlay.size = gui->win.disp_size;
+	overlay.bg = 0x000000;
+	overlay.brd = 0x000000;
 	draw_panel(gui, overlay);
-	box = (t_panel){.pos = w->pos, .size = w->size,
-		.bg = 0x12121E, .brd = COL_ACCENT};
+	box.pos = w->pos;
+	box.size = w->size;
+	box.bg = 0x12121E;
+	box.brd = COL_ACCENT;
 	draw_panel(gui, box);
 	if (w->label)
 		gui_draw_string(gui, w->label,
@@ -31,33 +35,36 @@ static void	draw_msgbox_bg(t_gui *gui, t_widget *w)
 			vec2i(w->pos.x + 8, (int)w->pos.y + 32), COL_TEXT);
 }
 
-static void	draw_msgbox_btn(t_gui *gui, t_widget *w, int bw, int by, int i)
+static void	draw_msgbox_btn(t_gui *gui, t_widget *w, t_vec3i p)
 {
 	t_panel	btn;
 	int		bx;
 
-	bx = (int)w->pos.x + 8 + i * (bw + 4);
-	btn = (t_panel){.pos = vec2i(bx, by), .size = vec2i(bw - 4, 22),
-		.bg = 0x2A2A40, .brd = COL_BORDER};
+	bx = (int)w->pos.x + 8 + p.z * (p.x + 4);
+	btn.pos = vec2i(bx, p.y);
+	btn.size = vec2i(p.x - 4, 22);
+	btn.bg = 0x2A2A40;
+	btn.brd = COL_BORDER;
 	draw_panel(gui, btn);
-	if (w->btn_labels[i])
-		gui_draw_string(gui, w->btn_labels[i],
-			vec2i(bx + bw / 2 - (int)ft_strlen(w->btn_labels[i]) * 4,
-				by + 7), COL_TEXT);
+	if (w->btn_labels[p.z])
+		gui_draw_string(gui, w->btn_labels[p.z],
+			vec2i(bx + p.x / 2 - (int)ft_strlen(w->btn_labels[p.z]) * 4,
+				p.y + 7), COL_TEXT);
 }
 
 void	widget_draw_msgbox(t_gui *gui, t_widget *w)
 {
-	int	bw;
-	int	by;
-	int	i;
+	t_vec3i	p;
 
 	draw_msgbox_bg(gui, w);
-	bw = w->size.x - 16;
+	p.x = w->size.x - 16;
 	if (w->btn_count > 0)
-		bw /= w->btn_count;
-	by = (int)w->pos.y + w->size.y - 28;
-	i = 0;
-	while (i < w->btn_count)
-		draw_msgbox_btn(gui, w, bw, by, i++);
+		p.x /= w->btn_count;
+	p.y = (int)w->pos.y + w->size.y - 28;
+	p.z = 0;
+	while (p.z < w->btn_count)
+	{
+		draw_msgbox_btn(gui, w, p);
+		p.z++;
+	}
 }

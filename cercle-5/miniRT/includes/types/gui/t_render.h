@@ -93,6 +93,8 @@ typedef struct s_optimizations
 	bool		prev_valid;
 	bool		frame_interp;
 	uint32_t	*interp_buf;
+	t_transform	interp_cam;
+	t_vec2		interp_half;
 	float		interp_alpha;
 	bool		taa;
 	uint32_t	*taa_buf;

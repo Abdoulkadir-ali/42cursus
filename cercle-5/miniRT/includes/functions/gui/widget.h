@@ -15,6 +15,9 @@
 
 # include "gui.h"
 
+bool		hit_titlebar(t_widget *w, t_vec2i m);
+bool		hit_body(t_widget *w, t_vec2i m);
+bool		handle_msgbox_click(struct s_gui *gui, t_widget *w, t_vec2i m);
 t_widget	*widget_create(t_widget_type type, t_vec2i pos, t_vec2i size,
 		const char *label);
 t_widget	*widget_make_msgbox(const char *title, const char *msg,

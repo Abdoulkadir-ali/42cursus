@@ -16,7 +16,7 @@
 ** Saves the current rendered frame into opts for next-frame reprojection.
 ** Called before any post-processing so prev_color always holds the raw render.
 */
-void    save_frame(t_gui *gui)
+void	save_frame(t_gui *gui)
 {
 	t_optimizations	*o;
 	size_t			n;

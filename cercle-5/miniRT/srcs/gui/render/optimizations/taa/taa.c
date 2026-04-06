@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:03:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 03:10:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,144 +16,47 @@
 ** Halton low-discrepancy sequence for sub-pixel jitter.
 ** base 2 for x, base 3 for y — standard TAA choice.
 */
-static double	halton(size_t i, size_t base)
-{
-	double	f;
-	double	r;
 
-	f = 1.0;
-	r = 0.0;
-	while (i > 0)
-	{
-		f /= (double)base;
-		r += f * (double)(i % base);
-		i /= base;
-	}
-	return (r);
-}
-
-/*
-** Returns the jitter for frame index n in [-0.5, 0.5] NDC sub-pixel space.
-*/
-void	taa_get_jitter(size_t frame, double *jx, double *jy)
-{
-	size_t	idx;
-
-	idx = (frame % TAA_SEQ_LEN) + 1;
-	*jx = halton(idx, 2) - 0.5;
-	*jy = halton(idx, 3) - 0.5;
-}
-
-/*
-** Reprojects pixel (dx, dy) from current into previous frame screen space.
-** Returns false if reprojection is invalid (behind camera, out of bounds,
-** or depth discontinuity indicating disocclusion).
-*/
-static bool	reproject_taa(t_gui *gui, size_t dx, size_t dy,
-	size_t *ox, size_t *oy)
-{
-	t_optimizations	*o;
-	t_vec3			wp;
-	t_vec3			rel;
-	t_vec3			ray_dir;
-	double			ndc_x;
-	double			ndc_y;
-	double			cz;
-	double			prev_d;
-	size_t			pw;
-	size_t			ph;
-
-	o = &gui->opts;
-	pw = (size_t)o->prev_render_size.x;
-	ph = (size_t)o->prev_render_size.y;
-	if (pw == 0 || ph == 0)
-		return (false);
-	ndc_x = (2.0 * (dx + 0.5) / (size_t)gui->win.size.x - 1.0) * o->cur_half_w;
-	ndc_y = (1.0 - 2.0 * (dy + 0.5) / (size_t)gui->win.size.y) * o->cur_half_h;
-	ray_dir = vec3_norm(vec3_add(o->cur_cam.forward,
-				vec3_add(vec3_scale(o->cur_cam.right, ndc_x),
-					vec3_scale(o->cur_cam.up, ndc_y))));
-	wp = vec3_add(o->cur_cam.pos,
-			vec3_scale(ray_dir, (double)o->depth_buf[dy * pw + dx]));
-	rel = vec3_sub(wp, o->prev_cam.pos);
-	cz = vec3_dot(rel, o->prev_cam.forward);
-	if (cz < 1e-4)
-		return (false);
-	*ox = (size_t)((vec3_dot(rel, o->prev_cam.right) / cz / o->prev_half_w
-				+ 1.0) * pw * 0.5);
-	*oy = (size_t)((1.0 - vec3_dot(rel, o->prev_cam.up) / cz
-				/ o->prev_half_h) * ph * 0.5);
-	if (*ox >= pw || *oy >= ph)
-		return (false);
-	prev_d = (double)o->prev_depth[*oy * pw + *ox];
-	if (prev_d > 1e-4 && o->depth_buf[dy * pw + dx] > 1e-4)
-	{
-		if (fabs(cz - prev_d) / fmaxf((float)cz, (float)prev_d)
-			> TAA_DEPTH_THR)
-			return (false);
-	}
-	return (true);
-}
-
-/*
-** Blends one pixel: alpha * current + (1-alpha) * history.
-** Channels extracted, blended in integer space.
-*/
 static uint32_t	blend_taa(uint32_t cur, uint32_t hist)
 {
-	size_t	cr;
-	size_t	cg;
-	size_t	cb;
-	size_t	hr;
-	size_t	hg;
-	size_t	hb;
-	size_t	a;
-	size_t	b;
+	t_vec3i	c;
+	t_vec3i	h;
+	int		a;
+	int		b;
 
-	a = (size_t)(TAA_ALPHA * 256.0f);
+	a = (int)(TAA_ALPHA * 256.0f);
 	b = 256 - a;
-	cr = (cur >> 16) & 0xFF;
-	cg = (cur >> 8) & 0xFF;
-	cb = cur & 0xFF;
-	hr = (hist >> 16) & 0xFF;
-	hg = (hist >> 8) & 0xFF;
-	hb = hist & 0xFF;
-	return (((a * cr + b * hr) / 256) << 16
-		| ((a * cg + b * hg) / 256) << 8
-		| ((a * cb + b * hb) / 256));
+	c = rt_unpack_color_v(cur);
+	h = rt_unpack_color_v(hist);
+	c.x = (a * c.x + b * h.x) >> 8;
+	c.y = (a * c.y + b * h.y) >> 8;
+	c.z = (a * c.z + b * h.z) >> 8;
+	return (rt_pack_color_v(c));
 }
 
-/*
-** Band worker: for each render pixel in [y_start, y_end),
-** reproject into prev frame and accumulate into taa_buf.
-*/
 void	taa_band(t_gui *gui, size_t y_start, size_t y_end)
 {
 	t_optimizations	*o;
-	size_t			rw;
-	size_t			dx;
-	size_t			dy;
-	size_t			ox;
-	size_t			oy;
+	t_vec2i			out;
+	t_vec2i			d;
 	uint32_t		cur;
 
 	o = &gui->opts;
-	rw = (size_t)gui->win.size.x;
-	dy = y_start;
-	while (dy < y_end)
+	d.y = y_start;
+	while (d.y < y_end)
 	{
-		dx = 0;
-		while (dx < rw)
+		d.x = 0;
+		while (d.x < gui->win.size.x)
 		{
-			cur = ((uint32_t *)gui->win.addr)[dy * rw + dx];
-			if (o->prev_valid && reproject_taa(gui, dx, dy, &ox, &oy))
-				o->taa_buf[dy * rw + dx] = blend_taa(cur,
-						o->prev_color[oy * (size_t)o->prev_render_size.x + ox]);
+			cur = gui->win.addr[d.y * gui->win.size.x + d.x];
+			if (o->prev_valid && reproject_taa(gui, d.x, d.y, &out))
+				o->taa_buf[d.y * gui->win.size.x + d.x] = blend_taa(cur,
+						o->prev_color[out.y * o->prev_render_size.x + out.x]);
 			else
-				o->taa_buf[dy * rw + dx] = cur;
-			dx++;
+				o->taa_buf[d.y * gui->win.size.x + d.x] = cur;
+			d.x++;
 		}
-		dy++;
+		d.y++;
 	}
 }
 

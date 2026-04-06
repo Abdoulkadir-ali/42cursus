@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:45:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/06 02:52:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
 #ifdef PROFILE_BUILD
+
 static void	handle_profile_exit(t_gui *gui)
 {
 	static int	prof_frames = 0;
@@ -20,17 +21,21 @@ static void	handle_profile_exit(t_gui *gui)
 	if (++prof_frames > 5)
 		mlx_loop_end(gui->win.mlx);
 }
+
 #else
+
 static void	handle_profile_exit(t_gui *gui)
 {
 	(void)gui;
 }
+
 #endif
 
 int	gui_update(t_gui *gui)
 {
 	double	delta;
 
+	delta = 0.016;
 	handle_profile_exit(gui);
 	scene_swap_step(gui);
 	physics_step(gui, delta);

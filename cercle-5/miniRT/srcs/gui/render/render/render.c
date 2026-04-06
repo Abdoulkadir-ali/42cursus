@@ -20,7 +20,8 @@ static void	setup_render_size(t_gui *gui, size_t s)
 	gui->win.addr = (char *)gui->win.render_pixels;
 }
 
-static void	setup_render_geometry(t_gui *gui, t_render *r, t_raytracer_engine *rt)
+static void	setup_render_geometry(t_gui *gui, t_render *r,
+	t_raytracer_engine *rt)
 {
 	r->tiles_count.x = (gui->win.size.x + TILE_SIZE - 1) / TILE_SIZE;
 	r->tiles_count.y = (gui->win.size.y + TILE_SIZE - 1) / TILE_SIZE;

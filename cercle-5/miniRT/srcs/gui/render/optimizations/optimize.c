@@ -15,6 +15,21 @@
 /*
 ** Allocates all buffers owned by t_optimizations and sets default flags.
 */
+static void	init_rt_defaults(t_gui *gui)
+{
+	gui->opts.adaptive_scale = true;
+	gui->opts.reprojection = true;
+	gui->opts.temporal_blend = false;
+	gui->opts.frame_interp = false;
+	gui->opts.taa = false;
+	gui->rt_engine.settings.blinn_phong = true;
+	gui->rt_engine.settings.brightness = 50.0;
+	gui->rt_engine.settings.contrast = 50.0;
+	gui->rt_engine.settings.saturation = 50.0;
+	gui->rt_engine.settings.gamma = 50.0;
+	gui->rt_engine.settings.preset = RT_PRESET_NATURAL;
+}
+
 void	optimizations_init(t_gui *gui)
 {
 	size_t	rn;
@@ -35,19 +50,8 @@ void	optimizations_init(t_gui *gui)
 	gui->opts.taa_frame = 0;
 	gui->opts.taa_jitter_x = 0.0;
 	gui->opts.taa_jitter_y = 0.0;
-	gui->opts.adaptive_scale = true;
-	gui->opts.reprojection = true;
-	gui->opts.temporal_blend = false;
-	gui->opts.frame_interp = false;
-	gui->opts.taa = false;
-	gui->rt_engine.settings.blinn_phong = true;
-	gui->rt_engine.settings.brightness = 50.0;
-	gui->rt_engine.settings.contrast = 50.0;
-	gui->rt_engine.settings.saturation = 50.0;
-	gui->rt_engine.settings.gamma = 50.0;
-	gui->rt_engine.settings.preset = RT_PRESET_NATURAL;
+	init_rt_defaults(gui);
 }
-
 
 /*
 ** Central dispatcher — called once per rendered frame after upscale.

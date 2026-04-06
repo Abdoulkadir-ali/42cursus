@@ -12,10 +12,6 @@
 
 #include "optimizations.h"
 
-/*
-** Returns true if the pixel at screen pos n[] has a depth discontinuity
-** compared to cz (the reprojected depth), rejecting edge bleeding.
-*/
 static bool	depth_reject(t_optimizations *o, size_t nx, size_t ny, double cz)
 {
 	size_t	rx;
@@ -30,46 +26,41 @@ static bool	depth_reject(t_optimizations *o, size_t nx, size_t ny, double cz)
 	return (fabsf((float)cz - cur_d) / fmaxf((float)cz, cur_d) > DEPTH_THRESH);
 }
 
-/*
-** Projects one pixel from prev frame into the current display buffer.
-*/
+static t_vec3	get_wp(t_optimizations *o, t_vec2 ndc, size_t idx)
+{
+	t_vec3	dir;
+
+	dir = repro_get_dir(o->prev_cam, ndc);
+	return (vec3_add(o->prev_cam.pos,
+			vec3_scale(dir, (double)o->prev_depth[idx])));
+}
+
 static void	project_pixel(t_gui *gui, size_t idx, t_vec2i p)
 {
 	t_optimizations	*o;
 	t_vec2			ndc;
-	t_vec3			wp;
-	t_vec3			rel;
-	size_t			nx;
-	size_t			ny;
+	t_vec2i			n;
+	t_reproj		r;
 	double			cz;
 
 	o = &gui->opts;
-	ndc.x = (2.0 * (p.x + 0.5) / o->prev_render_size.x - 1.0) * o->prev_half_w;
-	ndc.y = (1.0 - 2.0 * (p.y + 0.5) / o->prev_render_size.y) * o->prev_half_h;
-	wp = vec3_add(o->prev_cam.pos, vec3_scale(vec3_norm(vec3_add(o->prev_cam.forward,
-					vec3_add(vec3_scale(o->prev_cam.right, ndc.x),
-						vec3_scale(o->prev_cam.up, ndc.y)))),
-				(double)o->prev_depth[idx]));
-	rel = vec3_sub(wp, o->cur_cam.pos);
-	cz = vec3_dot(rel, o->cur_cam.forward);
-	if (cz < 1e-4)
-		return ;
-	nx = (size_t)((vec3_dot(rel, o->cur_cam.right) / cz / o->cur_half_w + 1.0)
-			* gui->win.disp_size.x * 0.5);
-	ny = (size_t)((1.0 - vec3_dot(rel, o->cur_cam.up) / cz / o->cur_half_h)
-			* gui->win.disp_size.y * 0.5);
-	if (nx < (size_t)gui->win.disp_size.x
-		&& ny < (size_t)gui->win.disp_size.y
-		&& !depth_reject(o, nx, ny, cz))
+	ndc = repro_get_ndc(p, o->prev_render_size,
+			vec2(o->prev_half_w, o->prev_half_h));
+	r.cam = o->cur_cam;
+	r.half = vec2(o->cur_half_w, o->cur_half_h);
+	r.size = gui->win.disp_size;
+	if (repro_world_to_screen(r, get_wp(o, ndc, idx), &n, &cz))
 	{
-		o->reproj_buf[ny * gui->win.disp_size.x + nx] = o->prev_color[idx];
-		o->reproj_tag[ny * gui->win.disp_size.x + nx] = o->reproj_gen;
+		if (!depth_reject(o, (size_t)n.x, (size_t)n.y, cz))
+		{
+			o->reproj_buf[(size_t)n.y * gui->win.disp_size.x + (size_t)n.x]
+				= o->prev_color[idx];
+			o->reproj_tag[(size_t)n.y * gui->win.disp_size.x + (size_t)n.x]
+				= o->reproj_gen;
+		}
 	}
 }
 
-/*
-** Scatters all pixels of the previous render into reproj_buf.
-*/
 void	scatter_band(t_gui *gui, size_t y_start, size_t y_end)
 {
 	t_optimizations	*o;
