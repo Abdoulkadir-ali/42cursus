@@ -12,7 +12,6 @@
 
 #include "glb.h"
 
-
 static t_mat4	parse_node_matrix(t_json_value *v)
 {
 	t_mat4	m;

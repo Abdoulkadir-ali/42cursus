@@ -31,7 +31,7 @@ static void	tick_mesh(t_mesh *mesh, t_scene *scene, double dt)
 
 	ma = &mesh->anim;
 	if (ma->paused || ma->idx.error
-			|| ma->idx.i >= scene->clip_count)
+		|| ma->idx.i >= scene->clip_count)
 	{
 		ft_print_debug("[ANIM] tick_mesh '%s': paused or invalid clip\n",
 			animation_mesh_name(mesh));

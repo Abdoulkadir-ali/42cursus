@@ -45,24 +45,10 @@ void	pyramid_cache_verts(t_pyramid *py)
 /*
 ** Try a single triangle face; if hit and closer than *best_t, update hit.
 */
-static bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
+static void	set_face_hit(t_ray_query *q, double t, t_vec2 uv, t_vec3 n)
 {
-	t_vec3	tri[3];
-	double	t;
-	t_vec2	uv;
-	t_vec3	n;
-
-	tri[0] = a;
-	tri[1] = b;
-	tri[2] = c;
-	if (!intersect_triangle_fast(q->ray, tri, &t, &uv))
-		return (false);
-	if (t >= *(q->tm))
-		return (false);
-	*(q->tm) = t;
 	q->hit->t = t;
 	q->hit->point = vec3_add(q->ray->origin, vec3_scale(q->ray->direction, t));
-	n = vec3_norm(vec3_cross(vec3_sub(b, a), vec3_sub(c, a)));
 	if (vec3_dot(q->ray->direction, n) > 0)
 	{
 		n = vec3_scale(n, -1.0);
@@ -74,6 +60,24 @@ static bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
 	q->hit->u = uv.x;
 	q->hit->v = uv.y;
 	vec3_orthonormal_basis(n, &q->hit->tangent, &q->hit->bitangent);
+}
+
+static bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
+{
+	t_vec3	tri[3];
+	double	t;
+	t_vec2	uv;
+
+	tri[0] = a;
+	tri[1] = b;
+	tri[2] = c;
+	if (!intersect_triangle_fast(q->ray, tri, &t, &uv))
+		return (false);
+	if (t >= *(q->tm))
+		return (false);
+	*(q->tm) = t;
+	set_face_hit(q, t, uv, vec3_norm(vec3_cross(vec3_sub(b, a),
+				vec3_sub(c, a))));
 	return (true);
 }
 

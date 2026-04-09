@@ -47,6 +47,7 @@ typedef struct s_box_calc
 	double	p[3];
 	double	d[3];
 	double	h[3];
+	t_ray	ray;
 }	t_box_calc;
 
 typedef struct s_cap_calc

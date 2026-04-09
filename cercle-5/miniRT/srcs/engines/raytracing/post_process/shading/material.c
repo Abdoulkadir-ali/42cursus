@@ -6,47 +6,57 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 18:19:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:44:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
+static int	mat_slot(t_scene *sc, t_bvh_ref ref)
+{
+	if (ref.type == TYPE_SPHERE)
+		return (sc->spheres[ref.index].mat_slots[
+				sc->spheres[ref.index].active_slot]);
+	if (ref.type == TYPE_PLANE)
+		return (sc->planes[ref.index].mat_slots[
+				sc->planes[ref.index].active_slot]);
+	if (ref.type == TYPE_CYLINDER)
+		return (sc->cylinders[ref.index].mat_slots[
+				sc->cylinders[ref.index].active_slot]);
+	if (ref.type == TYPE_CONE)
+		return (sc->cones[ref.index].mat_slots[
+				sc->cones[ref.index].active_slot]);
+	if (ref.type == TYPE_TRI)
+		return (sc->tris[ref.index].mat_slots[
+				sc->tris[ref.index].active_slot]);
+	if (ref.type == TYPE_RECT)
+		return (sc->rects[ref.index].mat_slots[
+				sc->rects[ref.index].active_slot]);
+	return (-1);
+}
+
 static int	dispatch_mat(t_shading *sha, t_hit *h)
 {
-	if (h->ref.type == TYPE_SPHERE)
-		return (sha->scene->spheres[h->ref.index].mat_slots[
-			sha->scene->spheres[h->ref.index].active_slot]);
-	if (h->ref.type == TYPE_PLANE)
-		return (sha->scene->planes[h->ref.index].mat_slots[
-			sha->scene->planes[h->ref.index].active_slot]);
-	if (h->ref.type == TYPE_CYLINDER)
-		return (sha->scene->cylinders[h->ref.index].mat_slots[
-			sha->scene->cylinders[h->ref.index].active_slot]);
-	if (h->ref.type == TYPE_CONE)
-		return (sha->scene->cones[h->ref.index].mat_slots[
-			sha->scene->cones[h->ref.index].active_slot]);
-	if (h->ref.type == TYPE_TRI)
-		return (sha->scene->tris[h->ref.index].mat_slots[
-			sha->scene->tris[h->ref.index].active_slot]);
-	if (h->ref.type == TYPE_RECT)
-		return (sha->scene->rects[h->ref.index].mat_slots[
-			sha->scene->rects[h->ref.index].active_slot]);
+	int	id;
+
+	id = mat_slot(sha->scene, h->ref);
+	if (id != -1)
+		return (id);
 	if (h->ref.type == TYPE_PYRAMID)
 		return (sha->scene->pyramids[h->ref.index].mat_slots[
-			sha->scene->pyramids[h->ref.index].active_slot]);
+				sha->scene->pyramids[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_BOX)
 		return (sha->scene->boxes[h->ref.index].mat_slots[
-			sha->scene->boxes[h->ref.index].active_slot]);
+				sha->scene->boxes[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_CAPSULE)
 		return (sha->scene->capsules[h->ref.index].mat_slots[
-			sha->scene->capsules[h->ref.index].active_slot]);
+				sha->scene->capsules[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_MESH)
 		return (sha->scene->meshes[h->ref.index].mat_slots[
-			sha->scene->meshes[h->ref.index].active_slot]);
+				sha->scene->meshes[h->ref.index].active_slot]);
 	if (h->ref.type == TYPE_ANIM)
 		return (sha->scene->animated[h->ref.index].base.mat_slots[
-			sha->scene->animated[h->ref.index].base.active_slot]);
+				sha->scene->animated[h->ref.index].base.active_slot]);
 	return (0);
 }
 

@@ -1,34 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   switch.c                                           :+:      :+:    :+:   */
+/*   ft_ishex.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/07 00:00:00 by abdoali           #+#    #+#             */
+/*   Created: 2026/04/09 00:00:00 by abdoali           #+#    #+#             */
 /*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
-#include "raytracing.h"
-#include "scene.h"
+#include "libft.h"
 
-void	fdf_switch_mode(t_mesh *mesh, t_scene *scene, t_fdf_mode new_mode)
+/**
+ * @brief Checks if @c is a valid hexadecimal digit (0-9, a-f, A-F).
+ */
+bool	ft_ishex(int c)
 {
-	t_fdf_state	*state;
-
-	if (!mesh || !mesh->is_fdf || !mesh->extra)
-		return ;
-	state = (t_fdf_state *)mesh->extra;
-	if (state->mode == new_mode)
-		return ;
-	mesh->extra = state->colors;
-	fdf_fill_data(mesh->name, mesh, state->dims);
-	mesh->extra = state;
-	state->mode = new_mode;
-	fdf_compute_normals(scene->pool, mesh, state->dims);
-	fdf_apply_mode(mesh, scene, state);
-	mesh->bvh_dirty = true;
-	mesh_build_bvh(mesh);
+	return (ft_isdigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
 }

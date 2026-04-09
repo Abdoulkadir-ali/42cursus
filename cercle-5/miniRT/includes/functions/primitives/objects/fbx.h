@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:48:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,11 @@ void					mesh_free(t_mesh *mesh);
 /* FBX Specific (srcs/primitives/objects/parsing/) */
 void					skip_properties(int fd, size_t num_props);
 char					*fbx_next(char *p);
+void					set_req(t_fbx_array_req *req, t_fbx_data *d,
+										t_fbx_type type);
+void					parse_array_bin(t_fbx_parse *fbx,
+										t_fbx_array_req *req, int depth);
+size_t					fbx_count_tris(int *raw, size_t raw_c);
 
 /* FBX Scene Addition (srcs/primitives/scene/add/objects/mesh/loaders/) */
 bool					parse_fbx_worker(const char *path, t_scene *scene);

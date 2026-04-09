@@ -67,6 +67,7 @@ void	traverse_sphere_bvh(t_contact_query *q, size_t idx, t_sphere *sp)
 	size_t				top;
 	const t_bvh_node	*nd;
 	t_trav				tr;
+	size_t				nd_idx;
 
 	tr.v = get_locked_bvh(q->engine->scene);
 	if (!tr.v)
@@ -78,8 +79,6 @@ void	traverse_sphere_bvh(t_contact_query *q, size_t idx, t_sphere *sp)
 	tr.top = &top;
 	while (top > 0 && q->count < q->max)
 	{
-		size_t	nd_idx;
-
 		nd_idx = st[--top];
 		nd = &tr.v->nodes[nd_idx];
 		if (nd->count > 0)

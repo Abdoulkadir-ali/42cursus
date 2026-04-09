@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 02:53:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:38:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ static void	cylinder_vs_cylinders(t_contact_query *qu, t_col_pair *p,
 		if (aabb_overlap(cylinder_aabb((t_cylinder *)p->sa->data),
 				cylinder_aabb(other)))
 		{
-			sb = init_gjk_shape(other, gjk_support_cylinder, other->phys.center);
+			sb = init_gjk_shape(other, gjk_support_cylinder,
+				other->phys.center);
 			pair = (t_col_pair){p->sa, &sb, p->ba, &other->phys, p->ta,
 				&other->transform};
 			if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
@@ -42,8 +43,8 @@ size_t	query_cylinder(t_contact_query *qu, size_t idx)
 {
 	t_cylinder		*cy;
 	t_gjk_shape		sa;
-	t_col_pair		p;
 	t_bvh_phys_ctx	ctx;
+	t_col_pair		p;
 
 	cy = &qu->engine->scene->cylinders[idx];
 	if (cy->phys.is_static)

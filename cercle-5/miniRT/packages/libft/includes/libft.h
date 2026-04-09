@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:08:27 by abdali            #+#    #+#             */
-/*   Updated: 2026/03/29 09:24:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ bool				ft_isalpha(int c);
 bool				ft_isalnum(int c);
 bool				ft_isascii(int c);
 bool				ft_isdigit(int c);
+bool				ft_ishex(int c);
 bool				ft_isprint(int c);
 char				ft_tolower(char c);
 char				ft_toupper(char c);

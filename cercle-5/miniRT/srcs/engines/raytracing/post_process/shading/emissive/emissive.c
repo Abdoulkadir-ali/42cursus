@@ -6,54 +6,56 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:37:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/07 22:22:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
+static void	finalize_em_val(t_shading *sha, t_vec3 *total,
+				t_material *mat, t_shading_ctx *ctx)
+{
+	double	bright;
+	double	att;
+
+	if (is_in_shadow(sha->bvh, vec3_add(sha->hit->point,
+				vec3_scale(sha->hit->normal, EPSILON * 10.0)), ctx->ldir,
+			ctx->d_surf))
+		return ;
+	bright = vec3_mag(mat->emission) / 255.0 * mat->em_intensity;
+	att = 1.0 / (1.0 + ctx->d_surf * ctx->d_surf);
+	*total = vec3_add(*total, pixel_color(sha->albedo, mat->emission,
+				bright * ctx->ndotl * att * ctx->emitter_facing));
+	sha->aux_v = vec3_scale(ctx->ldir,
+			bright * sha->mat.specular * att * ctx->emitter_facing);
+}
+
 static void	apply_em_val(t_shading *sha, t_vec3 *total,
 				t_material *mat, double r)
 {
-	double	d_surf;
-	t_vec3	ldir;
-	double	ndotl;
-	double	bright;
-	double	att;
-	double	max_d;
-	double	emitter_facing;
-	t_vec3	to_light;
+	t_shading_ctx	ctx;
+	t_vec3			tl;
 
-	to_light = sha->aux_v;
+	tl = sha->aux_v;
 	sha->aux_v = vec3(0, 0, 0);
-	max_d = fmax(r * 6.0, 8.0);
-	if (vec3_mag_sq(to_light) > max_d * max_d)
+	if (vec3_mag_sq(tl) > fmax(r * 6.0, 8.0) * fmax(r * 6.0, 8.0))
 		return ;
-	d_surf = vec3_mag(to_light) - r - 0.01;
-	if (d_surf <= 0.0)
+	ctx.d_surf = vec3_mag(tl) - r - 0.01;
+	if (ctx.d_surf <= 0.0)
 		return ;
-	ldir = vec3_norm(to_light);
+	ctx.ldir = vec3_norm(tl);
+	ctx.emitter_facing = 1.0;
 	if (vec3_mag_sq(sha->em_normal) > 1e-6)
 	{
-		emitter_facing = vec3_dot(sha->em_normal,
-				vec3_scale(ldir, -1.0));
-		if (emitter_facing <= 0.0)
+		ctx.emitter_facing = vec3_dot(sha->em_normal,
+				vec3_scale(ctx.ldir, -1.0));
+		if (ctx.emitter_facing <= 0.0)
 			return ;
 	}
-	else
-		emitter_facing = 1.0;
-	ndotl = vec3_dot(sha->hit->normal, ldir);
-	if (ndotl < 0.02)
+	ctx.ndotl = vec3_dot(sha->hit->normal, ctx.ldir);
+	if (ctx.ndotl < 0.02)
 		return ;
-	if (is_in_shadow(sha->bvh, vec3_add(sha->hit->point,
-				vec3_scale(sha->hit->normal, EPSILON * 10.0)), ldir, d_surf))
-		return ;
-	bright = vec3_mag(mat->emission) / 255.0 * mat->em_intensity;
-	att = 1.0 / (1.0 + d_surf * d_surf);
-	*total = vec3_add(*total, pixel_color(sha->albedo, mat->emission,
-				bright * ndotl * att * emitter_facing));
-	sha->aux_v = vec3_scale(ldir,
-			bright * sha->mat.specular * att * emitter_facing);
+	finalize_em_val(sha, total, mat, &ctx);
 }
 
 void	apply_em(t_shading *sha, t_vec3 *total, t_material *mat, double r)

@@ -49,28 +49,25 @@ static void	apply_f_imp(t_contact *ct, t_vec3 f_imp, double ia, double ib)
  * @brief Calculates and applies frictional impulses along the contact tangent.
  *        Clamped via Coulomb friction cone: |jt| <= friction * j_normal.
  */
-void	apply_friction(t_contact *ct, double ia, double ib, t_vec3 rel_v,
-		double j_normal)
+void	apply_friction(t_contact *ct, t_vec3 rel_v, double j_normal)
 {
 	t_vec3	vt;
 	t_vec3	tangent;
-	double	denom;
+	double	ia;
+	double	ib;
 	double	jt;
-	double	max_jt;
 
+	ia = get_inv_mass(ct->a);
+	ib = get_inv_mass(ct->b);
 	vt = vec3_sub(rel_v, vec3_scale(ct->normal, vec3_dot(rel_v, ct->normal)));
 	if (vec3_mag_sq(vt) <= 1e-6)
 		return ;
 	tangent = vec3_norm(vt);
-	denom = ia + ib + ang_term(ct->a, ct->ra, tangent, ia)
-		+ ang_term(ct->b, ct->rb, tangent, ib);
-	if (denom < 1e-9)
-		return ;
-	jt = -vec3_dot(rel_v, tangent) / denom;
-	max_jt = ct->friction * j_normal;
+	jt = -vec3_dot(rel_v, tangent) / (ia + ib + ang_term(ct->a, ct->ra,
+				tangent, ia) + ang_term(ct->b, ct->rb, tangent, ib));
 	if (jt > 0.0)
 		jt = 0.0;
-	else if (jt < -max_jt)
-		jt = -max_jt;
+	else if (jt < -ct->friction * j_normal)
+		jt = -ct->friction * j_normal;
 	apply_f_imp(ct, vec3_scale(tangent, jt), ia, ib);
 }

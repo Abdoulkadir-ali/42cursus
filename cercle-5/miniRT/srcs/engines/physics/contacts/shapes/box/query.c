@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 16:14:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:29:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,16 @@ static void	box_vs_boxes(t_contact_query *qu, t_box *bx, size_t idx,
 	t_gjk_shape	sa;
 	t_gjk_shape	sb;
 	t_col_pair	pair;
+	t_box		*other;
 
 	sa = init_gjk_shape(bx, gjk_support_box, bx->phys.pos);
 	p = idx + 1;
 	while (p < qu->engine->scene->box_count && qu->count < qu->max)
 	{
-		sb = init_gjk_shape(&qu->engine->scene->boxes[p], gjk_support_box,
-			qu->engine->scene->boxes[p].phys.pos);
-		pair = (t_col_pair){&sa, &sb, &bx->phys,
-			&qu->engine->scene->boxes[p].phys, &bx->transform,
-			&qu->engine->scene->boxes[p].transform};
+		other = &qu->engine->scene->boxes[p];
+		sb = init_gjk_shape(other, gjk_support_box, other->phys.pos);
+		pair = (t_col_pair){&sa, &sb, &bx->phys, &other->phys,
+			&bx->transform, &other->transform};
 		test_box_pair(qu, &pair, bx_aabb);
 		p++;
 	}

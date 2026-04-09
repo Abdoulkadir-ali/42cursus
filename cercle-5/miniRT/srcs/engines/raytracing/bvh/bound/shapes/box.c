@@ -26,11 +26,12 @@ t_aabb	box_aabb(t_box *bx)
 		s.x = (double)((i & 1) * 2 - 1);
 		s.y = (double)(((i >> 1) & 1) * 2 - 1);
 		s.z = (double)(((i >> 2) & 1) * 2 - 1);
-		c = vec3_add(bx->phys.center,
-				vec3_add(vec3_scale(bx->transform.forward, s.x * bx->half_extents.x),
-					vec3_add(vec3_scale(bx->transform.right, s.y * bx->half_extents.y),
-						vec3_scale(bx->transform.up, s.z * bx->half_extents.z))));
-		aabb_expand_point(&aabb, c);
+		c = vec3_scale(bx->transform.forward, s.x * bx->half_extents.x);
+		c = vec3_add(c, vec3_scale(bx->transform.right,
+					s.y * bx->half_extents.y));
+		c = vec3_add(c, vec3_scale(bx->transform.up,
+					s.z * bx->half_extents.z));
+		aabb_expand_point(&aabb, vec3_add(bx->phys.center, c));
 		i++;
 	}
 	return (aabb);

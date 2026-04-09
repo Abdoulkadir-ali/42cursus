@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:58:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 03:11:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void					load_ibms(t_json_value *json, char *bin, int acc_idx,
 							t_mat4 *dst);
 
 /* Prototypes - Utils */
+t_index					find_parent_node(t_json_value *json, size_t node_idx);
 void					set_channel_path(t_anim_channel *chan, const char *p);
 void					assign_anim_data(t_animation *clip, t_json_value *anim_j);
 void					update_max_time(t_animation *clip, t_anim_sampler *s);

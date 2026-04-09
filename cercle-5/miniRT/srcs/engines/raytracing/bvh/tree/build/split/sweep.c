@@ -40,7 +40,7 @@ static void	eval_split(t_sweep *sw, t_split_info *info, size_t count, size_t b)
 	if (nl > 0 && nl < count && c < info->cost)
 	{
 		info->cost = c;
-			info->axis = init_index(sw->axis, false);
+		info->axis = init_index(sw->axis, false);
 		info->split = nl;
 	}
 }

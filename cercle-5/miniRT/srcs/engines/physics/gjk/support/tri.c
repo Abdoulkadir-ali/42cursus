@@ -22,10 +22,7 @@ t_vec3	gjk_support_tri(const void *data, t_vec3 dir)
 	const t_tri_shape	*tr;
 	t_vec3				best;
 	double				best_d;
-	double				d;
 	size_t				i;
-	t_vec3				p_pos;
-	t_vec3				p_neg;
 
 	tr = (const t_tri_shape *)data;
 	best = tr->v[0];
@@ -33,17 +30,14 @@ t_vec3	gjk_support_tri(const void *data, t_vec3 dir)
 	i = 1;
 	while (i < 3)
 	{
-		d = vec3_dot(tr->v[i], dir);
-		if (d > best_d)
+		if (vec3_dot(tr->v[i], dir) > best_d)
 		{
-			best_d = d;
+			best_d = vec3_dot(tr->v[i], dir);
 			best = tr->v[i];
 		}
 		i++;
 	}
-	p_pos = vec3_add(best, vec3_scale(tr->normal, PHYS_SKIN));
-	p_neg = vec3_sub(best, vec3_scale(tr->normal, PHYS_SKIN));
-	if (vec3_dot(p_pos, dir) >= vec3_dot(p_neg, dir))
-		return (p_pos);
-	return (p_neg);
+	if (vec3_dot(tr->normal, dir) >= 0.0)
+		return (vec3_add(best, vec3_scale(tr->normal, PHYS_SKIN)));
+	return (vec3_sub(best, vec3_scale(tr->normal, PHYS_SKIN)));
 }

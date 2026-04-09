@@ -230,4 +230,15 @@ typedef struct s_bvh_phys_ctx
 	uint8_t			skip_type;
 }					t_bvh_phys_ctx;
 
+typedef struct s_seg_calc
+{
+	t_vec2	st;
+	t_vec3	d1;
+	t_vec3	d2;
+	t_vec3	r;
+	double	a;
+	double	e;
+	double	f;
+}	t_seg_calc;
+
 #endif

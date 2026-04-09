@@ -30,7 +30,7 @@ static void	check_planes(const t_ray *ray, t_scene *sc, t_hit *hit, bool *any)
 			{
 				*hit = temp;
 				hit->ref.type = TYPE_PLANE;
-					hit->ref.index = i;
+				hit->ref.index = i;
 				*any = true;
 			}
 		}

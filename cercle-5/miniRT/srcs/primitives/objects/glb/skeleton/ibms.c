@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 02:57:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ static void	fill_ibms_matrices(t_mat4 *dst, float *tmp, size_t count)
 		{
 			r = 0;
 			while (r < 4)
-				dst[i].m[r][c] = tmp[i * 16 + (r++) * 4 + c];
+			{
+				dst[i].m[r][c] = tmp[i * 16 + r * 4 + c];
+				r++;
+			}
 			c++;
 		}
 		i++;

@@ -81,7 +81,7 @@ static void	em_cone_sub(t_shading *sha, t_scene *sc, t_vec3 *total,
 	apply_em(sha, total, mat, r);
 }
 
-void	em_vol(t_shading *sha, t_scene *sc, t_vec3 *total,
+static bool	em_vol_sub(t_shading *sha, t_scene *sc, t_vec3 *total,
 				t_emissive_ref ref)
 {
 	t_sphere	*sp;
@@ -94,8 +94,9 @@ void	em_vol(t_shading *sha, t_scene *sc, t_vec3 *total,
 		sha->em_normal = vec3(0, 0, 0);
 		apply_em(sha, total, &sc->materials[sp->mat_id],
 			fmax(fabs(sp->transform.scale.x), 1.0) * sqrt(sp->radius_sq));
+		return (true);
 	}
-	else if (ref.type == TYPE_BOX)
+	if (ref.type == TYPE_BOX)
 	{
 		bx = &sc->boxes[ref.index];
 		sha->aux_v = vec3_sub(bx->transform.pos, sha->hit->point);
@@ -103,8 +104,17 @@ void	em_vol(t_shading *sha, t_scene *sc, t_vec3 *total,
 		apply_em(sha, total, &sc->materials[bx->mat_id],
 			fmax(fmax(bx->half_extents.x, bx->half_extents.y),
 				bx->half_extents.z));
+		return (true);
 	}
-	else if (ref.type == TYPE_CAPSULE)
+	return (false);
+}
+
+void	em_vol(t_shading *sha, t_scene *sc, t_vec3 *total,
+				t_emissive_ref ref)
+{
+	if (em_vol_sub(sha, sc, total, ref))
+		return ;
+	if (ref.type == TYPE_CAPSULE)
 		em_cap(sha, sc, total, ref);
 	else if (ref.type == TYPE_CYLINDER)
 		em_cylinder_sub(sha, sc, total, ref);

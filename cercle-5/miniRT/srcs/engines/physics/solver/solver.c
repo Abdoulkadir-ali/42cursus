@@ -19,38 +19,30 @@ double	get_inv_mass(t_physics_body *body)
 	return (1.0 / body->mass);
 }
 
+static void	update_body_pos(t_physics_body *b, t_transform *t, t_vec3 da)
+{
+	t->pos = vec3_add(t->pos, da);
+	b->pos = t->pos;
+	b->center = vec3_add(b->center, da);
+}
+
 static void	apply_position_correction(t_contact *ct, t_physic_engine *en,
 		double inv_a, double inv_b)
 {
-	double	target;
 	double	new_lambda;
-	double	delta;
 	double	scalar;
-	t_vec3	da;
-	t_vec3	db;
 
-	target = fmax(ct->penetration - en->settings.slop, 0.0);
-	new_lambda = fmin(ct->lambda_pos + target * en->settings.baumgarte,
-			target);
-	delta = new_lambda - ct->lambda_pos;
-	ct->lambda_pos = new_lambda;
-	if (delta < 1e-9 || inv_a + inv_b < 1e-9)
+	new_lambda = fmin(ct->lambda_pos + fmax(ct->penetration - en->settings.slop,
+				0.0) * en->settings.baumgarte, fmax(ct->penetration
+				- en->settings.slop, 0.0));
+	if (new_lambda - ct->lambda_pos < 1e-9 || inv_a + inv_b < 1e-9)
 		return ;
-	scalar = delta / (inv_a + inv_b);
+	scalar = (new_lambda - ct->lambda_pos) / (inv_a + inv_b);
+	ct->lambda_pos = new_lambda;
 	if (ct->a && inv_a > 0.0)
-	{
-		da = vec3_scale(ct->normal, -scalar * inv_a);
-		ct->ta->pos = vec3_add(ct->ta->pos, da);
-		ct->a->pos = ct->ta->pos;
-		ct->a->center = vec3_add(ct->a->center, da);
-	}
+		update_body_pos(ct->a, ct->ta, vec3_scale(ct->normal, -scalar * inv_a));
 	if (ct->b && inv_b > 0.0)
-	{
-		db = vec3_scale(ct->normal, scalar * inv_b);
-		ct->tb->pos = vec3_add(ct->tb->pos, db);
-		ct->b->pos = ct->tb->pos;
-		ct->b->center = vec3_add(ct->b->center, db);
-	}
+		update_body_pos(ct->b, ct->tb, vec3_scale(ct->normal, scalar * inv_b));
 }
 
 void	solve_positions(t_contact *c, t_physic_engine *engine, size_t count)

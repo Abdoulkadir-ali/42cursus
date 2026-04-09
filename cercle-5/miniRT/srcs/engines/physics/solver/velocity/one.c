@@ -57,6 +57,6 @@ void	solve_one_velocity(t_contact *ct, t_physic_engine *en, double ia,
 	if (vn < -en->settings.restitution_slop)
 		e = ct->restitution;
 	update_vel(ct, ia, ib, -(1.0 + e) * vn / denom);
-	apply_friction(ct, ia, ib, vec3_sub(point_vel(ct->b, ct->rb),
+	apply_friction(ct, vec3_sub(point_vel(ct->b, ct->rb),
 			point_vel(ct->a, ct->ra)), -(1.0 + e) * vn / denom);
 }

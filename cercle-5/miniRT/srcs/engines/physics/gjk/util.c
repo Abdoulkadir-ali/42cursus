@@ -49,3 +49,18 @@ void	set_simplex3(t_simplex *s, size_t *i, t_vec3 *p)
 	s->b_pts[2] = sb[2];
 	s->n = 3;
 }
+
+void	reorder_simplex(t_simplex *s)
+{
+	t_vec3	tmp;
+
+	tmp = s->pts[0];
+	s->pts[0] = s->pts[1];
+	s->pts[1] = tmp;
+	tmp = s->a_pts[0];
+	s->a_pts[0] = s->a_pts[1];
+	s->a_pts[1] = tmp;
+	tmp = s->b_pts[0];
+	s->b_pts[0] = s->b_pts[1];
+	s->b_pts[1] = tmp;
+}

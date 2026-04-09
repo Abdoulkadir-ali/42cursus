@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 10:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 03:00:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ void	glb_finalize_mesh(t_mesh *m)
 	if (!build_vertices(m))
 		return ;
 	apply_node_transform(m);
-	mesh_bounds(m);
 	if (m->base_geometry.indices && m->base_geometry.index_count >= 3)
 	{
 		if (!build_triangles(m))

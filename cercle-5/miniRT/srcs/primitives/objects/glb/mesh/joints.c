@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 00:54:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 03:16:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:49:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,13 @@ void	load_joints(t_json_value *json, char *bin, t_mesh *m, int acc_idx)
 		return ;
 	glb_extract_data((t_extract){bin, &acc, &bv, at.tmp,
 		at.c_sz * 4, at.c_sz * 4, at.c_sz * 4, acc.count});
-	i = -1;
-	while (++i < acc.count)
+	i = 0;
+	while (i < acc.count)
 	{
-		k = -1;
-		while (++k < 4)
-			set_joint_val(m, &at, i, k);
+		k = 0;
+		while (k < 4)
+			set_joint_val(m, &at, i, k++);
+		i++;
 	}
 	free(at.tmp);
 }

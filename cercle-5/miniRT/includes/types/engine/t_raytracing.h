@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/07 21:57:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:46:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,14 @@ typedef struct s_raytracer_engine
 	t_raytracer_cache		cache;
 }					t_raytracer_engine;
 
+typedef struct s_shading_ctx
+{
+	double	d_surf;
+	t_vec3	ldir;
+	double	ndotl;
+	double	emitter_facing;
+}	t_shading_ctx;
+
 typedef struct s_shading
 {
 	t_hit					*hit;
@@ -161,7 +169,9 @@ typedef struct s_shading
 	const t_ray				*ray;
 	struct s_material		mat;
 	t_vec3					albedo;
-	t_vec3					aux_v;	t_vec3						em_normal;	const t_raytracer_settings	*opts;
+	t_vec3					aux_v;
+	t_vec3					em_normal;
+	const t_raytracer_settings	*opts;
 }						t_shading;
 
 typedef struct s_build_item

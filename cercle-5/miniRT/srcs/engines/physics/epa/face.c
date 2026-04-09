@@ -12,6 +12,15 @@
 
 #include "physics.h"
 
+static void	fix_face_winding(t_epa_face *f, t_vec3s tri)
+{
+	f->normal = vec3_scale(f->normal, -1.0);
+	f->dist = -f->dist;
+	f->idx[0] = tri.x;
+	f->idx[1] = tri.z;
+	f->idx[2] = tri.y;
+}
+
 /**
  * @brief Creates a polytope face with a normal pointing outward from origin.
  */
@@ -35,13 +44,7 @@ t_epa_face	epa_make_face(t_epa_poly *p, t_vec3s tri)
 	f.normal = vec3_scale(n, 1.0 / len);
 	f.dist = vec3_dot(f.normal, p->pts[tri.x]);
 	if (f.dist < 0.0)
-	{
-		f.normal = vec3_scale(f.normal, -1.0);
-		f.dist = -f.dist;
-		f.idx[0] = tri.x;
-		f.idx[1] = tri.z;
-		f.idx[2] = tri.y;
-	}
+		fix_face_winding(&f, tri);
 	return (f);
 }
 

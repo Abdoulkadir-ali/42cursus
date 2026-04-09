@@ -126,6 +126,7 @@ bool	gjk_simplex_triangle(t_simplex *s, t_vec3 *dir);
 bool	gjk_simplex_tetrahedron(t_simplex *s, t_vec3 *dir);
 t_vec3	md_support(t_gjk_shape *a, t_gjk_shape *b, t_vec3 dir, t_simplex *s);
 void	set_simplex3(t_simplex *s, size_t *i, t_vec3 *p);
+void	reorder_simplex(t_simplex *s);
 
 /* EPA — extracts MTD from GJK simplex */
 bool	gjk_epa(t_col_pair *p, t_simplex *s, t_epa_res *res);
@@ -150,8 +151,7 @@ void	solve_positions(t_contact *contacts, t_physic_engine *engine, size_t count)
 
 /* Velocity Solver Internal Helpers */
 void	solve_one_velocity(t_contact *ct, t_physic_engine *en, double ia, double ib);
-void	apply_friction(t_contact *ct, double inv_a, double inv_b, t_vec3 rel_v,
-		double j_normal);
+void	apply_friction(t_contact *ct, t_vec3 rel_v, double j_normal);
 void	apply_phys_torque(t_physics_body *b, t_vec3 r, t_vec3 imp, double i_m_s);
 double	ang_term(t_physics_body *body, t_vec3 r, t_vec3 dir, double inv_m);
 t_vec3	point_vel(t_physics_body *body, t_vec3 r);

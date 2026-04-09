@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 11:47:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:31:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,6 @@ static void	process_leaf(t_bvh_phys_ctx *c, const t_bvh *bvh,
 	}
 }
 
-/**
- * @brief Traverses the scene BVH to find cross-type collisions.
- */
 static const t_bvh	*get_locked_bvh(t_scene *s)
 {
 	const t_bvh	*v;
@@ -63,22 +60,17 @@ static const t_bvh	*get_locked_bvh(t_scene *s)
 	return (v);
 }
 
-void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
+static void	traverse_bvh_node(t_bvh_phys_ctx *c, const t_bvh *v,
+				size_t *st, t_aabb qa)
 {
-	size_t				st[128];
 	size_t				top;
+	size_t				nd_idx;
 	const t_bvh_node	*nd;
-	const t_bvh			*v;
 
-	v = get_locked_bvh(c->qu->engine->scene);
-	if (!v)
-		return ;
 	top = 0;
 	st[top++] = 0;
 	while (top > 0 && c->qu->count < c->qu->max)
 	{
-		size_t	nd_idx;
-
 		nd_idx = st[--top];
 		nd = &v->nodes[nd_idx];
 		if (nd->count > 0)
@@ -91,5 +83,16 @@ void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
 				st[top++] = nd_idx + 1;
 		}
 	}
+}
+
+void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
+{
+	size_t				st[128];
+	const t_bvh			*v;
+
+	v = get_locked_bvh(c->qu->engine->scene);
+	if (!v)
+		return ;
+	traverse_bvh_node(c, v, st, qa);
 	pthread_rwlock_unlock(&c->qu->engine->scene->bvh_lock);
 }

@@ -6,16 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:47:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-/**
- * @brief Handles edge logic for the triangle-simplex case.
- * Ensures s->pts[0] and s->pts[1] correspond correctly to a_pts and b_pts.
- */
 static void	set_simplex_edge(t_simplex *s, int i1, int i2, t_vec3 *dir)
 {
 	t_vec3	a;
@@ -37,39 +33,20 @@ static void	set_simplex_edge(t_simplex *s, int i1, int i2, t_vec3 *dir)
 	*dir = vec3_sub(vec3_scale(ao, vec3_dot(ab, ab)),
 			vec3_scale(ab, vec3_dot(ao, ab)));
 	if (vec3_mag_sq(*dir) < 1e-12)
-		*dir = vec3_cross(ab, (fabs(ab.x) < 0.9) ? vec3(1, 0, 0) : vec3(0, 1, 0));
+	{
+		if (fabs(ab.x) < 0.9)
+			*dir = vec3_cross(ab, vec3(1, 0, 0));
+		else
+			*dir = vec3_cross(ab, vec3(0, 1, 0));
+	}
 }
 
-/**
- * @brief Reorders triangle simplex points to maintain CCW orientation.
- */
-static void	reorder_simplex(t_simplex *s)
+static bool	handle_triangle_edges(t_simplex *s, t_vec3 *dir, t_vec3 ab,
+				t_vec3 ac)
 {
-	t_vec3	tmp;
-
-	tmp = s->pts[0];
-	s->pts[0] = s->pts[1];
-	s->pts[1] = tmp;
-	tmp = s->a_pts[0];
-	s->a_pts[0] = s->a_pts[1];
-	s->a_pts[1] = tmp;
-	tmp = s->b_pts[0];
-	s->b_pts[0] = s->b_pts[1];
-	s->b_pts[1] = tmp;
-}
-
-/**
- * @brief Main triangle-simplex case handler.
- */
-bool	gjk_simplex_triangle(t_simplex *s, t_vec3 *dir)
-{
-	t_vec3	ab;
-	t_vec3	ac;
 	t_vec3	ao;
 	t_vec3	abc;
 
-	ab = vec3_sub(s->pts[1], s->pts[2]);
-	ac = vec3_sub(s->pts[0], s->pts[2]);
 	ao = vec3_scale(s->pts[2], -1.0);
 	abc = vec3_cross(ab, ac);
 	if (vec3_dot(vec3_cross(abc, ac), ao) > 0.0)
@@ -86,8 +63,16 @@ bool	gjk_simplex_triangle(t_simplex *s, t_vec3 *dir)
 			s->n = 1;
 			*dir = ao;
 		}
-		return (false);
+		return (true);
 	}
+	return (false);
+}
+
+static bool	check_triangle_abc(t_simplex *s, t_vec3 *dir, t_vec3 ab, t_vec3 ao)
+{
+	t_vec3	abc;
+
+	abc = vec3_cross(ab, vec3_sub(s->pts[0], s->pts[2]));
 	if (vec3_dot(vec3_cross(ab, abc), ao) > 0.0)
 	{
 		if (vec3_dot(ab, ao) > 0.0)
@@ -100,14 +85,27 @@ bool	gjk_simplex_triangle(t_simplex *s, t_vec3 *dir)
 			s->n = 1;
 			*dir = ao;
 		}
-		return (false);
+		return (true);
 	}
-	if (vec3_dot(abc, ao) > 0.0)
-		*dir = abc;
-	else
-	{
+	if (vec3_dot(abc, ao) < 0.0)
 		reorder_simplex(s);
+	if (vec3_dot(abc, ao) < 0.0)
 		*dir = vec3_scale(abc, -1.0);
-	}
+	else
+		*dir = abc;
 	return (false);
+}
+
+bool	gjk_simplex_triangle(t_simplex *s, t_vec3 *dir)
+{
+	t_vec3	ab;
+	t_vec3	ac;
+	t_vec3	ao;
+
+	ab = vec3_sub(s->pts[1], s->pts[2]);
+	ac = vec3_sub(s->pts[0], s->pts[2]);
+	if (handle_triangle_edges(s, dir, ab, ac))
+		return (false);
+	ao = vec3_scale(s->pts[2], -1.0);
+	return (check_triangle_abc(s, dir, ab, ao));
 }

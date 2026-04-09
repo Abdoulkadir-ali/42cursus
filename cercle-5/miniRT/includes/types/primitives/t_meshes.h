@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 18:19:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,14 +379,14 @@ typedef struct s_fbx_data
 	t_vec3				*v;
 	t_vec3				*vn;
 	t_vec2				*vu;
-	size_t				*ri;
+	int					*ri;
 	t_vec2s				rv;			/* x=rc (raw index count), y=vc (vertex count) */
 	t_vec2s				nu;			/* x=nc (normal count),    y=uc (uv count)     */
 }						t_fbx_data;
 
 typedef struct s_fbx_flat_params
 {
-	size_t				*raw;
+	int					*raw;
 	t_vec3				*n;
 	t_vec2				*u;
 	t_vec2s				rv;			/* x=raw_c (raw index count), y=vc (vertex count) */
@@ -396,7 +396,7 @@ typedef struct s_fbx_flat_params
 typedef struct s_fbx_build
 {
 	t_mesh				*m;
-	size_t				*raw;
+	int					*raw;
 	t_vec3				*n;
 	t_vec2				*u;
 	t_vertex			*vertices;
@@ -455,7 +455,7 @@ typedef struct s_fbx_ascii
 	t_skinned_mesh		mesh;
 	t_vec3				*rn;
 	t_vec2				*ru;
-	size_t				*ri;
+	int					*ri;
 	t_vec2s				rv;			/* x=rc (raw index count), y=vc (vertex count) */
 	t_vec2s				nu;			/* x=nc (normal count),    y=uc (uv count)     */
 	char				*buf;

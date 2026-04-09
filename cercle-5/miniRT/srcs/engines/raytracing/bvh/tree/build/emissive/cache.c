@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:46:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 22:05:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:49:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	cache_secondary_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
 	}
 }
 
-static void	cache_volume_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
+static void	cache_vol_part1(t_scene *sc, t_emissive_ref *cache, size_t *n)
 {
 	size_t	i;
 
@@ -63,6 +63,13 @@ static void	cache_volume_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
 			cache[(*n)++] = init_emissive_ref(TYPE_CAPSULE, i);
 		i++;
 	}
+}
+
+static void	cache_volume_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
+{
+	size_t	i;
+
+	cache_vol_part1(sc, cache, n);
 	i = 0;
 	while (i < sc->cylinder_count)
 	{
@@ -86,24 +93,12 @@ static void	cache_volume_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
 	}
 }
 
-static void	cache_complex_em(t_scene *sc, t_emissive_ref *cache, size_t *n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < sc->mesh_count)
-	{
-		if (is_emissive(sc, sc->meshes[i].mat_id))
-			cache[(*n)++] = init_emissive_ref(TYPE_MESH, i);
-		i++;
-	}
-}
-
 void	build_emissive_cache(t_scene *sc)
 {
 	t_emissive_ref	*cache;
 	size_t			cap;
 	size_t			n;
+	size_t			i;
 
 	cap = sc->sphere_count + sc->tri_count + sc->rect_count + sc->pyramid_count;
 	cap += sc->box_count + sc->capsule_count + sc->mesh_count;
@@ -117,7 +112,10 @@ void	build_emissive_cache(t_scene *sc)
 	cache_primary_em(sc, cache, &n);
 	cache_secondary_em(sc, cache, &n);
 	cache_volume_em(sc, cache, &n);
-	cache_complex_em(sc, cache, &n);
+	i = 0;
+	while (i < sc->mesh_count)
+		if (is_emissive(sc, sc->meshes[i].mat_id))
+			cache[n++] = init_emissive_ref(TYPE_MESH, i);
 	sc->emissive_cache = cache;
 	sc->emissive_n = n;
 }

@@ -23,27 +23,21 @@ t_vec3	gjk_support_pyramid(const void *data, t_vec3 dir)
 	t_vec3			best;
 	double			best_d;
 	double			d;
+	int				i;
 
 	py = (const t_pyramid *)data;
 	best = py->c[0];
 	best_d = vec3_dot(py->c[0], dir);
-	d = vec3_dot(py->c[1], dir);
-	if (d > best_d)
+	i = 1;
+	while (i < 4)
 	{
-		best_d = d;
-		best = py->c[1];
-	}
-	d = vec3_dot(py->c[2], dir);
-	if (d > best_d)
-	{
-		best_d = d;
-		best = py->c[2];
-	}
-	d = vec3_dot(py->c[3], dir);
-	if (d > best_d)
-	{
-		best_d = d;
-		best = py->c[3];
+		d = vec3_dot(py->c[i], dir);
+		if (d > best_d)
+		{
+			best_d = d;
+			best = py->c[i];
+		}
+		i++;
 	}
 	d = vec3_dot(py->apex, dir);
 	if (d > best_d)
