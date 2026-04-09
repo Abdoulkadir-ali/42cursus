@@ -47,6 +47,10 @@ $(LIBFT): FORCE
 	@$(MAKE) -s -C $(LIBFT_DIR)
 
 $(MINILIBX):
+	@if [ ! -d "$(MINILIBX_DIR)" ]; then \
+		printf "$(YELLOW)Cloning minilibx-linux...$(RESET)\n"; \
+		git clone --depth=1 https://github.com/42Paris/minilibx-linux.git $(MINILIBX_DIR); \
+	fi
 	@printf "$(YELLOW)Building minilibx...$(RESET)\n"
 	@$(MAKE) -s -C $(MINILIBX_DIR)
 
