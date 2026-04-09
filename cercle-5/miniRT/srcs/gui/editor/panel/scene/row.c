@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	draw_one_row(t_gui *gui, int y_px, t_type ty, size_t i)
 		snprintf(buf, sizeof(buf), "[ME] %.55s", gui->scene->groups[i].name);
 	else
 		snprintf(buf, sizeof(buf), "%s %zu", row_type_prefix(ty), i);
-	mlx_string_put(gui->win.mlx, gui->win.win, ui_sx(12, gui->win.disp_size),
+	mlx_string_put_c(gui->win.mlx, gui->win.win, ui_sx(12, gui->win.disp_size),
 		y_px, col, buf);
 }
 

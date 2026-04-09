@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static void	draw_tab_label(t_gui *gui, t_vec2i pos, struct s_tab_draw d, int i)
 	if (gui->inspector.tab == d.tabs[i])
 		color = COL_ACCENT;
 	tx = pos.x + d.step * i + ui_sx(8, winsz);
-	mlx_string_put(gui->win.mlx, gui->win.win, tx, ui_sy(70, winsz), color,
+	mlx_string_put_c(gui->win.mlx, gui->win.win, tx, ui_sy(70, winsz), color,
 		d.labels[i]);
 }
 

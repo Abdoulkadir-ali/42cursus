@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 15:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	draw_path_col(t_gui *gui, t_vec2i o, char *display, t_panel f)
 	col = COL_TEXT;
 	if (gui->crud.path_error)
 		col = COL_RED_SOFT;
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD + 6, d),
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD + 6, d),
 		f.pos.y + f.size.y / 2 + ui_sy(4, d), col, display);
 }
 
@@ -60,7 +60,7 @@ void	draw_popup_mesh_path(t_gui *gui)
 	d = gui->win.disp_size;
 	modal_h = ui_sy(POPUP_PAD * 2 + 36 + 36 + POPUP_ITEM_H + 16 + 36, d);
 	draw_modal_bg(gui, modal_h, &o);
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD, d),
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD, d),
 		o.y + ui_sy(POPUP_PAD, d), COL_ACCENT, "Add Mesh \xe2\x80\x94 Path");
 	draw_path_field(gui, o, modal_h);
 	draw_popup_btn(gui, (t_panel){
@@ -94,7 +94,7 @@ static void	draw_tex_path_input(t_gui *gui, t_vec2i o, t_vec2s d, int f_y)
 	col = COL_TEXT;
 	if (gui->crud.path_error)
 		col = COL_RED_SOFT;
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD + 6, d),
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD + 6, d),
 		f_y + (int)f.size.y / 2 + ui_sy(4, d), col, display);
 }
 
@@ -107,11 +107,11 @@ void	draw_popup_tex_path(t_gui *gui)
 	d = gui->win.disp_size;
 	modal_h = ui_sy(POPUP_PAD * 2 + 36 + 24 + POPUP_ITEM_H + 16 + 36, d);
 	draw_modal_bg(gui, modal_h, &o);
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD, d),
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD, d),
 		o.y + ui_sy(POPUP_PAD, d), COL_ACCENT, "Texture \xe2\x80\x94 Path");
 	draw_tex_path_input(gui, o, d, o.y + ui_sy(36 + POPUP_PAD + 24, d));
 	if (gui->crud.path_error)
-		mlx_string_put(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD, d),
+		mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD, d),
 			o.y + ui_sy(36 + POPUP_PAD + 24 + POPUP_ITEM_H + 6, d),
 			COL_ERROR, "File not found / load failed");
 	draw_popup_btn(gui, (t_panel){

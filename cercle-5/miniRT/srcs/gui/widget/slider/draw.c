@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ void	widget_draw_slider(t_gui *gui, t_widget *w)
 
 	draw_slider_track(gui, w);
 	if (w->label)
-		mlx_string_put(gui->win.mlx, gui->win.win,
+		mlx_string_put_c(gui->win.mlx, gui->win.win,
 			w->pos.x, w->pos.y + 2, COL_TEXT, w->label);
 	snprintf(buf, sizeof(buf), "%.3f", w->dvalue);
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		w->pos.x + w->size.x - 48, w->pos.y + 2, COL_HOVER, buf);
 }

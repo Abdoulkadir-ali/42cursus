@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 21:07:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	draw_popup_shape(t_gui *gui)
 	d = gui->win.disp_size;
 	h = ui_sy(POPUP_PAD * 2 + 36 + 4 * (POPUP_ITEM_H + 8) + 40, d);
 	draw_modal_bg(gui, h, &o);
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD, d),
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + ui_sx(POPUP_PAD, d),
 		o.y + ui_sy(POPUP_PAD, d), COL_ACCENT, "Add Object");
 	s.x = ui_sx((POPUP_W - POPUP_PAD * 4) / 3, d);
 	s.y = ui_sy(POPUP_ITEM_H, d);

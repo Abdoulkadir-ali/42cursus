@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static void	draw_anim_selector(t_gui *gui, t_vec2i pos, t_mesh_anim *ma,
 	const char		*name;
 
 	d = gui->win.disp_size;
-	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d), pos.y,
+	mlx_string_put_c(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d), pos.y,
 		COL_ACCENT, "<");
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		pos.x + gui->inspector.width - ui_sx(22, d),
 		pos.y, COL_ACCENT, ">");
 	if (ma->idx.i < scene->clip_count)
@@ -37,7 +37,7 @@ static void	draw_anim_selector(t_gui *gui, t_vec2i pos, t_mesh_anim *ma,
 	}
 	else
 		snprintf(buf, sizeof(buf), "none [%zu clips]", scene->clip_count);
-	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(24, d), pos.y,
+	mlx_string_put_c(gui->win.mlx, gui->win.win, pos.x + ui_sx(24, d), pos.y,
 		COL_TEXT, buf);
 }
 
@@ -65,7 +65,7 @@ void	draw_anim_section(t_gui *gui, t_vec2i pos, t_mesh *mesh)
 	p.y += ui_sy(INSP_HDR_STEP, d);
 	if (gui->scene->clip_count == 0)
 	{
-		mlx_string_put(gui->win.mlx, gui->win.win, p.x + ui_sx(8, d), p.y,
+		mlx_string_put_c(gui->win.mlx, gui->win.win, p.x + ui_sx(8, d), p.y,
 			COL_TEXT, "No animation clips");
 		return ;
 	}

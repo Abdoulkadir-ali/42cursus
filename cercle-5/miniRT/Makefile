@@ -4,6 +4,8 @@ MINILIBX_DIR = packages/minilibx-linux
 MINILIBX    = $(MINILIBX_DIR)/libmlx.a
 LIBFT_DIR   = packages/libft
 LIBFT       = $(LIBFT_DIR)/libft.a
+STB_IMAGE   = packages/stb_image.h
+STB_URL     = https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
 LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lXext -lX11 -lpthread
 
 
@@ -31,13 +33,13 @@ all: $(NAME)
 
 -include $(DEPS)
 
-$(NAME): $(LIBFT) $(MINILIBX) $(OBJS)
+$(NAME): $(LIBFT) $(MINILIBX) $(STB_IMAGE) $(OBJS)
 	@echo ""
 	@printf "$(BLUE)Linking $(NAME)...$(RESET)\n"
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 	@printf "$(GREEN)$(NAME) ready!$(RESET)\n"
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c | $(MINILIBX) $(STB_IMAGE)
 	@mkdir -p $(dir $@)
 	@printf "\r\033[K$(CYAN)Compiling $<...$(RESET)"
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -45,6 +47,10 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 $(LIBFT): FORCE
 	@printf "$(YELLOW)Building libft...$(RESET)\n"
 	@$(MAKE) -s -C $(LIBFT_DIR)
+
+$(STB_IMAGE):
+	@printf "$(YELLOW)Downloading stb_image.h...$(RESET)\n"
+	@curl -sL $(STB_URL) -o $(STB_IMAGE)
 
 $(MINILIBX):
 	@if [ ! -d "$(MINILIBX_DIR)" ]; then \
@@ -59,12 +65,18 @@ clean:
 	@$(RM) -r $(OBJS_DIR)
 	@$(MAKE) -s -C $(LIBFT_DIR) clean
 
-fclean: clean
+fclean: clean clean_package
 	@printf "$(YELLOW)Cleaning $(NAME)...$(RESET)\n"
 	@$(RM) $(NAME)
 	@$(MAKE) -s -C $(LIBFT_DIR) fclean
 
 re: fclean all
+
+clean_package:
+	@printf "$(YELLOW)Removing minilibx-linux...$(RESET)\n"
+	@$(RM) -r $(MINILIBX_DIR)
+	@printf "$(YELLOW)Removing stb_image.h...$(RESET)\n"
+	@$(RM) $(STB_IMAGE)
 
 
 # ── Profiling targets ────────────────────────────────────────────────────────

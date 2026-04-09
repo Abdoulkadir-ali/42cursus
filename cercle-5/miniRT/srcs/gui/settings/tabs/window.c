@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 15:46:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ static void	draw_window_stats(t_gui *gui, t_vec2i o, int *y)
 
 	snprintf(buf, sizeof(buf), "Res: %zu x %zu",
 		gui->win.disp_size.x, gui->win.disp_size.y);
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, *y, COL_TEXT, buf);
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + 8, *y, COL_TEXT, buf);
 	*y += 20;
 	snprintf(buf, sizeof(buf), "Render: %zu x %zu (%zux)",
 		gui->win.size.x, gui->win.size.y, gui->render.scale);
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, *y, 0x606070, buf);
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + 8, *y, 0x606070, buf);
 	*y += 24;
 }
 
@@ -47,7 +47,7 @@ void	draw_settings_window_tab(t_gui *gui, t_vec2i o)
 	int			y;
 
 	y = o.y + 12;
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y, COL_HOVER, "WIN");
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + 8, y, COL_HOVER, "WIN");
 	y += 24;
 	draw_window_stats(gui, o, &y);
 	sl = (t_islider){"Scale", 1.0, 8.0,
@@ -56,7 +56,7 @@ void	draw_settings_window_tab(t_gui *gui, t_vec2i o)
 	y += 36;
 	snprintf(buf, sizeof(buf), "GUI: %.0f RT: %.0f",
 		gui->render.fps, gui->render.render_fps);
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y, 0x606070, buf);
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + 8, y, 0x606070, buf);
 }
 
 bool	click_settings_window_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)

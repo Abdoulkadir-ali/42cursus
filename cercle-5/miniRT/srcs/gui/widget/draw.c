@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 06:25:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 void	widget_draw_label(t_gui *gui, t_widget *w)
 {
 	if (w->label)
-		mlx_string_put(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y
+		mlx_string_put_c(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y
 			+ w->size.y / 2, COL_TEXT, w->label);
 	else
-		mlx_string_put(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y
+		mlx_string_put_c(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y
 			+ w->size.y / 2, COL_TEXT, "");
 }
 
@@ -35,7 +35,7 @@ void	widget_draw_checkbox(t_gui *gui, t_widget *w)
 		snprintf(buf + 2, sizeof(buf) - 2, "] %s", w->label);
 	else
 		snprintf(buf + 2, sizeof(buf) - 2, "]");
-	mlx_string_put(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y + w->size.y
+	mlx_string_put_c(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y + w->size.y
 		/ 2, COL_TEXT, buf);
 }
 

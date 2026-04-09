@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	draw_settings_physics_tab(t_gui *gui, t_vec2i o)
 	size_t		i;
 
 	y = o.y + 12;
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		o.x + 8, y, COL_HOVER, "PHYSICS");
 	y += 24;
 	r = init_iradio("Enabled", &gui->physics_enabled, NULL);

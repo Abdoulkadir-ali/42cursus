@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 17:42:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 	int			y;
 
 	y = o.y + 12;
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y, COL_HOVER, "OPTS");
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + 8, y, COL_HOVER, "OPTS");
 	draw_rt_radios(gui, o, &y);
 	sl[0] = (t_islider){"Bright", 0.0, 100.0,
 		&gui->rt_engine.settings.brightness, on_color_change};

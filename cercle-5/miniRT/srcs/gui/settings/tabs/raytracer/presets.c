@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 17:42:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,10 @@ void	draw_preset_row(t_gui *gui, t_vec2i o, int y)
 	char			buf[64];
 
 	name = g_preset_names[gui->rt_engine.settings.preset];
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y + 14,
+	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + 8, y + 14,
 		COL_HOVER, "Preset");
 	snprintf(buf, sizeof(buf), "< %s >", name);
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		o.x + SETTINGS_W / 2 - 30, y + 14, 0xCCCCDD, buf);
 }
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 19:00:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:57:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "window.h"
 # include "types.h"
 # include "maths.h"
+# include "libs.h"
 
 # define AXIS_COL_X 0xFF4040
 # define AXIS_COL_Y 0x40FF40

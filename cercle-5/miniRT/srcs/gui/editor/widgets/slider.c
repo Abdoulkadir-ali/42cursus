@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ void	draw_slider_row(t_gui *gui, t_vec2i pos, t_islider sl)
 		frac = 1.0;
 	fill_w = frac * track_w;
 	snprintf(buf, sizeof(buf), "%.3f", *sl.ptr);
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		pos.x, pos.y, COL_TEXT, sl.label);
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		pos.x + track_w - ui_sx(46, d), pos.y, COL_HOVER, buf);
 	draw_slider_fill(gui, vec2i(pos.x, pos.y + ui_sy(13, d)), fill_w, track_w);
 }

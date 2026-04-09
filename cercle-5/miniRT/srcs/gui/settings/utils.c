@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ void	draw_radio_row(t_gui *gui, t_panel pan, t_iradio r)
 		col = COL_RADIO_ON_TEXT;
 		status = "ON";
 	}
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		pan.pos.x + 8, pan.pos.y + 15, COL_TEXT, (char *)r.label);
 	draw_panel(gui, (t_panel){vec2i(btn_x, pan.pos.y + 4),
 		vec2s(44, 20), bg, col, ""});
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		btn_x + 10, pan.pos.y + 18, col, (char *)status);
 }
 
@@ -77,9 +77,9 @@ void	draw_settings_slider(t_gui *gui, t_vec2i pos, t_islider sl)
 		frac = 1.0;
 	fill_w = (int)(frac * track_w);
 	snprintf(buf, sizeof(buf), "%.3g", *sl.ptr);
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		pos.x, pos.y, COL_TEXT, (char *)sl.label);
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		pos.x + track_w - 56, pos.y, COL_HOVER, buf);
 	draw_s_slider_rects(gui, pos, track_w, fill_w);
 }

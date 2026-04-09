@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	draw_mesh_info_panel(t_gui *gui, t_vec2i pos)
 	set_mesh_ptr(gui, &g, &mesh);
 	if (!mesh)
 		return ;
-	mlx_string_put(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d),
+	mlx_string_put_c(gui->win.mlx, gui->win.win, pos.x + ui_sx(8, d),
 		ui_sy(88, d), COL_HOVER, "MESH INFO");
 	draw_mesh_basic_info(gui, g, mesh, pos);
 	draw_bbox_info(gui, mesh, pos);

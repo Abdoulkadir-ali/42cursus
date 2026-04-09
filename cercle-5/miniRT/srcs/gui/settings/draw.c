@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	draw_settings_btn(t_gui *gui)
 		bg = 0x2A3040;
 	draw_panel(gui, (t_panel){p,
 		vec2s(SETTINGS_BTN_W, SETTINGS_BTN_H), bg, COL_ACCENT, ""});
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		p.x + 8, p.y + SETTINGS_BTN_H / 2 + 4, COL_TEXT, "Settings");
 }
 
@@ -53,7 +53,7 @@ static void	draw_settings_tabs(t_gui *gui, t_vec2i o)
 		draw_panel(gui, (t_panel){
 			vec2i(o.x + tab_w * i, o.y + SETTINGS_HDR_H),
 			vec2s(tab_w, SETTINGS_TABS_H), bg, COL_BORDER, ""});
-		mlx_string_put(gui->win.mlx, gui->win.win,
+		mlx_string_put_c(gui->win.mlx, gui->win.win,
 			o.x + tab_w * i + 8,
 			o.y + SETTINGS_HDR_H + SETTINGS_TABS_H / 2 + 4,
 			col, g_tab_labels[i]);
@@ -86,9 +86,9 @@ void	draw_settings(t_gui *gui)
 	draw_panel(gui, (t_panel){o, vec2s(SETTINGS_W, SETTINGS_H),
 		COL_BG, COL_BORDER, ""});
 	y = o.y + SETTINGS_HDR_H / 2 + 4;
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		o.x + 12, y, COL_ACCENT, "Settings");
-	mlx_string_put(gui->win.mlx, gui->win.win,
+	mlx_string_put_c(gui->win.mlx, gui->win.win,
 		o.x + SETTINGS_W - 24, y, 0xE04040, "X");
 	draw_settings_tabs(gui, o);
 	dispatch_draw(gui, o);
