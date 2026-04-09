@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 18:39:19 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,9 @@ static void	bvh_sync(t_scene *scene)
  */
 void	update_physics(t_scene *scene, t_physic_engine *engine, double dt)
 {
-	t_contact	contacts[MAX_CONTACTS];
-	size_t		count;
-	size_t		i;
+	static t_contact	contacts[MAX_CONTACTS];
+	size_t				count;
+	size_t				i;
 
 	if (!scene || !engine || dt < 1e-6)
 		return ;

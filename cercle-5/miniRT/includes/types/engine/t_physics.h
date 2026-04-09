@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 18:38:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <semaphore.h>
 # include <stdbool.h>
 
-# define MAX_CONTACTS 4096
+# define MAX_CONTACTS 32768
 # define PHYS_NUM_TYPES 7
 
 struct s_scene;
