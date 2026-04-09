@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:46:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 20:50:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,15 @@ typedef enum e_type
 	TYPE_PYRAMID,
 	TYPE_BOX,
 	TYPE_CAPSULE,
+	TYPE_ATTRACTOR,
 	TYPE_MAT_MOD
 }	t_type;
+
+typedef struct s_attractor
+{
+	t_vec3			pos;
+	double				mass;
+}						t_attractor;
 
 typedef enum e_light_type
 {

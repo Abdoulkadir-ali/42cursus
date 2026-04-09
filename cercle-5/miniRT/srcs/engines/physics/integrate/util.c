@@ -28,3 +28,13 @@ t_vec3	rot_by_ang(t_vec3 v, t_vec3 w, double dt)
 				vec3_scale(vec3_cross(n, v), sin(th))),
 			vec3_scale(n, vec3_dot(n, v) * (1.0 - cos(th)))));
 }
+
+void	sync_phys_settings(t_scene *scene, t_physic_engine *engine)
+{
+	if (scene->scene_gravity_set)
+		engine->settings.gravity = scene->scene_gravity;
+	if (scene->scene_big_g_set)
+		engine->settings.big_g = scene->scene_big_g;
+	if (scene->scene_damping_set)
+		engine->settings.global_damping = scene->scene_damping;
+}

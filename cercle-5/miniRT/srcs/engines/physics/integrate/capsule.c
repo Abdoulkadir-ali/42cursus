@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,9 @@ void	integrate_capsule(t_capsule *cap, double dt, t_physics_settings *s)
 		|| !isfinite(cap->phys.angular_velocity.z))
 		cap->phys.angular_velocity = vec3(0, 0, 0);
 	cap->phys.velocity = vec3_add(cap->phys.velocity,
-			vec3_scale(s->gravity, dt));
+			vec3_add(vec3_scale(s->gravity, dt),
+				vec3_scale(cap->phys.accel, dt)));
+	cap->phys.accel = vec3(0, 0, 0);
 	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
 	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
 	cap->phys.velocity = vec3_scale(cap->phys.velocity, damp.x);

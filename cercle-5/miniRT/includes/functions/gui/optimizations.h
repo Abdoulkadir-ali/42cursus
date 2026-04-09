@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 10:08:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 22:37:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_reproj
 */
 void	optimize_frames(t_gui *gui, double delta);
 void	optimizations_init(t_gui *gui);
-
+void	bloom_frame(t_gui *gui);
 /* Adaptive resolution scaling */
 void	adaptive_scale(t_gui *gui);
 

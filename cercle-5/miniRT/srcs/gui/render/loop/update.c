@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "render.h"
+#include "map.h"
 
 #ifdef PROFILE_BUILD
 
@@ -37,6 +38,7 @@ int	gui_update(t_gui *gui)
 
 	delta = update_delta(gui);
 	handle_profile_exit(gui);
+	gui_map_update(gui);
 	scene_swap_step(gui);
 	physics_step(gui, delta);
 	anim_step(gui, delta);

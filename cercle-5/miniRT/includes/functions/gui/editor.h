@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 21:07:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 21:02:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,8 @@ void				draw_tex_preview(struct s_gui *gui, t_vec2i pos,
 						t_vec2s size, t_texture *tex);
 
 /* srcs/gui/editor/widgets/slider.c + slider_draw.c */
+double				islider_get_val(t_islider sl);double					sl_to_frac(double val, double dmin, double dmax);
+double					sl_from_frac(double frac, double dmin, double dmax);void				islider_set_val(t_islider sl, double v);
 void				draw_slider_row(struct s_gui *gui, t_vec2i pos,
 						t_islider sl);
 bool				try_islider_click(struct s_gui *gui, t_vec2i mouse,

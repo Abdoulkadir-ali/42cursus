@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:50:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 23:48:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "objects.h"
 
 /* Debug print: only active when compiled with -DDEBUG or DEBUG 1 */
+# define DEBUG 0
 # if DEBUG
 #  define ft_print_debug(fmt, ...) do { printf("[DEBUG] " fmt, ##__VA_ARGS__); fflush(stdout); } while (0)
 # else

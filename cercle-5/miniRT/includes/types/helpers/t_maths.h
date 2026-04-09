@@ -127,6 +127,7 @@ typedef struct s_ray
 	int								sign[3];
 	size_t							depth;
 	double							weight;
+	size_t							frame_idx;
 }									t_ray;
 
 typedef struct s_quadratic

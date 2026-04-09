@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:46:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 00:20:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,11 +123,30 @@ typedef enum e_rt_preset
 typedef struct s_raytracer_settings
 {
 	bool	blinn_phong;      /* correct pow() specular (vs Ward approx)  */
-	/* post-process color grading — all 0..100 (50 = neutral)             */
 	double	brightness;       /* +/- additive: 50=neutral, 0=black, 100=white */
 	double	contrast;         /* 50=neutral, 0=flat, 100=high contrast    */
 	double	saturation;       /* 50=neutral, 0=greyscale, 100=vivid       */
 	double	gamma;            /* 50=neutral (gamma 1.0), 100=gamma 2.2    */
+	bool	bloom_enabled;
+	double	bloom_threshold;
+	double	bloom_intensity;
+	double	bloom_radius;
+	bool	dof_enabled;
+	double	dof_aperture;     /* lens radius in world units              */
+	double	dof_focal_dist;   /* distance to focus plane                */
+	/* Visual effects */
+	bool	ao_enabled;       /* ambient occlusion                       */
+	int		ao_samples;       /* rays per pixel (2-16)                   */
+	double	ao_radius;        /* max occlusion reach in world units      */
+	double	ao_strength;      /* darkening factor 0..1                   */
+	bool	fresnel_enabled;  /* Schlick edge reflections                */
+	bool	gi_enabled;       /* one-bounce indirect diffuse GI          */
+	double	gi_strength;      /* GI contribution scale 0..1             */
+	bool	aces_enabled;     /* ACES filmic tonemapping                 */
+	bool	beer_enabled;     /* Beer's law atmospheric absorption       */
+	double	beer_density;     /* absorption coefficient (e.g. 0.0..0.2) */
+	bool	chroma_enabled;   /* chromatic aberration on refraction      */
+	double	chroma_dispersion;/* per-channel IOR split 0..0.1           */
 	t_rt_preset	preset;           /* RT_PRESET_CUSTOM .. RT_PRESET_CINEMATIC  */
 }						t_raytracer_settings;
 
@@ -172,6 +191,7 @@ typedef struct s_shading
 	t_vec3					aux_v;
 	t_vec3					em_normal;
 	const t_raytracer_settings	*opts;
+	size_t					frame_idx;
 }						t_shading;
 
 typedef struct s_build_item

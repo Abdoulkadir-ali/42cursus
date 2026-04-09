@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 18:22:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:48:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 21:07:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,7 @@ static void	apply_prop_sub(t_material *mat, t_mat_mod *mod)
 {
 	if (mod->kind == MAT_MOD_EMIT_POWER)
 	{
-		mat->emission.x *= mod->val;
-		mat->emission.y *= mod->val;
-		mat->emission.z *= mod->val;
+		mat->em_intensity = mod->val;
 	}
 	else if (mod->kind == MAT_MOD_NAME)
 	{

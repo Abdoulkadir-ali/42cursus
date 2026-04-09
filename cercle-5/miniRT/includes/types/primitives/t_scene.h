@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:24:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 17:41:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,17 @@ typedef struct s_scene
 	t_capsule			*capsules;
 	size_t				capsule_count;
 	size_t				capsule_cap;
+
+	t_attractor			*attractors;
+	size_t				attractor_count;
+	size_t				attractor_cap;
+
+	t_vec3				scene_gravity;
+	double				scene_big_g;
+	double				scene_damping;
+	bool				scene_gravity_set;
+	bool				scene_big_g_set;
+	bool				scene_damping_set;
 
 	t_mesh				*meshes;
 	size_t				mesh_count;

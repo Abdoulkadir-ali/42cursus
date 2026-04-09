@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 11:01:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	gui_init_physics(t_gui *gui)
 	gui->phys_engine.settings.global_damping = 0.18;
 	gui->phys_engine.settings.time_scale = 1.0;
 	gui->phys_engine.settings.mesh_simplify_collision = 0;
+	gui->phys_engine.settings.big_g = 1.0;
 	gui->phys_engine.pool.initialized = 0;
 }
 

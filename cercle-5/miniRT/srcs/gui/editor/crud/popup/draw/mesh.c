@@ -28,7 +28,7 @@ static void	draw_path_col(t_gui *gui, t_vec2i o, char *display, t_panel f)
 void	draw_path_field(t_gui *gui, t_vec2i o, size_t modal_h)
 {
 	t_vec2s	d;
-	char	display[64];
+	char	display[2048];
 	t_panel	field;
 
 	d = gui->win.disp_size;
@@ -75,7 +75,7 @@ void	draw_popup_mesh_path(t_gui *gui)
 static void	draw_tex_path_input(t_gui *gui, t_vec2i o, t_vec2s d, int f_y)
 {
 	t_panel	f;
-	char	display[64];
+	char	display[2048];
 	int		col;
 
 	f.pos = vec2i(o.x + ui_sx(POPUP_PAD, d), f_y);

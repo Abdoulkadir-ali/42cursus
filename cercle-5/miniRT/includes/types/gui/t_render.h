@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 22:25:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,8 @@ typedef struct s_optimizations
 	uint32_t	*taa_buf;
 	size_t		taa_frame;
 	double		taa_jitter_x;
-	double		taa_jitter_y;
-}	t_optimizations;
+	double		taa_jitter_y;	uint32_t	*bloom_buf;
+	uint32_t	*bloom_tmp;}	t_optimizations;
 
 /*
 ** t_render_state — frame loop bookkeeping only.

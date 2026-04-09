@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:10:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static void	destroy_scene_arrays(t_scene *scene)
 	free(scene->pyramids);
 	free(scene->boxes);
 	free(scene->capsules);
+	free(scene->attractors);
 	free(scene->materials);
 	free(scene->lights);
 	free(scene->emissive_cache);

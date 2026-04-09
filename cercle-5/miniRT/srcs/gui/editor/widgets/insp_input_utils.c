@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	set_insp_drag(t_gui *gui, t_islider sl, int mouse_x, t_vec2i track)
 {
 	gui->slider_state.dragging = true;
 	gui->slider_state.drag_start.x = mouse_x;
-	gui->slider_state.drag_start_val = *sl.ptr;
+	gui->slider_state.drag_start_val = islider_get_val(sl);
 	gui->slider_state.value_ptr = sl.ptr;
 	gui->slider_state.dmin = sl.min;
 	gui->slider_state.dmax = sl.max;
@@ -35,7 +35,7 @@ void	set_insp_edit(t_gui *gui, t_islider sl)
 	e->dmin = sl.min;
 	e->dmax = sl.max;
 	e->on_change = sl.on_change;
-	snprintf(e->buf, sizeof(e->buf), "%.6g", *sl.ptr);
+	snprintf(e->buf, sizeof(e->buf), "%.6g", islider_get_val(sl));
 	e->i = ft_strlen(e->buf);
 }
 

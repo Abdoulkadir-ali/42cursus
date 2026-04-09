@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 18:39:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,38 +46,22 @@ static void	*universal_worker(void *p)
 /**
  * @brief Integrates all physical bodies in the scene using parallel workers.
  */
-void	integrate_bodies_worker(t_scene *se, t_physic_engine *en, double dt)
+static void	run_int_passes(t_scene *se, t_int_task *t)
 {
-	t_int_task	t;
-
-	if (!se || !en)
-		return ;
-	t = (t_int_task){se, dt, &en->settings, 0, INT_SPH};
-	parallel_run(se->pool, se->sphere_count, universal_worker, &t);
-	t.next = 0;
-	t.type = INT_BOX;
-	parallel_run(se->pool, se->box_count, universal_worker, &t);
-	t.next = 0;
-	t.type = INT_TRI;
-	parallel_run(se->pool, se->tri_count, universal_worker, &t);
-	t.next = 0;
-	t.type = INT_CYL;
-	parallel_run(se->pool, se->cylinder_count, universal_worker, &t);
-	t.next = 0;
-	t.type = INT_PYR;
-	parallel_run(se->pool, se->pyramid_count, universal_worker, &t);
-	t.next = 0;
-	t.type = INT_RECT;
-	parallel_run(se->pool, se->rect_count, universal_worker, &t);
-	t.next = 0;
-	t.type = INT_CAP;
-	parallel_run(se->pool, se->capsule_count, universal_worker, &t);
+	t->next = 0;
+	t->type = INT_CYL;
+	parallel_run(se->pool, se->cylinder_count, universal_worker, t);
+	t->next = 0;
+	t->type = INT_PYR;
+	parallel_run(se->pool, se->pyramid_count, universal_worker, t);
+	t->next = 0;
+	t->type = INT_RECT;
+	parallel_run(se->pool, se->rect_count, universal_worker, t);
+	t->next = 0;
+	t->type = INT_CAP;
+	parallel_run(se->pool, se->capsule_count, universal_worker, t);
 }
 
-/**
- * @brief Rebuilds the scene BVH in-place so contact detection
- *        uses current post-integration object positions.
- */
 static void	bvh_sync(t_scene *scene)
 {
 	t_bvh	*new_bvh;
@@ -93,9 +77,23 @@ static void	bvh_sync(t_scene *scene)
 	bvh_destroy(old);
 }
 
-/**
- * @brief Top-level physics update step.
- */
+void	integrate_bodies_worker(t_scene *se, t_physic_engine *en, double dt)
+{
+	t_int_task	t;
+
+	if (!se || !en)
+		return ;
+	t = (t_int_task){se, dt, &en->settings, 0, INT_SPH};
+	parallel_run(se->pool, se->sphere_count, universal_worker, &t);
+	t.next = 0;
+	t.type = INT_BOX;
+	parallel_run(se->pool, se->box_count, universal_worker, &t);
+	t.next = 0;
+	t.type = INT_TRI;
+	parallel_run(se->pool, se->tri_count, universal_worker, &t);
+	run_int_passes(se, &t);
+}
+
 void	update_physics(t_scene *scene, t_physic_engine *engine, double dt)
 {
 	static t_contact	contacts[MAX_CONTACTS];
@@ -105,6 +103,8 @@ void	update_physics(t_scene *scene, t_physic_engine *engine, double dt)
 	if (!scene || !engine || dt < 1e-6)
 		return ;
 	dt *= engine->settings.time_scale;
+	sync_phys_settings(scene, engine);
+	apply_attractor_pass(scene, &engine->settings);
 	integrate_bodies_worker(scene, engine, dt);
 	bvh_sync(scene);
 	count = generate_contacts(scene, engine, contacts, MAX_CONTACTS);

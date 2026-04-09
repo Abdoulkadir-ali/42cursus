@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/07 21:57:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 00:30:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,19 @@ double	shading_attenuation(double dist_sq)
 
 static bool	light_visible(t_shading *sha, t_light light, t_light_calc *c)
 {
-	double	bias;
 	t_vec3	org;
+	t_vec3	dir;
+	double	dist;
 
 	if (light.type == LIGHT_SPOT && vec3_dot(vec3_scale(c->norm, -1.0),
 			light.transform.forward) < light.cutoff)
 		return (false);
 	if (light.type == LIGHT_EMISSIVE)
 		return (true);
-	bias = fmax(EPSILON, EPSILON * 10.0 * (1.0 - c->ndotl));
-	org = vec3_add(sha->hit->point, vec3_scale(sha->hit->normal, bias));
-	if (is_in_shadow(sha->bvh, org, c->norm, c->dist))
+	org = vec3_add(sha->hit->point, vec3_scale(sha->hit->normal, 1e-3));
+	dir = vec3_sub(c->target, org);
+	dist = vec3_mag(dir);
+	if (is_in_shadow(sha->bvh, org, vec3_scale(dir, 1.0 / dist), dist - 1e-3))
 		return (false);
 	return (true);
 }
@@ -60,8 +62,35 @@ t_vec3	calc_light(t_shading *sha, t_light light)
 	t_light_calc	c;
 	double			spec;
 	t_vec3			diff;
+	t_vec3			target;
+	uint32_t		seed;
+	double			radius;
+	double			area_norm;
 
-	c.ld = vec3_sub(light.transform.pos, sha->hit->point);
+	radius = light.transform.scale.x;
+	target = light.transform.pos;
+	c.target = target;
+	area_norm = 1.0;
+	if (radius > 1e-4)
+	{
+		t_vec3	to_light = vec3_sub(light.transform.pos, sha->hit->point);
+		double	dist = vec3_mag(to_light);
+		if (radius < dist)
+		{
+			double cos_theta_max = sqrt(fmax(0.0, 1.0 - (radius * radius) / (dist * dist)));
+			seed = (uint32_t)sha->frame_idx * 1664525 + (uint32_t)light.id;
+			seed ^= (uint32_t)(sha->hit->point.x * 1000.0) ^ (uint32_t)(sha->hit->point.z * 1000.0);
+			c.norm = rt_random_on_cone(vec3_norm(to_light), cos_theta_max, &seed);
+			double b_val = 2.0 * vec3_dot(c.norm, vec3_scale(to_light, -1.0));
+			double c_val = dist * dist - radius * radius;
+			double det = b_val * b_val - 4.0 * c_val;
+			c.dist = (double)fmax(0.0, (-b_val - sqrt(fmax(0.0, det))) * 0.5);
+			target = vec3_add(sha->hit->point, vec3_scale(c.norm, c.dist));
+			c.target = target;
+			area_norm = 4.0 * PI * radius * radius;
+		}
+	}
+	c.ld = vec3_sub(target, sha->hit->point);
 	c.dist = vec3_mag(c.ld);
 	if (c.dist < 1e-8)
 		return (vec3(0, 0, 0));
@@ -69,12 +98,20 @@ t_vec3	calc_light(t_shading *sha, t_light light)
 	c.ndotl = vec3_dot(sha->hit->normal, c.norm);
 	if (c.ndotl < 0.0)
 		return (vec3(0, 0, 0));
-	if (light.brightness * c.ndotl < 0.004)
+	double b = light.brightness / area_norm;
+	double att = 1.0 / (c.dist * c.dist + 1.0);
+	if (!sha->opts || sha->opts->beer_enabled)
+	{
+		double density = (sha->opts && sha->opts->beer_density > 0.0)
+			? sha->opts->beer_density : 0.02;
+		att *= exp(-density * c.dist);
+	}
+	if (b * att * c.ndotl < 0.004)
 		return (vec3(0, 0, 0));
 	if (!light_visible(sha, light, &c))
 		return (vec3(0, 0, 0));
 	spec = calc_specular(sha, c.norm);
-	diff = pixel_color(sha->albedo, light.rgb, light.brightness * c.ndotl);
-	return (vec3_add(diff, vec3_scale(light.rgb, light.brightness
+	diff = pixel_color(sha->albedo, light.rgb, fmin(b * att, 200.0) * c.ndotl);
+	return (vec3_add(diff, vec3_scale(light.rgb, fmin(b * att, 200.0)
 				* sha->mat.specular * spec)));
 }

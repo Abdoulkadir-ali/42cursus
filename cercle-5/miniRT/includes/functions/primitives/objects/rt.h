@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:57:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 13:45:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:10:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ bool					scene_add_tri(t_scene *scene, t_tri_shape tri);
 bool					scene_add_rect(t_scene *scene, t_rect rect);
 bool					scene_add_pyramid(t_scene *scene, t_pyramid py);
 bool					scene_add_box(t_scene *scene, t_box box);
-bool					scene_add_capsule(t_scene *scene, t_capsule cap);
-bool					scene_add_light(t_scene *scene, t_light light);
+bool					scene_add_capsule(t_scene *scene, t_capsule cap);bool						scene_add_attractor(t_scene *scene, t_attractor a);bool					scene_add_light(t_scene *scene, t_light light);
 
 #endif

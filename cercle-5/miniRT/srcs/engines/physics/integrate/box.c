@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 16:14:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ void	integrate_box(t_box *bx, double dt, t_physics_settings *s)
 	if (bx->phys.is_static)
 		return ;
 	init_box_inertia(bx);
-	bx->phys.velocity = vec3_add(bx->phys.velocity, vec3_scale(s->gravity, dt));
+	bx->phys.velocity = vec3_add(bx->phys.velocity,
+			vec3_add(vec3_scale(s->gravity, dt),
+				vec3_scale(bx->phys.accel, dt)));
+	bx->phys.accel = vec3(0, 0, 0);
 	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
 	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
 	bx->phys.velocity = vec3_scale(bx->phys.velocity, damp.x);

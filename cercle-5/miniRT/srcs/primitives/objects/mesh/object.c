@@ -60,5 +60,7 @@ bool	process_object(t_scene *scene, t_parse_obj obj)
 		return (scene_add_box(scene, obj.data.box));
 	if (obj.type == TYPE_CAPSULE)
 		return (scene_add_capsule(scene, obj.data.capsule));
+	if (obj.type == TYPE_ATTRACTOR)
+		return (scene_add_attractor(scene, obj.data.attractor));
 	return (true);
 }

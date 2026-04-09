@@ -55,6 +55,8 @@ void    phys_debug_spheres(t_scene *scene);
 void    update_physics(t_scene *scene, t_physic_engine *engine, double dt);
 void    integrate_bodies_worker(t_scene *scene, t_physic_engine *engine, double dt);
 size_t  generate_contacts(t_scene *scene, t_physic_engine *engine, t_contact *contacts, size_t max_c);
+void    apply_attractor_pass(t_scene *scene, t_physics_settings *s);
+void	sync_phys_settings(t_scene *scene, t_physic_engine *engine);
 
 /* Internal Integrators */
 void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s);

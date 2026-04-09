@@ -6,15 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/30 19:14:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 18:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "core.h"
 #include "debug.h"
 #include "thread.h"
-#include <sys/stat.h>
-#include <dirent.h>
 
 static void	cleanup(t_scene *scene, t_gui *gui)
 {
@@ -38,20 +36,6 @@ static t_gui	*init_app(const char *path, t_scene **scene, void *mlx)
 	return (gui);
 }
 
-static int	start_gui(t_gui *gui, t_scene *scene, void *mlx)
-{
-	if (!gui)
-	{
-		fprintf(stderr, "Failed to initialize GUI\n");
-		cleanup(scene, NULL);
-		return (1);
-	}
-	gui->win.mlx = mlx;
-	gui_loop(gui);
-	cleanup(scene, gui);
-	return (0);
-}
-
 static int	run_app(const char *path)
 {
 	t_scene	*scene;
@@ -67,55 +51,16 @@ static int	run_app(const char *path)
 	}
 	scene = NULL;
 	gui = init_app(path, &scene, mlx);
-	return (start_gui(gui, scene, mlx));
-}
-
-static bool	is_rt_file(const char *name)
-{
-	size_t	len;
-
-	len = ft_strlen(name);
-	if (len < 4)
-		return (false);
-	return (ft_strcmp(name + len - 3, ".rt") == 0);
-}
-
-/*
-** Scans dir for the first .rt file found. Caller must free the result.
-*/
-static char	*first_rt_in_dir(const char *dir)
-{
-	DIR				*d;
-	struct dirent	*entry;
-	char			*tmp;
-	char			*result;
-
-	d = opendir(dir);
-	if (!d)
-		return (NULL);
-	result = NULL;
-	entry = readdir(d);
-	while (entry && !result)
+	if (!gui)
 	{
-		if (entry->d_type == DT_REG && is_rt_file(entry->d_name))
-		{
-			tmp = ft_strjoin(dir, "/");
-			result = ft_strjoin(tmp, entry->d_name);
-			free(tmp);
-		}
-		entry = readdir(d);
+		fprintf(stderr, "Failed to initialize GUI\n");
+		cleanup(scene, NULL);
+		return (1);
 	}
-	closedir(d);
-	return (result);
-}
-
-static bool	is_directory(const char *path)
-{
-	struct stat	st;
-
-	if (stat(path, &st) != 0)
-		return (false);
-	return (S_ISDIR(st.st_mode));
+	gui->win.mlx = mlx;
+	gui_loop(gui);
+	cleanup(scene, gui);
+	return (0);
 }
 
 int	main(int ac, char **av)

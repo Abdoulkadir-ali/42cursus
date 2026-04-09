@@ -37,5 +37,6 @@ void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction)
 	ray->direction = direction;
 	ray->depth = 0;
 	ray->weight = 1.0;
+	ray->frame_idx = 0;
 	ray_compute_inv(ray);
 }

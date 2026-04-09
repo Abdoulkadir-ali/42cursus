@@ -34,6 +34,8 @@ void	scene_swap_step(t_gui *gui)
 	gui->map_info.current = gui->render.next_entry;
 	scene_snap_take(&gui->render.next_entry->snap, gui);
 	gui->cam_ctrl.camera = &gui->scene->camera;
+	gui->phys_engine.scene = gui->scene;
+	gui->opts.prev_valid = false;
 	reset_camera_view(gui);
 	clear_selection(gui);
 	anim_engine_rebuild_index(&gui->anim_engine, gui->scene);

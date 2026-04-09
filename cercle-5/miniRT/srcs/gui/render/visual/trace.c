@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 00:17:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,15 @@ static int	pack_color(t_vec3 color, const t_raytracer_settings *opts)
 
 static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 {
-	double	px;
-	double	py;
-	t_vec3	dir;
-	double	jx;
-	double	jy;
+	double				px;
+	double				py;
+	t_vec3				dir;
+	double				jx;
+	double				jy;
+	t_vec3				origin;
+	const t_raytracer_settings	*s;
 
+	s = &render->gui->rt_engine.settings;
 	jx = 0.0;
 	jy = 0.0;
 	if (render->gui->opts.taa)
@@ -54,7 +57,30 @@ static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 	dir = vec3_norm(vec3_add(render->transform.forward,
 				vec3_add(vec3_scale(render->transform.right, px),
 					vec3_scale(render->transform.up, py))));
-	ray_init(ray, render->transform.pos, dir);
+	origin = render->transform.pos;
+	if (s->dof_enabled && s->dof_aperture > 1e-6)
+	{
+		uint32_t	seed;
+		double		angle;
+		double		radius;
+		double		focal_t;
+		t_vec3		focus_pt;
+		seed = (uint32_t)((int64_t)(x * 73856093)
+			^ (int64_t)(y * 19349663)
+			^ (int64_t)(render->gui->opts.taa_frame * 1664525 + 12345));
+		angle = 2.0 * PI * rt_rand_d(&seed);
+		radius = sqrt(rt_rand_d(&seed)) * s->dof_aperture;
+		focal_t = s->dof_focal_dist
+			/ fmax(vec3_dot(dir, render->transform.forward), 1e-6);
+		focus_pt = vec3_add(origin, vec3_scale(dir, focal_t));
+		origin = vec3_add(origin,
+				vec3_add(
+					vec3_scale(render->transform.right, cos(angle) * radius),
+					vec3_scale(render->transform.up, sin(angle) * radius)));
+		dir = vec3_norm(vec3_sub(focus_pt, origin));
+	}
+	ray_init(ray, origin, dir);
+	ray->frame_idx = render->gui->opts.taa_frame;
 }
 
 void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)

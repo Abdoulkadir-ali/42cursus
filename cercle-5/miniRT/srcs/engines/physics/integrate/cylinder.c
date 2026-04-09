@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 15:36:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,10 @@ void	integrate_cylinder(t_cylinder *cy, double dt, t_physics_settings *s)
 	if (cy->phys.is_static)
 		return ;
 	init_cylinder_inertia(cy);
-	cy->phys.velocity = vec3_add(cy->phys.velocity, vec3_scale(s->gravity, dt));
+	cy->phys.velocity = vec3_add(cy->phys.velocity,
+			vec3_add(vec3_scale(s->gravity, dt),
+				vec3_scale(cy->phys.accel, dt)));
+	cy->phys.accel = vec3(0, 0, 0);
 	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
 	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
 	cy->phys.velocity = vec3_scale(cy->phys.velocity, damp.x);

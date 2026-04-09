@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 03:08:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 23:33:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ size_t	scene_add_checker_material(t_scene *scene, t_vec3 color_a,
 	scene->materials[scene->mat_count - 1].specular = 0.3;
 	scene->materials[scene->mat_count - 1].shininess = 16.0;
 	scene->materials[scene->mat_count - 1].em_intensity = 1.0;
+	scene->materials[scene->mat_count - 1].em_radius = 1.0;
 	return (scene->mat_count - 1);
 }
 
@@ -63,6 +64,7 @@ t_index	scene_add_named_material(t_scene *scene, const char *name)
 	scene->materials[idx.i].specular = 0.1;
 	scene->materials[idx.i].shininess = 16.0;
 	scene->materials[idx.i].em_intensity = 1.0;
+	scene->materials[idx.i].em_radius = 1.0;
 	return (idx);
 }
 
@@ -82,6 +84,7 @@ t_index	scene_add_fresh_material(t_scene *scene, t_vec3 color)
 	m->specular = 0.5;
 	m->shininess = 32.0;
 	m->em_intensity = 1.0;
+	m->em_radius = 1.0;
 	apply_magic_colors(m, color);
 	apply_more_magic_colors(m, color);
 	return (idx);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 15:14:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:14:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,22 @@ static void	update_state(t_sphere *sp, double dt)
 /**
  * @brief Integrates a sphere body through one time step.
  */
-void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s)
+static void	apply_damp(t_sphere *sp, double dt, t_physics_settings *s)
 {
 	double	linear_d;
 	double	angular_d;
+
+	linear_d = clamp_d(1.0 - s->global_damping * dt, 0, 1);
+	angular_d = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
+	sp->phys.velocity = vec3_scale(vec3_add(vec3_add(sp->phys.velocity,
+					vec3_scale(s->gravity, dt)),
+				vec3_scale(sp->phys.accel, dt)), linear_d);
+	sp->phys.angular_velocity = vec3_scale(sp->phys.angular_velocity,
+			angular_d);
+}
+
+void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s)
+{
 	double	inv_i;
 
 	if (sp->phys.is_static)
@@ -112,12 +124,8 @@ void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s)
 			inv_i = 2.5 / sp->radius_sq;
 		sp->phys.inv_inertia = vec3(inv_i, inv_i, inv_i);
 	}
-	linear_d = clamp_d(1.0 - s->global_damping * dt, 0, 1);
-	angular_d = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
-	sp->phys.velocity = vec3_scale(vec3_add(sp->phys.velocity,
-				vec3_scale(s->gravity, dt)), linear_d);
-	sp->phys.angular_velocity = vec3_scale(sp->phys.angular_velocity,
-			angular_d);
+	apply_damp(sp, dt, s);
+	sp->phys.accel = vec3(0, 0, 0);
 	sp->phys.prev_velocity = sp->phys.velocity;
 	sp->transform.pos = vec3_add(sp->transform.pos,
 			vec3_scale(sp->phys.velocity, dt));

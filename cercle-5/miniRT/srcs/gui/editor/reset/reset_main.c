@@ -42,6 +42,7 @@ void	scene_reset(t_gui *gui)
 	sc->camera = snap->camera;
 	gui->ambient_color = snap->ambient_color;
 	gui->ambient_intensity = snap->ambient_intensity;
+	gui->opts.prev_valid = false;
 	reset_cam_ctrl(gui);
 	clear_selection(gui);
 	gui->render.bvh_needs_rebuild = 1;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 19:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:48:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,30 @@ void	apply_mat_mod_to_last(t_scene *scene, t_rt *rt, t_mat_mod *mod)
 	t_obj_mat_ref	ref;
 	size_t			mat_id;
 
-	if (rt->last_type == TYPE_NONE)
+	if (rt->last_type == TYPE_NONE
+		&& mod->kind < MAT_MOD_SCENE_GRAVITY)
 		return ;
-	if (mod->kind >= MAT_MOD_PHYS_MASS && mod->kind <= MAT_MOD_PHYS_FRIC)
+	if (mod->kind >= MAT_MOD_PHYS_MASS && mod->kind <= MAT_MOD_PHYS_VEL)
 	{
 		apply_phys_mod(scene, mod, rt->last_type);
+		return ;
+	}
+	if (mod->kind == MAT_MOD_SCENE_GRAVITY)
+	{
+		scene->scene_gravity = mod->color_a;
+		scene->scene_gravity_set = true;
+		return ;
+	}
+	if (mod->kind == MAT_MOD_SCENE_BIG_G)
+	{
+		scene->scene_big_g = mod->val;
+		scene->scene_big_g_set = true;
+		return ;
+	}
+	if (mod->kind == MAT_MOD_SCENE_DAMP)
+	{
+		scene->scene_damping = mod->val;
+		scene->scene_damping_set = true;
 		return ;
 	}
 	if (!get_last_obj_ref(scene, rt->last_type, &ref))

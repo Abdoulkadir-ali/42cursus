@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 15:55:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:24:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:10:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ static bool	init_arrays_more(t_scene *s)
 	s->boxes = ft_calloc(s->box_cap, sizeof(t_box));
 	s->capsule_cap = INIT_CAPSULE_CAP;
 	s->capsules = ft_calloc(s->capsule_cap, sizeof(t_capsule));
+	s->attractor_cap = 8;
+	s->attractors = ft_calloc(s->attractor_cap, sizeof(t_attractor));
 	if (!s->cones || !s->tris || !s->rects || !s->pyramids
-		|| !s->boxes || !s->capsules)
+		|| !s->boxes || !s->capsules || !s->attractors)
 		return (false);
 	return (true);
 }

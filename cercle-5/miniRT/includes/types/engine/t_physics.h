@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 18:38:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ typedef struct s_physics_settings
 	double				global_damping;
 	double				time_scale;
 	bool				mesh_simplify_collision;
+	double				big_g;
 }						t_physics_settings;
 
 typedef struct s_gen_job

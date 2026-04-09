@@ -38,6 +38,35 @@ static void	check_planes(const t_ray *ray, t_scene *sc, t_hit *hit, bool *any)
 	}
 }
 
+static t_vec3	add_volumetrics(const t_ray *ray, t_scene *sc, double max_t)
+{
+	t_vec3	glow;
+	size_t	i;
+	double	t;
+	double	d2;
+	t_vec3	lv;
+	double	br;
+
+	glow = vec3(0, 0, 0);
+	if (!sc || ray->depth > 0)
+		return (glow);
+	i = 0;
+	while (i < sc->light_count)
+	{
+		lv = vec3_sub(sc->lights[i].transform.pos, ray->origin);
+		t = vec3_dot(lv, ray->direction);
+		if (t > 0 && t < max_t)
+		{
+			d2 = vec3_mag_sq(lv) - t * t;
+			br = sc->lights[i].brightness;
+			glow = vec3_add(glow, vec3_scale(sc->lights[i].rgb,
+						br * 0.00004 / (d2 + 0.1)));
+		}
+		i++;
+	}
+	return (glow);
+}
+
 static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
 		t_scene *sc, float *out_t)
 {
@@ -55,8 +84,9 @@ static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
 	if (out_t)
 		*out_t = (float)hit.t;
 	if (hit_any)
-		return (compute_color(&hit, sc, bvh, ray));
-	return (vec3(0, 0, 0));
+		return (vec3_add(compute_color(&hit, sc, bvh, ray),
+				add_volumetrics(ray, sc, hit.t)));
+	return (add_volumetrics(ray, sc, 1e10));
 }
 
 t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *sc)

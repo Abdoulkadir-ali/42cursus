@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 16:39:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 22:25:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	opts_free(t_gui *gui)
 	free(o->reproj_tag);
 	free(o->interp_buf);
 	free(o->taa_buf);
+	free(o->bloom_buf);
+	free(o->bloom_tmp);
 	o->depth_buf = NULL;
 	o->prev_depth = NULL;
 	o->prev_color = NULL;
@@ -77,4 +79,6 @@ void	opts_free(t_gui *gui)
 	o->reproj_tag = NULL;
 	o->interp_buf = NULL;
 	o->taa_buf = NULL;
+	o->bloom_buf = NULL;
+	o->bloom_tmp = NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 17:33:54 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 00:24:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_light_calc
 {
 	t_vec3	ld;
 	t_vec3	norm;
+	t_vec3	target;
 	double	dist;
 	double	ndotl;
 }	t_light_calc;
@@ -147,7 +148,7 @@ bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 /* srcs/raytracing/bvh/tree/ */
 void	bvh_collapse(t_bvh *bvh);
 
-t_vec3	clamp_color(t_vec3 color);
+t_vec3	clamp_color(t_vec3 color, const t_raytracer_settings *opts);
 bool	is_emissive(t_scene *sc, size_t mat_id);
 
 /* srcs/raytracing/trace/ */
@@ -167,6 +168,15 @@ void	em_vol(t_shading *sha, t_scene *sc, t_vec3 *total, t_emissive_ref ref);
 void	em_surf(t_shading *sha, t_scene *sc, t_vec3 *total, t_emissive_ref ref);
 void	apply_em(t_shading *sha, t_vec3 *total, t_material *mat, double r);
 double	shading_attenuation(double dist_sq);
+uint32_t	rt_next_rand(uint32_t *seed);
+double	rt_rand_d(uint32_t *seed);
+t_vec3	rt_random_on_sphere(uint32_t *seed);
+t_vec3	rt_random_on_hemisphere(t_vec3 normal, uint32_t *seed);
+t_vec3	rt_random_cosine_weighted(t_vec3 normal, uint32_t *seed);
+t_vec3	rt_random_on_cone(t_vec3 axis, double cos_theta_max, uint32_t *seed);
+void	rt_build_onb(t_vec3 n, t_vec3 *v1, t_vec3 *v2);
+t_vec3	rt_kelvin_to_rgb(double kelvin);
+double	rt_halton(size_t i, size_t base);
 
 /* srcs/raytracing/intersection/ */
 bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit);

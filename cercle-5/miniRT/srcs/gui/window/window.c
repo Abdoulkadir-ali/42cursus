@@ -12,6 +12,7 @@
 
 #include "window.h"
 #include "editor.h"
+#include "optimizations.h"
 
 static bool	create_is(t_gui *gui, t_vec2s sz, void **imgs, char **as)
 {
@@ -60,6 +61,8 @@ int	gui_window_resize(t_vec2s sz, t_gui *gui)
 		i++;
 	}
 	gui->win.disp_size = sz;
+	opts_free(gui);
+	optimizations_init(gui);
 	gui_recompute_layout(gui);
 	gui->render.dirty = true;
 	return (0);

@@ -51,5 +51,5 @@ bool	repro_world_to_screen(t_reproj r, t_vec3 wp, t_vec2i *out_n,
 		*out_cz = cz;
 	sw = r.size.x;
 	sh = r.size.y;
-	return (out_n->x < sw && out_n->y < sh);
+	return (out_n->x >= 0 && out_n->x < sw && out_n->y >= 0 && out_n->y < sh);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 18:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 03:14:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@ t_parse_obj	dispatch_basic(t_parser *p, char *id)
 		return (parse_camera(p));
 	if (id[0] == 'L' && id[1] == '\0')
 		return (parse_light(p));
+	if (id[0] == 'G' && id[1] == '\0')
+		return (parse_big_g(p));
+	if (ft_strcmp(id, "grav") == 0)
+		return (parse_scene_gravity(p));
+	if (ft_strcmp(id, "damp") == 0)
+		return (parse_scene_damp(p));
 	return (init_none());
 }
 
@@ -45,6 +51,8 @@ t_parse_obj	dispatch_shapes(t_parser *p, char *id)
 		return (parse_box(p));
 	if (id[0] == 'c' && id[1] == 'a')
 		return (parse_capsule(p));
+	if (id[0] == 'b' && id[1] == 'h')
+		return (parse_attractor(p));
 	return (init_none());
 }
 

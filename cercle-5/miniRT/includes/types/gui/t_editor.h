@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/07 22:22:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 23:33:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define T_EDITOR_H
 
 # include "t_physics.h"
+# include <float.h>
 
 struct			s_gui;
 struct			s_widget;
@@ -95,10 +96,12 @@ typedef struct s_crud_ui
 # define SL_EMIT_MIN 0.0
 # define SL_EMIT_MAX 255.0
 # define SL_EM_POWER_MIN 0.0
-# define SL_EM_POWER_MAX 4.0
+# define SL_EM_POWER_MAX 1000000.0
+# define SL_EM_RADIUS_MIN 0.0
+# define SL_EM_RADIUS_MAX 10000.0
 /* Light */
 # define SL_INTENSITY_MIN 0.0
-# define SL_INTENSITY_MAX 5.0
+# define SL_INTENSITY_MAX 1000000.0
 # define SL_CUTOFF_MIN 0.0
 # define SL_CUTOFF_MAX 90.0
 /* Ambient */
@@ -106,7 +109,7 @@ typedef struct s_crud_ui
 # define SL_AMB_MAX 2.0
 /* Physics */
 # define SL_MASS_MIN 0.01
-# define SL_MASS_MAX 1000.0
+# define SL_MASS_MAX 1000000000.0
 # define SL_ELAST_MIN 0.0
 # define SL_ELAST_MAX 1.0
 # define SL_FRIC_MIN 0.0

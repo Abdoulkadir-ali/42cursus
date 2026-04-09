@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,10 @@ void	integrate_pyramid(t_pyramid *py, double dt, t_physics_settings *s)
 	if (py->phys.is_static)
 		return ;
 	init_pyramid_inertia(py);
-	py->phys.velocity = vec3_add(py->phys.velocity, vec3_scale(s->gravity, dt));
+	py->phys.velocity = vec3_add(py->phys.velocity,
+			vec3_add(vec3_scale(s->gravity, dt),
+				vec3_scale(py->phys.accel, dt)));
+	py->phys.accel = vec3(0, 0, 0);
 	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
 	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
 	py->phys.velocity = vec3_scale(py->phys.velocity, damp.x);

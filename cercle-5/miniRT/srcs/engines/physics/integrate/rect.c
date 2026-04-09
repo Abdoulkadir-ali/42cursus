@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/07 01:45:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,10 @@ void	integrate_rect(t_rect *rc, double dt, t_physics_settings *s)
 	delta = vec3_sub(rc->transform.pos, vec3_scale(vec3_add(vec3_add(rc->v[0],
 						rc->v[1]), vec3_add(rc->v[2], rc->v[3])), 0.25));
 	apply_displace(rc, delta);
-	rc->phys.velocity = vec3_add(rc->phys.velocity, vec3_scale(s->gravity, dt));
+	rc->phys.velocity = vec3_add(rc->phys.velocity,
+			vec3_add(vec3_scale(s->gravity, dt),
+				vec3_scale(rc->phys.accel, dt)));
+	rc->phys.accel = vec3(0, 0, 0);
 	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
 	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
 	rc->phys.velocity = vec3_scale(rc->phys.velocity, damp.x);

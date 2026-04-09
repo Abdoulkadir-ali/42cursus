@@ -41,18 +41,22 @@ static t_map_entry	*create_node(const char *folder, const char *name)
 {
 	t_map_entry	*node;
 	char		*tmp;
+	size_t		len;
 
 	node = ft_calloc(1, sizeof(t_map_entry));
 	if (!node)
 		return (NULL);
-	tmp = ft_strjoin(folder, "/");
-	node->path = ft_strjoin(tmp, name);
-	free(tmp);
-	if (!node->path)
+	len = ft_strlen(folder);
+	if (len > 0 && folder[len - 1] == '/')
+		node->path = ft_strjoin(folder, name);
+	else
 	{
-		free(node);
-		return (NULL);
+		tmp = ft_strjoin(folder, "/");
+		node->path = ft_strjoin(tmp, name);
+		free(tmp);
 	}
+	if (!node->path)
+		return (free(node), NULL);
 	return (node);
 }
 

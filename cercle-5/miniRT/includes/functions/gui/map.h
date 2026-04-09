@@ -27,6 +27,7 @@ void	map_manager_destroy(struct s_gui *gui);
 void	map_next_press(struct s_gui *gui);
 void	map_prev_press(struct s_gui *gui);
 void	fill_map_list(struct s_gui *gui);
+void	gui_map_update(struct s_gui *gui);
 void	set_current_entry(struct s_gui *gui);
 
 #endif

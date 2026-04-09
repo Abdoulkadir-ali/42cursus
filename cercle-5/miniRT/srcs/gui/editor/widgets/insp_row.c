@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 21:02:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	draw_insp_row_slider(t_gui *gui, t_vec2i pos, t_islider sl)
 	sl_w = ui_sx(INSP_SL_W, d);
 	frac = 0.0;
 	if (sl.max > sl.min)
-		frac = (*sl.ptr - sl.min) / (sl.max - sl.min);
+		frac = sl_to_frac(islider_get_val(sl), sl.min, sl.max);
 	if (frac < 0.0)
 		frac = 0.0;
 	if (frac > 1.0)
@@ -52,7 +52,7 @@ static void	draw_insp_row_input(t_gui *gui, t_vec2i pos, t_islider sl)
 {
 	t_insp_edit	*e;
 	t_vec2s		d;
-	char		buf[24];
+	char		buf[64];
 	t_panel		inp;
 	int			bg;
 
@@ -70,7 +70,7 @@ static void	draw_insp_row_input(t_gui *gui, t_vec2i pos, t_islider sl)
 	if (e->active && e->value_ptr == sl.ptr)
 		snprintf(buf, sizeof(buf), "%s", e->buf);
 	else
-		snprintf(buf, sizeof(buf), "%.4g", *sl.ptr);
+		snprintf(buf, sizeof(buf), "%.4g", islider_get_val(sl));
 	gui_draw_string(gui, buf, vec2i(pos.x + ui_sx(INSP_IN_OFF + 3, d),
 			pos.y + ui_sy(5, d)), COL_HOVER);
 	if (e->active && e->value_ptr == sl.ptr)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 19:08:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,11 @@ typedef enum e_mat_mod_kind
 	MAT_MOD_PHYS_MASS,
 	MAT_MOD_PHYS_STATIC,
 	MAT_MOD_PHYS_ELAST,
-	MAT_MOD_PHYS_FRIC
+	MAT_MOD_PHYS_FRIC,
+	MAT_MOD_PHYS_VEL,
+	MAT_MOD_SCENE_GRAVITY,
+	MAT_MOD_SCENE_BIG_G,
+	MAT_MOD_SCENE_DAMP
 }							t_mat_mod_kind;
 
 typedef struct s_mat_mod
@@ -87,6 +91,7 @@ typedef struct s_parse_obj
 		t_pyramid			pyramid;
 		t_box				box;
 		t_capsule			capsule;
+		t_attractor			attractor;
 		t_light				light;
 		t_camera			camera;
 		t_ambient			ambient;

@@ -61,17 +61,30 @@ static void	*async_load_thread(void *arg)
 	return (NULL);
 }
 
+void	gui_map_update(t_gui *gui)
+{
+	if (!gui->map_job.active || !gui->map_job.done)
+		return ;
+	pthread_join(gui->map_job.tid, NULL);
+	gui->map_job.active = false;
+	if (gui->map_job.entry->scene)
+	{
+		gui->render.next_scene = gui->map_job.entry->scene;
+		gui->render.next_entry = gui->map_job.entry;
+		gui->render.scene_swap_pending = 1;
+		gui->render.dirty = true;
+	}
+}
+
 void	map_load_async(t_gui *gui, t_map_entry *entry)
 {
 	if (gui->map_job.active)
 		return ;
 	if (entry->scene)
 	{
-		gui->scene = entry->scene;
-		gui->map_info.current = entry;
-		gui->cam_ctrl.camera = &gui->scene->camera;
-		reset_camera_view(gui);
-		clear_selection(gui);
+		gui->render.next_scene = entry->scene;
+		gui->render.next_entry = entry;
+		gui->render.scene_swap_pending = 1;
 		gui->render.dirty = true;
 		return ;
 	}

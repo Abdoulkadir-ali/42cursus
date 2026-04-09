@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 23:33:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,9 @@ void	draw_mat_emission(t_gui *gui, t_material *mat, t_vec2i *p)
 	p->y += ui_sy(INSP_ROW_STEP, d);
 	sl = (t_islider){"Power", SL_EM_POWER_MIN, SL_EM_POWER_MAX,
 		&mat->em_intensity, sync_group_materials};
+	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
+	p->y += ui_sy(INSP_ROW_STEP, d);
+	sl = (t_islider){"Radius", SL_EM_RADIUS_MIN, SL_EM_RADIUS_MAX,
+		&mat->em_radius, sync_group_materials};
 	draw_insp_row(gui, (t_vec2i){p->x, p->y}, sl);
 }

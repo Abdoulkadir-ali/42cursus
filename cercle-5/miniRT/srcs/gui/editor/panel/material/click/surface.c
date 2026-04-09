@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 23:33:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ bool	click_mat_emission(t_gui *gui, t_vec2i mouse, t_material *mat,
 		t_vec2i *p)
 {
 	t_vec2s		d;
-	t_islider	sl[4];
+	t_islider	sl[5];
 	size_t		i;
 
 	d = gui->win.disp_size;
@@ -65,9 +65,11 @@ bool	click_mat_emission(t_gui *gui, t_vec2i mouse, t_material *mat,
 		&mat->emission.z, sync_group_materials};
 	sl[3] = (t_islider){"Power", SL_EM_POWER_MIN, SL_EM_POWER_MAX,
 		&mat->em_intensity, sync_group_materials};
+	sl[4] = (t_islider){"Radius", SL_EM_RADIUS_MIN, SL_EM_RADIUS_MAX,
+		&mat->em_radius, sync_group_materials};
 	p->y += ui_sy(6 + INSP_HDR_STEP, d);
 	i = 0;
-	while (i < 4)
+	while (i < 5)
 	{
 		if (insp_row_click(gui, mouse, (t_vec2i){p->x, p->y}, sl[i]))
 			return (true);

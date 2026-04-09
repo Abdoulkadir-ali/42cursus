@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:35:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 19:08:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 19:32:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ t_parse_obj				parse_rect(t_parser *p);
 t_parse_obj				parse_pyramid(t_parser *p);
 t_parse_obj				parse_box(t_parser *p);
 t_parse_obj				parse_capsule(t_parser *p);
+t_parse_obj				parse_attractor(t_parser *p);
+t_parse_obj				parse_scene_gravity(t_parser *p);
+t_parse_obj				parse_big_g(t_parser *p);
+t_parse_obj				parse_scene_damp(t_parser *p);
 t_parse_obj				parse_spot_light(t_parser *p);
 t_parse_obj				parse_mesh_entry(t_parser *p, t_type type);
 t_parse_obj				parse_mat_mod(t_parser *p);
