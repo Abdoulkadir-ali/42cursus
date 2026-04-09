@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:38:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 18:06:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	cylinder_vs_cylinders(t_contact_query *qu, t_col_pair *p,
 				cylinder_aabb(other)))
 		{
 			sb = init_gjk_shape(other, gjk_support_cylinder,
-				other->phys.center);
+					other->phys.center);
 			pair = (t_col_pair){p->sa, &sb, p->ba, &other->phys, p->ta,
 				&other->transform};
 			if (gjk_make_contact(&pair, &qu->contacts[qu->count]))

@@ -201,6 +201,11 @@ bool	check_bottom_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 bool	check_top_cap(const t_ray *ray, t_cylinder *cy, double *tm,
 			t_hit *hit);
 bool	check_body(const t_ray *ray, t_cylinder *cy, double *tm, t_hit *hit);
+bool	near_sphere_t(const t_ray *ray, t_vec3 center, double radius,
+			double *t_out);
+bool	cylinder_body_t(const t_ray *ray, t_capsule *cap, double *t_out);
+void	update_capsule_hit(t_capsule *cp, t_hit *h, t_cap_calc *c,
+			const t_ray *r);
 
 /* 4. IMPLEMENTATION IMPORTS */
 # include "scene.h"
