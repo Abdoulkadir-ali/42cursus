@@ -47,6 +47,13 @@ typedef struct s_emissive_ref
 	size_t				index;
 }						t_emissive_ref;
 
+typedef struct s_obj_mat_ref
+{
+	size_t				*mat_id;
+	size_t				*mat_slots;
+	int					*active_slot;
+}						t_obj_mat_ref;
+
 typedef struct s_scene
 {
 	char				*name;

@@ -6,11 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:03:40 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:25:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:24:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
+
+static void	set_box_phys(t_box *box)
+{
+	init_poly_phys(&box->phys);
+	box->phys.center = box->transform.pos;
+	box->phys.pos = box->transform.pos;
+}
 
 t_parse_obj	parse_box(t_parser *p)
 {
@@ -21,12 +28,19 @@ t_parse_obj	parse_box(t_parser *p)
 	res.type = TYPE_NONE;
 	if (!parse_vec3(p, &res.data.box.transform.pos))
 		return (res);
-	if (!parse_vec3(p, &res.data.box.half_extents))
+	if (!parse_vec3(p, &res.data.box.transform.forward))
 		return (res);
-	if (!parse_vec3(p, &rgb))
+	if (vec3_mag_sq(res.data.box.transform.forward) > 1e-6)
+		res.data.box.transform.forward
+			= vec3_norm(res.data.box.transform.forward);
+	else
+		res.data.box.transform.forward = vec3(1, 0, 0);
+	if (!parse_vec3(p, &res.data.box.half_extents) || !parse_vec3(p, &rgb))
 		return (res);
 	res.data.box.temp_color = rgb;
-	init_poly_phys(&res.data.box.phys);
+	vec3_orthonormal_basis(res.data.box.transform.forward,
+		&res.data.box.transform.right, &res.data.box.transform.up);
+	set_box_phys(&res.data.box);
 	res.type = TYPE_BOX;
 	return (res);
 }

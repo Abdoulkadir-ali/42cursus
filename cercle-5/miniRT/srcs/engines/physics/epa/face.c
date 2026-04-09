@@ -38,6 +38,9 @@ t_epa_face	epa_make_face(t_epa_poly *p, t_vec3s tri)
 	{
 		f.normal = vec3_scale(f.normal, -1.0);
 		f.dist = -f.dist;
+		f.idx[0] = tri.x;
+		f.idx[1] = tri.z;
+		f.idx[2] = tri.y;
 	}
 	return (f);
 }

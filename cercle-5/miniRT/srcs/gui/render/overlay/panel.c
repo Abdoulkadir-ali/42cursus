@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 14:09:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,15 @@ static void	draw_panel_pixel(t_gui *gui, t_panel panel, t_vec2i pos)
 void	draw_panel(t_gui *gui, t_panel panel)
 {
 	t_vec2i	pos;
+	t_vec2i	end;
 
-	int	end_x;
-	int	end_y;
-
-	end_x = panel.pos.x + panel.size.x;
-	end_y = panel.pos.y + panel.size.y;
+	end.x = panel.pos.x + panel.size.x;
+	end.y = panel.pos.y + panel.size.y;
 	pos.y = panel.pos.y;
-	while (pos.y < end_y)
+	while (pos.y < end.y)
 	{
 		pos.x = panel.pos.x;
-		while (pos.x < end_x)
+		while (pos.x < end.x)
 		{
 			draw_panel_pixel(gui, panel, pos);
 			pos.x++;

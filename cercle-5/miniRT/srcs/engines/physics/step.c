@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 14:07:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,5 @@ void	physics_step(t_gui *gui, double delta)
 		steps++;
 	}
 	if (steps > 0)
-		gui->render.bvh_needs_rebuild = 1;
+		gui->render.dirty = true;
 }

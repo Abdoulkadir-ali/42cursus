@@ -6,18 +6,32 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 11:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 22:26:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 03:20:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "thread.h"
 #include "debug.h"
 
+static void	exec_worker(t_thread_pool *pool, size_t *my_gen)
+{
+	t_worker_func	f;
+	void			*data;
+
+	*my_gen = pool->generation;
+	f = pool->worker;
+	data = pool->data;
+	pthread_mutex_unlock(&pool->lock);
+	f(data);
+	pthread_mutex_lock(&pool->lock);
+	if (--pool->running == 0)
+		pthread_cond_signal(&pool->cond_done);
+	pthread_mutex_unlock(&pool->lock);
+}
+
 static void	*pool_worker(void *arg)
 {
 	t_thread_pool	*pool;
-	t_worker_func	f;
-	void			*data;
 	size_t			my_gen;
 
 	pool = (t_thread_pool *)arg;
@@ -32,17 +46,7 @@ static void	*pool_worker(void *arg)
 			pthread_mutex_unlock(&pool->lock);
 			break ;
 		}
-		my_gen = pool->generation;
-		f = pool->worker;
-		data = pool->data;
-		pthread_mutex_unlock(&pool->lock);
-		//ft_print_debug("[DEBUG] Thread pool worker starting generation %zu\n", my_gen);
-		f(data);
-		//ft_print_debug("[DEBUG] Thread pool worker finished generation %zu\n", my_gen);
-		pthread_mutex_lock(&pool->lock);
-		if (--pool->running == 0)
-			pthread_cond_signal(&pool->cond_done);
-		pthread_mutex_unlock(&pool->lock);
+		exec_worker(pool, &my_gen);
 	}
 	return (NULL);
 }

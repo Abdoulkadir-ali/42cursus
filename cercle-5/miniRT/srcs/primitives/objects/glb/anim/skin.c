@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:05 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 16:15:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 02:59:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ static void	apply_skin_vertex(t_mesh *m, int i, t_vec3 *pos, t_vec3 *norm)
 	bw = &m->weights[i];
 	*pos = vec3(0, 0, 0);
 	*norm = vec3(0, 0, 0);
-	k = -1;
-	while (++k < 4)
+	k = 0;
+	while (k < 4)
 	{
 		mat = get_joint_matrix(m, bw->bone_indices[k]);
 		if (!mat || bw->weights[k] <= 0.0f)
@@ -56,6 +56,7 @@ static void	apply_skin_vertex(t_mesh *m, int i, t_vec3 *pos, t_vec3 *norm)
 			apply_skin_norm(&m->base_normals[i], mat, bw->weights[k], norm);
 		else
 			apply_skin_norm(NULL, mat, bw->weights[k], norm);
+		k++;
 	}
 }
 

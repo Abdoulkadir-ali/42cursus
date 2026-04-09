@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pyramid.c                                          :+:      :+:    :+:   */
+/*   rect.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/30 15:54:10 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 14:19:19 by abdoali          ###   ########.fr       */
+/*   Created: 2026/03/30 20:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/03 14:21:02 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 
-bool	scene_add_pyramid(t_scene *scene, t_pyramid py)
+bool	scene_add_rect(t_scene *scene, t_rect rect)
 {
 	t_index	mat_id;
 
-	mat_id = scene_add_material(scene, py.temp_color);
+	mat_id = scene_add_material(scene, rect.temp_color);
 	if (mat_id.error)
 		return (false);
-	py.mat_id = mat_id.i;
-	if (!DYNARRAY_ENSURE_INT(&scene->pyramids, &scene->pyramid_count,
-			&scene->pyramid_cap, sizeof(t_pyramid)))
+	rect.mat_id = mat_id.i;
+	if (!DYNARRAY_ENSURE_INT(&scene->rects, &scene->rect_count,
+			&scene->rect_cap, sizeof(t_rect)))
 		return (false);
-py.mat_slots[0] = py.mat_id;
-py.mat_slots[1] = scene->mat_slot_checker;
-py.mat_slots[2] = scene->mat_slot_solid;
-py.mat_slots[3] = 0;
-py.active_slot = 0;
-	scene->pyramids[scene->pyramid_count++] = py;
+	rect.mat_slots[0] = rect.mat_id;
+	rect.mat_slots[1] = scene->mat_slot_checker;
+	rect.mat_slots[2] = scene->mat_slot_solid;
+	rect.mat_slots[3] = 0;
+	rect.active_slot = 0;
+	scene->rects[scene->rect_count++] = rect;
 	return (true);
 }

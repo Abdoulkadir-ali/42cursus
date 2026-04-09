@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   types.h                                            :+:      :+:    :+:   */
+/*   worker.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/08 14:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 00:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,13 @@
 #include "raytracing.h"
 #include "debug.h"
 
-/**
- * Main parser for FDF files. Converts heightmap to mesh.
- */
-
-bool	parse_fdf_worker(const char *path, t_scene *scene)
+static bool	fdf_setup_state(t_mesh *mesh, t_vec2s dims,
+		t_fdf_state **out_state)
 {
-	t_mesh			mesh;
-	t_vec2s			dims;
-	size_t			v_count;
-	size_t			i_count;
-	t_fdf_mode		mode;
-	t_fdf_state		*state;
+	t_fdf_state	*state;
+	size_t		v_count;
 
-	ft_print_debug("FDF: Starting parse for '%s'\n", path);
-	if (!fdf_get_dimensions(path, &dims))
-	{
-		ft_print_debug("FDF: ERROR: Failed to get dimensions for %s\n", path);
-		return (false);
-	}
-	ft_print_debug("FDF: %s dimensions: %zu x %zu\n", path, dims.x, dims.y);
 	v_count = dims.x * dims.y;
-	i_count = (dims.x - 1) * (dims.y - 1) * 2 * 3;
-	if (!fdf_init_mesh(&mesh, v_count, i_count, path))
-	{
-		ft_print_debug("FDF: ERROR: Failed to init mesh for %s\n", path);
-		return (false);
-	}
 	state = ft_calloc(1, sizeof(t_fdf_state));
 	if (!state)
 		return (false);
@@ -51,35 +31,53 @@ bool	parse_fdf_worker(const char *path, t_scene *scene)
 		free(state);
 		return (false);
 	}
-	mesh.extra = state->colors;
+	mesh->extra = state->colors;
+	*out_state = state;
+	return (true);
+}
+
+static void	fdf_finalize_parsing(t_mesh *mesh, t_scene *scene)
+{
+	t_fdf_state	*state;
+
+	state = (t_fdf_state *)mesh->extra;
+	fdf_compute_normals(scene->pool, mesh, state->dims);
+	fdf_triangulate(scene->pool, mesh, state->dims);
+	mesh_build_bvh(mesh);
+	mesh->mat_id = scene_add_material(scene, vec3(200, 200, 200)).i;
+	fdf_apply_mode(mesh, scene, state);
+}
+
+static const char	*fdf_get_mode_str(t_fdf_mode mode)
+{
+	if (mode == FDF_MODE_PICTURE)
+		return ("PICTURE");
+	return ("HEIGHT_GRADIENT");
+}
+
+bool	parse_fdf_worker(const char *path, t_scene *scene)
+{
+	t_mesh			mesh;
+	t_vec2s			dims;
+	t_fdf_mode		mode;
+	t_fdf_state		*state;
+
+	if (!fdf_get_dimensions(path, &dims))
+		return (false);
+	if (!fdf_init_mesh(&mesh, dims.x * dims.y, (dims.x - 1) * (dims.y - 1)
+			* 2 * 3, path))
+		return (false);
+	if (!fdf_setup_state(&mesh, dims, &state))
+		return (false);
 	mode = fdf_detect_mode(path);
-	ft_print_debug("FDF: mode=%s\n",
-		mode == FDF_MODE_PICTURE ? "PICTURE" : "HEIGHT_GRADIENT");
+	ft_print_debug("FDF: mode=%s\n", fdf_get_mode_str(mode));
 	fdf_fill_data(path, &mesh, dims);
-	ft_print_debug("FDF: Fill done. v[0]=%g v[1]=%g\n",
-		mesh.vertices[0].pos.y, mesh.vertices[1].pos.y);
 	mesh.extra = state;
 	state->mode = mode;
 	mesh.is_fdf = true;
-	fdf_compute_normals(scene->pool, &mesh, dims);
-	fdf_triangulate(scene->pool, &mesh, dims);
-	ft_print_debug("FDF: Triangulation done. idx[0..5]=%zu %zu %zu | %zu %zu %zu\n",
-		mesh.indices[0], mesh.indices[1], mesh.indices[2],
-		mesh.indices[3], mesh.indices[4], mesh.indices[5]);
-	mesh_build_bvh(&mesh);
-	ft_print_debug("FDF: BVH built. bvh_nodes=%zu BBox Min=%g, Max=%g\n",
-		mesh.bvh_node_count,
-		mesh.bbox.min.y, mesh.bbox.max.y);
-	mesh.mat_id = scene_add_material(scene, vec3(200, 200, 200)).i;
-	fdf_apply_mode(&mesh, scene, dims, mode, state->colors);
-	ft_print_debug("FDF: Material assigned: mat_id=%zu\n", mesh.mat_id);
+	fdf_finalize_parsing(&mesh, scene);
 	if (!scene_add_mesh(scene, mesh))
-	{
-		ft_print_debug("FDF: ERROR: Failed to add mesh to scene.\n");
-		mesh_free(&mesh);
-		return (false);
-	}
+		return (mesh_free(&mesh), false);
 	scene_add_group_for_subs(scene, path, scene->mesh_count - 1);
-	ft_print_debug("FDF: Successfully added mesh '%s'\n", path);
 	return (true);
 }

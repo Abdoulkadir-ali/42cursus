@@ -32,6 +32,12 @@ static bool	check_body_t(t_ray_query *q, t_cylinder *cy, double t)
 			q->hit->normal = vec3_norm(vec3_sub(vec3_sub(p,
 							cy->transform.pos),
 						vec3_scale(cy->transform.forward, h)));
+			q->hit->back_face = false;
+			if (vec3_dot(q->ray->direction, q->hit->normal) > 0)
+			{
+				q->hit->normal = vec3_scale(q->hit->normal, -1.0);
+				q->hit->back_face = true;
+			}
 			get_cylinder_uv((t_entry_point){p, cy->transform.pos,
 				cy->transform.scale.x, cy->transform.scale.y, h},
 				cy, q->hit, false);

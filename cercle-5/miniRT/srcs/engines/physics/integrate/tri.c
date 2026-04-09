@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 01:45:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,5 @@ void	integrate_tri(t_tri_shape *tr, double dt, t_physics_settings *s)
 	update_tri_rot(tr, dt, rot, delta);
 	tr->xform.pos = vec3_add(tr->xform.pos, delta);
 	tr->phys.center = tr->xform.pos;
+	tr->phys.pos = tr->xform.pos;
 }

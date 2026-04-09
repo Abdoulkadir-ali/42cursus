@@ -25,6 +25,7 @@ static void	init_find(t_bvh_find *f, t_bvh_eval *eval)
 	eval->s = &f->s;
 	eval->axis = 0;
 }
+
 /**
  * Finds the optimal split plane for a BVH node by evaluating all three 
  * axes (X, Y, Z) and selecting the one with the lowest SAH cost.

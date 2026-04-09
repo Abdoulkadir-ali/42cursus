@@ -20,6 +20,12 @@ void	set_sphere_hit_data(const t_ray *ray, t_sphere *sp, t_hit *hit)
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
 	hit->normal = vec3_scale(vec3_sub(hit->point, sp->transform.pos),
 			1.0 / sqrt(sp->radius_sq));
+	hit->back_face = false;
+	if (vec3_dot(ray->direction, hit->normal) > 0)
+	{
+		hit->normal = vec3_scale(hit->normal, -1.0);
+		hit->back_face = true;
+	}
 	if (sp->needs_uv)
 		get_sphere_uv(hit->normal, &hit->u, &hit->v);
 }

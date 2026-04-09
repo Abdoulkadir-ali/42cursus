@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:32:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:34:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 03:09:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 {
 	t_json_value	*ch;
 	t_json_value	*tgt;
-	const char		*path;
+	const char		*path_s;
 	size_t			i;
 
 	if (!json_get(anim_json, "channels"))
@@ -28,31 +28,12 @@ static void	load_channels(t_json_value *anim_json, t_animation *anim)
 	{
 		ch = json_at(json_get(anim_json, "channels"), i);
 		tgt = json_get(ch, "target");
-		path = json_as_string(json_get(tgt, "path"));
+		path_s = json_as_string(json_get(tgt, "path"));
 		anim->channels[i].sampler_idx = json_get_size_t(ch, "sampler").i;
 		anim->channels[i].node_idx = json_get_size_t(tgt, "node").i;
-		anim->channels[i].path = PATH_WEIGHTS;
-		if (path && !strcmp(path, "translation"))
-			anim->channels[i].path = PATH_TRANSLATION;
-		else if (path && !strcmp(path, "rotation"))
-			anim->channels[i].path = PATH_ROTATION;
-		else if (path && !strcmp(path, "scale"))
-			anim->channels[i].path = PATH_SCALE;
+		set_channel_path(&anim->channels[i], path_s);
 		i++;
 	}
-}
-
-static void	assign_anim_data(t_animation *clip, t_json_value *anim_j)
-{
-	clip->name = ft_strdup(json_as_string(json_get(anim_j, "name")));
-	clip->current_time = 0.0;
-	clip->max_time = 0.0;
-}
-
-static void	update_max_time(t_animation *clip, t_anim_sampler *s)
-{
-	if (s->count > 0 && s->inputs[s->count - 1] > clip->max_time)
-		clip->max_time = s->inputs[s->count - 1];
 }
 
 static void	load_all_samplers(t_json_value *j, char *bin, t_animation *clip,
@@ -71,38 +52,35 @@ static void	load_all_samplers(t_json_value *j, char *bin, t_animation *clip,
 	}
 }
 
-/**
- * Loads animations from a GLB JSON root into the scene's global clip pool.
- */
-void	glb_load_animations(t_scene *scene, t_json_value *json, char *bin)
+static void	glb_load_clip(t_scene *scene, t_json_value *json, char *bin,
+		size_t i)
 {
 	t_animation		*clip;
+	t_json_value	*anims;
+	t_json_value	*samplers;
+
+	anims = json_get(json, "animations");
+	clip = &scene->clips[scene->clip_count + i];
+	assign_anim_data(clip, json_at(anims, i));
+	samplers = json_get(json_at(anims, i), "samplers");
+	ft_print_debug("GLB: Anim %zu: '%s'\n", i + 1, clip->name);
+	load_all_samplers(json, bin, clip, samplers);
+	load_channels(json_at(anims, i), clip);
+}
+
+void	glb_load_animations(t_scene *scene, t_json_value *json, char *bin)
+{
 	t_json_value	*anims;
 	size_t			i;
 
 	anims = json_get(json, "animations");
 	if (!anims || anims->type != JSON_ARRAY)
 		return ;
-	ft_print_debug("GLB: Parsing %zu animation clip(s)...\n",
-		anims->u.array.count);
 	glb_ensure_clip_capacity(scene, anims->u.array.count);
 	i = 0;
 	while (i < anims->u.array.count)
 	{
-		clip = &scene->clips[scene->clip_count + i];
-		assign_anim_data(clip, json_at(anims, i));
-		ft_print_debug("GLB: Anim %zu/%zu: '%s' (%zu samplers)\n",
-			i + 1, anims->u.array.count,
-			clip->name ? clip->name : "(unnamed)",
-			json_get(json_at(anims, i), "samplers")
-				? json_get(json_at(anims, i), "samplers")->u.array.count : 0);
-		load_all_samplers(json, bin, clip,
-			json_get(json_at(anims, i), "samplers"));
-		ft_print_debug("GLB: Anim %zu: samplers loaded, max_time=%.3f\n",
-			i + 1, clip->max_time);
-		load_channels(json_at(anims, i), clip);
-		ft_print_debug("GLB: Anim %zu: %zu channels loaded\n",
-			i + 1, clip->channel_count);
+		glb_load_clip(scene, json, bin, i);
 		i++;
 	}
 	scene->clip_count += anims->u.array.count;

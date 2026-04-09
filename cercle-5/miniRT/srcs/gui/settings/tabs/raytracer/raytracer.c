@@ -6,37 +6,17 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 15:46:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:42:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "settings.h"
 
-static const char	*g_preset_names[RT_PRESET_COUNT] = {
-	"Custom", "Natural", "Vivid", "Cinematic"
-};
-
-static void	draw_preset_row(t_gui *gui, t_vec2i o, int y)
-{
-	const char		*name;
-	char			buf[64];
-
-	name = g_preset_names[gui->rt_engine.settings.preset];
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y + 14, COL_HOVER, "Preset");
-	snprintf(buf, sizeof(buf), "< %s >", name);
-	mlx_string_put(gui->win.mlx, gui->win.win,
-		o.x + SETTINGS_W / 2 - 30, y + 14, 0xCCCCDD, buf);
-}
-
-void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
+static void	draw_rt_radios(t_gui *gui, t_vec2i o, int *y)
 {
 	t_iradio	r[4];
-	t_islider	sl[4];
-	int			y;
 	size_t		i;
 
-	y = o.y + 12;
-	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y, COL_HOVER, "OPTS");
 	r[0] = init_iradio("Scale", &gui->opts.adaptive_scale, NULL);
 	r[1] = init_iradio("Reproj", &gui->opts.reprojection, NULL);
 	r[2] = init_iradio("TAA", &gui->opts.taa, NULL);
@@ -44,10 +24,20 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 	i = 0;
 	while (i < 4)
 	{
-		y += 24;
-		draw_radio_row(gui, (t_panel){vec2i(o.x, y), vec2s(SETTINGS_W - 16, 0),
-			0, 0, ""}, r[i++]);
+		*y += 24;
+		draw_radio_row(gui, (t_panel){vec2i(o.x, *y),
+			vec2s(SETTINGS_W - 16, 0), 0, 0, ""}, r[i++]);
 	}
+}
+
+void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
+{
+	t_islider	sl[4];
+	int			y;
+
+	y = o.y + 12;
+	mlx_string_put(gui->win.mlx, gui->win.win, o.x + 8, y, COL_HOVER, "OPTS");
+	draw_rt_radios(gui, o, &y);
 	sl[0] = (t_islider){"Bright", 0.0, 100.0,
 		&gui->rt_engine.settings.brightness, on_color_change};
 	sl[1] = (t_islider){"Contrast", 0.0, 100.0,
@@ -61,32 +51,6 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 	draw_settings_slider(gui, vec2i(o.x + 8, y + 120), sl[2]);
 	draw_settings_slider(gui, vec2i(o.x + 8, y + 156), sl[3]);
 	draw_preset_row(gui, o, y + 200);
-}
-
-static bool	click_preset(t_gui *gui, t_vec2i mouse, t_vec2i o, int y)
-{
-	t_rt_preset	cur;
-
-	cur = gui->rt_engine.settings.preset;
-	if (mouse.y >= y && mouse.y <= y + 32)
-	{
-		if (mouse.x < o.x + 8 + (SETTINGS_W - 16) / 2)
-		{
-			if (cur == 0)
-				cur = RT_PRESET_COUNT - 1;
-			else
-				cur--;
-		}
-		else
-			cur = (cur + 1) % RT_PRESET_COUNT;
-		gui->rt_engine.settings.preset = cur;
-		if (cur != RT_PRESET_CUSTOM)
-			apply_preset(gui, cur);
-		else
-			gui->render.dirty = true;
-		return (true);
-	}
-	return (false);
 }
 
 static bool	click_rt_radios(t_gui *gui, t_vec2i mouse, t_vec2i o, int *y)
@@ -118,8 +82,6 @@ bool	click_settings_raytracer_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 	y = o.y + 36;
 	if (click_rt_radios(gui, mouse, o, &y))
 		return (true);
-	/* click_rt_radios increments y one extra time after the last radio;
-	   compensate so y aligns with where the first slider was drawn */
 	y += 24;
 	sl[0] = (t_islider){"Bright", 0.0, 100.0,
 		&gui->rt_engine.settings.brightness, on_color_change};

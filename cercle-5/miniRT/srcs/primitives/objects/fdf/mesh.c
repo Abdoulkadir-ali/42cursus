@@ -12,7 +12,8 @@
 
 #include "fdf.h"
 
-bool	fdf_init_mesh(t_mesh *mesh, size_t v_count, size_t i_count, const char *p)
+bool	fdf_init_mesh(t_mesh *mesh, size_t v_count, size_t i_count,
+			const char *p)
 {
 	ft_memset(mesh, 0, sizeof(t_mesh));
 	mesh->vertices = ft_calloc(v_count, sizeof(t_vertex));

@@ -6,12 +6,28 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 #include "raytracing.h"
+
+static void	rect_gjk_vs_planes(t_contact_query *qu, t_rect *rc,
+		t_gjk_shape *sa)
+{
+	t_col_pair	p;
+	size_t		pi;
+
+	p = (t_col_pair){sa, NULL, &rc->phys, NULL, &rc->transform, NULL};
+	pi = 0;
+	while (pi < qu->engine->scene->plane_count && qu->count < qu->max)
+	{
+		qu->count += gjk_vs_plane(&p, &qu->engine->scene->planes[pi],
+				&qu->contacts[qu->count]);
+		pi++;
+	}
+}
 
 static void	test_rect_pair(t_contact_query *qu, t_col_pair *p)
 {
@@ -53,9 +69,9 @@ size_t	query_rect(t_contact_query *qu, size_t idx)
 	rc = &qu->engine->scene->rects[idx];
 	if (rc->phys.is_static)
 		return (qu->count);
-	rect_vs_all_planes(qu, rc);
-	rect_vs_rects(qu, rc, idx);
 	sa = init_gjk_shape(rc, gjk_support_rect, rc->phys.pos);
+	rect_gjk_vs_planes(qu, rc, &sa);
+	rect_vs_rects(qu, rc, idx);
 	ctx = (t_bvh_phys_ctx){qu, &sa, &rc->phys, &rc->transform, TYPE_RECT};
 	bvh_query_shapes(&ctx, rect_aabb(rc));
 	return (qu->count);

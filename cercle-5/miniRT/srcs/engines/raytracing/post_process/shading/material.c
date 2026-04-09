@@ -53,13 +53,8 @@ static int	dispatch_mat(t_shading *sha, t_hit *h)
 void	get_material(t_shading *sha)
 {
 	size_t			mat_id;
-	static size_t	hits = 0;
 
-	hits++;
 	mat_id = dispatch_mat(sha, sha->hit);
-	if (hits++ % 100000 == 0)
-		ft_print_debug("[DEBUG] get_material: type=%d idx=%zu mat_id=%zu\n",
-			sha->hit->ref.type, sha->hit->ref.index, mat_id);
 	if (mat_id >= sha->scene->mat_count)
 		mat_id = 0;
 	sha->mat = sha->scene->materials[mat_id];

@@ -44,6 +44,12 @@ void					fdf_apply_mode(t_mesh *mesh, t_scene *scene,
 							unsigned int *colors);
 void					fdf_switch_mode(t_mesh *mesh, t_scene *scene,
 							t_fdf_mode new_mode);
+char					*build_gradient_bitmap(void);
+char					*build_picture_bitmap(unsigned int *colors,
+							size_t w, size_t h);
+void					apply_height_gradient(t_mesh *mesh, t_scene *scene);
+void					apply_picture(t_mesh *mesh, t_scene *scene,
+							t_vec2s dims, unsigned int *colors);
 
 /* FDF Scene Addition (srcs/primitives/scene/add/objects/mesh/loaders/) */
 bool					parse_fdf_worker(const char *path, t_scene *scene);

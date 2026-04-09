@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:05:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 01:00:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static t_vec3	compute_refraction(t_shading *sha, const t_ray *ray,
 	t_vec3	refracted_color;
 	double	ior;
 
-	ior = 1.0 + (sha->mat.refract_index / 180.0) * 2.0;
+	ior = sha->mat.refract_index;
 	refracted_dir = vec3_refract(ray->direction, sha->hit->normal, ior);
 	if (vec3_mag_sq(refracted_dir) < 1e-6)
 	{
@@ -94,7 +94,7 @@ static void	recursive_color(t_shading *sha, const t_ray *ray, t_vec3 *total)
 		if (next_w > 0.02)
 		{
 			refr = compute_refraction(sha, ray, &kr, next_w);
-			*total = vec3_add(vec3_scale(*total, 1.0 - sha->mat.transparency),
+			*total = vec3_add(*total,
 					vec3_scale(refr, sha->mat.transparency));
 		}
 	}
@@ -102,7 +102,7 @@ static void	recursive_color(t_shading *sha, const t_ray *ray, t_vec3 *total)
 	{
 		next_w = ray->weight * kr;
 		if (next_w > 0.02)
-			*total = vec3_add(vec3_scale(*total, 1.0 - kr),
+			*total = vec3_add(*total,
 					vec3_scale(compute_reflection(sha, ray, next_w), kr));
 	}
 }
@@ -119,13 +119,9 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
 	total = pixel_color(sha.albedo, scene->ambient.rgb,
 			scene->ambient.brightness);
 	i = 0;
-	if (ray->depth < 2)
-	{
-		while (i < scene->light_count)
-			total = vec3_add(total, calc_light(&sha, scene->lights[i++]));
-	}
-	if (ray->depth == 0)
-		add_emissive_lighting(&sha, scene, &total);
+	while (i < scene->light_count)
+		total = vec3_add(total, calc_light(&sha, scene->lights[i++]));
+	add_emissive_lighting(&sha, scene, &total);
 	total = vec3_add(total, sha.mat.emission);
 	if (ray->depth < MAX_DEPTH)
 		recursive_color(&sha, ray, &total);

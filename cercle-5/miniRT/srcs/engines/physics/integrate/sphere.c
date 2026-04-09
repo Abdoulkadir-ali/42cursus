@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 21:05:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 15:14:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,27 +26,71 @@ static void	cache_inv_scale(t_sphere *sp)
 }
 
 /**
- * @brief Updates rotation and deformation for a sphere based on its velocity.
+ * @brief Applies squash-and-stretch deformation based on impulse delta-V.
+ * Only reacts to sudden velocity changes above a threshold —
+ * gravity drift and resting contact solver micro-corrections are filtered out.
+ * squash decays each frame; axis of squash follows the dominant dv component.
  */
-static void	update_state(t_sphere *sp, double dt)
+static void	apply_deformation(t_sphere *sp, t_vec3 dv)
 {
-	t_vec3	r_d;
+	double	spike;
+	double	q;
 
-	r_d = vec3_scale(sp->phys.angular_velocity, dt * 180.0 / M_PI);
-	sp->transform.rotation.pitch += r_d.x;
-	sp->transform.rotation.yaw += r_d.y;
-	sp->transform.rotation.roll += r_d.z;
-	if (vec3_mag(sp->phys.velocity) > 0.1)
-	{
-		sp->transform.scale = vec3(1.0 + fmin(vec3_mag(sp->phys.velocity)
-					* 0.05, 0.3), 1.0, 1.0);
-		sp->is_deformed = true;
-	}
-	else
+	spike = vec3_mag(dv);
+	if (spike < 0.8)
+		spike = 0.0;
+	q = sp->phys.squash * 0.72;
+	if (spike * 0.045 > q)
+		q = spike * 0.045;
+	if (q > 0.32)
+		q = 0.32;
+	sp->phys.squash = q;
+	if (q < 0.012)
 	{
 		sp->transform.scale = vec3(1, 1, 1);
 		sp->is_deformed = false;
+		return ;
 	}
+	sp->is_deformed = true;
+	if (fabs(dv.x) >= fabs(dv.y) && fabs(dv.x) >= fabs(dv.z))
+		sp->transform.scale = vec3(1.0 - q, 1.0 + q * 0.5, 1.0 + q * 0.5);
+	else if (fabs(dv.z) >= fabs(dv.y))
+		sp->transform.scale = vec3(1.0 + q * 0.5, 1.0 + q * 0.5, 1.0 - q);
+	else
+		sp->transform.scale = vec3(1.0 + q * 0.5, 1.0 - q, 1.0 + q * 0.5);
+}
+
+/**
+ * @brief Updates rotation and impulse-based deformation for a sphere.
+ * Tracks the local frame axes (right/up/forward) via Rodrigues rotation so
+ * the world-space angular velocity is projected onto the correct local axes.
+ * This produces proper rolling behaviour rather than world-aligned sliding.
+ */
+static void	update_state(t_sphere *sp, double dt)
+{
+	t_vec3	w;
+	t_vec3	r_d;
+	t_vec3	dv;
+
+	if (vec3_mag_sq(sp->transform.right) < 1e-9)
+	{
+		sp->transform.right = vec3(1, 0, 0);
+		sp->transform.up = vec3(0, 1, 0);
+		sp->transform.forward = vec3(0, 0, 1);
+	}
+	w = sp->phys.angular_velocity;
+	sp->transform.right = vec3_norm(rot_by_ang(sp->transform.right, w, dt));
+	sp->transform.up = vec3_norm(rot_by_ang(sp->transform.up, w, dt));
+	sp->transform.forward = vec3_norm(rot_by_ang(sp->transform.forward, w, dt));
+	r_d.x = vec3_dot(w, sp->transform.right);
+	r_d.y = vec3_dot(w, sp->transform.up);
+	r_d.z = vec3_dot(w, sp->transform.forward);
+	r_d = vec3_scale(r_d, dt * 180.0 / M_PI);
+	sp->transform.rotation.pitch += r_d.x;
+	sp->transform.rotation.yaw += r_d.y;
+	sp->transform.rotation.roll += r_d.z;
+	dv = vec3_sub(sp->phys.velocity, sp->phys.prev_velocity);
+	apply_deformation(sp, dv);
 	cache_inv_scale(sp);
 }
 
@@ -68,12 +112,13 @@ void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s)
 			inv_i = 2.5 / sp->radius_sq;
 		sp->phys.inv_inertia = vec3(inv_i, inv_i, inv_i);
 	}
-	linear_d = pow(1.0 - clamp_d(s->global_damping, 0, 1), dt);
-	angular_d = pow(1.0 - clamp_d(s->global_damping, 0, 1) * 0.5, dt);
+	linear_d = clamp_d(1.0 - s->global_damping * dt, 0, 1);
+	angular_d = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
 	sp->phys.velocity = vec3_scale(vec3_add(sp->phys.velocity,
 				vec3_scale(s->gravity, dt)), linear_d);
 	sp->phys.angular_velocity = vec3_scale(sp->phys.angular_velocity,
 			angular_d);
+	sp->phys.prev_velocity = sp->phys.velocity;
 	sp->transform.pos = vec3_add(sp->transform.pos,
 			vec3_scale(sp->phys.velocity, dt));
 	update_state(sp, dt);

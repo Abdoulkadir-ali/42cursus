@@ -19,7 +19,8 @@ static bool	bvh_alloc_nodes(t_mbvh *bvh, t_mesh *mesh)
 	if (mesh->bvh_indices)
 		free(mesh->bvh_indices);
 	mesh->bvh_nodes = ft_calloc(mesh->tri_count * 2, sizeof(t_mbvh_node));
-	mesh->bvh_indices = malloc(sizeof(*mesh->bvh_indices) * mesh->tri_count * 3);
+	mesh->bvh_indices = malloc(sizeof(*mesh->bvh_indices)
+			* mesh->tri_count * 3);
 	if (!mesh->bvh_nodes || !mesh->bvh_indices)
 	{
 		free(bvh->items);

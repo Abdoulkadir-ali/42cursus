@@ -14,7 +14,10 @@ typedef enum e_int_type
 	INT_SPH,
 	INT_BOX,
 	INT_TRI,
-	INT_CYL
+	INT_CYL,
+	INT_PYR,
+	INT_RECT,
+	INT_CAP
 }	t_int_type;
 
 typedef struct s_int_task
@@ -43,7 +46,7 @@ t_aabb	sphere_aabb(const t_sphere *s);
 
 /* ── GJK / EPA ──────────────────────────────────────────────────────────── */
 
-#define GJK_MAX_ITER 20
+#define GJK_MAX_ITER 32
 /* Global State Access */
 
 void    phys_debug_spheres(t_scene *scene);
@@ -138,6 +141,8 @@ void		epa_interpolate(t_epa_poly *poly, t_epa_face *f, t_epa_res *res);
 /* Contact generation */
 bool	gjk_make_contact(t_col_pair *pair, t_contact *c);
 bool	gjk_vs_plane(t_col_pair *p, t_plane *pl, t_contact *c);
+bool	analytic_capsule_capsule(t_contact_query *qu,
+			t_capsule *a, t_capsule *b);
 
 /* Solver */
 void	solve_velocities(t_contact *c, t_physic_engine *en, size_t count);
@@ -145,7 +150,8 @@ void	solve_positions(t_contact *contacts, t_physic_engine *engine, size_t count)
 
 /* Velocity Solver Internal Helpers */
 void	solve_one_velocity(t_contact *ct, t_physic_engine *en, double ia, double ib);
-void	apply_friction(t_contact *ct, double inv_a, double inv_b, t_vec3 rel_v);
+void	apply_friction(t_contact *ct, double inv_a, double inv_b, t_vec3 rel_v,
+		double j_normal);
 void	apply_phys_torque(t_physics_body *b, t_vec3 r, t_vec3 imp, double i_m_s);
 double	ang_term(t_physics_body *body, t_vec3 r, t_vec3 dir, double inv_m);
 t_vec3	point_vel(t_physics_body *body, t_vec3 r);

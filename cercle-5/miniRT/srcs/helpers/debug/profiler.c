@@ -20,10 +20,10 @@ volatile long	g_mesh_tri_tests = 0;
 volatile long	g_mesh_occ_calls = 0;
 int				g_prof_frame = 0;
 struct timespec	g_prof_start;
-__thread long	tl_g_mesh_calls = 0;
-__thread long	tl_g_mesh_aabb_tests = 0;
-__thread long	tl_g_mesh_tri_tests = 0;
-__thread long	tl_g_mesh_occ_calls = 0;
+__thread long	g_tl_mesh_calls = 0;
+__thread long	g_tl_mesh_aabb_tests = 0;
+__thread long	g_tl_mesh_tri_tests = 0;
+__thread long	g_tl_mesh_occ_calls = 0;
 
 static double	g_frame_times[1024];
 static int		g_frame_count = 0;
@@ -42,7 +42,8 @@ static void	prof_print_benchmark(int max_frames)
 	}
 	if (g_frame_count > 2)
 		avg /= (g_frame_count - 2);
-	ft_print_debug("\n=== BENCHMARK (%d frames, skipped first 2) ===\n", max_frames);
+	ft_print_debug("\n=== BENCHMARK (%d frames, skipped first 2) ===\n",
+		max_frames);
 	ft_print_debug("Avg frame: %.1f ms (%.1f FPS)\n", avg, 1000.0 / avg);
 	fflush(stdout);
 }

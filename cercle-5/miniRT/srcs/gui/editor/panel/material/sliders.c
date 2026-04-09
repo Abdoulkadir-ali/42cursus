@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:15:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 22:36:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static void	build_mat_emissive_sliders(t_material *mat, t_islider *sl,
 		&mat->emission.y, sync_group_materials};
 	sl[(*i)++] = (t_islider){"Emission B", SL_EMIT_MIN, SL_EMIT_MAX,
 		&mat->emission.z, sync_group_materials};
+	sl[(*i)++] = (t_islider){"Em.Power", SL_EM_POWER_MIN, SL_EM_POWER_MAX,
+		&mat->em_intensity, sync_group_materials};
 }
 
 void	build_mat_sliders(t_material *mat, t_islider *sl, int *count)

@@ -33,6 +33,7 @@ t_parse_obj	parse_sphere(t_parser *p)
 	res.data.sphere.temp_color = rgb;
 	res.data.sphere.transform.scale = vec3(1, 1, 1);
 	res.data.sphere.inv_scale = vec3(1, 1, 1);
+	init_poly_phys(&res.data.sphere.phys);
 	res.type = TYPE_SPHERE;
 	return (res);
 }

@@ -366,19 +366,27 @@ typedef struct s_fbx_bin_node
 	char				name[1024];
 }						t_fbx_bin_node;
 
+typedef enum e_fbx_type
+{
+	FBX_TYPE_VERTICES = 0,
+	FBX_TYPE_INDICES = 1,
+	FBX_TYPE_NORMALS = 2,
+	FBX_TYPE_UVS = 3
+}	t_fbx_type;
+
 typedef struct s_fbx_data
 {
 	t_vec3				*v;
 	t_vec3				*vn;
 	t_vec2				*vu;
-	int					*ri;
+	size_t				*ri;
 	t_vec2s				rv;			/* x=rc (raw index count), y=vc (vertex count) */
 	t_vec2s				nu;			/* x=nc (normal count),    y=uc (uv count)     */
 }						t_fbx_data;
 
 typedef struct s_fbx_flat_params
 {
-	int					*raw;
+	size_t				*raw;
 	t_vec3				*n;
 	t_vec2				*u;
 	t_vec2s				rv;			/* x=raw_c (raw index count), y=vc (vertex count) */
@@ -388,7 +396,7 @@ typedef struct s_fbx_flat_params
 typedef struct s_fbx_build
 {
 	t_mesh				*m;
-	int					*raw;
+	size_t				*raw;
 	t_vec3				*n;
 	t_vec2				*u;
 	t_vertex			*vertices;
@@ -447,7 +455,7 @@ typedef struct s_fbx_ascii
 	t_skinned_mesh		mesh;
 	t_vec3				*rn;
 	t_vec2				*ru;
-	int					*ri;
+	size_t				*ri;
 	t_vec2s				rv;			/* x=rc (raw index count), y=vc (vertex count) */
 	t_vec2s				nu;			/* x=nc (normal count),    y=uc (uv count)     */
 	char				*buf;

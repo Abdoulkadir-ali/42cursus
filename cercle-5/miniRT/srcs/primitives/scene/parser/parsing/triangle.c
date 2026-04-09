@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:03:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:25:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 15:36:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,9 @@ t_parse_obj	parse_pyramid(t_parser *p)
 		return (res);
 	res.data.pyramid.up = vec3_norm(res.data.pyramid.up);
 	init_shape_phys(&res.data.pyramid.phys);
+	res.data.pyramid.phys.center = vec3_add(res.data.pyramid.transform.pos,
+			vec3_scale(res.data.pyramid.up, res.data.pyramid.height * 0.25));
+	res.data.pyramid.phys.pos = res.data.pyramid.transform.pos;
 	res.type = TYPE_PYRAMID;
 	return (res);
 }

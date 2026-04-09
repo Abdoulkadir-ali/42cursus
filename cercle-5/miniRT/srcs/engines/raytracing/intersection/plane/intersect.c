@@ -28,8 +28,12 @@ bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
 		return (false);
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
 	hit->normal = pl->transform.forward;
+	hit->back_face = false;
 	if (vec3_dot(ray->direction, hit->normal) > 0)
+	{
 		hit->normal = vec3_scale(hit->normal, -1.0);
+		hit->back_face = true;
+	}
 	if (pl->needs_uv)
 	{
 		get_plane_uv(hit->point, pl->transform.forward, hit);

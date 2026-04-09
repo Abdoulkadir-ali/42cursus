@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 15:46:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,37 +24,37 @@ void	draw_radio_row(t_gui *gui, t_panel pan, t_iradio r)
 	const char	*status;
 
 	btn_x = pan.pos.x + pan.size.x - 44 - 4;
-	bg = 0x2A1616;
-	col = 0x804040;
+	bg = COL_RADIO_OFF_BG;
+	col = COL_RADIO_OFF_TEXT;
 	status = "OFF";
 	if (*r.ptr)
 	{
-		bg = 0x0E2E18;
-		col = 0x20D860;
+		bg = COL_RADIO_ON_BG;
+		col = COL_RADIO_ON_TEXT;
 		status = "ON";
 	}
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		pan.pos.x + 8, pan.pos.y + 15, COL_TEXT, (char *)r.label);
 	draw_panel(gui, (t_panel){vec2i(btn_x, pan.pos.y + 4),
-			vec2s(44, 20), bg, col, ""});
+		vec2s(44, 20), bg, col, ""});
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		btn_x + 10, pan.pos.y + 18, col, (char *)status);
 }
 
-bool	try_radio_click(t_gui *gui, t_vec2i mouse, t_panel pan, t_iradio r)
+static void	draw_s_slider_rects(t_gui *gui, t_vec2i pos, int tw, int fw)
 {
-	int	ex;
+	int	kx;
 
-	ex = pan.pos.x + pan.size.x;
-	if (mouse.x < pan.pos.x || mouse.x >= ex)
-		return (false);
-	if (mouse.y < pan.pos.y || mouse.y >= pan.pos.y + SETTINGS_ROW_H)
-		return (false);
-	*r.ptr = !*r.ptr;
-	if (r.on_change)
-		r.on_change(gui);
-	gui->render.dirty = true;
-	return (true);
+	fill_rect(gui, vec2i(pos.x, pos.y + 14), (t_vec2s){tw, 8}, COL_SLIDER_BG);
+	fill_rect(gui, vec2i(pos.x, pos.y + 14), (t_vec2s){tw, 1}, COL_BORDER);
+	fill_rect(gui, vec2i(pos.x, pos.y + 21), (t_vec2s){tw, 1}, COL_BORDER);
+	if (fw > 0)
+		fill_rect(gui, vec2i(pos.x, pos.y + 14), (t_vec2s){fw, 8},
+			COL_SLIDER_FG);
+	kx = pos.x + fw - 1;
+	if (kx < pos.x)
+		kx = pos.x;
+	fill_rect(gui, vec2i(kx, pos.y + 12), (t_vec2s){3, 12}, COL_SLIDER_KNOB);
 }
 
 /*
@@ -66,7 +66,6 @@ void	draw_settings_slider(t_gui *gui, t_vec2i pos, t_islider sl)
 	double	frac;
 	int		fill_w;
 	int		track_w;
-	int		knob_x;
 
 	track_w = SETTINGS_W - 32;
 	frac = 0.0;
@@ -82,45 +81,9 @@ void	draw_settings_slider(t_gui *gui, t_vec2i pos, t_islider sl)
 		pos.x, pos.y, COL_TEXT, (char *)sl.label);
 	mlx_string_put(gui->win.mlx, gui->win.win,
 		pos.x + track_w - 56, pos.y, COL_HOVER, buf);
-	fill_rect(gui, vec2i(pos.x, pos.y + 14),
-		(t_vec2s){track_w, 8}, COL_SLIDER_BG);
-	fill_rect(gui, vec2i(pos.x, pos.y + 14),
-		(t_vec2s){track_w, 1}, COL_BORDER);
-	fill_rect(gui, vec2i(pos.x, pos.y + 21),
-		(t_vec2s){track_w, 1}, COL_BORDER);
-	if (fill_w > 0)
-		fill_rect(gui, vec2i(pos.x, pos.y + 14),
-			(t_vec2s){fill_w, 8}, COL_SLIDER_FG);
-	knob_x = pos.x + fill_w - 1;
-	if (knob_x < pos.x)
-		knob_x = pos.x;
-	fill_rect(gui, vec2i(knob_x, pos.y + 12),
-		(t_vec2s){3, 12}, COL_SLIDER_KNOB);
+	draw_s_slider_rects(gui, pos, track_w, fill_w);
 }
 
-bool	try_settings_slider_click(t_gui *gui, t_vec2i mouse,
-				t_vec2i pos, t_islider sl)
-{
-	int	track_w;
-	int	track_y;
-
-	track_w = SETTINGS_W - 32;
-	track_y = pos.y + 10;
-	if (mouse.x < pos.x || mouse.x >= (pos.x + track_w))
-		return (false);
-	if (mouse.y < track_y || mouse.y >= (track_y + 16))
-		return (false);
-	gui->slider_state.dragging = true;
-	gui->slider_state.drag_start.x = mouse.x;
-	gui->slider_state.drag_start_val = *sl.ptr;
-	gui->slider_state.value_ptr = sl.ptr;
-	gui->slider_state.dmin = sl.min;
-	gui->slider_state.dmax = sl.max;
-	gui->slider_state.track_x = pos.x;
-	gui->slider_state.track_w = track_w;
-	gui->slider_state.on_change = sl.on_change;
-	return (true);
-}
 t_iradio	init_iradio(const char *label, bool *ptr,
 		void (*on_change)(t_gui *))
 {

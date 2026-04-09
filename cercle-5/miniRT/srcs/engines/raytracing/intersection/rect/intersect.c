@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 10:34:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 21:57:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,12 @@ static void	set_rect_hit(const t_ray *ray, t_rect *rc, t_hit *hit, double t)
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
 	hit->normal = rc->normal;
 	if (vec3_dot(ray->direction, hit->normal) > 0)
+	{
 		hit->normal = vec3_scale(hit->normal, -1.0);
+		hit->back_face = true;
+	}
+	else
+		hit->back_face = false;
 }
 
 bool	intersect_rect(const t_ray *ray, t_rect *rc, t_hit *hit)

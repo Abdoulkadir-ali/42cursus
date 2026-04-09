@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 02:53:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	loop_pyramids(t_contact_query *qu, t_gjk_shape *sa,
 		py = &qu->engine->scene->pyramids[p++];
 		if (ba == &py->phys)
 			continue ;
-		sb = init_gjk_shape(py, gjk_support_pyramid, py->phys.pos);
+		sb = init_gjk_shape(py, gjk_support_pyramid, py->phys.center);
 		pair = (t_col_pair){sa, &sb, ba, &py->phys, ta, &py->transform};
 		if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
 			qu->count++;

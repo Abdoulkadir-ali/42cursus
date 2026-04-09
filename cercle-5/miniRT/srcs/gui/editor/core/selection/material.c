@@ -6,21 +6,18 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 18:19:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-static t_index	mat_id_extra(t_gui *gui)
+static t_index	mat_id_extra(t_gui *gui, t_selection *sel, t_scene *sc)
 {
-	t_selection	*sel;
-	t_scene		*sc;
-	t_mesh		*m;
-	size_t		s;
+	t_mesh	*m;
+	size_t	s;
 
-	sel = &gui->selection;
-	sc = gui->scene;
+	(void)gui;
 	if (sel->type == TYPE_PYRAMID)
 	{
 		s = sc->pyramids[sel->index.i].active_slot;
@@ -44,14 +41,11 @@ static t_index	mat_id_extra(t_gui *gui)
 	return (init_index(0, true));
 }
 
-static t_index	mat_id_of_selection(t_gui *gui)
+static t_index	mat_id_basic(t_gui *gui, t_selection *sel, t_scene *sc)
 {
-	t_selection	*sel;
-	t_scene		*sc;
-	size_t		s;
+	size_t	s;
 
-	sel = &gui->selection;
-	sc = gui->scene;
+	(void)gui;
 	if (sel->type == TYPE_SPHERE)
 	{
 		s = sc->spheres[sel->index.i].active_slot;
@@ -72,6 +66,21 @@ static t_index	mat_id_of_selection(t_gui *gui)
 		s = sc->cones[sel->index.i].active_slot;
 		return (init_index(sc->cones[sel->index.i].mat_slots[s], false));
 	}
+	return (init_index(0, true));
+}
+
+static t_index	mat_id_of_selection(t_gui *gui)
+{
+	t_selection	*sel;
+	t_scene		*sc;
+	size_t		s;
+	t_index		idx;
+
+	sel = &gui->selection;
+	sc = gui->scene;
+	idx = mat_id_basic(gui, sel, sc);
+	if (!idx.error)
+		return (idx);
 	if (sel->type == TYPE_TRI)
 	{
 		s = sc->tris[sel->index.i].active_slot;
@@ -82,20 +91,17 @@ static t_index	mat_id_of_selection(t_gui *gui)
 		s = sc->rects[sel->index.i].active_slot;
 		return (init_index(sc->rects[sel->index.i].mat_slots[s], false));
 	}
-	return (mat_id_extra(gui));
+	return (mat_id_extra(gui, sel, sc));
 }
 
 t_material	*get_selected_material(t_gui *gui)
 {
-	t_selection	*sel;
 	t_index		idx;
 
-	sel = &gui->selection;
-	if (!sel->active || !gui->scene)
+	if (!gui->selection.active || !gui->scene)
 		return (NULL);
 	idx = mat_id_of_selection(gui);
 	if (idx.error || idx.i >= gui->scene->mat_count)
 		return (NULL);
 	return (&gui->scene->materials[idx.i]);
 }
-

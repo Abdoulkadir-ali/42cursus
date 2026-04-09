@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:13:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,13 @@ void	integrate_capsule(t_capsule *cap, double dt, t_physics_settings *s)
 	if (cap->phys.is_static)
 		return ;
 	init_capsule_inertia(cap);
+	if (!isfinite(cap->phys.velocity.x) || !isfinite(cap->phys.velocity.y)
+		|| !isfinite(cap->phys.velocity.z))
+		cap->phys.velocity = vec3(0, 0, 0);
+	if (!isfinite(cap->phys.angular_velocity.x)
+		|| !isfinite(cap->phys.angular_velocity.y)
+		|| !isfinite(cap->phys.angular_velocity.z))
+		cap->phys.angular_velocity = vec3(0, 0, 0);
 	cap->phys.velocity = vec3_add(cap->phys.velocity,
 			vec3_scale(s->gravity, dt));
 	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
@@ -66,4 +73,5 @@ void	integrate_capsule(t_capsule *cap, double dt, t_physics_settings *s)
 	cap->phys.angular_velocity = vec3_scale(cap->phys.angular_velocity, damp.y);
 	rot = vec3_scale(cap->phys.angular_velocity, dt * (180.0 / M_PI));
 	update_state(cap, dt, rot, vec3_scale(cap->phys.velocity, dt));
+	cap->phys.pos = cap->transform.pos;
 }

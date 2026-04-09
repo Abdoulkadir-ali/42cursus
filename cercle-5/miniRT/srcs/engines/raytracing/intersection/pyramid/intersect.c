@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:50:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 21:57:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,13 @@ static bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
 {
 	t_vec3	tri[3];
 	double	t;
+	t_vec2	uv;
 	t_vec3	n;
 
 	tri[0] = a;
 	tri[1] = b;
 	tri[2] = c;
-	if (!intersect_triangle_fast(q->ray, tri, &t, NULL))
+	if (!intersect_triangle_fast(q->ray, tri, &t, &uv))
 		return (false);
 	if (t >= *(q->tm))
 		return (false);
@@ -63,8 +64,16 @@ static bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
 	q->hit->point = vec3_add(q->ray->origin, vec3_scale(q->ray->direction, t));
 	n = vec3_norm(vec3_cross(vec3_sub(b, a), vec3_sub(c, a)));
 	if (vec3_dot(q->ray->direction, n) > 0)
+	{
 		n = vec3_scale(n, -1.0);
+		q->hit->back_face = true;
+	}
+	else
+		q->hit->back_face = false;
 	q->hit->normal = n;
+	q->hit->u = uv.x;
+	q->hit->v = uv.y;
+	vec3_orthonormal_basis(n, &q->hit->tangent, &q->hit->bitangent);
 	return (true);
 }
 

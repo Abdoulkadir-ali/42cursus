@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 21:57:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@ typedef struct s_hit
 	size_t				tri_idx;
 	t_vec3				bary;
 	double				u;
-	double				v;
-}						t_hit;
+	double				v;	bool				back_face;}						t_hit;
 
 typedef struct s_trace
 {
@@ -162,8 +161,7 @@ typedef struct s_shading
 	const t_ray				*ray;
 	struct s_material		mat;
 	t_vec3					albedo;
-	t_vec3					aux_v;
-	const t_raytracer_settings	*opts;
+	t_vec3					aux_v;	t_vec3						em_normal;	const t_raytracer_settings	*opts;
 }						t_shading;
 
 typedef struct s_build_item

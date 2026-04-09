@@ -6,39 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 04:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 16:15:48 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 03:15:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fbx.h"
-
-static size_t	fbx_count_tris(int *raw, size_t raw_c)
-{
-	size_t	ps;
-	int		vn;
-	int		idx;
-	int		tc;
-
-	ft_print_debug("[COUNT_TRIS] raw=%p raw_c=%zu raw[0]=%d\n",
-		(void *)raw, raw_c, raw_c > 0 ? raw[0] : 0);
-	ps = 0;
-	tc = 0;
-	while (ps < raw_c)
-	{
-		vn = 0;
-		while (ps < raw_c)
-		{
-			idx = raw[ps++];
-			vn++;
-			if (idx < 0)
-				break ;
-		}
-		if (vn >= 3)
-			tc += (vn - 2);
-	}
-	ft_print_debug("[COUNT_TRIS] result tc=%d\n", tc);
-	return (tc);
-}
 
 static void	fbx_init_build(t_fbx_build *b, t_mesh *m, t_fbx_flat_params *p)
 {
@@ -59,7 +31,7 @@ static bool	fbx_alloc_buffers(t_fbx_build *b)
 {
 	b->vertices = ft_calloc(b->tc * 3, sizeof(t_vertex));
 	b->triangles = ft_calloc(b->tc, sizeof(t_triangle));
-	b->v = malloc(sizeof(*b->v) * (b->rv.x + 1));
+	b->v = malloc(sizeof(*b->v) * (b->rv.y + 1));
 	if (!b->vertices || !b->triangles || !b->v)
 		return (false);
 	return (true);
@@ -68,9 +40,9 @@ static bool	fbx_alloc_buffers(t_fbx_build *b)
 static void	fbx_set_usage(t_fbx_build *b)
 {
 	if (b->n && b->nu.x > 0 && b->nu.x < b->tc * 3)
-		b->use_v_n = 1;
+		b->use_v_n = true;
 	if (b->u && b->nu.y > 0 && b->nu.y < b->tc * 3)
-		b->use_v_u = 1;
+		b->use_v_u = true;
 }
 
 bool	fbx_setup_build(t_fbx_build *b, t_mesh *m, t_fbx_flat_params *p)

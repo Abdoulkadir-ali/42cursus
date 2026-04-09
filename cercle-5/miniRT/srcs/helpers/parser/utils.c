@@ -58,38 +58,6 @@ bool	parser_is_eol(t_parser *p)
 	return (!c || c == '\n' || c == '\r' || c == '#');
 }
 
-bool	parse_path_safe(t_parser *p, char *buf, size_t size)
-{
-	size_t	i;
-	char	c;
-	bool	quoted;
-
-	parser_skip_horizontal_spaces(p);
-	i = 0;
-	c = parser_peek(p);
-	quoted = (c == '"');
-	if (quoted)
-		parser_advance(p);
-	while (i < size - 1)
-	{
-		c = parser_peek(p);
-		if (!c)
-			break ;
-		if (quoted && c == '"')
-			break ;
-		if (!quoted && (c == '\n' || c == '\r' || c == '#'))
-			break ;
-		buf[i++] = c;
-		parser_advance(p);
-	}
-	if (quoted && parser_peek(p) == '"')
-		parser_advance(p);
-	while (i > 0 && (buf[i - 1] == ' ' || buf[i - 1] == '\t'))
-		i--;
-	buf[i] = '\0';
-	return (i > 0);
-}
-
 bool	parser_match(t_parser *p, char expected)
 {
 	parser_skip_spaces(p);

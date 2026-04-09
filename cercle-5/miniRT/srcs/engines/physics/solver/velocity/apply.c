@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 /**
  * @brief Applies rotational impulse (torque) to a physics body.
- * @param i_m_s Precomputed inverse_mass * sign.
+ * @param sign Direction of the impulse for this body (-1 or 1).
  */
-void	apply_phys_torque(t_physics_body *b, t_vec3 r, t_vec3 imp, double i_m_s)
+void	apply_phys_torque(t_physics_body *b, t_vec3 r, t_vec3 imp, double sign)
 {
 	t_vec3	torque;
 	t_vec3	dw;
 
-	torque = vec3_cross(r, vec3_scale(imp, i_m_s));
+	torque = vec3_cross(r, vec3_scale(imp, sign));
 	dw.x = torque.x * b->inv_inertia.x;
 	dw.y = torque.y * b->inv_inertia.y;
 	dw.z = torque.z * b->inv_inertia.z;
@@ -36,24 +36,27 @@ static void	apply_f_imp(t_contact *ct, t_vec3 f_imp, double ia, double ib)
 	if (ct->a && ia > 0.0)
 	{
 		ct->a->velocity = vec3_sub(ct->a->velocity, vec3_scale(f_imp, ia));
-		apply_phys_torque(ct->a, ct->ra, f_imp, -ia);
+		apply_phys_torque(ct->a, ct->ra, f_imp, -1.0);
 	}
 	if (ct->b && ib > 0.0)
 	{
 		ct->b->velocity = vec3_add(ct->b->velocity, vec3_scale(f_imp, ib));
-		apply_phys_torque(ct->b, ct->rb, f_imp, ib);
+		apply_phys_torque(ct->b, ct->rb, f_imp, 1.0);
 	}
 }
 
 /**
  * @brief Calculates and applies frictional impulses along the contact tangent.
+ *        Clamped via Coulomb friction cone: |jt| <= friction * j_normal.
  */
-void	apply_friction(t_contact *ct, double ia, double ib, t_vec3 rel_v)
+void	apply_friction(t_contact *ct, double ia, double ib, t_vec3 rel_v,
+		double j_normal)
 {
 	t_vec3	vt;
 	t_vec3	tangent;
 	double	denom;
 	double	jt;
+	double	max_jt;
 
 	vt = vec3_sub(rel_v, vec3_scale(ct->normal, vec3_dot(rel_v, ct->normal)));
 	if (vec3_mag_sq(vt) <= 1e-6)
@@ -64,7 +67,10 @@ void	apply_friction(t_contact *ct, double ia, double ib, t_vec3 rel_v)
 	if (denom < 1e-9)
 		return ;
 	jt = -vec3_dot(rel_v, tangent) / denom;
+	max_jt = ct->friction * j_normal;
 	if (jt > 0.0)
 		jt = 0.0;
-	apply_f_imp(ct, vec3_scale(tangent, jt * ct->friction), ia, ib);
+	else if (jt < -max_jt)
+		jt = -max_jt;
+	apply_f_imp(ct, vec3_scale(tangent, jt), ia, ib);
 }

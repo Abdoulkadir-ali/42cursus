@@ -45,7 +45,7 @@ metal 0.0
 name tex_cylinder
 
 # Box
-bx -8,0,0 2.8,3.0,2.8 255,255,255
+bx -8,0,0 1,0,0 2.8,3.0,2.8 255,255,255
 mat t maps/obj/garen/garen_tex.jpg
 rough 0.5
 metal 0.0
@@ -64,7 +64,7 @@ mat t maps/obj/garen/garen_tex.jpg
 rough 0.5
 metal 0.0
 name tex_pyramid
-d
+
 # Triangle
 tr 14,-1,0 18,-1,0 16,5,0 255,255,255
 mat t maps/obj/garen/garen_tex.jpg
@@ -102,7 +102,7 @@ emit_power 0.01
 name emit_cylinder
 
 # Box — purple glow
-bx -8,0,-10 2.8,3.0,2.8 180,40,240
+bx -8,0,-10 1,0,0 2.8,3.0,2.8 180,40,240
 mat s 180,50,240
 rough 0.8
 metal 0.0
@@ -165,7 +165,7 @@ metal 0.0
 name check_cylinder
 
 # Box — blue & orange
-bx -8,0,-20 2.8,3.0,2.8 30,80,220
+bx -8,0,-20 1,0,0 2.8,3.0,2.8 30,80,220
 mat c 30,80,220 240,120,20 1.0
 rough 0.75
 metal 0.0
@@ -219,7 +219,7 @@ metal 0.0
 name solid_cylinder
 
 # Box — dark navy satin
-bx -8,0,-30 2.8,3.0,2.8 25,40,90
+bx -8,0,-30 1,0,0 2.8,3.0,2.8 25,40,90
 mat s 25,40,90
 rough 0.45
 metal 0.15

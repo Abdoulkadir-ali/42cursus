@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:08:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 00:53:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	get_calc(t_box *bx, const t_ray *ray, t_box_calc *c)
 	c->h[2] = bx->half_extents.z;
 }
 
-static bool	test_axis(t_box_calc *c, int i, double *mm, int *face)
+static bool	test_axis(t_box_calc *c, int i, double *mm, int *eface, int *xface)
 {
 	double	t[2];
 	double	tmp;
@@ -51,36 +51,73 @@ static bool	test_axis(t_box_calc *c, int i, double *mm, int *face)
 	if (t[0] > mm[0])
 	{
 		mm[0] = t[0];
-		*face = i;
+		*eface = i;
 	}
 	if (t[1] < mm[1])
+	{
 		mm[1] = t[1];
+		*xface = i;
+	}
 	return (mm[0] <= mm[1]);
+}
+
+static void	set_box_uv(t_box_calc *c, double t, int axis, t_hit *hit)
+{
+	double	lp[3];
+	int		u_ax;
+	int		v_ax;
+
+	lp[0] = c->p[0] + c->d[0] * t;
+	lp[1] = c->p[1] + c->d[1] * t;
+	lp[2] = c->p[2] + c->d[2] * t;
+	u_ax = (axis == 0) ? 1 : 0;
+	v_ax = (axis == 2) ? 1 : 2;
+	hit->u = (lp[u_ax] + c->h[u_ax]) / (2.0 * c->h[u_ax]);
+	hit->v = (lp[v_ax] + c->h[v_ax]) / (2.0 * c->h[v_ax]);
+}
+
+static void	set_face(t_box_calc *c, double t, int face,
+				t_hit *hit, const t_ray *ray)
+{
+	hit->t = t;
+	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, t));
+	hit->normal = c->ax[face];
+	if (c->d[face] > 0.0)
+	{
+		hit->normal = vec3_scale(c->ax[face], -1.0);
+		hit->back_face = true;
+	}
+	else
+		hit->back_face = false;
+	set_box_uv(c, t, face, hit);
 }
 
 bool	intersect_box(const t_ray *ray, t_box *bx, t_hit *hit)
 {
 	t_box_calc	c;
 	double		mm[2];
-	int			face;
+	int			eface;
+	int			xface;
 	size_t		i;
 
 	get_calc(bx, ray, &c);
 	mm[0] = -1e30;
 	mm[1] = 1e30;
-	face = 0;
+	eface = 0;
+	xface = 0;
 	i = 0;
 	while (i < 3)
-		if (!test_axis(&c, i++, mm, &face))
+		if (!test_axis(&c, i++, mm, &eface, &xface))
 			return (false);
-	if (mm[0] < 1e-6)
-		return (false);
-	hit->t = mm[0];
-	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, mm[0]));
-	hit->normal = c.ax[face];
-	if (c.p[face] < 0.0)
-		hit->normal = vec3_scale(c.ax[face], -1.0);
-	if (vec3_dot(ray->direction, hit->normal) > 0.0)
-		hit->normal = vec3_scale(hit->normal, -1.0);
-	return (true);
+	if (mm[0] >= 1e-6)
+	{
+		set_face(&c, mm[0], eface, hit, ray);
+		return (true);
+	}
+	if (mm[1] >= 1e-6)
+	{
+		set_face(&c, mm[1], xface, hit, ray);
+		return (true);
+	}
+	return (false);
 }

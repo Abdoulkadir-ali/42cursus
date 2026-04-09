@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,34 +34,38 @@ static size_t	blend_taa(size_t cur, size_t hist)
 	return (rt_pack_color_v(c));
 }
 
+static void	taa_pixel(t_gui *gui, t_optimizations *o, t_vec2i d)
+{
+	t_vec2i		out;
+	size_t		cur;
+	uint32_t	*pixels;
+	int			sw;
+
+	sw = gui->win.size.x;
+	pixels = (uint32_t *)gui->win.addr;
+	cur = pixels[d.y * sw + d.x];
+	if (o->prev_valid && reproject_taa(gui, d.x, d.y, &out))
+		o->taa_buf[d.y * sw + d.x] = blend_taa(cur,
+				o->prev_color[out.y * o->prev_render_size.x + out.x]);
+	else
+		o->taa_buf[d.y * sw + d.x] = cur;
+}
+
 void	taa_band(t_gui *gui, size_t y_start, size_t y_end)
 {
 	t_optimizations	*o;
-	t_vec2i			out;
 	t_vec2i			d;
-	size_t			cur;
-
-	int			yend;
-	int			sw;
-
-	uint32_t	*pixels;
+	int				sw;
 
 	o = &gui->opts;
-	yend = y_end;
 	sw = gui->win.size.x;
-	pixels = (uint32_t *)gui->win.addr;
 	d.y = y_start;
-	while (d.y < yend)
+	while (d.y < (int)y_end)
 	{
 		d.x = 0;
 		while (d.x < sw)
 		{
-			cur = pixels[d.y * sw + d.x];
-			if (o->prev_valid && reproject_taa(gui, d.x, d.y, &out))
-				o->taa_buf[d.y * sw + d.x] = blend_taa(cur,
-						o->prev_color[out.y * o->prev_render_size.x + out.x]);
-			else
-				o->taa_buf[d.y * sw + d.x] = cur;
+			taa_pixel(gui, o, d);
 			d.x++;
 		}
 		d.y++;

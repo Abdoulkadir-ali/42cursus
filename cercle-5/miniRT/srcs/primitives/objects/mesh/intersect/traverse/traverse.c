@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/15 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:21:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,5 @@ void	intersect_traverse_mesh(t_mesh *mesh, const t_ray *ray,
 	while (!idx.error)
 	{
 		idx = process_node(mesh, idx.i, ray, trace);
-	}}
+	}
+}

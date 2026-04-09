@@ -27,6 +27,13 @@ typedef struct s_glb_mesh_task
 	t_scene			*scene;
 }	t_glb_mesh_task;
 
+typedef struct s_extract_attr
+{
+	unsigned char	*tmp;
+	int				comp_type;
+	size_t			c_sz;
+}	t_extract_attr;
+
 typedef struct s_glb_mat
 {
 	t_mesh_resource	*out;

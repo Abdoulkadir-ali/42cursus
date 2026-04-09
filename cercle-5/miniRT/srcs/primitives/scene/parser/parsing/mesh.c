@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 22:56:46 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:24:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,62 +41,51 @@ static void	init_mesh_transform(t_mesh_info *info)
 	info->emission = vec3(0, 0, 0);
 }
 
-/**
- * Parses a mesh entry from the buffered parser.
- * Format: <path> <pos_x,pos_y,pos_z> <rot_x,rot_y,rot_z> <scale> <r,g,b> [emissive_r,emissive_g,emissive_b]
- */
+static void	parse_mesh_optional(t_parser *p, t_mesh_info *info)
+{
+	t_vec3	rot;
+	double	sc;
+
+	parser_skip_spaces(p);
+	if (!parser_peek(p) || parser_peek(p) == '\n')
+		return ;
+	parse_vec3(p, &rot);
+	info->transform.rotation.pitch = rot.x;
+	info->transform.rotation.yaw = rot.y;
+	info->transform.rotation.roll = rot.z;
+	parser_skip_spaces(p);
+	if (!parser_peek(p) || parser_peek(p) == '\n')
+		return ;
+	sc = parse_double(p);
+	if (sc > 0.0)
+		info->transform.scale = vec3(sc, sc, sc);
+	parser_skip_spaces(p);
+	if (!parser_peek(p) || parser_peek(p) == '\n')
+		return ;
+	parse_vec3(p, &info->color);
+	parser_skip_spaces(p);
+	if (parser_peek(p) && parser_peek(p) != '\n')
+		parse_vec3(p, &info->emission);
+}
+
 t_parse_obj	parse_mesh_entry(t_parser *p, t_type type)
 {
 	t_parse_obj	res;
-	t_vec3		rot;
-	double		scale;
-	char		nc;
+	char		*path;
 
 	ft_memset(&res, 0, sizeof(res));
 	res.type = TYPE_NONE;
-	res.data.mesh_info.path = parse_mesh_path(p);
-	if (!res.data.mesh_info.path)
+	path = parse_mesh_path(p);
+	if (!path)
 		return (res);
+	res.data.mesh_info.path = path;
 	init_mesh_transform(&res.data.mesh_info);
 	parser_skip_spaces(p);
-	if (!parser_peek(p) || parser_peek(p) == '\n')
+	if (parser_peek(p) && parser_peek(p) != '\n')
 	{
-		res.type = type;
-		return (res);
+		parse_vec3(p, &res.data.mesh_info.transform.pos);
+		parse_mesh_optional(p, &res.data.mesh_info);
 	}
-	parse_vec3(p, &res.data.mesh_info.transform.pos);
-	parser_skip_spaces(p);
-	if (!parser_peek(p) || parser_peek(p) == '\n')
-	{
-		res.type = type;
-		return (res);
-	}
-	parse_vec3(p, &rot);
-	res.data.mesh_info.transform.rotation.pitch = rot.x;
-	res.data.mesh_info.transform.rotation.yaw = rot.y;
-	res.data.mesh_info.transform.rotation.roll = rot.z;
-	parser_skip_spaces(p);
-	nc = parser_peek(p);
-	if (!nc || nc == '\n')
-	{
-		res.type = type;
-		return (res);
-	}
-	scale = parse_double(p);
-	if (scale > 0.0)
-		res.data.mesh_info.transform.scale = vec3(scale, scale, scale);
-	parser_skip_spaces(p);
-	nc = parser_peek(p);
-	if (!nc || nc == '\n')
-	{
-		res.type = type;
-		return (res);
-	}
-	parse_vec3(p, &res.data.mesh_info.color);
-	parser_skip_spaces(p);
-	nc = parser_peek(p);
-	if (nc && nc != '\n')
-		parse_vec3(p, &res.data.mesh_info.emission);
 	res.type = type;
 	return (res);
 }

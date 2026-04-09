@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 10:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,7 @@ bool	gjk_epa(t_col_pair *p, t_simplex *s, t_epa_res *res)
 		iter++;
 	}
 	epa_interpolate(&poly, &poly.faces[epa_closest_face(&poly)], res);
+	if (vec3_mag_sq(res->normal) < 1e-12)
+		return (false);
 	return (true);
 }

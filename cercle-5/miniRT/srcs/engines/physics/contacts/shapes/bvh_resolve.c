@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:05:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static bool	fill_ref_a(t_scene *s, t_bvh_ref ref, t_ref_data *d)
 	if (ref.type == TYPE_CAPSULE)
 	{
 		d->shape = init_gjk_shape(&s->capsules[ref.index],
-			gjk_support_capsule, s->capsules[ref.index].phys.pos);
+			gjk_support_capsule, s->capsules[ref.index].phys.center);
 		d->body = &s->capsules[ref.index].phys;
 		d->xform = &s->capsules[ref.index].transform;
 		return (true);
@@ -34,7 +34,7 @@ static bool	fill_ref_a(t_scene *s, t_bvh_ref ref, t_ref_data *d)
 	if (ref.type == TYPE_CYLINDER)
 	{
 		d->shape = init_gjk_shape(&s->cylinders[ref.index],
-			gjk_support_cylinder, s->cylinders[ref.index].phys.pos);
+			gjk_support_cylinder, s->cylinders[ref.index].phys.center);
 		d->body = &s->cylinders[ref.index].phys;
 		d->xform = &s->cylinders[ref.index].transform;
 		return (true);
@@ -63,7 +63,7 @@ static bool	fill_ref_b(t_scene *s, t_bvh_ref ref, t_ref_data *d)
 	if (ref.type == TYPE_PYRAMID)
 	{
 		d->shape = init_gjk_shape(&s->pyramids[ref.index],
-			gjk_support_pyramid, s->pyramids[ref.index].phys.pos);
+			gjk_support_pyramid, s->pyramids[ref.index].phys.center);
 		d->body = &s->pyramids[ref.index].phys;
 		d->xform = &s->pyramids[ref.index].transform;
 		return (true);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 02:53:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	cylinder_vs_cylinders(t_contact_query *qu, t_col_pair *p,
 		if (aabb_overlap(cylinder_aabb((t_cylinder *)p->sa->data),
 				cylinder_aabb(other)))
 		{
-			sb = init_gjk_shape(other, gjk_support_cylinder, other->phys.pos);
+			sb = init_gjk_shape(other, gjk_support_cylinder, other->phys.center);
 			pair = (t_col_pair){p->sa, &sb, p->ba, &other->phys, p->ta,
 				&other->transform};
 			if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
@@ -48,7 +48,7 @@ size_t	query_cylinder(t_contact_query *qu, size_t idx)
 	cy = &qu->engine->scene->cylinders[idx];
 	if (cy->phys.is_static)
 		return (qu->count);
-	sa = init_gjk_shape(cy, gjk_support_cylinder, cy->phys.pos);
+	sa = init_gjk_shape(cy, gjk_support_cylinder, cy->phys.center);
 	p = (t_col_pair){&sa, NULL, &cy->phys, NULL, &cy->transform, NULL};
 	cylinder_vs_all_planes(qu, &p);
 	cylinder_vs_cylinders(qu, &p, idx);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 21:07:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 22:22:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,7 @@ typedef struct s_crud_ui
 	bool		shift_held;
 }	t_crud_ui;
 
-/* --- Editor Color Constants --- */
-# define COL_SELECTED 0x20D870
-# define COL_PANEL_HDR 0x1A1A28
-# define COL_ROW_HOVER 0x1E2030
-# define COL_ROW_SEL 0x2A3040
-# define COL_SLIDER_BG 0x1A1A20
-# define COL_SLIDER_FG 0xE0A820
-# define COL_SLIDER_KNOB 0xFFFFFF
+/* (Colors moved to window.h) */
 
 /* --- Inspector Combo-Row Layout --- */
 # define INSP_LBL_W	80
@@ -101,6 +94,8 @@ typedef struct s_crud_ui
 # define SL_COL_MAX 255.0
 # define SL_EMIT_MIN 0.0
 # define SL_EMIT_MAX 255.0
+# define SL_EM_POWER_MIN 0.0
+# define SL_EM_POWER_MAX 4.0
 /* Light */
 # define SL_INTENSITY_MIN 0.0
 # define SL_INTENSITY_MAX 5.0

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 14:52:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 21:57:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
 	t_hit	hit;
 	bool	hit_any;
 
+	hit = (t_hit){0};
 	hit.t = 1e30;
 	hit.ref.type = TYPE_NONE;
 	hit.ref.index = 0;

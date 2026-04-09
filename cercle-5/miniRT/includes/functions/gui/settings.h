@@ -63,6 +63,8 @@ void	draw_settings_raytracer_tab(struct s_gui *gui, t_vec2i o);
 bool	click_settings_raytracer_tab(struct s_gui *gui, t_vec2i mouse,
 			t_vec2i o);
 void	apply_preset(struct s_gui *gui, t_rt_preset p);
+void	draw_preset_row(struct s_gui *gui, t_vec2i o, int y);
+bool	click_preset(struct s_gui *gui, t_vec2i mouse, t_vec2i o, int y);
 void	on_color_change(struct s_gui *gui);
 
 #endif

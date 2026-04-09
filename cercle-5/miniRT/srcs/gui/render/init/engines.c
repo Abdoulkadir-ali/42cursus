@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gui_init.c                                         :+:      :+:    :+:   */
+/*   engines.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 11:01:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ void	gui_init_physics(t_gui *gui)
 	gui->ambient_color = 0xFFFFFF;
 	gui->ambient_intensity = 1.0;
 	gui->phys_engine.scene = gui->scene;
-	gui->phys_engine.settings.slop = 0.005;
+	gui->phys_engine.settings.slop = 0.01;
 	gui->phys_engine.settings.baumgarte = 0.2;
-	gui->phys_engine.settings.solver_iterations = 10;
-	gui->phys_engine.settings.restitution_slop = 0.5;
+	gui->phys_engine.settings.solver_iterations = 8;
+	gui->phys_engine.settings.restitution_slop = 0.05;
 	gui->phys_engine.settings.gravity = vec3(0, -9.81, 0);
-	gui->phys_engine.settings.global_damping = 0.999;
+	gui->phys_engine.settings.global_damping = 0.18;
 	gui->phys_engine.settings.time_scale = 1.0;
 	gui->phys_engine.settings.mesh_simplify_collision = 0;
 	gui->phys_engine.pool.initialized = 0;

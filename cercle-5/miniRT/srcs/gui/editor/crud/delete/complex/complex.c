@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:05:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void	delete_sel_cy_co(t_scene *sc, t_selection *sel)
 {
 	if (sel->type == TYPE_CYLINDER && sel->index.i < sc->cylinder_count)
 	{
-		ft_memmove(sc->cylinders + sel->index.i, sc->cylinders + sel->index.i + 1,
+		ft_memmove(sc->cylinders + sel->index.i,
+			sc->cylinders + sel->index.i + 1,
 			(sc->cylinder_count - sel->index.i - 1) * sizeof(t_cylinder));
 		sc->cylinder_count--;
 	}

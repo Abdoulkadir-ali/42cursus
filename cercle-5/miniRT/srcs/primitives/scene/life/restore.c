@@ -23,7 +23,7 @@ static bool	restore_geo(t_mesh *mesh, const t_cache_snap *snap)
 	if (!mesh->indices)
 		return (mesh_free(mesh), false);
 	ft_memcpy(mesh->indices, snap->indices,
-			sizeof(*mesh->indices) * snap->tri_count * 3);
+		sizeof(*mesh->indices) * snap->tri_count * 3);
 	if (snap->normals)
 	{
 		mesh->normals = malloc(sizeof(t_vec3) * snap->vertex_count);

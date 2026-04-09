@@ -21,7 +21,6 @@ static void	apply_anim_channel(t_bone *bone, t_anim_channel *chan,
 	res[1] = 0.0f;
 	res[2] = 0.0f;
 	res[3] = 1.0f;
-
 	if (chan->path == PATH_TRANSLATION)
 	{
 		sample_channel(s, time, res, 3);
@@ -39,7 +38,8 @@ static void	apply_anim_channel(t_bone *bone, t_anim_channel *chan,
 	}
 }
 
-static void	update_bone_recursive(t_mesh *mesh, size_t bone_idx, t_mat4 parent_mat)
+static void	update_bone_recursive(t_mesh *mesh, size_t bone_idx,
+				t_mat4 parent_mat)
 {
 	t_bone	*bone;
 	double	s[3];
@@ -57,7 +57,7 @@ static void	update_bone_recursive(t_mesh *mesh, size_t bone_idx, t_mat4 parent_m
 	while (i < mesh->bone_count)
 	{
 		if (!mesh->skeleton[i].parent.error
-				&& mesh->skeleton[i].parent.i == bone_idx)
+			&& mesh->skeleton[i].parent.i == bone_idx)
 			update_bone_recursive(mesh, i, bone->global_transform);
 		i++;
 	}

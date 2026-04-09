@@ -27,4 +27,3 @@ void	draw_transform_panel(t_gui *gui, t_vec2i pos)
 	}
 	build_tr_sliders(gui, gui->selection.type, &p);
 }
-

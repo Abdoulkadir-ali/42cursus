@@ -6,14 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
 /**
- * @brief Returns the furthest vertex of a triangle along the search direction.
+ * @brief Returns the furthest point of a triangle along the search direction.
+ *        A small skin offset in the face-normal direction is applied to give
+ *        the zero-thickness triangle a non-degenerate slab for GJK/EPA.
  */
 t_vec3	gjk_support_tri(const void *data, t_vec3 dir)
 {
@@ -22,6 +24,8 @@ t_vec3	gjk_support_tri(const void *data, t_vec3 dir)
 	double				best_d;
 	double				d;
 	size_t				i;
+	t_vec3				p_pos;
+	t_vec3				p_neg;
 
 	tr = (const t_tri_shape *)data;
 	best = tr->v[0];
@@ -37,5 +41,9 @@ t_vec3	gjk_support_tri(const void *data, t_vec3 dir)
 		}
 		i++;
 	}
-	return (best);
+	p_pos = vec3_add(best, vec3_scale(tr->normal, PHYS_SKIN));
+	p_neg = vec3_sub(best, vec3_scale(tr->normal, PHYS_SKIN));
+	if (vec3_dot(p_pos, dir) >= vec3_dot(p_neg, dir))
+		return (p_pos);
+	return (p_neg);
 }

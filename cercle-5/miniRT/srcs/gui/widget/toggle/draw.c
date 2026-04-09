@@ -6,11 +6,25 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "widget.h"
+
+static void	get_toggle_style(t_widget *w, int *bg, const char **state,
+	int *state_col)
+{
+	*bg = COL_TOGGLE_OFF_BG;
+	*state = "OFF";
+	*state_col = COL_TOGGLE_OFF_TEXT;
+	if (w->value)
+	{
+		*bg = COL_TOGGLE_ON_BG;
+		*state = " ON";
+		*state_col = COL_TOGGLE_ON_TEXT;
+	}
+}
 
 void	widget_draw_toggle(t_gui *gui, t_widget *w)
 {
@@ -20,16 +34,12 @@ void	widget_draw_toggle(t_gui *gui, t_widget *w)
 	const char		*state;
 	int				state_col;
 
-	bg = 0x402020;
-	state = "OFF";
-	state_col = 0xFF5050;
-	if (w->value)
-	{
-		bg = 0x206040;
-		state = " ON";
-		state_col = 0x40FF80;
-	}
-	p = (t_panel){.pos = w->pos, .size = w->size, .bg = bg, .brd = COL_BORDER};
+	get_toggle_style(w, &bg, &state, &state_col);
+	p.pos = w->pos;
+	p.size = w->size;
+	p.bg = bg;
+	p.brd = COL_BORDER;
+	p.lbl = NULL;
 	draw_panel(gui, p);
 	lpos = vec2i(w->pos.x + 4, w->pos.y + w->size.y / 2 - 4);
 	if (w->label)

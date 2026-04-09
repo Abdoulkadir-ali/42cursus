@@ -15,12 +15,11 @@
 static void	mark_joints(t_json_value *joints, size_t *is_joint)
 {
 	size_t	i;
+	t_index	rs;
 
 	i = 0;
 	while (i < joints->u.array.count)
 	{
-		t_index	rs;
-
 		rs = json_as_t_index(json_at(joints, i));
 		if (!rs.error && rs.i < PARSER_BUF_SIZE)
 			is_joint[rs.i] = 1;

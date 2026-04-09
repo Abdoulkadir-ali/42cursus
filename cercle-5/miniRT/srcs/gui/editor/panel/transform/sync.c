@@ -6,11 +6,31 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:44:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
+
+static void	sync_primitive(t_gui *gui, t_scene *sc, size_t idx)
+{
+	if (gui->selection.type == TYPE_SPHERE)
+	{
+		sphere_scale_sync(gui);
+		sc->spheres[idx].transform.pos = gui->transform.pos;
+		sc->spheres[idx].phys.pos = gui->transform.pos;
+		sc->spheres[idx].transform.scale = gui->transform.scale;
+	}
+	else if (gui->selection.type == TYPE_PLANE)
+	{
+		sc->planes[idx].transform.pos = gui->transform.pos;
+		sc->planes[idx].transform.rotation = gui->transform.rotation;
+		sc->planes[idx].transform.forward = vec3_norm(
+				mat4_mul_vec3(mat4_rotation(gui->transform.rotation),
+					vec3(0, 0, -1)));
+		sc->planes[idx].transform.up = sc->planes[idx].transform.forward;
+	}
+}
 
 void	transform_selection_sync(t_gui *gui)
 {
@@ -19,21 +39,8 @@ void	transform_selection_sync(t_gui *gui)
 
 	sc = gui->scene;
 	idx = gui->selection.index.i;
-	if (gui->selection.type == TYPE_SPHERE && idx < sc->sphere_count)
-	{
-		sphere_scale_sync(gui);
-		sc->spheres[idx].transform.pos = gui->transform.pos;
-		sc->spheres[idx].phys.pos = gui->transform.pos;
-		sc->spheres[idx].transform.scale = gui->transform.scale;
-	}
-	else if (gui->selection.type == TYPE_PLANE && idx < sc->plane_count)
-	{
-		sc->planes[idx].transform.pos = gui->transform.pos;
-		sc->planes[idx].transform.rotation = gui->transform.rotation;
-		sc->planes[idx].transform.forward = vec3_norm(
-				mat4_mul_vec3(mat4_rotation(gui->transform.rotation),
-					vec3(0, 0, -1)));
-	}
+	if (gui->selection.type == TYPE_SPHERE || gui->selection.type == TYPE_PLANE)
+		sync_primitive(gui, sc, idx);
 	else if (gui->selection.type == TYPE_MESH)
 		mesh_transform_sync(gui);
 	else if (gui->selection.type == TYPE_LIGHT && idx < sc->light_count)

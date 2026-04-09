@@ -35,36 +35,22 @@ static t_physics_body	*get_hit_phys(t_scene *s, t_bvh_ref ref)
 }
 
 /**
- * @brief Applies rotational impulse based on hit point and torque.
- */
-static void	apply_torque(t_physics_body *ph, t_vec3 hit, double imp,
-		t_bvh_ref r)
-{
-	t_vec3	ra;
-	t_vec3	dw;
-	t_vec3	ax;
-
-	ra = vec3_sub(hit, ph->center);
-	if (vec3_mag_sq(ra) < 1e-6)
-		return ;
-	dw = vec3_scale(vec3_cross(ra, vec3_scale(ra, imp)),
-			2.5 / (ph->mass * vec3_mag_sq(ra)));
-	if (r.type == TYPE_CYLINDER)
-	{
-		ax = vec3_norm(ph->pos);
-		dw = vec3_sub(dw, vec3_scale(ax, vec3_dot(dw, ax)));
-	}
-	ph->angular_velocity = vec3_add(ph->angular_velocity, dw);
-}
-
-/**
  * @brief Casts a ray and applies a physical impulse to the first dynamic hit.
+ * Uses a scalar isotropic inertia estimate so the angular response stays
+ * reasonable for any shape orientation.  For cylinders the spin-axis
+ * component is stripped so they tip over instead of behaving like a beyblade.
  */
 void	physics_shoot_ray(t_scene *s, t_ray ray, double impulse)
 {
-	t_hit			h;
+	t_hit		h;
 	t_physics_body	*ph;
-	t_vec3			hit_p;
+	t_vec3		hit_p;
+	t_vec3		ra;
+	t_vec3		torque;
+	t_vec3		dw;
+	double		inv_m;
+	double		inv_i;
+	t_vec3		ax;
 
 	if (!s || !s->bvh)
 		return ;
@@ -74,8 +60,20 @@ void	physics_shoot_ray(t_scene *s, t_ray ray, double impulse)
 	ph = get_hit_phys(s, h.ref);
 	if (!ph || ph->is_static || ph->mass < 1e-6)
 		return ;
+	inv_m = 1.0 / ph->mass;
 	ph->velocity = vec3_add(ph->velocity,
-			vec3_scale(ray.direction, impulse / ph->mass));
+			vec3_scale(ray.direction, impulse * inv_m));
 	hit_p = vec3_add(ray.origin, vec3_scale(ray.direction, h.t));
-	apply_torque(ph, hit_p, impulse, h.ref);
+	ra = vec3_sub(hit_p, ph->center);
+	if (vec3_mag_sq(ra) < 1e-6)
+		return ;
+	torque = vec3_cross(ra, vec3_scale(ray.direction, impulse));
+	inv_i = 2.5 * inv_m / fmax(vec3_mag_sq(ra), 1.0);
+	dw = vec3_scale(torque, inv_i);
+	if (h.ref.type == TYPE_CYLINDER)
+	{
+		ax = vec3_norm(s->cylinders[h.ref.index].transform.forward);
+		dw = vec3_sub(dw, vec3_scale(ax, vec3_dot(dw, ax)));
+	}
+	ph->angular_velocity = vec3_add(ph->angular_velocity, dw);
 }

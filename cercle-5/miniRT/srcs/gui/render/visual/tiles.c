@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   tiles.c											:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: abdoali <abdoali@student.42.fr>			+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2026/04/03 12:50:57 by abdoali		   #+#	#+#			 */
-/*   Updated: 2026/04/06 00:00:00 by abdoali		  ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tiles.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/03 12:50:57 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
@@ -42,8 +42,7 @@ static void	render_tile_row(t_render *render, t_tile *v, size_t id, int *cnt)
 	st = now_ms();
 	v->p_pos.x = v->tile.x;
 	v->pixel_ptr = v->row_ptr;
-	while (v->p_pos.x < v->tile.x + TILE_SIZE
-			&& v->p_pos.x < sw)
+	while (v->p_pos.x < v->tile.x + TILE_SIZE && v->p_pos.x < sw)
 	{
 		process_pixel(render, vec2i(v->p_pos.x, v->p_pos.y), v->pixel_ptr);
 		v->p_pos.x += render->step;
@@ -61,8 +60,7 @@ void	render_tile(t_render *render, size_t id)
 {
 	t_tile	v;
 	int		cnt;
-
-	int			sh;
+	int		sh;
 
 	sh = render->gui->win.size.y;
 	if (!decode_morton(render, id, &v.tile))
@@ -75,8 +73,7 @@ void	render_tile(t_render *render, size_t id)
 	v.bpp_step = (render->gui->win.bpp / 8) * render->step;
 	v.row_step = render->gui->win.line_len * render->step;
 	cnt = 0;
-	while (v.p_pos.y < v.tile.y + TILE_SIZE
-			&& v.p_pos.y < sh)
+	while (v.p_pos.y < v.tile.y + TILE_SIZE && v.p_pos.y < sh)
 	{
 		render_tile_row(render, &v, id, &cnt);
 		v.p_pos.y += render->step;

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "input.h"
+#include "optimizations.h"
 
 static void	update_ctrl_transform(t_camera_controller *ctrl, t_vec3 fwd,
 	t_vec3 right, t_vec3 up)
@@ -49,5 +50,5 @@ void	gui_update_input(t_gui *gui)
 	smooth_position(gui, ctrl);
 	update_fov(gui, ctrl);
 	if (gui->render.force_fullres)
-		gui->render.scale = 1;
+		gui->render.scale = SCALE_MIN;
 }

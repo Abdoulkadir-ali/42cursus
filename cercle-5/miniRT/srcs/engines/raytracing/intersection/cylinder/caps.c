@@ -21,6 +21,12 @@ static void	fill_cap_hit(t_cylinder *cy, t_ray_query *q,
 	t_entry_point	pt;
 
 	q->hit->normal = vec3_scale(cy->transform.forward, normal_sign);
+	q->hit->back_face = false;
+	if (vec3_dot(q->ray->direction, q->hit->normal) > 0)
+	{
+		q->hit->normal = vec3_scale(q->hit->normal, -1.0);
+		q->hit->back_face = true;
+	}
 	pt = (t_entry_point){q->hit->point, center, cy->transform.scale.x,
 		cy->transform.scale.y, 0};
 	get_cylinder_uv(pt, cy, q->hit, true);

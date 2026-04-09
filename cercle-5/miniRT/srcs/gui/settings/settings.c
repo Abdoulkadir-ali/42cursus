@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void	settings_close(t_gui *gui)
 void	settings_handle_drag(t_gui *gui, t_vec2i mouse)
 {
 	t_vec2i	p;
-
 	int		p_x_max;
 	int		p_y_max;
 

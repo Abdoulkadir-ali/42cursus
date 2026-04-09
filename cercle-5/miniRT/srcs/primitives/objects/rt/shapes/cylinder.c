@@ -13,27 +13,27 @@
 #include "scene.h"
 
 /*
-** Adds a cone to the scene.
+** Adds a cylinder to the scene.
 ** Automatically creates/retrieves the material based on temp_color.
 */
-bool	scene_add_cone(t_scene *scene, t_cone cone)
+bool	scene_add_cylinder(t_scene *scene, t_cylinder cylinder)
 {
 	t_index	mat_id;
 
-	mat_id = scene_add_material(scene, cone.temp_color);
+	mat_id = scene_add_material(scene, cylinder.temp_color);
 	if (mat_id.error)
 		return (false);
-	cone.mat_id = mat_id.i;
-	if (!DYNARRAY_ENSURE_INT(&scene->cones, &scene->cone_count,
-			&scene->cone_cap, sizeof(t_cone)))
+	cylinder.mat_id = mat_id.i;
+	if (!DYNARRAY_ENSURE_INT(&scene->cylinders, &scene->cylinder_count,
+			&scene->cylinder_cap, sizeof(t_cylinder)))
 		return (false);
-cone.mat_slots[0] = cone.mat_id;
-cone.mat_slots[1] = scene->mat_slot_checker;
-cone.mat_slots[2] = scene->mat_slot_solid;
-cone.mat_slots[3] = 0;
-cone.active_slot = 0;
-	if (vec3_mag_sq(cone.transform.scale) < 1e-6)
-		cone.transform.scale = vec3(1, 1, 1);
-	scene->cones[scene->cone_count++] = cone;
+	cylinder.mat_slots[0] = cylinder.mat_id;
+	cylinder.mat_slots[1] = scene->mat_slot_checker;
+	cylinder.mat_slots[2] = scene->mat_slot_solid;
+	cylinder.mat_slots[3] = 0;
+	cylinder.active_slot = 0;
+	if (vec3_mag_sq(cylinder.transform.scale) < 1e-6)
+		cylinder.transform.scale = vec3(1, 1, 1);
+	scene->cylinders[scene->cylinder_count++] = cylinder;
 	return (true);
 }

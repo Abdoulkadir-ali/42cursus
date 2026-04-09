@@ -12,7 +12,8 @@
 
 #include "fdf.h"
 
-static t_vec3	fdf_vertex_normal(t_mesh *mesh, size_t x, size_t z, t_vec2s dims)
+static t_vec3	fdf_vertex_normal(t_mesh *mesh, size_t x, size_t z,
+								t_vec2s dims)
 {
 	size_t	idx;
 	t_vec3	v[4];

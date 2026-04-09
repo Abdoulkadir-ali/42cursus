@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 19:25:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 15:36:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,8 @@ bool	parse_cylinder_base(t_parser *p, t_cylinder *out)
 	out->mat_id = 0;
 	out->temp_color = rgb;
 	init_poly_phys(&out->phys);
+	out->phys.center = vec3_add(out->transform.pos,
+			vec3_scale(out->transform.forward, height / 2.0));
+	out->phys.pos = out->transform.pos;
 	return (true);
 }

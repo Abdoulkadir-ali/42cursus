@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:48:49 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:15:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	init_camera(t_gui *gui)
 	gui->cam_ctrl.transform.rotation.yaw = gui->cam_ctrl.target_rot.yaw;
 	gui->cam_ctrl.transform.rotation.pitch = gui->cam_ctrl.target_rot.pitch;
 	init_camera_state(gui);
-	gui->render.scale = 4;
+	gui->render.scale = SCALE_MAX;
 	gui->win.size.x = gui->win.disp_size.x / gui->render.scale;
 	gui->win.size.y = gui->win.disp_size.y / gui->render.scale;
 	gui->win.line_len = gui->win.size.x * 4;

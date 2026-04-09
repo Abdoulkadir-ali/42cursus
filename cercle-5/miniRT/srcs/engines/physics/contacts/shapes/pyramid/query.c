@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 02:53:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ static void	pyramid_vs_pyramids(t_contact_query *qu, t_pyramid *py, size_t idx)
 	t_gjk_shape	sb;
 	t_col_pair	pair;
 
-	sa = init_gjk_shape(py, gjk_support_pyramid, py->phys.pos);
+	sa = init_gjk_shape(py, gjk_support_pyramid, py->phys.center);
 	p = idx + 1;
 	while (p < qu->engine->scene->pyramid_count && qu->count < qu->max)
 	{
 		sb = init_gjk_shape(&qu->engine->scene->pyramids[p], gjk_support_pyramid,
-			qu->engine->scene->pyramids[p].phys.pos);
+			qu->engine->scene->pyramids[p].phys.center);
 		pair = (t_col_pair){&sa, &sb, &py->phys,
 			&qu->engine->scene->pyramids[p].phys, &py->transform,
 			&qu->engine->scene->pyramids[p].transform};
@@ -55,7 +55,7 @@ size_t	query_pyramid(t_contact_query *qu, size_t idx)
 		return (qu->count);
 	pyramid_vs_planes(qu, py);
 	pyramid_vs_pyramids(qu, py, idx);
-	sa = init_gjk_shape(py, gjk_support_pyramid, py->phys.pos);
+	sa = init_gjk_shape(py, gjk_support_pyramid, py->phys.center);
 	ctx = (t_bvh_phys_ctx){qu, &sa, &py->phys, &py->transform, TYPE_PYRAMID};
 	bvh_query_shapes(&ctx, pyramid_aabb(py));
 	return (qu->count);

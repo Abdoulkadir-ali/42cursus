@@ -22,17 +22,35 @@ double	get_inv_mass(t_physics_body *body)
 static void	apply_position_correction(t_contact *ct, t_physic_engine *en,
 		double inv_a, double inv_b)
 {
-	double	depth;
+	double	target;
+	double	new_lambda;
+	double	delta;
 	double	scalar;
-	t_vec3	correction;
+	t_vec3	da;
+	t_vec3	db;
 
-	depth = fmax(ct->penetration - en->settings.slop, 0.0);
-	scalar = depth / (inv_a + inv_b) * en->settings.baumgarte;
-	correction = vec3_scale(ct->normal, scalar);
+	target = fmax(ct->penetration - en->settings.slop, 0.0);
+	new_lambda = fmin(ct->lambda_pos + target * en->settings.baumgarte,
+			target);
+	delta = new_lambda - ct->lambda_pos;
+	ct->lambda_pos = new_lambda;
+	if (delta < 1e-9 || inv_a + inv_b < 1e-9)
+		return ;
+	scalar = delta / (inv_a + inv_b);
 	if (ct->a && inv_a > 0.0)
-		ct->ta->pos = vec3_sub(ct->ta->pos, vec3_scale(correction, inv_a));
+	{
+		da = vec3_scale(ct->normal, -scalar * inv_a);
+		ct->ta->pos = vec3_add(ct->ta->pos, da);
+		ct->a->pos = ct->ta->pos;
+		ct->a->center = vec3_add(ct->a->center, da);
+	}
 	if (ct->b && inv_b > 0.0)
-		ct->tb->pos = vec3_add(ct->tb->pos, vec3_scale(correction, inv_b));
+	{
+		db = vec3_scale(ct->normal, scalar * inv_b);
+		ct->tb->pos = vec3_add(ct->tb->pos, db);
+		ct->b->pos = ct->tb->pos;
+		ct->b->center = vec3_add(ct->b->center, db);
+	}
 }
 
 void	solve_positions(t_contact *c, t_physic_engine *engine, size_t count)

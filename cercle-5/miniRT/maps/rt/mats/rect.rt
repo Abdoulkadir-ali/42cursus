@@ -1,0 +1,55 @@
+A 0.05 255,255,255
+C 0,5,28 0,-0.1,-1 75
+L 10,20,10 0.9 255,245,220
+
+pl 0,-1,0 0,1,0 140,140,140
+mat c 130,130,130 50,50,50 2.5
+rough 0.9 metal 0.0
+
+# 1 — Texture
+rc -23,0,-1 -17,0,-1 -17,6,-1 -23,6,-1 255,255,255
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.5
+metal 0.0
+name tex
+
+# 2 — Transparent
+rc -15,0,-1 -9,0,-1 -9,6,-1 -15,6,-1 200,235,255
+mat s 200,235,255
+rough 0.03
+metal 0.0
+opac 0.06
+ior 1.52
+refl 0.07
+name transparent
+
+# 3 — Reflective
+rc -7,0,-1 -1,0,-1 -1,6,-1 -7,6,-1 200,200,210
+mat s 200,200,210
+rough 0.05
+metal 1.0
+refl 0.95
+name reflective
+
+# 4 — Checker
+rc 1,0,-1 7,0,-1 7,6,-1 1,6,-1 230,80,30
+mat c 230,80,30 20,20,180 4.0
+rough 0.7
+metal 0.0
+name checker
+
+# 5 — Emissive
+rc 9,0,-1 15,0,-1 15,6,-1 9,6,-1 255,120,40
+mat s 255,120,40
+rough 0.8
+metal 0.0
+emit 255,120,40
+emit_power 0.3
+name emissive
+
+# 6 — Solid
+rc 17,0,-1 23,0,-1 23,6,-1 17,6,-1 60,200,120
+mat s 60,200,120
+rough 0.6
+metal 0.0
+name solid

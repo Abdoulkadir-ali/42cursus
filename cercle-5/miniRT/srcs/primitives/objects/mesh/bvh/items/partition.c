@@ -12,13 +12,14 @@
 
 #include "mesh.h"
 
-static double	bvh_item_centroid(t_mesh_build_item *items, size_t idx, size_t axis)
+static double	bvh_item_centroid(t_mesh_build_item *it, size_t idx,
+		size_t axis)
 {
 	if (axis == 0)
-		return (items[idx].centroid.x);
+		return (it[idx].centroid.x);
 	if (axis == 1)
-		return (items[idx].centroid.y);
-	return (items[idx].centroid.z);
+		return (it[idx].centroid.y);
+	return (it[idx].centroid.z);
 }
 
 static void	bvh_swap_item(t_mesh_build_item *items, size_t left, size_t right)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 21:10:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,60 +56,48 @@ bool	click_fdf_row(t_gui *gui, t_vec2i mouse, t_vec2i *p)
 	gap = ui_sx(3, d);
 	p->y += ui_sy(INSP_HDR_STEP, d);
 	if (mat_hit_btn(gui, mouse, *p, vec2s(bw, ui_sy(18, d))))
-	{
 		fdf_switch_mode(fdf, gui->scene, FDF_MODE_HEIGHT);
-		p->y += ui_sy(INSP_HDR_STEP + 26, d);
-		return (true);
-	}
-	if (mat_hit_btn(gui, mouse, vec2i(p->x + bw + gap, p->y),
+	else if (mat_hit_btn(gui, mouse, vec2i(p->x + bw + gap, p->y),
 			vec2s(bw, ui_sy(18, d))))
-	{
 		fdf_switch_mode(fdf, gui->scene, FDF_MODE_PICTURE);
+	else
+	{
 		p->y += ui_sy(INSP_HDR_STEP + 26, d);
-		return (true);
+		return (false);
 	}
 	p->y += ui_sy(INSP_HDR_STEP + 26, d);
-	return (false);
+	return (true);
+}
+
+static void	handle_slot_click(t_gui *gui, int slot)
+{
+	ensure_slot_mat(gui, slot);
+	set_selected_group_slot(gui, slot);
 }
 
 bool	click_mat_slots(t_gui *gui, t_vec2i mouse, t_vec2i *p)
 {
 	t_vec2s	d;
+	t_vec2s	s;
 	int		bw;
-	int		bh;
 	int		gap;
 
 	d = gui->win.disp_size;
 	bw = (ui_sx(gui->inspector.width - 18, d) - ui_sx(3, d)) / 2;
-	bh = ui_sy(18, d);
+	s = vec2s(bw, ui_sy(18, d));
 	gap = ui_sx(3, d);
-	if (mat_hit_btn(gui, mouse, *p, vec2s(bw, bh)))
+	if (mat_hit_btn(gui, mouse, *p, s))
 		set_selected_group_slot(gui, 0);
-	else if (mat_hit_btn(gui, mouse, vec2i(p->x + bw + gap, p->y),
-			vec2s(bw, bh)))
-	{
-		ensure_slot_mat(gui, 1);
-		set_selected_group_slot(gui, 1);
-	}
-	else if (mat_hit_btn(gui, mouse, vec2i(p->x, p->y + bh + gap),
-			vec2s(bw, bh)))
-	{
-		ensure_slot_mat(gui, 2);
-		set_selected_group_slot(gui, 2);
-	}
-	else if (mat_hit_btn(gui, mouse, vec2i(p->x + bw + gap, p->y + bh + gap),
-			vec2s(bw, bh)))
-	{
+	else if (mat_hit_btn(gui, mouse, vec2i(p->x + bw + gap, p->y), s))
+		handle_slot_click(gui, 1);
+	else if (mat_hit_btn(gui, mouse, vec2i(p->x, p->y + s.y + gap), s))
+		handle_slot_click(gui, 2);
+	else if (mat_hit_btn(gui, mouse, vec2i(p->x + bw + gap, p->y + s.y + gap),
+			s))
 		set_selected_group_slot(gui, 3);
-	}
 	else
-	{
-		p->y += ui_sy(44, d);
-		return (false);
-	}
+		return (p->y += ui_sy(44, d), false);
 	if (gui->scene)
 		scene_init_uv_flags(gui->scene);
-	gui->render.dirty = true;
-	p->y += ui_sy(44, d);
-	return (true);
+	return (gui->render.dirty = true, p->y += ui_sy(44, d), true);
 }

@@ -162,8 +162,8 @@ bool				insp_toggle_click(struct s_gui *gui, t_vec2i mouse,
 void				insp_input_key(struct s_gui *gui, int keycode);
 void				insp_input_commit(struct s_gui *gui);
 bool				insp_input_nav(t_insp_edit *e, int keycode);
-void				set_insp_drag(struct s_gui *gui, t_islider sl, int mouse_x,
-								int tx, int tw);
+void set_insp_drag(struct s_gui *gui, t_islider sl, int mouse_x,
+								t_vec2i track);
 void				set_insp_edit(struct s_gui *gui, t_islider sl);
 
 /* srcs/gui/editor/crud/add/ */

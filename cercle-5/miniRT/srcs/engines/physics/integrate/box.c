@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:13:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 16:14:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,12 @@ static void	update_state(t_box *bx, double dt, t_vec3 delta)
 	bx->transform.rotation.pitch += rot_d.x;
 	bx->transform.rotation.yaw += rot_d.y;
 	bx->transform.rotation.roll += rot_d.z;
-	bx->transform.forward = rot_by_ang(bx->transform.forward,
-			bx->phys.angular_velocity, dt);
+	bx->transform.forward = vec3_norm(rot_by_ang(bx->transform.forward,
+				bx->phys.angular_velocity, dt));
+	bx->transform.right = vec3_norm(rot_by_ang(bx->transform.right,
+				bx->phys.angular_velocity, dt));
+	bx->transform.up = vec3_norm(rot_by_ang(bx->transform.up,
+				bx->phys.angular_velocity, dt));
 	bx->transform.pos = vec3_add(bx->transform.pos, delta);
 	bx->phys.center = bx->transform.pos;
 }
@@ -64,4 +68,5 @@ void	integrate_box(t_box *bx, double dt, t_physics_settings *s)
 	bx->phys.angular_velocity = vec3_scale(bx->phys.angular_velocity, damp.y);
 	v_d = vec3_scale(bx->phys.velocity, dt);
 	update_state(bx, dt, v_d);
+	bx->phys.pos = bx->transform.pos;
 }

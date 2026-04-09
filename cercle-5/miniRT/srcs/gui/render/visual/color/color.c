@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:52:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,20 @@ size_t	rt_pack_color(t_vec3f v)
 	return ((size_t)pack_rgb(vd));
 }
 
-t_vec3i	rt_unpack_color_v(size_t c)
+static void	apply_gamma(t_vec3f *ch, float gamma)
 {
-	return (unpack_rgb_v((uint32_t)c));
-}
+	float	exp_val;
 
-size_t	rt_pack_color_v(t_vec3i v)
-{
-	return ((size_t)pack_rgb_v(v));
+	if (gamma <= 0.0)
+		return ;
+	exp_val = 50.0f / gamma;
+	ch->x = powf(fmaxf(ch->x / 255.0f, 0.0f), exp_val) * 255.0f;
+	ch->y = powf(fmaxf(ch->y / 255.0f, 0.0f), exp_val) * 255.0f;
+	ch->z = powf(fmaxf(ch->z / 255.0f, 0.0f), exp_val) * 255.0f;
 }
 
 /*
-** apply_bcg: applies brightness, contrast, gamma, and saturation
+** applies brightness, contrast, gamma, and saturation
 ** to a float[3] RGB channel array (values in [0,255]).
 ** All opts values are in [0,100] with 50 = neutral.
 */
@@ -71,15 +73,7 @@ void	apply_bcg(t_vec3f *ch, const t_raytracer_settings *opts)
 	ch->x = p.x + (ch->x - p.x) * f.z;
 	ch->y = p.x + (ch->y - p.x) * f.z;
 	ch->z = p.x + (ch->z - p.x) * f.z;
-	if (opts->gamma > 0.0)
-	{
-		float	exp_val;
-
-		exp_val = (float)(50.0 / opts->gamma);
-		ch->x = powf(fmaxf(ch->x / 255.0f, 0.0f), exp_val) * 255.0f;
-		ch->y = powf(fmaxf(ch->y / 255.0f, 0.0f), exp_val) * 255.0f;
-		ch->z = powf(fmaxf(ch->z / 255.0f, 0.0f), exp_val) * 255.0f;
-	}
+	apply_gamma(ch, (float)opts->gamma);
 	ch->x = fminf(fmaxf(ch->x, 0.0f), 255.0f);
 	ch->y = fminf(fmaxf(ch->y, 0.0f), 255.0f);
 	ch->z = fminf(fmaxf(ch->z, 0.0f), 255.0f);

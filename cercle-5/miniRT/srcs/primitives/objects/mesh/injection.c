@@ -6,55 +6,35 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:41:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 22:34:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/09 03:08:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "mesh.h"
 
-static void	clone_instance_materials(t_scene *scene, size_t start_mesh)
+static void	apply_inst_props(t_scene *scene, size_t start, t_mesh_info *info)
 {
 	size_t	i;
 	t_index	new_id;
+	t_vec3	col;
 
-	i = start_mesh;
+	col = info->color;
+	i = start;
 	while (i < scene->mesh_count)
 	{
 		new_id = scene_clone_material(scene, scene->meshes[i].mat_id);
 		if (!new_id.error)
 			scene->meshes[i].mat_id = new_id.i;
-		i++;
-	}
-}
-
-static void	apply_instance_material(t_scene *scene, size_t start_mesh, t_vec3 col)
-{
-	size_t	i;
-
-	i = start_mesh;
-	while (i < scene->mesh_count)
-	{
 		scene->materials[scene->meshes[i].mat_id].albedo_map.color_a = col;
+		if (!(info->emission.x == 0.0 && info->emission.y == 0.0
+				&& info->emission.z == 0.0))
+			scene->materials[scene->meshes[i].mat_id].emission = info->emission;
 		i++;
 	}
 }
 
-static void	apply_instance_emission(t_scene *scene, size_t start_mesh, t_vec3 em)
-{
-	size_t	i;
-
-	if (em.x == 0.0 && em.y == 0.0 && em.z == 0.0)
-		return ;
-	i = start_mesh;
-	while (i < scene->mesh_count)
-	{
-		scene->materials[scene->meshes[i].mat_id].emission = em;
-		i++;
-	}
-}
-
-static void	apply_instance_transform(t_scene *scene, size_t start, t_transform tf)
+static void	apply_inst_tf(t_scene *scene, size_t start, t_transform tf)
 {
 	size_t	i;
 
@@ -68,48 +48,41 @@ static void	apply_instance_transform(t_scene *scene, size_t start, t_transform t
 	}
 }
 
+static void	inject_res_items(t_scene *scene, t_mesh_resource *res)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < res->mat_count)
+	{
+		scene_material_allocate_slot(scene);
+		scene->materials[scene->mat_count - 1] = res->materials[i++];
+	}
+	i = 0;
+	while (i < res->mesh_count)
+		scene_add_mesh(scene, res->meshes[i++]);
+	i = 0;
+	while (i < res->group_count)
+		scene_add_group(scene, res->groups[i++]);
+}
+
 bool	scene_inject_mesh_resource(t_scene *scene, t_mesh_resource *res,
 			t_mesh_info *info)
 {
-	size_t	i;
 	size_t	start_mesh;
 
-	ft_print_debug("INJECT: %s (res meshes=%zu)\n", info->path, res->mesh_count);
 	start_mesh = scene->mesh_count;
 	if (mesh_cache_has(scene, info->path))
 	{
 		mesh_resource_free(res);
 		return (mesh_cache_restore(scene, info->path));
 	}
-	i = 0;
-	while (i < res->mat_count)
-	{
-		scene_material_allocate_slot(scene);
-		scene->materials[scene->mat_count - 1] = res->materials[i];
-		i++;
-	}
-	i = 0;
-	while (i < res->mesh_count)
-	{
-		if (!scene_add_mesh(scene, res->meshes[i]))
-			return (false);
-		i++;
-	}
-	i = 0;
-	while (i < res->group_count)
-	{
-		if (!scene_add_group(scene, res->groups[i]))
-			return (false);
-		i++;
-	}
+	inject_res_items(scene, res);
 	mesh_cache_save(scene, info->path, start_mesh);
-	clone_instance_materials(scene, start_mesh);
-	apply_instance_transform(scene, start_mesh, info->transform);
-	apply_instance_material(scene, start_mesh, info->color);
-	apply_instance_emission(scene, start_mesh, info->emission);
+	apply_inst_tf(scene, start_mesh, info->transform);
+	apply_inst_props(scene, start_mesh, info);
 	if (scene->mesh_count > start_mesh)
 		scene_add_group_for_subs(scene, info->path, start_mesh);
-	ft_print_debug("INJECT: done, total meshes=%zu\n", scene->mesh_count);
 	return (true);
 }
 

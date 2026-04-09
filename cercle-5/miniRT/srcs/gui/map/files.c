@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:20:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 16:20:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:44:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,12 @@ void	fill_map_list(t_gui *gui)
 		return ;
 	tail = &gui->map_info.head;
 	gui->map_info.count = 0;
-	while ((entry = readdir(dir)))
+	entry = readdir(dir);
+	while (entry)
+	{
 		if (entry->d_type == DT_REG && is_rt_file(entry->d_name))
 			add_map_node(gui, &tail, entry->d_name);
+		entry = readdir(dir);
+	}
 	closedir(dir);
 }

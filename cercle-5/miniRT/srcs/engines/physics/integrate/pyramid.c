@@ -6,11 +6,43 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:13:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
+
+/**
+ * @brief Recomputes and caches the 5 world-space pyramid vertices into
+ *        py->c[0..3] (base corners) and py->apex after every integration step.
+ *        Mirrors pyramid_cache_verts() from the raytracing module so that
+ *        the physics support function and plane-contact code can read them
+ *        directly without recomputing on every GJK/EPA query.
+ */
+static void	pyramid_update_verts(t_pyramid *py)
+{
+	t_vec3	ref;
+	t_vec3	right;
+	t_vec3	fwd;
+	double	h;
+
+	h = py->base_size * 0.5;
+	if (fabs(py->up.y) < 0.9)
+		ref = vec3(0, 1, 0);
+	else
+		ref = vec3(1, 0, 0);
+	right = vec3_norm(vec3_cross(py->up, ref));
+	fwd = vec3_cross(right, py->up);
+	py->c[0] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, h)),
+			vec3_scale(fwd, h));
+	py->c[1] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, -h)),
+			vec3_scale(fwd, h));
+	py->c[2] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, -h)),
+			vec3_scale(fwd, -h));
+	py->c[3] = vec3_add(vec3_add(py->transform.pos, vec3_scale(right, h)),
+			vec3_scale(fwd, -h));
+	py->apex = vec3_add(py->transform.pos, vec3_scale(py->up, py->height));
+}
 
 /**
  * @brief Initializes inertia for a pyramid shape.
@@ -35,13 +67,16 @@ static void	init_pyramid_inertia(t_pyramid *py)
  */
 static void	update_state(t_pyramid *py, double dt, t_vec3 rot_d, t_vec3 delta)
 {
+	t_vec3	center;
+
 	py->transform.rotation.pitch += rot_d.x;
 	py->transform.rotation.yaw += rot_d.y;
 	py->transform.rotation.roll += rot_d.z;
 	py->up = vec3_norm(rot_by_ang(py->up, py->phys.angular_velocity, dt));
-	py->transform.pos = vec3_add(py->transform.pos, delta);
-	py->phys.center = vec3_add(py->transform.pos,
+	center = vec3_add(py->phys.center, delta);
+	py->transform.pos = vec3_sub(center,
 			vec3_scale(py->up, py->height * 0.25));
+	py->phys.center = center;
 }
 
 /**
@@ -62,4 +97,6 @@ void	integrate_pyramid(t_pyramid *py, double dt, t_physics_settings *s)
 	py->phys.angular_velocity = vec3_scale(py->phys.angular_velocity, damp.y);
 	rot = vec3_scale(py->phys.angular_velocity, dt * (180.0 / M_PI));
 	update_state(py, dt, rot, vec3_scale(py->phys.velocity, dt));
+	py->phys.pos = py->transform.pos;
+	pyramid_update_verts(py);
 }

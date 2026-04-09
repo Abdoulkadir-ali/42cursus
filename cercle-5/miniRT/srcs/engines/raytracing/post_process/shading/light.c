@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 17:03:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 21:57:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ double	shading_attenuation(double dist_sq)
 static bool	light_visible(t_shading *sha, t_light light, t_light_calc *c)
 {
 	double	bias;
+	t_vec3	org;
 
 	if (light.type == LIGHT_SPOT && vec3_dot(vec3_scale(c->norm, -1.0),
 			light.transform.forward) < light.cutoff)
@@ -30,8 +31,8 @@ static bool	light_visible(t_shading *sha, t_light light, t_light_calc *c)
 	if (light.type == LIGHT_EMISSIVE)
 		return (true);
 	bias = fmax(EPSILON, EPSILON * 10.0 * (1.0 - c->ndotl));
-	if (is_in_shadow(sha->bvh, vec3_add(sha->hit->point,
-				vec3_scale(sha->hit->normal, bias)), c->norm, c->dist))
+	org = vec3_add(sha->hit->point, vec3_scale(sha->hit->normal, bias));
+	if (is_in_shadow(sha->bvh, org, c->norm, c->dist))
 		return (false);
 	return (true);
 }
@@ -66,6 +67,8 @@ t_vec3	calc_light(t_shading *sha, t_light light)
 		return (vec3(0, 0, 0));
 	c.norm = vec3_scale(c.ld, 1.0 / c.dist);
 	c.ndotl = vec3_dot(sha->hit->normal, c.norm);
+	if (c.ndotl < 0.0)
+		return (vec3(0, 0, 0));
 	if (light.brightness * c.ndotl < 0.004)
 		return (vec3(0, 0, 0));
 	if (!light_visible(sha, light, &c))

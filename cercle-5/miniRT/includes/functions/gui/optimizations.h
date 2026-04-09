@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 10:08:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 # define TAA_SEQ_LEN	8
 
 # define SCALE_MIN			1
-# define SCALE_MAX			4
-# define SCALE_FPS_LOW		22.0
-# define SCALE_FPS_HIGH		35.0
+# define SCALE_MAX			2
+# define SCALE_FPS_LOW		10.0
+# define SCALE_FPS_HIGH		20.0
 # define SCALE_COOLDOWN_MS	2000
 
 # define DEPTH_THRESH	0.15f

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 10:52:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ size_t	generate_contacts(t_scene *scene, t_physic_engine *engine,
 	engine->scene = scene;
 	if (!engine->pool.initialized)
 		init_phys_pool(engine);
+	ft_memset(bufs, 0, sizeof(bufs));
 	dispatch_jobs(scene, engine, bufs, max_c);
 	return (collect_results(engine, contacts, bufs, max_c));
 }

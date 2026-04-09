@@ -6,13 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:01:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor.h"
 
-void	set_insp_drag(t_gui *gui, t_islider sl, int mouse_x, int tx, int tw)
+void	set_insp_drag(t_gui *gui, t_islider sl, int mouse_x, t_vec2i track)
 {
 	gui->slider_state.dragging = true;
 	gui->slider_state.drag_start.x = mouse_x;
@@ -20,8 +20,8 @@ void	set_insp_drag(t_gui *gui, t_islider sl, int mouse_x, int tx, int tw)
 	gui->slider_state.value_ptr = sl.ptr;
 	gui->slider_state.dmin = sl.min;
 	gui->slider_state.dmax = sl.max;
-	gui->slider_state.track_x = tx;
-	gui->slider_state.track_w = tw;
+	gui->slider_state.track_x = track.x;
+	gui->slider_state.track_w = track.y;
 	gui->slider_state.on_change = sl.on_change;
 }
 

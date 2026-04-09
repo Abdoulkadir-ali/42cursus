@@ -6,14 +6,15 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:13:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 15:36:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
 /**
- * @brief Initializes inertia for a cylinder shape.
+ * @brief Initializes inertia tensor for a cylinder.
+ * Ix=Iz = 1/(3r²+h²/4) * 12, Iy = 2/r².
  */
 static void	init_cylinder_inertia(t_cylinder *cy)
 {
@@ -32,19 +33,21 @@ static void	init_cylinder_inertia(t_cylinder *cy)
 }
 
 /**
- * @brief Updates transformation of the cylinder.
+ * @brief Updates cylinder transform after integration.
  */
 static void	update_state(t_cylinder *cy, double dt, t_vec3 rot_d, t_vec3 delta)
 {
+	t_vec3	center;
+
 	cy->transform.rotation.pitch += rot_d.x;
 	cy->transform.rotation.yaw += rot_d.y;
 	cy->transform.rotation.roll += rot_d.z;
 	cy->transform.forward = vec3_norm(rot_by_ang(cy->transform.forward,
 				cy->phys.angular_velocity, dt));
-	cy->transform.pos = vec3_add(cy->transform.pos, delta);
-	cy->phys.center = vec3_add(cy->transform.pos,
-			vec3_scale(vec3_norm(cy->transform.forward),
-				cy->transform.scale.y * 0.5));
+	center = vec3_add(cy->phys.center, delta);
+	cy->transform.pos = vec3_sub(center,
+			vec3_scale(cy->transform.forward, cy->transform.scale.y * 0.5));
+	cy->phys.center = center;
 }
 
 /**
@@ -67,4 +70,5 @@ void	integrate_cylinder(t_cylinder *cy, double dt, t_physics_settings *s)
 	rot = vec3_scale(cy->phys.angular_velocity, dt * (180.0 / M_PI));
 	vel = vec3_scale(cy->phys.velocity, dt);
 	update_state(cy, dt, rot, vel);
+	cy->phys.pos = cy->transform.pos;
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:17:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 22:36:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ t_index	mesh_resource_add_material(t_mesh_resource *res, const char *name)
 	m->albedo_map.scale = 1.0;
 	m->specular = 0.1;
 	m->shininess = 16.0;
+	m->em_intensity = 1.0;
 	return (index_success(res->mat_count++));
 }
 

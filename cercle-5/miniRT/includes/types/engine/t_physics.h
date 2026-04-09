@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <semaphore.h>
 # include <stdbool.h>
 
-# define MAX_CONTACTS 1024
+# define MAX_CONTACTS 4096
 # define PHYS_NUM_TYPES 7
 
 struct s_scene;
@@ -50,6 +50,8 @@ typedef struct s_physics_body
 	t_vec3				angular_velocity;
 	t_vec3				accel;
 	t_vec3				inv_inertia;
+	t_vec3				prev_velocity;
+	double				squash;
 	double				mass;
 	double				inv_mass;
 	double				restitution;
@@ -72,6 +74,7 @@ typedef struct s_contact
 	t_vec3				contact_point;
 	t_vec3				ra;
 	t_vec3				rb;
+	double				lambda_pos;
 }						t_contact;
 
 typedef struct s_simplex
@@ -179,10 +182,13 @@ typedef struct s_epa_face
 	double	dist;
 }	t_epa_face;
 
-# define EPA_MAX_ITER   30
-# define EPA_MAX_FACES  64
-# define EPA_MAX_VERTS  32
+# define EPA_MAX_ITER   64
+# define EPA_MAX_FACES  128
+# define EPA_MAX_VERTS  64
 # define EPA_TOL        1e-5
+/* Collision margin added to zero-thickness shapes (rect/tri) so GJK/EPA
+   has a non-degenerate slab to work with. Value matches Bullet's default. */
+# define PHYS_SKIN      0.005
 
 typedef struct s_epa_poly
 {

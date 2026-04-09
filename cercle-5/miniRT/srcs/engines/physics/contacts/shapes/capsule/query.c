@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/04 20:15:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,16 @@
 static void	capsule_vs_capsules(t_contact_query *qu, t_col_pair *p, size_t idx)
 {
 	size_t		pi;
-	t_gjk_shape	sb;
-	t_col_pair	pair;
+	t_capsule	*self;
 	t_capsule	*other;
 
+	self = (t_capsule *)p->sa->data;
 	pi = idx + 1;
 	while (pi < qu->engine->scene->capsule_count && qu->count < qu->max)
 	{
 		other = &qu->engine->scene->capsules[pi];
-		if (aabb_overlap(capsule_aabb((t_capsule *)p->sa->data),
-				capsule_aabb(other)))
-		{
-			sb = init_gjk_shape(other, gjk_support_capsule, other->phys.pos);
-			pair = (t_col_pair){p->sa, &sb, p->ba, &other->phys,
-				p->ta, &other->transform};
-			if (gjk_make_contact(&pair, &qu->contacts[qu->count]))
-				qu->count++;
-		}
+		if (aabb_overlap(capsule_aabb(self), capsule_aabb(other)))
+			analytic_capsule_capsule(qu, self, other);
 		pi++;
 	}
 }
@@ -48,7 +41,7 @@ size_t	query_capsule(t_contact_query *qu, size_t idx)
 	cap = &qu->engine->scene->capsules[idx];
 	if (cap->phys.is_static)
 		return (qu->count);
-	sa = init_gjk_shape(cap, gjk_support_capsule, cap->phys.pos);
+	sa = init_gjk_shape(cap, gjk_support_capsule, cap->phys.center);
 	p = (t_col_pair){&sa, NULL, &cap->phys, NULL, &cap->transform, NULL};
 	pi = 0;
 	while (pi < qu->engine->scene->plane_count && qu->count < qu->max)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:33:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 00:55:40 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,12 @@ static void	set_n(const t_ray *ray, t_capsule *cap, t_hit *hit, t_cap_calc *c)
 	else
 		norm = vec3_norm(vec3_sub(hit->point, c->p[c->type.i - 1]));
 	if (vec3_dot(ray->direction, norm) > 0.0)
+	{
 		norm = vec3_scale(norm, -1.0);
+		hit->back_face = true;
+	}
+	else
+		hit->back_face = false;
 	hit->normal = norm;
 }
 
@@ -97,6 +102,37 @@ static void	get_best(t_cap_calc *c)
 	}
 }
 
+static void	set_capsule_uv(t_capsule *cap, t_hit *hit, t_cap_calc *c)
+{
+	t_vec3	up;
+	t_vec3	right;
+	t_vec3	fwd;
+	t_vec3	local;
+	double	along;
+
+	vec3_orthonormal_basis(cap->axis, &right, &fwd);
+	if (c->type.i == 0)
+	{
+		local = vec3_sub(hit->point, cap->transform.pos);
+		along = vec3_dot(local, cap->axis);
+		hit->u = (atan2(vec3_dot(local, fwd), vec3_dot(local, right))
+				+ M_PI) / (2.0 * M_PI);
+		hit->v = (along / cap->half_height + 1.0) * 0.5;
+		hit->tangent = vec3_norm(vec3_cross(cap->axis, hit->normal));
+		hit->bitangent = cap->axis;
+	}
+	else
+	{
+		up = cap->axis;
+		local = vec3_norm(vec3_sub(hit->point, c->p[c->type.i - 1]));
+		hit->u = (atan2(vec3_dot(local, fwd), vec3_dot(local, right))
+				+ M_PI) / (2.0 * M_PI);
+		hit->v = (vec3_dot(local, up) + 1.0) * 0.5;
+		hit->tangent = vec3_norm(vec3_cross(up, hit->normal));
+		hit->bitangent = vec3_norm(vec3_cross(hit->normal, hit->tangent));
+	}
+}
+
 bool	intersect_capsule(const t_ray *ray, t_capsule *cap, t_hit *hit)
 {
 	t_cap_calc	c;
@@ -114,7 +150,6 @@ bool	intersect_capsule(const t_ray *ray, t_capsule *cap, t_hit *hit)
 	hit->t = c.best;
 	hit->point = vec3_add(ray->origin, vec3_scale(ray->direction, c.best));
 	set_n(ray, cap, hit, &c);
-	hit->u = 0.5;
-	hit->v = 0.5;
+	set_capsule_uv(cap, hit, &c);
 	return (true);
 }

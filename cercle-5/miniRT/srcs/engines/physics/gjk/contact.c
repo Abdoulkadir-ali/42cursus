@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:31:31 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:19:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ bool	gjk_make_contact(t_col_pair *p, t_contact *c)
 	c->ta = p->ta;
 	c->tb = p->tb;
 	c->contact_point = cpt;
-	c->ra = vec3_sub(cpt, p->ba->pos);
+	c->ra = vec3_sub(cpt, p->ba->center);
 	c->rb = vec3(0, 0, 0);
 	if (p->bb)
-		c->rb = vec3_sub(cpt, p->bb->pos);
+		c->rb = vec3_sub(cpt, p->bb->center);
 	fill_props(p, c);
 	return (true);
 }
@@ -81,7 +81,7 @@ bool	gjk_vs_plane(t_col_pair *p, t_plane *pl, t_contact *c)
 	c->ta = p->ta;
 	c->tb = &pl->transform;
 	c->contact_point = supp;
-	c->ra = vec3_sub(supp, p->ba->pos);
+	c->ra = vec3_sub(supp, p->ba->center);
 	c->rb = vec3(0, 0, 0);
 	c->restitution = fmin(p->ba->elasticity, 0.5);
 	c->friction = sqrt(p->ba->friction * 0.5);

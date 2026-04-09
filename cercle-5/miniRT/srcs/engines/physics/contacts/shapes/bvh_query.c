@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 22:02:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 11:47:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@ static void	test_one_ref(t_bvh_phys_ctx *c, t_bvh_ref ref)
 	t_ref_data	d;
 	t_col_pair	p;
 
-	if (ref.type == c->skip_type || ref.type == TYPE_SPHERE
-		|| ref.type == TYPE_MESH || ref.type == TYPE_ANIM)
+	if (ref.type == TYPE_MESH || ref.type == TYPE_ANIM)
+		return ;
+	if (ref.type <= c->skip_type)
 		return ;
 	if (!bvh_resolve_ref(c->qu->engine->scene, ref, &d))
 		return ;
@@ -76,15 +77,18 @@ void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa)
 	st[top++] = 0;
 	while (top > 0 && c->qu->count < c->qu->max)
 	{
-		nd = &v->nodes[st[--top]];
+		size_t	nd_idx;
+
+		nd_idx = st[--top];
+		nd = &v->nodes[nd_idx];
 		if (nd->count > 0)
 			process_leaf(c, v, nd);
 		else if (top < 126)
 		{
-			if (aabb_overlap(v->nodes[nd->left_or_first + 1].bbox, qa))
-				st[top++] = nd->left_or_first + 1;
 			if (aabb_overlap(v->nodes[nd->left_or_first].bbox, qa))
 				st[top++] = nd->left_or_first;
+			if (aabb_overlap(v->nodes[nd_idx + 1].bbox, qa))
+				st[top++] = nd_idx + 1;
 		}
 	}
 	pthread_rwlock_unlock(&c->qu->engine->scene->bvh_lock);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ static void	update_vel(t_contact *ct, double ia, double ib, double j)
 	{
 		ct->a->velocity = vec3_sub(ct->a->velocity, vec3_scale(ct->normal,
 					j * ia));
-		apply_phys_torque(ct->a, ct->ra, imp, -ia);
+		apply_phys_torque(ct->a, ct->ra, imp, -1.0);
 	}
 	if (ct->b && ib > 0.0)
 	{
 		ct->b->velocity = vec3_add(ct->b->velocity, vec3_scale(ct->normal,
 					j * ib));
-		apply_phys_torque(ct->b, ct->rb, imp, ib);
+		apply_phys_torque(ct->b, ct->rb, imp, 1.0);
 	}
 }
 
@@ -58,5 +58,5 @@ void	solve_one_velocity(t_contact *ct, t_physic_engine *en, double ia,
 		e = ct->restitution;
 	update_vel(ct, ia, ib, -(1.0 + e) * vn / denom);
 	apply_friction(ct, ia, ib, vec3_sub(point_vel(ct->b, ct->rb),
-			point_vel(ct->a, ct->ra)));
+			point_vel(ct->a, ct->ra)), -(1.0 + e) * vn / denom);
 }

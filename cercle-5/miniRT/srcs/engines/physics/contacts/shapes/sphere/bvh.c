@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 22:02:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 11:47:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,17 @@ static const t_bvh	*get_locked_bvh(t_scene *s)
 	return (v);
 }
 
-static void	push_sphere_children(t_trav *t, const t_bvh_node *nd)
+static void	push_sphere_children(t_trav *t, const t_bvh_node *nd, size_t nd_idx)
 {
 	double	r;
 
 	r = sqrt(t->sp->radius_sq);
-	if (aabb_v_sphere(t->v->nodes[nd->left_or_first + 1].bbox,
-			t->sp->phys.pos, r))
-		t->st[(*t->top)++] = nd->left_or_first + 1;
 	if (aabb_v_sphere(t->v->nodes[nd->left_or_first].bbox,
 			t->sp->phys.pos, r))
 		t->st[(*t->top)++] = nd->left_or_first;
+	if (aabb_v_sphere(t->v->nodes[nd_idx + 1].bbox,
+			t->sp->phys.pos, r))
+		t->st[(*t->top)++] = nd_idx + 1;
 }
 
 void	traverse_sphere_bvh(t_contact_query *q, size_t idx, t_sphere *sp)
@@ -78,11 +78,14 @@ void	traverse_sphere_bvh(t_contact_query *q, size_t idx, t_sphere *sp)
 	tr.top = &top;
 	while (top > 0 && q->count < q->max)
 	{
-		nd = &tr.v->nodes[st[--top]];
+		size_t	nd_idx;
+
+		nd_idx = st[--top];
+		nd = &tr.v->nodes[nd_idx];
 		if (nd->count > 0)
 			sphere_leaf(q, idx, sp, nd);
 		else if (top < 126)
-			push_sphere_children(&tr, nd);
+			push_sphere_children(&tr, nd, nd_idx);
 	}
 	pthread_rwlock_unlock(&q->engine->scene->bvh_lock);
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 12:51:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ static void	glb_load_logic(t_gui *gui, size_t mesh_start, const char *path)
 		i = mesh_start;
 		while (i < gui->scene->mesh_count)
 		{
-			gui->scene->meshes[i].group_id = init_index(gui->scene->group_count, false);
+			gui->scene->meshes[i].group_id = init_index(
+					gui->scene->group_count, false);
 			i++;
 		}
 		gui->scene->group_count++;

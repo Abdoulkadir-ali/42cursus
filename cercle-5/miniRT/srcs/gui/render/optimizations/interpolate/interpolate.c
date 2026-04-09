@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ static void	interp_pixel(t_gui *gui, t_vec2i p)
 	ndc = repro_get_ndc(p, o->prev_render_size,
 			vec2(o->prev_half_w, o->prev_half_h));
 	wp = vec3_add(o->prev_cam.pos, vec3_scale(repro_get_dir(o->prev_cam, ndc),
-				(double)o->prev_depth[p.y
-				* o->prev_render_size.x + p.x]));
+				(double)o->prev_depth[p.y * o->prev_render_size.x + p.x]));
 	r.cam = o->interp_cam;
 	r.half = o->interp_half;
 	r.size = gui->win.disp_size;
@@ -39,16 +38,15 @@ void	interp_band(t_gui *gui, size_t y_start, size_t y_end)
 {
 	t_optimizations	*o;
 	t_vec2i			p;
-
-	int			yend;
-	int			pw;
+	int				yend;
+	int				pw;
 
 	o = &gui->opts;
 	o->interp_cam = lerp_cam(o, (double)o->interp_alpha);
 	o->interp_half.x = lerp_half(o->prev_half_w, o->cur_half_w,
-				o->interp_alpha);
+			o->interp_alpha);
 	o->interp_half.y = lerp_half(o->prev_half_h, o->cur_half_h,
-				o->interp_alpha);
+			o->interp_alpha);
 	yend = y_end;
 	pw = o->prev_render_size.x;
 	p.y = y_start;

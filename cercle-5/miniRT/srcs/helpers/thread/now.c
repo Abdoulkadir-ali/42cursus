@@ -12,9 +12,9 @@
 
 #include "time.h"
 
-long long		now_ms(void)
+long long	now_ms(void)
 {
-	struct timeval tv;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000LL + tv.tv_usec / 1000LL);

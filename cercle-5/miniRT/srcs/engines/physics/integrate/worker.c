@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:08:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 #include "thread.h"
+#include "raytracing.h"
 
 static void	*universal_worker(void *p)
 {
@@ -30,6 +31,12 @@ static void	*universal_worker(void *p)
 			integrate_tri(&t->sc->tris[i], t->dt, t->s);
 		else if (t->type == INT_CYL && i < t->sc->cylinder_count)
 			integrate_cylinder(&t->sc->cylinders[i], t->dt, t->s);
+		else if (t->type == INT_PYR && i < t->sc->pyramid_count)
+			integrate_pyramid(&t->sc->pyramids[i], t->dt, t->s);
+		else if (t->type == INT_RECT && i < t->sc->rect_count)
+			integrate_rect(&t->sc->rects[i], t->dt, t->s);
+		else if (t->type == INT_CAP && i < t->sc->capsule_count)
+			integrate_capsule(&t->sc->capsules[i], t->dt, t->s);
 		else
 			break ;
 	}
@@ -42,7 +49,6 @@ static void	*universal_worker(void *p)
 void	integrate_bodies_worker(t_scene *se, t_physic_engine *en, double dt)
 {
 	t_int_task	t;
-	size_t		i;
 
 	if (!se || !en)
 		return ;
@@ -57,12 +63,34 @@ void	integrate_bodies_worker(t_scene *se, t_physic_engine *en, double dt)
 	t.next = 0;
 	t.type = INT_CYL;
 	parallel_run(se->pool, se->cylinder_count, universal_worker, &t);
-	i = 0;
-	while (i < se->pyramid_count)
-		integrate_pyramid(&se->pyramids[i++], dt, t.s);
-	i = 0;
-	while (i < se->rect_count)
-		integrate_rect(&se->rects[i++], dt, t.s);
+	t.next = 0;
+	t.type = INT_PYR;
+	parallel_run(se->pool, se->pyramid_count, universal_worker, &t);
+	t.next = 0;
+	t.type = INT_RECT;
+	parallel_run(se->pool, se->rect_count, universal_worker, &t);
+	t.next = 0;
+	t.type = INT_CAP;
+	parallel_run(se->pool, se->capsule_count, universal_worker, &t);
+}
+
+/**
+ * @brief Rebuilds the scene BVH in-place so contact detection
+ *        uses current post-integration object positions.
+ */
+static void	bvh_sync(t_scene *scene)
+{
+	t_bvh	*new_bvh;
+	t_bvh	*old;
+
+	new_bvh = bvh_create(scene);
+	if (!new_bvh)
+		return ;
+	pthread_rwlock_wrlock(&scene->bvh_lock);
+	old = scene->bvh;
+	scene->bvh = new_bvh;
+	pthread_rwlock_unlock(&scene->bvh_lock);
+	bvh_destroy(old);
 }
 
 /**
@@ -78,15 +106,15 @@ void	update_physics(t_scene *scene, t_physic_engine *engine, double dt)
 		return ;
 	dt *= engine->settings.time_scale;
 	integrate_bodies_worker(scene, engine, dt);
+	bvh_sync(scene);
+	count = generate_contacts(scene, engine, contacts, MAX_CONTACTS);
+	if (count == 0)
+		return ;
 	i = 0;
 	while (i < engine->settings.solver_iterations)
 	{
-		count = generate_contacts(scene, engine, contacts, MAX_CONTACTS);
-		if (count > 0)
-		{
-			solve_velocities(contacts, engine, count);
-			solve_positions(contacts, engine, count);
-		}
+		solve_velocities(contacts, engine, count);
+		solve_positions(contacts, engine, count);
 		i++;
 	}
 }

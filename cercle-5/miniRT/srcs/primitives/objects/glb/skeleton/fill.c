@@ -12,12 +12,14 @@
 
 #include "glb.h"
 
-static void	build_parent_map(t_json_value *nodes, t_index *parent_map, size_t nc)
+static void	build_parent_map(t_json_value *nodes, t_index *parent_map,
+				size_t nc)
 {
 	t_json_value	*node;
 	t_json_value	*children;
 	size_t			i;
 	size_t			k;
+	t_index			rs;
 
 	i = 0;
 	while (i < nc && i < PARSER_BUF_SIZE)
@@ -29,8 +31,6 @@ static void	build_parent_map(t_json_value *nodes, t_index *parent_map, size_t nc
 			k = 0;
 			while (k < children->u.array.count)
 			{
-				t_index	rs;
-
 				rs = json_as_t_index(json_at(children, k));
 				if (!rs.error && rs.i < PARSER_BUF_SIZE)
 					parent_map[rs.i] = init_index(i, false);
@@ -94,6 +94,7 @@ static void	add_non_joint_bones(t_mesh *mesh, t_json_value *nodes,
 static void	prepare_fill_state(t_vec2s state, t_json_value *joints)
 {
 	size_t	i;
+	t_index	rs;
 
 	i = 0;
 	while (i < PARSER_BUF_SIZE)
@@ -105,8 +106,6 @@ static void	prepare_fill_state(t_vec2s state, t_json_value *joints)
 	i = 0;
 	while (i < joints->u.array.count)
 	{
-		t_index	rs;
-
 		rs = json_as_t_index(json_at(joints, i));
 		if (!rs.error && rs.i < PARSER_BUF_SIZE)
 			((t_index *)state.x)[rs.i] = init_index(1, false);

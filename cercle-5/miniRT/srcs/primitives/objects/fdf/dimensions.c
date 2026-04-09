@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 18:16:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,24 @@ static int	count_columns(t_parser *p)
 	return (count);
 }
 
+static bool	validate_cols(t_vec2s *dims, int cols, int line, int fd)
+{
+	if (cols > 0)
+	{
+		if (dims->x == 0)
+			dims->x = (size_t)cols;
+		else if (dims->x != (size_t)cols)
+		{
+			ft_print_debug("FDF: ERR at line %d: mismatch (exp %zu, got %d)\n",
+				line, dims->x, cols);
+			close(fd);
+			return (false);
+		}
+		dims->y++;
+	}
+	return (true);
+}
+
 bool	fdf_get_dimensions(const char *path, t_vec2s *dims)
 {
 	int			fd;
@@ -52,27 +70,14 @@ bool	fdf_get_dimensions(const char *path, t_vec2s *dims)
 	if (fd < 0)
 		return (false);
 	parser_init(&p, fd);
-	dims->y = 0;
-	dims->x = 0;
+	*dims = (t_vec2s){0, 0};
 	line = 0;
 	while (parser_peek(&p) != 0)
 	{
 		cols = count_columns(&p);
 		line++;
-		ft_print_debug("FDF: Line %d has %d columns\n", line, cols);
-		if (cols > 0)
-		{
-			if (dims->x == 0)
-				dims->x = (size_t)cols;
-			else if (dims->x != (size_t)cols)
-			{
-				ft_print_debug("FDF: ERROR at line %d: mismatch (expected %zu, got %d)\n",
-					line, dims->x, cols);
-				close(fd);
-				return (false);
-			}
-			dims->y++;
-		}
+		if (!validate_cols(dims, cols, line, fd))
+			return (false);
 	}
 	close(fd);
 	ft_print_debug("FDF: Final dims: %zu x %zu\n", dims->x, dims->y);

@@ -28,7 +28,7 @@ bool	insp_row_click(t_gui *gui, t_vec2i mouse, t_vec2i pos, t_islider sl)
 		&& mouse.y >= pos.y
 		&& mouse.y < pos.y + ui_sy(INSP_ROW_STEP, d))
 	{
-		set_insp_drag(gui, sl, mouse.x, x_off, w);
+		set_insp_drag(gui, sl, mouse.x, vec2i(x_off, w));
 		return (true);
 	}
 	if (mouse.x >= ix && mouse.x < ix + ui_sx(INSP_IN_W, d)

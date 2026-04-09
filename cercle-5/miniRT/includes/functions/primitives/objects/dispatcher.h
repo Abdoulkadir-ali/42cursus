@@ -22,6 +22,11 @@ bool						parse_cylinder_base(t_parser *p, t_cylinder *out);
 
 /* RT Parser Dispatch (srcs/primitives/objects/rt_scene/dispatch.c) */
 t_parse_obj				dispatch_scan(t_parser *p, char *id);
+t_parse_obj				init_none(void);
+t_parse_obj				dispatch_basic(t_parser *p, char *id);
+t_parse_obj				dispatch_shapes(t_parser *p, char *id);
+t_parse_obj				dispatch_meshes(t_parser *p, char *id);
+t_parse_obj				dispatch_modifiers(t_parser *p, char *id);
 t_parse_obj				parse_ambient(t_parser *p);
 t_parse_obj				parse_camera(t_parser *p);
 t_parse_obj				parse_light(t_parser *p);

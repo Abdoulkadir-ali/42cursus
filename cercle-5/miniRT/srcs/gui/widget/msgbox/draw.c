@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:33:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,13 @@ static void	draw_msgbox_bg(t_gui *gui, t_widget *w)
 	overlay.size = gui->win.disp_size;
 	overlay.bg = 0x000000;
 	overlay.brd = 0x000000;
+	overlay.lbl = NULL;
 	draw_panel(gui, overlay);
 	box.pos = w->pos;
 	box.size = w->size;
-	box.bg = 0x12121E;
+	box.bg = COL_MSGBOX_BG;
 	box.brd = COL_ACCENT;
+	box.lbl = NULL;
 	draw_panel(gui, box);
 	if (w->label)
 		gui_draw_string(gui, w->label,
@@ -43,8 +45,9 @@ static void	draw_msgbox_btn(t_gui *gui, t_widget *w, t_vec3i p)
 	bx = w->pos.x + 8 + p.z * (p.x + 4);
 	btn.pos = vec2i(bx, p.y);
 	btn.size = vec2s(p.x - 4, 22);
-	btn.bg = 0x2A2A40;
+	btn.bg = COL_MSGBOX_BTN;
 	btn.brd = COL_BORDER;
+	btn.lbl = NULL;
 	draw_panel(gui, btn);
 	if (w->btn_labels[p.z])
 		gui_draw_string(gui, w->btn_labels[p.z],
@@ -55,10 +58,9 @@ static void	draw_msgbox_btn(t_gui *gui, t_widget *w, t_vec3i p)
 void	widget_draw_msgbox(t_gui *gui, t_widget *w)
 {
 	t_vec3i	p;
-
-	draw_msgbox_bg(gui, w);
 	int		bc;
 
+	draw_msgbox_bg(gui, w);
 	p.x = w->size.x - 16;
 	if (w->btn_count > 0)
 		p.x /= w->btn_count;

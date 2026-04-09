@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:13:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,22 +31,18 @@ bool	hit_body(t_widget *w, t_vec2i m)
 bool	handle_msgbox_click(t_gui *gui, t_widget *w, t_vec2i m)
 {
 	size_t	btn_w;
-	t_vec2i	btn_pos;
+	t_vec2i	bp;
 	size_t	i;
-	size_t	div;
 
 	if (!w->visible)
 		return (false);
-	div = w->btn_count;
-	if (div == 0)
-		div = 1;
-	btn_w = (w->size.x - 16) / div;
-	btn_pos.y = w->pos.y + w->size.y - 28;
+	btn_w = (w->size.x - 16) / fmax(w->btn_count, 1);
+	bp.y = w->pos.y + w->size.y - 28;
 	i = 0;
 	while (i < w->btn_count)
 	{
-		btn_pos.x = w->pos.x + 8 + i * (btn_w + 4);
-		if (phit(m, btn_pos, vec2s(btn_w - 4, 22)))
+		bp.x = w->pos.x + 8 + i * (btn_w + 4);
+		if (phit(m, bp, vec2s(btn_w - 4, 22)))
 		{
 			if (w->btn_callbacks[i])
 				w->btn_callbacks[i](w, gui);

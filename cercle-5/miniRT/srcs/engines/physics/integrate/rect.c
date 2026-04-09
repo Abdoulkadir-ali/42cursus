@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:19:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/07 01:45:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,5 @@ void	integrate_rect(t_rect *rc, double dt, t_physics_settings *s)
 			dt * (180.0 / M_PI)), delta);
 	rc->transform.pos = vec3_add(rc->transform.pos, delta);
 	rc->phys.center = rc->transform.pos;
+	rc->phys.pos = rc->transform.pos;
 }
