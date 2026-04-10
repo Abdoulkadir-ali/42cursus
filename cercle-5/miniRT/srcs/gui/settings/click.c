@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 02:19:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ static bool	click_content(t_gui *gui, t_vec2i mouse, t_vec2i o)
 		return (click_settings_physics_tab(gui, mouse, co));
 	if (gui->settings.tab == STAB_RAYTRACER)
 		return (click_settings_raytracer_tab(gui, mouse, co));
+	if (gui->settings.tab == STAB_VISUAL)
+		return (click_settings_visual_tab(gui, mouse, co));
 	return (false);
 }
 

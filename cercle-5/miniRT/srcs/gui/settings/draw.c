@@ -6,14 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 02:19:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "settings.h"
 
 static char	*g_tab_labels[SETTINGS_TAB_COUNT] = {
-	"Raytracer", "Physics", "Window"
+	"Raytracer", "Physics", "Window", "Visual"
 };
 
 static void	draw_settings_btn(t_gui *gui)
@@ -72,6 +72,8 @@ static void	dispatch_draw(t_gui *gui, t_vec2i o)
 		draw_settings_physics_tab(gui, co);
 	else if (gui->settings.tab == STAB_RAYTRACER)
 		draw_settings_raytracer_tab(gui, co);
+	else if (gui->settings.tab == STAB_VISUAL)
+		draw_settings_visual_tab(gui, co);
 }
 
 void	draw_settings(t_gui *gui)

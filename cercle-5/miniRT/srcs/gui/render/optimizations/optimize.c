@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 00:44:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 02:10:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ void	optimize_frames(t_gui *gui, double delta)
 	(void)delta;
 	if (gui->opts.reprojection)
 		reproject_frame(gui);
+	if (gui->opts.taa || gui->rt_engine.settings.gi_enabled)
+		taa_apply(gui);
 	if (gui->rt_engine.settings.bloom_enabled)
 		bloom_frame(gui);
 }

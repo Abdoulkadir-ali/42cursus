@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 01:24:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 02:18:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # define SETTINGS_H			580
 # define SETTINGS_BTN_W		88
 # define SETTINGS_BTN_H		22
-# define SETTINGS_TAB_COUNT	3
+# define SETTINGS_TAB_COUNT	4
 # define SETTINGS_HDR_H		36
 # define SETTINGS_TABS_H	28
 # define SETTINGS_CONTENT_Y	(SETTINGS_HDR_H + SETTINGS_TABS_H)
@@ -66,5 +66,9 @@ void	apply_preset(struct s_gui *gui, t_rt_preset p);
 void	draw_preset_row(struct s_gui *gui, t_vec2i o, int y);
 bool	click_preset(struct s_gui *gui, t_vec2i mouse, t_vec2i o, int y);
 void	on_color_change(struct s_gui *gui);
+
+/* srcs/gui/settings/tabs/visual.c */
+void	draw_settings_visual_tab(struct s_gui *gui, t_vec2i o);
+bool	click_settings_visual_tab(struct s_gui *gui, t_vec2i mouse, t_vec2i o);
 
 #endif
