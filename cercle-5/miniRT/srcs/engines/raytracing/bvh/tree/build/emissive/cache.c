@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:46:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:49:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 01:45:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	build_emissive_cache(t_scene *sc)
 	size_t			i;
 
 	cap = sc->sphere_count + sc->tri_count + sc->rect_count + sc->pyramid_count;
-	cap += sc->box_count + sc->capsule_count + sc->mesh_count;
+	cap += sc->box_count + sc->capsule_count + sc->mesh_count + sc->plane_count;
 	cap += sc->cylinder_count + sc->cone_count;
 	if (cap == 0)
 		return ;
@@ -113,9 +113,19 @@ void	build_emissive_cache(t_scene *sc)
 	cache_secondary_em(sc, cache, &n);
 	cache_volume_em(sc, cache, &n);
 	i = 0;
+	while (i < sc->plane_count)
+	{
+		if (is_emissive(sc, sc->planes[i].mat_id))
+			cache[n++] = init_emissive_ref(TYPE_PLANE, i);
+		i++;
+	}
+	i = 0;
 	while (i < sc->mesh_count)
+	{
 		if (is_emissive(sc, sc->meshes[i].mat_id))
 			cache[n++] = init_emissive_ref(TYPE_MESH, i);
+		i++;
+	}
 	sc->emissive_cache = cache;
 	sc->emissive_n = n;
 }

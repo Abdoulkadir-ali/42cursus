@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 14:53:59 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 01:03:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	raytrace_step(t_gui *gui, double delta)
 	save_frame(gui);
 	if (gui->opts.temporal_blend)
 		blend_temporal(gui, delta);
+	smooth_render(gui);
 	upscale_image(gui);
 	optimize_frames(gui, delta);
 	overlay_step(gui);

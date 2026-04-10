@@ -20,18 +20,26 @@
 ** apply_gamma:      gamma = 50/gamma_val (neutral=50 → exponent 1.0).
 **                   Uses fast sqrt chains to avoid powf when possible.
 */
-static int	pack_color(t_vec3 color, const t_raytracer_settings *opts)
+static int	pack_color(t_vec3 color, const t_raytracer_settings *opts,
+	t_vec2i pos, size_t frame)
 {
 	t_vec3f			ch;
 	unsigned int	rgb[3];
+	float			dither;
+	uint32_t		h;
 
 	ch.x = (float)color.x;
 	ch.y = (float)color.y;
 	ch.z = (float)color.z;
 	apply_bcg(&ch, opts);
-	rgb[0] = ((unsigned int)(uint8_t)ch.x) << 16;
-	rgb[1] = ((unsigned int)(uint8_t)ch.y) << 8;
-	rgb[2] = (unsigned int)(uint8_t)ch.z;
+	/* Spatial Dithering: break banding into temporal noise */
+	h = (uint32_t)pos.x * 374761393U + (uint32_t)pos.y * 668265263U;
+	h ^= (uint32_t)frame * 1103515245U;
+	h = (h ^ (h >> 13)) * 12741261U;
+	dither = ((float)(h % 256) / 255.0f - 0.5f) * 1.5f;
+	rgb[0] = (unsigned int)(uint8_t)clamp_d(ch.x + dither, 0, 255) << 16;
+	rgb[1] = (unsigned int)(uint8_t)clamp_d(ch.y + dither, 0, 255) << 8;
+	rgb[2] = (unsigned int)(uint8_t)clamp_d(ch.z + dither, 0, 255);
 	return ((rgb[0] | rgb[1] | rgb[2]));
 }
 
@@ -48,7 +56,8 @@ static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 	s = &render->gui->rt_engine.settings;
 	jx = 0.0;
 	jy = 0.0;
-	if (render->gui->opts.taa)
+	/* Always jitter if TAA or any Rescaling is active */
+	if (render->gui->opts.taa || render->gui->render.scale > 1)
 		taa_get_jitter(render->gui->opts.taa_frame, &jx, &jy);
 	px = (2.0 * (x + 0.5 + jx) / render->gui->win.size.x - 1.0)
 		* render->half_width;
@@ -95,7 +104,8 @@ void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 	out_t = 0.0f;
 	color = trace_ray_ex(render->gui->scene->bvh, &ray,
 			render->gui->scene, &out_t);
-	color_packed = pack_color(color, &render->gui->rt_engine.settings);
+	color_packed = pack_color(color, &render->gui->rt_engine.settings,
+			pos, render->gui->opts.taa_frame);
 	((uint32_t *)pixel_addr)[0] = (uint32_t)color_packed;
 	if (render->gui->opts.depth_buf)
 	{

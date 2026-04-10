@@ -19,14 +19,29 @@ static void	widen_indices(size_t *dst, unsigned char *src, size_t count,
 
 	i = 0;
 	if (comp_type == GLB_TYPE_UNSIGNED_SHORT)
+	{
 		while (i < count)
+		{
 			dst[i] = ((unsigned short *)src)[i];
+			i++;
+		}
+	}
 	else if (comp_type == GLB_TYPE_UNSIGNED_INT)
+	{
 		while (i < count)
+		{
 			dst[i] = ((unsigned int *)src)[i];
+			i++;
+		}
+	}
 	else
-		while (++i < count)
+	{
+		while (i < count)
+		{
 			dst[i] = src[i];
+			i++;
+		}
+	}
 }
 
 static void	load_indices(t_json_value *json, char *bin, t_mesh *m, int acc_idx)

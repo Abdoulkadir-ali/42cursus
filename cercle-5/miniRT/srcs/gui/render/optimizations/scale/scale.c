@@ -32,4 +32,5 @@ void	adaptive_scale(t_gui *gui)
 	gui->render.scale = new_scale;
 	gui->render.scale_last_change = now;
 	gui->render.dirty = true;
+	gui->opts.prev_valid = false;
 }

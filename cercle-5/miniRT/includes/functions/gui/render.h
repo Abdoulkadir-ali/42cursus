@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 00:56:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ void			process_pixel(t_render *render, t_vec2i pos, char *pixel_addr);
 void			upscale_image(t_gui *gui);
 void			upscale_band(t_gui *gui, size_t y_start, size_t y_end);
 void			upscale_pixel(t_gui *gui, t_vec2i dst, t_vec2 src);
+void			smooth_render_band(t_gui *gui, size_t y_start, size_t y_end);
+void			smooth_render(t_gui *gui);
 void			fullres_toggle(t_gui *gui);
 void			poll_map_job(t_gui *gui);
 void			clear_selection(t_gui *gui);

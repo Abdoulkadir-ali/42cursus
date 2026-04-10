@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:16:43 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 00:56:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,9 @@ static void	gui_worker_task(t_gui *gui, t_render_task *task,
 	}
 	else if (task->type == TASK_TAA)
 		taa_band(gui, (my * gui->win.size.y) / n,
+			((my + 1) * gui->win.size.y) / n);
+	else if (task->type == TASK_BLUR)
+		smooth_render_band(gui, (my * gui->win.size.y) / n,
 			((my + 1) * gui->win.size.y) / n);
 	else
 		upscale_band(gui, (my * gui->win.disp_size.y) / n,

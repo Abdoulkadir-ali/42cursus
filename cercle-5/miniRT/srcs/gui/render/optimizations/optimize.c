@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 00:24:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 00:44:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	init_rt_defaults(t_gui *gui)
 	gui->rt_engine.settings.ao_strength = 0.65;
 	gui->rt_engine.settings.fresnel_enabled = true;
 	gui->rt_engine.settings.gi_enabled = true;
-	gui->rt_engine.settings.gi_strength = 1.0;
+	gui->rt_engine.settings.gi_strength = 0.4;
 	gui->rt_engine.settings.aces_enabled = true;
 	gui->rt_engine.settings.beer_enabled = true;
 	gui->rt_engine.settings.beer_density = 0.02;

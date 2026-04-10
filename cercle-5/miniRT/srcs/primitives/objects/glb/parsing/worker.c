@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 03:00:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 01:52:11 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ static void	glb_mesh_worker_mat(t_glb_mesh_task *task, size_t i)
 	t_index			midx;
 
 	v[0] = json_get(task->json, "meshes");
-	v[1] = json_get(json_at(json_get(json_at(v[0], i), "primitives"), 0),
-			"material");
+	v[1] = json_at(json_get(json_at(v[0], i), "primitives"), 0);
 	midx = json_get_size_t(v[1], "material");
 	task->meshes[i].mat_id = task->fallback_mat_id;
 	if (!midx.error && task->mat_ids)

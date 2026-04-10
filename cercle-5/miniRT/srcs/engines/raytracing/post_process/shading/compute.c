@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 00:24:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 02:01:08 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ static double	compute_ao(const t_shading *sha)
 	double		radius;
 
 	if (!sha->opts || !sha->opts->ao_enabled)
+		return (1.0);
+	if (sha->mat.transparency > 0.5)
 		return (1.0);
 	samples = (sha->opts->ao_samples > 0) ? sha->opts->ao_samples : AO_SAMPLES;
 	radius = (sha->opts->ao_radius > 0.0) ? sha->opts->ao_radius : AO_RADIUS;
@@ -160,6 +162,8 @@ static t_vec3	compute_indirect(t_shading *sha, const t_ray *ray)
 
 	if (ray->depth >= MAX_DEPTH - 1)
 		return (vec3(0, 0, 0));
+	if (sha->mat.transparency > 0.5)
+		return (vec3(0, 0, 0));
 	seed = (uint32_t)(sha->frame_idx * 1664525) + 1013904223;
 	seed ^= (uint32_t)(sha->hit->point.x * 123.0) ^ (uint32_t)(sha->hit->point.z * 456.0);
 	dir = rt_random_cosine_weighted(sha->hit->normal, &seed);
@@ -169,6 +173,12 @@ static t_vec3	compute_indirect(t_shading *sha, const t_ray *ray)
 	gi_ray.weight = ray->weight * 0.4;
 	gi_ray.frame_idx = sha->frame_idx;
 	indirect = trace_ray(sha->bvh, &gi_ray, sha->scene);
+	if (vec3_mag_sq(indirect) < 1e-4 && sha->scene->ambient.brightness > 0.0)
+		indirect = vec3_scale(sha->scene->ambient.rgb,
+				sha->scene->ambient.brightness * 0.5);
+	indirect.x = fmin(indirect.x, 255.0);
+	indirect.y = fmin(indirect.y, 255.0);
+	indirect.z = fmin(indirect.z, 255.0);
 	return (pixel_color(sha->albedo, indirect, 0.5));
 }
 
@@ -184,7 +194,7 @@ static void	recursive_color(t_shading *sha, const t_ray *ray, t_vec3 *total)
 	(void)cos_theta;
 	(void)f0;
 	fresnel = 0.0;
-	if (!sha->opts || sha->opts->gi_enabled)
+	if ((!sha->opts || sha->opts->gi_enabled) && sha->mat.transparency < 0.5)
 	{
 		t_vec3	gi = compute_indirect(sha, ray);
 		if (sha->opts && sha->opts->gi_strength > 0.0)

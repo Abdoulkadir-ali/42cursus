@@ -84,6 +84,7 @@ size_t	collect_objects_worker(t_scene *scene, t_build_item *items)
 		scene->cone_count, scene->capsule_count, scene->tri_count);
 	ft_print_debug("box=%zu mesh=%zu anim=%zu\n",
 		scene->box_count, scene->mesh_count, scene->anim_count);
+	add_items_worker(items, &k, TYPE_PLANE, scene);
 	add_items_worker(items, &k, TYPE_SPHERE, scene);
 	add_items_worker(items, &k, TYPE_CYLINDER, scene);
 	add_items_worker(items, &k, TYPE_CONE, scene);

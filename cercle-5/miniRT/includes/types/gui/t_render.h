@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 22:25:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 00:56:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ typedef enum e_pool_task
 	TASK_APPLY,
 	TASK_INTERP,
 	TASK_TAA,
-	TASK_UPSCALE
+	TASK_UPSCALE,
+	TASK_BLUR
 }	t_pool_task;
 
 typedef struct s_render_task

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 10:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 01:09:48 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static bool	build_vertices(t_mesh *m)
 			m->vertices[i].normal = m->base_normals[i];
 		if (m->uvs)
 			m->vertices[i].uv = m->uvs[i];
+		i++;
 	}
 	return (true);
 }
@@ -68,7 +69,10 @@ static void	sync_flat_normals(t_mesh *m)
 		{
 			i = 0;
 			while (i < m->vertex_count)
+			{
 				m->normals[i] = m->vertices[i].normal;
+				i++;
+			}
 		}
 	}
 }
