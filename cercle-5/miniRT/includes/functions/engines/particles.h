@@ -55,6 +55,9 @@ void			particle_systems_step(t_scene *scene, double dt,
 t_vec3			blackbody_color(double t);
 void			init_proxy_spheres(t_scene *scene);
 void			update_proxy_spheres(t_scene *scene);
+/* ── Utilities ──────────────────────────────────────────────────────────── */
+double			rnd01(unsigned int *seed);
+double			rnd_range(double lo, double hi, unsigned int *seed);
 void			age_and_kill(t_particle_soa *soa, double dt);
 
 #endif

@@ -218,6 +218,7 @@ void	clamp_accel(t_physics_body *b);
 void	clamp_speed(t_physics_body *b);
 t_vec3	rot_by_ang(t_vec3 v, t_vec3 w, double dt);
 void	sync_phys_settings(t_scene *scene, t_physic_engine *engine);
+double	value_noise3(double x, double y, double z);
 
 /* Warm-start utility */
 void	update_vel(t_contact *ct, double ia, double ib, double dj);
