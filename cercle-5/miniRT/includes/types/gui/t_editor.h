@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 23:33:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/11 10:36:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ typedef struct s_crud_ui
 # define SL_EM_POWER_MAX 1000000.0
 # define SL_EM_RADIUS_MIN 0.0
 # define SL_EM_RADIUS_MAX 10000.0
+# define SL_TEMP_MIN 0.0
+# define SL_TEMP_MAX ((double)(~(size_t)0))
 /* Light */
 # define SL_INTENSITY_MIN 0.0
 # define SL_INTENSITY_MAX 1000000.0

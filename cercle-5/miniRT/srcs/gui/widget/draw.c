@@ -6,37 +6,45 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 06:25:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 03:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "widget.h"
 
-void	widget_draw_label(t_gui *gui, t_widget *w)
+static void	draw_w_text_fill_buf(char *buf, t_widget *w)
 {
-	if (w->label)
-		mlx_string_put_c(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y
-			+ w->size.y / 2, COL_TEXT, w->label);
+	if (w->value)
+		ft_memcpy(buf, "[X] ", 5);
 	else
-		mlx_string_put_c(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y
-			+ w->size.y / 2, COL_TEXT, "");
+		ft_memcpy(buf, "[ ] ", 5);
+	if (w->label)
+		snprintf(buf + 4, 124, "%s", w->label);
+	else
+		buf[4] = '\0';
 }
 
-void	widget_draw_checkbox(t_gui *gui, t_widget *w)
+static void	draw_w_text(t_gui *gui, t_widget *w)
 {
-	char	buf[128];
+	char		buf[128];
+	int			y;
+	const char	*lbl;
 
-	if (w->value)
-		buf[0] = 'X';
-	else
-		buf[0] = ' ';
-	buf[1] = '\0';
-	if (w->label)
-		snprintf(buf + 2, sizeof(buf) - 2, "] %s", w->label);
-	else
-		snprintf(buf + 2, sizeof(buf) - 2, "]");
-	mlx_string_put_c(gui->win.mlx, gui->win.win, w->pos.x, w->pos.y + w->size.y
-		/ 2, COL_TEXT, buf);
+	y = w->pos.y + w->size.y / 2;
+	if (w->type == WIDGET_LABEL)
+	{
+		lbl = "";
+		if (w->label)
+			lbl = w->label;
+		mlx_string_put_c(gui->win.mlx, gui->win.win, w->pos.x, y,
+			COL_TEXT, lbl);
+	}
+	else if (w->type == WIDGET_CHECKBOX)
+	{
+		draw_w_text_fill_buf(buf, w);
+		mlx_string_put_c(gui->win.mlx, gui->win.win, w->pos.x, y,
+			COL_TEXT, buf);
+	}
 }
 
 static void	draw_widget_title(t_gui *gui, t_widget *w)
@@ -55,19 +63,10 @@ static void	draw_widget_title(t_gui *gui, t_widget *w)
 			vec2i(w->pos.x + 6, w->pos.y + 5), COL_TEXT);
 }
 
-static void	dispatch_draw(t_gui *gui, t_widget *w)
+static void	dispatch_type(t_gui *gui, t_widget *w)
 {
-	if (w->type == WIDGET_MESSAGE_BOX)
-	{
-		if (w->visible)
-			widget_draw_msgbox(gui, w);
-		return ;
-	}
-	draw_widget_title(gui, w);
-	if (w->type == WIDGET_CHECKBOX)
-		widget_draw_checkbox(gui, w);
-	else if (w->type == WIDGET_LABEL)
-		widget_draw_label(gui, w);
+	if (w->type == WIDGET_CHECKBOX || w->type == WIDGET_LABEL)
+		draw_w_text(gui, w);
 	else if (w->type == WIDGET_SLIDER)
 		widget_draw_slider(gui, w);
 	else if (w->type == WIDGET_INPUT_BOX)
@@ -89,7 +88,16 @@ void	widget_draw_all(t_gui *gui)
 	w = gui->widgets;
 	while (w)
 	{
-		dispatch_draw(gui, w);
+		if (w->type == WIDGET_MESSAGE_BOX)
+		{
+			if (w->visible)
+				widget_draw_msgbox(gui, w);
+		}
+		else
+		{
+			draw_widget_title(gui, w);
+			dispatch_type(gui, w);
+		}
 		w = w->next;
 	}
 }

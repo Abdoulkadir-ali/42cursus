@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:23:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:33:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 01:27:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,6 +278,8 @@ typedef struct s_mesh_info
 	t_transform			transform;
 	t_vec3				color;
 	t_vec3				emission;
+	double				sb_stiffness;
+	double				sb_damping;
 }						t_mesh_info;
 
 typedef struct s_mesh_init

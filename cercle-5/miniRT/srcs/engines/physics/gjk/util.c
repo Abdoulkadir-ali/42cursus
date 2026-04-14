@@ -18,8 +18,13 @@
  */
 t_vec3	md_support(t_gjk_shape *a, t_gjk_shape *b, t_vec3 dir, t_simplex *s)
 {
-	s->a_pts[s->n] = a->support(a->data, dir);
-	s->b_pts[s->n] = b->support(b->data, vec3_scale(dir, -1.0));
+	t_vec3	nd;
+
+	nd = vec3_norm(dir);
+	s->a_pts[s->n] = vec3_add(a->support(a->data, dir),
+			vec3_scale(nd, a->radius));
+	s->b_pts[s->n] = vec3_sub(b->support(b->data, vec3_scale(dir, -1.0)),
+			vec3_scale(nd, b->radius));
 	s->pts[s->n] = vec3_sub(s->a_pts[s->n], s->b_pts[s->n]);
 	return (s->pts[s->n]);
 }

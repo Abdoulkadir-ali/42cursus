@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 18:18:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 21:04:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stddef.h>
 # include <sys/time.h>
+# include_next <time.h>
 
 /*
 ** Returns the current wall-clock time in milliseconds.

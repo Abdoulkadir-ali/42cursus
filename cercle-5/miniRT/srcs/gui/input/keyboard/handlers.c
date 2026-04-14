@@ -18,12 +18,11 @@ static t_key_action	*get_keymap(void)
 	{XK_w, move_forward_press, move_forward_release},
 	{XK_z, move_forward_press, move_forward_release},
 	{XK_s, move_backward_press, move_backward_release},
-	{XK_a, move_left_press, move_left_release},
+	{XK_a, auto_fullres_toggle, NULL},
 	{XK_q, move_left_press, move_left_release},
 	{XK_d, move_right_press, move_right_release},
 	{XK_n, map_next_press, NULL},
 	{XK_p, map_prev_press, NULL},
-	{XK_P, map_prev_press, NULL},
 	{XK_Up, speed_up_press, NULL},
 	{XK_Down, speed_down_press, NULL},
 	{XK_Left, move_left_press, move_left_release},
@@ -32,9 +31,10 @@ static t_key_action	*get_keymap(void)
 	{XK_Shift_L, move_down_press, move_down_release},
 	{XK_plus, zoom_in_press, zoom_in_release},
 	{XK_equal, zoom_in_press, zoom_in_release},
-	{XK_minus, zoom_out_press, zoom_out_release},
-	{XK_Escape, exit_press, NULL},
 	{XK_f, fullres_toggle, NULL},
+	{XK_b, bake_toggle, NULL},
+	{XK_j, soft_body_jiggle_press, NULL},
+	{XK_Escape, exit_press, NULL},
 	{0, NULL, NULL}};
 
 	return (keymap);

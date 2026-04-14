@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 15:55:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 19:10:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 10:59:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
+#include "particles.h"
 
 static bool	init_arrays_more(t_scene *s)
 {
@@ -28,8 +29,12 @@ static bool	init_arrays_more(t_scene *s)
 	s->capsules = ft_calloc(s->capsule_cap, sizeof(t_capsule));
 	s->attractor_cap = 8;
 	s->attractors = ft_calloc(s->attractor_cap, sizeof(t_attractor));
+	s->emitter_cap = 8;
+	s->emitters = ft_calloc(s->emitter_cap, sizeof(t_emitter));
+	s->psoa = particle_soa_alloc(MAX_PARTICLES);
 	if (!s->cones || !s->tris || !s->rects || !s->pyramids
-		|| !s->boxes || !s->capsules || !s->attractors)
+		|| !s->boxes || !s->capsules || !s->attractors
+		|| !s->emitters || !s->psoa)
 		return (false);
 	return (true);
 }

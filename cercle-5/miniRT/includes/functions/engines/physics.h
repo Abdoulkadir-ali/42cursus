@@ -55,8 +55,16 @@ void    phys_debug_spheres(t_scene *scene);
 void    update_physics(t_scene *scene, t_physic_engine *engine, double dt);
 void    integrate_bodies_worker(t_scene *scene, t_physic_engine *engine, double dt);
 size_t  generate_contacts(t_scene *scene, t_physic_engine *engine, t_contact *contacts, size_t max_c);
-void    apply_attractor_pass(t_scene *scene, t_physics_settings *s);
+void	apply_attractor_pass(t_scene *scene, t_physics_settings *s);
+void	apply_nbody_gravity(t_scene *scene, double big_g);
+void	apply_wind_pass(t_scene *scene, t_physics_settings *s, double dt);
 void	sync_phys_settings(t_scene *scene, t_physic_engine *engine);
+
+/* Thermal System */
+void	phys_heat_viscous(t_physics_body *b, double dt);
+void	phys_cool_radiative(t_physics_body *b, double dt);
+void	phys_heat_collision(t_contact *ct, double j, double e);
+void	sync_thermal_to_materials(t_scene *scene);
 
 /* Internal Integrators */
 void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s);
@@ -99,6 +107,24 @@ void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa);
 bool	aabb_overlap(t_aabb a, t_aabb b);
 bool	aabb_v_sphere(t_aabb a, t_vec3 center, double radius);
 void	init_phys_pool(t_physic_engine *engine);
+void	destroy_phys_pool(t_physic_engine *engine);
+
+/* Soft Body */
+bool	soft_body_build(t_soft_body *sb, t_mesh *mesh, t_sb_params p);
+void	soft_body_step(t_scene *scene, double dt, t_physics_settings *s);
+void	soft_body_jiggle(t_scene *scene);
+void	soft_body_free(t_soft_body *sb);
+bool	scene_build_soft_body(t_scene *scene, t_sb_params p);
+void	soft_body_build_springs(t_soft_body *sb, t_mesh *mesh,
+			size_t p_count);
+void	fill_particles(t_sb_particle *out, const t_mesh *mesh,
+			size_t count, t_vec3 offset);
+void	apply_one_body_to_sb(t_soft_body *sb, t_vec3 body_pos,
+			double g_mass);
+void	apply_vols_to_sb(t_soft_body *sb, t_scene *sc, double big_g);
+void	apply_surfs_to_sb(t_soft_body *sb, t_scene *sc, double big_g);
+void	accumulate_ext_f(t_soft_body *sb, const t_physics_settings *s);
+void	accumulate_spring_f(t_soft_body *sb);
 
 /* Support functions (one per shape type) */
 t_vec3	gjk_support_sphere(const void *data, t_vec3 dir);
@@ -169,6 +195,9 @@ size_t	cylinder_vs_all_planes(t_contact_query *qu, t_col_pair *p);
 size_t	box_vs_all_planes(t_contact_query *qu, t_box *bx);
 size_t	rect_vs_all_planes(t_contact_query *qu, t_rect *rc);
 size_t	tri_vs_all_planes(t_contact_query *qu, t_tri_shape *tr);
+t_vec3	best_box_face_verts(t_box *bx, t_vec3 dir, t_vec3 verts[4]);
+size_t	box_vs_box_manifold(t_contact_query *qu, t_box *ba,
+			t_box *bb, t_contact *base);
 void	sphere_vs_sphere(t_sphere *sp, t_sphere *other, t_contact_query *q);
 void	sphere_vs_mesh(t_sphere *sp, t_mesh *m, t_contact_query *q);
 void	sphere_vs_plane_analytic(t_sphere *sp, t_plane *pl, t_contact_query *q);
@@ -181,5 +210,16 @@ bool	test_sphere_triangle(const struct s_sphere *s, t_vec3 v[3],
 t_vec3	closest_point_on_triangle(t_vec3 p, t_vec3 v0, t_vec3 v1, t_vec3 v2);
 bool	detect_sphere_capsule_collision(const struct s_sphere *s,
 			const t_collider *c, t_collision *out);
+
+/* Integrate utilities */
+void	check_sleep(t_physics_body *b, double dt);
+void	wake_body(t_physics_body *b);
+void	clamp_accel(t_physics_body *b);
+void	clamp_speed(t_physics_body *b);
+t_vec3	rot_by_ang(t_vec3 v, t_vec3 w, double dt);
+void	sync_phys_settings(t_scene *scene, t_physic_engine *engine);
+
+/* Warm-start utility */
+void	update_vel(t_contact *ct, double ia, double ib, double dj);
 
 #endif

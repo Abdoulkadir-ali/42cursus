@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 19:14:58 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/11 12:12:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,18 +113,19 @@ static void	apply_damp(t_sphere *sp, double dt, t_physics_settings *s)
 
 void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s)
 {
-	double	inv_i;
-
-	if (sp->phys.is_static)
+	if (sp->phys.is_static || sp->phys.is_sleeping)
 		return ;
-	if (vec3_mag_sq(sp->phys.inv_inertia) < 1e-9)
-	{
-		inv_i = 1.0;
-		if (sp->radius_sq > 1e-9)
-			inv_i = 2.5 / sp->radius_sq;
-		sp->phys.inv_inertia = vec3(inv_i, inv_i, inv_i);
-	}
+	check_sleep(&sp->phys, dt);
+	if (sp->phys.is_sleeping)
+		return ;
+	if (vec3_mag_sq(sp->phys.inv_inertia) < 1e-9 && sp->radius_sq > 1e-9)
+		sp->phys.inv_inertia = vec3(2.5 / sp->radius_sq,
+				2.5 / sp->radius_sq, 2.5 / sp->radius_sq);
+	else if (vec3_mag_sq(sp->phys.inv_inertia) < 1e-9)
+		sp->phys.inv_inertia = vec3(1.0, 1.0, 1.0);
+	clamp_accel(&sp->phys);
 	apply_damp(sp, dt, s);
+	clamp_speed(&sp->phys);
 	sp->phys.accel = vec3(0, 0, 0);
 	sp->phys.prev_velocity = sp->phys.velocity;
 	sp->transform.pos = vec3_add(sp->transform.pos,
@@ -132,4 +133,6 @@ void	integrate_sphere(t_sphere *sp, double dt, t_physics_settings *s)
 	update_state(sp, dt);
 	sp->phys.pos = sp->transform.pos;
 	sp->phys.center = sp->transform.pos;
+	phys_heat_viscous(&sp->phys, dt);
+	phys_cool_radiative(&sp->phys, dt);
 }

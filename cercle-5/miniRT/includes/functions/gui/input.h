@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:01:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 23:21:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 02:15:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,14 @@ void	speed_up_press(t_gui *gui);
 void	speed_down_press(t_gui *gui);
 void	exit_press(t_gui *gui);
 void    fullres_toggle(struct s_gui *gui);
+void    bake_toggle(struct s_gui *gui);
+void    adaptive_toggle(struct s_gui *gui);
+void    auto_fullres_toggle(struct s_gui *gui);
 void	shoot_force(struct s_gui *gui, t_vec2i mouse);
 void	handle_scroll(int b, struct s_gui *gui);
+void	soft_body_jiggle_press(struct s_gui *gui);
+void	time_pause_toggle(struct s_gui *gui);
+void	time_slower(struct s_gui *gui);
+void	time_faster(struct s_gui *gui);
 
 #endif

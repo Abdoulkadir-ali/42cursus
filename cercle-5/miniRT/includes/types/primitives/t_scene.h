@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:24:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include "t_objects.h"
 # include "t_meshes.h"
 # include "t_surface.h"
+# include "t_soft_body.h"
+# include "t_particle_system.h"
 # include "thread.h"
 # include "t_raytracing.h"
 
@@ -45,6 +47,7 @@ typedef struct s_emissive_ref
 {
 	t_type				type;
 	size_t				index;
+	double				reach_center_sq;	/* (sqrt(reach_sq)+r)^2 for spheres, 1e300 otherwise */
 }						t_emissive_ref;
 
 typedef struct s_obj_mat_ref
@@ -102,9 +105,13 @@ typedef struct s_scene
 	t_vec3				scene_gravity;
 	double				scene_big_g;
 	double				scene_damping;
+	t_vec3				scene_wind;
+	double				scene_turbulence;
 	bool				scene_gravity_set;
 	bool				scene_big_g_set;
 	bool				scene_damping_set;
+	bool				scene_wind_set;
+	bool				scene_turbulence_set;
 
 	t_mesh				*meshes;
 	size_t				mesh_count;
@@ -143,6 +150,18 @@ typedef struct s_scene
 	size_t				cache_count;
 	t_thread_pool		*pool;
 	const t_raytracer_settings	*opts;
+
+	t_soft_body			*soft_bodies;
+	size_t				soft_body_count;
+	size_t				soft_body_cap;
+	t_emitter				*emitters;
+	size_t				emitter_count;
+	size_t				emitter_cap;
+	t_particle_soa			*psoa;
+	size_t				proxy_sphere_base;
+	size_t				proxy_mat_base;
+	size_t				proxy_sphere_count;
+	bool					psoa_ready;
 }						t_scene;
 
 #endif

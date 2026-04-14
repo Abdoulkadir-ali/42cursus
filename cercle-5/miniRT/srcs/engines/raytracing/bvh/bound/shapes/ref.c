@@ -40,7 +40,7 @@ static t_aabb	get_anim_aabb(t_skinned_mesh *anim)
  */
 t_aabb	aabb_from_ref(t_scene *scene, t_bvh_ref ref)
 {
-	if (ref.type == TYPE_SPHERE)
+	if (ref.type == TYPE_SPHERE || ref.type == TYPE_PROXY_SPHERE)
 		return (sphere_aabb(&scene->spheres[ref.index]));
 	if (ref.type == TYPE_PLANE)
 		return (plane_aabb());

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 11:47:53 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 09:41:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ static void	sphere_leaf(t_contact_query *q, size_t idx, t_sphere *sp,
 	while (j < node->count && q->count < q->max)
 	{
 		ref = bvh->refs[node->left_or_first + j];
-		if (ref.type == TYPE_SPHERE && ref.index > idx)
+		if (ref.type == TYPE_SPHERE && ref.index > idx
+			&& ref.index < s->proxy_sphere_base
+			&& !s->spheres[ref.index].phys.is_static)
 			sphere_vs_sphere(sp, &s->spheres[ref.index], q);
 		else if (ref.type == TYPE_MESH)
 			sphere_vs_mesh(sp, &s->meshes[ref.index], q);

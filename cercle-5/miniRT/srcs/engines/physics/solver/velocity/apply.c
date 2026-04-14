@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:38:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 16:41:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,35 @@
 
 /**
  * @brief Applies rotational impulse (torque) to a physics body.
+ *        When orient_r/u/f are set, transforms the torque into the body's
+ *        local frame before applying the (diagonal) inertia inverse — this
+ *        is the R * I_inv * R^T operation that keeps spinning correct for
+ *        rotated boxes and pyramids.
  * @param sign Direction of the impulse for this body (-1 or 1).
  */
 void	apply_phys_torque(t_physics_body *b, t_vec3 r, t_vec3 imp, double sign)
 {
 	t_vec3	torque;
+	t_vec3	tl;
 	t_vec3	dw;
 
 	torque = vec3_cross(r, vec3_scale(imp, sign));
-	dw.x = torque.x * b->inv_inertia.x;
-	dw.y = torque.y * b->inv_inertia.y;
-	dw.z = torque.z * b->inv_inertia.z;
+	if (vec3_mag_sq(b->orient_r) > 1e-9)
+	{
+		tl.x = vec3_dot(torque, b->orient_r);
+		tl.y = vec3_dot(torque, b->orient_u);
+		tl.z = vec3_dot(torque, b->orient_f);
+		dw = vec3_add(vec3_add(
+					vec3_scale(b->orient_r, tl.x * b->inv_inertia.x),
+					vec3_scale(b->orient_u, tl.y * b->inv_inertia.y)),
+				vec3_scale(b->orient_f, tl.z * b->inv_inertia.z));
+	}
+	else
+	{
+		dw.x = torque.x * b->inv_inertia.x;
+		dw.y = torque.y * b->inv_inertia.y;
+		dw.z = torque.z * b->inv_inertia.z;
+	}
 	b->angular_velocity = vec3_add(b->angular_velocity, dw);
 }
 
@@ -56,6 +74,8 @@ void	apply_friction(t_contact *ct, t_vec3 rel_v, double j_normal)
 	double	ia;
 	double	ib;
 	double	jt;
+	double	old_accum;
+	double	max_f;
 
 	ia = get_inv_mass(ct->a);
 	ib = get_inv_mass(ct->b);
@@ -65,9 +85,8 @@ void	apply_friction(t_contact *ct, t_vec3 rel_v, double j_normal)
 	tangent = vec3_norm(vt);
 	jt = -vec3_dot(rel_v, tangent) / (ia + ib + ang_term(ct->a, ct->ra,
 				tangent, ia) + ang_term(ct->b, ct->rb, tangent, ib));
-	if (jt > 0.0)
-		jt = 0.0;
-	else if (jt < -ct->friction * j_normal)
-		jt = -ct->friction * j_normal;
-	apply_f_imp(ct, vec3_scale(tangent, jt), ia, ib);
+	old_accum = ct->accum_t;
+	max_f = ct->friction * j_normal;
+	ct->accum_t = clamp_d(old_accum + jt, -max_f, max_f);
+	apply_f_imp(ct, vec3_scale(tangent, ct->accum_t - old_accum), ia, ib);
 }

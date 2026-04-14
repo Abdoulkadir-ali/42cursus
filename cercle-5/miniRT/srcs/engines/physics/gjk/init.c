@@ -20,6 +20,7 @@ t_gjk_shape	init_gjk_shape(const void *data, t_support_fn support,
 	s.data = data;
 	s.support = support;
 	s.center = center;
+	s.radius = 0.01;
 	return (s);
 }
 

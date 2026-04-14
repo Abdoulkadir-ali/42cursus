@@ -16,7 +16,7 @@
 # include "editor.h"
 
 # define SETTINGS_W			400
-# define SETTINGS_H			580
+# define SETTINGS_H			640
 # define SETTINGS_BTN_W		88
 # define SETTINGS_BTN_H		22
 # define SETTINGS_TAB_COUNT	4

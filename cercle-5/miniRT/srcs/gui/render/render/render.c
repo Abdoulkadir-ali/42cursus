@@ -6,11 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:49:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 14:54:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 21:10:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
+#include "profiler.h"
 
 static void	setup_render_size(t_gui *gui, size_t s)
 {
@@ -78,6 +79,9 @@ void	gui_render(t_gui *gui)
 	render.step = 1;
 	setup_render_geometry(gui, &render, rt);
 	start = now_ms();
+	PROF_RESET();
 	render_tiles_worker(&render);
+	PROF_FLUSH();
+	PROF_PRINT();
 	update_rt_stats(gui, rt, start);
 }

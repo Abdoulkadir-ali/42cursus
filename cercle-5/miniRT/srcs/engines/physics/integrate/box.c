@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 12:17:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,26 @@
 static void	init_box_inertia(t_box *bx)
 {
 	t_vec3	e;
+	double	m;
 
 	if (bx->phys.mass < 1e-6)
 		bx->phys.mass = 1.0;
 	if (vec3_mag_sq(bx->phys.inv_inertia) > 1e-9)
 		return ;
 	e = bx->half_extents;
-	bx->phys.inv_inertia.x = 3.0 / (e.y * e.y + e.z * e.z + 1e-9);
-	bx->phys.inv_inertia.y = 3.0 / (e.x * e.x + e.z * e.z + 1e-9);
-	bx->phys.inv_inertia.z = 3.0 / (e.x * e.x + e.y * e.y + 1e-9);
+	m = bx->phys.mass;
+	bx->phys.inv_inertia.x = 12.0 / (m * (4.0 * e.y * e.y
+				+ 4.0 * e.z * e.z) + 1e-9);
+	bx->phys.inv_inertia.y = 12.0 / (m * (4.0 * e.x * e.x
+				+ 4.0 * e.z * e.z) + 1e-9);
+	bx->phys.inv_inertia.z = 12.0 / (m * (4.0 * e.x * e.x
+				+ 4.0 * e.y * e.y) + 1e-9);
 }
 
 /**
- * @brief Updates rotation and center position for a box.
+ * @brief Updates rotation, orientation, and center position for a box.
+ *        Keeps phys.orient_r/u/f in sync with the transform axes so that
+ *        apply_phys_torque can apply the inertia tensor in world space.
  */
 static void	update_state(t_box *bx, double dt, t_vec3 delta)
 {
@@ -46,6 +53,9 @@ static void	update_state(t_box *bx, double dt, t_vec3 delta)
 				bx->phys.angular_velocity, dt));
 	bx->transform.up = vec3_norm(rot_by_ang(bx->transform.up,
 				bx->phys.angular_velocity, dt));
+	bx->phys.orient_r = bx->transform.right;
+	bx->phys.orient_u = bx->transform.up;
+	bx->phys.orient_f = bx->transform.forward;
 	bx->transform.pos = vec3_add(bx->transform.pos, delta);
 	bx->phys.center = bx->transform.pos;
 }
@@ -58,9 +68,13 @@ void	integrate_box(t_box *bx, double dt, t_physics_settings *s)
 	t_vec3	v_d;
 	t_vec2	damp;
 
-	if (bx->phys.is_static)
+	if (bx->phys.is_static || bx->phys.is_sleeping)
+		return ;
+	check_sleep(&bx->phys, dt);
+	if (bx->phys.is_sleeping)
 		return ;
 	init_box_inertia(bx);
+	clamp_accel(&bx->phys);
 	bx->phys.velocity = vec3_add(bx->phys.velocity,
 			vec3_add(vec3_scale(s->gravity, dt),
 				vec3_scale(bx->phys.accel, dt)));
@@ -68,8 +82,11 @@ void	integrate_box(t_box *bx, double dt, t_physics_settings *s)
 	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
 	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
 	bx->phys.velocity = vec3_scale(bx->phys.velocity, damp.x);
+	clamp_speed(&bx->phys);
 	bx->phys.angular_velocity = vec3_scale(bx->phys.angular_velocity, damp.y);
 	v_d = vec3_scale(bx->phys.velocity, dt);
 	update_state(bx, dt, v_d);
 	bx->phys.pos = bx->transform.pos;
+	phys_heat_viscous(&bx->phys, dt);
+	phys_cool_radiative(&bx->phys, dt);
 }

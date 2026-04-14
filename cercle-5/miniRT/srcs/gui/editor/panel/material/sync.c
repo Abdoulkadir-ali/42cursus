@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:19:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/11 11:28:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,16 @@ void	sync_group_materials(t_gui *gui)
 		if (mat_id < gui->scene->mat_count)
 			gui->scene->materials[mat_id] = *lead;
 	}
+}
+
+void	sync_temperature(t_gui *gui)
+{
+	t_material	*mat;
+
+	mat = get_selected_material(gui);
+	if (mat)
+		apply_blackbody_to_mat(mat);
+	sync_group_materials(gui);
+	if (gui->scene && gui->scene->bvh)
+		build_emissive_cache(gui->scene);
 }

@@ -79,6 +79,8 @@ bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit)
 	double	disc;
 	double	sq;
 
+	if (sp->radius_sq <= 0.0)
+		return (false);
 	if (sp->is_deformed)
 		return (solve_deformed(ray, sp, hit));
 	oc = vec3_sub(ray->origin, sp->transform.pos);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 11:17:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,6 @@ void	apply_phys_mod(t_scene *sc, t_mat_mod *mod, t_type last_type)
 		body->friction = mod->val;
 	else if (mod->kind == MAT_MOD_PHYS_VEL)
 		body->velocity = mod->color_a;
+	else if (mod->kind == MAT_MOD_PHYS_MAGNETIC)
+		body->magnetic_charge = mod->val;
 }

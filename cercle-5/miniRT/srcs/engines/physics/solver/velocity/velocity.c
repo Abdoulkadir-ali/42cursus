@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 11:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 09:41:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,13 @@ void	solve_velocities(t_contact *c, t_physic_engine *en, size_t count)
 	{
 		ia = get_inv_mass(c[i].a);
 		ib = get_inv_mass(c[i].b);
-		if (ia + ib > 1e-8)
+		if ((ia < 1e-15 && c[i].a && !c[i].a->is_static)
+			|| (ib < 1e-15 && c[i].b && !c[i].b->is_static))
+		{
+			i++;
+			continue ;
+		}
+		if (ia + ib > 1e-15)
 			solve_one_velocity(&c[i], en, ia, ib);
 		i++;
 	}

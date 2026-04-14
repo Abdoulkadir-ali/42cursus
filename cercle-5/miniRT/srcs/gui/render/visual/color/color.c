@@ -6,37 +6,19 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 22:03:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "color.h"
 
-t_vec3f	rt_unpack_color(size_t c)
-{
-	t_vec3	v;
-	t_vec3f	vf;
+/* rt_unpack_color and rt_pack_color are now static inline in render.h */
 
-	v = unpack_rgb(c);
-	vf.x = (float)v.x;
-	vf.y = (float)v.y;
-	vf.z = (float)v.z;
-	vf.w = (float)v.w;
-	return (vf);
-}
-
-size_t	rt_pack_color(t_vec3f v)
-{
-	t_vec3	vd;
-
-	vd.x = (double)v.x;
-	vd.y = (double)v.y;
-	vd.z = (double)v.z;
-	vd.w = (double)v.w;
-	return ((size_t)pack_rgb(vd));
-}
-
+/*
+** gamma == 50 -> exp_val == 1.0 -> powf(x,1) = x. Skip to avoid 3
+** expensive powf calls per pixel when using default neutral gamma.
+*/
 static void	apply_gamma(t_vec3f *ch, float gamma)
 {
 	float	exp_val;
@@ -44,6 +26,8 @@ static void	apply_gamma(t_vec3f *ch, float gamma)
 	if (gamma <= 0.0)
 		return ;
 	exp_val = 50.0f / gamma;
+	if (fabsf(exp_val - 1.0f) < 0.002f)
+		return ;
 	ch->x = powf(fmaxf(ch->x / 255.0f, 0.0f), exp_val) * 255.0f;
 	ch->y = powf(fmaxf(ch->y / 255.0f, 0.0f), exp_val) * 255.0f;
 	ch->z = powf(fmaxf(ch->z / 255.0f, 0.0f), exp_val) * 255.0f;

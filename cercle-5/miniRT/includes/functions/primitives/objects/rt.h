@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 19:57:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 19:10:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 01:33:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ t_parse_obj				parse_pyramid(t_parser *p);
 t_parse_obj				parse_box(t_parser *p);
 t_parse_obj				parse_capsule(t_parser *p);
 t_parse_obj				parse_mesh_entry(t_parser *p, t_type type);
+t_parse_obj				parse_soft_body(t_parser *p);
+t_parse_obj						 parse_particle_emitter(t_parser *p);
 
 /* RT Object Scene Addition (srcs/primitives/scene/add/objects/rt/) */
 bool					scene_add_sphere(t_scene *scene, t_sphere sphere);

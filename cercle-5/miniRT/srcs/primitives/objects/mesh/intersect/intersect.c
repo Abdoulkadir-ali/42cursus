@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mesh_trace_intersect.c                             :+:      :+:    :+:   */
+/*   intersect.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:22:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 08:57:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ bool	intersect_mesh(const t_ray *ray, t_mesh *mesh, t_hit *hit)
 		return (false);
 	if (!aabb_intersect_fast(&mesh->bvh_nodes[0].bbox, ray, &tmin, &tmax))
 		return (false);
-	PROF_INC(g_mesh_calls);
+	PROF_INC(mesh_calls);
 	intersect_init(&trace, hit);
 	trace.node_count = 0;
 	trace.tri_count = 0;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:38:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 14:19:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,11 @@ static size_t	get_count_for_type(int type, t_scene *scene)
 	return (0);
 }
 
+/*
+** Worker thread for scene object collection.
+** mark TYPE_PROXY_SPHERE: visible but no shadows for particles.
+** skip radius_sq=0 spheres: degenerate nodes pollute BVH.
+*/
 static void	*add_worker(void *p)
 {
 	t_add_task	*t;
@@ -51,8 +56,13 @@ static void	*add_worker(void *p)
 		i = __sync_fetch_and_add(&t->next, 1);
 		if (i >= get_count_for_type(t->type, t->sc))
 			break ;
-		ki = t->start_k + i;
-		t->items[ki].ref.type = (uint8_t)t->type;
+		if (t->type == TYPE_SPHERE && t->sc->spheres[i].radius_sq <= 0.0)
+			continue ;
+		ki = t->start_k + __sync_fetch_and_add(&t->ki_next, 1);
+		if (t->type == TYPE_SPHERE && i >= t->sc->proxy_sphere_base)
+			t->items[ki].ref.type = (uint8_t)TYPE_PROXY_SPHERE;
+		else
+			t->items[ki].ref.type = (uint8_t)t->type;
 		t->items[ki].ref.index = i;
 		t->items[ki].bbox = aabb_from_ref(t->sc, t->items[ki].ref);
 		t->items[ki].centroid = vec3_scale(vec3_add(t->items[ki].bbox.min,
@@ -69,9 +79,9 @@ static void	add_items_worker(t_build_item *it, size_t *k, int type, t_scene *sc)
 	count = get_count_for_type(type, sc);
 	if (count == 0)
 		return ;
-	t = (t_add_task){sc, it, k, type, 0, *k};
+	t = (t_add_task){sc, it, k, type, 0, *k, 0};
 	parallel_run(sc->pool, count, add_worker, &t);
-	*k += count;
+	*k += t.ki_next;
 }
 
 size_t	collect_objects_worker(t_scene *scene, t_build_item *items)
@@ -79,11 +89,6 @@ size_t	collect_objects_worker(t_scene *scene, t_build_item *items)
 	size_t	k;
 
 	k = 0;
-	ft_print_debug("BVH Collect: sp=%zu pl=%zu cy=%zu co=%zu ca=%zu tri=%zu ",
-		scene->sphere_count, scene->plane_count, scene->cylinder_count,
-		scene->cone_count, scene->capsule_count, scene->tri_count);
-	ft_print_debug("box=%zu mesh=%zu anim=%zu\n",
-		scene->box_count, scene->mesh_count, scene->anim_count);
 	add_items_worker(items, &k, TYPE_PLANE, scene);
 	add_items_worker(items, &k, TYPE_SPHERE, scene);
 	add_items_worker(items, &k, TYPE_CYLINDER, scene);
@@ -95,6 +100,5 @@ size_t	collect_objects_worker(t_scene *scene, t_build_item *items)
 	add_items_worker(items, &k, TYPE_CAPSULE, scene);
 	add_items_worker(items, &k, TYPE_ANIM, scene);
 	add_items_worker(items, &k, TYPE_MESH, scene);
-	ft_print_debug("BVH Collect Finished: total items=%zu\n", k);
 	return (k);
 }

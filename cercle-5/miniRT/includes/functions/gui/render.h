@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 00:56:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 08:50:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,86 @@ void			*gui_worker(void *ptr);
 
 
 
-t_vec3f			rt_unpack_color(size_t c);
-t_vec3i			rt_unpack_color_v(size_t c);
-size_t			rt_pack_color(t_vec3f v);
-size_t			rt_pack_color_v(t_vec3i v);
-void			apply_bcg(t_vec3f *ch, const t_raytracer_settings *opts);
-size_t			bilerp_pixel(size_t c[4], t_vec4f w);
-void			get_weights(t_vec4f *w, t_vec2f f, float *db[2]);
+t_vec3i				rt_unpack_color_v(size_t c);
+size_t				rt_pack_color_v(t_vec3i v);
+void					apply_bcg(t_vec3f *ch, const t_raytracer_settings *opts);
+/* ---- inline color helpers: avoid double round-trip ---- */
+static inline __attribute__((always_inline))
+t_vec3f	rt_unpack_color(size_t c)
+{
+	return ((t_vec3f){
+		(float)((c >> 16) & 0xFF),
+		(float)((c >> 8) & 0xFF),
+		(float)(c & 0xFF),
+		0.0f});
+}
+
+static inline __attribute__((always_inline))
+size_t	rt_pack_color(t_vec3f v)
+{
+	uint32_t	r;
+	uint32_t	g;
+	uint32_t	b;
+
+	r = (uint32_t)(v.x < 0.0f ? 0.0f : v.x > 255.0f ? 255.0f : v.x);
+	g = (uint32_t)(v.y < 0.0f ? 0.0f : v.y > 255.0f ? 255.0f : v.y);
+	b = (uint32_t)(v.z < 0.0f ? 0.0f : v.z > 255.0f ? 255.0f : v.z);
+	return ((size_t)((r << 16) | (g << 8) | b));
+}
+
+static inline __attribute__((always_inline))
+size_t	bilerp_pixel(size_t c[4], t_vec4f w)
+{
+	float		wt;
+	t_vec3f	acc;
+	size_t	i;
+	t_vec3f	rgb;
+	float		*wf;
+
+	wf = (float *)&w;
+	wt = wf[0] + wf[1] + wf[2] + wf[3];
+	if (wt < 1e-6f)
+		return (c[0]);
+	acc = (t_vec3f){0, 0, 0, 0};
+	i = 0;
+	while (i < 4)
+	{
+		rgb = rt_unpack_color(c[i]);
+		acc.x += rgb.x * wf[i];
+		acc.y += rgb.y * wf[i];
+		acc.z += rgb.z * wf[i];
+		i++;
+	}
+	acc.x /= wt;
+	acc.y /= wt;
+	acc.z /= wt;
+	return (rt_pack_color(acc));
+}
+
+static inline __attribute__((always_inline))
+void	get_weights(t_vec4f *w, t_vec2f f, float *db[2])
+{
+	float	d00;
+	float	*wf;
+
+	wf = (float *)w;
+	wf[0] = (1.0f - f.x) * (1.0f - f.y);
+	wf[1] = f.x * (1.0f - f.y);
+	wf[2] = (1.0f - f.x) * f.y;
+	wf[3] = f.x * f.y;
+	if (db[0])
+	{
+		d00 = db[0][0];
+		if (d00 > 1e-4f)
+		{
+			if (__builtin_fabsf(db[0][1] - d00) / d00 > DEPTH_THRESH)
+				wf[1] = 0.0f;
+			if (__builtin_fabsf(db[1][0] - d00) / d00 > DEPTH_THRESH)
+				wf[2] = 0.0f;
+			if (__builtin_fabsf(db[1][1] - d00) / d00 > DEPTH_THRESH)
+				wf[3] = 0.0f;
+		}
+	}
+}
+
 #endif

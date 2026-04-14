@@ -1,0 +1,28 @@
+A 0.08 255,255,255
+C 0,6,-20 0,-0.2,1 70
+
+# Disable N-body gravity — the heavy sphere should NOT act as a gravity well
+# for particles (its mass=1e8 would otherwise cap particle acceleration at
+# 200 m/s², trapping them inside the sphere forever).
+G 0
+
+# Warm key light (upper left)
+L -8,14,-4  180  255,220,160
+
+# Cool fill light (upper right)
+L  8,10,-8  120  160,200,255
+
+# Ground plane
+pl 0,-1,0 0,1,0 60,60,65
+mat
+rough 0.85
+
+# Heavy sphere sitting on the ground — particles should NOT move it
+sp 0,0.59,0 3.18 220,80,60
+mat
+rough 0.3
+mass 1e8
+
+# Particle emitter — fires upward from just below the sphere, splashing out
+# pos       dir      rate  speed  life_min  life_max  size  spread  temp_min  temp_max
+pe 0,0.5,0  0,1,0  300  7.0  1.0  3.0  0.12  0.5  0.5  1.0

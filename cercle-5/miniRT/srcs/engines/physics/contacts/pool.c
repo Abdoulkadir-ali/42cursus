@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 10:47:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 12:32:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static void	run_contact_job(t_gen_job *job)
 
 	i = 0;
 	qu = init_contact_query(job->engine, job->out, job->count, job->max_c);
-	while (job->type == 0 && i < job->scene->sphere_count)
+	while (job->type == 0
+		&& i < job->scene->sphere_count - job->scene->proxy_sphere_count)
 		job->count = query_sphere(&qu, i++);
 	while (job->type == 1 && i < job->scene->box_count)
 		job->count = query_box(&qu, i++);
@@ -83,4 +84,29 @@ void	init_phys_pool(t_physic_engine *engine)
 		i++;
 	}
 	engine->pool.initialized = true;
+}
+
+/**
+ * @brief Signals all physics worker threads to exit and joins them.
+ */
+void	destroy_phys_pool(t_physic_engine *engine)
+{
+	size_t	i;
+
+	if (!engine->pool.initialized)
+		return ;
+	engine->pool.shutdown = true;
+	i = 0;
+	while (i < PHYS_NUM_TYPES)
+		sem_post(&engine->pool.start[i++]);
+	i = 0;
+	while (i < PHYS_NUM_TYPES)
+	{
+		sem_wait(&engine->pool.done[i]);
+		pthread_join(engine->pool.threads[i], NULL);
+		sem_destroy(&engine->pool.start[i]);
+		sem_destroy(&engine->pool.done[i]);
+		i++;
+	}
+	engine->pool.initialized = false;
 }

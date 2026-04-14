@@ -46,35 +46,25 @@ static void	process_worker_tiles(t_render *render)
 	}
 }
 
-static void	gui_worker_task(t_gui *gui, t_render_task *task,
-	size_t my, size_t n)
+static void	gui_worker_task(t_gui *gui, t_render_task *t, size_t my, size_t n)
 {
-	size_t	h;
-
-	if (task->type == TASK_SCATTER)
-	{
-		h = gui->opts.prev_render_size.y;
-		scatter_band(gui, (my * h) / n, ((my + 1) * h) / n);
-	}
-	else if (task->type == TASK_APPLY)
-	{
-		h = gui->win.disp_size.y;
-		apply_reproj_band(gui, (my * h) / n, ((my + 1) * h) / n);
-	}
-	else if (task->type == TASK_INTERP)
-	{
-		h = gui->opts.prev_render_size.y;
-		interp_band(gui, (my * h) / n, ((my + 1) * h) / n);
-	}
-	else if (task->type == TASK_TAA)
-		taa_band(gui, (my * gui->win.size.y) / n,
-			((my + 1) * gui->win.size.y) / n);
-	else if (task->type == TASK_BLUR)
-		smooth_render_band(gui, (my * gui->win.size.y) / n,
-			((my + 1) * gui->win.size.y) / n);
+	if (t->type == TASK_SCATTER)
+		scatter_band(gui, my * gui->opts.prev_render_size.y / n,
+			(my + 1) * gui->opts.prev_render_size.y / n);
+	else if (t->type == TASK_APPLY)
+		apply_reproj_band(gui, my * gui->win.disp_size.y / n,
+			(my + 1) * gui->win.disp_size.y / n);
+	else if (t->type == TASK_INTERP)
+		interp_band(gui, my * gui->opts.prev_render_size.y / n,
+			(my + 1) * gui->opts.prev_render_size.y / n);
+	else if (t->type == TASK_TAA)
+		taa_band(gui, my * gui->win.size.y / n, (my + 1) * gui->win.size.y / n);
+	else if (t->type == TASK_BLUR)
+		smooth_render_band(gui, my * gui->win.size.y / n,
+			(my + 1) * gui->win.size.y / n);
 	else
-		upscale_band(gui, (my * gui->win.disp_size.y) / n,
-			((my + 1) * gui->win.disp_size.y) / n);
+		upscale_band(gui, my * gui->win.disp_size.y / n,
+			(my + 1) * gui->win.disp_size.y / n);
 }
 
 void	*gui_worker(void *ptr)

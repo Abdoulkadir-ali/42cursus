@@ -1,0 +1,96 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# SOFT BODY DEMO  —  maps/rt/physics/soft_body_demo.rt
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# WHAT WAS IMPLEMENTED  (session 2026-04-12)
+# ─────────────────────────────────────────────────────────────────────────────
+# TYPE / FILE                            WHAT
+# includes/types/engine/t_soft_body.h   New types: t_sb_particle, t_sb_spring,
+#                                        t_soft_body (particle array + spring
+#                                        array + mesh_idx + stiffness/damping)
+#
+# includes/types/primitives/t_objects.h Added TYPE_SOFT_BODY enum value
+# includes/types/primitives/t_meshes.h  Added sb_stiffness, sb_damping fields
+#                                        to t_mesh_info
+# includes/types/primitives/t_scene.h   Added soft_bodies[], soft_body_count,
+#                                        soft_body_cap; includes t_soft_body.h
+#
+# srcs/engines/physics/soft/soft_body.c Full mass-spring integrator:
+#                                        - soft_body_build(): 1 particle/vertex,
+#                                          1 spring/unique triangle edge
+#                                        - accumulate_forces(): gravity + Hooke
+#                                          + velocity-projection damping
+#                                        - integrate_particles(): symplectic
+#                                          Euler (v then x)
+#                                        - writeback(): pos → geometry.vertices,
+#                                          normals recomputed from cross product
+#                                        - soft_body_step(): loops all SBs
+#                                        - scene_build_soft_body(): scene API
+#
+# srcs/engines/physics/integrate/worker.c  Calls soft_body_step() after rigid
+#                                           body integration, before bvh_sync()
+#
+# srcs/primitives/scene/parser/parsing/soft_body.c
+#                                        Parses "sb <path> [k] [c]" line
+# includes/functions/primitives/objects/rt.h  Declared parse_soft_body()
+# srcs/primitives/objects/rt/dispatch/dispatch_utils.c  Routes "sb" keyword
+# srcs/primitives/scene/parser/worker_utils.c  Loads mesh resource for SB
+# srcs/primitives/scene/parser/worker.c  inject_one() handles TYPE_SOFT_BODY
+#
+# INCIDENTAL PRE-EXISTING BUGS FIXED
+# srcs/primitives/scene/parser/apply_mod.c   Restored deleted get_last_obj_ref;
+#                                             fixed t_vec3f → t_vec3 type mismatch
+# srcs/gui/render/optimizations/bloom.c      Added vec3f_add() to maths.h
+# srcs/gui/render/visual/upscale/upscale_worker.c  Renamed get_weights() clash;
+#                                             zero-init struct u; added vec3f_muls
+# srcs/gui/render/visual/trace.c             Fixed {x,y,z} → {x,y,z,0} for t_vec3f
+# srcs/gui/render/visual/upscale/smooth.c    Suppressed unused 'gui' warning
+# srcs/gui/settings/tabs/raytracer/raytracer.c  Replaced missing callback with
+#                                               NULL; added draw_settings_raytracer_tab
+# srcs/gui/editor/widgets/slider.c           Implemented islider_get_val()
+#
+# HOW TO USE SOFT BODIES IN A SCENE FILE
+#   sb <mesh_path> [stiffness_N/m] [damping_N·s/m]
+#   stiffness default: 200.0   damping default: 5.0
+# ─────────────────────────────────────────────────────────────────────────────
+
+A 0.15 255,255,255
+C 0,8,-18 0,-0.25,1 70
+L   0,20,  0  150 255,255,255
+L -15,12,-10  120 255,210,180
+L  15,12,-10  120 180,210,255
+L   0, 8, 15  100 255,255,210
+
+pl 0,0,0 0,1,0 40,40,40
+
+# Ground plane (y = -1, normal up)
+pl 0,-1,0 0,1,0 180,180,180
+mat
+rough 0.8
+
+# Left wall (keeps spheres from drifting off left)
+pl -8,0,0 1,0,0 140,140,160
+mat
+rough 0.6
+
+# Right wall
+pl 8,0,0 -1,0,0 140,140,160
+mat
+rough 0.6
+
+# Tilted ramp — spheres that land on it slide forward and bounce off the ground
+pl 0,4,4 0,0.64,-0.77 160,150,140
+mat
+rough 0.5
+
+# Four soft-body spheres at different starting positions
+# syntax: sb <path> <stiffness> <damping> <x,y,z>
+# Press J to jiggle all spheres at any time
+# sb maps/obj/sphere/sphere.obj 500.0 12.0  -4.5,5,0
+# sb maps/obj/sphere/sphere.obj 500.0 12.0  -1.5,7,0
+# sb maps/obj/sphere/sphere.obj 500.0 12.0   1.5,9,0
+sb maps/obj/sphere/sphere.obj 500.0 12.0   4.5,5,0
+sp 0,0,0 3.18 243,137,254
+
+# Particle emitter: pos  dir  rate  speed  life_min  life_max  size  [spread] [temp_min] [temp_max]
+pe 0,2,0  0,1,0  150  6.0  1.5  4.0  0.07  0.35  0.65  1.0

@@ -45,3 +45,26 @@ t_parse_obj	parse_scene_damp(t_parser *p)
 	res.type = TYPE_MAT_MOD;
 	return (res);
 }
+
+t_parse_obj	parse_scene_wind(t_parser *p)
+{
+	t_parse_obj	res;
+
+	ft_memset(&res, 0, sizeof(res));
+	res.data.mat_mod.kind = MAT_MOD_SCENE_WIND;
+	if (!parse_vec3(p, &res.data.mat_mod.color_a))
+		return (res);
+	res.type = TYPE_MAT_MOD;
+	return (res);
+}
+
+t_parse_obj	parse_scene_turbulence(t_parser *p)
+{
+	t_parse_obj	res;
+
+	ft_memset(&res, 0, sizeof(res));
+	res.data.mat_mod.kind = MAT_MOD_SCENE_TURBULENCE;
+	res.data.mat_mod.val = parse_double(p);
+	res.type = TYPE_MAT_MOD;
+	return (res);
+}

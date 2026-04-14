@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 22:25:42 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 12:30:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,29 @@
 ** Saves the current rendered frame into opts for next-frame reprojection.
 ** Called before any post-processing so prev_color always holds the raw render.
 */
-void	save_frame(t_gui *gui)
+void	save_depth(t_gui *gui)
 {
 	t_optimizations	*o;
 	size_t			n;
-	float			*tmp;
 
 	o = &gui->opts;
 	n = gui->win.size.x * gui->win.size.y;
-	ft_memcpy(o->prev_color, gui->win.addr, n * sizeof(uint32_t));
-	tmp = o->prev_depth;
-	o->prev_depth = o->depth_buf;
-	o->depth_buf = tmp;
+	if (o->prev_depth && o->depth_buf)
+		ft_memcpy(o->prev_depth, o->depth_buf, n * sizeof(float));
 	o->prev_render_size = gui->win.size;
 	o->prev_cam = o->cur_cam;
 	o->prev_half_w = o->cur_half_w;
 	o->prev_half_h = o->cur_half_h;
+}
+
+void	save_frame(t_gui *gui)
+{
+	t_optimizations	*o;
+	size_t			n;
+
+	o = &gui->opts;
+	n = gui->win.size.x * gui->win.size.y;
+	ft_memcpy(o->prev_color, gui->win.addr, n * sizeof(uint32_t));
 	o->prev_valid = true;
 }
 

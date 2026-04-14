@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:19:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 11:42:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,18 @@ static t_vec3	get_box_cor(t_box *bx, size_t i, t_vec3 ax[3])
 
 /**
  * @brief Tests a single box corner against a plane.
+ * Uses the transform's actual oriented axes (right/up/forward) which are
+ * kept current by integrate_box — avoids the vec3_orthonormal_basis
+ * reconstruction that produced wrong corners after any rotation.
  */
 static void	check_corner(t_contact_query *qu, t_box *bx, t_plane *pl, size_t i)
 {
 	t_vec3	ax[3];
 	t_vec3	cor;
 
-	ax[0] = vec3_norm(bx->transform.forward);
-	vec3_orthonormal_basis(ax[0], &ax[1], &ax[2]);
+	ax[0] = bx->transform.forward;
+	ax[1] = bx->transform.right;
+	ax[2] = bx->transform.up;
 	cor = get_box_cor(bx, i, ax);
 	if (vec3_dot(vec3_sub(cor, pl->transform.pos),
 			vec3_norm(pl->transform.up)) < 0.0 && qu->count < qu->max)

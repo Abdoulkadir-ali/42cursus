@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:22:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 11:22:15 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@
 
 # define MAX_CONTACTS 32768
 # define PHYS_NUM_TYPES 7
+# define MAX_NBODY 4096
+# define MAX_ACCEL 200.0
+/*
+** MAX_SPEED: upper bound on body velocity magnitude (units/s).
+** Set to DBL_MAX — effectively no cap. Floor tunnelling is handled
+** by the contact solver, not by speed limiting.
+*/
+# define MAX_SPEED DBL_MAX
 
 struct s_scene;
 
@@ -40,6 +48,7 @@ typedef struct s_gjk_shape
 	const void		*data;
 	t_support_fn	support;
 	t_vec3			center;
+	double			radius;
 }	t_gjk_shape;
 
 typedef struct s_physics_body
@@ -51,12 +60,19 @@ typedef struct s_physics_body
 	t_vec3				accel;
 	t_vec3				inv_inertia;
 	t_vec3				prev_velocity;
+	t_vec3				orient_r;
+	t_vec3				orient_u;
+	t_vec3				orient_f;
 	double				squash;
 	double				mass;
 	double				inv_mass;
 	double				restitution;
 	double				elasticity;
 	double				friction;
+	double				sleep_timer;
+	double				temperature;
+	double				magnetic_charge;
+	bool				is_sleeping;
 	bool				is_static;
 	bool				use_gravity;
 }						t_physics_body;
@@ -75,6 +91,9 @@ typedef struct s_contact
 	t_vec3				ra;
 	t_vec3				rb;
 	double				lambda_pos;
+	double				accum_n;
+	double				accum_t;
+	uint32_t			hash;
 }						t_contact;
 
 typedef struct s_simplex
@@ -96,6 +115,9 @@ typedef struct s_physics_settings
 	double				time_scale;
 	bool				mesh_simplify_collision;
 	double				big_g;
+	t_vec3				wind;
+	double				wind_turbulence;
+	double				wind_time;
 }						t_physics_settings;
 
 typedef struct s_gen_job
@@ -149,6 +171,8 @@ typedef struct s_physic_engine
 	struct s_scene		*scene;
 	t_physics_settings	settings;
 	t_phys_pool			pool;
+	t_contact			contacts[MAX_CONTACTS];
+	size_t				contact_count;
 }						t_physic_engine;
 
 typedef enum e_collider_type

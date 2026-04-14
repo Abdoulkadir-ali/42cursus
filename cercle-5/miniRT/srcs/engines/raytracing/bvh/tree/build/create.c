@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 21:49:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 20:19:59 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ static t_bvh_tmp_node	*build_tmp_tree(t_scene *scene, size_t total, size_t *k)
 static size_t	get_scene_total(t_scene *scene)
 {
 	size_t	total;
+	size_t	i;
+	size_t	dead;
 
 	total = scene->sphere_count + scene->plane_count;
 	total += scene->cylinder_count + scene->cone_count;
@@ -66,7 +68,17 @@ static size_t	get_scene_total(t_scene *scene)
 	total += scene->tri_count + scene->rect_count;
 	total += scene->pyramid_count + scene->box_count;
 	total += scene->capsule_count;
-	return (total);
+	dead = 0;
+	i = scene->proxy_sphere_base;
+	while (i < scene->sphere_count)
+	{
+		if (scene->spheres[i].radius_sq <= 0.0)
+			dead++;
+		i++;
+	}
+	if (dead > total)
+		dead = total;
+	return (total - dead);
 }
 
 static void	bvh_finalize(t_bvh *bvh, t_bvh_tmp_node *root)

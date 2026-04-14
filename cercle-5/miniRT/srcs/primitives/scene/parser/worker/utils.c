@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 18:48:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:48:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 01:33:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ void	*rt_mesh_worker(void *ptr)
 		i = __sync_fetch_and_add(&t->next_idx, 1);
 		if (i >= t->count)
 			break ;
-		if (t->statuses[i] && t->results[i].type == TYPE_MESH)
+		if (t->statuses[i] && (t->results[i].type == TYPE_MESH
+				|| t->results[i].type == TYPE_SOFT_BODY))
 			mesh_build_resource(NULL, t->results[i].data.mesh_info.path,
 				&t->resources[i]);
 	}

@@ -14,15 +14,14 @@
 
 static t_vec3	aces_tonemap(t_vec3 x)
 {
-	double	a = 2.51;
-	double	b = 0.03;
-	double	c = 2.43;
-	double	d = 0.59;
-	double	e = 0.14;
+	t_vec3	abc;
+	t_vec2	de;
 
-	x.x = (x.x * (a * x.x + b)) / (x.x * (c * x.x + d) + e);
-	x.y = (x.y * (a * x.y + b)) / (x.y * (c * x.y + d) + e);
-	x.z = (x.z * (a * x.z + b)) / (x.z * (c * x.z + d) + e);
+	abc = vec3(2.51, 0.03, 2.43);
+	de = vec2(0.59, 0.14);
+	x.x = (x.x * (abc.x * x.x + abc.y)) / (x.x * (abc.z * x.x + de.x) + de.y);
+	x.y = (x.y * (abc.x * x.y + abc.y)) / (x.y * (abc.z * x.y + de.x) + de.y);
+	x.z = (x.z * (abc.x * x.z + abc.y)) / (x.z * (abc.z * x.z + de.x) + de.y);
 	return (x);
 }
 

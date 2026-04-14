@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 11:45:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 11:54:03 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 12:40:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MESH_H
 # define MESH_H
 
+# define MESH_BVH_STACK_SIZE 64
 
 # include "helpers.h"
 # include "surface.h"
@@ -62,8 +63,45 @@ void					bvh_centroid_bounds(t_mbvh *bvh, int first, int count,
 /* Tracing Internal */
 bool					intersect_tri_precomp(const t_ray *ray,
 							const t_tri_precomp *tc, double *t, t_vec2 *uv);
-bool					intersect_triangle_fast(const t_ray *ray,
-							t_vec3 v[3], double *t, t_vec2 *uv);
+static inline __attribute__((always_inline))
+bool	tri_compute_bary(const t_ray *ray, t_vec3 v[3], t_tri_hit *hit)
+{
+	hit->e1 = vec3_sub(v[1], v[0]);
+	hit->e2 = vec3_sub(v[2], v[0]);
+	hit->pvec = vec3_cross(ray->direction, hit->e2);
+	hit->det = vec3_dot(hit->e1, hit->pvec);
+	if (hit->det > -1e-8 && hit->det < 1e-8)
+		return (false);
+	hit->inv_det = 1.0 / hit->det;
+	hit->tvec = vec3_sub(ray->origin, v[0]);
+	hit->u = vec3_dot(hit->tvec, hit->pvec) * hit->inv_det;
+	if (hit->u < 0.0 || hit->u > 1.0)
+		return (false);
+	hit->qvec = vec3_cross(hit->tvec, hit->e1);
+	hit->v = vec3_dot(ray->direction, hit->qvec) * hit->inv_det;
+	if (hit->v < 0.0 || hit->u + hit->v > 1.0)
+		return (false);
+	return (true);
+}
+
+static inline __attribute__((always_inline))
+bool	intersect_triangle_fast(const t_ray *ray, t_vec3 v[3], double *t,
+			t_vec2 *uv)
+{
+	t_tri_hit	hit;
+
+	if (!tri_compute_bary(ray, v, &hit))
+		return (false);
+	*t = vec3_dot(hit.e2, hit.qvec) * hit.inv_det;
+	if (*t <= EPSILON)
+		return (false);
+	if (uv)
+	{
+		uv->x = hit.u;
+		uv->y = hit.v;
+	}
+	return (true);
+}
 void					update_mesh_hit(t_mesh_hit *hit);
 bool					traverse_occlude(t_mesh *mesh, const t_ray *ray,
 							double dist);
@@ -91,8 +129,8 @@ bool					scene_add_mesh_file(t_scene *scene, const char *path);
 bool					mesh_build_resource(t_thread_pool *pool, const char *path,
 							t_mesh_resource *res);
 bool					scene_inject_mesh_resource(t_scene *scene,
-							t_mesh_resource *res, t_mesh_info *info);
-bool					scene_add_collection(t_scene *scene, t_parse_obj *item);
+							t_mesh_resource *res, t_mesh_info *info);bool					scene_inject_mesh_resource_unique(t_scene *scene,
+						t_mesh_resource *res, t_mesh_info *info);bool					scene_add_collection(t_scene *scene, t_parse_obj *item);
 bool					scene_add_animated(t_scene *scene,
 							t_skinned_mesh animated);
 bool					scene_add_group(t_scene *scene, t_mesh_group g);

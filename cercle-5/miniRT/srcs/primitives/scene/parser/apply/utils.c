@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 18:22:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 21:07:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/11 10:28:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ void	apply_property(t_material *mat, t_mat_mod *mod)
 		mat->shininess = mod->val;
 	else if (mod->kind == MAT_MOD_UV_SCALE)
 		mat->albedo_map.scale = mod->val;
+	else if (mod->kind == MAT_MOD_TEMPERATURE)
+		mat->temperature = mod->val;
 	else
 		apply_prop_sub(mat, mod);
 }

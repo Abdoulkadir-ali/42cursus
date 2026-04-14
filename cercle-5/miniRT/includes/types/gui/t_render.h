@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 00:56:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 23:33:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdatomic.h>
 # include <stdint.h>
+# include <pthread.h>
 # include "t_physics.h"
 # include "t_raytracing.h"
 # include "t_maths.h"
@@ -76,6 +77,7 @@ typedef struct s_render_task
 typedef struct s_optimizations
 {
 	bool		adaptive_scale;
+	bool		auto_fullres;
 	bool		reprojection;
 	bool		temporal_blend;
 	float		*depth_buf;
@@ -102,7 +104,35 @@ typedef struct s_optimizations
 	size_t		taa_frame;
 	double		taa_jitter_x;
 	double		taa_jitter_y;	uint32_t	*bloom_buf;
-	uint32_t	*bloom_tmp;}	t_optimizations;
+	uint32_t	*bloom_tmp;
+}				t_optimizations;
+
+/*
+** t_bake_job — self-contained context for one async background bake.
+** Allocated on heap by bake_job_start; freed by bake_job_cancel/poll.
+*/
+typedef struct s_bake_job
+{
+	pthread_t				thread;
+	volatile bool			running;
+	volatile bool			cancel;
+	volatile bool			done;
+	uint32_t				*accum_r;
+	uint32_t				*accum_g;
+	uint32_t				*accum_b;
+	uint32_t				*pixel_scratch;
+	int						width;
+	int						height;
+	double					fov;
+	size_t					frame;
+	size_t					target;
+	char					out_path[256];
+	struct s_gui			*gui;
+	t_transform				camera;
+	t_raytracer_settings	settings;
+	long long				done_ts;
+	struct s_scene			*scene_snap;
+}	t_bake_job;
 
 /*
 ** t_render_state — frame loop bookkeeping only.
@@ -125,6 +155,7 @@ typedef struct s_render_state
 	struct s_map_entry	*next_entry;
 	int					back_idx;
 	volatile bool		abort_render;
+	t_bake_job			*bake_job;
 }	t_render_state;
 
 typedef struct s_tile

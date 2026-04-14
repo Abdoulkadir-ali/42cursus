@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/01 18:44:24 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 08:58:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,29 +20,26 @@
 
 # ifdef PROFILE_MESH
 
-extern volatile long	g_mesh_calls;
-extern volatile long	g_mesh_aabb_tests;
-extern volatile long	g_mesh_tri_tests;
-extern volatile long	g_mesh_occ_calls;
-extern int				g_prof_frame;
-extern struct timespec	g_prof_start;
+typedef struct s_profiler
+{
+	volatile long	mesh_calls;
+	volatile long	mesh_aabb_tests;
+	volatile long	mesh_tri_tests;
+	volatile long	mesh_occ_calls;
+	int				frame;
+	int				frame_count;
+	double			frame_times[1024];
+	struct timespec	start;
+}	t_profiler;
 
-extern __thread long	tl_g_mesh_calls;
-extern __thread long	tl_g_mesh_aabb_tests;
-extern __thread long	tl_g_mesh_tri_tests;
-extern __thread long	tl_g_mesh_occ_calls;
+extern t_profiler	g_profiler;
 
-#  define PROF_INC(x) (tl_##x++)
-#  define PROF_FLUSH() do { \
-	__sync_fetch_and_add(&g_mesh_calls, tl_g_mesh_calls); \
-	__sync_fetch_and_add(&g_mesh_aabb_tests, tl_g_mesh_aabb_tests); \
-	__sync_fetch_and_add(&g_mesh_tri_tests, tl_g_mesh_tri_tests); \
-	__sync_fetch_and_add(&g_mesh_occ_calls, tl_g_mesh_occ_calls); \
-	tl_g_mesh_calls = 0; tl_g_mesh_aabb_tests = 0; \
-	tl_g_mesh_tri_tests = 0; tl_g_mesh_occ_calls = 0; } while (0)
-#  define PROF_RESET() do { g_mesh_calls = 0; g_mesh_aabb_tests = 0; \
-	g_mesh_tri_tests = 0; g_mesh_occ_calls = 0; \
-	clock_gettime(CLOCK_MONOTONIC, &g_prof_start); } while (0)
+#  define PROF_INC(f) (__sync_fetch_and_add(&g_profiler.f, 1))
+#  define PROF_FLUSH()
+#  define PROF_RESET() do { \
+	g_profiler.mesh_calls = 0; g_profiler.mesh_aabb_tests = 0; \
+	g_profiler.mesh_tri_tests = 0; g_profiler.mesh_occ_calls = 0; \
+	clock_gettime(CLOCK_MONOTONIC, &g_profiler.start); } while (0)
 #  define PROF_PRINT() prof_print_frame()
 
 void	prof_print_frame(void);

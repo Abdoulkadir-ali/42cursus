@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 00:20:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 11:55:07 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,8 @@ typedef struct s_hit
 	double				t;
 	t_vec3				point;
 	t_vec3				normal;
-	t_vec3				v_normal;
 	t_vec3				tangent;
 	t_vec3				bitangent;
-	t_vec2				uv;
-	size_t				mat_id;
 	t_bvh_ref			ref;
 	void				*mesh;
 	size_t				tri_idx;
@@ -147,6 +144,8 @@ typedef struct s_raytracer_settings
 	double	beer_density;     /* absorption coefficient (e.g. 0.0..0.2) */
 	bool	chroma_enabled;   /* chromatic aberration on refraction      */
 	double	chroma_dispersion;/* per-channel IOR split 0..0.1           */
+	bool	stochastic_lights; /* area-light soft shadows via cone sampling */
+	bool	draft_mode;        /* set when camera is moving — skip GI+stoch */
 	t_rt_preset	preset;           /* RT_PRESET_CUSTOM .. RT_PRESET_CINEMATIC  */
 }						t_raytracer_settings;
 
@@ -207,5 +206,12 @@ typedef struct s_split_info
 	size_t				split;
 	double				cost;
 }						t_split_info;
-
+typedef struct s_cyl_info
+{
+	t_vec3				base;
+	t_vec3				top;
+	t_vec3				axis;
+	double				r;
+	t_vec3				tan;
+}					t_cyl_info;
 #endif

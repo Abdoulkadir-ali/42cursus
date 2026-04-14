@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/01 19:12:06 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 00:25:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 01:13:44 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	gui_destroy(t_gui *gui)
 {
 	if (!gui)
 		return ;
+	destroy_phys_pool(&gui->phys_engine);
 	map_manager_destroy(gui);
 	if (gui->win.render_pixels)
 		free(gui->win.render_pixels);

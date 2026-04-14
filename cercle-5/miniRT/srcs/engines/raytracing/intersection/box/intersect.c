@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 00:53:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/11 10:09:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
-static void	get_calc(t_box *bx, const t_ray *ray, t_box_calc *c)
+PROF_HOT
+static inline void	get_calc(t_box *bx, const t_ray *ray, t_box_calc *c)
 {
 	t_vec3	oc;
 
@@ -31,18 +32,22 @@ static void	get_calc(t_box *bx, const t_ray *ray, t_box_calc *c)
 	c->h[0] = bx->half_extents.x;
 	c->h[1] = bx->half_extents.y;
 	c->h[2] = bx->half_extents.z;
+	c->inv_d[0] = 1.0 / c->d[0];
+	c->inv_d[1] = 1.0 / c->d[1];
+	c->inv_d[2] = 1.0 / c->d[2];
 	c->ray = *ray;
 }
 
-static bool	test_axis(t_box_calc *c, int i, double *mm, int *eface)
+PROF_HOT
+static inline bool	test_axis(t_box_calc *c, int i, double *mm, int *eface)
 {
 	double	t[2];
 	double	tmp;
 
-	if (fabs(c->d[i]) < 1e-8)
+	if (__builtin_fabs(c->d[i]) < 1e-8)
 		return (c->p[i] >= -c->h[i] && c->p[i] <= c->h[i]);
-	t[0] = (-c->h[i] - c->p[i]) / c->d[i];
-	t[1] = (c->h[i] - c->p[i]) / c->d[i];
+	t[0] = (-c->h[i] - c->p[i]) * c->inv_d[i];
+	t[1] = (c->h[i] - c->p[i]) * c->inv_d[i];
 	if (t[0] > t[1])
 	{
 		tmp = t[0];
@@ -59,7 +64,8 @@ static bool	test_axis(t_box_calc *c, int i, double *mm, int *eface)
 	return (mm[0] <= mm[1]);
 }
 
-static void	set_box_uv(t_box_calc *c, double t, int axis, t_hit *hit)
+PROF_HOT
+static inline void	set_box_uv(t_box_calc *c, double t, int axis, t_hit *hit)
 {
 	double	lp[3];
 
@@ -76,7 +82,8 @@ static void	set_box_uv(t_box_calc *c, double t, int axis, t_hit *hit)
 		hit->v = (lp[2] + c->h[2]) / (2.0 * c->h[2]);
 }
 
-static void	set_face(t_box_calc *c, double t, int face, t_hit *hit)
+PROF_HOT
+static inline void	set_face(t_box_calc *c, double t, int face, t_hit *hit)
 {
 	hit->t = t;
 	hit->point = vec3_add(c->ray.origin, vec3_scale(c->ray.direction, t));
@@ -96,16 +103,17 @@ bool	intersect_box(const t_ray *ray, t_box *bx, t_hit *hit)
 	t_box_calc	c;
 	double		mm[2];
 	int			eface;
-	size_t		i;
 
 	get_calc(bx, ray, &c);
 	mm[0] = -1e30;
 	mm[1] = 1e30;
 	eface = 0;
-	i = 0;
-	while (i < 3)
-		if (!test_axis(&c, i++, mm, &eface))
-			return (false);
+	if (!test_axis(&c, 0, mm, &eface))
+		return (false);
+	if (!test_axis(&c, 1, mm, &eface))
+		return (false);
+	if (!test_axis(&c, 2, mm, &eface))
+		return (false);
 	if (mm[0] >= 1e-6)
 	{
 		set_face(&c, mm[0], eface, hit);

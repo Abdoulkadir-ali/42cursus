@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:11:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/07 21:57:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 22:58:43 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,19 @@ static void	set_face_hit(t_ray_query *q, double t, t_vec2 uv, t_vec3 n)
 	vec3_orthonormal_basis(n, &q->hit->tangent, &q->hit->bitangent);
 }
 
-static bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
+PROF_HOT
+static inline bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
 {
+	t_vec3	edge1;
+	t_vec3	n_raw;
 	t_vec3	tri[3];
 	double	t;
 	t_vec2	uv;
 
+	edge1 = vec3_sub(b, a);
+	n_raw = vec3_cross(edge1, vec3_sub(c, a));
+	if (vec3_dot(q->ray->direction, n_raw) >= 0.0)
+		return (false);
 	tri[0] = a;
 	tri[1] = b;
 	tri[2] = c;
@@ -76,8 +83,7 @@ static bool	try_face(t_ray_query *q, t_vec3 a, t_vec3 b, t_vec3 c)
 	if (t >= *(q->tm))
 		return (false);
 	*(q->tm) = t;
-	set_face_hit(q, t, uv, vec3_norm(vec3_cross(vec3_sub(b, a),
-				vec3_sub(c, a))));
+	set_face_hit(q, t, uv, vec3_norm(n_raw));
 	return (true);
 }
 

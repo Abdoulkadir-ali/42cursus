@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 18:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 11:25:17 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ t_parse_obj	dispatch_basic(t_parser *p, char *id)
 		return (parse_scene_gravity(p));
 	if (ft_strcmp(id, "damp") == 0)
 		return (parse_scene_damp(p));
+	if (ft_strcmp(id, "wind") == 0)
+		return (parse_scene_wind(p));
+	if (ft_strcmp(id, "turb") == 0)
+		return (parse_scene_turbulence(p));
 	return (init_none());
 }
 
@@ -51,8 +55,10 @@ t_parse_obj	dispatch_shapes(t_parser *p, char *id)
 		return (parse_box(p));
 	if (id[0] == 'c' && id[1] == 'a')
 		return (parse_capsule(p));
-	if (id[0] == 'b' && id[1] == 'h')
+	if (id[0] == 'b' && id[1] == 'h' && id[2] == '\0')
 		return (parse_attractor(p));
+	if (ft_strcmp(id, "bhole") == 0)
+		return (parse_black_hole(p));
 	return (init_none());
 }
 
@@ -68,6 +74,10 @@ t_parse_obj	dispatch_meshes(t_parser *p, char *id)
 		return (parse_mesh_entry(p, TYPE_MESH));
 	if (id[0] == 'm' && id[1] == '\0')
 		return (parse_mesh_entry(p, TYPE_MESH));
+	if (ft_strcmp(id, "sb") == 0)
+		return (parse_soft_body(p));
+	if (ft_strcmp(id, "pe") == 0)
+		return (parse_particle_emitter(p));
 	return (init_none());
 }
 
@@ -91,6 +101,8 @@ static t_parse_obj	dispatch_properties(t_parser *p, char *id)
 		return (parse_prop_mod(p, MAT_MOD_UV_SCALE));
 	if (ft_strcmp(id, "emit_power") == 0)
 		return (parse_prop_mod(p, MAT_MOD_EMIT_POWER));
+	if (ft_strcmp(id, "temp") == 0)
+		return (parse_prop_mod(p, MAT_MOD_TEMPERATURE));
 	return (init_none());
 }
 

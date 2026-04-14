@@ -6,21 +6,30 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 10:52:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 08:56:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "color.h"
 #include <math.h>
 
+static double	clamp_channel(double v)
+{
+	if (v < 0.0)
+		return (0.0);
+	if (v > 255.0)
+		return (255.0);
+	return (v);
+}
+
 /**
  * @brief Clips a color vector values to [0.0, 255.0].
  */
 t_vec3	clip_color(t_vec3 color)
 {
-	color.x = fmin(fmax(color.x, 0.0), 255.0);
-	color.y = fmin(fmax(color.y, 0.0), 255.0);
-	color.z = fmin(fmax(color.z, 0.0), 255.0);
+	color.x = clamp_channel(color.x);
+	color.y = clamp_channel(color.y);
+	color.z = clamp_channel(color.z);
 	return (color);
 }
 

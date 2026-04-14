@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/27 17:44:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:57:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 01:35:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,71 @@
 
 
 /* AABB Utilities (srcs/engines/raytracing/bvh/bound/) */
-t_aabb								aabb_union(const t_aabb *a, const t_aabb *b);
 bool								aabb_intersect(const t_ray *ray,
 										const t_aabb *box, double *t);
-bool								aabb_intersect_fast(const t_aabb *box,
-										const t_ray *ray, double *tmin,
-										double *tmax);
+static inline __attribute__((always_inline))
+bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray, double *tmin,
+			double *tmax)
+{
+	double	t1;
+	double	t2;
+	double	mn;
+	double	mx;
+
+	t1 = (aabb->min.x - ray->origin.x) * ray->inv_dir.x;
+	t2 = (aabb->max.x - ray->origin.x) * ray->inv_dir.x;
+	mn = t1 < t2 ? t1 : t2;
+	mx = t1 > t2 ? t1 : t2;
+	t1 = (aabb->min.y - ray->origin.y) * ray->inv_dir.y;
+	t2 = (aabb->max.y - ray->origin.y) * ray->inv_dir.y;
+	mn = (t1 < t2 ? t1 : t2) > mn ? (t1 < t2 ? t1 : t2) : mn;
+	mx = (t1 > t2 ? t1 : t2) < mx ? (t1 > t2 ? t1 : t2) : mx;
+	t1 = (aabb->min.z - ray->origin.z) * ray->inv_dir.z;
+	t2 = (aabb->max.z - ray->origin.z) * ray->inv_dir.z;
+	mn = (t1 < t2 ? t1 : t2) > mn ? (t1 < t2 ? t1 : t2) : mn;
+	mx = (t1 > t2 ? t1 : t2) < mx ? (t1 > t2 ? t1 : t2) : mx;
+	*tmin = mn;
+	*tmax = mx;
+	return (mx >= 0.0 && mx >= mn);
+}
 t_aabb								aabb_init(void);
-void								aabb_expand_point(t_aabb *bbox, t_vec3 p);
-t_aabb								aabb_create_empty(void);
+
+static inline __attribute__((always_inline))
+t_aabb	aabb_create_empty(void)
+{
+	t_aabb	b;
+
+	b.min.x = MAX_VALUE; b.min.y = MAX_VALUE; b.min.z = MAX_VALUE; b.min.w = 0;
+	b.max.x = -MAX_VALUE; b.max.y = -MAX_VALUE; b.max.z = -MAX_VALUE; b.max.w = 0;
+	return (b);
+}
+
+static inline __attribute__((always_inline))
+t_aabb	aabb_union(const t_aabb *a, const t_aabb *b)
+{
+	t_aabb	r;
+
+	r.min.x = a->min.x < b->min.x ? a->min.x : b->min.x;
+	r.min.y = a->min.y < b->min.y ? a->min.y : b->min.y;
+	r.min.z = a->min.z < b->min.z ? a->min.z : b->min.z;
+	r.min.w = 0;
+	r.max.x = a->max.x > b->max.x ? a->max.x : b->max.x;
+	r.max.y = a->max.y > b->max.y ? a->max.y : b->max.y;
+	r.max.z = a->max.z > b->max.z ? a->max.z : b->max.z;
+	r.max.w = 0;
+	return (r);
+}
+
+static inline __attribute__((always_inline))
+void	aabb_expand_point(t_aabb *bbox, t_vec3 p)
+{
+	if (p.x < bbox->min.x) bbox->min.x = p.x;
+	if (p.y < bbox->min.y) bbox->min.y = p.y;
+	if (p.z < bbox->min.z) bbox->min.z = p.z;
+	if (p.x > bbox->max.x) bbox->max.x = p.x;
+	if (p.y > bbox->max.y) bbox->max.y = p.y;
+	if (p.z > bbox->max.z) bbox->max.z = p.z;
+}
 
 t_vec2i								vec2i(int x, int y);
 t_vec2i								vec2i_add(t_vec2i a, t_vec2i b);
@@ -83,20 +139,59 @@ double								vec2_mag_sq(t_vec2 a);
 double								vec2_mag(t_vec2 a);
 t_vec2								vec2_norm(t_vec2 a);
 
-/* vec3 — declarations */
-t_vec3								vec3(double x, double y, double z);
-t_vec3								vec3_pt(double x, double y, double z);
-t_vec3								vec3_norm(t_vec3 a);
+/* vec3 — hot constructors inlined */
+static inline __attribute__((always_inline))
+t_vec3	vec3(double x, double y, double z)
+{
+	return ((t_vec3){x, y, z, 0.0});
+}
+
+static inline __attribute__((always_inline))
+t_vec3	vec3_pt(double x, double y, double z)
+{
+	return ((t_vec3){x, y, z, 1.0});
+}
 t_vec3								vec3_lerp(t_vec3 a, t_vec3 b, double t);
 t_vec3								vec3_min(t_vec3 a, t_vec3 b);
 t_vec3								vec3_max(t_vec3 a, t_vec3 b);
 bool								vec3_compare(t_vec3 a, t_vec3 b);
-void								vec3_orthonormal_basis(t_vec3 normal,
-										t_vec3 *tangent, t_vec3 *bitangent);
 t_vec3								get_camera_forward(double pitch,
 										double yaw);
 t_vec3								rotate_vector(t_vec3 v, double pitch,
 										double yaw);
+
+static inline __attribute__((always_inline))
+t_vec3	vec3_norm(t_vec3 a)
+{
+	double	mag_sq;
+	double	inv;
+
+	mag_sq = a.x * a.x + a.y * a.y + a.z * a.z;
+	if (mag_sq < 1e-24)
+		return ((t_vec3){0, 0, 0, 0});
+	inv = 1.0 / __builtin_sqrt(mag_sq);
+	return ((t_vec3){a.x * inv, a.y * inv, a.z * inv, 0.0});
+}
+
+static inline __attribute__((always_inline))
+void	vec3_orthonormal_basis(t_vec3 normal, t_vec3 *tangent,
+	t_vec3 *bitangent)
+{
+	t_vec3	up;
+
+	if (normal.y > 0.9 || normal.y < -0.9)
+		up = (t_vec3){1, 0, 0, 0};
+	else
+		up = (t_vec3){0, 1, 0, 0};
+	*bitangent = vec3_norm((t_vec3){
+		normal.y * up.z - normal.z * up.y,
+		normal.z * up.x - normal.x * up.z,
+		normal.x * up.y - normal.y * up.x, 0});
+	*tangent = vec3_norm((t_vec3){
+		bitangent->y * normal.z - bitangent->z * normal.y,
+		bitangent->z * normal.x - bitangent->x * normal.z,
+		bitangent->x * normal.y - bitangent->y * normal.x, 0});
+}
 
 /*
 ** Hot-path vec3 ops: static inline so each TU gets the body and the
@@ -104,6 +199,13 @@ t_vec3								rotate_vector(t_vec3 v, double pitch,
 ** The matching bodies in vec3.c / vec3_ops.c are guarded by this macro.
 */
 # define VEC3_HOT_INLINE 1
+
+/* Force inline in profile build (-O1); compiler handles it at -O3 */
+# ifdef PROFILE_BUILD
+#  define PROF_HOT __attribute__((always_inline))
+# else
+#  define PROF_HOT
+# endif
 
 static inline t_vec3	vec3_add(t_vec3 a, t_vec3 b)
 {
@@ -174,5 +276,16 @@ double								aabb_surface_area(t_aabb bbox);
 double								clamp_d(double v, double lo, double hi);
 double								lerp_d(double a, double b, double t);
 double								normalize_angle(double angle);
+
+/* Float vector helpers */
+static inline t_vec3f	vec3f_add(t_vec3f a, t_vec3f b)
+{
+	return ((t_vec3f){a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w});
+}
+
+static inline t_vec3f	vec3f_muls(t_vec3f a, float s)
+{
+	return ((t_vec3f){a.x * s, a.y * s, a.z * s, a.w * s});
+}
 
 #endif

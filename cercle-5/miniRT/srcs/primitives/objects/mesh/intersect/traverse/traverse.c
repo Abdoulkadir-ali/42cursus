@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:21:50 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 08:57:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static t_index	process_node(t_mesh *mesh, size_t i, const t_ray *ray,
 	t_mbvh_node	*node;
 	t_index		idx;
 
-	PROF_INC(g_mesh_aabb_tests);
+	PROF_INC(mesh_aabb_tests);
 	trace->node_count++;
 	node = &mesh->bvh_nodes[i];
 	if (node->count > 0)

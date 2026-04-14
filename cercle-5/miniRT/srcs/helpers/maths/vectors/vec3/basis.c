@@ -12,18 +12,7 @@
 
 #include "maths.h"
 
-void	vec3_orthonormal_basis(t_vec3 normal, t_vec3 *tangent,
-		t_vec3 *bitangent)
-{
-	t_vec3	up;
-
-	if (fabs(normal.y) > 0.9)
-		up = vec3(1, 0, 0);
-	else
-		up = vec3(0, 1, 0);
-	*bitangent = vec3_norm(vec3_cross(normal, up));
-	*tangent = vec3_norm(vec3_cross(*bitangent, normal));
-}
+/* vec3_orthonormal_basis is now static inline in maths.h */
 
 t_vec3	get_camera_forward(double pitch, double yaw)
 {

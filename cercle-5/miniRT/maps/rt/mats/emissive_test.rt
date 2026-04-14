@@ -2,7 +2,7 @@ A 0.02 255,255,255
 C 0,6,20 0,-0.15,-1 70
 
 # Very dim ambient light — let emissive sphere dominate
-L 15,20,5 0.3 200,200,255
+L 15,20,5 800 200,200,255
 
 # Floor plane (gray)
 pl 0,0,0 0,1,0 140,140,140

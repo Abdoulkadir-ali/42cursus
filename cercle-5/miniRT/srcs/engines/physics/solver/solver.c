@@ -30,14 +30,16 @@ static void	apply_position_correction(t_contact *ct, t_physic_engine *en,
 		double inv_a, double inv_b)
 {
 	double	new_lambda;
+	double	delta_lambda;
 	double	scalar;
 
 	new_lambda = fmin(ct->lambda_pos + fmax(ct->penetration - en->settings.slop,
 				0.0) * en->settings.baumgarte, fmax(ct->penetration
 				- en->settings.slop, 0.0));
-	if (new_lambda - ct->lambda_pos < 1e-9 || inv_a + inv_b < 1e-9)
+	delta_lambda = new_lambda - ct->lambda_pos;
+	if (delta_lambda < 1e-9 || inv_a + inv_b < 1e-9)
 		return ;
-	scalar = (new_lambda - ct->lambda_pos) / (inv_a + inv_b);
+	scalar = delta_lambda / (inv_a + inv_b);
 	ct->lambda_pos = new_lambda;
 	if (ct->a && inv_a > 0.0)
 		update_body_pos(ct->a, ct->ta, vec3_scale(ct->normal, -scalar * inv_a));
@@ -56,7 +58,13 @@ void	solve_positions(t_contact *c, t_physic_engine *engine, size_t count)
 	{
 		inv_a = get_inv_mass(c[i].a);
 		inv_b = get_inv_mass(c[i].b);
-		if (inv_a + inv_b > 1e-8)
+		if ((inv_a < 1e-15 && c[i].a && !c[i].a->is_static)
+			|| (inv_b < 1e-15 && c[i].b && !c[i].b->is_static))
+		{
+			i++;
+			continue ;
+		}
+		if (inv_a + inv_b > 1e-15)
 			apply_position_correction(&c[i], engine, inv_a, inv_b);
 		i++;
 	}

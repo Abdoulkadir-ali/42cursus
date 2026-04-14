@@ -81,6 +81,8 @@ t_index					scene_allocate_object_slot(void **ptr, size_t *count,
 							size_t *cap, size_t sz);
 void					refresh_editor_snaps(t_scene *scene, size_t start_idx);
 void					align_and_frame_meshes(t_scene *scene, size_t start_idx);
+bool					get_last_obj_ref(t_scene *sc, t_type type,
+							t_obj_mat_ref *out);
 bool					get_last_basic_ref(t_scene *sc, t_type type,
 							t_obj_mat_ref *out);
 bool					get_last_complex_ref(t_scene *sc, t_type type,

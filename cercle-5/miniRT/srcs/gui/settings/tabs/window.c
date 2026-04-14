@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 19:05:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ static void	on_scale_change(t_gui *gui)
 		s = 8;
 	gui->render.force_fullres = false;
 	gui->render.scale = s;
+	gui->render.scale_last_change = now_ms();
+	gui->opts.adaptive_scale = false;
 	gui->render.dirty = true;
 }
 

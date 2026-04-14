@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 19:29:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 11:23:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,13 @@ typedef enum e_mat_mod_kind
 	MAT_MOD_PHYS_ELAST,
 	MAT_MOD_PHYS_FRIC,
 	MAT_MOD_PHYS_VEL,
+	MAT_MOD_PHYS_MAGNETIC,
 	MAT_MOD_SCENE_GRAVITY,
 	MAT_MOD_SCENE_BIG_G,
-	MAT_MOD_SCENE_DAMP
+	MAT_MOD_SCENE_DAMP,
+	MAT_MOD_SCENE_WIND,
+	MAT_MOD_SCENE_TURBULENCE,
+	MAT_MOD_TEMPERATURE
 }							t_mat_mod_kind;
 
 typedef struct s_mat_mod
@@ -97,6 +101,7 @@ typedef struct s_parse_obj
 		t_ambient			ambient;
 		t_mesh_info			mesh_info;
 		t_mat_mod			mat_mod;
+		t_emitter					emitter;
 	}					data;
 }						t_parse_obj;
 

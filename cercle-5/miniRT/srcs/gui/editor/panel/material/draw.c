@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 03:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,27 +67,34 @@ static void	draw_fdf_mode_row(t_gui *gui, t_vec2i pos, t_vec2s d)
 		vec2s(bw, ui_sy(18, d)), 0, 0, "Picture"}, cur == FDF_MODE_PICTURE);
 }
 
+static void	draw_mat_header(t_gui *gui, t_material *mat, t_vec2i *p, int slot)
+{
+	t_vec2s	d;
+
+	d = gui->win.disp_size;
+	if (gui->tex_popup_input)
+		gui->tex_popup_input->visible = (slot == 3 && gui->selection.active);
+	draw_mat_slot_buttons(gui, *p, slot, d);
+	p->y += ui_sy(44, d);
+	draw_fdf_mode_row(gui, *p, d);
+	if (get_selected_fdf_mesh(gui))
+		p->y += ui_sy(INSP_HDR_STEP + 26, d);
+	if (!mat && slot == 3)
+		gui_draw_string(gui, "No texture — click Texture to load",
+			(t_vec2i){p->x, p->y}, COL_TEXT);
+}
+
 void	draw_material_panel_text(t_gui *gui, t_vec2i pos)
 {
 	t_material	*mat;
 	t_vec2i		p;
-	t_vec2s		d;
 	int			slot;
 
 	mat = get_selected_material(gui);
-	d = gui->win.disp_size;
-	p = (t_vec2i){pos.x + ui_sx(8, d), ui_sy(92, d)};
+	p = (t_vec2i){pos.x + ui_sx(8, gui->win.disp_size), ui_sy(92,
+			gui->win.disp_size)};
 	slot = get_selected_group_slot(gui);
-	if (gui->tex_popup_input)
-		gui->tex_popup_input->visible = (slot == 3 && gui->selection.active);
-	draw_mat_slot_buttons(gui, p, slot, d);
-	p.y += ui_sy(44, d);
-	draw_fdf_mode_row(gui, p, d);
-	if (get_selected_fdf_mesh(gui))
-		p.y += ui_sy(INSP_HDR_STEP + 26, d);
-	if (!mat && slot == 3)
-		gui_draw_string(gui, "No texture — click Texture to load",
-			(t_vec2i){p.x, p.y}, COL_TEXT);
+	draw_mat_header(gui, mat, &p, slot);
 	if (!mat)
 		return ;
 	draw_mat_surface(gui, mat, &p);

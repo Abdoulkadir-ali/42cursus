@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:50:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	mat_slot(t_scene *sc, t_bvh_ref ref)
 {
-	if (ref.type == TYPE_SPHERE)
+	if (ref.type == TYPE_SPHERE || ref.type == TYPE_PROXY_SPHERE)
 		return (sc->spheres[ref.index].mat_slots[
 				sc->spheres[ref.index].active_slot]);
 	if (ref.type == TYPE_PLANE)

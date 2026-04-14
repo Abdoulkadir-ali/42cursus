@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 21:02:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/11 10:45:01 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ bool				material_panel_handle_click(struct s_gui *gui,
 void				build_mat_sliders(t_material *mat, t_islider *sl,
 						int *count);
 void				sync_group_materials(struct s_gui *gui);
+void				sync_temperature(struct s_gui *gui);
 int					get_selected_group_slot(struct s_gui *gui);
 void				set_selected_group_slot(struct s_gui *gui, int slot);
 t_mesh				*get_selected_fdf_mesh(struct s_gui *gui);

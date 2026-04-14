@@ -6,12 +6,28 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 18:48:33 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 11:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "rt.h"
+#include "physics.h"
+
+static void	inject_sb(t_scene *sc, t_rt *rt, t_rt_line_task *t, size_t i)
+{
+	t_sb_params	p;
+
+	scene_inject_mesh_resource_unique(sc, &t->resources[i],
+		&t->results[i].data.mesh_info);
+	p.mesh_idx = sc->mesh_count - 1;
+	p.stiffness = t->results[i].data.mesh_info.sb_stiffness;
+	p.damping = t->results[i].data.mesh_info.sb_damping;
+	p.offset = t->results[i].data.mesh_info.transform.pos;
+	scene_build_soft_body(sc, p);
+	rt->last_type = TYPE_SOFT_BODY;
+	rt->last_mat_cloned = false;
+}
 
 static void	inject_one(t_scene *sc, t_rt *rt, t_rt_line_task *t, size_t i)
 {
@@ -24,12 +40,17 @@ static void	inject_one(t_scene *sc, t_rt *rt, t_rt_line_task *t, size_t i)
 		rt->last_type = TYPE_MESH;
 		rt->last_mat_cloned = false;
 	}
+	else if (t->results[i].type == TYPE_SOFT_BODY)
+		inject_sb(sc, rt, t, i);
 	else if (process_object(sc, t->results[i]))
 	{
 		rt->last_type = t->results[i].type;
 		rt->last_mat_cloned = false;
 	}
 }
+
+void	cleanup_task(t_rt_line_task *t);
+bool	prep_task(t_rt_line_task *t, char *content);
 
 static void	inject_results(t_scene *sc, t_rt_line_task *t)
 {
@@ -45,25 +66,7 @@ static void	inject_results(t_scene *sc, t_rt_line_task *t)
 			inject_one(sc, &rt, t, i);
 		free(t->lines[i++]);
 	}
-	free(t->lines);
-	free(t->results);
-	free(t->statuses);
-	free(t->resources);
-}
-
-static bool	prep_task(t_rt_line_task *t, char *content)
-{
-	t->lines = ft_split(content, '\n');
-	free(content);
-	if (!t->lines)
-		return (false);
-	t->count = 0;
-	while (t->lines[t->count])
-		t->count++;
-	t->results = ft_calloc(t->count, sizeof(t_parse_obj));
-	t->statuses = ft_calloc(t->count, sizeof(bool));
-	t->resources = ft_calloc(t->count, sizeof(t_mesh_resource));
-	return (t->results && t->statuses && t->resources);
+	cleanup_task(t);
 }
 
 bool	parse_rt_worker(const char *path, t_scene *scene)

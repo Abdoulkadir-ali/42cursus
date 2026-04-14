@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/11 12:11:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,32 +71,60 @@ static void	update_rect_rot(t_rect *rc, double dt, t_vec3 rot_d, t_vec3 delta)
 	}
 }
 
+static void	apply_rect_vel(t_rect *rc, double dt,
+					t_physics_settings *s)
+{
+	t_vec2	damp;
+
+	clamp_accel(&rc->phys);
+	rc->phys.velocity = vec3_add(rc->phys.velocity,
+				vec3_add(vec3_scale(s->gravity, dt),
+					vec3_scale(rc->phys.accel, dt)));
+	rc->phys.accel = vec3(0, 0, 0);
+	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
+	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
+	rc->phys.velocity = vec3_scale(rc->phys.velocity, damp.x);
+	clamp_speed(&rc->phys);
+	rc->phys.angular_velocity = vec3_scale(rc->phys.angular_velocity, damp.y);
+}
+
+static void	apply_rect_vel(t_rect *rc, double dt,
+					t_physics_settings *s)
+{
+	t_vec2	damp;
+
+	clamp_accel(&rc->phys);
+	rc->phys.velocity = vec3_add(rc->phys.velocity,
+				vec3_add(vec3_scale(s->gravity, dt),
+					vec3_scale(rc->phys.accel, dt)));
+	rc->phys.accel = vec3(0, 0, 0);
+	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
+	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
+	rc->phys.velocity = vec3_scale(rc->phys.velocity, damp.x);
+	clamp_speed(&rc->phys);
+	rc->phys.angular_velocity = vec3_scale(rc->phys.angular_velocity, damp.y);
+}
+
 /**
  * @brief Integrates a rectangle through one time step.
  */
 void	integrate_rect(t_rect *rc, double dt, t_physics_settings *s)
 {
 	t_vec3	delta;
-	t_vec2	damp;
 
 	if (rc->phys.is_static)
 		return ;
 	init_rect_inertia(rc);
 	delta = vec3_sub(rc->transform.pos, vec3_scale(vec3_add(vec3_add(rc->v[0],
-						rc->v[1]), vec3_add(rc->v[2], rc->v[3])), 0.25));
+							rc->v[1]), vec3_add(rc->v[2], rc->v[3])), 0.25));
 	apply_displace(rc, delta);
-	rc->phys.velocity = vec3_add(rc->phys.velocity,
-			vec3_add(vec3_scale(s->gravity, dt),
-				vec3_scale(rc->phys.accel, dt)));
-	rc->phys.accel = vec3(0, 0, 0);
-	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
-	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
-	rc->phys.velocity = vec3_scale(rc->phys.velocity, damp.x);
-	rc->phys.angular_velocity = vec3_scale(rc->phys.angular_velocity, damp.y);
+	apply_rect_vel(rc, dt, s);
 	delta = vec3_scale(rc->phys.velocity, dt);
 	update_rect_rot(rc, dt, vec3_scale(rc->phys.angular_velocity,
-			dt * (180.0 / M_PI)), delta);
+				dt * (180.0 / M_PI)), delta);
 	rc->transform.pos = vec3_add(rc->transform.pos, delta);
 	rc->phys.center = rc->transform.pos;
 	rc->phys.pos = rc->transform.pos;
+	phys_heat_viscous(&rc->phys, dt);
+	phys_cool_radiative(&rc->phys, dt);
 }

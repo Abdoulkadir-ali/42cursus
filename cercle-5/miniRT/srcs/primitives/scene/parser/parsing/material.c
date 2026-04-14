@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 19:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 19:32:55 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 11:17:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,15 @@ static t_mat_mod_kind	match_phys_mod(const char *sub)
 		return (MAT_MOD_PHYS_FRIC);
 	if (ft_strcmp(sub, "vel") == 0)
 		return (MAT_MOD_PHYS_VEL);
+	if (ft_strcmp(sub, "charge") == 0)
+		return (MAT_MOD_PHYS_MAGNETIC);
 	return ((t_mat_mod_kind)-1);
 }
 
 t_parse_obj	parse_phys_mod(t_parser *p)
 {
 	t_parse_obj	res;
-	char			sub[16];
+	char		sub[16];
 
 	ft_memset(&res, 0, sizeof(res));
 	parser_skip_horizontal_spaces(p);

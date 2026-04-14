@@ -17,10 +17,14 @@
 */
 bool	is_emissive(t_scene *sc, size_t mat_id)
 {
-	t_vec3	e;
+	t_material	*mat;
+	t_vec3		e;
 
 	if (mat_id >= sc->mat_count)
 		return (false);
-	e = sc->materials[mat_id].emission;
+	mat = &sc->materials[mat_id];
+	if (mat->temperature > 0.0)
+		return (true);
+	e = mat->emission;
 	return ((e.x * e.x + e.y * e.y + e.z * e.z) > 1.0);
 }

@@ -6,20 +6,27 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 16:49:45 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 22:19:55 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "map.h"
+#include "profiler.h"
+#include <stdlib.h>
 
 #ifdef PROFILE_BUILD
 
 static void	handle_profile_exit(t_gui *gui)
 {
-	static int	prof_frames = 0;
+	int	max_frames;
 
-	if (++prof_frames > 5)
+	max_frames = 22;
+	if (getenv("BENCH_FRAMES"))
+		max_frames = atoi(getenv("BENCH_FRAMES")) + 2;
+	gui->render.dirty = true;
+	gui->render.last_dirty = true;
+	if (g_prof_frame >= max_frames)
 		mlx_loop_end(gui->win.mlx);
 }
 

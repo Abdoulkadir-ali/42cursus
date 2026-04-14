@@ -6,18 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 00:56:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 01:35:56 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 
-/*
-** 3x3 box blur on the low-res render buffer.
-** Reads from render_pixels (via win.addr), writes back in-place row by row.
-** Only the current render dimensions (win.size) are touched — not the full
-** disp_size allocation — so it is safe at any adaptive scale level.
-*/
 static uint32_t	blend3(uint32_t a, uint32_t b, uint32_t c)
 {
 	unsigned int	r;
@@ -30,68 +24,60 @@ static uint32_t	blend3(uint32_t a, uint32_t b, uint32_t c)
 	return ((r << 16) | (g << 8) | bv);
 }
 
-static uint32_t	sample_clamp(const uint32_t *buf, int x, int y, int w, int h)
+static uint32_t	sample_clamp(const uint32_t *buf, t_vec2i p, t_vec2i sz)
 {
-	if (x < 0)
-		x = 0;
-	if (x >= w)
-		x = w - 1;
-	if (y < 0)
-		y = 0;
-	if (y >= h)
-		y = h - 1;
-	return (buf[y * w + x]);
+	if (p.x < 0)
+		p.x = 0;
+	if (p.x >= sz.x)
+		p.x = sz.x - 1;
+	if (p.y < 0)
+		p.y = 0;
+	if (p.y >= sz.y)
+		p.y = sz.y - 1;
+	return (buf[p.y * sz.x + p.x]);
 }
 
-/*
-** Horizontal 1D box pass into a scratch row stored in a static thread-local
-** buffer.  Then the vertical pass reads from the original buffer.
-** We do a simple separable 3-tap box (1/3, 1/3, 1/3) — fast and effective.
-*/
+static void	smooth_row(t_gui *gui, t_vec2i sz, int y, uint32_t *buf)
+{
+	uint32_t	tmp[RENDER_W];
+	int			x;
+
+	(void)gui;
+	x = 0;
+	while (x < sz.x)
+	{
+		tmp[x] = blend3(sample_clamp(buf, (t_vec2i){x - 1, y}, sz),
+				sample_clamp(buf, (t_vec2i){x, y}, sz),
+				sample_clamp(buf, (t_vec2i){x + 1, y}, sz));
+		x++;
+	}
+	x = 0;
+	while (x < sz.x)
+	{
+		buf[y * sz.x + x] = blend3(sample_clamp(tmp, (t_vec2i){x, 0},
+					(t_vec2i){sz.x, 1}),
+				sample_clamp(buf, (t_vec2i){x, y - 1}, sz),
+				sample_clamp(buf, (t_vec2i){x, y + 1}, sz));
+		x++;
+	}
+}
+
 void	smooth_render_band(t_gui *gui, size_t y_start, size_t y_end)
 {
-	uint32_t	*buf;
-	uint32_t	tmp[RENDER_W];
-	uint32_t	h_px;
-	int			w;
-	int			h;
-	int			x;
-	int			y;
+	t_vec2i	sz;
+	int		y;
 
 	if (gui->render.scale < 2)
 		return ;
-	buf = (uint32_t *)gui->win.addr;
-	w = (int)gui->win.size.x;
-	h = (int)gui->win.size.y;
+	sz = (t_vec2i){(int)gui->win.size.x, (int)gui->win.size.y};
 	y = (int)y_start;
 	while (y < (int)y_end)
-	{
-		x = 0;
-		while (x < w)
-		{
-			h_px = blend3(
-				sample_clamp(buf, x - 1, y, w, h),
-				sample_clamp(buf, x, y, w, h),
-				sample_clamp(buf, x + 1, y, w, h));
-			tmp[x] = h_px;
-			x++;
-		}
-		x = 0;
-		while (x < w)
-		{
-			buf[y * w + x] = blend3(
-				sample_clamp((uint32_t *)tmp, x, 0, w, 1),
-				buf[((y > 0 ? y - 1 : 0)) * w + x],
-				buf[((y < h - 1 ? y + 1 : h - 1)) * w + x]);
-			x++;
-		}
-		y++;
-	}
+		smooth_row(gui, sz, y++, (uint32_t *)gui->win.addr);
 }
 
 void	smooth_render(t_gui *gui)
 {
-	if (gui->render.scale < 2)
+	if (gui->render.scale < 2 || gui->opts.taa)
 		return ;
 	gui_parallel_task_worker(gui, TASK_BLUR);
 }

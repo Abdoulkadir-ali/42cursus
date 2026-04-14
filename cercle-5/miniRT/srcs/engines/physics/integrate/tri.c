@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 20:48:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 19:26:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	integrate_tri(t_tri_shape *tr, double dt, t_physics_settings *s)
 			1.0 / 3.0);
 	delta = vec3_sub(tr->xform.pos, delta);
 	apply_displace(tr, delta);
+	clamp_accel(&tr->phys);
 	tr->phys.velocity = vec3_add(tr->phys.velocity,
 			vec3_add(vec3_scale(s->gravity, dt),
 				vec3_scale(tr->phys.accel, dt)));
@@ -91,6 +92,7 @@ void	integrate_tri(t_tri_shape *tr, double dt, t_physics_settings *s)
 	damp.x = clamp_d(1.0 - s->global_damping * dt, 0, 1);
 	damp.y = clamp_d(1.0 - s->global_damping * 0.5 * dt, 0, 1);
 	tr->phys.velocity = vec3_scale(tr->phys.velocity, damp.x);
+	clamp_speed(&tr->phys);
 	tr->phys.angular_velocity = vec3_scale(tr->phys.angular_velocity, damp.y);
 	delta = vec3_scale(tr->phys.velocity, dt);
 	rot = vec3_scale(tr->phys.angular_velocity, dt * (180.0 / M_PI));

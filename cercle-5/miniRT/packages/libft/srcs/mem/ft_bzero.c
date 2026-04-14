@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 20:06:12 by abdali            #+#    #+#             */
-/*   Updated: 2025/11/04 09:56:27 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 23:03:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,5 @@
  */
 void	ft_bzero(void *s, size_t n)
 {
-	unsigned char	*str;
-
-	str = (unsigned char *)s;
-	while (n)
-		str[n-- - 1] = 0;
+	ft_memset(s, 0, n);
 }

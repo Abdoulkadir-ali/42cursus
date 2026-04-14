@@ -11,53 +11,7 @@
 /* ************************************************************************** */
 
 #include "raytracing.h"
-
-bool	near_sphere_t(const t_ray *ray, t_vec3 center, double radius,
-		double *t_out)
-{
-	t_vec3	oc;
-	double	b;
-	double	c;
-	double	disc;
-
-	oc = vec3_sub(ray->origin, center);
-	b = vec3_dot(oc, ray->direction);
-	c = vec3_dot(oc, oc) - radius * radius;
-	disc = b * b - c;
-	if (disc < 0.0)
-		return (false);
-	*t_out = -b - sqrt(disc);
-	if (*t_out < 1e-6)
-		*t_out = -b + sqrt(disc);
-	return (*t_out > 1e-6);
-}
-
-bool	cylinder_body_t(const t_ray *ray, t_capsule *cap, double *t_out)
-{
-	t_vec3	oc;
-	t_vec3	perp[2];
-	double	abc[4];
-
-	oc = vec3_sub(ray->origin, cap->transform.pos);
-	perp[0] = vec3_sub(ray->direction,
-			vec3_scale(cap->axis, vec3_dot(ray->direction, cap->axis)));
-	perp[1] = vec3_sub(oc, vec3_scale(cap->axis, vec3_dot(oc, cap->axis)));
-	abc[0] = vec3_dot(perp[0], perp[0]);
-	if (abc[0] < 1e-10)
-		return (false);
-	abc[1] = 2.0 * vec3_dot(perp[0], perp[1]);
-	abc[2] = vec3_dot(perp[1], perp[1]) - cap->radius * cap->radius;
-	abc[3] = abc[1] * abc[1] - 4.0 * abc[0] * abc[2];
-	if (abc[3] < 0.0)
-		return (false);
-	*t_out = (-abc[1] - sqrt(abc[3])) / (2.0 * abc[0]);
-	if (*t_out < 1e-6)
-		*t_out = (-abc[1] + sqrt(abc[3])) / (2.0 * abc[0]);
-	abc[3] = vec3_dot(vec3_sub(vec3_add(ray->origin,
-					vec3_scale(ray->direction, *t_out)),
-				cap->transform.pos), cap->axis);
-	return (*t_out > 1e-6 && fabs(abc[3]) <= cap->half_height);
-}
+/* near_sphere_t and cylinder_body_t are now static inline in raytracing.h */
 
 static void	set_uv_tan(t_capsule *cp, t_hit *h, t_cap_calc *c, t_vec3 lo)
 {

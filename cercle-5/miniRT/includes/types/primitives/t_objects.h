@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:21:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 20:50:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,11 @@ typedef enum e_type
 	TYPE_CAMERA,
 	TYPE_LIGHT,
 	TYPE_SPHERE,
+	TYPE_PROXY_SPHERE,
 	TYPE_PLANE,
 	TYPE_MESH,
 	TYPE_ANIM,
+	TYPE_SOFT_BODY,
 	TYPE_CYLINDER,
 	TYPE_CONE,
 	TYPE_TRI,
@@ -35,14 +37,14 @@ typedef enum e_type
 	TYPE_BOX,
 	TYPE_CAPSULE,
 	TYPE_ATTRACTOR,
+	TYPE_PARTICLE_EMITTER,
 	TYPE_MAT_MOD
 }	t_type;
 
 typedef struct s_attractor
 {
 	t_vec3			pos;
-	double				mass;
-}						t_attractor;
+	double				mass;	bool					is_black_hole;}						t_attractor;
 
 typedef enum e_light_type
 {

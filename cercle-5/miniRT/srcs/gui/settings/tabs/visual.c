@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 02:18:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 01:55:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static void	build_vr(t_gui *gui, t_iradio *vr)
 	vr[4] = init_iradio("Beer", &gui->rt_engine.settings.beer_enabled, NULL);
 	vr[5] = init_iradio("Chroma",
 			&gui->rt_engine.settings.chroma_enabled, NULL);
+	vr[6] = init_iradio("Stoch Lights",
+			&gui->rt_engine.settings.stochastic_lights, NULL);
 }
 
 static void	build_sl(t_gui *gui, t_islider *sl)
@@ -40,60 +42,52 @@ static void	build_sl(t_gui *gui, t_islider *sl)
 
 void	draw_settings_visual_tab(t_gui *gui, t_vec2i o)
 {
-	t_iradio	vr[6];
+	t_iradio	vr[7];
 	t_islider	sl[5];
-	size_t		i;
 	int			y;
+	int			i;
 
 	build_vr(gui, vr);
 	build_sl(gui, sl);
 	y = o.y + 12;
 	mlx_string_put_c(gui->win.mlx, gui->win.win, o.x + 8, y,
 		COL_HOVER, "VISUAL");
-	i = 0;
-	while (i < 6)
+	i = -1;
+	while (++i < 7)
 	{
 		y += 24;
 		draw_radio_row(gui, (t_panel){vec2i(o.x, y),
 			vec2s(SETTINGS_W - 16, 0), 0, 0, ""}, vr[i]);
-		i++;
 	}
 	y += 24;
-	i = 0;
-	while (i < 5)
-	{
-		draw_settings_slider(gui, vec2i(o.x + 8, y + 24 + (int)i * 36), sl[i]);
-		i++;
-	}
+	i = -1;
+	while (++i < 5)
+		draw_settings_slider(gui, vec2i(o.x + 8, y + 24 + i * 36), sl[i]);
 }
 
 bool	click_settings_visual_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 {
-	t_iradio	vr[6];
+	t_iradio	vr[7];
 	t_islider	sl[5];
-	size_t		i;
 	int			y;
+	int			i;
 
 	build_vr(gui, vr);
 	build_sl(gui, sl);
 	y = o.y + 36;
-	i = 0;
-	while (i < 6)
+	i = -1;
+	while (++i < 7)
 	{
 		if (try_radio_click(gui, mouse, (t_panel){vec2i(o.x, y),
 				vec2s(SETTINGS_W - 16, 0), 0, 0, ""}, vr[i]))
 			return (true);
 		y += 24;
-		i++;
 	}
 	y += 24;
-	i = 0;
-	while (i < 5)
-	{
+	i = -1;
+	while (++i < 5)
 		if (try_settings_slider_click(gui, mouse,
-				vec2i(o.x + 8, y + 24 + (int)i * 36), sl[i]))
+				vec2i(o.x + 8, y + 24 + i * 36), sl[i]))
 			return (true);
-		i++;
-	}
 	return (false);
 }

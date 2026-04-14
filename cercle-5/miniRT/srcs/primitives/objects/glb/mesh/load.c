@@ -6,11 +6,21 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:33:55 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 03:00:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 04:30:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "glb.h"
+
+static void	widen_val(size_t *dst, unsigned char *src, size_t i, int type)
+{
+	if (type == GLB_TYPE_UNSIGNED_SHORT)
+		dst[i] = ((unsigned short *)src)[i];
+	else if (type == GLB_TYPE_UNSIGNED_INT)
+		dst[i] = ((unsigned int *)src)[i];
+	else
+		dst[i] = src[i];
+}
 
 static void	widen_indices(size_t *dst, unsigned char *src, size_t count,
 				int comp_type)
@@ -18,29 +28,10 @@ static void	widen_indices(size_t *dst, unsigned char *src, size_t count,
 	size_t	i;
 
 	i = 0;
-	if (comp_type == GLB_TYPE_UNSIGNED_SHORT)
+	while (i < count)
 	{
-		while (i < count)
-		{
-			dst[i] = ((unsigned short *)src)[i];
-			i++;
-		}
-	}
-	else if (comp_type == GLB_TYPE_UNSIGNED_INT)
-	{
-		while (i < count)
-		{
-			dst[i] = ((unsigned int *)src)[i];
-			i++;
-		}
-	}
-	else
-	{
-		while (i < count)
-		{
-			dst[i] = src[i];
-			i++;
-		}
+		widen_val(dst, src, i, comp_type);
+		i++;
 	}
 }
 

@@ -40,16 +40,18 @@ void	obj_set_out_vertex(t_obj *obj, size_t vi, size_t vti, size_t vni)
 void	obj_ensure_out_capacity(t_obj *obj)
 {
 	size_t	cnt;
+	size_t	cap_vt;
+	size_t	cap_vn;
 
 	cnt = obj->out_v_count;
-	if (obj->out_v_count < obj->out_v_cap)
-		return ;
+	cap_vt = obj->out_v_cap;
+	cap_vn = obj->out_v_cap;
 	if (!dynarray_ensure((void **)&obj->out_v, cnt,
 			&obj->out_v_cap, sizeof(t_vec3))
 		|| !dynarray_ensure((void **)&obj->out_vt, cnt,
-			&obj->out_v_cap, sizeof(t_vec2))
+			&cap_vt, sizeof(t_vec2))
 		|| !dynarray_ensure((void **)&obj->out_vn, cnt,
-			&obj->out_v_cap, sizeof(t_vec3)))
+			&cap_vn, sizeof(t_vec3)))
 		return ;
 }
 

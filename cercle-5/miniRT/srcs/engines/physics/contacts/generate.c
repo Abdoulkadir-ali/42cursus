@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 10:48:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 09:41:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,20 @@ static size_t	collect_results(t_physic_engine *engine, t_contact *contacts,
 	return (count);
 }
 
+static void	zero_new_contacts(t_contact *c, size_t count)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < count)
+	{
+		c[i].accum_n = 0.0;
+		c[i].accum_t = 0.0;
+		c[i].lambda_pos = 0.0;
+		i++;
+	}
+}
+
 /**
  * @brief Main entry point for parallel contact generation.
  */
@@ -60,11 +74,13 @@ size_t	generate_contacts(t_scene *scene, t_physic_engine *engine,
 		t_contact *contacts, size_t max_c)
 {
 	static t_contact	bufs[PHYS_NUM_TYPES][MAX_CONTACTS];
+	size_t				count;
 
 	engine->scene = scene;
 	if (!engine->pool.initialized)
 		init_phys_pool(engine);
-	ft_memset(bufs, 0, sizeof(bufs));
 	dispatch_jobs(scene, engine, bufs, max_c);
-	return (collect_results(engine, contacts, bufs, max_c));
+	count = collect_results(engine, contacts, bufs, max_c);
+	zero_new_contacts(contacts, count);
+	return (count);
 }

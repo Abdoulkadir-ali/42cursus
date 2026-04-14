@@ -28,6 +28,8 @@
 # define COL_PANEL_HDR 0x1A1A28
 # define COL_ROW_HOVER 0x1E2030
 # define COL_ROW_SEL 0x2A3040
+# define COL_BAKE_SAVED 0x00FF80
+# define COL_BAKE_TEXT 0xFFFFFF
 
 /* Toggle & Radio Colors */
 # define COL_TOGGLE_ON_BG 0x206040

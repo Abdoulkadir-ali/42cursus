@@ -6,30 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 14:52:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 00:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
-
-static void	upscale_row(t_gui *gui, t_vec2i dst, double ry)
-{
-	t_vec2	src;
-	double	step_x;
-	int		dsw;
-
-	src.y = ry;
-	step_x = (double)gui->win.size.x / (double)gui->win.disp_size.x;
-	dsw = gui->win.disp_size.x;
-	src.x = 0;
-	dst.x = 0;
-	while (dst.x < dsw)
-	{
-		upscale_pixel(gui, dst, src);
-		src.x += step_x;
-		dst.x++;
-	}
-}
+#include "optimizations.h"
 
 void	upscale_band(t_gui *gui, size_t y_start, size_t y_end)
 {

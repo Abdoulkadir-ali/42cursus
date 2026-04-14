@@ -6,26 +6,39 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 17:11:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 12:27:29 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 12:40:13 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
+/*
+** OBJ meshes: t_vertex *vertices (field .pos) + t_triangle *triangles
+** GLB meshes: t_mesh_geom geometry (t_vec3 *vertices, direct, no .pos)
+** bvh_init_indices allocates m->indices for OBJ too, so branching on
+** m->indices no longer identifies the model.  Use m->vertices != NULL.
+*/
+static t_vec3	mesh_vtx_pos(const t_mesh *m, size_t idx)
+{
+	if (m->vertices)
+		return (m->vertices[idx].pos);
+	return (m->geometry.vertices[idx]);
+}
+
 static void	process_mesh_triangles(const t_sphere *s, t_mesh *m,
 				t_mbvh_node *node, t_collision *col)
 {
 	size_t	i;
-	size_t	tri_idx;
+	size_t	base;
 	t_vec3	v[3];
 
 	i = 0;
 	while (i < node->count)
 	{
-		tri_idx = m->bvh_indices[node->left_or_first + i];
-		v[0] = m->vertices[m->indices[tri_idx * 3 + 0]].pos;
-		v[1] = m->vertices[m->indices[tri_idx * 3 + 1]].pos;
-		v[2] = m->vertices[m->indices[tri_idx * 3 + 2]].pos;
+		base = (node->left_or_first + i) * 3;
+		v[0] = mesh_vtx_pos(m, m->bvh_indices[base + 0]);
+		v[1] = mesh_vtx_pos(m, m->bvh_indices[base + 1]);
+		v[2] = mesh_vtx_pos(m, m->bvh_indices[base + 2]);
 		if (test_sphere_triangle(s, v, col))
 		{
 			col->hit = true;
@@ -39,7 +52,7 @@ static void	process_mesh_triangles(const t_sphere *s, t_mesh *m,
 static void	traverse_mesh_bvh(const struct s_sphere *s, t_mesh *m,
 				t_aabb s_aabb, t_collision *col)
 {
-	t_mbvh_node	*stack[64];
+	t_mbvh_node	*stack[MESH_BVH_STACK_SIZE];
 	int			top;
 	t_mbvh_node	*node;
 
@@ -52,22 +65,16 @@ static void	traverse_mesh_bvh(const struct s_sphere *s, t_mesh *m,
 			continue ;
 		if (node->count > 0)
 			process_mesh_triangles(s, m, node, col);
-		else
+		else if (top < MESH_BVH_STACK_SIZE - 2)
 		{
+			stack[top++] = &m->bvh_nodes[(size_t)(node - m->bvh_nodes) + 1];
 			stack[top++] = &m->bvh_nodes[node->left_or_first];
-			stack[top++] = &m->bvh_nodes[node->left_or_first + 1];
 		}
 	}
 }
 
-/**
- * Traverses the mesh BVH to check for collisions with a sphere.
- */
-/**
- * Traverses the mesh BVH to check for collisions with a sphere.
- */
 bool	detect_sphere_mesh_collision(const struct s_sphere *s, struct s_mesh *m,
-			t_physic_engine *en, t_collision *out)
+				t_physic_engine *en, t_collision *out)
 {
 	t_aabb		s_aabb;
 	t_collision	col;
@@ -76,6 +83,8 @@ bool	detect_sphere_mesh_collision(const struct s_sphere *s, struct s_mesh *m,
 		&& m->collider.type == COLLIDER_CAPSULE)
 		return (detect_sphere_capsule_collision(s, &m->collider, out));
 	if (!m || !m->bvh_nodes)
+		return (false);
+	if (!m->vertices && !m->geometry.vertices)
 		return (false);
 	s_aabb = sphere_aabb((t_sphere *)s);
 	if (!mesh_aabb_overlap(&m->bbox, &s_aabb))

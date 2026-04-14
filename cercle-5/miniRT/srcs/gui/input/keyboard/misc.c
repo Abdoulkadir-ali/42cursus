@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   move_forward.c                                     :+:      :+:    :+:   */
+/*   misc.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 16:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/11 16:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/12 01:45:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "input.h"
+#include "optimizations.h"
 
 void	map_next_press(t_gui *gui)
 {
@@ -30,17 +31,21 @@ void	exit_press(t_gui *gui)
 
 void	fullres_toggle(t_gui *gui)
 {
-	size_t	s;
-
 	gui->render.force_fullres = !gui->render.force_fullres;
-	if (!gui->render.force_fullres)
-	{
-		s = (size_t)(gui->settings.render_scale + 0.5);
-		if (s < 1)
-			s = 1;
-		if (s > 8)
-			s = 8;
-		gui->render.scale = s;
-	}
+	if (gui->render.force_fullres)
+		gui->render.scale = 1;
 	gui->render.dirty = true;
+	gui->opts.prev_valid = false;
+	if (gui->render.force_fullres)
+		ft_print_debug("Force FullRes: ON\n");
+	else
+		ft_print_debug("Force FullRes: OFF\n");
+}
+
+void	bake_toggle(t_gui *gui)
+{
+	if (gui->render.bake_job && gui->render.bake_job->running)
+		bake_job_cancel(gui);
+	else
+		bake_job_start(gui);
 }

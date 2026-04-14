@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:29:30 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/10 16:41:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,18 @@
 #include "raytracing.h"
 
 /**
- * @brief Tests a pair of boxes for collision using AABB broadphase then GJK.
+ * @brief Tests a pair of boxes for collision using AABB broadphase then GJK,
+ *        then expands the single contact into a multi-point manifold.
  */
 static void	test_box_pair(t_contact_query *qu, t_col_pair *p, t_aabb aabb_a)
 {
-	if (aabb_overlap(aabb_a, box_aabb((t_box *)p->sb->data)))
-	{
-		if (gjk_make_contact(p, &qu->contacts[qu->count]))
-			qu->count++;
-	}
+	t_contact	base;
+
+	if (!aabb_overlap(aabb_a, box_aabb((t_box *)p->sb->data)))
+		return ;
+	if (!gjk_make_contact(p, &base))
+		return ;
+	box_vs_box_manifold(qu, (t_box *)p->sa->data, (t_box *)p->sb->data, &base);
 }
 
 /**
