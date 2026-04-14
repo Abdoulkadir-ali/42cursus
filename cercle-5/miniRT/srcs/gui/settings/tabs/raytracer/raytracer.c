@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 01:38:38 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:16:57 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static bool	click_rt_sl(t_gui *gui, t_vec2i mouse, t_vec2i o, int y)
 		if (try_settings_slider_click(gui, mouse,
 				vec2i(o.x + 8, y + 24 + i * 36), sl[i]))
 			return (true);
-	return (click_preset(gui, mouse, o, y + 348));
+	return (false);
 }
 
 bool	click_settings_raytracer_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)

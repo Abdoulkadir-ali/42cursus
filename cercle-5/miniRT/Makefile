@@ -70,6 +70,12 @@ fclean: clean
 	@$(RM) $(NAME)
 	@$(MAKE) -s -C $(LIBFT_DIR) fclean
 
+ffclean: fclean
+	@printf "$(YELLOW)Cleaning minilibx-linux...$(RESET)\n"
+	@$(RM) -r $(MINILIBX_DIR)
+	@printf "$(YELLOW)Cleaning stb_image.h...$(RESET)\n"
+	@$(RM) $(STB_IMAGE)
+
 re: fclean all
 
 clean_package:
@@ -140,4 +146,4 @@ gprof-build: $(LIBFT) $(MINILIBX) $(GPROF_OBJS)
 prof-clean:
 	$(RM) -r $(PROF_OBJS_DIR) $(GPROF_OBJS_DIR) miniRT-prof miniRT-gprof gmon.out callgrind.out*
 
-.PHONY: all clean fclean re test FORCE profile gprof-build prof-clean
+.PHONY: all clean fclean ffclean re test FORCE profile gprof-build prof-clean
