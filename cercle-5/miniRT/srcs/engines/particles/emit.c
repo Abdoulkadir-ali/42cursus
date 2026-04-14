@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 12:25:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:40:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,9 @@ static t_vec3	cone_dir(t_vec3 dir, double spread, unsigned int *seed)
 	v[0] = cos(spread * rnd01(seed));
 	v[1] = sqrt(1.0 - v[0] * v[0]);
 	v[2] = 2.0 * M_PI * rnd01(seed);
+	help = vec3(0, 1, 0);
 	if (fabs(dir.x) < 0.9)
 		help = vec3(1, 0, 0);
-	else
-		help = vec3(0, 1, 0);
 	p[0] = vec3_norm(vec3_cross(dir, help));
 	p[1] = vec3_norm(vec3_cross(dir, p[0]));
 	p[2] = vec3_add(
@@ -69,56 +68,47 @@ static void	spawn_props(t_particle_soa *soa, const t_emitter *em,
 	soa->alive++;
 }
 
-static void	spawn_one(t_particle_soa *soa, const t_emitter *em,
-				unsigned int *seed)
+static void	set_spawn_pos(t_particle_soa *s, const t_emitter *e,
+				unsigned int *sd, t_vec3 *l)
 {
-	size_t	i;
-	t_vec3	launch;
 	t_vec3	on;
+	size_t	i;
 
-	i = soa->alive;
-	if (em->shape == EMITTER_SPHERE_SURF)
+	i = s->alive;
+	if (e->shape == EMITTER_SPHERE_SURF)
 	{
-		on = random_on_sphere(seed);
-		soa->px[i] = em->pos.x + on.x * em->spread;
-		soa->py[i] = em->pos.y + on.y * em->spread;
-		soa->pz[i] = em->pos.z + on.z * em->spread;
-		launch = vec3_scale(on, em->speed);
+		on = random_on_sphere(sd);
+		s->px[i] = e->pos.x + on.x * e->spread;
+		s->py[i] = e->pos.y + on.y * e->spread;
+		s->pz[i] = e->pos.z + on.z * e->spread;
+		*l = vec3_scale(on, e->speed);
+		return ;
 	}
-	else if (em->shape == EMITTER_CONE)
-	{
-		soa->px[i] = em->pos.x;
-		soa->py[i] = em->pos.y;
-		soa->pz[i] = em->pos.z;
-		launch = vec3_scale(cone_dir(vec3_norm(em->dir), em->spread, seed),
-				em->speed);
-	}
+	s->px[i] = e->pos.x;
+	s->py[i] = e->pos.y;
+	s->pz[i] = e->pos.z;
+	if (e->shape == EMITTER_CONE)
+		*l = vec3_scale(cone_dir(vec3_norm(e->dir), e->spread, sd), e->speed);
 	else
-	{
-		soa->px[i] = em->pos.x;
-		soa->py[i] = em->pos.y;
-		soa->pz[i] = em->pos.z;
-		launch = vec3_scale(vec3_norm(em->dir), em->speed);
-	}
-	spawn_props(soa, em, seed, launch);
+		*l = vec3_scale(vec3_norm(e->dir), e->speed);
 }
 
 void	emit_particles(t_particle_soa *soa, t_emitter *em, double dt)
 {
-	double			to_spawn;
 	int				n;
 	unsigned int	seed;
+	t_vec3			launch;
 
 	if (!em->active || em->rate <= 0.0)
 		return ;
 	em->_accum += em->rate * dt;
-	to_spawn = em->_accum;
-	n = (int)to_spawn;
+	n = (int)em->_accum;
 	em->_accum -= (double)n;
 	seed = (unsigned int)(soa->alive * 2654435761u ^ (size_t)(em));
 	while (n > 0 && soa->alive < soa->cap)
 	{
-		spawn_one(soa, em, &seed);
+		set_spawn_pos(soa, em, &seed, &launch);
+		spawn_props(soa, em, &seed, launch);
 		n--;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/11 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 12:30:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:35:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,33 +26,26 @@ static void	sync_one(t_physics_body *phys, size_t mat_id, t_scene *sc)
 	apply_blackbody_to_mat(&sc->materials[mat_id]);
 }
 
-static void	sync_collapse_radii(t_scene *sc)
+static void	sphere_collapse_step(t_sphere *sp)
 {
-	size_t	i;
 	double	rs;
 	double	radius;
 	double	target_r;
 
-	i = 0;
-	while (i < sc->sphere_count)
+	if (sp->phys.is_static || sp->phys.mass <= 0.0)
+		return ;
+	rs = 2.0 * THERMAL_G_C2 * sp->phys.mass;
+	if (rs >= THERMAL_COLLAPSE_THRESHOLD)
 	{
-		if (!sc->spheres[i].phys.is_static && sc->spheres[i].phys.mass > 0.0)
+		radius = sqrt(sp->radius_sq);
+		target_r = rs;
+		if (rs < 0.05)
+			target_r = 0.05;
+		if (target_r < radius)
 		{
-			rs = 2.0 * THERMAL_G_C2 * sc->spheres[i].phys.mass;
-			if (rs >= THERMAL_COLLAPSE_THRESHOLD)
-			{
-				radius = sqrt(sc->spheres[i].radius_sq);
-				target_r = rs;
-				if (rs < 0.05)
-					target_r = 0.05;
-				if (target_r < radius)
-				{
-					radius = radius * 0.92 + target_r * 0.08;
-					sc->spheres[i].radius_sq = radius * radius;
-				}
-			}
+			radius = radius * 0.92 + target_r * 0.08;
+			sp->radius_sq = radius * radius;
 		}
-		i++;
 	}
 }
 
@@ -64,6 +57,7 @@ static void	sync_vols(t_scene *sc)
 	while (i < sc->sphere_count)
 	{
 		sync_one(&sc->spheres[i].phys, sc->spheres[i].mat_id, sc);
+		sphere_collapse_step(&sc->spheres[i]);
 		i++;
 	}
 	i = 0;
@@ -118,5 +112,4 @@ void	sync_thermal_to_materials(t_scene *sc)
 		sync_one(&sc->tris[i].phys, sc->tris[i].mat_id, sc);
 		i++;
 	}
-	sync_collapse_radii(sc);
 }

@@ -43,7 +43,7 @@ static void	init_rt_options(t_gui *gui)
 static void	init_rt_defaults(t_gui *gui)
 {
 	gui->opts.adaptive_scale = false;
-gui->opts.auto_fullres = false;
+	gui->opts.auto_fullres = false;
 	gui->opts.reprojection = false;
 	gui->opts.temporal_blend = false;
 	gui->opts.frame_interp = false;

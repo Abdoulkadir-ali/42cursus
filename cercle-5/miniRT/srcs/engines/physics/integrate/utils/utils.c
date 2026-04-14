@@ -6,15 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/11 14:52:21 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:05:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-/**
- * @brief Performs Rodrigues rotation of vector v by angular velocity w * dt.
- */
 t_vec3	rot_by_ang(t_vec3 v, t_vec3 w, double dt)
 {
 	double	th;
@@ -72,37 +69,4 @@ void	wake_body(t_physics_body *b)
 		return ;
 	b->is_sleeping = false;
 	b->sleep_timer = 0.0;
-}
-
-/**
- * @brief Clamps body->accel to MAX_ACCEL magnitude.
- *        Gravitational attraction from a very massive neighbour can produce
- *        thousands of m/s² per step, launching the body through solid floors
- *        before the collision solver gets a chance to respond.
- *        Clamping preserves direction but caps the speed gain per frame.
- */
-void	clamp_accel(t_physics_body *b)
-{
-	double	mag_sq;
-	double	mag;
-
-	mag_sq = vec3_mag_sq(b->accel);
-	if (mag_sq > MAX_ACCEL * MAX_ACCEL)
-	{
-		mag = sqrt(mag_sq);
-		b->accel = vec3_scale(b->accel, MAX_ACCEL / mag);
-	}
-}
-
-void	clamp_speed(t_physics_body *b)
-{
-	double	mag_sq;
-	double	mag;
-
-	mag_sq = vec3_mag_sq(b->velocity);
-	if (mag_sq > MAX_SPEED * MAX_SPEED)
-	{
-		mag = sqrt(mag_sq);
-		b->velocity = vec3_scale(b->velocity, MAX_SPEED / mag);
-	}
 }

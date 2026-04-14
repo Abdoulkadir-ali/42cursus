@@ -6,15 +6,12 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 19:26:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 12:52:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
 
-/**
- * @brief Initializes inertia for a triangle shape.
- */
 static void	init_tri_inertia(t_tri_shape *tr)
 {
 	double	a2;
@@ -29,13 +26,14 @@ static void	init_tri_inertia(t_tri_shape *tr)
 	tr->phys.inv_inertia = vec3(18.0 / b2, 18.0 / (a2 + b2), 18.0 / a2);
 }
 
-/**
- * @brief Displaces triangle vertices to maintain world center.
- */
-static void	apply_displace(t_tri_shape *tr, t_vec3 delta)
+static void	apply_displace(t_tri_shape *tr)
 {
+	t_vec3	delta;
 	size_t	i;
 
+	delta = vec3_scale(vec3_add(vec3_add(tr->v[0], tr->v[1]), tr->v[2]),
+			1.0 / 3.0);
+	delta = vec3_sub(tr->xform.pos, delta);
 	i = 0;
 	while (i < 3)
 	{
@@ -46,9 +44,6 @@ static void	apply_displace(t_tri_shape *tr, t_vec3 delta)
 	tr->phys.center = tr->xform.pos;
 }
 
-/**
- * @brief Updates rotation and orientation for the triangle.
- */
 static void	update_tri_rot(t_tri_shape *tr, double dt, t_vec3 rot_d,
 		t_vec3 delta)
 {
@@ -68,22 +63,13 @@ static void	update_tri_rot(t_tri_shape *tr, double dt, t_vec3 rot_d,
 	}
 }
 
-/**
- * @brief Integrates a triangle body through one time step.
- */
-void	integrate_tri(t_tri_shape *tr, double dt, t_physics_settings *s)
+static void	step_tri_kinematics(t_tri_shape *tr, double dt,
+				const t_physics_settings *s)
 {
-	t_vec3	delta;
 	t_vec2	damp;
+	t_vec3	delta;
 	t_vec3	rot;
 
-	if (tr->phys.is_static)
-		return ;
-	init_tri_inertia(tr);
-	delta = vec3_scale(vec3_add(vec3_add(tr->v[0], tr->v[1]), tr->v[2]),
-			1.0 / 3.0);
-	delta = vec3_sub(tr->xform.pos, delta);
-	apply_displace(tr, delta);
 	clamp_accel(&tr->phys);
 	tr->phys.velocity = vec3_add(tr->phys.velocity,
 			vec3_add(vec3_scale(s->gravity, dt),
@@ -100,4 +86,13 @@ void	integrate_tri(t_tri_shape *tr, double dt, t_physics_settings *s)
 	tr->xform.pos = vec3_add(tr->xform.pos, delta);
 	tr->phys.center = tr->xform.pos;
 	tr->phys.pos = tr->xform.pos;
+}
+
+void	integrate_tri(t_tri_shape *tr, double dt, t_physics_settings *s)
+{
+	if (tr->phys.is_static)
+		return ;
+	init_tri_inertia(tr);
+	apply_displace(tr);
+	step_tri_kinematics(tr, dt, s);
 }

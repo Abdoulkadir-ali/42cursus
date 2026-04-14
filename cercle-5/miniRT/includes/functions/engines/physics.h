@@ -58,7 +58,10 @@ size_t  generate_contacts(t_scene *scene, t_physic_engine *engine, t_contact *co
 void	apply_attractor_pass(t_scene *scene, t_physics_settings *s);
 void	apply_nbody_gravity(t_scene *scene, double big_g);
 void	apply_wind_pass(t_scene *scene, t_physics_settings *s, double dt);
+void	apply_pair_grav(t_physics_body *a, t_physics_body *b, double big_g);
+void	apply_pair_mag(t_physics_body *a, t_physics_body *b);
 void	sync_phys_settings(t_scene *scene, t_physic_engine *engine);
+void	bvh_sync(t_scene *scene);
 
 /* Thermal System */
 void	phys_heat_viscous(t_physics_body *b, double dt);
@@ -220,7 +223,18 @@ t_vec3	rot_by_ang(t_vec3 v, t_vec3 w, double dt);
 void	sync_phys_settings(t_scene *scene, t_physic_engine *engine);
 double	value_noise3(double x, double y, double z);
 
-/* Warm-start utility */
+void	apply_wind_vols(t_scene *sc, const t_physics_settings *s, double dt);
+void	apply_wind_surfs(t_scene *sc, const t_physics_settings *s, double dt);
+void	apply_wind_to_soft_bodies(t_scene *scene, const t_physics_settings *s);
+void	apply_wind_to_particles(t_particle_soa *soa,
+			const t_physics_settings *s, double dt);
+t_vec3	wind_accel_at(t_vec3 pos, const t_physics_settings *s);
+void	apply_wind_to_physics_body(t_physics_body *b,
+			const t_physics_settings *s, double dt);
 void	update_vel(t_contact *ct, double ia, double ib, double dj);
+void	persist_contacts(t_physic_engine *en, t_contact *new_c, size_t count);
+void	warm_start(t_physic_engine *en);
+void	solve_all(t_physic_engine *engine);
+void	clamp_all_speeds(t_scene *sc);
 
 #endif

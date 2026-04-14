@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 16:41:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:15:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 
 /**
  * @brief Applies rotational impulse (torque) to a physics body.
- *        When orient_r/u/f are set, transforms the torque into the body's
- *        local frame before applying the (diagonal) inertia inverse — this
- *        is the R * I_inv * R^T operation that keeps spinning correct for
- *        rotated boxes and pyramids.
- * @param sign Direction of the impulse for this body (-1 or 1).
  */
 void	apply_phys_torque(t_physics_body *b, t_vec3 r, t_vec3 imp, double sign)
 {
@@ -65,28 +60,23 @@ static void	apply_f_imp(t_contact *ct, t_vec3 f_imp, double ia, double ib)
 
 /**
  * @brief Calculates and applies frictional impulses along the contact tangent.
- *        Clamped via Coulomb friction cone: |jt| <= friction * j_normal.
  */
 void	apply_friction(t_contact *ct, t_vec3 rel_v, double j_normal)
 {
 	t_vec3	vt;
-	t_vec3	tangent;
-	double	ia;
-	double	ib;
-	double	jt;
-	double	old_accum;
-	double	max_f;
+	t_vec3	tan;
+	double	a[4];
 
-	ia = get_inv_mass(ct->a);
-	ib = get_inv_mass(ct->b);
+	a[0] = get_inv_mass(ct->a);
+	a[1] = get_inv_mass(ct->b);
 	vt = vec3_sub(rel_v, vec3_scale(ct->normal, vec3_dot(rel_v, ct->normal)));
 	if (vec3_mag_sq(vt) <= 1e-6)
 		return ;
-	tangent = vec3_norm(vt);
-	jt = -vec3_dot(rel_v, tangent) / (ia + ib + ang_term(ct->a, ct->ra,
-				tangent, ia) + ang_term(ct->b, ct->rb, tangent, ib));
-	old_accum = ct->accum_t;
-	max_f = ct->friction * j_normal;
-	ct->accum_t = clamp_d(old_accum + jt, -max_f, max_f);
-	apply_f_imp(ct, vec3_scale(tangent, ct->accum_t - old_accum), ia, ib);
+	tan = vec3_norm(vt);
+	a[2] = -vec3_dot(rel_v, tan) / (a[0] + a[1] + ang_term(ct->a, ct->ra,
+				tan, a[0]) + ang_term(ct->b, ct->rb, tan, a[1]));
+	a[3] = ct->friction * j_normal;
+	a[3] = clamp_d(ct->accum_t + a[2], -a[3], a[3]);
+	apply_f_imp(ct, vec3_scale(tan, a[3] - ct->accum_t), a[0], a[1]);
+	ct->accum_t = a[3];
 }
