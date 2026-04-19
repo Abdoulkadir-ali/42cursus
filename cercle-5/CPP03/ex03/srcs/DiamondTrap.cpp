@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 12:24:01 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 12:24:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 14:25:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ DiamondTrap::DiamondTrap()
       FragTrap(),
       name("")
 {
-    this->hp     = FragTrap::hp;
-    this->energy = ScavTrap::energy;
-    this->damage = FragTrap::damage;
+    this->hp     = 100;
+    this->energy = 50;
+    this->damage = 30;
     std::cout << "DiamondTrap default constructor called" << std::endl;
 }
 
@@ -30,10 +30,9 @@ DiamondTrap::DiamondTrap(const std::string& name)
       FragTrap(name),
       name(name)
 {
-    
-    this->hp     = FragTrap::hp;
-    this->energy = ScavTrap::energy;
-    this->damage = FragTrap::damage;
+    this->hp     = 100;
+    this->energy = 50;
+    this->damage = 30;
     std::cout << "DiamondTrap " << this->name << " constructor called" << std::endl;
 }
 

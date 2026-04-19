@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 16:33:47 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 14:15:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 14:25:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ ClapTrap::ClapTrap(const ClapTrap &c)
 
 ClapTrap::~ClapTrap()
 {
-	std::cout << this->type << " Desctructor called" << std::endl;
+	std::cout << this->type << " " << this->name << " Destructor called" << std::endl;
 }
 
 bool ClapTrap::isDead(bool verbose) const
