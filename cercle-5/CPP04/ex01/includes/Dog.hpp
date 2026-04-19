@@ -5,23 +5,28 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:06:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 06:27:20 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:37:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include "Animal.hpp"
-#include "Brain.hpp"
+# pragma once
+# include "Animal.hpp"
+# include "Brain.hpp"
 
 class Dog : public Animal
-{	
+{
 	private:
-		Brain *brain;
-	
+		Brain* brain;
+		static const Verbose verbose = FULL;
+
 	public:
 		Dog();
-		Dog(const Dog &d);
-		~Dog();
-		void makeSound(void);
+		Dog(const Dog& other);
+		virtual ~Dog();
+		Dog& operator=(const Dog& other);
+
+		void makeSound() const;
+
+		friend std::ostream& operator<<(std::ostream& os, const Dog& obj);
 };

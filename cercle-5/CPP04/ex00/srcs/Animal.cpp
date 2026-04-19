@@ -5,26 +5,53 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:06:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 04:32:44 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:36:24 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:36:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Animal.hpp"
 
-Animal::Animal() : name(""), type("Animal")
+Animal::Animal() : type("Animal")
 {
-	std::cout << "Building " <<this->type << std::endl;
+	if (verbose == FULL)
+		std::cout << "Animal constructor called" << std::endl;
 }
 
-Animal::Animal(const Animal &c)
+Animal::Animal(const Animal& other)
 {
-    this->name = c.name;
-    this->type = c.type;
-	std::cout << "Copying " <<this->type << std::endl;
+	if (verbose == FULL)
+		std::cout << "Animal copy constructor called" << std::endl;
+	*this = other;
 }
 
-Animal::~Animal(void)
+Animal::~Animal()
 {
-	std::cout << "Destroying " <<this->type << std::endl;
+	if (verbose == FULL)
+		std::cout << "Animal destructor called" << std::endl;
+}
+
+Animal& Animal::operator=(const Animal& other)
+{
+	if (verbose == FULL)
+		std::cout << "Animal assignation operator called" << std::endl;
+	if (this != &other)
+		this->type = other.type;
+	return *this;
+}
+
+void Animal::makeSound() const
+{
+	std::cout << "* Animal sound *" << std::endl;
+}
+
+std::string Animal::getType() const
+{
+	return this->type;
+}
+
+std::ostream& operator<<(std::ostream& os, const Animal& obj)
+{
+	os << "Animal type: " << obj.getType();
+	return os;
 }

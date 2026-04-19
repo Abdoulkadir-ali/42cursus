@@ -5,23 +5,27 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 09:34:56 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 11:09:46 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:44:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include <iostream>
-#include "AMateria.hpp"
-#include "ICharacter.hpp"
+# pragma once
+# include "AMateria.hpp"
 
 class Cure : public AMateria
 {
-    public:
-        Cure();
-        Cure(const Cure& other);
-        Cure& operator=(const Cure& other);
-        ~Cure();
-        AMateria* clone() const;
-        void use(ICharacter& target);
+	private:
+		static const Verbose verbose = FULL;
+
+	public:
+		Cure();
+		Cure(const Cure& other);
+		virtual ~Cure();
+		Cure& operator=(const Cure& other);
+
+		AMateria* clone() const;
+		void use(ICharacter& target);
+
+		friend std::ostream& operator<<(std::ostream& os, const Cure& obj);
 };

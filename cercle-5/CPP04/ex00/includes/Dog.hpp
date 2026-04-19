@@ -5,19 +5,24 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:06:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 04:32:57 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:35:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:36:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include "Animal.hpp"
+# pragma once
+# include "Animal.hpp"
 
 class Dog : public Animal
 {
-  public:
-  	void makeSound(void);
-    Dog();
-    Dog(const Dog &d);
-    ~Dog();
+	private:
+		static const Verbose verbose = FULL;
+
+	public:
+		Dog();
+		Dog(const Dog& other);
+		virtual ~Dog();
+		Dog& operator=(const Dog& other);
+		void makeSound() const;
+		friend std::ostream& operator<<(std::ostream& os, const Dog& obj);
 };

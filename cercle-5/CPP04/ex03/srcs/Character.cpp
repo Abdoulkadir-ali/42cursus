@@ -1,65 +1,57 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Character.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 09:42:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 14:47:25 by abdoali          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "Character.hpp"
-#include <iostream>
 
-Character::Character()
-    : name("default"), inventory(NULL)
+Character::Character(std::string const& name) : name(name)
 {
+	if (verbose == FULL)
+		std::cout << "Character " << name << " created" << std::endl;
 }
 
-Character::Character(const std::string& name)
-    : name(name), inventory(NULL)
+Character::Character(const Character& other) : name(other.name), inventory(other.inventory)
 {
-}
-
-Character::Character(const Character& other)
-    : name(other.name), inventory(other.inventory)
-{
-}
-
-Character& Character::operator=(const Character& other)
-{
-    if (this == &other)
-        return *this;
-
-    name = other.name;
-    inventory = other.inventory;
-    return *this;
+	if (verbose == FULL)
+		std::cout << "Character " << name << " copied" << std::endl;
 }
 
 Character::~Character()
 {
+	if (verbose == FULL)
+		std::cout << "Character " << name << " destroyed" << std::endl;
 }
 
-std::string const & Character::getName() const
+Character& Character::operator=(const Character& other)
 {
-    return name;
+	if (this != &other)
+	{
+		name = other.name;
+		inventory = other.inventory;
+	}
+	return *this;
+}
+
+std::string const& Character::getName() const
+{
+	return name;
 }
 
 void Character::equip(AMateria* m)
 {
-    inventory->equip(m);
+	inventory.addMateria(m);
 }
 
 void Character::unequip(int idx)
 {
-    inventory->unequip(idx);
+	inventory.removeMateria(idx);
 }
 
-void Character::use(int idx, ICharacter &target)
+void Character::use(int idx, ICharacter& target)
 {
-    const Materia* m = inventory->getItem(idx);
-    if (m)
-        m->use(static_cast<Materia>(target));
+	AMateria* m = inventory.getMateria(idx);
+	if (m)
+		m->use(target);
+}
+
+std::ostream& operator<<(std::ostream& os, const Character& obj)
+{
+	os << "Character " << obj.getName() << " with " << obj.inventory;
+	return os;
 }

@@ -5,44 +5,48 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 06:44:11 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 07:07:13 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:38:08 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:38:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Animal.hpp"
 
-
-Animal::Animal(): name(""), type("Animal")
-{}
+Animal::Animal() : type("Animal")
+{
+	if (verbose == FULL)
+		std::cout << "Animal constructor called" << std::endl;
+}
 
 Animal::Animal(const Animal& other)
 {
-    this->name = other.name;
-    this->type = other.type;
+	if (verbose == FULL)
+		std::cout << "Animal copy constructor called" << std::endl;
+	*this = other;
 }
 
-Animal::~Animal() 
-{}
+Animal::~Animal()
+{
+	if (verbose == FULL)
+		std::cout << "Animal destructor called" << std::endl;
+}
 
 Animal& Animal::operator=(const Animal& other)
 {
-    if (this != &other)
-    {
-        this->name = other.name;
-        this->type = other.type;
-    }
-    return *this;
+	if (verbose == FULL)
+		std::cout << "Animal assignation operator called" << std::endl;
+	if (this != &other)
+		type = other.type;
+	return *this;
 }
 
 std::string Animal::getType() const
-{return this->type;}
-
-std::string Animal::getName() const
-{return this->name;}
-
-std::ostream& operator<<(std::ostream& os, const Animal& animal)
 {
-    os << "Animal <" << animal.getType() << ">, Name: " << animal.getName();
-    return os;
+	return type;
+}
+
+std::ostream& operator<<(std::ostream& os, const Animal& obj)
+{
+	os << "Animal of type: " << obj.type;
+	return os;
 }

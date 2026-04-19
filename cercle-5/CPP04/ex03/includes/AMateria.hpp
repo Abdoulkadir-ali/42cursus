@@ -5,25 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 09:34:04 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 11:24:08 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:44:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include <iostream>
-#include <string>
-
-class ICharacter;
+# pragma once
+# include "defines.hpp"
+# include "ICharacter.hpp"
 
 class AMateria
 {
-    protected:
-        std::string type;
-    public:
-        AMateria(std::string const & type);
-        std::string const & getType() const; //Returns the materia type
-        virtual ~AMateria();
-        virtual AMateria* clone() const = 0;
-        virtual void use(ICharacter& target);
+	private:
+		static const Verbose verbose = FULL;
+
+	protected:
+		std::string type;
+
+	public:
+		AMateria(std::string const& type);
+		AMateria(const AMateria& other);
+		virtual ~AMateria();
+		AMateria& operator=(const AMateria& other);
+
+		std::string const& getType() const;
+		virtual AMateria* clone() const = 0;
+		virtual void use(ICharacter& target);
+
+		friend std::ostream& operator<<(std::ostream& os, const AMateria& obj);
 };

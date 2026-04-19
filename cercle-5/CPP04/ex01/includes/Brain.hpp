@@ -5,22 +5,25 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:36:33 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 06:26:13 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 14:00:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:37:21 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#pragma once
-#include <iostream>
+# pragma once
+# include "defines.hpp"
 
 class Brain
 {
-    private:
-        std::string type;
-        std::string ideas[100];
-    public:
-        Brain(void);
-        Brain(const Brain &brain);
-        ~Brain();
+	private:
+		std::string ideas[100];
+		static const Verbose verbose = FULL;
+
+	public:
+		Brain();
+		Brain(const Brain& other);
+		virtual ~Brain();
+		Brain& operator=(const Brain& other);
+
+		friend std::ostream& operator<<(std::ostream& os, const Brain& obj);
 };

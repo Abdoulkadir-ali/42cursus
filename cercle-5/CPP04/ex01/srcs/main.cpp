@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 03:57:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 06:29:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 13:37:38 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,28 @@
 
 int main(void)
 {
-    Animal animals[100];
-    int i;
+	const int SIZE = 10;
+	Animal *animals[SIZE];
 
-    i = 0;
-    while (i < 50)
-        animals[i++] = Cat();
-    while (i < 100)
-        animals[i++] = Dog();
-    return (0);
+	for (size_t i = 0; i < SIZE / 2; i++)
+		animals[i] = new Cat();
+
+	for (size_t i = SIZE / 2; i < SIZE; i++)
+		animals[i] = new Dog();
+
+	std::cout << "\n--- Sounds ---" << std::endl;
+	for (size_t i = 0; i < SIZE; i++)
+		animals[i]->makeSound();
+
+	std::cout << "\n--- Deep copy test ---" << std::endl;
+	Dog d1;
+	Dog d2(d1);
+	Dog d3;
+	d3 = d1;
+
+	std::cout << "\n--- Deleting all (destructor order matters) ---" << std::endl;
+	for (size_t i = 0; i < SIZE; i++)
+		delete animals[i];
+
+	return 0;
 }

@@ -5,41 +5,57 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:06:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 06:26:30 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:37:35 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:37:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Dog.hpp"
 
-Dog::Dog() : Animal()
+Dog::Dog()
 {
-    this->type = "Dog";
-    this->name = "";
-    this->brain = new Brain();
-    std::cout << "Building " <<this->type << std::endl;
+	this->type = "Dog";
+	this->brain = new Brain();
+	if (verbose == FULL)
+		std::cout << "Dog constructor called" << std::endl;
 }
 
-Dog::Dog(const Dog& copyDog) : Animal(copyDog)
+Dog::Dog(const Dog& other) : Animal(other)
 {
-    this->name = copyDog.name;
-    this->type = copyDog.type;
-    if (this->brain)
-        delete this->brain;
-    if (copyDog.brain)
-        this->brain = new Brain(*copyDog.brain);
-    else
-        this->brain = NULL; 
+	this->brain = NULL;
+	if (verbose == FULL)
+		std::cout << "Dog copy constructor called" << std::endl;
+	*this = other;
 }
 
 Dog::~Dog()
 {
-    if (this->brain)
-        delete this->brain;
-    std::cout << "Killing " <<this->type << std::endl;
+	delete this->brain;
+	if (verbose == FULL)
+		std::cout << "Dog destructor called" << std::endl;
 }
 
-void Dog::makeSound(void)
+Dog& Dog::operator=(const Dog& other)
 {
-    std::cout << "<" << this->type << ">: Bark" << std::endl;
+	if (verbose == FULL)
+		std::cout << "Dog assignation operator called" << std::endl;
+	if (this != &other)
+	{
+		this->type = other.type;
+		if (this->brain)
+			delete this->brain;
+		this->brain = new Brain(*other.brain);
+	}
+	return *this;
+}
+
+void Dog::makeSound() const
+{
+	std::cout << "Woof Woof" << std::endl;
+}
+
+std::ostream& operator<<(std::ostream& os, const Dog& obj)
+{
+	os << "Dog type: " << obj.getType();
+	return os;
 }

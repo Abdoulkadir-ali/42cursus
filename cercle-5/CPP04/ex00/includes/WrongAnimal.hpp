@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Animal.hpp                                         :+:      :+:    :+:   */
+/*   WrongAnimal.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:06:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 13:36:44 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:11:01 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:42:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,20 @@
 #include <iostream>
 #include "defines.hpp"
 
-class Animal
+class WrongAnimal
 {
     private:
         static const Verbose verbose = FULL;
 
     protected:
-        std::string name;
         std::string type;
-        
 
     public:
-        Animal(void);
-        Animal(const Animal &a);
-        virtual ~Animal();
-        Animal& operator=(const Animal& other);
-        virtual void makeSound(void) const;
-        std::string  getType(void) const;
-        friend std::ostream& operator<<(std::ostream& os, const Animal& a);
+        WrongAnimal(void);
+        WrongAnimal(const WrongAnimal &a);
+        virtual ~WrongAnimal();
+        WrongAnimal& operator=(const WrongAnimal& other);
+        void        makeSound(void) const;
+        std::string getType(void) const;
+        friend std::ostream& operator<<(std::ostream& os, const WrongAnimal& a);
 };

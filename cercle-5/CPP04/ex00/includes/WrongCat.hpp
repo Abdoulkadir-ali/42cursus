@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Brain.hpp                                          :+:      :+:    :+:   */
+/*   WrongCat.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/19 14:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 13:38:28 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:55:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:36:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # pragma once
-# include "defines.hpp"
+# include "WrongAnimal.hpp"
 
-class Brain
+class WrongCat : public WrongAnimal
 {
-	private:
-		std::string ideas[100];
-		static const Verbose verbose = FULL;
-
-	public:
-		Brain();
-		Brain(const Brain& other);
-		virtual ~Brain();
-		Brain& operator=(const Brain& other);
-
-		friend std::ostream& operator<<(std::ostream& os, const Brain& obj);
+    private:
+        static const Verbose verbose = FULL;
+        
+    public:
+		WrongCat();
+		WrongCat(const WrongCat& other);
+		virtual ~WrongCat();
+		WrongCat& operator=(const WrongCat& other);
+		friend std::ostream& operator<<(std::ostream& os, const WrongCat& obj);
+        void makeSound() const;
 };

@@ -5,31 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 09:42:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 11:46:52 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:44:04 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include <string>
-#include "ICharacter.hpp"
-#include "Inventory.hpp"
+# pragma once
+# include "ICharacter.hpp"
+# include "Inventory.hpp"
 
 class Character : public ICharacter
 {
-    private:
-        std::string name;
-        Inventory *inventory;
+	private:
+		std::string name;
+		Inventory inventory;
+		static const Verbose verbose = FULL;
 
-    public:
-        Character();
-        Character(const std::string& name);
-        Character(const Character& other);
-        Character& operator=(const Character& other);
-        ~Character();
+	public:
+		Character(std::string const& name);
+		Character(const Character& other);
+		virtual ~Character();
+		Character& operator=(const Character& other);
 
-        std::string const & getName() const;
-        void equip(AMateria* m);
-        void unequip(int idx);
-        void use(int idx, ICharacter &target);
+		std::string const& getName() const;
+		void equip(AMateria* m);
+		void unequip(int idx);
+		void use(int idx, ICharacter& target);
+
+		friend std::ostream& operator<<(std::ostream& os, const Character& obj);
 };

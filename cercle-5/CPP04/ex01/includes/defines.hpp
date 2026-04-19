@@ -1,29 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Brain.hpp                                          :+:      :+:    :+:   */
+/*   defines.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/19 14:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 13:38:28 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:40:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:40:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # pragma once
-# include "defines.hpp"
+# include <iostream>
+# include <string>
 
-class Brain
+enum Verbose
 {
-	private:
-		std::string ideas[100];
-		static const Verbose verbose = FULL;
-
-	public:
-		Brain();
-		Brain(const Brain& other);
-		virtual ~Brain();
-		Brain& operator=(const Brain& other);
-
-		friend std::ostream& operator<<(std::ostream& os, const Brain& obj);
+	FULL,
+	RESTRICTED
 };

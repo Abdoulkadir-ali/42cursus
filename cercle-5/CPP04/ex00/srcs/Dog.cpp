@@ -5,32 +5,49 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:06:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 04:32:33 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:36:34 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:36:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Dog.hpp"
 
-Dog::Dog() : Animal()
+Dog::Dog()
 {
-    this->type = "Dog";
-    this->name = "";
-    std::cout << "Building " <<this->type << std::endl;
+	this->type = "Dog";
+	if (verbose == FULL)
+		std::cout << "Dog constructor called" << std::endl;
 }
 
-Dog::Dog(const Dog& copyDog) : Animal(copyDog)
+Dog::Dog(const Dog& other) : Animal(other)
 {
-    this->name = copyDog.name;
-    this->type = copyDog.type;
+	if (verbose == FULL)
+		std::cout << "Dog copy constructor called" << std::endl;
+	*this = other;
 }
 
 Dog::~Dog()
 {
-    std::cout << "Killing " <<this->type << std::endl;
+	if (verbose == FULL)
+		std::cout << "Dog destructor called" << std::endl;
 }
 
-void Dog::makeSound(void)
+Dog& Dog::operator=(const Dog& other)
 {
-    std::cout << "<" << this->type << ">: Bark" << std::endl;
+	if (verbose == FULL)
+		std::cout << "Dog assignation operator called" << std::endl;
+	if (this != &other)
+		this->type = other.type;
+	return *this;
+}
+
+void Dog::makeSound() const
+{
+	std::cout << "Woof Woof" << std::endl;
+}
+
+std::ostream& operator<<(std::ostream& os, const Dog& obj)
+{
+	os << "Dog type: " << obj.getType();
+	return os;
 }

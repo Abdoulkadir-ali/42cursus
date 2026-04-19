@@ -5,25 +5,47 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:36:33 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 06:15:47 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:37:28 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:37:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Brain.hpp"
 
 Brain::Brain()
-    :type("Brain")
 {
-    std::cout << "Building " <<this->type << std::endl;
+	if (verbose == FULL)
+		std::cout << "Brain constructor called" << std::endl;
 }
 
-Brain::Brain(const Brain& copyBrain)
+Brain::Brain(const Brain& other)
 {
-    this->type = copyBrain.type;
+	if (verbose == FULL)
+		std::cout << "Brain copy constructor called" << std::endl;
+	*this = other;
 }
 
 Brain::~Brain()
 {
-    std::cout << "Killing " << this->type << std::endl;
+	if (verbose == FULL)
+		std::cout << "Brain destructor called" << std::endl;
+}
+
+Brain& Brain::operator=(const Brain& other)
+{
+	if (verbose == FULL)
+		std::cout << "Brain assignation operator called" << std::endl;
+	if (this != &other)
+	{
+		for (int i = 0; i < 100; i++)
+			ideas[i] = other.ideas[i];
+	}
+	return *this;
+}
+
+std::ostream& operator<<(std::ostream& os, const Brain& obj)
+{
+	(void)obj;
+	os << "Brain containing ideas";
+	return os;
 }

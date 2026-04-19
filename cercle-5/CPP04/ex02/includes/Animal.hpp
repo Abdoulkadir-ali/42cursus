@@ -5,30 +5,30 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:06:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 07:03:37 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 14:05:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:38:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include <iostream>
+# pragma once
+# include "defines.hpp"
 
 class Animal
 {
-    protected:
-        std::string name;
-        std::string type;
-        /* Making the constructor private to avoid instantiation*/
+	private:
+		static const Verbose verbose = FULL;
 
+	protected:
+		std::string type;
 
-    public:
-        Animal();
-        Animal(const Animal &a);
-        virtual ~Animal();
-        virtual void makeSound(void) = 0;
-        Animal& operator=(const Animal &a);
-        std::string getType() const;
-        std::string getName() const;
+	public:
+		Animal();
+		Animal(const Animal& other);
+		virtual ~Animal();
+		Animal& operator=(const Animal& other);
+
+		virtual void makeSound() const = 0;
+		std::string getType() const;
+
+		friend std::ostream& operator<<(std::ostream& os, const Animal& obj);
 };
-
-std::ostream& operator<<(std::ostream& os, const Animal& animal);

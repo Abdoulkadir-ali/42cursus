@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 03:57:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 07:06:31 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 13:38:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,22 @@
 
 int main(void)
 {
-    Cat cats[50];
-    Dog dogs[50];
-    Animal *animals[100];
-    int i;
+	const int SIZE = 10;
+	Animal *animals[SIZE];
 
-    i = 0;
-    while (i < 50)
-    {
-        cats[i] = Cat();
-        dogs[i] = Dog();
-        animals[i] = &cats[i];
-        animals[i + 50] = &dogs[i];
-        i++;
-    }
-    // Animal test = new Animal(); //This should tell you can't instantiate an object of type Animal because it's abstract
-    (void)animals;
-    i = 0;
-    while (i < 100)
-    {
-        animals[i]->makeSound();
-        std::cout << *animals[i] << std::endl;
-        i++;
-    }
-    return (0);
+	for (size_t i = 0; i < SIZE / 2; i++)
+		animals[i] = new Cat();
+
+	for (size_t i = SIZE / 2; i < SIZE; i++)
+		animals[i] = new Dog();
+
+	std::cout << "\n--- Sounds ---" << std::endl;
+	for (size_t i = 0; i < SIZE; i++)
+		animals[i]->makeSound();
+
+	std::cout << "\n--- Delete all via Animal* (virtual destructor required!) ---" << std::endl;
+	for (size_t i = 0; i < SIZE; i++)
+		delete animals[i];
+
+	return 0;
 }

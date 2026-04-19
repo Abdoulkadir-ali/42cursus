@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Brain.hpp                                          :+:      :+:    :+:   */
+/*   IMateriaSource.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/19 14:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 13:38:28 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:50:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # pragma once
-# include "defines.hpp"
+# include "AMateria.hpp"
 
-class Brain
+class IMateriaSource
 {
-	private:
-		std::string ideas[100];
-		static const Verbose verbose = FULL;
-
 	public:
-		Brain();
-		Brain(const Brain& other);
-		virtual ~Brain();
-		Brain& operator=(const Brain& other);
-
-		friend std::ostream& operator<<(std::ostream& os, const Brain& obj);
+		virtual ~IMateriaSource() {}
+		virtual void learnMateria(AMateria*) = 0;
+		virtual AMateria* createMateria(std::string const& type) = 0;
 };

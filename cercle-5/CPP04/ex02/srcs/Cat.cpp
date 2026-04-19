@@ -5,56 +5,57 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/13 04:06:29 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/13 07:04:07 by abdoali          ###   ########.fr       */
+/*   Created: 2026/04/19 13:38:12 by abdoali           #+#    #+#             */
+/*   Updated: 2026/04/19 13:38:28 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cat.hpp"
 
-Cat::Cat() : Animal()
+Cat::Cat()
 {
-    this->type = "Cat";
-    this->name = "Norminette";
-    this->brain = new Brain();
-    std::cout << "Building " <<this->type << std::endl;
+	this->type = "Cat";
+	this->brain = new Brain();
+	if (verbose == FULL)
+		std::cout << "Cat constructor called" << std::endl;
 }
 
-Cat::Cat(const Cat& copyCat) : Animal(copyCat)
-{   
-    this->name = copyCat.name;
-    this->type = copyCat.type;
-    if (this->brain)
-        delete this->brain;
-    if (copyCat.brain)
-        this->brain = new Brain(*copyCat.brain);
-    else
-        this->brain = NULL;
+Cat::Cat(const Cat& other) : Animal(other)
+{
+	this->brain = NULL;
+	if (verbose == FULL)
+		std::cout << "Cat copy constructor called" << std::endl;
+	*this = other;
 }
 
 Cat::~Cat()
 {
-    if (this->brain)
-        delete this->brain;
-    std::cout << "Killing " <<this->type << std::endl;
+	delete this->brain;
+	if (verbose == FULL)
+		std::cout << "Cat destructor called" << std::endl;
 }
 
 Cat& Cat::operator=(const Cat& other)
 {
-    if (this != &other)
-    {
-        Animal::operator=(other);
-        if (this->brain)
-            delete this->brain;
-        if (other.brain)
-            this->brain = new Brain(*other.brain);
-        else
-            this->brain = NULL;
-    }
-    return *this;
+	if (verbose == FULL)
+		std::cout << "Cat assignation operator called" << std::endl;
+	if (this != &other)
+	{
+		this->type = other.type;
+		if (this->brain)
+			delete this->brain;
+		this->brain = new Brain(*other.brain);
+	}
+	return *this;
 }
 
-void Cat::makeSound(void)
+void Cat::makeSound() const
 {
-    std::cout << "<" << this->type << ">: Meow" << std::endl;
+	std::cout << "Meow Meow" << std::endl;
+}
+
+std::ostream& operator<<(std::ostream& os, const Cat& obj)
+{
+	os << "Cat type: " << obj.getType();
+	return os;
 }
