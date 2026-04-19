@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 13:16:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:24:50 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ static void	init_rt_sliders(t_gui *gui, t_islider *sl)
 
 static void	draw_rt_radios(t_gui *gui, t_vec2i o, int *y)
 {
-	t_iradio	r[7];
-	int			i;
+	t_iradio	r[8];
+	int		i;
 
 	r[0] = init_iradio("Adaptive", &gui->opts.adaptive_scale, NULL);
 	r[1] = init_iradio("AutoRes", &gui->opts.auto_fullres, NULL);
@@ -50,12 +50,16 @@ static void	draw_rt_radios(t_gui *gui, t_vec2i o, int *y)
 	r[4] = init_iradio("Bloom", &gui->rt_engine.settings.bloom_enabled, NULL);
 	r[5] = init_iradio("Blinn", &gui->rt_engine.settings.blinn_phong, NULL);
 	r[6] = init_iradio("DOF", &gui->rt_engine.settings.dof_enabled, NULL);
+	r[7] = init_iradio("BounceL",
+			&gui->rt_engine.settings.lights_on_bounces, NULL);
 	i = -1;
-	while (++i < 7)
+	while (++i < 8)
 	{
 		*y += 24;
 		draw_radio_row(gui, (t_panel){vec2i(o.x, *y),
 			vec2s(SETTINGS_W - 16, 0), 0, 0, ""}, r[i]);
+		draw_perf_tag(gui, o.x + SETTINGS_W - 108, *y + 15,
+			(i >= 2 && i <= 4) || i == 6 || i == 7);
 	}
 }
 
@@ -70,12 +74,12 @@ static bool	click_rt_sl(t_gui *gui, t_vec2i mouse, t_vec2i o, int y)
 		if (try_settings_slider_click(gui, mouse,
 				vec2i(o.x + 8, y + 24 + i * 36), sl[i]))
 			return (true);
-	return (false);
+	return (click_preset(gui, mouse, o, y + 348));
 }
 
 bool	click_settings_raytracer_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 {
-	t_iradio	r[7];
+	t_iradio	r[8];
 	int			y;
 	int			i;
 
@@ -87,8 +91,10 @@ bool	click_settings_raytracer_tab(t_gui *gui, t_vec2i mouse, t_vec2i o)
 	r[4] = init_iradio("B", &gui->rt_engine.settings.bloom_enabled, NULL);
 	r[5] = init_iradio("L", &gui->rt_engine.settings.blinn_phong, NULL);
 	r[6] = init_iradio("D", &gui->rt_engine.settings.dof_enabled, NULL);
+	r[7] = init_iradio("BL",
+			&gui->rt_engine.settings.lights_on_bounces, NULL);
 	i = -1;
-	while (++i < 7)
+	while (++i < 8)
 	{
 		if (try_radio_click(gui, mouse, (t_panel){vec2i(o.x, y),
 				vec2s(SETTINGS_W - 16, 0), 0, 0, ""}, r[i]))
@@ -112,4 +118,5 @@ void	draw_settings_raytracer_tab(t_gui *gui, t_vec2i o)
 	i = -1;
 	while (++i < 9)
 		draw_settings_slider(gui, vec2i(o.x + 8, y + 24 + i * 36), sl[i]);
+	draw_preset_row(gui, o, y + 348);
 }

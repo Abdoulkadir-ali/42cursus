@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/28 20:21:01 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/01 02:00:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 21:04:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ public:
             const std::string &darkest_secret);
     Contact(const Contact &contact);
     ~Contact();
-    Contact &operator=(const Contact &other) = default;
-
     void Update(const std::string &first_name, const std::string &last_name,
                 const std::string &nickname, const std::string &phone_number,
                 const std::string &darkest_secret);

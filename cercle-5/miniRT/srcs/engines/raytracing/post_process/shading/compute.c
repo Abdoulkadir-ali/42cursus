@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:23:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,15 @@ static void	add_gi(t_shading *sha, const t_ray *ray, t_vec3 *total)
 	*total = vec3_add(*total, gi);
 }
 
-static double	compute_fresnel(t_shading *sha, const t_ray *ray, double kr)
+static double	compute_fresnel(t_shading *sha, double kr)
 {
-	double	cos_theta;
 	double	f0;
 	double	fresnel;
 
 	if (sha->opts && !sha->opts->fresnel_enabled)
 		return (kr);
-	cos_theta = fmax(0.0, -vec3_dot(ray->direction, sha->hit->normal));
 	f0 = sha->mat.metallic * 0.9 + (1.0 - sha->mat.metallic) * 0.04;
-	fresnel = f0 + (1.0 - f0) * pow(1.0 - cos_theta, 5.0);
+	fresnel = f0 + (1.0 - f0) * pow(1.0 - sha->cache.ndotv, 5.0);
 	return (fmin(kr + fresnel * (1.0 - kr), 1.0));
 }
 
@@ -48,7 +46,7 @@ static void	recursive_color(t_shading *sha, const t_ray *ray, t_vec3 *total)
 
 	add_gi(sha, ray, total);
 	kr = sha->mat.reflectivity;
-	fresnel = compute_fresnel(sha, ray, kr);
+	fresnel = compute_fresnel(sha, kr);
 	if (sha->mat.transparency > 0.0)
 	{
 		next_w = ray->weight * sha->mat.transparency;
@@ -89,10 +87,13 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
 	setup_shading(&sha, hit, scene, bvh);
 	total = vec3_scale(pixel_color(sha.albedo, scene->ambient.rgb,
 				scene->ambient.brightness), compute_ao(&sha));
-	i = 0;
-	while (i < scene->light_count)
-		total = vec3_add(total, calc_light(&sha, scene->lights[i++]));
-	add_emissive_lighting(&sha, scene, &total);
+	if (ray->depth == 0 || (sha.opts && sha.opts->lights_on_bounces))
+	{
+		i = 0;
+		while (i < scene->light_count)
+			total = vec3_add(total, calc_light(&sha, scene->lights[i++]));
+		add_emissive_lighting(&sha, scene, &total);
+	}
 	add_emission(&sha, &total);
 	if (ray->depth < MAX_DEPTH)
 		recursive_color(&sha, ray, &total);

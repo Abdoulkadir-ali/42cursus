@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 09:17:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:23:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	init_rt_options(t_gui *gui)
 	gui->rt_engine.settings.bloom_enabled = false;
 	gui->rt_engine.settings.bloom_threshold = 220.0;
 	gui->rt_engine.settings.bloom_intensity = 1.0;
-	gui->rt_engine.settings.bloom_radius = 3.0;
+	gui->rt_engine.settings.bloom_radius = 2.0;
 	gui->rt_engine.settings.dof_enabled = false;
 	gui->rt_engine.settings.dof_aperture = 0.1;
 	gui->rt_engine.settings.dof_focal_dist = 10.0;
@@ -37,6 +37,7 @@ static void	init_rt_options(t_gui *gui)
 	gui->rt_engine.settings.chroma_enabled = false;
 	gui->rt_engine.settings.chroma_dispersion = 0.012;
 	gui->rt_engine.settings.stochastic_lights = false;
+	gui->rt_engine.settings.lights_on_bounces = false;
 	gui->rt_engine.settings.preset = RT_PRESET_NATURAL;
 }
 

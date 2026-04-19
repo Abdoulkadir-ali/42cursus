@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 01:55:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:42:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ void	draw_settings_visual_tab(t_gui *gui, t_vec2i o)
 		y += 24;
 		draw_radio_row(gui, (t_panel){vec2i(o.x, y),
 			vec2s(SETTINGS_W - 16, 0), 0, 0, ""}, vr[i]);
+		draw_perf_tag(gui, o.x + SETTINGS_W - 108, y + 15,
+			i == 0 || i == 2 || i == 5);
 	}
 	y += 24;
 	i = -1;

@@ -1,20 +1,19 @@
 NAME        = sed_is_for_losers
 CC          = c++
 MAKEFLAGS	+= -j4
-CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -I/includes -std=c++98
+CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -std=c++98
 RM          = rm -f
-SRCS_DIR    = srcs
 OBJS_DIR    = objs
 
-SRCS        = $(shell find $(SRCS_DIR) -name "*.cpp")
-OBJS        = $(patsubst $(SRCS_DIR)/%.cpp,$(OBJS_DIR)/%.o,$(SRCS))
+SRCS        = main.cpp srcs/Sed.cpp
+OBJS        = $(patsubst %.cpp,$(OBJS_DIR)/%.o,$(SRCS))
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
+$(OBJS_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -24,6 +23,7 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 
-re: fclean all
+re: fclean
+	$(MAKE) all
 
-.PHONY: all clean fclean re test
+.PHONY: all clean fclean re

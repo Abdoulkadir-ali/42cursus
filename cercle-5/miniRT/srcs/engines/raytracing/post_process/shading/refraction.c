@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 09:04:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:42:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ t_vec3	compute_refraction(t_shading *sha, const t_ray *ray,
 	c_g = refract_channel(sha, ray, ior, next_w);
 	if (vec3_mag_sq(c_g) < 1e-8 && *kr == 1.0)
 		return (vec3(0, 0, 0));
-	if (disp > 1e-6)
+	if (disp > 1e-6 && ray->depth == 0)
 	{
 		c_r = refract_channel(sha, ray, ior - disp, next_w);
 		c_b = refract_channel(sha, ray, ior + disp, next_w);

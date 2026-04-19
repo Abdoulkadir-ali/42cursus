@@ -39,7 +39,7 @@ static void	apply_one_attractor(t_scene *s, t_attractor *at, double big_g)
 
 	g_mass = big_g * at->mass;
 	i = 0;
-	while (i < s->sphere_count - s->proxy_sphere_count)
+	while (i + s->proxy_sphere_count < s->sphere_count)
 		apply_to_body(&s->spheres[i++].phys, at->pos, g_mass);
 	i = 0;
 	while (i < s->box_count)

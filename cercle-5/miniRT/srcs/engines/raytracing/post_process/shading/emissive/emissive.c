@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 11:37:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 22:03:20 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:18:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ static bool	em_reach_check(t_shading *sha, t_material *mat,
 
 	tl_sq = vec3_mag_sq(sha->aux_v);
 	reach = fmax(r * 3.0, 3.0) * fmax(1.0, mat->em_radius);
-	reach = reach * reach * fmin(fmax(1.0, mat->em_intensity), 2.5e9);
-	if (tl_sq > reach)
+	reach = reach * sqrt(fmax(1.0, mat->em_intensity));
+	if (tl_sq > reach * reach)
 		return (false);
 	ctx->d_surf = fmax(sqrt(tl_sq) - r * 0.05, 1e-3);
 	return (true);
@@ -47,8 +47,8 @@ static double	em_val_check(t_shading *sha, t_material *mat,
 	if (is_in_shadow(sha->bvh, org, ctx->ldir, ctx->d_surf - EPSILON))
 		return (0.0);
 	bright = fmin(vec3_mag(mat->emission) / 255.0
-			* mat->em_intensity / fmax(4.0 * PI * r * r, 1.0), 50000.0);
-	att = 1.0 / (1.0 + ctx->d_surf * ctx->d_surf * 0.1);
+			* mat->em_intensity / fmax(4.0 * PI * r * r, 1.0), 200.0);
+	att = 1.0 / (1.0 + ctx->d_surf * ctx->d_surf);
 	return (bright * ctx->ndotl * att * ctx->emitter_facing);
 }
 
@@ -84,8 +84,7 @@ void	apply_em(t_shading *sha, t_vec3 *total, t_material *mat, double r)
 	if (spec_val < 1e-6)
 		return ;
 	spec_val = fmin(spec_val, 2.0);
-	half = vec3_norm(vec3_add(ldir,
-				vec3_scale(sha->ray->direction, -1.0)));
+	half = vec3_norm(vec3_add(ldir, sha->cache.view));
 	ndoth = (float)fmax(0.0, vec3_dot(sha->hit->normal, half));
 	if ((float)sha->mat.shininess <= 2.5f)
 		spec = (double)(ndoth * ndoth);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/28 20:17:10 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/01 02:00:08 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 21:05:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Contact::Contact()
 	, _nickname("")
 	, _phone_number("")
 	, _darkest_secret("")
-	, _creation_date(std::time(nullptr))
+	, _creation_date(std::time(NULL))
 {
 }
 
@@ -45,7 +45,7 @@ Contact::Contact(const std::string &first_name, const std::string &last_name,
 	, _nickname(nickname)
 	, _phone_number(phone_number)
 	, _darkest_secret(darkest_secret)
-	, _creation_date(std::time(nullptr))
+	, _creation_date(std::time(NULL))
 {
 }
 
@@ -58,7 +58,7 @@ void Contact::Update(const std::string &first_name, const std::string &last_name
 	_nickname = nickname;
 	_phone_number = phone_number;
 	_darkest_secret = darkest_secret;
-	_creation_date = std::time(nullptr);
+	_creation_date = std::time(NULL);
 }
 
 void Contact::Print() const

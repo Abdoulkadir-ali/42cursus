@@ -1,32 +1,25 @@
-NAME        = megaphone
-CC          = c++
-CFLAGS      = -Wall -Wextra -Werror
-RM          = rm -f
-SRCS        = $(shell find . -name "*.cpp")
-OBJS_DIR    = objs
-OBJS        = $(patsubst $(SRCS_DIR)/%.c,$(OBJS_DIR)/%.o,$(SRCS))
+NAME    = megaphone
+CC      = c++
+CFLAGS  = -Wall -Wextra -Werror -std=c++98
+RM      = rm -f
+
+SRCS    = megaphone.cpp
+OBJS    = $(SRCS:.cpp=.o)
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
-	@mkdir -p $(dir $@)
+%.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
-
 clean:
-	$(RM) -r $(OBJS_DIR)
+	$(RM) $(OBJS)
 
 fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
 
-test: re
-	bash ~/tools/
-
-.PHONY: all clean fclean re test
+.PHONY: all clean fclean re

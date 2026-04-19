@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 16:33:47 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/11 17:26:18 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 12:22:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void ClapTrap::attack(const std::string& target)
 {
     if (this->energy)
     {
-        std::cout << this->type << this->name << "attacks " << target << ", causing " << this->damage << " points of damage!" << std::endl;
+        std::cout << this->type << this->name << " attacks " << target << ", causing " << this->damage << " points of damage!" << std::endl;
         this->energy--;
     }
     else
@@ -53,12 +53,12 @@ void ClapTrap::takeDamage(const unsigned int damage)
         if (this->hp < damage)
         {
             this->hp = 0;
-            std::cout << this->type << this->name << "took " << damage << " points of damage and died !" << std::endl;
+            std::cout << this->type << this->name << " took " << damage << " points of damage and died !" << std::endl;
         }
         else
         {
             this->hp = this->hp - damage;
-            std::cout << this->type << this->name << "took " << damage << " points of damage!" << std::endl;
+            std::cout << this->type << this->name << " took " << damage << " points of damage!" << std::endl;
         }
         this->energy--;
     }

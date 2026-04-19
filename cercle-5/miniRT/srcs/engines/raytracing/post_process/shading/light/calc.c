@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   light_calc.c                                       :+:      :+:    :+:   */
+/*   calc.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 12:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:18:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@ static void	stochastic_target(t_shading *sha, t_light light, t_light_calc *c,
 		return ;
 	bv = light.transform.scale.x / dist;
 	cos_theta_max = sqrt(fmax(0.0, 1.0 - bv * bv));
-	seed = (uint32_t)sha->frame_idx * 1664525 + (uint32_t)light.id;
-	seed ^= (uint32_t)(sha->hit->point.x * 1000.0)
-		^ (uint32_t)(sha->hit->point.z * 1000.0);
+	seed = rt_seed_mix(sha->cache.seed_pos, (int)sha->frame_idx, (int)light.id);
 	c->norm = rt_random_on_cone(vec3_norm(to_light), cos_theta_max, &seed);
 	bv = 2.0 * vec3_dot(c->norm, vec3_scale(to_light, -1.0));
 	dist = dist * dist - light.transform.scale.x * light.transform.scale.x;

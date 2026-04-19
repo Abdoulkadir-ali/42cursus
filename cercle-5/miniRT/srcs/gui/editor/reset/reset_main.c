@@ -45,5 +45,9 @@ void	scene_reset(t_gui *gui)
 	gui->opts.prev_valid = false;
 	reset_cam_ctrl(gui);
 	clear_selection(gui);
+	sc->proxy_sphere_count = 0;
+	sc->proxy_mat_base = 0;
+	sc->proxy_sphere_base = 0;
+	sc->psoa_ready = false;
 	gui->render.bvh_needs_rebuild = 1;
 }

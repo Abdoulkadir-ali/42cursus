@@ -13,7 +13,12 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 CC          = cc
 INCLUDES_DIRS = $(shell find includes -type d)
 INCLUDES    = $(addprefix -I,$(INCLUDES_DIRS))
-CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops -ffast-math -g3 -pthread $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -Ipackages -DDEBUG_EXTENDER -MMD -MP
+CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops \
+              -ffast-math -flto=auto -fno-plt -fno-semantic-interposition \
+              -fomit-frame-pointer -fvect-cost-model=unlimited -fipa-pta \
+              -falign-functions=64 -falign-loops=32 \
+              -g3 -pthread $(INCLUDES) -Ipackages/libft/includes \
+              -I$(MINILIBX_DIR) -Ipackages -DDEBUG_EXTENDER -MMD -MP
 RM          = rm -f
 SRCS_DIR    = srcs
 # Exclude old physics.c if it still exists (handled by file deletion)
@@ -36,7 +41,7 @@ all: $(NAME)
 $(NAME): $(LIBFT) $(MINILIBX) $(STB_IMAGE) $(OBJS)
 	@echo ""
 	@printf "$(BLUE)Linking $(NAME)...$(RESET)\n"
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -Wl,-O2 -Wl,--sort-common -o $(NAME)
 	@printf "$(GREEN)$(NAME) ready!$(RESET)\n"
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c | $(MINILIBX) $(STB_IMAGE)
@@ -87,6 +92,34 @@ clean_package:
 
 # ── Profiling targets ────────────────────────────────────────────────────────
 #
+# debug target — no LTO, no aggressive opts, keeps call-graph readable
+#   make debug && ./miniRT-debug maps/rt/physics/dod_stress.rt
+#   valgrind --tool=callgrind --callgrind-out-file=callgrind.out \
+#     --collect-atstart=yes --instr-atstart=yes \
+#     ./miniRT-debug maps/rt/physics/dod_stress.rt
+#   callgrind_annotate --auto=yes callgrind.out | head -160
+DEBUG_CFLAGS  = -Wall -Wextra -O1 -g3 -pthread \
+                $(INCLUDES) -Ipackages/libft/includes -I$(MINILIBX_DIR) -Ipackages \
+                -DDEBUG_EXTENDER -D_DEFAULT_SOURCE -MMD -MP
+DEBUG_OBJS_DIR = objs-debug
+DEBUG_OBJS     = $(patsubst $(SRCS_DIR)/%.c,$(DEBUG_OBJS_DIR)/%.o,$(SRCS))
+DEBUG_DEPS     = $(DEBUG_OBJS:.o=.d)
+
+-include $(DEBUG_DEPS)
+
+$(DEBUG_OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(DEBUG_CFLAGS) -c $< -o $@
+
+debug: $(LIBFT) $(MINILIBX) $(DEBUG_OBJS)
+	$(CC) $(DEBUG_CFLAGS) $(DEBUG_OBJS) $(LIBS) -o miniRT-debug
+	@echo ""
+	@echo "Binary:  ./miniRT-debug"
+	@echo "Profile: valgrind --tool=callgrind --callgrind-out-file=callgrind.out \\"
+	@echo "           --collect-atstart=yes --instr-atstart=yes \\"
+	@echo "           ./miniRT-debug maps/rt/physics/dod_stress.rt"
+	@echo "Read:    callgrind_annotate --auto=yes callgrind.out | head -160"
+
 # callgrind (recommended — counts every instruction, sees all threads):
 #
 #   make profile
@@ -144,6 +177,6 @@ gprof-build: $(LIBFT) $(MINILIBX) $(GPROF_OBJS)
 	@echo "Read:   gprof miniRT-prof gmon.out | head -80"
 
 prof-clean:
-	$(RM) -r $(PROF_OBJS_DIR) $(GPROF_OBJS_DIR) miniRT-prof miniRT-gprof gmon.out callgrind.out*
+	$(RM) -r $(PROF_OBJS_DIR) $(GPROF_OBJS_DIR) $(DEBUG_OBJS_DIR) miniRT-prof miniRT-gprof miniRT-debug gmon.out callgrind.out*
 
-.PHONY: all clean fclean ffclean re test FORCE profile gprof-build prof-clean
+.PHONY: all clean fclean ffclean re test FORCE profile gprof-build debug prof-clean

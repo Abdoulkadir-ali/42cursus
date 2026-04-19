@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:56:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:42:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,4 +93,12 @@ t_iradio	init_iradio(const char *label, bool *ptr,
 	r.ptr = ptr;
 	r.on_change = on_change;
 	return (r);
+}
+
+void	draw_perf_tag(t_gui *gui, int x, int y, bool heavy)
+{
+	if (heavy)
+		mlx_string_put_c(gui->win.mlx, gui->win.win, x, y, 0xFF4444, "Heavy");
+	else
+		mlx_string_put_c(gui->win.mlx, gui->win.win, x, y, 0x44CC44, "Fast");
 }

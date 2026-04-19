@@ -33,7 +33,7 @@ static size_t	fill_bodies_a(t_scene *s, t_physics_body **lst, size_t n)
 	size_t	i;
 
 	i = 0;
-	while (i < s->sphere_count - s->proxy_sphere_count && n < MAX_NBODY)
+	while (i + s->proxy_sphere_count < s->sphere_count && n < MAX_NBODY)
 		lst[n++] = &s->spheres[i++].phys;
 	i = 0;
 	while (i < s->box_count && n < MAX_NBODY)

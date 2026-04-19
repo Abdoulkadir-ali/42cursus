@@ -1,7 +1,7 @@
 NAME        = scavtrap
 CC          = c++
 MAKEFLAGS	+= -j4
-CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -I/includes
+CFLAGS      = -Wall -Wextra -Werror -std=c++98 -g3 -Iincludes
 RM          = rm -f
 SRCS_DIR    = srcs
 OBJS_DIR    = objs

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 09:14:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:18:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,10 @@
 static double	compute_ao_ray(const t_shading *sha, t_ray *ray, double rad)
 {
 	t_hit	hit;
-	double	min_t;
-	size_t	i;
 
-	min_t = rad;
 	hit.t = rad;
-	if (bvh_intersect(sha->bvh, ray, &hit))
-		min_t = hit.t;
-	i = 0;
-	while (i < sha->scene->plane_count)
-	{
-		if (intersect_plane(ray, &sha->scene->planes[i], &hit))
-			if (hit.t < min_t)
-				min_t = hit.t;
-		i++;
-	}
-	if (min_t < rad)
-		return (1.0 - (min_t / rad));
+	if (bvh_intersect(sha->bvh, ray, &hit) && hit.t < rad)
+		return (1.0 - (hit.t / rad));
 	return (0.0);
 }
 
@@ -64,10 +51,7 @@ static double	run_ao_samples(const t_shading *sha, int samples, double radius)
 	double		occ;
 	int			i;
 
-	seed = (uint32_t)((int64_t)(sha->hit->point.x * 73856093)
-			^ (int64_t)(sha->hit->point.y * 19349663)
-			^ (int64_t)(sha->hit->point.z * 83492791)
-			^ (int64_t)(sha->frame_idx * 1103515245));
+	seed = rt_seed_mix(sha->cache.seed_pos, (int)sha->frame_idx, 0);
 	origin = vec3_add(sha->hit->point, vec3_scale(sha->hit->normal, 1e-4));
 	occ = 0.0;
 	i = 0;

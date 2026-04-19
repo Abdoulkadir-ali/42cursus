@@ -3,7 +3,7 @@ CC          = c++
 MAKEFLAGS	+= -j4
 CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -I/includes -std=c++98
 RM          = rm -f
-SRCS_DIR    = srcs
+SRCS_DIR    = 
 OBJS_DIR    = objs
 
 SRCS        = $(shell find $(SRCS_DIR) -name "*.cpp")

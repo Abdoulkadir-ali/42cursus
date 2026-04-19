@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:26:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 11:55:07 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:23:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ typedef struct s_raytracer_settings
 	double	chroma_dispersion;/* per-channel IOR split 0..0.1           */
 	bool	stochastic_lights; /* area-light soft shadows via cone sampling */
 	bool	draft_mode;        /* set when camera is moving — skip GI+stoch */
+	bool	lights_on_bounces; /* run lights/emissive at all depths (quality mode) */
 	t_rt_preset	preset;           /* RT_PRESET_CUSTOM .. RT_PRESET_CINEMATIC  */
 }						t_raytracer_settings;
 
@@ -179,6 +180,14 @@ typedef struct s_shading_ctx
 	double	emitter_facing;
 }	t_shading_ctx;
 
+typedef struct s_shading_cache
+{
+	t_vec3		view;
+	double		ndotv;
+	t_vec3		org;
+	uint32_t	seed_pos;
+}	t_shading_cache;
+
 typedef struct s_shading
 {
 	t_hit					*hit;
@@ -191,6 +200,7 @@ typedef struct s_shading
 	t_vec3					em_normal;
 	const t_raytracer_settings	*opts;
 	size_t					frame_idx;
+	t_shading_cache				cache;
 }						t_shading;
 
 typedef struct s_build_item

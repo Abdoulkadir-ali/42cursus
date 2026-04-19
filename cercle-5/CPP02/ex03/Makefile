@@ -1,20 +1,19 @@
 NAME        = bsp
 CC          = c++
 MAKEFLAGS	+= -j4
-CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -I/includes
+CFLAGS      = -Wall -Wextra -Werror -std=c++98
 RM          = rm -f
-SRCS_DIR    = srcs
 OBJS_DIR    = objs
 
-SRCS        = $(shell find $(SRCS_DIR) -name "*.cpp")
-OBJS        = $(patsubst $(SRCS_DIR)/%.cpp,$(OBJS_DIR)/%.o,$(SRCS))
+SRCS        = $(shell find . -name "*.cpp")
+OBJS        = $(patsubst ./%.cpp,$(OBJS_DIR)/%.o,$(SRCS))
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
+$(OBJS_DIR)/%.o: ./%.cpp
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

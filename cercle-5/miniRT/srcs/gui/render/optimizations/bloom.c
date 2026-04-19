@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/09 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 05:40:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:42:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ static t_vec3f	sample_blur(t_gui *gui, t_vec2s p, t_vec2i st, uint32_t *s)
 	long	o;
 
 	acc = (t_vec3f){0, 0, 0, 0};
-	k = -5;
-	while (++k < 4)
+	k = -3;
+	while (++k < 3)
 	{
 		o = (long)p.y + k * (long)st.x * (st.y != 0);
 		if (o >= 0 && o < (long)gui->win.disp_size.y && !((st.y == 0)
@@ -60,9 +60,9 @@ static t_vec3f	sample_blur(t_gui *gui, t_vec2s p, t_vec2i st, uint32_t *s)
 							+ (st.y == 0))]));
 		}
 	}
-	acc.x /= 9.0f;
-	acc.y /= 9.0f;
-	acc.z /= 9.0f;
+	acc.x /= 5.0f;
+	acc.y /= 5.0f;
+	acc.z /= 5.0f;
 	return (acc);
 }
 

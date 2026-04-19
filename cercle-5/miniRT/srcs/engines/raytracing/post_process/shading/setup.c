@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 09:04:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:23:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,19 @@ static void	apply_thermal_blend(t_shading *sha)
 	sha->albedo.x = sha->albedo.x * (1.0 - blend) + bb.x * blend;
 	sha->albedo.y = sha->albedo.y * (1.0 - blend) + bb.y * blend;
 	sha->albedo.z = sha->albedo.z * (1.0 - blend) + bb.z * blend;
+}
+
+static void	init_shading_cache(t_shading *sha)
+{
+	sha->cache.view = vec3_scale(sha->ray->direction, -1.0);
+	sha->cache.ndotv = fmax(0.0,
+			vec3_dot(sha->hit->normal, sha->cache.view));
+	sha->cache.org = vec3_add(sha->hit->point,
+			vec3_scale(sha->hit->normal, 1e-3));
+	sha->cache.seed_pos = 0;
+	if (!sha->opts || sha->opts->ao_enabled || sha->opts->gi_enabled
+		|| sha->opts->stochastic_lights || sha->mat.roughness > 0.001)
+		sha->cache.seed_pos = rt_seed_pos(sha->hit->point);
 }
 
 void	setup_shading(t_shading *sha, t_hit *hit, t_scene *scene,
@@ -50,4 +63,5 @@ void	setup_shading(t_shading *sha, t_hit *hit, t_scene *scene,
 		+ sha->mat.metallic * 0.9;
 	apply_bump(sha);
 	apply_thermal_blend(sha);
+	init_shading_cache(sha);
 }

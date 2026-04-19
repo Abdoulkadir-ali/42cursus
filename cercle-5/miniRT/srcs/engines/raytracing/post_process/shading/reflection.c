@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 09:04:13 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 15:18:39 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,7 @@ static t_vec3	jitter_reflected(t_shading *sha, t_vec3 dir)
 {
 	uint32_t	seed;
 
-	seed = (uint32_t)(sha->frame_idx * 1103515245) + 12345;
-	seed ^= (uint32_t)(sha->hit->point.x * 73856093)
-		^ (uint32_t)(sha->hit->point.y * 19349663);
-	seed = (seed ^ (seed >> 16)) * 0x45d9f3b;
+	seed = rt_seed_mix(sha->cache.seed_pos, (int)sha->frame_idx, 1);
 	return (vec3_norm(vec3_add(dir,
 				vec3_scale(rt_random_on_sphere(&seed),
 					sha->mat.roughness * 0.5))));

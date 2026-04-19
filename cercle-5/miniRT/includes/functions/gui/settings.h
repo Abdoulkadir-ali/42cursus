@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 13:16:57 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/14 13:42:27 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ void	settings_handle_drag(struct s_gui *gui, t_vec2i mouse);
 void	settings_end_drag(struct s_gui *gui);
 
 /* srcs/gui/settings/utils.c */
-void	draw_radio_row(struct s_gui *gui, t_panel pan, t_iradio r);t_iradio	init_iradio(const char *label, bool *ptr,
+void	draw_radio_row(struct s_gui *gui, t_panel pan, t_iradio r);
+void	draw_perf_tag(struct s_gui *gui, int x, int y, bool heavy);t_iradio	init_iradio(const char *label, bool *ptr,
 			void (*on_change)(t_gui *));bool	try_radio_click(struct s_gui *gui, t_vec2i mouse, t_panel pan,
 			t_iradio r);
 void	draw_settings_slider(struct s_gui *gui, t_vec2i pos, t_islider sl);
@@ -62,6 +63,9 @@ bool	click_settings_physics_tab(struct s_gui *gui, t_vec2i mouse, t_vec2i o);
 void	draw_settings_raytracer_tab(struct s_gui *gui, t_vec2i o);
 bool	click_settings_raytracer_tab(struct s_gui *gui, t_vec2i mouse,
 			t_vec2i o);
+void	apply_preset(struct s_gui *gui, t_rt_preset p);
+void	draw_preset_row(struct s_gui *gui, t_vec2i o, int y);
+bool	click_preset(struct s_gui *gui, t_vec2i mouse, t_vec2i o, int y);
 void	on_color_change(struct s_gui *gui);
 
 /* srcs/gui/settings/tabs/visual.c */
