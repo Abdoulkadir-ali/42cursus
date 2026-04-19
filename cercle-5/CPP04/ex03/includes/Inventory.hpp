@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 13:31:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 18:11:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ class Inventory
 {
 	private:
 		std::vector<AMateria*> materias;
-		static Verbose verbose;
+		static const Verbose verbose = FULL;
+		unsigned int maxSize;
 
 	public:
 		Inventory();
