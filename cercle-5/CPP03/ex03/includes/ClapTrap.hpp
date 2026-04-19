@@ -16,25 +16,25 @@
 
 class ClapTrap
 {
-protected:
-    std::string     name;
-    unsigned int    hp;
-    unsigned int    max_hp;
-    unsigned int    energy;
-    unsigned int    damage;
+    protected:
+        std::string     name;
+        unsigned int    hp;
+        unsigned int    max_hp;
+        unsigned int    energy;
+        unsigned int    damage;
 
-public:
-    ClapTrap();
-    ClapTrap(const std::string& name);
-    ClapTrap(const ClapTrap& c);
-    ClapTrap& operator=(const ClapTrap& c);
-    ~ClapTrap();
+    public:
+        ClapTrap();
+        ClapTrap(const std::string& name);
+        ClapTrap(const ClapTrap& c);
+        ClapTrap& operator=(const ClapTrap& c);
+        ~ClapTrap();
 
-    void attack(const std::string& target);
-    void takeDamage(unsigned int amount);
-    void beRepaired(unsigned int amount);
-    bool isDead(bool verbose = false) const;
-    bool hasEnergy(bool verbose = false) const;
+        void attack(const std::string& target);
+        void takeDamage(unsigned int amount);
+        void beRepaired(unsigned int amount);
+        bool isDead(bool verbose = false) const;
+        bool hasEnergy(bool verbose = false) const;
 
-    const std::string& getName() const;
+        const std::string& getName() const;
 };

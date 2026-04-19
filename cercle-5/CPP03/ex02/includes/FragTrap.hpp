@@ -15,12 +15,12 @@
 
 class FragTrap : public ClapTrap
 {
-public:
-    FragTrap();
-    FragTrap(const std::string& name);
-    FragTrap(const FragTrap& c);
-    FragTrap& operator=(const FragTrap& c);
-    ~FragTrap();
+    public:
+        FragTrap();
+        FragTrap(const std::string& name);
+        FragTrap(const FragTrap& c);
+        FragTrap& operator=(const FragTrap& c);
+        ~FragTrap();
 
-    void highFivesGuys();
+        void highFivesGuys();
 };

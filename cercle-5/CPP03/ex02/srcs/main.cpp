@@ -22,7 +22,7 @@ int main()
     clap.takeDamage(5);
     clap.beRepaired(3);
     clap.takeDamage(100);
-    clap.attack("dummy");   // can't: no hp
+    clap.attack("dummy");   
 
     std::cout << "\n=== ScavTrap Tests ===" << std::endl;
     ScavTrap scav("ScavBot");

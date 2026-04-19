@@ -18,7 +18,6 @@ DiamondTrap::DiamondTrap()
       FragTrap(),
       name("")
 {
-    // Apply FragTrap hp/damage, ScavTrap energy (as per spec)
     this->hp     = FragTrap::hp;
     this->energy = ScavTrap::energy;
     this->damage = FragTrap::damage;
@@ -31,7 +30,7 @@ DiamondTrap::DiamondTrap(const std::string& name)
       FragTrap(name),
       name(name)
 {
-    // Apply FragTrap hp/damage, ScavTrap energy (as per spec)
+    
     this->hp     = FragTrap::hp;
     this->energy = ScavTrap::energy;
     this->damage = FragTrap::damage;

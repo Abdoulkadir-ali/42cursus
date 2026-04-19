@@ -30,7 +30,7 @@ int main()
         c.takeDamage(5);
         c.beRepaired(3);
         c.takeDamage(100);
-        c.attack("Target"); // can't: no hp
+        c.attack("Target"); 
     }
 
     std::cout << "\n=== End ===" << std::endl;

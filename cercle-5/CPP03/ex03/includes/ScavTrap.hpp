@@ -13,17 +13,15 @@
 #pragma once
 #include "ClapTrap.hpp"
 
-/* virtual inheritance: ensures only ONE ClapTrap subobject
-   exists when DiamondTrap inherits from both ScavTrap and FragTrap */
 class ScavTrap : virtual public ClapTrap
 {
-public:
-    ScavTrap();
-    ScavTrap(const std::string& name);
-    ScavTrap(const ScavTrap& c);
-    ScavTrap& operator=(const ScavTrap& c);
-    ~ScavTrap();
+    public:
+        ScavTrap();
+        ScavTrap(const std::string& name);
+        ScavTrap(const ScavTrap& c);
+        ScavTrap& operator=(const ScavTrap& c);
+        ~ScavTrap();
 
-    void attack(const std::string& target);
-    void guardGate();
+        void attack(const std::string& target);
+        void guardGate();
 };

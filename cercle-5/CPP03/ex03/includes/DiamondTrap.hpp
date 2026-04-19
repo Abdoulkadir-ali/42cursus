@@ -16,17 +16,15 @@
 
 class DiamondTrap : public ScavTrap, public FragTrap
 {
-private:
-    std::string name; // DiamondTrap's own name (shadows ClapTrap::name)
+    private:
+        std::string name;
 
-public:
-    DiamondTrap();
-    DiamondTrap(const std::string& name);
-    DiamondTrap(const DiamondTrap& c);
-    DiamondTrap& operator=(const DiamondTrap& c);
-    ~DiamondTrap();
-
-    using ScavTrap::attack; // use ScavTrap's attack
-
-    void whoAmI();
+    public:
+        DiamondTrap();
+        DiamondTrap(const std::string& name);
+        DiamondTrap(const DiamondTrap& c);
+        DiamondTrap& operator=(const DiamondTrap& c);
+        ~DiamondTrap();
+        using ScavTrap::attack;
+        void whoAmI();
 };
