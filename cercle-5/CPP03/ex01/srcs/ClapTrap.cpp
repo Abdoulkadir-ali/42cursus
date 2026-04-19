@@ -6,84 +6,105 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 16:33:47 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/11 17:40:15 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 14:00:22 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClapTrap.hpp"
 
 ClapTrap::ClapTrap()
-    : type("ClapTrap"), hp(10), energy(10), damage(0)
+    : name(""), hp(10), max_hp(UINT_MAX), energy(10), damage(0)
 {
-    std::cout << this->type << " Constructor called" << std::endl;
+    std::cout << "ClapTrap default constructor called" << std::endl;
 }
 
-ClapTrap::ClapTrap(const std::string& type, const unsigned int hp, const unsigned int energy, const unsigned int damage)
-    : type(type), hp(hp), energy(energy), damage(damage)
+ClapTrap::ClapTrap(const std::string& name)
+    : name(name), hp(10), max_hp(UINT_MAX), energy(10), damage(0)
 {
-    std::cout << this->type << " Parametrized constructor called" << std::endl;
+    std::cout << "ClapTrap " << this->name << " constructor called" << std::endl;
 }
 
-ClapTrap::ClapTrap(const ClapTrap &c)
-    : type(c.type), name(c.name), hp(c.hp), energy(c.energy), damage(c.damage)
+ClapTrap::ClapTrap(const ClapTrap& c)
+    : name(c.name), hp(c.hp), max_hp(c.max_hp), energy(c.energy), damage(c.damage)
 {
-    std::cout << this->type << " Copy constructor called" << std::endl;
+    std::cout << "ClapTrap " << this->name << " copy constructor called" << std::endl;
+}
+
+ClapTrap& ClapTrap::operator=(const ClapTrap& c)
+{
+    if (this != &c)
+    {
+        name   = c.name;
+        hp     = c.hp;
+        max_hp = c.max_hp;
+        energy = c.energy;
+        damage = c.damage;
+    }
+    return *this;
 }
 
 ClapTrap::~ClapTrap()
 {
-	std::cout << this->type << " Desctructor called" << std::endl;
+    std::cout << "ClapTrap " << this->name << " destructor called" << std::endl;
+}
+
+bool ClapTrap::isDead(bool verbose) const
+{
+    if (!this->hp)
+    {
+        if (verbose)
+            std::cout << "ClapTrap " << this->name << " is dead!" << std::endl;
+        return true;
+    }
+    return false;
+}
+
+bool ClapTrap::hasEnergy(bool verbose) const
+{
+    if (!this->energy)
+    {
+        if (verbose)
+            std::cout << "ClapTrap " << this->name << " has no energy!" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 void ClapTrap::attack(const std::string& target)
 {
-    if (this->energy)
-    {
-        std::cout << this->type << this->name << " attacks " << target << ", causing " << this->damage << " points of damage!" << std::endl;
-        this->energy--;
-    }
-    std::cout << this->type << this->name << " do not enough energy to launch attack" << std::endl;
+    if (isDead(true) || !hasEnergy(true))
+        return;
+    this->energy--;
+    std::cout << "ClapTrap " << this->name << " attacks " << target
+              << ", causing " << this->damage << " points of damage!" << std::endl;
 }
 
-void ClapTrap::takeDamage(const unsigned int damage)
+void ClapTrap::takeDamage(unsigned int amount)
 {
-    if (this->hp)
-    {
-        if (this->hp < damage)
-        {
-            this->hp = 0;
-            std::cout << this->type << this->name << " took " << damage << " points of damage and died !" << std::endl;
-        }
-        else
-        {
-            this->hp = this->hp - damage;
-            std::cout << this->type << this->name << " took " << damage << " points of damage!" << std::endl;
-        }
-        this->energy--;
-    }
+    if (isDead(true))
+        return;
+    if (this->hp <= amount)
+        this->hp = 0;
     else
-        std::cout << this->type << this->name << " is already dead and can no longer take damage" << std::endl;
+        this->hp -= amount;
+    std::cout << "ClapTrap " << this->name << " took " << amount
+              << " points of damage! HP left: " << this->hp << std::endl;
 }
 
-void ClapTrap::beRepaired(const unsigned int amount)
+void ClapTrap::beRepaired(unsigned int amount)
 {
-    if (this->energy)
-    {
-        std::cout << this->type << this->name << " repairs itself for " << amount << " amount!" << std::endl;
-        this->energy--;
-        if (this->hp < UINT_MAX - amount)
-            this->hp += amount;
-        else
-            this->hp = UINT_MAX;
-    }
-    std::cout << this->type << this->name << " do not enough energy to repair itself" << std::endl;
+    if (isDead(true) || !hasEnergy(true))
+        return;
+    this->energy--;
+    if (this->hp > this->max_hp - amount)
+        this->hp = this->max_hp;
+    else
+        this->hp += amount;
+    std::cout << "ClapTrap " << this->name << " repaired itself for " << amount
+              << " HP! HP: " << this->hp << std::endl;
 }
 
-const std::string &ClapTrap::getName(void) const { return this->name; }
-const std::string &ClapTrap::getType(void) const { return this->type; }
-
-std::ostream& operator<<(std::ostream& out, const ClapTrap& self)
+const std::string& ClapTrap::getName() const
 {
-    out << self.getType() << "instance : <" << self.getName() << ">" << std::endl;
-    return out;
+    return this->name;
 }

@@ -6,26 +6,26 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 12:20:16 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 12:24:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 14:00:18 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClapTrap.hpp"
 
 ClapTrap::ClapTrap()
-    : name(""), hp(10), energy(10), damage(0)
+    : name(""), hp(10), max_hp(UINT_MAX), energy(10), damage(0)
 {
     std::cout << "ClapTrap default constructor called" << std::endl;
 }
 
 ClapTrap::ClapTrap(const std::string& name)
-    : name(name), hp(10), energy(10), damage(0)
+    : name(name), hp(10), max_hp(UINT_MAX), energy(10), damage(0)
 {
     std::cout << "ClapTrap " << this->name << " constructor called" << std::endl;
 }
 
 ClapTrap::ClapTrap(const ClapTrap& c)
-    : name(c.name), hp(c.hp), energy(c.energy), damage(c.damage)
+    : name(c.name), hp(c.hp), max_hp(c.max_hp), energy(c.energy), damage(c.damage)
 {
     std::cout << "ClapTrap " << this->name << " copy constructor called" << std::endl;
 }
@@ -36,6 +36,7 @@ ClapTrap& ClapTrap::operator=(const ClapTrap& c)
     {
         name   = c.name;
         hp     = c.hp;
+        max_hp = c.max_hp;
         energy = c.energy;
         damage = c.damage;
     }
@@ -47,20 +48,32 @@ ClapTrap::~ClapTrap()
     std::cout << "ClapTrap " << this->name << " destructor called" << std::endl;
 }
 
-void ClapTrap::attack(const std::string& target)
+bool ClapTrap::isDead(bool verbose) const
 {
     if (!this->hp)
     {
-        std::cout << "ClapTrap " << this->name
-                  << " can't attack, has no hit points!" << std::endl;
-        return;
+        if (verbose)
+            std::cout << "ClapTrap " << this->name << " is dead!" << std::endl;
+        return true;
     }
+    return false;
+}
+
+bool ClapTrap::hasEnergy(bool verbose) const
+{
     if (!this->energy)
     {
-        std::cout << "ClapTrap " << this->name
-                  << " can't attack, has no energy!" << std::endl;
-        return;
+        if (verbose)
+            std::cout << "ClapTrap " << this->name << " has no energy!" << std::endl;
+        return false;
     }
+    return true;
+}
+
+void ClapTrap::attack(const std::string& target)
+{
+    if (isDead(true) || !hasEnergy(true))
+        return;
     this->energy--;
     std::cout << "ClapTrap " << this->name << " attacks " << target
               << ", causing " << this->damage << " points of damage!" << std::endl;
@@ -68,11 +81,8 @@ void ClapTrap::attack(const std::string& target)
 
 void ClapTrap::takeDamage(unsigned int amount)
 {
-    if (!this->hp)
-    {
-        std::cout << "ClapTrap " << this->name << " is already dead!" << std::endl;
+    if (isDead(true))
         return;
-    }
     if (this->hp <= amount)
         this->hp = 0;
     else
@@ -83,21 +93,11 @@ void ClapTrap::takeDamage(unsigned int amount)
 
 void ClapTrap::beRepaired(unsigned int amount)
 {
-    if (!this->hp)
-    {
-        std::cout << "ClapTrap " << this->name
-                  << " can't repair, has no hit points!" << std::endl;
+    if (isDead(true) || !hasEnergy(true))
         return;
-    }
-    if (!this->energy)
-    {
-        std::cout << "ClapTrap " << this->name
-                  << " can't repair, has no energy!" << std::endl;
-        return;
-    }
     this->energy--;
-    if (this->hp > UINT_MAX - amount)
-        this->hp = UINT_MAX;
+    if (this->hp > this->max_hp - amount)
+        this->hp = this->max_hp;
     else
         this->hp += amount;
     std::cout << "ClapTrap " << this->name << " repaired itself for " << amount

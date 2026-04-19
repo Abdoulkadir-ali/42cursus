@@ -6,42 +6,69 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 16:33:47 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/11 17:46:02 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 12:00:00 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ScavTrap.hpp"
 
 ScavTrap::ScavTrap()
-    : type("ScavTrap"), hp(10), energy(10), damage(20)
+    : ClapTrap()
 {
-    ClapTrap(this->type, this->hp, this->energy, this->damage);
-    std::cout << this->type << " Constructor called" << std::endl;
+    this->hp     = 100;
+    this->energy = 50;
+    this->damage = 20;
+    std::cout << "ScavTrap default constructor called" << std::endl;
 }
 
-ScavTrap::ScavTrap(const unsigned int hp, const unsigned int energy, const unsigned int damage)
-    : ClapTrap("ScavTrap", hp, energy, damage)
+ScavTrap::ScavTrap(const std::string& name)
+    : ClapTrap(name)
 {
-    std::cout << this->type << " Parametrized constructor called" << std::endl;
+    this->hp     = 100;
+    this->energy = 50;
+    this->damage = 20;
+    std::cout << "ScavTrap " << this->name << " constructor called" << std::endl;
 }
 
-ScavTrap::~ScavTrap(void)
+ScavTrap::ScavTrap(const ScavTrap& c)
+    : ClapTrap(c)
 {
-	std::cout << this->type << " Desctructor called" << std::endl;
+    std::cout << "ScavTrap " << this->name << " copy constructor called" << std::endl;
+}
+
+ScavTrap& ScavTrap::operator=(const ScavTrap& c)
+{
+    if (this != &c)
+        ClapTrap::operator=(c);
+    return *this;
+}
+
+ScavTrap::~ScavTrap()
+{
+    std::cout << "ScavTrap " << this->name << " destructor called" << std::endl;
 }
 
 void ScavTrap::attack(const std::string& target)
 {
-    if (this->energy)
+    if (!this->hp)
     {
-        std::cout << this->type << " attacks " << target << ", causing " << this->damage << " points of damage!" << std::endl;
-        this->energy--;
+        std::cout << "ScavTrap " << this->name
+                  << " can't attack, has no hit points!" << std::endl;
+        return;
     }
-    else
-        std::cout << this->type << " " << this->name << " does not have enough energy to launch attack" << std::endl;
+    if (!this->energy)
+    {
+        std::cout << "ScavTrap " << this->name
+                  << " can't attack, has no energy!" << std::endl;
+        return;
+    }
+    this->energy--;
+    std::cout << "ScavTrap " << this->name << " attacks " << target
+              << ", causing " << this->damage << " points of damage!" << std::endl;
 }
 
-void ScavTrap::guardGate(void)
+void ScavTrap::guardGate()
 {
-    std::cout << this->type << "Enters in keeper mode" << std::endl;
+    std::cout << "ScavTrap " << this->name
+              << " is now in Gatekeeper mode!" << std::endl;
 }
