@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 14:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:11:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:18:06 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@ class Animal
 
 		virtual void makeSound() const = 0;
 		std::string getType() const;
-
-		friend std::ostream& operator<<(std::ostream& os, const Animal& obj);
 };
+
+std::ostream& operator<<(std::ostream& os, const Animal& obj);

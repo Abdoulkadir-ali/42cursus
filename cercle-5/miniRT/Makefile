@@ -10,7 +10,7 @@ LIBS        = -L$(LIBFT_DIR) -lft -L$(MINILIBX_DIR) -lmlx -lreadline -lm -lz -lX
 
 
 
-CC          = cc
+CC          = gcc
 INCLUDES_DIRS = $(shell find includes -type d)
 INCLUDES    = $(addprefix -I,$(INCLUDES_DIRS))
 CFLAGS      = -Wall -Wextra -Werror -O3 -march=native -mfma -funroll-loops \

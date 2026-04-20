@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:12:19 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:37:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ class Character : public ICharacter
 	private:
 		std::string name;
 		Inventory inventory;
-		static const Verbose verbose = FULL;
+		static const Verbose verbose = RESTRICTED;
 
 	public:
 		Character(std::string const& name);
@@ -31,6 +31,7 @@ class Character : public ICharacter
 		void equip(AMateria* m);
 		void unequip(int idx);
 		void use(int idx, ICharacter& target);
-
-		friend std::ostream& operator<<(std::ostream& os, const Character& obj);
+		Inventory getInventory() const;
 };
+
+std::ostream& operator<<(std::ostream& os, const Character& obj);

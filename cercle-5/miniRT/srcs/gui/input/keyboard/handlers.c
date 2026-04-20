@@ -16,11 +16,11 @@ static t_key_action	*get_keymap(void)
 {
 	static t_key_action	keymap[] = {
 	{XK_w, move_forward_press, move_forward_release},
-	{XK_z, move_forward_press, move_forward_release},
 	{XK_s, move_backward_press, move_backward_release},
-	{XK_a, auto_fullres_toggle, NULL},
-	{XK_q, move_left_press, move_left_release},
+	{XK_a, move_left_press, move_left_release},
 	{XK_d, move_right_press, move_right_release},
+	
+	{XK_a, auto_fullres_toggle, NULL},
 	{XK_n, map_next_press, NULL},
 	{XK_p, map_prev_press, NULL},
 	{XK_Up, speed_up_press, NULL},

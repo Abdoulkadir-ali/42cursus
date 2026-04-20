@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 14:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:11:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:18:33 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ class Dog : public Animal
 		Dog(const Dog& other);
 		virtual ~Dog();
 		Dog& operator=(const Dog& other);
-
 		void makeSound() const;
-
-		friend std::ostream& operator<<(std::ostream& os, const Dog& obj);
 };
+
+std::ostream& operator<<(std::ostream& os, const Dog& obj);

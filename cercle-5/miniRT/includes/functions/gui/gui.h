@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 20:29:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/09 17:57:23 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 19:35:54 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 **   mlx_string_put(..., ui_sx(960, gui->win.disp_size), ...);
 **   draw_panel(gui, (t_panel){ui_pos(0, 0, d), ui_size(220, 1080, d), ...});
 */
-# define UI_BASE_W 1920
+# define UI_BASE_W 
 # define UI_BASE_H 1080
 
 static inline int	ui_sx(size_t x, t_vec2s disp)

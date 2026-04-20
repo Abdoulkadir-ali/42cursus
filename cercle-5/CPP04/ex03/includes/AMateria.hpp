@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:18:22 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:31:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 class AMateria
 {
 	private:
-		static const Verbose verbose = FULL;
+		static const Verbose verbose = RESTRICTED;
 
 	protected:
 		std::string type;
@@ -31,6 +31,6 @@ class AMateria
 		std::string const& getType() const;
 		virtual AMateria* clone() const = 0;
 		virtual void use(ICharacter& target);
-
-		friend std::ostream& operator<<(std::ostream& os, const AMateria& obj);
 };
+
+std::ostream& operator<<(std::ostream& os, const AMateria& obj);

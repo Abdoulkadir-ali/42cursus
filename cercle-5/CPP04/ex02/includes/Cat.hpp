@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 14:05:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:11:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:18:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ class Cat : public Animal
 		Cat(const Cat& other);
 		virtual ~Cat();
 		Cat& operator=(const Cat& other);
-
 		void makeSound() const;
-
-		friend std::ostream& operator<<(std::ostream& os, const Cat& obj);
 };
+
+std::ostream& operator<<(std::ostream& os, const Cat& obj);

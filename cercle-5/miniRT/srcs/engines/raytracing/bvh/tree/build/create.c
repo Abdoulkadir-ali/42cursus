@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 16:52:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/19 19:28:05 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,9 @@ t_bvh	*bvh_create(t_scene *scene)
 		return (node_destroy(root), NULL);
 	}
 	bvh_finalize(bvh, root);
-	fprintf(stderr, "[BVH] nodes=%zu refs=%zu root_count=%u root_first=%u\n",
+	fprintf(stderr, "[BVH] nodes=%zu refs=%zu root_count=%zu root_first=%zu\n",
 		bvh->num_nodes, bvh->num_refs,
-		bvh->nodes[0].count, (unsigned)bvh->nodes[0].left_or_first);
+		bvh->nodes[0].count, bvh->nodes[0].left_or_first);
 	build_emissive_cache(scene);
 	return (bvh);
 }

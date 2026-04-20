@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 13:11:01 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:11:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:16:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,6 @@ class WrongAnimal
         WrongAnimal& operator=(const WrongAnimal& other);
         void        makeSound(void) const;
         std::string getType(void) const;
-        friend std::ostream& operator<<(std::ostream& os, const WrongAnimal& a);
 };
+
+std::ostream& operator<<(std::ostream& os, const WrongAnimal& a);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 18:07:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:07:36 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:29:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,13 @@ void Character::use(int idx, ICharacter& target)
 		m->use(target);
 }
 
+Inventory Character::getInventory() const
+{
+	return this->inventory;
+}
+
 std::ostream& operator<<(std::ostream& os, const Character& obj)
 {
-	os << "Character " << obj.getName() << " with " << obj.inventory;
+	os << "Character " << obj.getName() << " with inventory:" << obj.getInventory();
 	return os;
 }

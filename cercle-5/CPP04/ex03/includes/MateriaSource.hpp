@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:11:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:31:09 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 class MateriaSource : public IMateriaSource
 {
 	private:
-		std::vector<AMateria*> templates;
+		AMateria*	templates[4];
 		static const size_t maxLearned = 4;
-		static const Verbose verbose = FULL;
+		static const Verbose verbose = RESTRICTED;
 
 	public:
 		MateriaSource();
@@ -29,6 +29,6 @@ class MateriaSource : public IMateriaSource
 
 		void learnMateria(AMateria* m);
 		AMateria* createMateria(std::string const& type);
-
-		friend std::ostream& operator<<(std::ostream& os, const MateriaSource& obj);
 };
+
+std::ostream& operator<<(std::ostream& os, const MateriaSource& obj);

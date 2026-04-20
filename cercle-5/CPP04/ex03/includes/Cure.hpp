@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 18:11:47 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 01:31:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 class Cure : public AMateria
 {
 	private:
-		static const Verbose verbose = FULL;
+		static const Verbose verbose = RESTRICTED;
 
 	public:
 		Cure();
@@ -26,6 +26,6 @@ class Cure : public AMateria
 
 		AMateria* clone() const;
 		void use(ICharacter& target);
-
-		friend std::ostream& operator<<(std::ostream& os, const Cure& obj);
 };
+
+std::ostream& operator<<(std::ostream& os, const Cure& obj);
