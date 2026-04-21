@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 13:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/21 01:31:52 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 02:03:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Inventory
 		Inventory& operator=(const Inventory& other);
 
 		void addMateria(AMateria* m);
-		void removeMateria(int idx);
+		AMateria* removeMateria(int idx);
 		AMateria* getMateria(int idx) const;
 		size_t getCount() const;
 };

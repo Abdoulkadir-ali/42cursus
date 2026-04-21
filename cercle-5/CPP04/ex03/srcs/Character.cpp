@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 18:07:35 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/21 01:29:10 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 02:20:25 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Character::Character(std::string const& name) : name(name)
 		std::cout << "Character " << name << " created" << std::endl;
 }
 
-Character::Character(const Character& other) : name(other.name), inventory(other.inventory)
+Character::Character(const Character& other) : name(other.name), inventory(other.inventory), floor(other.floor)
 {
 	if (verbose == FULL)
 		std::cout << "Character " << name << " copied" << std::endl;
@@ -36,6 +36,7 @@ Character& Character::operator=(const Character& other)
 	{
 		name = other.name;
 		inventory = other.inventory;
+		floor = other.floor;
 	}
 	return *this;
 }
@@ -52,7 +53,7 @@ void Character::equip(AMateria* m)
 
 void Character::unequip(int idx)
 {
-	inventory.removeMateria(idx);
+	floor.drop(inventory.removeMateria(idx));
 }
 
 void Character::use(int idx, ICharacter& target)

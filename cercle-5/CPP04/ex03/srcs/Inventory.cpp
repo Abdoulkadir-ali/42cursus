@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 18:07:45 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/21 01:44:06 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 02:03:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,15 @@ void Inventory::addMateria(AMateria* m)
 	}
 }
 
-void Inventory::removeMateria(int idx)
+AMateria* Inventory::removeMateria(int idx)
 {
 	if (idx >= 0 && idx < (int)maxSize)
+	{
+		AMateria* tmp = materias[idx];
 		materias[idx] = 0;
+		return tmp;
+	}
+	return 0;
 }
 
 AMateria* Inventory::getMateria(int idx) const
