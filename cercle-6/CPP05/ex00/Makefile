@@ -1,11 +1,10 @@
 NAME        = bureaucrat
 CC          = c++
 MAKEFLAGS	+= -j4
-CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -I/includes
+CFLAGS      = -Wall -Wextra -Werror -g3 -Iincludes -I/includes --std=c++98
 RM          = rm -f
 SRCS_DIR    = srcs
 OBJS_DIR    = objs
-
 SRCS        = $(shell find $(SRCS_DIR) -name "*.cpp")
 OBJS        = $(patsubst $(SRCS_DIR)/%.cpp,$(OBJS_DIR)/%.o,$(SRCS))
 
@@ -24,6 +23,7 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 
-re: fclean all
+re: fclean
+	$(MAKE) all
 
 .PHONY: all clean fclean re test

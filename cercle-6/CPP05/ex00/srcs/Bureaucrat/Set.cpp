@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 07:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/20 09:30:40 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 20:04:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,7 @@ void Bureaucrat::validateGradeRange(int minG, int maxG)
 {
     if (minG > maxG)
         throw Bureaucrat::InvalidGradeRangeException();
-    if (minG < 1 || maxG > 150)
+    if (minG < minGrade || maxG > maxGrade)
         throw Bureaucrat::InvalidGradeRangeException();
-    this->minGrade = minG;
-    this->maxGrade = maxG;
 }
 

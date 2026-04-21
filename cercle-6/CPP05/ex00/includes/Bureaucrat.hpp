@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 07:10:46 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/20 09:33:49 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 20:14:24 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ class Bureaucrat
         const std::string name;
         std::string type;
         int grade;
-        int minGrade = 1;
-        int maxGrade = 150;
+        int minGrade;
+        int maxGrade;
         
     public:
         //Init
@@ -69,8 +69,8 @@ class Bureaucrat
                     public: 
                         virtual const char* what() const throw();
                     };
-    };
+};
 
-    std::ostream &operator<<(std::ostream& out, const Bureaucrat &instance);
+std::ostream &operator<<(std::ostream& out, const Bureaucrat &instance);
 
 

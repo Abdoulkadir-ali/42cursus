@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 07:48:17 by abdoali           #+#    #+#             */
-/*   Updated: 2026/03/20 09:34:09 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 20:14:49 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Bureaucrat::Bureaucrat()
 }
 
 Bureaucrat::Bureaucrat(const std::string &name, const std::string &type, int grade, int minGrade, int maxGrade)
-	: name(name), type(type), grade(grade)
+	: name(name), type(type), grade(grade), minGrade(minGrade), maxGrade(maxGrade)	
 {
 	this->validateGradeRange(minGrade, maxGrade);
 	std::cout << "Bureaucrat " << this->name << " constructed (grade=" << this->grade << ")" << std::endl;

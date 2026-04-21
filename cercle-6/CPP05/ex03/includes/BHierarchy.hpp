@@ -10,8 +10,8 @@ class BHierarchy
 	protected:
 		const std::string name;
 		std::string type;
-		int minGrade = 150;
-		int maxGrade = 1;
+		int minGrade;
+		int maxGrade;
 
 	public:
 		BHierarchy();
