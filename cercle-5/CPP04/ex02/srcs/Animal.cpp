@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/19 13:38:08 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 13:38:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 03:45:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,6 @@ std::string Animal::getType() const
 
 std::ostream& operator<<(std::ostream& os, const Animal& obj)
 {
-	os << "Animal of type: " << obj.type;
+	os << "Animal of type: " << obj.getType();
 	return os;
 }
