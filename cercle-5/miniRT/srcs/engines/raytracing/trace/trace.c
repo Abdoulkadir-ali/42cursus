@@ -15,15 +15,14 @@
 #include "raytracing.h"
 
 static t_vec3	shade_trace(const t_bvh *bvh, const t_ray *ray, t_scene *sc,
-					t_hit *hit)
+					t_hit *hit, t_vec3 vol)
 {
 	t_vec3	p;
 
 	p = vec3_add(ray->origin, vec3_scale(ray->direction, hit->t));
 	if (point_inside_eh(p, sc))
 		return (vec3(0, 0, 0));
-	return (vec3_add(compute_color(hit, sc, bvh, ray),
-			add_volumetrics(ray, sc, hit->t)));
+	return (vec3_add(compute_color(hit, sc, bvh, ray), vol));
 }
 
 static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
@@ -33,6 +32,7 @@ static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
 	bool	hit_any;
 	t_ray	bent;
 	bool	cap;
+	t_vec3	vol;
 
 	if (lens_ray(ray, sc, &bent, &cap))
 	{
@@ -49,9 +49,10 @@ static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
 	check_planes(ray, sc, &hit, &hit_any);
 	if (out_t)
 		*out_t = (float)hit.t;
+	vol = add_volumetrics(ray, sc, hit_any ? hit.t : 1e10);
 	if (hit_any)
-		return (shade_trace(bvh, ray, sc, &hit));
-	return (add_volumetrics(ray, sc, 1e10));
+		return (shade_trace(bvh, ray, sc, &hit, vol));
+	return (vol);
 }
 
 t_vec3	trace_ray(const t_bvh *bvh, const t_ray *ray, t_scene *sc)

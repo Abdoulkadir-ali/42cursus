@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 01:35:56 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:18:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,16 @@ static int	pack_color(t_vec3 color, const t_raytracer_settings *opts,
 	h ^= (uint32_t)frame * 1103515245U;
 	h = (h ^ (h >> 13)) * 12741261U;
 	di = ((float)(h % 256) / 255.0f - 0.5f) * 1.5f;
-	rgb[0] = (unsigned int)(uint8_t)clamp_d(ch.x + di, 0, 255) << 16;
-	rgb[1] = (unsigned int)(uint8_t)clamp_d(ch.y + di, 0, 255) << 8;
-	rgb[2] = (unsigned int)(uint8_t)clamp_d(ch.z + di, 0, 255);
+	rgb[0] = (unsigned int)(uint8_t)(ch.x + di < 0.0f ? 0.0f : ch.x + di > 255.0f ? 255.0f : ch.x + di) << 16;
+	rgb[1] = (unsigned int)(uint8_t)(ch.y + di < 0.0f ? 0.0f : ch.y + di > 255.0f ? 255.0f : ch.y + di) << 8;
+	rgb[2] = (unsigned int)(uint8_t)(ch.z + di < 0.0f ? 0.0f : ch.z + di > 255.0f ? 255.0f : ch.z + di);
 	return ((rgb[0] | rgb[1] | rgb[2]));
 }
 
 static void	apply_dof(t_ray *ray, t_render *render, double x, double y)
 {
 	const t_raytracer_settings	*s;
-	uint32_t					seed;
+	uint64_t					seed;
 	t_vec2						ap;
 	double						ft;
 	t_vec3						fpt;

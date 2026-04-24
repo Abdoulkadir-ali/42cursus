@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 14:38:50 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 16:30:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ size_t	collect_objects_worker(t_scene *scene, t_build_item *items)
 	size_t	k;
 
 	k = 0;
-	add_items_worker(items, &k, TYPE_PLANE, scene);
+	/* Planes are infinite — excluded from BVH, tested separately */
 	add_items_worker(items, &k, TYPE_SPHERE, scene);
 	add_items_worker(items, &k, TYPE_CYLINDER, scene);
 	add_items_worker(items, &k, TYPE_CONE, scene);

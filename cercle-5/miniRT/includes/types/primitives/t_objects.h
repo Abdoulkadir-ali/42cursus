@@ -38,7 +38,8 @@ typedef enum e_type
 	TYPE_CAPSULE,
 	TYPE_ATTRACTOR,
 	TYPE_PARTICLE_EMITTER,
-	TYPE_MAT_MOD
+	TYPE_MAT_MOD,
+	TYPE_MAX
 }	t_type;
 
 typedef struct s_attractor
@@ -150,6 +151,8 @@ typedef struct s_box
 	t_vec3				temp_color;
 	size_t				mat_slots[4];
 	int					active_slot;
+	t_vec3					ax[3];
+	t_vec3					ax_fwd_cache;
 }						t_box;
 
 typedef struct s_capsule

@@ -23,10 +23,12 @@ static void	exec_worker(t_thread_pool *pool, size_t *my_gen)
 	data = pool->data;
 	pthread_mutex_unlock(&pool->lock);
 	f(data);
-	pthread_mutex_lock(&pool->lock);
-	if (--pool->running == 0)
+	if (atomic_fetch_sub(&pool->running, 1) == 1)
+	{
+		pthread_mutex_lock(&pool->lock);
 		pthread_cond_signal(&pool->cond_done);
-	pthread_mutex_unlock(&pool->lock);
+		pthread_mutex_unlock(&pool->lock);
+	}
 }
 
 static void	*pool_worker(void *arg)
@@ -110,10 +112,10 @@ void	parallel_run(t_thread_pool *pool, size_t count,
 	pthread_mutex_lock(&pool->lock);
 	pool->worker = worker;
 	pool->data = data;
-	pool->running = pool->count;
+	atomic_store(&pool->running, pool->count);
 	pool->generation++;
 	pthread_cond_broadcast(&pool->cond_work);
-	while (pool->running > 0)
+	while (atomic_load(&pool->running) > 0)
 		pthread_cond_wait(&pool->cond_done, &pool->lock);
 	pool->worker = NULL;
 	pthread_mutex_unlock(&pool->lock);

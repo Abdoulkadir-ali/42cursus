@@ -60,6 +60,12 @@ typedef struct s_box_calc
 	t_ray	ray;
 }	t_box_calc;
 
+typedef struct s_stk_entry
+{
+	uint32_t	idx;
+	float		t;
+}	t_stk_entry;
+
 typedef struct s_cap_calc
 {
 	t_vec3	p[2];
@@ -71,8 +77,7 @@ typedef struct s_cap_calc
 
 typedef struct s_bvh_trav
 {
-	size_t			*stack;
-	double			*stk_t;
+	t_stk_entry		*stack;
 	size_t			*top;
 	const t_bvh		*bvh;
 	const t_ray		*ray;
@@ -80,8 +85,7 @@ typedef struct s_bvh_trav
 
 typedef struct s_bvh_trav_init
 {
-	size_t			*stack;
-	double			*stk_t;
+	t_stk_entry		*stack;
 	size_t			*top;
 	const t_bvh		*bvh;
 	const t_ray		*ray;
@@ -221,8 +225,8 @@ t_vec3			closest_pt_rect(t_vec3 p, t_vec3 v0, t_vec3 v1, t_vec3 v2);
 void			apply_em(t_shading *sha, t_vec3 *total, t_material *mat,
 					double r);
 double			shading_attenuation(double dist_sq);
-uint32_t		rt_next_rand(uint32_t *seed);
-double			rt_rand_d(uint32_t *seed);
+uint64_t		rt_next_rand(uint64_t *seed);
+double			rt_rand_d(uint64_t *seed);
 void			setup_shading(t_shading *sha, t_hit *hit, t_scene *scene,
 					const t_bvh *bvh);
 double			compute_ao(const t_shading *sha);
@@ -231,12 +235,12 @@ t_vec3			compute_refraction(t_shading *sha, const t_ray *ray,
 					double *kr, double next_w);
 t_vec3			compute_reflection(t_shading *sha, const t_ray *ray,
 					double next_w);
-t_vec3			rt_random_on_sphere(uint32_t *seed);
-t_vec3			rt_random_on_hemisphere(t_vec3 normal, uint32_t *seed);
-t_vec3			rt_random_cosine_weighted(t_vec3 normal, uint32_t *seed);
-t_vec3			rt_random_on_cone(t_vec3 axis, double cos_theta_max,
-					uint32_t *seed);
 void			rt_build_onb(t_vec3 n, t_vec3 *v1, t_vec3 *v2);
+t_vec3			rt_random_on_sphere(uint64_t *seed);
+t_vec3			rt_random_on_hemisphere(t_vec3 normal, uint64_t *seed);
+t_vec3			rt_random_cosine_weighted(t_vec3 normal, uint64_t *seed);
+t_vec3			rt_random_on_cone(t_vec3 axis, double cos_theta_max,
+					uint64_t *seed);
 t_vec3			rt_kelvin_to_rgb(double kelvin);
 void			apply_blackbody_to_mat(t_material *mat);
 double			rt_halton(size_t i, size_t base);

@@ -38,8 +38,10 @@ t_parse_obj	parse_box(t_parser *p)
 	if (!parse_vec3(p, &res.data.box.half_extents) || !parse_vec3(p, &rgb))
 		return (res);
 	res.data.box.temp_color = rgb;
-	vec3_orthonormal_basis(res.data.box.transform.forward,
-		&res.data.box.transform.right, &res.data.box.transform.up);
+	res.data.box.ax[0] = res.data.box.transform.forward;
+	vec3_orthonormal_basis(res.data.box.ax[0],
+		&res.data.box.ax[1], &res.data.box.ax[2]);
+	res.data.box.ax_fwd_cache = res.data.box.ax[0];
 	set_box_phys(&res.data.box);
 	res.type = TYPE_BOX;
 	return (res);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:37:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/06 12:01:26 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 16:36:29 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,18 +74,26 @@ void	find_best_split(t_build_item *items, size_t count,
 		t_split_info *info, t_aabb *bounds)
 {
 	t_sweep	sw;
+	t_aabb	cb;
+	size_t	i;
 
+	(void)bounds;
+	cb.min = items[0].centroid;
+	cb.max = items[0].centroid;
+	i = 1;
+	while (i < count)
+		aabb_expand_point(&cb, items[i++].centroid);
 	info->cost = 1e30;
-	sw.lo = bounds->min.x;
-	sw.hi = bounds->max.x;
+	sw.lo = cb.min.x;
+	sw.hi = cb.max.x;
 	sw.axis = 0;
 	sweep_axis(&sw, items, count, info);
-	sw.lo = bounds->min.y;
-	sw.hi = bounds->max.y;
+	sw.lo = cb.min.y;
+	sw.hi = cb.max.y;
 	sw.axis = 1;
 	sweep_axis(&sw, items, count, info);
-	sw.lo = bounds->min.z;
-	sw.hi = bounds->max.z;
+	sw.lo = cb.min.z;
+	sw.hi = cb.max.z;
 	sw.axis = 2;
 	sweep_axis(&sw, items, count, info);
 }

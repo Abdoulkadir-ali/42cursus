@@ -12,16 +12,15 @@
 
 #include "raytracing.h"
 
+
 PROF_HOT
 static inline void	get_calc(t_box *bx, const t_ray *ray, t_box_calc *c)
 {
 	t_vec3	oc;
 
-	if (vec3_mag_sq(bx->transform.forward) < 1e-6)
-		c->ax[0] = vec3(1, 0, 0);
-	else
-		c->ax[0] = vec3_norm(bx->transform.forward);
-	vec3_orthonormal_basis(c->ax[0], &c->ax[1], &c->ax[2]);
+	c->ax[0] = bx->ax[0];
+	c->ax[1] = bx->ax[1];
+	c->ax[2] = bx->ax[2];
 	oc = vec3_sub(ray->origin, bx->transform.pos);
 	c->p[0] = vec3_dot(oc, c->ax[0]);
 	c->p[1] = vec3_dot(oc, c->ax[1]);

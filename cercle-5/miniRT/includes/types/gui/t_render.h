@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 20:00:30 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 19:28:54 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 19:47:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 # include "t_maths.h"
 
 # define RENDER_POOL_MAX 128
-# define RENDER_W 1920
-# define RENDER_H 1080
+# define RENDER_W 2560
+# define RENDER_H 1440
 
 # ifndef GUI_AUTOREFRESH_PHYSICS
 #  define GUI_AUTOREFRESH_PHYSICS 1

@@ -45,7 +45,7 @@ static void	init_ao_params(const t_shading *sha, int *samples, double *radius,
 
 static double	run_ao_samples(const t_shading *sha, int samples, double radius)
 {
-	uint32_t	seed;
+	uint64_t	seed;
 	t_vec3		origin;
 	t_ray		ao_ray;
 	double		occ;

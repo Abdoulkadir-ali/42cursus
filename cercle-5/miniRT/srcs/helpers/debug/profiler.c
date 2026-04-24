@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 08:58:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/23 15:03:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,13 @@ void	prof_print_frame(void)
 	if (getenv("BENCH_FRAMES"))
 		max_frames = atoi(getenv("BENCH_FRAMES"));
 	if (g_profiler.frame == max_frames)
+	{
 		prof_print_benchmark(max_frames);
+#ifdef PROFILE_BUILD
+		CALLGRIND_STOP_INSTRUMENTATION;
+		CALLGRIND_DUMP_STATS;
+#endif
+	}
 }
 
 #endif

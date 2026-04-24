@@ -12,45 +12,52 @@
 
 #include "raytracing.h"
 
-/*
-** Dispatches ray intersection — flattened, most-frequent types first.
-*/
-static bool	intersect_dispatch_ext(const t_ray *ray, t_scene *sc, t_bvh_ref ref,
-				t_hit *hit)
+typedef bool (*t_intersect_fn)(const t_ray *, const void *, t_hit *);
+
+static const t_intersect_fn g_intersect_dispatch[TYPE_MAX] = {
+	[TYPE_SPHERE]       = (t_intersect_fn)intersect_sphere,
+	[TYPE_PROXY_SPHERE] = (t_intersect_fn)intersect_sphere,
+	[TYPE_PYRAMID]      = (t_intersect_fn)intersect_pyramid,
+	[TYPE_BOX]          = (t_intersect_fn)intersect_box,
+	[TYPE_CAPSULE]      = (t_intersect_fn)intersect_capsule,
+	[TYPE_CYLINDER]     = (t_intersect_fn)intersect_cylinder,
+	[TYPE_RECT]         = (t_intersect_fn)intersect_rect,
+	[TYPE_CONE]         = (t_intersect_fn)intersect_cone,
+	[TYPE_TRI]          = (t_intersect_fn)intersect_tri_shape,
+	[TYPE_PLANE]        = (t_intersect_fn)intersect_plane,
+	[TYPE_MESH]         = (t_intersect_fn)intersect_mesh,
+	[TYPE_ANIM]         = (t_intersect_fn)intersect_mesh,
+};
+
+static inline const void	*get_scene_object(t_scene *scene, t_bvh_ref ref)
 {
-	if (ref.type == TYPE_CONE)
-		return (intersect_cone(ray, &sc->cones[ref.index], hit));
-	if (ref.type == TYPE_TRI)
-		return (intersect_tri_shape(ray, &sc->tris[ref.index], hit));
-	if (ref.type == TYPE_PLANE)
-		return (intersect_plane(ray, &sc->planes[ref.index], hit));
-	if (ref.type == TYPE_MESH)
-		return (intersect_mesh(ray, &sc->meshes[ref.index], hit));
-	if (ref.type == TYPE_ANIM)
-		return (intersect_mesh(ray, &sc->animated[ref.index].base, hit));
-	return (false);
+	if (ref.type == TYPE_SPHERE || ref.type == TYPE_PROXY_SPHERE)
+		return (&scene->spheres[ref.index]);
+	if (ref.type == TYPE_PYRAMID) return (&scene->pyramids[ref.index]);
+	if (ref.type == TYPE_BOX) return (&scene->boxes[ref.index]);
+	if (ref.type == TYPE_CAPSULE) return (&scene->capsules[ref.index]);
+	if (ref.type == TYPE_CYLINDER) return (&scene->cylinders[ref.index]);
+	if (ref.type == TYPE_RECT) return (&scene->rects[ref.index]);
+	if (ref.type == TYPE_CONE) return (&scene->cones[ref.index]);
+	if (ref.type == TYPE_TRI) return (&scene->tris[ref.index]);
+	if (ref.type == TYPE_PLANE) return (&scene->planes[ref.index]);
+	if (ref.type == TYPE_MESH) return (&scene->meshes[ref.index]);
+	if (ref.type == TYPE_ANIM) return (&scene->animated[ref.index].base);
+	return (NULL);
 }
 
 bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
-		t_hit *hit)
+			t_hit *hit)
 {
-	bool	res;
+	bool		res;
+	const void	*obj;
 
-	res = false;
-	if (ref.type == TYPE_SPHERE || ref.type == TYPE_PROXY_SPHERE)
-		res = intersect_sphere(ray, &scene->spheres[ref.index], hit);
-	else if (ref.type == TYPE_PYRAMID)
-		res = intersect_pyramid(ray, &scene->pyramids[ref.index], hit);
-	else if (ref.type == TYPE_BOX)
-		res = intersect_box(ray, &scene->boxes[ref.index], hit);
-	else if (ref.type == TYPE_CAPSULE)
-		res = intersect_capsule(ray, &scene->capsules[ref.index], hit);
-	else if (ref.type == TYPE_CYLINDER)
-		res = intersect_cylinder(ray, &scene->cylinders[ref.index], hit);
-	else if (ref.type == TYPE_RECT)
-		res = intersect_rect(ray, &scene->rects[ref.index], hit);
-	else
-		res = intersect_dispatch_ext(ray, scene, ref, hit);
+	if (ref.type >= TYPE_MAX || !g_intersect_dispatch[ref.type])
+		return (false);
+	obj = get_scene_object(scene, ref);
+	if (!obj)
+		return (false);
+	res = g_intersect_dispatch[ref.type](ray, obj, hit);
 	if (res)
 		hit->ref = ref;
 	return (res);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   worker_sync.c                                      :+:      :+:    :+:   */
+/*   sync.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 14:30:23 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,9 @@ static void	rebuild_sb_mesh_bvhs(t_scene *scene)
 	i = 0;
 	while (i < scene->soft_body_count)
 	{
-		sb = &scene->soft_bodies[i];
+		sb = &scene->soft_bodies[i++];
 		if (sb->active && sb->mesh_idx < scene->mesh_count)
 			mesh_build_bvh(&scene->meshes[sb->mesh_idx]);
-		i++;
 	}
 }
 
@@ -33,6 +32,8 @@ void	bvh_sync(t_scene *scene)
 	t_bvh	*new_bvh;
 	t_bvh	*old;
 
+	if (!scene)
+		return ;
 	pthread_rwlock_wrlock(&scene->bvh_lock);
 	rebuild_sb_mesh_bvhs(scene);
 	pthread_rwlock_unlock(&scene->bvh_lock);

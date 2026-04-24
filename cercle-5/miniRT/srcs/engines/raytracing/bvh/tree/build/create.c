@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 03:07:24 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/19 19:28:05 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 16:48:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ static size_t	get_scene_total(t_scene *scene)
 	size_t	i;
 	size_t	dead;
 
-	total = scene->sphere_count + scene->plane_count;
+	/* Planes are infinite and excluded from BVH — check them separately */
+	total = scene->sphere_count;
 	total += scene->cylinder_count + scene->cone_count;
 	total += scene->mesh_count + scene->anim_count;
 	total += scene->tri_count + scene->rect_count;
@@ -118,9 +119,11 @@ t_bvh	*bvh_create(t_scene *scene)
 		return (node_destroy(root), NULL);
 	}
 	bvh_finalize(bvh, root);
+#ifdef DEBUG_EXTENDER
 	fprintf(stderr, "[BVH] nodes=%zu refs=%zu root_count=%zu root_first=%zu\n",
 		bvh->num_nodes, bvh->num_refs,
 		bvh->nodes[0].count, bvh->nodes[0].left_or_first);
+#endif
 	build_emissive_cache(scene);
 	return (bvh);
 }

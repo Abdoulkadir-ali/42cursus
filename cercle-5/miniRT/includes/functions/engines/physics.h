@@ -27,6 +27,7 @@ typedef struct s_int_task
 	t_physics_settings	*s;
 	size_t				next;
 	t_int_type			type;
+	volatile int		any_moved;
 }	t_int_task;
 
 typedef struct s_trav
@@ -53,7 +54,7 @@ void    phys_debug_spheres(t_scene *scene);
 
 /* Integration */
 void    update_physics(t_scene *scene, t_physic_engine *engine, double dt);
-void    integrate_bodies_worker(t_scene *scene, t_physic_engine *engine, double dt);
+bool    integrate_bodies_worker(t_scene *scene, t_physic_engine *engine, double dt);
 size_t  generate_contacts(t_scene *scene, t_physic_engine *engine, t_contact *contacts, size_t max_c);
 void	apply_attractor_pass(t_scene *scene, t_physics_settings *s);
 void	apply_nbody_gravity(t_scene *scene, double big_g);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 15:23:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:18:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ static void	apply_thermal_blend(t_shading *sha)
 static void	init_shading_cache(t_shading *sha)
 {
 	sha->cache.view = vec3_scale(sha->ray->direction, -1.0);
-	sha->cache.ndotv = fmax(0.0,
-			vec3_dot(sha->hit->normal, sha->cache.view));
+	sha->cache.ndotv = vec3_dot(sha->hit->normal, sha->cache.view);
+	if (sha->cache.ndotv < 0.0)
+		sha->cache.ndotv = 0.0;
 	sha->cache.org = vec3_add(sha->hit->point,
 			vec3_scale(sha->hit->normal, 1e-3));
 	sha->cache.seed_pos = 0;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 15:18:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:32:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	stochastic_target(t_shading *sha, t_light light, t_light_calc *c,
 	t_vec3		to_light;
 	double		dist;
 	double		cos_theta_max;
-	uint32_t	seed;
+	uint64_t	seed;
 	double		bv;
 
 	to_light = vec3_sub(light.transform.pos, sha->hit->point);
@@ -37,6 +37,7 @@ static void	stochastic_target(t_shading *sha, t_light light, t_light_calc *c,
 	*a_norm = 4.0 * PI * light.transform.scale.x * light.transform.scale.x;
 }
 
+__attribute__((optimize("O3")))
 static double	get_attenuation(t_shading *sha, t_light_calc *c)
 {
 	double	att;
@@ -48,11 +49,12 @@ static double	get_attenuation(t_shading *sha, t_light_calc *c)
 		density = 0.02;
 		if (sha->opts && sha->opts->beer_density > 0.0)
 			density = sha->opts->beer_density;
-		att *= exp(-density * c->dist);
+		att *= __builtin_exp2(-density * c->dist * 1.4426950408889634);
 	}
 	return (att);
 }
 
+__attribute__((optimize("O3")))
 t_vec3	calc_light(t_shading *sha, t_light light)
 {
 	t_light_calc	c;
@@ -71,13 +73,15 @@ t_vec3	calc_light(t_shading *sha, t_light light)
 		return (vec3(0, 0, 0));
 	c.norm = vec3_scale(c.ld, 1.0 / c.dist);
 	c.ndotl = vec3_dot(sha->hit->normal, c.norm);
+	if (c.ndotl < 0.0)
+		return (vec3(0, 0, 0));
 	att = get_attenuation(sha, &c);
 	b = light.brightness / b;
-	if (c.ndotl < 0.0 || b * att * c.ndotl < 0.004
+	if (b * att * c.ndotl < 0.004
 		|| !light_visible(sha, light, &c))
 		return (vec3(0, 0, 0));
 	spec = calc_specular(sha, c.norm);
-	b = fmin(b * att, 200.0) * c.ndotl;
+	b = (b * att < 200.0 ? b * att : 200.0) * c.ndotl;
 	return (vec3_add(pixel_color(sha->albedo, light.rgb, b),
 			vec3_scale(light.rgb, b * sha->mat.specular * spec)));
 }

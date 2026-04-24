@@ -14,8 +14,8 @@
 
 static void	push_to_trav(t_bvh_trav *v, size_t idx, double t)
 {
-	v->stack[*v->top] = idx;
-	v->stk_t[(*v->top)++] = t;
+	v->stack[*v->top].idx = (uint32_t)idx;
+	v->stack[(*v->top)++].t = (float)t;
 }
 
 static void	push_sort(t_bvh_trav *v, double t[2], size_t l, size_t r)
@@ -42,15 +42,14 @@ static double	clamp0(double t)
 void	bvh_trav_push0(t_bvh_trav *v, t_bvh_trav_init *cfg)
 {
 	v->stack = cfg->stack;
-	v->stk_t = cfg->stk_t;
 	v->top = cfg->top;
 	v->bvh = cfg->bvh;
 	v->ray = cfg->ray;
-	v->stack[*cfg->top] = 0;
+	v->stack[*cfg->top].idx = 0;
 	if (cfg->t0 < 0.0)
-		v->stk_t[(*cfg->top)++] = 0.0;
+		v->stack[(*cfg->top)++].t = 0.0f;
 	else
-		v->stk_t[(*cfg->top)++] = cfg->t0;
+		v->stack[(*cfg->top)++].t = (float)cfg->t0;
 }
 
 void	bvh_push_children(t_bvh_trav *v, size_t idx, double cur_t)

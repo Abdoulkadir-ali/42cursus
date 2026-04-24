@@ -185,7 +185,7 @@ typedef struct s_shading_cache
 	t_vec3		view;
 	double		ndotv;
 	t_vec3		org;
-	uint32_t	seed_pos;
+	uint64_t	seed_pos;
 }	t_shading_cache;
 
 typedef struct s_shading

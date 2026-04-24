@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/stat.h>
 #include "scene.h"
 
 bool	read_id(t_parser *p, char *buf, size_t max_len)
@@ -69,20 +70,22 @@ bool	rt_parse_entry(t_scene *scene, t_rt *rt)
 char	*read_file_to_str(int fd)
 {
 	char	*content;
-	char	buf[4096];
+	off_t	size;
 	ssize_t	n;
-	char	*tmp;
 
-	content = ft_strdup("");
-	while (1)
+	size = lseek(fd, 0, SEEK_END);
+	if (size <= 0)
+		return (ft_strdup(""));
+	lseek(fd, 0, SEEK_SET);
+	content = malloc(size + 1);
+	if (!content)
+		return (NULL);
+	n = read(fd, content, size);
+	if (n < 0)
 	{
-		n = read(fd, buf, 4095);
-		if (n <= 0)
-			break ;
-		buf[n] = '\0';
-		tmp = ft_strjoin(content, buf);
 		free(content);
-		content = tmp;
+		return (NULL);
 	}
+	content[n] = '\0';
 	return (content);
 }

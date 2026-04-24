@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/08 17:09:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:18:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,12 @@
 unsigned int	color_blend(unsigned int dst, int src, float alpha)
 {
 	t_vec3i	rgb;
+	float	inv_alpha;
 
-	rgb.x = ((src >> 16) & 0xFF) * alpha + ((dst >> 16) & 0xFF) * (1.0 - alpha);
-	rgb.y = ((src >> 8) & 0xFF) * alpha + ((dst >> 8) & 0xFF) * (1.0 - alpha);
-	rgb.z = (src & 0xFF) * alpha + (dst & 0xFF) * (1.0 - alpha);
+	inv_alpha = 1.0f - alpha;
+	rgb.x = ((src >> 16) & 0xFF) * alpha + ((dst >> 16) & 0xFF) * inv_alpha;
+	rgb.y = ((src >> 8) & 0xFF) * alpha + ((dst >> 8) & 0xFF) * inv_alpha;
+	rgb.z = (src & 0xFF) * alpha + (dst & 0xFF) * inv_alpha;
 	return ((rgb.x << 16) | (rgb.y << 8) | rgb.z);
 }
 

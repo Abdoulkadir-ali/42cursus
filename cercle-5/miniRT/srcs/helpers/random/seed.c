@@ -12,27 +12,27 @@
 
 #include "helpers.h"
 
-uint32_t	rt_seed_pos(t_vec3 p)
+uint64_t	rt_seed_pos(t_vec3 p)
 {
-	uint32_t	s;
+	uint64_t	s;
 
-	s = (uint32_t)(p.x * 73856093.0);
-	s ^= (uint32_t)(p.y * 19349663.0);
-	s ^= (uint32_t)(p.z * 83492791.0);
-	s ^= s >> 16;
-	s *= 0x85ebca6b;
-	s ^= s >> 13;
-	s *= 0xc2b2ae35;
-	s ^= s >> 16;
+	s = (uint64_t)(p.x * 73856093.0);
+	s ^= (uint64_t)(p.y * 19349663.0);
+	s ^= (uint64_t)(p.z * 83492791.0);
+	s ^= s >> 33;
+	s *= 0xff51afd7ed558ccdULL;
+	s ^= s >> 33;
+	s *= 0xc4ceb9fe1a85ec53ULL;
+	s ^= s >> 33;
 	return (s);
 }
 
-uint32_t	rt_seed_mix(uint32_t base, int frame, int id)
+uint64_t	rt_seed_mix(uint64_t base, int frame, int id)
 {
-	return (base ^ (uint32_t)(frame * 1103515245 + id * 374761393));
+	return (base ^ (uint64_t)((uint64_t)frame * 1103515245ULL + (uint64_t)id * 374761393ULL));
 }
 
-uint32_t	rt_seed_point(t_vec3 p, int frame, int id)
+uint64_t	rt_seed_point(t_vec3 p, int frame, int id)
 {
 	return (rt_seed_mix(rt_seed_pos(p), frame, id));
 }

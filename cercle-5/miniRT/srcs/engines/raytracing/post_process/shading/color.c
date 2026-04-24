@@ -35,9 +35,9 @@ t_vec3	clamp_color(t_vec3 color, const t_raytracer_settings *opts)
 		v = aces_tonemap(v);
 		color = vec3_scale(v, 255.0);
 	}
-	color.x = fmin(fmax(color.x, 0.0), 255.0);
-	color.y = fmin(fmax(color.y, 0.0), 255.0);
-	color.z = fmin(fmax(color.z, 0.0), 255.0);
+	color.x = color.x < 0.0 ? 0.0 : color.x > 255.0 ? 255.0 : color.x;
+	color.y = color.y < 0.0 ? 0.0 : color.y > 255.0 ? 255.0 : color.y;
+	color.z = color.z < 0.0 ? 0.0 : color.z > 255.0 ? 255.0 : color.z;
 	return (color);
 }
 

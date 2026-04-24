@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include "time.h"
+# include <stdatomic.h>
 
 
 typedef void	*(*t_worker_func)(void *);
@@ -32,7 +33,8 @@ typedef struct s_thread_pool
 	pthread_cond_t	cond_done;
 	t_worker_func	worker;
 	void			*data;
-	size_t			running;
+	_Atomic size_t	running;
+	char			_pad[56];
 	size_t			generation;
 	bool			stop;
 	bool			initialized;

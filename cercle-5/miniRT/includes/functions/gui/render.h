@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 08:50:01 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 19:31:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,9 +132,12 @@ size_t	bilerp_pixel(size_t c[4], t_vec4f w)
 		acc.z += rgb.z * wf[i];
 		i++;
 	}
-	acc.x /= wt;
-	acc.y /= wt;
-	acc.z /= wt;
+	{
+		const float	rcp_wt = 1.0f / wt;
+		acc.x *= rcp_wt;
+		acc.y *= rcp_wt;
+		acc.z *= rcp_wt;
+	}
 	return (rt_pack_color(acc));
 }
 
@@ -154,11 +157,12 @@ void	get_weights(t_vec4f *w, t_vec2f f, float *db[2])
 		d00 = db[0][0];
 		if (d00 > 1e-4f)
 		{
-			if (__builtin_fabsf(db[0][1] - d00) / d00 > DEPTH_THRESH)
+			const float	thresh_abs = DEPTH_THRESH * d00;
+			if (__builtin_fabsf(db[0][1] - d00) > thresh_abs)
 				wf[1] = 0.0f;
-			if (__builtin_fabsf(db[1][0] - d00) / d00 > DEPTH_THRESH)
+			if (__builtin_fabsf(db[1][0] - d00) > thresh_abs)
 				wf[2] = 0.0f;
-			if (__builtin_fabsf(db[1][1] - d00) / d00 > DEPTH_THRESH)
+			if (__builtin_fabsf(db[1][1] - d00) > thresh_abs)
 				wf[3] = 0.0f;
 		}
 	}

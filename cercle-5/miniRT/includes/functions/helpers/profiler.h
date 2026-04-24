@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 08:58:25 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/23 15:03:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@
 
 
 # ifdef PROFILE_MESH
+
+#  if defined(PROFILE_BUILD)
+#   include <valgrind/callgrind.h>
+#  endif
+/* Allow update.c (PROFILE_BUILD) to read the frame counter */
+#  define g_prof_frame g_profiler.frame
 
 typedef struct s_profiler
 {

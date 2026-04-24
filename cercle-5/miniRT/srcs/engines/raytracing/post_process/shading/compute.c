@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 15:23:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:32:37 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ static void	add_emission(t_shading *sha, t_vec3 *total)
 				sha->mat.emission.z * scale));
 }
 
+__attribute__((optimize("O3")))
 t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
 		const t_ray *ray)
 {

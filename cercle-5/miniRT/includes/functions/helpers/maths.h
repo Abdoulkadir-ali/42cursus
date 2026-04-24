@@ -59,6 +59,31 @@ bool	aabb_intersect_fast(const t_aabb *aabb, const t_ray *ray, double *tmin,
 	*tmax = mx;
 	return (mx >= 0.0 && mx >= mn);
 }
+
+static inline __attribute__((always_inline))
+bool	aabb_intersect_fast_f(const float min[3], const float max[3],
+			const t_ray *ray, float *tmin, float *tmax)
+{
+	float	t[2];
+	float	mn;
+	float	mx;
+
+	t[0] = (min[0] - (float)ray->origin.x) * (float)ray->inv_dir.x;
+	t[1] = (max[0] - (float)ray->origin.x) * (float)ray->inv_dir.x;
+	mn = t[0] < t[1] ? t[0] : t[1];
+	mx = t[0] > t[1] ? t[0] : t[1];
+	t[0] = (min[1] - (float)ray->origin.y) * (float)ray->inv_dir.y;
+	t[1] = (max[1] - (float)ray->origin.y) * (float)ray->inv_dir.y;
+	mn = (t[0] < t[1] ? t[0] : t[1]) > mn ? (t[0] < t[1] ? t[0] : t[1]) : mn;
+	mx = (t[0] > t[1] ? t[0] : t[1]) < mx ? (t[0] > t[1] ? t[0] : t[1]) : mx;
+	t[0] = (min[2] - (float)ray->origin.z) * (float)ray->inv_dir.z;
+	t[1] = (max[2] - (float)ray->origin.z) * (float)ray->inv_dir.z;
+	mn = (t[0] < t[1] ? t[0] : t[1]) > mn ? (t[0] < t[1] ? t[0] : t[1]) : mn;
+	mx = (t[0] > t[1] ? t[0] : t[1]) < mx ? (t[0] > t[1] ? t[0] : t[1]) : mx;
+	*tmin = mn;
+	*tmax = mx;
+	return (mx >= 0.0f && mx >= mn);
+}
 t_aabb								aabb_init(void);
 
 static inline __attribute__((always_inline))

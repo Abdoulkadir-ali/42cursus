@@ -15,9 +15,9 @@
 
 static void	init_p_line(t_parser *p, char *line)
 {
-	ft_memset(p, 0, sizeof(t_parser));
 	p->fd = -1;
 	p->eof = true;
+	p->cursor = 0;
 	p->bytes_read = ft_strlen(line);
 	if (p->bytes_read > PARSER_BUF_SIZE)
 		p->bytes_read = PARSER_BUF_SIZE;

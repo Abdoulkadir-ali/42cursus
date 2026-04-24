@@ -32,24 +32,26 @@ double	rt_halton(size_t i, size_t base)
 }
 
 /*
-** Simple LCG for fast per-pixel/per-light randomness.
-** Refined to provide full 32-bit entropy.
+** xorshift64* for high-quality, fast randomness.
+** Eliminates banding artifacts seen with 32-bit LCG.
 */
-uint32_t	rt_next_rand(uint32_t *seed)
+uint64_t	rt_next_rand(uint64_t *seed)
 {
-	*seed = *seed * 1103515245 + 12345;
-	return (*seed);
+	*seed ^= *seed >> 12;
+	*seed ^= *seed << 25;
+	*seed ^= *seed >> 27;
+	return (*seed * 0x2545F4914F6CDD1DULL);
 }
 
-double	rt_rand_d(uint32_t *seed)
+double	rt_rand_d(uint64_t *seed)
 {
-	return ((double)rt_next_rand(seed) / (double)0xFFFFFFFF);
+	return ((double)rt_next_rand(seed) / (double)0xFFFFFFFFFFFFFFFFULL);
 }
 
 /*
 ** Returns a random point on the surface of a unit sphere.
 */
-t_vec3	rt_random_on_sphere(uint32_t *seed)
+t_vec3	rt_random_on_sphere(uint64_t *seed)
 {
 	double	phi;
 	double	cos_theta;
@@ -69,7 +71,7 @@ t_vec3	rt_random_on_sphere(uint32_t *seed)
 /*
 ** Returns a random point on the hemisphere facing 'normal'.
 */
-t_vec3	rt_random_on_hemisphere(t_vec3 normal, uint32_t *seed)
+t_vec3	rt_random_on_hemisphere(t_vec3 normal, uint64_t *seed)
 {
 	t_vec3	v;
 

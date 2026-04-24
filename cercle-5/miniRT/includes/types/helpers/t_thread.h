@@ -24,7 +24,8 @@ typedef struct s_thread_pool
 	char			cond_done[48];
 	t_worker_func	worker;
 	void			*data;
-	size_t			running;
+	_Atomic size_t	running;
+	char			_pad[56];
 	int				stop;
 	int				initialized;
 }	t_thread_pool;

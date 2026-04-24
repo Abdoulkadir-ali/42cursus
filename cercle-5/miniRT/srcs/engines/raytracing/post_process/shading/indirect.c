@@ -15,7 +15,7 @@
 t_vec3	compute_indirect(t_shading *sha, const t_ray *ray)
 {
 	t_ray		gi_ray;
-	uint32_t	seed;
+	uint64_t	seed;
 	t_vec3		dir;
 	t_vec3		indirect;
 

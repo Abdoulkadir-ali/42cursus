@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:49:57 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/10 21:10:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/23 15:03:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,10 @@ void	gui_render(t_gui *gui)
 	render.step = 1;
 	setup_render_geometry(gui, &render, rt);
 	start = now_ms();
+#if defined(PROFILE_BUILD) && defined(PROFILE_MESH)
+	if (g_profiler.frame == 0)
+		CALLGRIND_START_INSTRUMENTATION;
+#endif
 	PROF_RESET();
 	render_tiles_worker(&render);
 	PROF_FLUSH();

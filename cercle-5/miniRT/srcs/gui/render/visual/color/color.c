@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 13:05:44 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 18:00:35 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	apply_bcg(t_vec3f *ch, const t_raytracer_settings *opts)
 	ch->y = p.x + (ch->y - p.x) * f.z;
 	ch->z = p.x + (ch->z - p.x) * f.z;
 	apply_gamma(ch, (float)opts->gamma);
-	ch->x = fminf(fmaxf(ch->x, 0.0f), 255.0f);
-	ch->y = fminf(fmaxf(ch->y, 0.0f), 255.0f);
-	ch->z = fminf(fmaxf(ch->z, 0.0f), 255.0f);
+	ch->x = ch->x < 0.0f ? 0.0f : ch->x > 255.0f ? 255.0f : ch->x;
+	ch->y = ch->y < 0.0f ? 0.0f : ch->y > 255.0f ? 255.0f : ch->y;
+	ch->z = ch->z < 0.0f ? 0.0f : ch->z > 255.0f ? 255.0f : ch->z;
 }

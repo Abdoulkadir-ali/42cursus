@@ -14,7 +14,7 @@
 
 static t_vec3	jitter_reflected(t_shading *sha, t_vec3 dir)
 {
-	uint32_t	seed;
+	uint64_t	seed;
 
 	seed = rt_seed_mix(sha->cache.seed_pos, (int)sha->frame_idx, 1);
 	return (vec3_norm(vec3_add(dir,

@@ -35,7 +35,7 @@
 **   mlx_string_put(..., ui_sx(960, gui->win.disp_size), ...);
 **   draw_panel(gui, (t_panel){ui_pos(0, 0, d), ui_size(220, 1080, d), ...});
 */
-# define UI_BASE_W 
+# define UI_BASE_W 1920
 # define UI_BASE_H 1080
 
 static inline int	ui_sx(size_t x, t_vec2s disp)
