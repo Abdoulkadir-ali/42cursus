@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 15:23:14 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/21 19:50:45 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	init_rt_options(t_gui *gui)
 static void	init_rt_defaults(t_gui *gui)
 {
 	gui->opts.adaptive_scale = false;
-	gui->opts.auto_fullres = false;
+	gui->opts.auto_fullres = true;
 	gui->opts.reprojection = false;
 	gui->opts.temporal_blend = false;
 	gui->opts.frame_interp = false;

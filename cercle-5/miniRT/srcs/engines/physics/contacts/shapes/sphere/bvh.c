@@ -52,14 +52,14 @@ static const t_bvh	*get_locked_bvh(t_scene *s)
 
 static void	push_sphere_children(t_trav *t, const t_bvh_node *nd, size_t nd_idx)
 {
-	double	r;
+	double	r_sq;
 
-	r = sqrt(t->sp->radius_sq);
-	if (aabb_v_sphere(t->v->nodes[nd->left_or_first].bbox,
-			t->sp->phys.pos, r))
+	r_sq = t->sp->radius_sq;
+	if (aabb_v_sphere_sq(t->v->nodes[nd->left_or_first].bbox,
+			t->sp->phys.pos, r_sq))
 		t->st[(*t->top)++] = nd->left_or_first;
-	if (aabb_v_sphere(t->v->nodes[nd_idx + 1].bbox,
-			t->sp->phys.pos, r))
+	if (aabb_v_sphere_sq(t->v->nodes[nd_idx + 1].bbox,
+			t->sp->phys.pos, r_sq))
 		t->st[(*t->top)++] = nd_idx + 1;
 }
 

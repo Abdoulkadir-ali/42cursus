@@ -31,6 +31,11 @@ bool	aabb_overlap(t_aabb a, t_aabb b)
  */
 bool	aabb_v_sphere(t_aabb a, t_vec3 center, double radius)
 {
+	return (aabb_v_sphere_sq(a, center, radius * radius));
+}
+
+bool	aabb_v_sphere_sq(t_aabb a, t_vec3 center, double radius_sq)
+{
 	double	dist_sq;
 	double	v;
 
@@ -50,5 +55,5 @@ bool	aabb_v_sphere(t_aabb a, t_vec3 center, double radius)
 		dist_sq += (a.min.z - v) * (a.min.z - v);
 	if (v > a.max.z)
 		dist_sq += (v - a.max.z) * (v - a.max.z);
-	return (dist_sq <= (radius * radius));
+	return (dist_sq <= radius_sq);
 }

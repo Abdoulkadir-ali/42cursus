@@ -109,6 +109,7 @@ void	bvh_query_shapes(t_bvh_phys_ctx *c, t_aabb qa);
 /* Internal Helpers */
 bool	aabb_overlap(t_aabb a, t_aabb b);
 bool	aabb_v_sphere(t_aabb a, t_vec3 center, double radius);
+bool	aabb_v_sphere_sq(t_aabb a, t_vec3 center, double radius_sq);
 void	init_phys_pool(t_physic_engine *engine);
 void	destroy_phys_pool(t_physic_engine *engine);
 

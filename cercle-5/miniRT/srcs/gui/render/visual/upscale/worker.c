@@ -42,6 +42,7 @@ static void	blend_pixel(struct s_upscale *ctx, int px, float wf[4])
 {
 	t_vec3f		b;
 	float		w;
+	float		inv_w;
 
 	if (px != ctx->last_px)
 	{
@@ -56,12 +57,13 @@ static void	blend_pixel(struct s_upscale *ctx, int px, float wf[4])
 		ctx->out[0] = rt_pack_color(ctx->cache[0]);
 	else
 	{
+		inv_w = 1.0f / w;
 		b.x = (ctx->cache[0].x * wf[0] + ctx->cache[1].x * wf[1]
-				+ ctx->cache[2].x * wf[2] + ctx->cache[3].x * wf[3]) / w;
+				+ ctx->cache[2].x * wf[2] + ctx->cache[3].x * wf[3]) * inv_w;
 		b.y = (ctx->cache[0].y * wf[0] + ctx->cache[1].y * wf[1]
-				+ ctx->cache[2].y * wf[2] + ctx->cache[3].y * wf[3]) / w;
+				+ ctx->cache[2].y * wf[2] + ctx->cache[3].y * wf[3]) * inv_w;
 		b.z = (ctx->cache[0].z * wf[0] + ctx->cache[1].z * wf[1]
-				+ ctx->cache[2].z * wf[2] + ctx->cache[3].z * wf[3]) / w;
+				+ ctx->cache[2].z * wf[2] + ctx->cache[3].z * wf[3]) * inv_w;
 		b.w = 0.0f;
 		ctx->out[0] = rt_pack_color(b);
 	}
