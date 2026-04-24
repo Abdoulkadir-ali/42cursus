@@ -6,13 +6,14 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 10:50:12 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/24 20:18:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:39:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "optimizations.h"
 
+__attribute__((optimize("O3")))
 static int	pack_color(t_vec3 color, const t_raytracer_settings *opts,
 	t_vec2i pos, size_t frame)
 {
@@ -55,6 +56,7 @@ static void	apply_dof(t_ray *ray, t_render *render, double x, double y)
 	ray->direction = vec3_norm(vec3_sub(fpt, ray->origin));
 }
 
+__attribute__((optimize("O3")))
 static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 {
 	t_vec2	p;
@@ -78,6 +80,7 @@ static void	make_camera_ray(t_render *render, double x, double y, t_ray *ray)
 	ray->frame_idx = render->gui->opts.taa_frame;
 }
 
+__attribute__((optimize("O3")))
 void	process_pixel(t_render *render, t_vec2i pos, char *pixel_addr)
 {
 	t_ray		ray;

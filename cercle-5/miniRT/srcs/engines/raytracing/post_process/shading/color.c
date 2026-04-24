@@ -12,6 +12,7 @@
 
 #include "raytracing.h"
 
+__attribute__((optimize("O3")))
 static t_vec3	aces_tonemap(t_vec3 x)
 {
 	t_vec3	abc;
@@ -25,6 +26,7 @@ static t_vec3	aces_tonemap(t_vec3 x)
 	return (x);
 }
 
+__attribute__((optimize("O3")))
 t_vec3	clamp_color(t_vec3 color, const t_raytracer_settings *opts)
 {
 	t_vec3	v;
@@ -41,6 +43,7 @@ t_vec3	clamp_color(t_vec3 color, const t_raytracer_settings *opts)
 	return (color);
 }
 
+__attribute__((optimize("O3")))
 t_vec3	pixel_color(t_vec3 obj, t_vec3 light, double intensity)
 {
 	t_vec3	f;

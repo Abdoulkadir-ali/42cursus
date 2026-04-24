@@ -12,6 +12,7 @@
 
 #include "raytracing.h"
 
+__attribute__((optimize("O3")))
 void	check_planes(const t_ray *ray, t_scene *sc, t_hit *hit, bool *any)
 {
 	t_hit	temp;

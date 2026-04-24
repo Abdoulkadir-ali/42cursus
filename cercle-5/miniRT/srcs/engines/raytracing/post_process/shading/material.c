@@ -60,6 +60,7 @@ static int	dispatch_mat(t_shading *sha, t_hit *h)
 	return (0);
 }
 
+__attribute__((optimize("O3")))
 void	get_material(t_shading *sha)
 {
 	size_t			mat_id;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/24 20:18:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:39:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static void	apply_thermal_blend(t_shading *sha)
 	sha->albedo.z = sha->albedo.z * (1.0 - blend) + bb.z * blend;
 }
 
+__attribute__((optimize("O3")))
 static void	init_shading_cache(t_shading *sha)
 {
 	sha->cache.view = vec3_scale(sha->ray->direction, -1.0);
@@ -40,6 +41,7 @@ static void	init_shading_cache(t_shading *sha)
 		sha->cache.seed_pos = rt_seed_pos(sha->hit->point);
 }
 
+__attribute__((optimize("O3")))
 void	setup_shading(t_shading *sha, t_hit *hit, t_scene *scene,
 		const t_bvh *bvh)
 {

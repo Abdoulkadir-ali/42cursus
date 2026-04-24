@@ -13,8 +13,7 @@
 /* ************************************************************************** */
 
 #include "raytracing.h"
-
-static t_vec3	shade_trace(const t_bvh *bvh, const t_ray *ray, t_scene *sc,
+__attribute__((optimize("O3")))static t_vec3	shade_trace(const t_bvh *bvh, const t_ray *ray, t_scene *sc,
 					t_hit *hit, t_vec3 vol)
 {
 	t_vec3	p;
@@ -25,6 +24,7 @@ static t_vec3	shade_trace(const t_bvh *bvh, const t_ray *ray, t_scene *sc,
 	return (vec3_add(compute_color(hit, sc, bvh, ray), vol));
 }
 
+__attribute__((optimize("O3")))
 static t_vec3	do_trace(const t_bvh *bvh, const t_ray *ray,
 		t_scene *sc, float *out_t)
 {

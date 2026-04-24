@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/24 18:00:35 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:39:32 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 ** gamma == 50 -> exp_val == 1.0 -> powf(x,1) = x. Skip to avoid 3
 ** expensive powf calls per pixel when using default neutral gamma.
 */
+__attribute__((optimize("O3")))
 static void	apply_gamma(t_vec3f *ch, float gamma)
 {
 	float	exp_val;
@@ -38,6 +39,7 @@ static void	apply_gamma(t_vec3f *ch, float gamma)
 ** to a float[3] RGB channel array (values in [0,255]).
 ** All opts values are in [0,100] with 50 = neutral.
 */
+__attribute__((optimize("O3")))
 void	apply_bcg(t_vec3f *ch, const t_raytracer_settings *opts)
 {
 	t_vec2f	p;
