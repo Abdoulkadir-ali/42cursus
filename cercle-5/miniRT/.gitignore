@@ -7,12 +7,18 @@ digest.txt
 
 # Compilation
 objs/
+objs-debug/
+objs-prof/
 *.o
 *.d
 
 # Binaries
 miniRT
+miniRT-prof
+miniRT-debug
+miniRT-asan
 a.out
+packages/libft/miniRT-asan
 
 # Libraries
 *.a
@@ -39,5 +45,6 @@ valgrind-out.txt
 42_header.txt
 
 callgrind*
+cg.*
 maps/fbx
 maps/glb
