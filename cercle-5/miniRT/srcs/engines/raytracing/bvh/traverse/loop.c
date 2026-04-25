@@ -1,17 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bvh_loop.c                                         :+:      :+:    :+:   */
+/*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 10:13:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:42:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
+__attribute__((optimize("O3")))
 static void	process_leaf(const t_bvh *bvh, size_t node_idx, const t_ray *r,
 		t_hit *h)
 {
@@ -37,6 +38,7 @@ static void	init_trav(t_bvh_trav *v, t_bvh_trav_init *cfg)
 	bvh_trav_push0(v, cfg);
 }
 
+__attribute__((optimize("O3")))
 static void	step_trav(t_bvh_trav *v, const t_bvh *bvh,
 		const t_ray *ray, t_hit *hit)
 {
@@ -56,6 +58,7 @@ static void	step_trav(t_bvh_trav *v, const t_bvh *bvh,
 		bvh_push_children(v, idx, hit->t);
 }
 
+__attribute__((optimize("O3")))
 bool	bvh_intersect(const t_bvh *bvh, const t_ray *ray, t_hit *hit)
 {
 	t_bvh_trav		v;

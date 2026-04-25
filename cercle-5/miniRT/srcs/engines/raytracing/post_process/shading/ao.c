@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/14 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 15:18:39 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:42:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #define AO_RADIUS	0.8
 #define AO_STRENGTH	0.65
 
+__attribute__((optimize("O3")))
 static double	compute_ao_ray(const t_shading *sha, t_ray *ray, double rad)
 {
 	t_hit	hit;

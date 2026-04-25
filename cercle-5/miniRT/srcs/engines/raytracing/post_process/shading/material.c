@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:53:31 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
+__attribute__((optimize("O3")))
 static int	mat_slot(t_scene *sc, t_bvh_ref ref)
 {
 	if (ref.type == TYPE_SPHERE || ref.type == TYPE_PROXY_SPHERE)
@@ -35,6 +36,7 @@ static int	mat_slot(t_scene *sc, t_bvh_ref ref)
 	return (-1);
 }
 
+__attribute__((optimize("O3")))
 static int	dispatch_mat(t_shading *sha, t_hit *h)
 {
 	int	id;

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:44:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static const t_intersect_fn g_intersect_dispatch[TYPE_MAX] = {
 	[TYPE_ANIM]         = (t_intersect_fn)intersect_mesh,
 };
 
+__attribute__((optimize("O3")))
 static inline const void	*get_scene_object(t_scene *scene, t_bvh_ref ref)
 {
 	if (ref.type == TYPE_SPHERE || ref.type == TYPE_PROXY_SPHERE)
@@ -45,8 +46,7 @@ static inline const void	*get_scene_object(t_scene *scene, t_bvh_ref ref)
 	if (ref.type == TYPE_ANIM) return (&scene->animated[ref.index].base);
 	return (NULL);
 }
-
-bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
+__attribute__((optimize("O3")))bool	intersect_object(const t_ray *ray, t_scene *scene, t_bvh_ref ref,
 			t_hit *hit)
 {
 	bool		res;

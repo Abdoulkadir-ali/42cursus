@@ -6,14 +6,16 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/11 14:20:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:42:20 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /* ************************************************************************** */
 
 #include "raytracing.h"
-__attribute__((optimize("O3")))static t_vec3	shade_trace(const t_bvh *bvh, const t_ray *ray, t_scene *sc,
+
+__attribute__((optimize("O3")))
+static t_vec3	shade_trace(const t_bvh *bvh, const t_ray *ray, t_scene *sc,
 					t_hit *hit, t_vec3 vol)
 {
 	t_vec3	p;

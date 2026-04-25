@@ -6,18 +6,20 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 10:13:32 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:55:52 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
+__attribute__((optimize("O3")))
 static void	push_to_trav(t_bvh_trav *v, size_t idx, double t)
 {
 	v->stack[*v->top].idx = (uint32_t)idx;
 	v->stack[(*v->top)++].t = (float)t;
 }
 
+__attribute__((optimize("O3")))
 static void	push_sort(t_bvh_trav *v, double t[2], size_t l, size_t r)
 {
 	if (t[0] <= t[1])
@@ -39,6 +41,7 @@ static double	clamp0(double t)
 	return (t);
 }
 
+__attribute__((optimize("O3")))
 void	bvh_trav_push0(t_bvh_trav *v, t_bvh_trav_init *cfg)
 {
 	v->stack = cfg->stack;
@@ -52,6 +55,7 @@ void	bvh_trav_push0(t_bvh_trav *v, t_bvh_trav_init *cfg)
 		v->stack[(*cfg->top)++].t = (float)cfg->t0;
 }
 
+__attribute__((optimize("O3")))
 void	bvh_push_children(t_bvh_trav *v, size_t idx, double cur_t)
 {
 	size_t	l;

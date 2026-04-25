@@ -12,6 +12,7 @@
 
 #include "raytracing.h"
 
+__attribute__((optimize("O3")))
 static bool	select_sphere_t(t_quadratic_roots roots, double *t)
 {
 	if (roots.t1 > EPSILON)
@@ -20,8 +21,7 @@ static bool	select_sphere_t(t_quadratic_roots roots, double *t)
 		*t = roots.t2;
 	return (*t > EPSILON);
 }
-
-static void	scale_normal(t_hit *hit, t_vec3 inv_scale, t_vec3 n_local,
+__attribute__((optimize("O3")))static void	scale_normal(t_hit *hit, t_vec3 inv_scale, t_vec3 n_local,
 		bool needs_uv)
 {
 	t_vec3	n_world;
@@ -34,8 +34,7 @@ static void	scale_normal(t_hit *hit, t_vec3 inv_scale, t_vec3 n_local,
 	if (needs_uv)
 		get_sphere_uv(n_local, &hit->u, &hit->v);
 }
-
-static void	build_local_ray(t_vec3 *lo, t_vec3 *ld, const t_ray *r,
+__attribute__((optimize("O3")))static void	build_local_ray(t_vec3 *lo, t_vec3 *ld, const t_ray *r,
 		t_sphere *sp)
 {
 	t_vec3	is;
@@ -51,6 +50,7 @@ static void	build_local_ray(t_vec3 *lo, t_vec3 *ld, const t_ray *r,
 	ld->w = 0.0;
 }
 
+__attribute__((optimize("O3")))
 static bool	solve_deformed(const t_ray *ray, t_sphere *sp, t_hit *hit)
 {
 	t_vec3				lo;
@@ -72,6 +72,7 @@ static bool	solve_deformed(const t_ray *ray, t_sphere *sp, t_hit *hit)
 	return (true);
 }
 
+__attribute__((optimize("O3")))
 bool	intersect_sphere(const t_ray *ray, t_sphere *sp, t_hit *hit)
 {
 	t_vec3	oc;

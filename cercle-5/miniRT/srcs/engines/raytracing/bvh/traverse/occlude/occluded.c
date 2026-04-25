@@ -6,12 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:19:46 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/24 18:04:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:44:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
+__attribute__((optimize("O3")))
 static bool	check_leaf_occlusion(const t_bvh *bvh, size_t node_idx,
 		const t_ray *ray, double max_t)
 {
@@ -28,6 +29,7 @@ static bool	check_leaf_occlusion(const t_bvh *bvh, size_t node_idx,
 	return (false);
 }
 
+__attribute__((optimize("O3")))
 bool	bvh_occluded(const t_bvh *bvh, const t_ray *ray, double max_t)
 {
 	t_stk_entry	stack[128];

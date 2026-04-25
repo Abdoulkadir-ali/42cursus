@@ -1,17 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   occlude_dispatch.c                                 :+:      :+:    :+:   */
+/*   dispatch.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:42:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "raytracing.h"
 
+__attribute__((optimize("O3")))
 static bool	occ_sphere(const t_ray *ray, t_sphere *sp, double max_t)
 {
 	t_vec3	oc;
@@ -56,8 +57,7 @@ static inline const void	*get_occ_object(t_scene *sc, t_bvh_ref ref)
 /*
 ** Proxy spheres (particles) are tiny emissive glows -- skip shadow testing
 ** entirely to avoid 400+ sqrt calls per shadow ray.
-*/
-bool	occlude_primitive(const t_ray *ray, t_scene *sc, t_bvh_ref ref,
+*/__attribute__((optimize("O3")))bool	occlude_primitive(const t_ray *ray, t_scene *sc, t_bvh_ref ref,
 			double max_t)
 {
 	t_hit		h;

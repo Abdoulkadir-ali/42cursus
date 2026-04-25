@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/24 20:18:12 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:42:26 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 /*
 ** Blends two colors with alpha.
 */
+__attribute__((optimize("O3")))
 unsigned int	color_blend(unsigned int dst, int src, float alpha)
 {
 	t_vec3i	rgb;

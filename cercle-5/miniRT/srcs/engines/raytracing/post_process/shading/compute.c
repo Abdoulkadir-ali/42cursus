@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 12:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/24 20:32:37 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/25 12:33:53 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ t_vec3	compute_color(t_hit *hit, t_scene *scene, const t_bvh *bvh,
 		i = 0;
 		while (i < scene->light_count)
 			total = vec3_add(total, calc_light(&sha, scene->lights[i++]));
-		add_emissive_lighting(&sha, scene, &total);
+		// add_emissive_lighting(&sha, scene, &total);
 	}
 	add_emission(&sha, &total);
 	if (ray->depth < MAX_DEPTH)

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/05 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/05 00:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/24 20:42:14 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static double	safe_rcp(double d)
 	return (1.0 / d);
 }
 
+__attribute__((optimize("O3")))
 static void	ray_compute_inv(t_ray *ray)
 {
 	ray->inv_dir = vec3(safe_rcp(ray->direction.x),
@@ -31,6 +32,7 @@ static void	ray_compute_inv(t_ray *ray)
 	ray->sign[2] = (ray->inv_dir.z < 0);
 }
 
+__attribute__((optimize("O3")))
 void	ray_init(t_ray *ray, t_vec3 origin, t_vec3 direction)
 {
 	ray->origin = origin;

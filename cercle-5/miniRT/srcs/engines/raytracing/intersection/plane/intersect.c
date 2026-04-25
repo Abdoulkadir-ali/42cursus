@@ -15,6 +15,7 @@
 /*
 ** Intersects a ray with a plane.
 */
+__attribute__((optimize("O3")))
 bool	intersect_plane(const t_ray *ray, t_plane *pl, t_hit *hit)
 {
 	double	denom;
