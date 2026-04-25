@@ -58,7 +58,6 @@ bool    integrate_bodies_worker(t_scene *scene, t_physic_engine *engine, double 
 size_t  generate_contacts(t_scene *scene, t_physic_engine *engine, t_contact *contacts, size_t max_c);
 void	apply_attractor_pass(t_scene *scene, t_physics_settings *s);
 void	apply_nbody_gravity(t_scene *scene, double big_g);
-void	apply_wind_pass(t_scene *scene, t_physics_settings *s, double dt);
 void	apply_pair_grav(t_physics_body *a, t_physics_body *b, double big_g);
 void	apply_pair_mag(t_physics_body *a, t_physics_body *b);
 void	sync_phys_settings(t_scene *scene, t_physic_engine *engine);
@@ -112,23 +111,6 @@ bool	aabb_overlap(t_aabb a, t_aabb b);
 bool	aabb_v_sphere(t_aabb a, t_vec3 center, double radius);
 void	init_phys_pool(t_physic_engine *engine);
 void	destroy_phys_pool(t_physic_engine *engine);
-
-/* Soft Body */
-bool	soft_body_build(t_soft_body *sb, t_mesh *mesh, t_sb_params p);
-void	soft_body_step(t_scene *scene, double dt, t_physics_settings *s);
-void	soft_body_jiggle(t_scene *scene);
-void	soft_body_free(t_soft_body *sb);
-bool	scene_build_soft_body(t_scene *scene, t_sb_params p);
-void	soft_body_build_springs(t_soft_body *sb, t_mesh *mesh,
-			size_t p_count);
-void	fill_particles(t_sb_particle *out, const t_mesh *mesh,
-			size_t count, t_vec3 offset);
-void	apply_one_body_to_sb(t_soft_body *sb, t_vec3 body_pos,
-			double g_mass);
-void	apply_vols_to_sb(t_soft_body *sb, t_scene *sc, double big_g);
-void	apply_surfs_to_sb(t_soft_body *sb, t_scene *sc, double big_g);
-void	accumulate_ext_f(t_soft_body *sb, const t_physics_settings *s);
-void	accumulate_spring_f(t_soft_body *sb);
 
 /* Support functions (one per shape type) */
 t_vec3	gjk_support_sphere(const void *data, t_vec3 dir);

@@ -15,9 +15,9 @@
 static t_key_action	*get_keymap(void)
 {
 	static t_key_action	keymap[] = {
-	{XK_w, move_forward_press, move_forward_release},
+	{XK_z, move_forward_press, move_forward_release},
 	{XK_s, move_backward_press, move_backward_release},
-	{XK_a, move_left_press, move_left_release},
+	{XK_q, move_left_press, move_left_release},
 	{XK_d, move_right_press, move_right_release},
 	
 	{XK_a, auto_fullres_toggle, NULL},
@@ -33,7 +33,6 @@ static t_key_action	*get_keymap(void)
 	{XK_equal, zoom_in_press, zoom_in_release},
 	{XK_f, fullres_toggle, NULL},
 	{XK_b, bake_toggle, NULL},
-	{XK_j, soft_body_jiggle_press, NULL},
 	{XK_Escape, exit_press, NULL},
 	{0, NULL, NULL}};
 

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 09:24:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/12 21:50:51 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/25 14:04:47 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,11 +157,9 @@ typedef struct s_scene
 	t_emitter				*emitters;
 	size_t				emitter_count;
 	size_t				emitter_cap;
-	t_particle_soa			*psoa;
 	size_t				proxy_sphere_base;
 	size_t				proxy_mat_base;
 	size_t				proxy_sphere_count;
-	bool					psoa_ready;
 }						t_scene;
 
 #endif

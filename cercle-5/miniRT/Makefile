@@ -81,7 +81,8 @@ ffclean: fclean
 	@printf "$(YELLOW)Cleaning stb_image.h...$(RESET)\n"
 	@$(RM) $(STB_IMAGE)
 
-re: fclean all
+re: fclean
+	$(MAKE) all
 
 clean_package:
 	@printf "$(YELLOW)Removing minilibx-linux...$(RESET)\n"

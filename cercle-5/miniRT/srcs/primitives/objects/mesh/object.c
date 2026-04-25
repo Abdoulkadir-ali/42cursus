@@ -1,18 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process.c                                          :+:      :+:    :+:   */
+/*   object.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 20:50:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/02/12 20:50:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/25 14:04:12 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
 #include "scene.h"
-#include "particles.h"
 
 static bool	process_rect(t_scene *sc, t_rect *r)
 {
@@ -63,7 +62,5 @@ bool	process_object(t_scene *scene, t_parse_obj obj)
 		return (scene_add_capsule(scene, obj.data.capsule));
 	if (obj.type == TYPE_ATTRACTOR)
 		return (scene_add_attractor(scene, obj.data.attractor));
-	if (obj.type == TYPE_PARTICLE_EMITTER)
-		return (scene_add_emitter(scene, obj.data.emitter));
 	return (true);
 }

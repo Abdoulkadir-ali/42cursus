@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 12:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/03 15:01:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/25 14:04:58 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,5 @@ void	scene_reset(t_gui *gui)
 	sc->proxy_sphere_count = 0;
 	sc->proxy_mat_base = 0;
 	sc->proxy_sphere_base = 0;
-	sc->psoa_ready = false;
 	gui->render.bvh_needs_rebuild = 1;
 }

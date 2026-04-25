@@ -6,28 +6,13 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 14:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/14 11:00:00 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/25 14:02:46 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scene.h"
 #include "rt.h"
 #include "physics.h"
-
-static void	inject_sb(t_scene *sc, t_rt *rt, t_rt_line_task *t, size_t i)
-{
-	t_sb_params	p;
-
-	scene_inject_mesh_resource_unique(sc, &t->resources[i],
-		&t->results[i].data.mesh_info);
-	p.mesh_idx = sc->mesh_count - 1;
-	p.stiffness = t->results[i].data.mesh_info.sb_stiffness;
-	p.damping = t->results[i].data.mesh_info.sb_damping;
-	p.offset = t->results[i].data.mesh_info.transform.pos;
-	scene_build_soft_body(sc, p);
-	rt->last_type = TYPE_SOFT_BODY;
-	rt->last_mat_cloned = false;
-}
 
 static void	inject_one(t_scene *sc, t_rt *rt, t_rt_line_task *t, size_t i)
 {
@@ -40,8 +25,6 @@ static void	inject_one(t_scene *sc, t_rt *rt, t_rt_line_task *t, size_t i)
 		rt->last_type = TYPE_MESH;
 		rt->last_mat_cloned = false;
 	}
-	else if (t->results[i].type == TYPE_SOFT_BODY)
-		inject_sb(sc, rt, t, i);
 	else if (process_object(sc, t->results[i]))
 	{
 		rt->last_type = t->results[i].type;

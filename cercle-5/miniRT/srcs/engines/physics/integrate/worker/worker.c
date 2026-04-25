@@ -6,12 +6,11 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/03 00:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/24 14:26:17 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/04/25 14:07:10 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "physics.h"
-#include "particles.h"
 #include "thread.h"
 #include "raytracing.h"
 
@@ -144,11 +143,8 @@ void	update_physics(t_scene *sc, t_physic_engine *en, double dt)
 	sync_phys_settings(sc, en);
 	apply_attractor_pass(sc, &en->settings);
 	apply_nbody_gravity(sc, en->settings.big_g);
-	apply_wind_pass(sc, &en->settings, dt);
 	if (integrate_bodies_worker(sc, en, dt))
 		bvh_sync(sc);
-	soft_body_step(sc, dt, &en->settings);
-	particle_systems_step(sc, dt, &en->settings);
 	sync_thermal_to_materials(sc);
 	count = generate_contacts(sc, en, new_c, MAX_CONTACTS);
 	persist_contacts(en, new_c, count);
