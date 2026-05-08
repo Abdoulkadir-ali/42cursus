@@ -1,0 +1,438 @@
+/* DXPM */
+PREV door080.dxpm
+"320 180 256 2",
+".. c None",
+"ab c #0a0807",
+"ac c #0c0b0c",
+"ad c #0d0909",
+"ae c #0e0c0d",
+"af c #0f0a07",
+"ag c #100e0e",
+"ah c #110b08",
+"ai c #120f11",
+"aj c #140c09",
+"ak c #151212",
+"al c #160f0b",
+"am c #171414",
+"an c #18120e",
+"ao c #191617",
+"ap c #1a191c",
+"aq c #1c100d",
+"ar c #1c1512",
+"as c #1e1917",
+"at c #1e1c1e",
+"au c #211310",
+"av c #211c1a",
+"aw c #221815",
+"ax c #221f21",
+"ay c #241a18",
+"az c #242123",
+"aA c #251612",
+"aB c #251f1d",
+"aC c #252325",
+"aD c #272322",
+"aE c #272424",
+"aF c #272426",
+"aG c #281914",
+"aH c #282629",
+"aI c #291c1a",
+"aJ c #2a2222",
+"aK c #2a2525",
+"aL c #2a272a",
+"aM c #2b2726",
+"aN c #2b292c",
+"aO c #2d1b15",
+"aP c #2d2b2e",
+"aQ c #2f201c",
+"aR c #2f2524",
+"aS c #2f2928",
+"aT c #2f2d31",
+"aU c #302a2a",
+"aV c #322c2b",
+"aW c #323033",
+"aX c #331e17",
+"aY c #33231d",
+"aZ c #332727",
+"a0 c #333335",
+"a1 c #352929",
+"a2 c #352f2d",
+"a3 c #353538",
+"a4 c #363234",
+"a5 c #38211a",
+"a6 c #382721",
+"a7 c #383437",
+"a8 c #38383c",
+"a9 c #392c2b",
+"a! c #39312f",
+"a# c #3b3639",
+"a$ c #3b3b3e",
+"a% c #3c2b24",
+"a& c #3c3331",
+"a( c #3d3d42",
+"a) c #3e241c",
+"a* c #3e2f2c",
+"a+ c #3e3635",
+"a, c #3e393c",
+"a- c #403d3e",
+"a. c #41322f",
+"a/ c #414043",
+"a: c #423937",
+"a; c #43271f",
+"a< c #432f27",
+"a= c #433433",
+"a> c #434245",
+"a? c #45342f",
+"a[ c #45454a",
+"a\ c #462d26",
+"a] c #463635",
+"a^ c #474546",
+"a_ c #483632",
+"a` c #483a37",
+"a{ c #48484b",
+"a| c #49342b",
+"a} c #493d3c",
+"a~ c #4a2b20",
+"ba c #4b4a4d",
+"bb c #4d3835",
+"bc c #4d3c37",
+"bd c #4d4c50",
+"be c #4e322a",
+"bf c #50413e",
+"bg c #504f52",
+"bh c #51382f",
+"bi c #523022",
+"bj c #523c38",
+"bk c #535155",
+"bl c #543c35",
+"bm c #544542",
+"bn c #555457",
+"bo c #56382d",
+"bp c #563e3a",
+"bq c #57362b",
+"br c #57575b",
+"bs c #594039",
+"bt c #5b3d34",
+"bu c #5b423e",
+"bv c #5b4a45",
+"bw c #5b5a5e",
+"bx c #5d3325",
+"by c #5d423c",
+"bz c #5e5d62",
+"bA c #5f3b2b",
+"bB c #5f4238",
+"bC c #5f4f4a",
+"bD c #604740",
+"bE c #605754",
+"bF c #616165",
+"bG c #62656c",
+"bH c #644640",
+"bI c #663e2d",
+"bJ c #664c45",
+"bK c #66696f",
+"bL c #68453a",
+"bM c #686465",
+"bN c #694a43",
+"bO c #6a544d",
+"bP c #6a6e75",
+"bQ c #6b5d59",
+"bR c #6c4b41",
+"bS c #6c686a",
+"bT c #6e422f",
+"bU c #6f6d6f",
+"bV c #705047",
+"bW c #705149",
+"bX c #70747b",
+"bY c #734835",
+"bZ c #744f41",
+"b0 c #75564d",
+"b1 c #757274",
+"b2 c #767a82",
+"b3 c #776058",
+"b4 c #795950",
+"b5 c #7a564b",
+"b6 c #7a655f",
+"b7 c #7a7a7c",
+"b8 c #7b4c36",
+"b9 c #7c8189",
+"b! c #7d5545",
+"b# c #7f5b51",
+"b$ c #7f6a63",
+"b% c #808082",
+"b& c #815c4f",
+"b( c #82868b",
+"b) c #836f67",
+"b* c #846156",
+"b+ c #855239",
+"b, c #866054",
+"b- c #86898e",
+"b. c #885d4a",
+"b/ c #898c91",
+"b: c #8b665b",
+"b; c #8c6556",
+"b< c #8c7368",
+"b= c #8d9095",
+"b> c #8f593c",
+"b? c #8f7a73",
+"b[ c #906a5f",
+"b\ c #90959c",
+"b] c #926650",
+"b^ c #926b5c",
+"b_ c #956f61",
+"b` c #958078",
+"b{ c #969394",
+"b| c #969ba2",
+"b} c #98705f",
+"b~ c #9a7467",
+"ca c #9c6241",
+"cb c #9ca1a8",
+"cc c #9d877e",
+"cd c #9e7665",
+"ce c #9e9a9b",
+"cf c #9f6d53",
+"cg c #a27b6c",
+"ch c #a3a8af",
+"ci c #a4908a",
+"cj c #a5735a",
+"ck c #a66945",
+"cl c #a67b67",
+"cm c #a7a1a0",
+"cn c #a88274",
+"co c #a8aeb4",
+"cp c #ab704b",
+"cq c #aca7a7",
+"cr c #acb1b8",
+"cs c #ae816c",
+"ct c #b07654",
+"cu c #b08e7d",
+"cv c #b1adac",
+"cw c #b1b7bd",
+"cx c #b77f5b",
+"cy c #b8bec4",
+"cz c #b9b1b1",
+"cA c #bb8b6e",
+"cB c #beb7b4",
+"cC c #bfc5cb",
+"cD c #c08660",
+"cE c #c2977e",
+"cF c #c4bcb9",
+"cG c #c5afa3",
+"cH c #c68c66",
+"cI c #c6a08a",
+"cJ c #c6cbd1",
+"cK c #c8c1c0",
+"cL c #cb926a",
+"cM c #cdcaca",
+"cN c #cdd2d8",
+"cO c #d19a74",
+"cP c #d1a98f",
+"cQ c #d3bcae",
+"cR c #d6d1cf",
+"cS c #d6dadf",
+"cT c #d7a27d",
+"cU c #dda984",
+"cV c #dde0e5",
+"cW c #dfc5b6",
+"cX c #dfd7d4",
+"cY c #e0b79c",
+"cZ c #e4b08c",
+"c0 c #e5e8ec",
+"c1 c #e6dfdb",
+"c2 c #e7ccbc",
+"c3 c #e9b892",
+"c4 c #ece7e4",
+"c5 c #eceef2",
+"c6 c #f0c09c",
+"c7 c #f2d4bb",
+"c8 c #f2edea",
+"c9 c #f4f4f6",
+"c! c #f5c8a5",
+"c# c #f5e3d4",
+"c$ c #f6f4f3",
+"c% c #f8f5f2",
+"c& c #f8f8fa",
+"c( c #f9dbc0",
+"c) c #f9f8f7",
+"c* c #fad0ad",
+"c+ c #fde2c7",
+"c, c #fde9d5",
+"c- c #fff2e4",
+"c. c None",
+R0 236,2 anar 
+R2 58,1 aA 80,1 ay 
+R3 46,1 a` 48,1 a. 51,2 a:a! 57,1 al 62,1 b< 78,1 a6 80,3 a%a|a) 94,1 aJ 238,1 aI 240,1 ay 245,1 aG 272,1 bc 286,1 a* 
+R4 45,2 a_bh 48,5 a|a&aSavan 56,2 aGa) 59,1 bA 62,1 bA 64,1 bh 67,6 a<a%a<a%a6aY 74,7 a%a%a6a%aYa%.. 82,1 cl 240,1 a6 243,1 a% 250,3 a;a~a5 255,1 a~ 258,3 bobobA 263,2 bIbT 266,2 bOb8 272,4 b0bCb4bW 282,3 akalag 287,2 aRa% 
+R5 50,1 af 53,2 aobd 56,10 cGcZcPcTcLcHcDctcpb] 67,3 b>b!bY 71,1 bI 73,2 bAbh 76,2 bibi 79,2 bc.. 235,2 a~a< 238,1 a% 240,4 a~a\bebi 247,2 b!bY 253,2 bIbT 256,2 b8b> 259,3 caclcx 263,5 cAcIcPcUcY 269,1 c3 271,1 c! 280,2 a:a9 287,1 ag 290,1 a1 293,1 a< 295,1 a| 
+R6 44,1 a2 54,14 c,c,c(c7c2c6c3cUcTcLcDcxcfca 69,7 b+b+b8bYbTbIbT 77,4 bIbAbh.. 238,3 ..bAbi 248,1 bI 251,11 bIbTb8b+b>cackcpcxcLcT 263,4 c3c!c2c( 268,1 c+ 272,3 c,c-c, 278,6 c7cYccb4bDa! 285,2 avao 
+R7 45,1 am 55,1 c2 57,16 c6cWcZcUcOcLcActcpcab>b+bZbYbTbI 74,1 bA 76,5 bqbxbobh.. 238,5 ..bsbibqbi 247,2 bobA 250,2 bAbI 253,14 bTb8b+b>cactcxcAcLcTcPcYc6cW 269,1 c7 278,3 c6cWc3 290,2 alaq 
+R8 47,3 blcfcx 51,7 cxcpcjcab>b+b8 59,2 bTbT 63,1 bI 65,4 bAbxbqbi 75,1 bi 78,3 a~a|.. 238,5 ..bla|bibt 245,2 bobh 251,1 bi 254,2 bqbq 257,2 bAbA 261,5 bTbYb+b+b> 267,4 cfcjcxcs 274,5 cxctcfcaca 280,2 b+b8 288,2 a1aI 291,1 am 
+R9 46,6 b$clcDcOcUc3 53,13 cZcLcDcfcab>b.b+bZb8bZbYbR 67,4 bDbBbLbB 76,1 bs 79,2 bv.. 238,12 ..bCbDbRb3b4b0bRbBbAbtbB 253,5 bBbIbBbLbL 259,12 bRbYb8b+b>cacjcxcHcOcTcU 272,14 cZc3cZcTcLcActcfcab+bZbZbRbL 
+R10 44,1 aG 48,1 bh 50,3 bAbBbL 55,2 btbo 58,1 be 61,3 a<a|a< 65,1 a% 74,1 a6 76,1 a% 78,3 aYa2.. 238,3 ..a?aS 251,1 a6 253,1 a% 258,4 a%a~a<be 263,7 bhbqbtbtbBbIbL 272,7 bRbYbRbYbLbIbA 280,2 bqbi 286,2 a%aY 289,1 a6 
+R11 48,1 af 54,1 aj 58,4 alajalaj 63,3 ahajaj 68,2 alai 74,7 ajagajalabav.. 238,3 ..aDaf 242,1 ah 244,5 afajahajah 252,2 ajaj 255,1 af 270,6 ajahajahajah 277,2 ahaj 280,2 aqal 288,1 aj 290,1 al 293,1 a& 
+R12 44,1 ay 54,5 aOaGaOaIaO 61,3 aGaraj 65,4 ajalaiaq 70,1 al 72,3 akaqak 76,5 alagafaB.. 238,8 ..aEafajalanarau 249,11 awayawayaAawaqajajauau 261,2 awaG 265,2 aIaG 278,1 aG 286,1 aG 290,2 awan 293,4 babfa9aI 298,2 alaw 
+R13 43,3 aOaQaO 49,3 aOaQaO 57,3 aXaOaQ 61,3 aOawaj 66,3 akamar 70,2 aoar 75,6 amakaiafaB.. 238,3 ..aEah 242,4 alaraway 250,2 aIaO 254,4 aIarajan 259,1 ay 261,1 aI 273,3 aXaQaY 277,1 aY 279,4 a5a6a5a6 285,1 a6 287,5 a5aYaXaQaQ 293,2 aIa% 296,2 a:aY 
+R14 43,2 aAaG 46,3 aIaOaI 51,1 aQ 55,3 aGayaI 61,3 aIawaj 65,7 arasarasarasar 75,6 aoanaiafaD.. 238,6 ..aMalajalar 245,1 ay 248,2 aIaQ 253,6 aIavaralanay 260,3 aIaOaQ 273,2 aYaY 277,2 a5a6 281,1 a; 285,1 a; 287,2 a)a) 290,2 a5a5 293,2 aRaI 297,3 bma%al 
+R15 44,1 ar 46,1 ay 57,1 aI 62,4 awalanas 67,14 ayasayatawatawatayamakafaK.. 238,3 ..aSam 242,5 alasaIaBaI 251,24 aQaJaQaBaralanayaIaOaIaGaOaQa6a%a;a%a)a%a)a%a;a% 276,1 a; 279,4 a~bebebq 284,3 bqbibi 288,3 a~a;a; 292,1 a) 294,1 a5 296,1 aY 
+R16 60,6 aIaJawanarav 68,1 ay 71,10 axayaxayavamalahaM.. 238,7 ..aSamalanavaQ 246,2 aJaQ 250,8 aRaYaRaQaJawalaq 259,6 aIaQaOa*a_a% 266,1 a< 270,2 a\be 273,4 a\bea\be 278,1 bq 282,1 bT 285,2 bIbx 288,3 bibia~ 294,2 a;a) 297,3 aYbCbg 
+R17 43,2 away 58,1 ay 62,1 ar 64,2 asav 68,13 aIaxayaIaxayaxayaralajaS.. 238,3 ..aVao 242,3 anaBaJ 247,4 aRaZaYaZ 253,7 aRaQayalaqaIaI 261,5 aQa.a_a<a* 274,1 a\ 276,3 bebqbl 280,1 bt 284,3 bAbobq 288,1 be 290,2 a\a; 293,2 a;a6 297,1 aQ 299,1 bg 
+R18 63,5 awasavaIaB 71,10 aIaJaJaIaBaraqajaM.. 238,11 ..a2avaganaBaKaRa1aSa1 250,2 aRaQ 254,5 aRayaqaqam 261,1 au 263,3 aqauar 267,6 aqauaqanaqan 287,6 aqalaqalaqaj 294,2 aqaj 
+R19 36,1 aA 38,2 aAay 44,4 aIaGaIaG 51,2 ayaI 55,2 ayaI 60,1 ay 62,5 aIaBaQaJaR 69,2 aZaZ 75,6 aRavanaqaM.. 238,7 ..a&avalaraJaS 246,5 a9a*a!a1aZ 253,3 a1aRaI 257,1 aw 266,1 aI 268,1 aG 272,1 aO 274,7 aXa5a)a;a\bibq 285,3 bAbobq 289,2 bia; 292,3 a)a5a5 297,1 aG 
+R20 36,9 a)a6a;a%a;a<a%a\a* 46,8 a.a.a]a}bcbfbmbv 55,2 bCbE 62,7 bCa,a&bfbma{bm 70,8 a^bma>a}a:a,aSas 79,2 a2.. 238,7 ..bfaBajaGa=bf 246,4 bmbvbabm 251,1 bf 253,6 a}a`aZaBaSbc 260,5 bmbubmbubm 268,2 bubs 271,1 bu 275,2 bybH 278,4 bLbRbYbR 286,1 bY 288,5 bTbIbAbqbq 295,2 a\a; 
+R21 32,1 aY 35,3 a6a;a\ 40,13 a_bhbjbubCbQb6b)b%b`b=cicm 54,2 cqcv 57,1 cz 63,4 b7bUcmcv 70,2 cqcq 73,1 cm 75,6 b=bQaSaKbC.. 238,29 ..b)a#aqa1b1b`b(b`b%b?b7b)b1b)b1bSbfaRbCb(ccb{ccb{ccciccb/ 269,1 cc 272,1 b` 276,2 b?b< 279,7 b$b6b4bWbRbNby 287,4 btbobqbb 293,2 bea\ 
+R22 34,16 a*a.bebbbpbDbObQb$b?b-cecvcBcKcM 52,5 cScXcScXcS 58,2 c1cV 61,1 c0 63,3 cmcec5 68,2 c0c5 73,1 c0 75,6 c4cea:a$cq.. 238,6 ..cXbEarbCcR 245,4 c0c4c1cV 250,1 cV 253,5 cXcRbSa!b{ 259,2 c1cS 262,2 c1cS 265,1 cX 267,2 cRcN 271,3 cKcFcB 275,3 czcqcm 279,10 cib`b?b<b$b3b0bObJbH 290,2 bubp 293,1 bb 296,1 be 299,1 aJ 
+R23 33,1 bf 35,7 a!a=a_a}bmbCbE 43,5 bQb$b)b?b- 49,2 b{b{ 53,4 cbcKc0c8 59,9 c8c5c9c5crcmc5c9c9 72,2 c&c9 76,5 cqa-a^cQ.. 238,11 ..c#bSaGbMc1c%c$c9c&c% 250,8 c$c$c$c%c8b7a:cm 259,1 c$ 261,1 c9 263,7 c$c9c$c9c5c8c5 273,3 c4cKb{ 277,5 ccb%b?b)b) 283,3 b6b3bQ 287,3 bEbJbv 291,6 bubfbbbba]a= 299,1 a5 306,1 ba 
+R24 35,10 aMa9a!a=a`bfbmbCbObQ 46,12 b6b$b1b?b%b-b{b7bnb%cRc9 60,2 c5c$ 63,3 cwcqc9 70,5 c&c9c&c9c& 76,5 cvbabdcQ.. 238,7 ..c1b)aMbzc1c& 250,1 c$ 252,18 c$c9c8b%a>cmc%c$c9c)c9c$c9c)c$c&c$c9 271,6 c)c1b-a-a{bM 279,4 bSbMbQbE 284,1 bC 286,11 bmbfa`a:a.a&a*a9a1a1aS 301,5 cMcCb/bXa( 
+R25 31,1 bg 36,16 bpbDbJbOb0b6b:b)b?cccicmcGcKc8c) 53,7 c%c1cebKb{cVc) 61,1 c9 63,3 cycvc9 67,1 c& 69,1 c& 76,2 cBbg 79,2 cF.. 238,8 ..c1b1a2bQcVc)c$ 249,2 c9c$ 252,13 c$c&c8b-a}cmc$c&c$c9c)c$c& 266,2 c)c9 269,28 c)c0b{babncmc4c%c1cMcFcBcGcqcmcucib`b?b$b3bQbObCbDbmbmbj 304,2 bXbn 
+R26 30,2 a:bw 36,1 bu 38,1 bH 40,12 bNb0b4b#b*b[b~b`ciczcRc% 53,2 c9c& 56,11 cVcebPcecVc&c&cMcwc9c9 76,5 cBbkbvcQ.. 238,9 ..c#b7a!bMc1c)c&c9 248,1 c9 250,1 c& 252,10 c&c)c$b/a>cqc$c$c%c9 263,3 c$c&c% 267,14 c)c8cqbdbncqc8c)c8cMcqcicib` 282,6 b~b)b$b*b3b4 290,7 bObJbCbvbubmbm 305,2 bFbg 309,1 cw 
+R27 27,1 bd 29,1 a3 35,4 bjbmbvbJ 40,8 bOb4b6b$b)b`b-ci 49,5 cqcKc1c9c) 55,1 c& 57,10 c&c0cebXcecVcNcFc9c& 76,2 cBbg 79,2 cQ.. 238,6 ..c#b%a&bMc1 245,2 c&c9 250,2 c)c& 253,5 c)c$b/bfcq 259,5 c$c9c9c%c9 265,14 c&c$cvbwbncmc4c)c5cXcFczcqcm 280,14 ciccb`b?b<b)b$b6bSb3bQbzbQbE 295,3 bCbgbv 299,2 a=b( 310,4 cNc5cJb| 
+R28 31,1 bX 34,12 chbJbQbMbUb?b%b-cib|cecq 48,10 czczcKcJcVc5c)c&c)c) 60,7 c4cqb%b%czc9c& 76,2 czbk 79,2 cQ.. 238,6 ..c#b%a&bMc1 245,2 c&c9 249,3 c&c%c& 253,5 c)c%cca>cq 259,18 c$c9c%c$c$c)cRbQbEcmc1c)c9c0cScRcNcM 278,8 cKczcvcmceb\b=b- 287,2 b?b2 290,10 b1bUbSbFbFbwbwbnbkbj 304,2 b9bG 312,1 cN 
+R29 28,1 a3 30,1 ba 34,11 cwcececqcvcBcFcKcJcMcJ 46,1 cN 49,1 cN 51,5 c1c0c8c9c& 58,2 c&c) 62,6 cXbMcmc)c&c& 76,2 czbg 79,2 cQ.. 238,12 ..c1b?a+bMc1c9c%c9c)c)c& 253,5 c)c$b-a>cq 259,3 c$c9c% 263,5 c$c%cqb/c4 269,3 c)c)c9 273,1 c5 276,1 c4 278,14 c1cScNcMcCcFcwczchcbceb=b/b( 293,3 b7b1bU 297,5 bMbzbCb{cN 304,1 b2 312,2 cJcb 
+R30 29,1 a[ 35,2 cFcJ 38,2 cNcS 45,2 c1c0 48,1 c5 50,1 c9 52,2 c&c9 55,1 c) 57,1 c) 62,4 c1bUcmc$ 76,2 czbC 79,2 cF.. 238,13 ..c#b7a+bMc1c9c&c$c9c)c)c$ 252,6 c$c)c8b/a}cq 259,4 c$c9c%c$ 264,1 c$ 266,3 cXc%c% 271,1 c& 275,3 c9c8c9 280,2 c5c4 283,15 cVcScRcJcKcyczcocqcbb{b=b/b%b7 299,1 bS 306,2 bGch 311,1 c5 313,1 b| 
+R31 30,1 bd 33,1 cJ 36,1 cS 38,1 cV 40,1 c0 44,1 c5 46,1 c9 48,1 c& 54,2 c$c) 62,5 c1bScec8c& 76,2 czbg 79,2 cQ.. 238,6 ..c#b%a&bFc1 245,3 c&c$c% 252,6 c$c&c8cca/cq 264,4 c8cRcXc% 269,1 c) 273,1 c& 275,3 c&c&c9 281,1 c9 283,1 c8 285,1 c0 287,3 cVcScN 291,10 cCcKcwcrcqcbb|b{b/co 308,2 cJcC 315,1 c5 
+R32 32,2 cJcJ 36,1 cV 38,2 c0c5 41,1 c9 53,1 c9 55,1 c) 62,7 cXbSb{c8c&c9c& 75,6 c)czbgbvcB.. 238,8 ..c1b%a?bEcXc%c$ 247,3 c&c%c9 251,7 c)c9c%c8b`a}cq 260,2 c$c9 264,1 c$ 266,3 cRc-c% 275,1 c& 277,2 c9c& 283,1 c9 286,1 c5 288,1 c0 290,1 cV 293,9 cNcJcCcycyczcqcycJ 305,1 bG 
+R33 30,2 bkb9 37,1 c5 39,2 c9c& 48,1 c& 53,3 c5c8c) 59,2 c%c) 62,5 cXbMb=c8c& 68,5 c9c&c9c&c) 76,5 czbabgcG.. 238,10 ..c1b?a!bncRc)c$c%c9 249,9 c)c$c)c9c$c8b`a}cq 260,2 c$c9 264,5 c$cRcXc-c8 270,1 c9 276,3 c&c9c& 285,1 c9 288,1 c5 290,3 c0c0cV 294,1 cS 296,5 cNcJcJcycF 
+R34 37,2 c5c9 41,2 c&c& 46,1 c) 52,5 c$c5c8c9c$ 61,12 c)cXbQb/c8c9c&c$c&c$c)c) 74,7 c9c)cvbmbdcG.. 238,21 ..c1b7a&bEcRc%c%c9c$c9c)c$c)c9c$c8b`a}cmc% 260,2 c$c9 263,2 c$c8 266,3 cRc-c5 270,1 c9 276,3 c&c9c& 283,1 c9 288,2 c5c5 291,1 c0 296,1 cS 298,3 cNcJcJ 302,1 cC 312,2 cJcb 
+R35 37,1 c5 40,1 c9 51,5 c9c$c4c5c$ 58,2 c8c$ 61,6 c%cRbEb-c4c9 68,13 c$c9c)c$c)c$c)c$cza^bacv.. 238,7 ..c1b<a&bEcMc% 246,2 c$c9 249,2 c$c9 252,6 c9c$c8b%bbcm 261,6 c$c9c$c8cXcX 268,2 c$c$ 271,1 c9 274,7 c&c9c&c9c&c9c& 285,1 c9 289,1 c5 292,1 c0 294,1 cV 297,1 cS 
+R36 30,2 bGb9 37,1 c5 40,1 c9 42,1 c5 44,1 c9 46,1 c& 50,4 c9c$c9c4 55,2 c$c8 59,8 c$c8c$cRbnb-c8c9 68,1 c$ 70,5 c)c$c)c9c$ 76,2 cza^ 79,2 cI.. 238,14 ..cXb7a&bEcMc%c8c$c9c$c9c$c9 253,7 c5c4b?a}cec$c% 263,4 c$c8cXc2 268,2 c8c5 273,9 c9c&c9c&c9c&c9c&c9 283,1 c9 289,1 c5 291,1 c0 294,1 cV 297,2 cScN 300,1 cJ 304,2 b9bP 
+R37 38,1 c5 45,1 c9 52,2 c8c4 55,1 c8 61,8 c$cMbCb%c4c9c8c9 70,11 c$c9c$c9c$c8cza^a^cq.. 238,6 ..cXb)a2bCcM 246,12 c8c5c$c5c$c8c9c8c4b7bbce 263,2 c$c8 266,3 cXc,c5 272,1 c8 283,1 c9 287,1 c5 290,1 c0 294,1 cV 296,1 cS 298,2 cNcJ 304,2 b2bX 
+R38 37,1 c0 39,1 c5 46,1 c9 51,1 c$ 53,1 c0 55,1 c8 58,2 c4c8 62,5 cKbgb7c1c5 68,6 c$c5c$c9c8c9 75,6 c8cza>a}cq.. 238,6 ..cXb$aVbgcK 245,1 c8 248,2 c5c8 251,8 c5c8c5c4b7bbcec8 263,4 c$c8c1cX 268,4 c8c4c0c0 273,1 c9 281,1 c9 285,3 c5c0c5 289,1 c0 292,1 cV 295,1 cS 297,1 cN 299,1 cJ 305,1 bK 
+R39 38,1 c0 42,2 c5c0 45,1 c5 48,6 c9c5c9c5c8c4 55,1 c8 57,1 c4 61,10 c8cBbmb7c1c8c5c8c5c$ 76,5 cva/a-cm.. 238,8 ..cRb$aMbvcKc8c4 247,1 c8 249,10 c5c8c5c4c8c4b7bbcic8 260,5 c$c8c%c-c8 266,2 c7c8 269,1 c0 271,2 c4c0 274,3 c8c9c5 278,3 c9c5c9 284,1 c5 288,1 c0 291,1 cV 293,1 cS 296,2 cNcJ 299,1 cC 301,1 cy 303,1 ch 
+R40 36,1 cV 39,1 c0 46,1 c5 49,1 c8 51,1 c8 53,4 cVc4c8c4 58,12 c1c4c1c4cBa/b7cXc8c5c8c4 74,7 c4c0cqa-a:ci.. 238,6 ..cKbSaYa^cB 247,22 c4c8c4c8c4c0c4c1b1a=b{c4c$c%c$c8c$c8cXcXc#c4 271,1 cV 273,1 c0 275,5 c5c5c9c5c9 282,1 c5 286,1 c0 289,1 cV 292,1 cS 294,1 cN 296,1 cJ 298,2 cCcy 303,3 b|b2br 
+R41 37,1 cV 41,2 c0cV 47,1 c5 51,3 c4c5c1 55,1 c5 57,1 c1 61,6 c0cva}b1cXc4 69,9 c0c4c0c1c0c1c1cqa+ 79,2 cc.. 238,7 ..cKbMaBa}cBc1 247,1 c4 250,8 c4c1c0c1cXb1a.b` 260,1 c8 264,6 c8cXc2c8c4c1 272,1 cV 275,1 c0 280,1 c5 283,1 c0 287,1 cV 290,1 cS 292,1 cN 295,2 cJcC 298,2 cycw 305,3 bzbrbX 
+R42 29,3 a{bzb( 36,1 cS 39,1 cV 45,2 c0c0 48,8 c4c5c4c0c8c1c1c4 57,3 c1cSc1 62,19 cqa-bUcRc1cVc1cVc1cVc1cVc1cScma:a3cc.. 238,7 ..cFbQaBa:czc1 251,8 cVcXc1cRb1a!b?c1 263,8 c8c#cXc2c8c4cVcS 273,7 cVc0cVc0c5c0c5 281,1 c0 286,1 cV 288,1 cS 291,1 cN 293,1 cJ 295,1 cC 297,4 cycwcrcw 
+R43 29,1 a{ 37,1 cS 41,1 cV 44,1 cV 46,2 c0c0 51,5 c1c0c1cVc4 57,1 cX 59,2 cRcX 62,13 cea:bMcMcXcVcXcVcXcVcXcScX 76,5 cea+a0cc.. 238,6 ..cBbQaBa#cv 250,9 cXcScXcRcMb$a2b7c1 262,3 c4c4c4 266,7 c2c4c4cScXcNcS 275,1 cV 278,3 c0cVc0 283,1 cV 286,1 cS 289,2 cNcM 293,1 cC 295,2 cycw 298,2 crch 306,1 bk 
+R44 37,1 cN 39,2 cScN 46,1 cV 49,9 c0cVc1c0c1cXc1cScR 60,8 cNcRb{a!bzcKcXcR 69,4 cXcRcScX 76,5 b{a&a0b`.. 238,7 ..cvbEaDa+cqcX 246,1 cS 248,2 cXcS 251,1 cX 253,6 cRcKbSa%b7cX 260,2 c1c0 263,4 c4c1cXc2 268,3 c1cScN 274,1 cR 279,3 cVcScV 284,1 cS 287,2 cNcJ 290,1 cC 292,1 cy 294,3 cwcrco 298,1 ch 302,1 cr 
+R45 27,1 b9 35,1 cC 38,2 cNcN 45,1 cS 49,1 cV 52,3 c1cScX 57,1 cM 62,5 b/aSbEcBcN 68,4 cMcNcRcN 73,2 cMcN 76,5 b=a!a2b?.. 238,7 ..cqbEaBa+cmcN 246,5 cMcRcMcRcM 253,8 cMcKbMaVb)cRcVcX 262,1 cV 264,3 c1c2cR 268,2 cXcR 274,1 cJ 276,1 cN 279,3 cScRcS 283,1 cN 286,1 cJ 289,2 cycy 292,3 cwcrco 296,1 ch 302,1 cw 307,1 bP 
+R46 37,1 cC 39,1 cJ 45,1 cN 47,1 cS 52,6 c1cXcRcScRcK 59,2 cCcK 62,6 b(aMbkczcJcM 70,3 cJcMcJ 74,1 cM 76,2 b/a! 79,2 b7.. 238,7 ..cqbEava!cecK 249,3 cMcMcM 253,7 cKcBbMaVbUcMcR 262,1 cS 264,3 cXcXcW 268,2 cXcJ 273,1 cC 275,4 cJcNcJcN 282,1 cJ 285,1 cC 287,3 cycwcr 291,1 co 293,1 ch 295,3 cbb|b\ 302,1 cr 
+R47 37,4 cocrcycC 45,1 cJ 48,1 cN 50,1 cR 52,2 cScR 56,4 cMcKcFcy 61,7 cBb%aNbkcvcKcC 69,3 cKcCcK 76,5 b(aVaSb).. 238,6 ..cmbEasa9ce 245,4 cKcCcKcC 251,7 cCcFcycBbwaVbS 260,1 cM 262,1 cR 264,6 cXcRcWcXcRcM 272,1 cB 275,1 cy 281,1 cC 283,3 cycwcr 287,2 coch 291,1 cb 293,1 b| 295,3 b\b=b/ 
+R48 29,3 babwbX 38,6 a8a(bnb-cwcy 45,2 cCcC 48,6 cJcNcJcMcNcM 57,1 cF 59,1 cB 61,6 cwb%aUbacmcy 69,4 cCcycKcy 74,7 cFcBb%aVaSb).. 238,7 ..cmbCasa2b=cF 248,1 cK 251,10 cycBcwcvbraSbScFcCcC 262,1 cN 264,7 cRc2cMc2cMcCcB 273,1 cw 275,1 cw 279,8 cycwb|bKbga{a[a/ 288,4 a>a/a(a( 295,1 a$ 301,1 cy 
+R49 28,2 a{a{ 35,1 aj 41,10 aHb%crcwcwcycCcCcJcC 52,9 cMcJcKcMcycBczcrcz 62,5 b7aHa{b|cw 68,2 cwcB 71,2 cycw 74,7 cwczb%aUaMbU.. 238,6 ..cebmasa2b/ 246,2 cBcw 249,2 cBcw 252,7 cwcvcqbraMbFcB 260,1 cF 262,10 cCcMcRcMcWcMcMcBcrcr 274,1 co 276,2 crcw 279,4 crb%aHap 284,3 atapat 289,2 apat 293,4 apatapat 299,2 aebK 303,1 b/ 305,1 br 
+R50 30,1 bw 39,9 a0azatbGchcocwcwcy 49,3 cCcKcC 53,7 cKcCcKcwcrcvco 62,9 b7aFa[b\cvcrczcwcr 75,6 cvb7aSaKb6.. 238,10 ..b{baawaVb(cvczcwcv 250,2 crcv 253,6 cocbbkaMbwcv 260,4 cwcBcycM 265,1 cK 267,4 cQcFcwco 278,4 chcbbGat 283,3 aCaPaT 287,3 aTa0aW 293,1 a0 300,2 b1cw 
+R51 29,1 bg 35,3 a[bgbk 40,8 aTaxbFcbchcocrcw 49,3 cycwcy 55,13 cBcwcqchcqchcmbXaCa/b=chch 69,1 co 71,1 cv 73,8 chcocqb1aMaDbQ.. 238,12 ..b{bmaoaLb%cqcrcvcocqco 251,10 cqchcbcebgazbnchcvco 262,2 cwcy 265,1 cK 267,4 cFcBcrch 279,5 cbbzaxaHa8 285,1 br 288,1 bk 294,6 bgbgbda{bma* 307,1 bG 309,2 b|b\ 312,1 b| 
+R52 28,1 a[ 36,1 bk 39,7 bna8axbrb\cbch 47,3 cocrcw 51,3 czcycz 55,4 cycvcbcb 60,1 cm 62,9 bKaxa(b-cbcmchcmch 72,9 chcqcmcbb1aKaDbQ.. 238,6 ..b/a^araHb2 247,1 cq 249,1 ch 252,6 cmcbb|bdaxbg 260,4 chchcrcz 265,2 cBcB 268,2 czcq 277,7 b|cbb\bzaxaNa[ 285,3 bGbzbw 290,4 brbnbnbk 296,2 bgbd 299,1 bj 312,1 b= 
+R53 33,1 ch 35,1 bg 38,1 bw 40,6 a8atbgb=b\cb 47,1 ch 49,1 co 52,8 crcrczcrchcbceb| 61,7 b|bGaxa(b(b|ce 71,1 cm 73,1 cb 75,6 cebUaKaDbQ.. 238,7 ..b`a{amaLb2b| 246,1 cb 248,1 cm 251,10 cbcbceb\bgaxbgceb|cb 262,3 chcocr 267,1 cz 269,3 cmcbb| 279,5 b=bzaxaNbr 285,2 bPbP 288,1 bG 292,2 bzbz 296,1 br 298,1 bk 308,3 bXb-b- 312,1 b= 
+R54 40,5 brapa[b/b\ 46,2 b|cb 49,1 ch 51,2 cqco 54,1 co 56,2 cmb| 59,1 ce 61,7 b{bFata$b(b\b| 75,3 b{bUaK 79,2 bE.. 238,6 ..b%a^aoaLbX 245,1 b| 251,1 ce 253,6 b\b=a{axbgb= 260,3 cecbcb 264,8 cqcqcvcqcmcbb|b\ 273,1 b= 278,7 b/b-brapaTbrbX 286,1 bP 289,1 bG 292,1 bF 294,1 bz 296,1 bw 298,1 br 311,2 b(b- 
+R55 30,1 bn 36,3 b/b=b\ 41,5 b-cocwb|b\ 47,1 b| 49,1 cb 52,8 chcbcqchcbb|b{b\ 61,7 b\bwata$b9b=b{ 69,6 b\b|b\ceb\b{ 76,5 bSaDaBbE.. 238,6 ..b%a^amaHbP 245,1 b\ 247,2 b|b| 250,1 b\ 253,8 b\b/a{axbab/b=b\ 263,1 cb 267,1 cm 269,4 ceb\b=b- 274,3 b(b9b2 278,9 b/b9bdaHa8bGb9b2bX 288,1 bP 290,1 bK 293,1 bG 295,4 bFbzbwbr 
+R56 31,1 bK 34,1 cB 38,10 cScNcVc0cVcyb/b=b/b\ 49,2 cbb| 52,7 cbb|cbcbb|b{b= 62,6 bgata8b2b=b= 70,2 b\b= 76,5 bMaBaDbE.. 238,10 ..b7a-anaLbXb\b=b\b{ 251,1 b\ 253,10 b=b(a{axa{b(b/b=b\b\ 264,3 b|cecb 269,3 b|b=b- 273,7 b9b2bPb9b|cbcy 282,1 cJ 285,1 cN 289,1 cJ 294,3 cCcycC 314,1 ch 316,1 co 318,1 cb 
+R57 29,1 a( 32,1 b\ 34,2 b=b{ 37,1 cb 42,3 b|b\b9 46,3 b(b=b\ 50,3 b|b\b| 56,3 b\b=b/ 62,6 bdapa8b2b-b/ 70,2 b=b/ 76,5 bzavaDbC.. 238,6 ..b1a-amaNbX 245,1 b/ 251,1 b= 253,9 b/b(a^ata^b%b-b/b= 264,7 b\b{ceb{b=b\b/ 272,10 b9b2bXbGbXb2b9b\crcy 284,1 cr 291,3 cochco 312,1 b9 314,4 cocbchcb 319,1 cb 
+R58 29,1 a[ 32,1 b/ 43,7 b/b2bXb9b(b/b\ 51,7 b=b|b\b|b\b=b/ 59,1 b- 62,6 bdapa3bXb(b- 70,1 b/ 76,5 bwasaxbg.. 238,6 ..b1a-amaFbP 247,1 b/ 249,1 b= 251,9 b/b-b(b%a[apa>b7b( 262,1 b- 264,1 b/ 267,5 b=b-b=b(b9 273,9 b2bPbKbwbGbXb9b-b( 283,3 b-b9b( 295,1 b/ 297,1 b- 312,1 b7 318,1 cb 
+R59 29,2 a(bg 32,1 b- 35,2 bpb- 38,1 b\ 42,5 b\b-b9b2b9 48,2 b/b= 52,3 b\b=b\ 56,3 b/b-b( 62,6 a{apa3bXb9b( 69,2 b9b- 72,1 b9 74,7 b(b9bzavavbv.. 238,6 ..bUa-aoaCbP 250,1 b- 252,9 b(b%b7a>aoa/b2b%b9 264,2 b(b- 267,4 b/b(b/b9 272,3 b2bXbP 277,2 bzbP 280,14 b9b(b9b-bXb2b-b(b-b(b-b(b-b( 296,2 b-b( 299,1 b7 316,2 cbb| 
+R60 27,4 bra{a[a{ 33,1 b( 35,5 bfb-b9b-b/ 42,3 b=b9bX 46,1 b9 48,2 b(b- 52,3 b/b/b= 56,2 b-b( 61,6 b9a[apa8bXb9 75,6 b%brataBbg.. 238,6 ..bUa-aoazbG 245,1 b( 248,3 b(b%b( 253,6 b9b2a/apa/b1 260,1 b2 263,3 b9b(b% 267,5 b-b%b-b9b2 273,7 bXbKbzbGbwbKb2 282,2 b9b2 297,1 b9 299,1 bK 
+R61 29,2 a(bd 33,1 b( 37,2 b(b- 42,9 b/b9b2bXb2b9b(b-b( 52,1 b- 54,1 b/ 56,3 b(b9b( 61,6 b2a[apa3bKb2 69,1 b9 71,2 b2b9 74,7 b2b7brataBbv.. 238,6 ..bMa/aoaCbz 246,2 b9b( 251,8 b9b%b7bXa/apa(bP 261,1 b2 263,2 b9b2 268,3 b%b9b9 273,6 bPbGbzbGbwbG 285,1 b2 289,1 b9 291,8 b9b2b9b2b9b2b7bX 
+R62 34,1 bz 36,3 bXb9b( 40,1 b9 42,1 b( 44,3 bXbPb2 48,1 b9 51,2 b9b( 54,4 b-b-b9b9 61,7 b2a/apa3bKbXb2 75,6 b7bgapaxbd.. 238,6 ..bMa-aoaxbz 245,6 b9b2b%b9b7b9 253,6 b2bXa(aoa(bP 260,1 bX 264,2 b2b7 267,5 b%b7b9b2bX 273,8 bXbFa{bnbkbGbPb2 282,2 bXbP 285,1 bK 288,1 bP 297,2 bPbU 
+R63 33,8 b7bFa&ataNa{bKb9 43,6 bPbdbrbPb2b9 54,1 b( 56,1 b9 58,9 b2b7b9bXa(apa0bKbX 68,3 b2bXb2 73,8 bXb2b1bgasavbm.. 238,6 ..bMa:amaxbz 246,2 b2b7 250,1 b7 253,6 b2bPa8ama(bK 260,1 bP 262,2 bXb2 265,1 b1 268,3 b7b9bX 273,3 bPbKa( 277,3 aTbnbP 281,4 bXbKa{aH 291,1 aH 293,1 aH 
+R64 32,1 bX 34,13 bQa&azatapaza^bza[a8bdbPbX 48,3 b2b9b2 52,1 b9 54,1 b( 56,2 b9b2 60,9 b7bXa(aia3bKbXbPbX 75,6 b1bgatapa^.. 238,9 ..bMa:akaCbFb2b1b2 250,2 b2b2 253,6 bXbPa0aoa(bK 261,3 bPbXb2 267,6 b1b7b2bXbPbK 274,9 bGbgaTapaHa[brbaaN 284,1 ap 286,1 at 288,1 ax 297,2 atav 315,3 b=b=b/ 
+R65 31,1 bz 36,3 apataC 40,5 apaPbdbPbX 49,1 b2 54,1 b% 56,1 b7 59,1 bX 62,5 a8aia3bGbP 69,6 bXbPbXbPbXbP 76,2 bgas 79,2 a}.. 238,9 ..bza+agaCbFb1bXb1 249,1 b1 253,6 bXbKa0aoa(bG 260,2 bKbP 263,5 bXbPb1bUb1 269,2 b7bP 272,14 bKbGbFbKbGa{aNapaoapakapatap 287,2 apam 290,1 ai 294,1 ao 299,1 a6 
+R66 35,8 a`a0aCapa8bgbKbP 47,1 bX 50,1 b2 54,1 b7 56,2 b2bX 60,7 bXbPa8aka3bGbP 73,5 bXbPbUbdas 79,2 a-.. 238,6 ..bEa3alaCbz 245,4 bUb1bPb1 251,1 bX 253,8 bPbKa0apa(bFbGbK 262,3 bPbXbP 267,1 bU 269,3 bXbPbK 273,2 bGbz 277,15 bGbGa(atamaCa3a3aNapamaza{bGbr 295,3 bnbnbw 301,1 cI 
+R67 29,1 a( 36,7 aCa{bFbKbPbKbP 49,1 bX 54,3 b2b2bX 59,8 b1bPbKa3aoa0bGbP 74,1 bK 76,5 bdasaoa:.. 238,7 ..bwa+agaEbwbU 246,3 bPbUbP 253,6 bPbGaWapa$bz 260,2 bGbK 263,1 bP 267,3 bUb1b1 271,5 bKbGbFbzbG 279,12 bGbwa$aNazatapaWbPb|b\bX 294,2 bGbM 299,1 bQ 303,1 b% 305,1 bv 308,3 bFbPbF 312,1 bP 
+R68 33,1 bP 35,3 a{bFbG 43,1 bK 47,1 bP 50,3 bXbUbX 54,4 bXb2b1bX 59,8 bPbUbKa3amaTbFbK 75,6 bMbaaoasa>.. 238,7 ..bEa3amaxbrbK 246,1 bU 248,1 bU 252,8 bPbKbFaWama8bwbF 261,2 bGbK 264,4 bPbSbUbS 269,3 bPbKbG 275,1 bz 277,1 bz 279,1 bF 281,9 bGbra/a/bPcbb|bXbK 291,2 bGbG 294,2 bFbz 307,1 bd 310,1 bz 313,2 b-b- 
+R69 28,1 a[ 31,1 bz 33,1 bK 42,1 bG 47,2 bKbK 51,6 bSb1bPb1bXbP 60,8 bKbGa3akaTbzbKbG 69,12 bGbGbKbGbKbGbMa{aoasa-.. 238,6 ..bEa3akavbn 246,5 bKbUbKbPbK 253,8 bKbFaTama8bwbzbF 262,4 bGbKbSbK 267,7 bSbUbKbGbzbFbz 278,2 bFbz 282,6 bFbGbPb7bKbz 290,2 bFbF 299,3 bOcqcI 306,4 a{bkbKbS 
+R70 28,2 a(a[ 37,5 bFbzbFbzbF 46,1 bG 49,1 bK 52,3 bUbKbP 59,8 bUbKbGa0amaTbwbG 69,1 bS 74,1 bF 76,5 a^aoasa:.. 238,6 ..bna&akaxbn 245,1 bM 248,1 bS 251,8 bKbKbGbzaTaoa3br 261,2 bzbG 264,7 bKbMbSbMbSbKbF 272,3 bzbzbr 276,1 bw 278,1 bz 280,1 bw 282,2 bwbz 285,1 bw 290,1 bz 292,2 bwbw 299,1 bO 301,2 cub? 309,2 bMbz 
+R71 29,1 a( 44,5 bFbzbGbFbG 50,5 bKbGbSbKbU 57,1 bK 60,7 bGbFaTakaTbwbF 68,4 bGbFbGbF 74,1 bF 76,2 a>ao 79,2 a+.. 238,7 ..bna!akazbnbF 246,4 bMbKbGbK 253,6 bGbwaTaoa3br 260,2 bwbz 264,1 bG 267,4 bMbSbKbF 272,1 bz 276,1 br 280,1 bw 290,1 bw 294,1 br 297,1 bn 302,2 b<bU 
+R72 23,2 bGbP 31,2 brbz 42,2 bzbz 48,2 bFbG 52,3 bKbGbK 57,2 bGbK 61,6 bzaNapaTbwbz 76,2 a(ao 79,2 a+.. 238,8 ..bka2agatbgbMbG 247,1 bM 251,7 bGbFbGbwaTapa3 260,1 bw 262,2 bzbG 268,4 bMbGbzbz 283,1 br 289,1 br 294,3 bnbkbn 
+R73 21,2 bdbz 29,1 a[ 33,2 bGa> 46,1 bz 49,4 bFbGbFbM 54,1 bK 56,1 bG 61,6 bwaHaka3brbz 70,1 bF 76,5 a(aoapa&.. 238,6 ..bkaValapbg 245,6 bFbMbFbGbFbG 253,6 bFbraPaoa3bk 260,1 br 262,2 bwbF 265,9 bFbMbFbMbFbzbwbrbn 275,2 bkbn 278,2 brbr 282,1 bn 285,2 bnbk 289,3 bnbkbn 297,1 bg 299,1 bk 
+R74 25,1 bz 27,2 a[a( 32,2 bzbG 36,2 brbn 40,2 brbn 46,5 bwbwbwbzbG 54,1 bG 58,9 bFbGbFbwaHaia3brbz 75,6 bwa(apaoa0.. 238,6 ..bgaVagatbd 251,1 bF 253,5 bzbraPama3 259,1 bn 261,3 brbwbF 265,1 bz 269,5 bFbwbrbnbk 275,1 bg 283,2 bgbk 286,3 bgbkbg 291,1 bk 299,2 bvb{ 303,1 bS 
+R75 25,2 bGbd 28,1 a[ 32,1 bz 34,1 a- 36,1 bn 40,1 bk 42,3 bnbrbr 48,5 bwbzbzbzbF 54,2 bGbF 61,6 bwaHaiaWbrbz 75,6 bra(apaoa2.. 238,6 ..bgaSalatba 245,3 bzbFbz 249,1 bF 252,7 bzbwbkaPapaWbd 262,2 brbz 266,4 bFbEbFbz 271,2 brbk 275,1 bd 281,5 bgbkbdbgbd 287,1 bd 291,5 bgbdbgbdbg 297,1 bg 300,1 b{ 303,1 bM 306,1 a/ 
+R76 24,2 bzbG 28,1 a( 33,1 bw 38,2 bdbd 41,5 bgbkbkbkbr 50,1 bz 52,3 bFbzbF 57,1 bz 59,1 bF 61,5 braHaiaTbr 67,1 bw 73,8 brbwbra(aoama!.. 238,8 ..bdaSagata{bzbw 250,1 bz 252,7 bwbrbkaNaoa0bd 260,3 bkbnbr 265,8 bwbFbwbzbwbnbkbg 293,1 bd 295,1 ba 298,1 a^ 301,3 b?bSb3 305,2 a^a- 
+R77 26,2 a[a[ 35,1 a4 41,1 bd 43,2 bgbk 47,8 brbnbrbzbwbFbzbF 56,1 bz 59,8 bwbzbnaHapaTbkbr 76,5 a(aoama2.. 238,6 ..bdaMalapa{ 245,2 bwbz 251,1 bw 253,7 brbgaNaoaWbabg 261,2 bkbr 264,4 brbwbzbE 269,3 bwbnbg 274,2 bda{ 284,8 bda{bda{bda{baba 293,1 a{ 295,3 a{a{ba 302,1 bM 305,2 a{a$ 
+R78 36,1 a{ 39,2 bdbd 45,3 bkbkbg 49,7 brbrbwbzbwbFbz 57,1 bw 60,9 brbkaCaiaTbdbrbkbr 75,6 bna(aoama2.. 238,6 ..bdaKahapa^ 245,2 bwbr 248,1 bw 252,11 brbnbgaHaoaWa{bdbgbkbk 266,2 bwbn 269,4 bwbkbgbd 276,5 a[bda{bda[ 282,1 a{ 284,3 a[a{a[ 288,3 a{a[a{ 294,1 a{ 296,2 a[a{ 300,3 b%b?bF 304,1 bE 
+R79 25,2 bGa[ 37,1 ba 39,4 a[a{a[bd 44,1 bd 47,4 bgbgbkbr 52,3 bzbwbz 56,1 bw 58,1 br 61,6 bgaCaiaTbdbk 68,1 br 72,3 bkbrbk 76,5 a$aoama2.. 238,6 ..baaMagasa[ 252,9 brbkbdaHapaTa[bdbg 262,11 bkbrbnbrbwbnbwbrbgbdba 275,2 a[a{ 280,3 a{a[a{ 287,2 a[a{ 291,2 a[a{ 301,1 b1 305,1 a^ 
+R80 23,1 bG 25,1 bz 34,1 a3 45,1 a{ 47,1 bd 49,2 bgbr 52,5 bwbrbwbzbw 58,1 br 60,10 bnbgaHaiaHa[brbda[a{ 71,1 a[ 73,1 bk 75,6 bda8apaoa2.. 238,7 ..baaMagasa>bn 250,1 br 252,7 bnbkbgaHaiaTa[ 260,3 bdbdbk 265,2 bnbr 268,5 bnbnbgbda{ 291,3 a[a>a> 300,1 b7 302,5 bEbnbra^a- 
+R81 25,1 bG 32,2 bkbk 35,1 aP 45,4 a{bda[bd 50,4 bkbnbwbr 55,2 bwbr 59,12 bnbkbdaHaiaHa[bgbrbGbFbX 72,2 bkbd 76,5 a8apaoa2.. 238,7 ..baaMagasa/bg 251,9 bnbkbda{aCaiaTa/a{ 262,1 bd 264,3 bkbgbr 269,8 bnbdbaa{a[a>a[a> 284,7 a[a>a[a/a>a(a[ 292,2 a>a/ 296,2 a/a> 
+R82 25,2 brbd 32,1 bk 46,2 a{bd 50,1 bk 52,3 bwbnbr 57,2 bnbk 61,8 a{aHaiaHa[bdbPce 70,8 cvcebrbdbkbda8ap 79,2 a2.. 238,7 ..a^aMacata-bg 248,1 bn 251,1 bk 253,11 bga{aCaiaPa/a[bdbabdbk 265,8 bgbnbgbnbkbaa^a[ 274,1 a/ 276,4 a/a>a>a/ 287,3 a/a>a( 291,6 a/a(a/a(a/a( 
+R83 31,5 a{bga[aHa0 37,4 a/a>a/a> 48,2 a{bd 51,3 bkbnbk 55,3 brbnbk 59,19 bgbda[aCaiaCa[bdbKb{cecqb{bkbdbkbda8ap 79,2 aV.. 238,6 ..a^aDagasa/ 245,2 bgbk 250,2 bkbg 253,11 bda[aCaiaPa/a[a{bdbabg 265,10 bdbnbgbkbgbaa[a>a/a( 279,7 a>a(a>a(a>a(a/ 287,2 a(a/ 290,2 a(a/ 299,1 a- 303,1 bg 306,1 a$ 
+R84 26,1 a{ 32,1 bd 34,1 a3 37,1 a> 44,1 a[ 50,4 bgbgbnbk 55,2 bnbk 58,2 bgbd 61,20 a[aCaiaCa[bdbKb7b)b?b%bgbdbgbda3apaoaV.. 238,7 ..a>aDafata(bd 246,1 bg 248,1 bk 251,8 bgbdbaa[azaiaPa( 260,1 a[ 262,1 ba 265,3 bdbkbd 269,4 bga{a>a/ 297,1 a( 299,2 a}bM 304,2 bga/ 
+R85 33,1 a3 45,1 a> 47,1 a[ 50,3 bdbgbn 57,2 bgbd 61,13 a>azaiaHa(babSb1bUb<bQbgba 75,3 a{a0ao 79,2 a2.. 238,6 ..a>aDacata( 245,1 bd 248,2 bdbg 252,1 bd 254,7 a[atakaPa(a/a[ 262,1 a{ 264,4 bdbabgba 269,3 bda[a/ 293,3 a(a$a( 299,2 a:bM 302,1 bC 
+R86 24,2 bkbz 34,1 a8 43,1 a/ 46,3 a>a>a[ 50,4 babgbkbg 57,1 bd 59,15 baa{a>azaiaHa/a{bFb?b<b1bva{a{ 75,6 a^a4aoama2.. 238,7 ..a>aDafata$ba 246,1 bd 251,2 bdbd 254,14 a[atakaPa$a/a>a[a{bdbaa{bda{ 269,3 baa>a/ 273,3 a(a8a( 290,4 a(a$a(a8 296,1 a$ 302,1 bk 305,1 a- 
+R87 24,1 bg 40,2 a(a( 46,2 a/a> 50,7 a{bdbkbgbdbgbd 58,23 baa{a[a>aCaiaHa(a[bzb{cib`bva^a>a{a^aWaoama2.. 238,8 ..a>aDadapa$a{ba 251,10 bda{a[a>axaiaPa8a(a> 262,9 a[baa{a^baa^baa{a> 272,4 a(a8a$a8 291,1 a$ 297,1 a8 301,2 bQbk 
+R88 24,1 bd 36,1 a( 43,1 a( 47,1 a/ 50,5 a{babkbaba 57,2 a{a[ 61,20 a(axaiaHa(a{bdbgbEccbCa-a>a[a>aTaoama2.. 238,8 ..a>aBabapa3a[a{ 248,1 bd 251,1 a{ 253,15 a[a(axaiaPa8a(a/a>a[a{a[a^a{a> 269,4 a{a>a(a$ 296,1 a8 298,1 a7 300,4 bEbzbva^ 
+R89 36,9 a$a$a$a8a8a8a8a$a( 49,5 a/a[a{bga{ 57,1 a[ 60,15 a>a(axaiaHa(a{a^bnbOccbma-a/a> 76,5 aPamama2.. 238,8 ..a>aBabapa3a[a^ 248,1 a{ 251,1 a{ 253,6 a[a(ataiaNa8 260,1 a( 262,1 a> 264,1 a[ 266,2 a^a/ 269,3 a^a/a( 273,2 a8a3 289,9 a8a3a8a7a8a7a8a7a# 299,2 a&bk 
+R90 24,1 bd 44,1 a$ 47,1 a( 50,5 a[a^bda^a[ 58,2 a>a/ 61,11 a(axaiaHa(a[a>a^bfb)bc 73,8 a-a>a/aPakama2.. 238,6 ..a-aBabapa3 251,1 a{ 253,6 a[a(axaiaNa8 260,1 a( 262,2 a/a[ 265,3 a>a^a/ 269,3 a^a(a$ 273,18 a8a3a8a3a8a7a3a8a7a8a7a8a7a8a7a8a7a8 296,1 a3 298,2 a3a& 301,1 bn 303,1 a^ 
+R91 25,1 bg 46,1 a$ 48,1 a( 50,6 a>a^a{a^a>a[ 57,2 a>a/ 60,21 a(a$axaiaHa8a[a/a^a:bEa|a$a-a/a-aNamakaS.. 238,7 ..a-aBahaoa8a> 252,8 a[a>a(ataiaHa8a$ 261,2 a(a/ 264,8 a>a[a^a-a>a^a-a$ 292,2 a3a0 297,1 a3 299,5 a!bdbEbaa^ 
+R92 25,1 bd 38,1 a3 42,1 a8 47,1 a$ 50,9 a(a>a{a>a/a>a[a>a/ 60,18 a(a$axaiaHa8a[a/bEbCbEaVa!a-a/a-aMak 79,2 aM.. 238,8 ..a+aMagaoa3a/a> 247,3 a[a>a[ 252,1 a> 254,6 a(ataiaHa3a8 262,2 a(a/ 266,2 a>a: 269,4 a>a-a8a3 274,1 a0 286,1 a3 289,10 a0a3a4a7a4a0a7a4a0a4 303,3 a[a^a, 307,2 a(bd 
+R93 24,2 a{bg 46,2 a3a8 49,5 a,a(a}a^a/ 56,2 a>a/ 59,1 a( 61,8 a8azaiaHa8a[a/bE 71,2 bCa+ 76,5 aEakaiaS.. 238,7 ..a8aEagaoa3a- 252,1 a/ 254,9 a(ataiaHa3a8a(a,a( 266,6 a/a-a}a/a$a+ 276,2 a0a3 280,1 a0 285,1 a3 290,1 a0 292,5 a4aWa4aWa4 299,2 a!a^ 
+R94 23,1 a[ 46,10 a8a7a8a#a(a/a^a/a-a/ 58,1 a( 61,9 a8axamaHa8a>a(bFbE 72,1 a$ 74,4 a$a8aDak 79,2 aS.. 238,7 ..a+aDagaoa0a- 252,8 a/a(a$ataiaHa3a8 262,1 a$ 266,2 a/a: 269,3 a/a+a3 289,3 a0aWa4 299,1 a4 
+R95 23,1 a{ 29,1 a( 33,1 aC 35,2 a3a0 43,2 a0a3 48,1 a8 51,5 a-a>a/a(a/ 58,1 a( 61,20 a8ataiaHaWa(a>b%b)bEbEa+a3a$a8aDakagaS.. 238,6 ..a8aBagasa3 245,2 a-a> 250,1 a/ 253,7 a(a8apakaHa7a8 262,9 a$a/a(a-a/a-a/a-a$ 273,1 a0 275,1 aW 277,1 a0 280,1 aW 286,2 a0aW 289,1 a0 296,1 aW 309,4 a{a/a(a{ 
+R96 21,1 a( 25,1 a{ 28,1 a( 30,1 a/ 32,1 a8 46,1 a3 48,1 a8 51,5 a$a>a/a(a/ 58,1 a( 60,5 a$a8aWbkbP 66,12 bra-a^a{baa^a$a+a8a3azak 79,2 aM.. 238,11 ..a+azagaoa0a(a-a(a-bg 251,1 bz 253,7 bwbra,ataTa#a8 262,2 a$a/ 265,2 a$a/ 268,5 a/a-a3a0a2 274,1 a0 292,1 aW 309,1 ba 
+R97 21,1 a8 30,1 a( 32,1 a3 44,1 a0 47,1 a3 49,5 a8a7a,a>a( 55,1 a/ 58,1 a( 61,1 a8 63,18 a{bdbga{a&a2a&a{bva0a8a+a3aDagakaM.. 238,12 ..a3aDagaoa0a(a-a(a/a>a8 252,7 aWa8a^a0aTa#a8 261,7 a$a(a/a-a$a-a$ 269,2 a-a3 273,2 aWa0 281,3 aWaTaW 286,4 aTaWaTaW 296,2 aTaT 312,1 a> 316,1 aN 
+R98 23,1 a( 32,2 a3az 36,1 aT 47,1 a0 49,1 a3 51,6 a8a/a(a-a/a> 58,1 a/ 60,18 a(a$aWaxapaoasavavaDaVa2aVa0a3a3aEak 79,2 aM.. 238,12 ..a&aBagaoa3a(a$a^bka^aN 252,6 aoataMaFa8a- 262,2 a(a/ 266,7 a$a8a-a$a0aWaT 274,1 aW 292,1 aT 298,1 aP 316,1 aL 318,1 ag 
+R99 23,1 a[ 28,1 a8 35,3 aWaTaW 39,1 aW 41,1 aW 43,1 aW 48,9 aTa0a3a8a/a$a-a>a[ 58,8 babrbzbrbda>a$a8 67,3 a+a8a- 72,2 a$a3 76,5 aEamagaV.. 238,12 ..a3aBagaoa3a-a0a3bgbrba 251,1 bd 253,4 bgbkbzbM 258,7 bSbMbwbaa[a^a( 266,2 a$a8 269,5 a$a3a$aWaP 284,1 aT 286,1 aP 292,1 aT 317,1 ap 
+R100 23,1 a( 27,3 a8a$a/ 33,1 aC 35,1 aW 40,1 aW 43,1 aW 47,4 aWa[baa3 52,12 a-a(a/a{bzb-cFcNcXcNcMcK 66,1 cB 68,13 cFcBcwb{bSbaa-a+aEamakaV.. 238,7 ..a3aBagaoa8a^ 246,7 a>bMcmczcwcBcy 254,3 cFcKcC 260,7 cJcqbUbka-a8a$ 269,11 a8a0a{bka$aNaPaTaPaTaP 292,1 aT 
+R101 27,1 a3 46,7 a$brbka$a0a3a$ 54,8 a/bdb/cqb-bUbFbE 63,2 bwbE 66,15 bwbzbQbSb%cmcqbMa-a3aKamakaV.. 238,13 ..a&axaiaoa8a^a>b1cKb{bFbg 253,1 ba 256,5 a{a^babgbw 262,4 b7bra$a3 268,8 a8a3aWaTa0a^a{a0 277,1 aN 
+R102 24,1 a/ 43,6 aPa8bgbna(aW 50,10 a0a3a$a8a$a^bSbga^a` 61,1 bc 65,16 a`a|a:a+a:a-babSbza+a0aMamakaV.. 238,13 ..a3aBagaoa$a^a-b%b(a^a-a: 252,15 a+a?a:a|a:a?a:a?a:a(a^a{a3a0a8 268,11 a3a8aWaTaPaNa3a{a>aTaL 290,1 aP 293,1 aN 
+R103 41,13 aPa3a{bna/aWaTa0aWa0a3a8a3 55,2 a$ba 58,5 bmbCcicIcG 64,7 cIcqcIcvcibvba 72,3 bCbga2 76,5 aMamakaV.. 238,14 ..a&axaiasa8a^a&babga^a}bQcm 257,7 cvcIb?bma-a:a- 265,1 a0 269,2 a3aT 273,1 aP 275,6 aNa8baa-aPaN 289,1 aP 293,1 aN 295,1 aP 
+R104 33,1 aC 39,6 aNaTa{bra>aT 46,1 aW 49,5 aTaWa0a3aW 55,9 a0a^babmbQcWc#c,c# 65,6 c,c#c,cKbQbd 72,9 bna^a2a0aSamaiaV.. 238,27 ..a3aBagaoa7a-aVa&bda{bcb<c(c8c,c#c#c,c,c#cmbva-a7a-a4 266,4 aWa0a3a0 271,1 aP 274,7 aLaNaLaNa$a{a7 282,1 aN 289,1 aP 318,1 aF 
+R105 37,7 aPaTa>brbda0aP 45,4 aWaTaWaT 51,1 a0 53,10 aWaTa0a^babmb3cQc#c, 68,13 cKbQbvbabCa^a2a0aMamakaV.. 238,16 ..a&axaiaoa4a+aNa3bdbma^b?cXc,c, 256,11 c#c8c#cmbDa-a&a,a4aTaW 269,2 a0aP 277,6 aNaHaNa-a^a3 284,1 aN 289,1 aP 297,1 aN 
+R106 36,7 a-a[bkbga8aPaT 50,2 aWa0 53,5 aTaPaVa-bm 59,3 b6cWc# 64,2 c1c# 68,13 cFbMbgbabna^aVa2aHaoamaS.. 238,15 ..a3aBaiasaWa0aMa0bdbmbfb?cXc, 258,9 c#cmbDa-a4a#a4aTaW 269,2 a0aP 275,2 aNaL 278,1 aN 280,8 aHaWa{a^a0aTaPaT 290,2 aPaN 317,2 aoaC 
+R107 37,3 bka3aT 43,2 aVaP 49,1 aT 51,1 aW 53,2 aPaP 56,6 a-a{bfb6cWc# 68,10 cFb3baa{bga}aSaPaDam 79,2 aS.. 238,13 ..a&axagapaWa4aKaVbda{bfb? 258,9 c#cmbva:a4a8aWaTaW 268,3 a0a4aP 273,1 aN 280,6 aLaHaLa3bkbF 288,1 bz 291,4 bwbrbwbr 296,2 bwbr 299,1 a7 
+R108 37,1 aP 39,3 aVaTaP 43,2 aVaP 47,5 aVaPaTaVaW 53,2 aPaN 56,6 a-a^bfb$cRc# 64,3 c1c(c# 68,10 cFbQbga^bga:aMaVaCak 79,2 aS.. 238,15 ..a0avagaoaWa2aCaPbdbmbfccc1c, 258,9 c#cvbva+aWa#aWaPaT 269,2 a4aP 272,1 aN 288,3 aLaNaL 296,2 aMaM 300,3 a,a>a/ 
+R109 48,4 aVaPaTaW 53,2 aNaN 56,6 a-a^bfb$c2c# 64,3 c(c1c# 68,10 cKbQbdbmbga:aEaPazak 79,2 aM.. 238,5 ..a4avagao 244,7 a2axaMbdbma^cc 252,2 c#c, 256,14 c#c8c#cqbva+a4a7aTaPaTa4a0a4 272,1 aN 274,1 aL 284,1 aH 291,7 aLaMaLaMaLaMaH 
+R110 35,1 aP 37,6 aNaPaNaPaNaP 44,2 aNaP 51,11 aWaTaPaNaMa-a^bfb$c2c# 64,3 c1c+c1 68,10 cKbQa{bmbaa3aMaMaxak 79,2 aM.. 238,5 ..a4avagao 244,9 aVaxaMa{bmbmccc1c, 256,14 c#c,c#cGbCa#aWa4aTaNaTaWa4aW 272,1 aN 274,1 aL 286,1 aH 290,7 aLaMaHaLaMaLaM 
+R111 37,7 aNaSaPaMaPaNaP 51,12 aWaTaNaLaHa-a^a}b)cXc,c# 65,7 c,c#c-cKbQbaa^ 73,8 a0aDaSavakaiaM.. 238,9 ..a4avagaoaVaPataD 248,6 a^bfcic-c,c8 255,13 c,c8c-c8cGbva7aVa0aTaLaPa4 269,1 aW 271,1 aN 274,1 aL 286,1 aH 291,6 aLaMaNaPaNaM 304,1 a8 
+R112 35,1 aP 37,1 aN 43,1 aP 47,7 aNaPaNaPaTaWaL 55,7 aHa+a>a`bCb`ci 68,13 b`bCbgbfa-a!aKaSaxakagaM.. 238,9 ..a4aBakaoaSaMasaz 248,4 a^a:b$b{ 256,1 ci 258,9 ceb<a^a!aNa0aWaLaT 269,1 aW 273,1 aL 279,1 aH 282,1 aF 290,7 aHaKaNaVaPaMaL 
+R113 35,2 aPaN 51,3 aTaWaH 55,9 aCa!a-a!a!a2a!a!a& 67,1 a! 69,12 a:a:a:a-aVaKaSaxakagaM.. 238,17 ..a4aBakamaMaDaoava-a}a3a!a9a&a&a4 256,2 a4a* 259,8 a!a#a2aNa0aTaLaT 268,2 aWaT 271,1 aL 274,1 aH 282,1 aF 290,7 aHaKaHaMaNaLaK 
+R114 51,3 aTaWaH 55,5 aDaUa+aMaK 61,1 aM 63,1 aS 69,12 aMaKa&a:aUaMaPavakagaK.. 238,5 ..a4aBaiam 244,7 aMapasaMa8aVaK 254,3 aRaKaR 258,12 aMaKaRaSaUa4aTaHaPaWaTaW 271,1 aH 274,1 aF 276,1 aC 286,1 aF 294,2 aHaL 
+R115 51,7 aTaWaHaEaCaDaU 59,1 aS 62,1 aV 69,5 a2aVa!a2aM 75,6 aSaxagagaM.. 238,11 ..a4aBakamaNaVavatavaM 256,1 aS 260,7 aVaSaTa4aWaHaP 268,3 aTaPaH 274,1 aF 280,1 aC 286,1 aF 294,1 aH 296,2 aFaH 
+R116 36,3 aLaNaL 41,1 aN 47,1 aP 50,5 aNaTaWaEaE 56,1 az 58,1 aM 64,4 aRaSaMaS 69,3 aMaKaE 73,8 aFaMaPaBakacaM.. 238,12 ..a4aBaiakaLa0axavaxaEaM 255,3 aMaYaM 260,8 aKaSaTa4aWaNaPaT 269,2 aPaF 272,1 aC 274,1 aF 280,1 aC 286,1 aF 290,1 aH 294,1 aF 296,1 aC 
+R117 36,1 aL 41,1 aN 50,5 aLaPa0aMaC 56,4 azatasai 61,3 alanak 67,3 alavaB 71,10 axaDaFaNaVazaiafaM.. 238,8 ..a4aBaiakaLa7aK 249,6 atamagamarar 257,8 ananamaxaMaTaWaT 266,1 aP 269,2 aPaF 280,1 aC 286,1 aF 290,1 aH 294,1 aF 
+R118 36,1 aL 43,1 aN 50,6 aLaPa0aMaEaC 57,7 azatagaganawas 66,5 arakavaBaz 72,3 aJaMaV 76,5 azagacaM.. 238,9 ..a4aBaiakaMa3aMax 249,4 atamacas 256,7 awaranamazaPaV 264,1 aT 266,1 aP 269,2 aPaF 286,1 aC 294,1 aF 
+R119 36,1 aL 39,1 aH 41,1 aL 47,1 aN 50,6 aLaPa0aNaMaH 57,6 aEaxakalaya% 65,16 aVaIanavazaDaEaMaUaWaVaBaiaeaM.. 238,9 ..a4aBagakaLa7a2az 249,6 atamahaRa*a% 256,2 a<aI 259,2 araC 262,4 aPaVaPaN 269,2 aPaF 286,1 aC 294,1 aF 
+R120 35,2 aLaH 39,1 aL 48,1 aN 51,12 aPa0aPaTa$aMaHaCaoanaOa< 66,15 aBalavaFaKaLaSaTaVaPaBaiagaM.. 238,16 ..a0avagakaSa#a4aUaBavaxaoahaYa% 256,11 a<aQanasaKaPaUaPaUaNaN 268,2 aTaP 286,1 aC 290,1 aF 
+R121 35,2 aHaH 43,1 aL 48,1 aN 51,5 aPaWaPaNaP 57,7 aMaEaoanaOa|a< 66,4 aQanaBaP 71,3 aVaTaV 75,6 aPaxaiacaM.. 238,6 ..a4avagakaK 245,8 a7a4aMaBaxamajaQ 254,11 a<a~a<aYaqaraMaPaVaVaP 266,4 aNaPaWaP 286,1 aC 290,1 aF 297,1 aE 299,2 azaP 
+R122 48,1 aL 51,3 aNaWaP 57,15 aNaEaoanaXa<a|a<a|aQanaDaVa2aW 73,8 aTaVaPaBaiaeaM.. 238,6 ..a4asagakaF 246,8 a4aWaKaxarajaYa| 255,6 bia|aYanasaM 264,6 aPaPaSaPaWaP 286,1 aC 290,1 aF 297,4 aCazaCaP 
+R123 51,3 aNaWaP 57,6 aNaEaoanaXa| 65,6 a<aYanaDa2aT 72,9 aVaTaPaVaxaiacaM.. 238,27 ..a4aracaiaFa4a0a4a0aVaMasaja6a<a|bia|aYauasaNaTaVaTaP 266,4 aNaPaWaP 286,1 aC 290,1 aF 296,1 aE 
+R124 43,6 aKaHaKaHaKaH 51,4 aNaTaUaP 58,7 aMaralaXa|a~a| 66,5 aBanaDaWaT 75,6 aPatagacaM.. 238,17 ..a2aoafaiaFa4aWa4aWa4aTaxaja%a<bi 256,6 a|a5arasaNaV 263,1 aT 266,4 aNaTaWaT 272,2 aFaC 280,1 aF 286,2 aCaF 290,5 aHaKaHaKaH 296,1 aF 
+R125 34,1 aK 44,4 aKaHaKaH 51,4 aNaTaUaP 58,5 aMaralaQa| 64,6 a<a?aDanaEaT 75,6 aPatagacaM.. 238,7 ..a2asacaiaCaW 246,1 aW 249,4 a4azana. 255,9 bha|aYaravaNaVaWaT 265,5 aPaNaPaWaT 282,1 aF 287,1 aC 290,5 aHaKaHaKaH 297,1 aF 
+R126 36,1 aL 38,1 aL 40,2 aHaL 46,2 aMaL 51,2 aPaV 54,1 aP 58,5 aNaxaoamar 65,6 asaoamaKaWaT 75,6 aPavagacaM.. 238,6 ..a0aoafakaC 246,9 a4aWa4a3aPapavazaB 256,7 avaranataPaVaT 265,5 aPaNaPaTaP 275,1 aF 277,1 aH 288,1 aF 290,4 aHaKaHaK 297,1 aF 299,2 ataz 
+R127 38,1 aL 40,2 aHaL 43,4 aRaLaRaL 51,3 aNaTaP 59,4 aTa0a>a{ 64,4 a^a}a8aW 70,4 aVaTaWaT 75,6 aPavagacaM.. 238,13 ..a2asacaiaCaWa4aWa4aWa4a3 252,3 aWaTaV 256,4 aMaEaKaP 261,2 aVaT 265,6 aPaNaTaWaPaC 274,1 aF 280,2 aHaF 286,1 aH 288,1 aF 290,4 aHaKaHaE 296,2 aFaE 
+R128 36,2 aNaM 42,7 aNaSaLaNaMaNaM 50,7 aLaNaWaPaUaPaT 58,8 aVaTaWa-a>a+a7a- 67,4 a7a2aWaT 75,3 aPatae 79,2 aM.. 238,6 ..a2asaeaiaC 245,18 aWa4aWa4aWa4a,a^baa{a7aKa#a7aTaUaPaV 265,6 aUaSaTa2aPaF 287,5 aKaFaKaHaM 296,3 aKaFaF 
+R129 35,1 aF 37,12 aKaFaKaFaKaSaUaPaSaLaNaM 50,1 aL 52,5 aWaTaUaPaT 58,13 aPaVaTaUaMamacazaTaVaTaWaT 75,3 aPatae 79,2 aM.. 238,6 ..a2aoahaiaC 245,5 aWa4aWa4aW 251,9 a4a2aTaVaoacazaPaU 261,2 aPaV 264,8 aUaVaUaVaWaUaFaM 279,2 aKaF 286,5 aDaCazaDaE 292,1 aF 
+R130 38,3 bzbzbE 42,9 a-aVaUaNaSaLaNaMaL 52,4 aWaTaUaP 57,4 aTaVaTaV 62,9 aNamagaCaTaVaTaWaT 75,3 aPatae 79,2 aM.. 238,6 ..a2arahaiaC 245,7 aWa4aWa4aWa4a0 253,6 aWaVaoaeaCaP 260,1 aU 265,6 aVaUaVaWaUaJ 274,9 aKaLaMaMaNaUa/babd 285,1 bg 289,1 bk 293,6 bnbEbrbEbwbE 
+R131 34,1 bw 40,1 bM 42,4 a}aTaVaS 48,8 aNaSaNaLaWaTaUaT 58,12 aVaTaVaPaSamagaEaTaVaWaT 71,2 aWaT 75,6 aPataeaeaM.. 238,6 ..aVaraeaiaz 245,15 aWa4aWa4aWa4a0aWa2aPaoaeazaSaP 261,3 aVaWaU 266,6 aVaTa2aPaEaK 273,8 aMaLaMaNaMaSaWbr 283,2 bSbU 290,2 bSbU 
+R132 34,3 aSaNaM 38,3 aRaLaR 42,4 aUaVaVaU 48,1 aS 51,5 aNa2aVaUaV 57,2 aTaV 62,5 aNamaiaEa2 68,2 a2aW 75,6 aPataeacaM.. 238,6 ..aVanaeaiaC 245,1 aW 252,11 a4a2aSaoafaBaNaUaTa2aT 267,4 aVa2aSaE 277,1 aM 279,3 aSaKaJ 284,2 aKaR 287,5 aKaMaRaMaR 293,3 aMaRaL 
+R133 40,4 bQbra&aV 45,1 aU 48,1 aS 52,1 aV 57,2 aTaV 62,6 aNamaiaKa2aW 70,1 a0 75,6 aVaxaeacaM.. 238,7 ..aUanahaiaCaW 246,2 a4a! 250,17 a4a!a4a2aSamacaBaSaPaVaTa2aTaVa2aU 268,2 aVaS 279,3 aMa-bz 284,2 bQbF 287,5 bQbzbFbQbz 293,1 bQ 295,1 bz 301,3 a4aVaN 
+R134 35,1 a: 39,1 a, 41,3 a+a2aV 48,5 aUaSaUaUa2 54,1 aV 56,13 a2aVa2aVaTaVaSaoaiaMa2a2aW 70,4 a!a2a!a2 75,6 aWaxagaeaS.. 238,7 ..aUanahaiaCaW 246,15 a4a!a4a!a4a!a4a2aUaoaeaBaPaVaT 262,2 a2aT 265,1 a2 267,4 aVa2aSaM 272,11 aSaMaSaLaNaMaNaMaUaVaP 284,10 aPaSaPaUaSaNaPaUaUaN 295,3 aSaSaS 300,4 aSaWa2aN 
+R135 37,6 aRaMaSaMaSaV 50,1 aU 52,1 a2 54,6 aVa2aVa2aVa2 61,17 aTaSaoaiaLa2a2a4a!a4a!a4a!a2aWaxag 79,2 aS.. 238,6 ..aVanahakaF 246,12 a4a&a4a&a4a&a4a2aUaoagaB 259,8 aVaTa2aWa9aVa2aV 268,1 a2 270,2 aMaU 273,1 aU 275,3 aNaSaN 279,3 aSaLaK 283,3 aFaJaF 296,1 aE 
+R136 36,2 bvbg 39,9 bCbdbfa2aVa2aVa2aV 49,7 a2aVaUa&a!aVa2 62,6 aUamaiaSaWa! 71,1 a& 75,3 a2aBag 79,2 aS.. 238,13 ..a2aradaiaSa4a!a4a&a3a&a3 252,7 a!a2aVaoagazaV 261,2 a2a! 268,3 a2aUaM 279,2 aUa/ 283,1 bg 286,1 bk 289,2 bnbE 296,3 bnbEbn 
+R137 38,7 bQbMbQbEa4a9a2 46,5 a9a2a9a2aV 52,4 a+a4a2a! 62,6 aVamaiaSa4a! 70,1 a7 75,6 a2aBagalaS.. 238,13 ..a!aradaiaRa!a4a&a7a+a3a+ 252,6 a&a4aVaoahaD 262,3 a2a!a9 267,5 a2a4aUaSaV 274,1 aU 276,1 aV 279,3 aUbfbg 283,1 bk 288,2 bvbd 291,2 babm 297,1 ba 
+R138 37,6 a1aUa1aUaVa2 44,5 a9a2a!a9a! 50,7 a9aVa+a&a2a&a! 59,8 a&a!a&aVarakaSa& 71,10 a#a&a#a&a4aBagajaV.. 238,6 ..a&aradajaL 246,1 a& 248,2 a+a: 252,6 a+a&aVasajaD 259,3 a2a!a2 268,3 a!aVaS 277,1 aV 279,3 aUaSaK 284,1 aR 287,1 aR 290,1 aK 292,6 aHaKaKaRaJaK 299,5 axaNa2aPaS 
+R139 37,4 a9a!a9a! 48,2 a&a! 51,6 a9a]a=a2a&a. 59,10 a&a+a&a2arakaVa+a&a+ 72,9 a#a=a#a&aBaealaS.. 238,6 ..a+aradala1 245,4 a+a=a:a] 250,1 a: 253,8 a+a2asajaJa2a!a& 263,4 a!a&a9a! 268,3 a&aVa1 272,13 a1a9aVa9a2a9aVa9a4a&a#a&a# 286,9 a&a#a=a#a=a#a=a7a& 296,4 a#a&a+a& 
+R140 41,4 bQa=a*a. 48,8 a&a.a&a9a`a]a&a= 60,7 a:a+a!asana2a+ 71,4 a:a+a:a+ 76,5 aDalaiaV.. 238,8 ..a+arajalaVa+a: 247,1 a] 249,1 a] 251,7 a]a:a+a2asalaM 259,1 a! 264,1 a& 268,7 a&a9aVa2a9a2a9 276,2 a2a9 279,3 a2bnb6 283,2 bUb6 286,5 bUb$bUbSbU 292,1 b6 294,2 bSb6 
+R141 35,1 a} 37,1 a} 40,3 bfa}a] 44,1 a= 47,1 a= 49,7 a]a=a*a}a`a.a] 58,9 a`a]a`a:a&asana!a: 71,2 a`a: 76,2 aKai 79,2 a2.. 238,6 ..a+arajalaV 245,3 a:a`a} 249,1 a} 251,1 a` 253,5 a:a&awanaS 259,7 a&a.a=a&a=a&a! 267,4 a&a+a2a9 272,9 a9a!a2a9a2a9a2a9a2 282,1 a9 284,4 a2a1a2a1 289,8 a1a9a1aVa9a1aVa9 298,1 aR 
+R142 38,1 a! 40,3 a&a=a] 49,9 bba]a.a}bca=a_bbbb 59,1 a` 62,5 a+asara&a` 68,10 a}bca}bca}bca}a-aMal 79,2 a2.. 238,6 ..a:asajaqa2 245,1 a` 251,1 a} 253,6 a`a&awanaVa& 261,5 a=a,a=a+a! 267,2 a+a: 270,3 a2a&a! 274,1 a* 277,3 a!a*a! 281,3 a9a1a9 295,1 a1 
+R143 41,7 bmbba`a_bba`bb 49,9 bca`a.bfbja_a`bcbj 59,1 a} 61,20 a`a+awara=a}bcbfbpbfbpbfbpbfa}aSaiana2.. 238,11 ..a:awajaqa!a`a}bpbfbp 250,9 bfa}bja}a=awaqaVa+ 261,8 a]a:a]a:a&a+a`a: 270,2 a!a& 274,3 a.a&a. 278,3 a&a.bg 283,2 bFbQ 287,4 bFbQbMbQ 292,4 bMbQbMb3 297,1 bM 299,1 a} 
+R144 28,2 aVa0 37,1 b$ 41,7 bQbbbcbbbcbjbc 49,6 bja`a?bmbfbc 56,4 bpbfbubf 61,3 a}a:au 65,16 a]bfbpbfbubmbsbmbubmbfa1alama!.. 238,6 ..a:awahaqa* 245,1 bj 249,2 bfbu 253,6 bfa_ayara9a` 260,3 a}bba} 264,3 a`a=a: 268,1 a` 270,1 a* 273,2 a=a] 276,1 bc 279,5 bfbQb6bQb3 285,2 bQbQ 289,1 bC 291,4 bvbdbvbd 297,3 bmbaa9 
+R145 28,2 aVa0 41,2 bbbj 45,1 bp 48,9 bfbpbca_bmbubjbfbu 58,3 bvbubm 62,6 bcauaAbcbmbu 69,5 bvbDbvbDbv 75,3 bfa9aq 79,2 a2.. 238,9 ..a:asahaqa=bfbmbu 249,2 bubm 252,15 bubmbbayaqa&a}bcbfbjbcbja}a?a` 268,1 a} 270,3 a.a:a= 274,2 a]a` 279,2 bca` 282,10 a]a]a]a=a=a.a.a*a*a! 294,3 a9a4a9 298,1 a! 
+R146 28,5 aVa0a!aUa. 36,1 bb 40,4 bcbjbpbs 49,8 bmbsbhbvbDblbybD 59,5 bvbDbvbfaA 65,2 bfbD 68,2 bHbJ 74,1 bv 76,2 a*ak 79,2 a2.. 238,7 ..a-awahaua]bm 252,6 bDbmbjaGaqa& 259,3 bfbpbf 263,6 bpbja_a`bfbc 270,6 a=a`a:a_a:a: 279,4 a+a&a*a! 286,12 a&a.a&a&a&a=a7a=a&a*a7a* 
+R147 28,2 aPa4 41,4 bObubybD 50,7 bsbhbJbDbsbDbJ 61,6 bCbfaAaGbubJ 70,4 bWbObVbO 75,6 bva&alaqa&.. 238,6 ..a-awajaua` 246,1 bv 252,7 bCbDbfaGaqa=bf 264,1 bs 266,1 bc 268,8 bfa=a_a}bca}bca} 277,16 a`a`bmb6b1b)b1b)b1b)b1b$b1b)b1b$ 294,2 b1b$ 297,4 b1b)babj 
+R148 41,3 b0bDbJ 46,1 bJ 49,8 bRbDblbVbJbybRbV 60,8 bJbObuaAaGbHbVbW 69,3 b0bWb0 73,2 bWbO 76,5 a&aqara:.. 238,6 ..a`asajaAbc 245,1 bN 249,3 bVbJbO 253,6 bJbmaGaua`bu 264,8 bDbcbpbmbua_bcbs 275,1 bp 278,2 bjbf 283,1 bv 289,1 bu 291,3 bfbmbp 296,1 bf 
+R149 37,2 bybH 40,1 bH 42,7 bJbNbJbRbWbVbW 50,7 bNbsbObVbBbVb0 62,5 bvaGaXbHb0 68,1 b4 70,11 b#b4b#b4b3bOa=anawa:.. 238,7 ..a}asajaGbsbO 247,2 bWbO 251,12 b0bVbObDaGaubjbDbJbNbJbR 264,1 bJ 266,5 bsbJbDbbbl 273,2 bmby 276,1 bs 279,1 bl 283,1 bj 288,1 bb 290,1 bb 297,1 a] 
+R150 29,1 a4 37,7 bJbNbJbNbJbRbV 47,1 b0 50,9 bRbBb4b0bDbZb4b#b& 60,1 b3 62,6 bJaOaXbRb4b& 69,3 b,b*b* 73,8 b&b3b4a`aqaAa`.. 238,6 ..a^awajaGbs 245,2 b4b4 250,1 b& 253,6 b4bJaXaAbpbJ 263,4 bWbObsbB 268,4 bJbhbsbv 275,1 bD 280,1 by 282,1 bs 285,1 bp 297,1 bb 
+R151 30,1 a7 37,1 bR 39,1 bV 41,1 bW 44,1 b0 46,1 b5 48,10 b4b#bVbLb#b0bLb5b&b, 62,7 bOaOaXbZb*b,b; 73,8 b:b*b6bjaqaAbc.. 238,8 ..bfawajaGbDb3b# 249,1 b, 252,8 b&b#bVaXaAbBb0b5 262,9 b4b5b0bBbDbWbVbjby 272,1 bJ 275,6 bNbDbHbDbHbD 282,1 by 285,1 bu 289,1 bp 296,2 bcbb 
+R152 26,3 a9aWa2 34,1 bN 36,1 bV 38,1 bW 40,3 b0b0b5 44,2 b4b& 49,8 b,b0bLb&b5bLb&b; 60,1 b: 62,9 b0aXa5bZb;b;b[b;b^ 74,7 b[b$bsauaGbc.. 238,6 ..bvawajaObJ 245,1 b* 251,7 b;b:b,bWa5aAbL 259,2 b#b* 262,1 b, 264,12 b&bDbLb0bObtbHbWbVbRbVbR 278,1 bN 280,1 bH 282,3 bDbHbD 289,2 bubs 294,1 bp 296,1 bj 301,1 bp 
+R153 28,1 a4 36,1 bW 38,1 b0 40,4 b5b5b4b& 45,2 b*b, 50,8 b5bRb*b&bRb.b:b^ 61,3 b[b4a5 65,3 b!b;b^ 69,2 b}b_ 72,2 b}b_ 75,6 b)byaAaObl.. 238,7 ..bvawajaObOb; 249,2 b^b_ 252,8 b^b[b5a5aAbRb*b: 263,4 b;b&bRbD 268,3 b4bsbJ 272,1 b0 275,1 bW 278,6 bVbRbNbJbNbJ 285,1 bH 288,1 bD 290,1 by 292,5 bybsbpbubf 
+R154 37,2 b5b5 41,6 b&b&b*b.b,b; 50,10 b!bZb;b&bYb;b^b_b}b_ 62,2 b3a5 65,2 b+b_ 69,1 b~ 71,3 b}cdb~ 75,6 b[buaAaObm.. 238,7 ..bCanajaOb4b) 246,1 b_ 248,12 b}b~b}b~b}b_b*aXaAbZb:b[ 263,2 b^b; 266,6 bRb&b3bBbWb4 276,1 b5 281,1 bV 283,2 bRbJ 286,1 bN 288,1 bH 291,4 bDbBbybu 296,2 bmbs 
+R155 34,1 bW 37,4 b5b4b#b& 42,1 b* 44,1 b; 48,11 b[b^b!bZb^b*bZb;b}cdb} 62,5 b*a)a)b.b~ 71,2 clcg 74,7 cgb?bDauaXbm.. 238,7 ..bCaAalaXb4b_ 246,1 b} 251,1 cd 253,6 b~b*a)aAb0b; 260,1 cf 263,4 b}b^bZbR 268,4 b*bDb0b& 275,1 b# 278,2 b5b0 283,1 bW 285,2 bVbR 289,2 bNbL 295,3 bDbBbu 
+R156 29,1 a: 32,1 bb 35,1 b0 37,2 b#b& 40,1 b, 43,1 b; 45,16 b]b[b]b^b_b.bZb^b;bZb]cdcjcdclcd 62,8 b*a)a5b&cdcdclcl 74,7 cgb~buaqaXbC.. 238,7 ..bOaAaqaOb#b_ 247,5 cdclcgclcg 253,8 cdb*a5aOb!b^b}cd 262,1 cd 264,3 b}bZbZ 268,3 b:bLb4 272,1 b* 274,1 b& 278,1 b# 282,2 b5b0 286,4 bVbRbVbJ 291,1 bR 293,3 bJbDbH 299,3 bcbBbu 
+R157 28,1 a: 30,1 a` 32,2 bcb0 35,2 b5b# 38,1 b, 41,1 b; 44,5 b^b]b_b^b} 50,8 b,b!b}b]bZb^cdcl 59,2 cgcg 62,7 b*a;aXb.cdcgcl 71,1 cs 73,8 clcnb?bBauaXbC.. 238,8 ..bEaAaqaOb#b}cd 248,2 clcn 251,1 cl 253,6 cgb:a5aXb&b_ 261,11 cdclcdb~b!bZb[b:bRb#b: 273,1 b* 276,2 b,b& 281,1 b# 283,5 b5b0bWbZbW 291,1 bV 293,1 bR 295,2 bNbN 299,1 bj 
+R158 28,3 a:a-a} 32,1 bj 34,1 b0 36,2 b#b, 40,1 b; 43,1 b^ 45,2 b_b} 49,9 cdb;bZb}b^bZb^clcl 60,1 cg 62,5 b:a;a)b.cg 68,3 clcscn 72,9 cscnclcgbDaua5bC.. 238,8 ..bOaAaqaOb,cdcg 251,8 cnclcnb[a5aXb&b} 262,9 clclcdb#bZb^b<bRb* 272,1 b: 274,1 b; 279,1 b, 283,1 b# 285,1 b5 288,2 b0bZ 291,1 bW 293,2 bVbR 297,3 bRbJbD 301,3 bya<a+ 
+R159 29,1 a} 32,4 bfb#b4b# 38,1 b; 41,2 b]b^ 44,1 b} 46,14 b~cjb~cdb]b!b}b^bZb}clcsclcn 62,7 b[a~a5b;cgcncs 74,7 cncgbJaAa5bO.. 238,9 ..bOaAaqaOb*cgclcn 248,2 cscn 251,4 cscscnb^ 256,3 a5b,cd 261,1 cs 263,4 clcgb&bZ 268,4 b_bZb*b^ 273,5 b[b;b]b:b; 281,1 b, 283,1 b& 285,3 b#b5b! 289,1 b5 291,2 b5bV 296,2 bVbR 301,1 bp 
+R160 32,1 bu 37,1 b; 40,4 b:b[b^b} 46,1 b~ 48,1 cd 50,10 b;b!cdb^b!b}clcscncs 61,6 cnb[a;a)b]cg 68,1 cs 72,3 cucscn 76,5 bJaAa5bE.. 238,10 ..bQaAaqaOb:cgclcscn 251,9 cscscnb^a)a5b*cgcl 264,7 clb&b5b_b<bZb* 274,6 b^b[b]b:b]b; 283,2 b,b& 287,1 b# 292,3 b5bZb0 298,1 bW 
+R161 32,1 bu 37,1 b; 40,2 b[b^ 43,1 b} 45,3 b~cdb~ 49,9 cdb]b!cdb^b!cdclcs 59,8 cncscnb[a;a)b[cl 68,1 cs 70,5 cAcscAcscn 76,5 bJaAa5bO.. 238,8 ..b0aGaqaOb:cgcl 248,1 cs 250,1 cn 252,7 cscgb^a)a5b*cl 262,10 cscsclb&b5b}b_bZb;b^ 273,1 b_ 275,1 b^ 277,1 b[ 281,1 b; 284,2 b,b& 289,1 b# 295,2 b0bZ 
+R162 28,1 a: 36,1 b; 38,6 b]b;b^b[b^b} 46,1 cd 50,17 b:bZcdb;b!cdclcncscncscnb[a;a)b]cn 69,4 cAcscAcs 74,1 cn 76,5 bRaAa5bO.. 238,9 ..b4aAaqaOb:cgclcn 248,2 cncs 251,4 cncscnb[ 256,3 a5b;cg 263,9 csclb,bZb^b)bZb[b^ 274,1 b^ 276,7 b^b[b;b:b;b:b; 284,3 b,b.b, 289,4 b&b#b5b# 294,1 b5 296,1 b5 
+R163 28,1 a, 38,3 b]b:b^ 43,2 b_b} 47,9 b~cdcgcdb;bZbob.cd 57,4 cnclcscn 62,5 b[a;a)b]cg 68,1 cs 74,7 cncnbJaAa5bO.. 238,9 ..bQaOaqaOb:cgclcn 249,10 cscncscscnb[a)a5b;cg 261,9 csclcsclb[a~bib&b^ 274,2 b_b^ 278,1 b[ 280,5 b;b:b:b,b* 287,1 b, 290,1 b& 292,3 b#b4b# 297,1 b5 
+R164 38,2 b[b] 44,1 b_ 47,12 cdcncgb,bRbYb.b}cgclclcn 60,9 clcgb[a;a)b]cgclcs 71,1 cu 73,8 cscncgbHauaXbC.. 238,7 ..b4aAaqaOb#cd 246,1 cg 249,1 cn 252,6 cncgb^a)aXb* 259,1 cg 264,9 cgcdb_bYbibIb;b<b} 275,1 b_ 277,4 b[b:b[b; 282,4 b;b:b,b: 288,4 b*b&b#b& 293,3 b#b4b# 
+R165 35,1 b: 38,1 b[ 40,1 b^ 44,6 b_b~cgcdb,bI 51,5 b&b^b<b}cd 59,2 cgcg 62,5 b[a;a5b;cl 69,5 cncscncscn 75,6 b`bBauaXbO.. 238,8 ..bQaAaqaOb4b~cd 250,10 cgclclcgb:a;aXb*b~cd 261,3 cgclcg 267,9 cdb;bAa~bBb*b~b<b} 278,1 b^ 281,1 b: 291,1 b* 296,1 b# 298,4 b4b#bua` 303,1 a` 305,2 aJaB 
+R166 35,4 b:b;b:b^ 43,9 b~cgcdb4bIbLb4b^b_ 54,1 b} 56,1 cd 58,1 cd 62,6 b:a)a5b.cdcg 69,12 clcgcsclcncgb~byaAa5bC.. 238,7 ..b0aAaqaOb4b~ 246,2 cdcg 252,10 clcgb*a)aXb3b}b~cdcg 265,1 cd 268,12 cdb}b,bAa)bLb^cgcdb<b^b^ 285,1 b: 292,3 b*b#b* 299,2 b3bH 
+R167 29,1 a> 34,1 b^ 37,15 b_b}b~b}b~cdb~b4bBbLb!b^b<b^b_ 56,1 b~ 58,1 cd 60,1 b~ 62,5 b:a)a5b.cd 68,1 cg 73,1 cg 75,6 b?byaAa5bC.. 238,7 ..bOaAaqaGb0b} 246,2 b~cd 249,2 cdcg 252,7 cgcdb*a5aOb4b^ 263,4 b~cdb}b~ 270,9 b}b_b&bia~bJb^cgb~ 282,1 b_ 287,1 b[ 290,1 b[ 296,4 b:b*b*b6 301,1 bb 303,1 a} 305,2 aQaJ 
+R168 29,1 bf 31,1 a] 35,2 cgcd 41,7 b:b0bIbLb&b^b_ 50,2 b}b_ 54,1 b} 57,4 b~cdb}b~ 62,6 b*a;aXb.b~cd 69,1 cg 75,6 b?btaua5bC.. 238,9 ..bOaGaqaOb5b_b}b} 249,1 cd 251,9 b~cdb~b*a)aOb0b:b_ 266,1 b} 268,14 b_b^b_b^b_b^b!bia<bRb3b_cgb` 285,1 b~ 287,2 b?b~ 290,1 b? 293,5 b<b_b<b_b_ 
+R169 29,1 a- 31,1 bp 34,1 bt 36,1 bB 38,1 bB 42,3 bRb&b^ 46,1 b^ 55,1 b} 58,1 b~ 60,9 b}b~b*a;aXb&b}b~cd 70,1 cg 75,6 b<byauaXbv.. 238,7 ..bOaGaqaOb5b^ 247,1 b_ 250,11 b~b}b~b_b*a5aOb0b:b[b^ 262,8 b_b^b_b^b_b^b_b[ 271,2 b^b[ 274,7 b^b:b0bia~bhbo 286,3 btbobl 295,1 bo 297,3 bobja] 
+R170 33,1 b4 35,1 b0 37,1 b5 40,3 b4b*b[ 44,1 b^ 49,1 b_ 52,1 b} 55,14 b~b}b~b}b~b}b~b*a;aXb!b~b~cd 71,10 cgcdcgb~b<bsaAaXbv.. 238,7 ..bJaAaqaOb5b: 246,16 b^b_b}b}b~b}b~b_b#a)aObWb:b:b_b^ 263,4 b^b_b_b^ 268,3 b_b[b^ 274,1 b[ 276,3 b[b$b& 281,4 b0b0bVbW 293,1 bV 295,2 bRbJ 304,1 a] 306,1 aB 
+R171 34,1 b* 36,8 b,b:b*b;b:b;b:b[ 50,3 b_b^b_ 56,3 b}b_b} 60,1 b_ 62,5 b*a%aXb.b_ 68,1 cd 70,1 cd 74,7 b~b<bpaua5bv.. 238,7 ..bJaAaqaOb0b: 246,1 b[ 248,1 b^ 250,2 b_b} 253,6 b_b#a5aObWb* 260,1 b: 264,2 b[b: 267,1 b[ 275,2 b:b* 282,3 b*b&b* 287,2 b&b& 291,1 b# 294,2 b4b# 297,2 b5b4 300,1 a* 304,1 a, 
+R172 29,3 a`a^bh 34,1 b4 36,4 b,b,b,b* 42,3 b;b*b; 46,1 b: 51,2 b[b: 54,16 b[b:b[b:b[b;b:b[b3a~aOb&b<b}b~cd 73,1 cg 75,6 b_byaGa5bv.. 238,6 ..bCaAaqaXbO 245,4 b:b[b:b[ 250,8 b[b_b_b[b4aXaObR 261,1 b: 275,5 b*b&b&b#b& 282,1 b4 284,1 b4 287,1 b5 292,2 bWb5 295,3 bWb0bW 299,1 a1 302,1 a} 304,1 a] 
+R173 36,2 b4b# 51,4 b*b,b;b, 56,2 b:b; 61,6 b:b&a;aXb&b} 69,1 cd 72,2 cdb~ 75,6 b<byaGa)bv.. 238,7 ..bvaGanaObOb$ 246,1 b[ 248,3 b[b[b[ 252,6 b^b[b4a5aXbR 261,1 b# 263,2 b&b3 266,5 b&b*b3b&b* 272,4 b&b3b&b4 280,5 b0bZb0bZbW 287,1 bZ 292,1 bW 
+R174 27,1 a} 33,1 bW 35,1 bO 46,1 b# 48,7 b4b&b3b&b3b&b* 59,1 b; 61,7 b*b4a;aXb!b<b~ 75,6 b<byauaQbc.. 238,6 ..bcanajaAbJ 245,2 b:b: 248,2 b[b^ 253,6 b[b0aXaObYb3 261,2 b#b& 265,1 b# 267,1 b5 272,1 b4 274,2 b5b0 277,5 bZbRbZbRbZ 283,3 bZbRbN 287,2 bNbL 
+R175 29,1 bc 34,3 b?b)b` 47,3 cccicc 54,4 b`ccb`cc 59,3 b`ccb` 63,8 b<b)b`cnb`ccb`cc 73,1 cc 75,7 b`b)bObQb)cm.. 237,4 ..cib$bE 242,2 bQb< 248,1 b` 251,7 b`b?b`b<bObQb< 262,1 b? 271,1 b< 273,1 b? 279,1 b< 289,2 b?b< 
+R176 35,2 cMcQ 45,3 cFcQcB 66,1 cz 70,2 cvcG 73,1 cv 75,1 cG 77,1 cF 79,2 cGcG 82,5 cFcGcFcBcQ 88,5 cGcFcBcQcB 95,5 cQcBcQcFcQ 101,1 cK 103,1 cQ 105,1 cK 107,1 cQ 109,2 cKcQ 114,1 cK 116,1 cQ 184,2 c2cM 237,6 cGcvcGcBcGcB 248,1 cG 253,4 cGcBcGcF 263,4 cBcFcBcF 273,1 cB 275,1 cB 291,1 cR 294,4 cQcWcKcB 
+R177 32,1 bh 45,1 bD 50,1 by 52,18 bDbubDbubybDbmbybvbubvbubvbubDbubvbD 71,4 bmbDbDbm 81,1 bJ 83,2 bCbJ 86,2 bvbJ 89,1 bJ 92,3 bCbJbC 96,1 bC 99,4 bOb0bObQ 104,3 b0bObQ 108,2 b0bQ 111,2 bQb0 116,1 bQ 180,1 b$ 185,1 b6 238,1 bC 247,1 bC 251,1 bC 255,1 bJ 272,3 bDbvbJ 276,1 bJ 278,1 bC 283,3 bJbvbJ 290,5 bvbCb`cWcF 298,2 a&a. 
+R178 31,2 bbaX 41,1 ci 44,1 bv 46,2 b3b3 56,2 bmbs 66,3 bmbsbm 71,2 bmbs 78,1 bm 81,5 bfbsbpbfbs 91,4 bsbmbsbm 96,1 bu 100,1 bD 102,7 bHbubHbubHbubH 110,1 bH 112,1 bv 115,2 bJbD 232,1 bJ 235,3 bvbvbJ 239,7 bDbJbDbvbDbvbD 247,2 bDbv 253,1 bD 256,9 bDbBbmbsbfbsbpbubf 266,6 bsbfbubsbubf 276,4 bmbDbvbJ 282,1 bC 296,1 bC 299,1 bc 301,1 a^ 
+R179 56,1 b< 81,2 b`b? 85,1 b` 104,2 ccb` 107,3 ccb`cc 114,1 b` 232,2 b`cc 253,3 b?b`b? 257,4 b`b?b`b? 265,1 b` 271,1 b` 280,1 b` 295,2 arau 301,2 bmbf 

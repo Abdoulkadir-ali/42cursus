@@ -1,0 +1,190 @@
+# 🖌️ UI & Primitive Drawing Library (`srcs/engine/render/draw`)
+
+![Subsystem](https://img.shields.io/badge/Subsystem-UI_&_Primitives-1f6feb?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Detailed-success?style=for-the-badge)
+
+---
+
+## 🚧 Subsystem Boundary
+> [!NOTE]
+> **Trigger:** Called by the scene assembler during the final overlay phase of the rendering pipeline.
+> 
+> **Output:** Renders non-perspective elements like the HUD, crosshair, and performance metrics over the world view.
+
+---
+
+## ✅ Responsibilities & ❌ Anti-Responsibilities
+- **Must:** Provide low-level primitive drawing (lines, squares, circles).
+- **Must:** Render the Heads-Up Display (HUD) including health, ammo, and maps.
+- **Must:** Implement a real-time FPS counter for performance monitoring.
+- **Must:** Draw the static crosshair at the center of the screen.
+- **Must Not:** Perform raycasting (delegated to `render/raycasting/`).
+- **Must Not:** Handle input events (delegated to `window/`).
+
+---
+
+## 🔄 Drawing Pipeline
+```mermaid
+graph LR
+    A[World Render Ready] --> B[Draw HUD Layout]
+    B --> C[Overlay Crosshair]
+    C --> D[Calculate & Print FPS]
+    D --> E[Final Image Push]
+```
+
+---
+
+## 🧬 Drawing Utilities Matrix
+| Feature | Implementation | Notes |
+| :--- | :--- | :--- |
+| **HUD** | `hud.c` | Manages the layout of all persistent UI elements. |
+| **Crosshair** | `crosshair.c` | Static overlay centered on the viewport. |
+| **Primitives** | `line.c` / `square.c` | Generic tools for drawing shapes in the buffer. |
+| **Metrics** | `fps.c` | Calculates frame-time and updates the display counter. |
+
+---
+
+## ⚠️ Edge Cases & Gotchas
+> [!IMPORTANT]
+> **Resolution Independence:** UI elements should ideally be calculated relative to the window dimensions to ensure they remain legible across different screen sizes.
+
+---
+
+## 🗂️ Files Inventory
+| File | Primary Function | Role |
+| :--- | :--- | :--- |
+| `put.c` | `my_mlx_pixel_put()` | Optimized buffer write utility. |
+| `hud.c` | `render_hud()` | High-level UI orchestration. |
+| `fps.c` | `render_fps()` | Real-time performance tracking. |
+| `line.c` | `draw_line()` | Bresenham-like algorithm for primitive lines. |
+
+---
+
+## 🚧 Subsystem Boundary
+> [!NOTE]
+> **Trigger:** Called for each visible sprite after depth sorting and projection calculations.
+> 
+> **Output:** Pushes shaded and alpha-blended pixels directly to the primary image buffer.
+
+---
+
+## ✅ Responsibilities & ❌ Anti-Responsibilities
+- **Must:** Handle 1-bit alpha transparency (XPM mask colors).
+- **Must:** Perform vertical texture sampling for scaled sprite columns.
+- **Must:** Respect the Z-Buffer to prevent sprites from rendering through walls.
+- **Must Not:** Sort sprites (delegated to `sprites/sort.c`).
+- **Must Not:** Calculate world-to-camera transformations (delegated to `sprites/pos.c`).
+
+---
+
+## 🔄 Pixel Processing Pipeline
+```mermaid
+graph TD
+    A[Sprite Column Data] --> B[Z-Buffer Check]
+    B -- Occluded --> C[Skip Pixel]
+    B -- Visible --> D[Sample Texture UV]
+    D --> E{Alpha Mask?}
+    E -- Yes --> C
+    E -- No --> F[Apply Shading/Light]
+    F --> G[Push to Image Buffer]
+```
+
+---
+
+## 🧬 Rendering Logic Matrix
+| Feature | Implementation | Notes |
+| :--- | :--- | :--- |
+| **Alpha Blending** | Color Thresholding | Detects specific "transparent" hex codes in XPM data. |
+| **Z-Occlusion** | Depth Comparison | Compares sprite distance vs wall distance stored in Z-buffer. |
+| **Scaling** | Fixed-point sampling | Optimized for performance on CPU-based rendering. |
+
+---
+
+## ⚠️ Edge Cases & Gotchas
+> [!CAUTION]
+> **Precision Artifacts:** When sprites are extremely close to the camera, texture sampling must use guarded indices to prevent buffer overflows at the top/bottom edges of the screen.
+
+---
+
+## 🗂️ Files Inventory
+| File | Primary Function | Role |
+| :--- | :--- | :--- |
+| `render.c` | `draw_sprite_pixel()` | Core inner loop for sprite pixel pushing. |
+| `utils.c` | `get_sprite_tex()` | Helper for UV coordinate translation. |
+
+---
+
+## 🚧 Subsystem Boundary
+> [!NOTE]
+> **Trigger:** Orchestrated by `core/main.c`, this subsystem drives the entire game lifecycle through the MLX loop hooks.
+> 
+> **Output:** A fully processed and rendered game frame, incorporating physics resolution, entity animations, and pseudo-3D raycasting.
+
+---
+
+## ✅ Responsibilities & ❌ Anti-Responsibilities
+- **Must:** Orchestrate the high-level flow: Update -> Render -> Display.
+- **Must:** Synchronize world state between the physics and animation layers.
+- **Must:** Optimize the rendering pipeline using the SAH BVH and spatial partitioning.
+- **Must:** Manage global engine resources (texture caches, global timers).
+- **Must Not:** Directly handle OS-level windowing (delegated to `window/`).
+- **Must Not:** Perform raw map parsing (delegated to `helpers/parser/`).
+
+---
+
+## 🔄 Engine Orchestration Pipeline
+```mermaid
+graph TD
+    A[MLX Loop Hook] --> B[Physics Tick]
+    B --> C[Animation Update]
+    C --> D[Render Scene]
+    D --> E[Draw UI / HUD]
+    E --> F[MLX Push Buffer]
+    
+    subgraph Physics
+        B1[DDA Traversal]
+        B2[Collision Resolution]
+    end
+    
+    subgraph Render
+        D1[Raycasting]
+        D2[Sprite Sorting]
+        D3[Floor/Ceiling]
+    end
+```
+
+---
+
+## 🧱 Sub-Modules Matrix
+| Module | Primary Responsibility | Documentation |
+| :--- | :--- | :--- |
+| **`physics/`** | Movement, DDA, and Collision resolution. | [README](physics/README.md) |
+| **`animation/`** | Sprite rendering and entity state management. | [README](animation/render/README.md) |
+| **`optimization/`** | SAH BVH build and spatial queries. | [README](optimization/README.md) |
+| **`render/`** | High-level scene assembly and UI drawing. | *Internal* |
+
+---
+
+## 🧠 Global Engine Strategy
+The engine follows a strict **Command & Control** pattern:
+- **`engine.c`** (or `render_frame`) acts as the conductor, calling into specialized sub-modules in a specific order to ensure that collisions are resolved before animations are calculated, and animations are ticked before the final render.
+- **Data Persistence**: Shared state like the **Z-Buffer** is generated during wall-casting and passed to the sprite-rendering module to handle occlusion.
+
+---
+
+## 🛡️ Memory & Resource Philosophy
+> [!IMPORTANT]
+> **Asset Lifecycle:** Textures and animation clips are shared resources managed via the `tex_cache`. They are loaded once at startup and reused across all entities to minimize memory footprint.
+
+> [!CAUTION]
+> **Thread Safety (Ready):** The engine is designed with a "Read-Only" render phase, meaning the world state is locked while the raycaster is walking the BVH, preparing the foundation for future multi-threaded optimizations.
+
+---
+
+## 🗂️ Files Inventory
+| File | Role |
+| :--- | :--- |
+| `render/` | Handles the visual output (Raycasting, Sprites, HUD). |
+| `physics/` | Handles the spatial logic (DDA, Collisions). |
+| `animation/` | Handles dynamic world entities. |
+| `optimization/` | Spatial acceleration structures (SAH BVH). |

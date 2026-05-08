@@ -1,0 +1,46 @@
+#Packages
+packages/minilibx-linux
+objs/
+ignore/
+digest.txt
+*.txt
+__pycache__/
+
+# Compilation
+objs/
+*.o
+*.d
+
+# Binaries
+cub3D
+a.out
+
+# Libraries
+*.a
+packages/libft/libft.a
+
+# Editor directories
+.vscode/
+.idea/
+.settings/
+*.swp
+*~
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Misc
+digest.txt
+subjects/
+*.log
+valgrind-out.txt
+*.md
+!README.md
+42_header.txt
+
+callgrind*
+objs/
+
+cub3d-tester
+cub3D_tester
