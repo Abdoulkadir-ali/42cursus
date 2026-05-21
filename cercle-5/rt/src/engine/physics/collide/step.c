@@ -46,13 +46,7 @@ void	phys_step(t_app *app, float dt)
 			fprintf(stderr, "Physics: skipping neighbor collisions due to bin_bodies failure\n");
 		}
 	}
-	i = 0;
-	while (i < app->phys.n)
-	{
-		if (app->phys.bodies[i].active)
-			collide_planes(app, &app->phys.bodies[i]);
-		i++;
-	}
+	collide_planes_all(app);
 	if (push_back_to_scene(app))
 	{
 		bvh_refit(&app->bvh, app->scene.bvh_objs);

@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 17:25:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/05/02 17:11:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/05/08 18:41:34 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,55 @@ void	collide_planes(t_app *app, t_body *b)
 		}
 		i++;
 	}
+}
+
+static void	planes_chunk(void *data)
+{
+	t_planes_job	*j;
+	int				i;
+
+	j = (t_planes_job *)data;
+	i = j->start;
+	while (i < j->end)
+	{
+		if (j->app->phys.bodies[i].active)
+			collide_planes(j->app, &j->app->phys.bodies[i]);
+		i++;
+	}
+}
+
+void	collide_planes_all(t_app *app)
+{
+	int	n;
+	int	w;
+	int	chunk;
+	int	i;
+
+	n = app->phys.n;
+	w = app->pool.tpool.n_workers;
+	if (n < 32 || w <= 1)
+	{
+		i = 0;
+		while (i < n)
+		{
+			if (app->phys.bodies[i].active)
+				collide_planes(app, &app->phys.bodies[i]);
+			i++;
+		}
+		return ;
+	}
+	chunk = (n + w - 1) / w;
+	i = 0;
+	while (i < w)
+	{
+		app->phys.planes_jobs[i].app = app;
+		app->phys.planes_jobs[i].start = i * chunk;
+		app->phys.planes_jobs[i].end = i * chunk + chunk;
+		if (app->phys.planes_jobs[i].end > n)
+			app->phys.planes_jobs[i].end = n;
+		if (app->phys.planes_jobs[i].start < n)
+			tpool_submit(&app->pool.tpool, planes_chunk, &app->phys.planes_jobs[i]);
+		i++;
+	}
+	tpool_wait(&app->pool.tpool);
 }

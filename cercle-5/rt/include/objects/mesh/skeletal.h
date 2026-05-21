@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 02:26:18 by abdoali           #+#    #+#             */
-/*   Updated: 2026/05/02 17:11:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/05/08 18:41:30 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define SKELETAL_H
 
 # include "maths.h"
+# include "threads.h"
 # include <stdbool.h>
 
 typedef struct s_animation_settings
@@ -88,6 +89,15 @@ typedef struct s_anim_prim
 	t_vec3			color;
 }					t_anim_prim;
 
+struct s_reskin;
+
+typedef struct s_reskin_job
+{
+	const struct s_reskin	*c;
+	int						start;
+	int						end;
+}	t_reskin_job;
+
 typedef struct s_animator
 {
 	t_anim_node	*nodes;
@@ -109,8 +119,9 @@ typedef struct s_animator
 	float		pre_scale;
 	t_mat4		extra;
 	int			has_extra;
-	float		*joint_mats;
-	int			max_joints;
+	float			*joint_mats;
+	int				max_joints;
+	t_reskin_job	reskin_jobs[MAX_THREADS];
 }				t_animator;
 
 typedef struct s_reskin
@@ -124,18 +135,8 @@ typedef struct s_reskin
 
 typedef struct s_subdets
 {
-	float	up_01;
-	float	up_02;
-	float	up_03;
-	float	up_12;
-	float	up_13;
-	float	up_23;
-	float	lo_01;
-	float	lo_02;
-	float	lo_03;
-	float	lo_12;
-	float	lo_13;
-	float	lo_23;
+	t_vec3	up[2];
+	t_vec3	lo[2];
 }			t_subdets;
 
 /* Column-major 4x4 matrix macros.
@@ -171,7 +172,7 @@ t_vec4		skel_q_slerp(t_vec4 a, t_vec4 b, float t);
 void		skel_compute_world(t_animator *a);
 void		skel_reset_to_bind(t_animator *a);
 void		skel_apply_clip(t_animator *a);
-void		skel_reskin_all(t_animator *a, struct s_scene *s);
+void		skel_reskin_all(t_animator *a, struct s_scene *s, struct s_tpool *tp);
 t_vec3		skel_skin_vertex(const t_animator *a, const t_anim_prim *p, int v);
 void		skel_build_palette(t_animator *a, int skin_idx);
 

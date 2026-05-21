@@ -13,7 +13,6 @@
 #ifndef RAYTRACING_H
 # define RAYTRACING_H
 
-# include <immintrin.h>
 # include <stdbool.h>
 # include "maths.h"
 # include "physics.h"
@@ -157,7 +156,6 @@ int		bvh_build(t_bvh *bvh, t_object *objs, int n);
 void	bvh_free(t_bvh *bvh);
 void	bvh_refit(t_bvh *bvh, const t_object *objs);
 int		hit_one(const t_object *o, const t_ray *r, t_hit *h);
-int		hit_triangle_sse(const t_tri_soa4 *t, const t_ray *r, t_hit *h);
 int		bvh_traverse(const t_bvh *bvh, const t_ray *r, t_hit *out,
 			const t_object *objs);
 int		bvh_occluded(const t_bvh *bvh, const t_ray *r, float max_t,
@@ -165,5 +163,7 @@ int		bvh_occluded(const t_bvh *bvh, const t_ray *r, float max_t,
 int		bvh_rebuild(struct s_app *app);
 void	bvh_prepare_simd(t_bvh *bvh, const t_object *objs);
 void	assign_node_soa(t_bvh *bvh, const t_object *objs, t_bvh_node *node);
+
+# include "simd.h"
 
 #endif

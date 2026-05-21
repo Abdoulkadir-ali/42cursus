@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 18:47:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/05/02 17:17:28 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/05/08 18:41:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "maths.h"
 # include "scene.h"
 # include "shapes.h"
+# include "threads.h"
 # include <stdbool.h>
 
 typedef struct s_physics_settings
@@ -42,6 +43,31 @@ typedef struct s_body
 	int		sleep_frames;
 }			t_body;
 
+struct s_app;
+
+typedef struct s_integrate_job
+{
+	struct s_app	*app;
+	int				start;
+	int				end;
+	float			dt;
+}	t_integrate_job;
+
+typedef struct s_planes_job
+{
+	struct s_app	*app;
+	int				start;
+	int				end;
+}	t_planes_job;
+
+typedef struct s_pushback_job
+{
+	struct s_app	*app;
+	int				start;
+	int				end;
+	int				moved;
+}	t_pushback_job;
+
 typedef struct s_phys_world
 {
 	t_body			*bodies;
@@ -63,6 +89,9 @@ typedef struct s_phys_world
 	int				*cell_count;
 	int				*cell_start;
 	int				*cell_items;
+	t_integrate_job	integrate_jobs[MAX_THREADS];
+	t_planes_job	planes_jobs[MAX_THREADS];
+	t_pushback_job	pushback_jobs[MAX_THREADS];
 }					t_phys_world;
 
 typedef struct s_hitbox
@@ -94,7 +123,6 @@ typedef struct s_cylinder_bounds
 	t_vec3	lo;
 	t_vec3	hi;
 } 				t_cylinder_bounds;
-struct s_app;
 
 void	phys_init(t_phys_world *w);
 void	phys_free(t_phys_world *w);
@@ -115,6 +143,7 @@ int		bin_bodies(t_phys_world *w, int cells);
 void	resolve_pair(struct s_app *app, t_body *a, t_body *b);
 void	collide_neighbors(struct s_app *app, int bi);
 void	collide_planes(struct s_app *app, t_body *b);
+void	collide_planes_all(struct s_app *app);
 void	apply_blackhole_gravity(struct s_app *app, t_body *b, float dt);
 void	integrate(struct s_app *app, float dt);
 int		push_back_to_scene(struct s_app *app);

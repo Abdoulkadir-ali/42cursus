@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 04:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/05/02 17:11:16 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/05/08 18:34:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 static void	advance_skinning(t_app *app, t_animator *a)
 {
-	skel_reskin_all(a, &app->scene);
+	skel_reskin_all(a, &app->scene, &app->pool.tpool);
 	bvh_refit(&app->bvh, app->scene.bvh_objs);
 	bvh_prepare_simd(&app->bvh, app->scene.bvh_objs);
 	app->dirty = 1;

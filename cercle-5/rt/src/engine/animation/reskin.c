@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 03:30:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/30 00:32:04 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/05/08 18:41:42 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,25 @@ static void	write_triangle(const t_reskin *c, int ti)
 				v3_sub(o->u.tri.c, o->u.tri.a)));
 }
 
-static void	reskin_prim(t_animator *a, t_anim_prim *p, t_scene *s)
+static void	reskin_chunk(void *data)
+{
+	t_reskin_job	*j;
+	int				ti;
+
+	j = (t_reskin_job *)data;
+	ti = j->start;
+	while (ti < j->end)
+		write_triangle(j->c, ti++);
+}
+
+static void	reskin_prim(t_animator *a, t_anim_prim *p, t_scene *s,
+				t_tpool *tp)
 {
 	t_reskin	c;
 	int			ti;
+	int			w;
+	int			chunk;
+	int			i;
 
 	c.a = a;
 	c.p = p;
@@ -65,16 +80,35 @@ static void	reskin_prim(t_animator *a, t_anim_prim *p, t_scene *s)
 	c.has_inv = 0;
 	if (p->skin >= 0)
 		skel_build_palette(a, p->skin);
+	if (tp && tp->n_workers > 1 && p->n_tris >= 64)
+	{
+		w = tp->n_workers;
+		chunk = (p->n_tris + w - 1) / w;
+		i = 0;
+		while (i < w)
+		{
+			a->reskin_jobs[i].c = &c;
+			a->reskin_jobs[i].start = i * chunk;
+			a->reskin_jobs[i].end = i * chunk + chunk;
+			if (a->reskin_jobs[i].end > p->n_tris)
+				a->reskin_jobs[i].end = p->n_tris;
+			if (a->reskin_jobs[i].start < p->n_tris)
+				tpool_submit(tp, reskin_chunk, &a->reskin_jobs[i]);
+			i++;
+		}
+		tpool_wait(tp);
+		return ;
+	}
 	ti = -1;
 	while (++ti < p->n_tris)
 		write_triangle(&c, ti);
 }
 
-void	skel_reskin_all(t_animator *a, t_scene *s)
+void	skel_reskin_all(t_animator *a, t_scene *s, t_tpool *tp)
 {
 	int	i;
 
 	i = -1;
 	while (++i < a->n_prims)
-		reskin_prim(a, &a->prims[i], s);
+		reskin_prim(a, &a->prims[i], s, tp);
 }

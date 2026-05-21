@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 18:47:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/05/02 17:17:11 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/05/08 18:49:16 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 # define RENDER_H
 
 # include <pthread.h>
+# include "threads.h"
 # include "maths.h"
 # include "physics.h"
 # include "raytracing.h"
 # include "scene.h"
 # include "shapes.h"
+# include "simd.h"
 
-# define MAX_THREADS 32
 # define TILE_SIZE 32
 # define MAX_BOUNCES 4
 
@@ -62,16 +63,33 @@ typedef struct s_render_settings
 	bool	taa;
 }			t_render_settings;
 
+/*
+** Per-tile job passed to the generic thread pool.
+** Must stay alive until tpool_wait() returns (pool_run() guarantees this).
+*/
+typedef struct s_tile_job
+{
+	struct s_app	*app;
+	t_tile			tile;
+}				t_tile_job;
+
+typedef struct s_taa_job
+{
+	struct s_app	*app;
+	int				y0;
+	int				y1;
+}				t_taa_job;
+
 typedef struct s_thread_pool
 {
-	pthread_t		tids[MAX_THREADS];
+	t_tpool			tpool;
 	int				n_threads;
 	t_tile			*tiles;
+	t_tile_job		*jobs;
 	int				cap_tiles;
 	int				n_tiles;
-	int				next_tile;
-	pthread_mutex_t	mtx;
 	struct s_app	*app;
+	t_taa_job		taa_jobs[MAX_THREADS];
 }					t_thread_pool;
 
 typedef struct s_pickbuf
@@ -114,5 +132,6 @@ int		pick_at(struct s_app *app, int sx, int sy);
 
 /* Camera update */
 void	update_camera(struct s_app *app);
+void	render_tile(struct s_app *app, t_tile t);
 
 #endif

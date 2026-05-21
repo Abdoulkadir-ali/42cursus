@@ -6,7 +6,7 @@
 /*   By: abdoali <abdoali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 04:00:00 by abdoali           #+#    #+#             */
-/*   Updated: 2026/04/28 21:04:34 by abdoali          ###   ########.fr       */
+/*   Updated: 2026/05/08 18:34:41 by abdoali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,5 @@ void	skel_animator_attach(t_scene *s, t_animator *a)
 		a->active = 0;
 	skel_reset_to_bind(a);
 	skel_compute_world(a);
-	skel_reskin_all(a, s);
+	skel_reskin_all(a, s, NULL);
 }
