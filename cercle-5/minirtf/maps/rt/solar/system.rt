@@ -1,0 +1,55 @@
+# Miniature Solar System
+# Scene-level physics: zero gravity, G=1.0, no damping
+# v_orbit = sqrt(G * M / r)  with G=1, M=100000
+#   r=20 -> v = sqrt(100000/20) = 70.71
+#   r=35 -> v = sqrt(100000/35) = 53.45
+#   r=55 -> v = sqrt(100000/55) = 42.61
+#   r=80 -> v = sqrt(100000/80) = 35.36
+
+grav 0,0,0
+G 1.0
+damp 0.0
+
+A 0.05 10,10,20
+C 0,30,200 0,-0.15,-1 60
+L 0,80,0 1.0 255,240,200
+
+# Sun (visual — large static emissive sphere)
+sp 0,0,0 8 255,200,50
+phys mass 100000
+phys static 1
+emit 255,180,40
+emit_power 4.0
+
+# Gravity well (invisible attractor at same position)
+# With G=1.0 and mass=100000: v_orbit(r) = sqrt(100000/r)
+bh 0,0,0 100000
+
+# Mercury — r=20, v=70.71 (moves along +Z axis)
+sp 20,0,0 0.6 180,140,100
+phys vel 0,0,70.71
+phys mass 0.33
+
+# Venus — r=35, v=53.45
+sp 35,0,0 1.0 220,180,100
+phys vel 0,0,53.45
+phys mass 4.87
+rough 0.7
+
+# Earth — r=55, v=42.61
+sp 55,0,0 1.1 50,120,220
+phys vel 0,0,42.61
+phys mass 5.97
+rough 0.4
+
+# Mars — r=80, v=35.36
+sp 80,0,0 0.8 200,80,50
+phys vel 0,0,35.36
+phys mass 0.64
+rough 0.8
+
+# Jupiter — r=115, v=29.49
+sp 115,0,0 3.0 200,160,120
+phys vel 0,0,29.49
+phys mass 1898.0
+rough 0.5

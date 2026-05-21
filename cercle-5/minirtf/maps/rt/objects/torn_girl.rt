@@ -1,0 +1,26 @@
+A 0.05 255,255,255
+C 0,10,30 0,-0.2,-1 90
+
+# Soft area light
+L 10,20,10 0.5 155,255,155
+
+# Gray floor
+pl 0,0,0 0,1,0 100,100,100
+
+# # Emissive (left)
+glb maps/glb/torn_cloth_girl.glb -8,0,0 0,0,0 10.0 255,255,255 100,0,0
+# glb maps/glb/in_underwear.glb -16,0,0 0,0,0 10.0 255,255,255  0,100,0
+# glb maps/glb/leggings_girl.glb -24,0,0 0,0,0 10.0 255,255,255 0,0,100
+# glb maps/glb/girl_sexy.glb -32,0,0 0,0,0 10.0 255,255,255 100,20,0
+# glb maps/glb/sexy_beach_bikini_asian_woman.glb 0,10,0 -90,0,0 15.0 255,255,255 0,0,0
+
+
+
+# Non-emissive (right)
+glb maps/glb/lady_in_black_dress.glb 0,0,0 -180,0,0 0.1 255,255,255 0,0,0
+glb maps/glb/torn_cloth_girl.glb 8,0,0 0,0,0 10.0 255,255,255 0,0,0
+glb maps/glb/in_underwear.glb 16,0,0 0,0,0 10.0 255,255,255 0,0,0
+glb maps/glb/leggings_girl.glb 24,0,0 0,0,0 10.0 255,255,255 0,0,0
+glb maps/glb/girl_sexy.glb 32,0,0 0,0,0 10.0 255,255,255 0,0,0
+glb maps/glb/sci-fi_girl_v.02_walkcycle_test.glb 38,0,0 -90,0,0 1.0 255,255,255 0,0,0
+glb maps/glb/women_in_jeans.glb -50,0,0 90,0,0 10.0 255,255,255 0,0,0

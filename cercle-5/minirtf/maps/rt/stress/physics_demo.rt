@@ -1,0 +1,49 @@
+# Physics + thermal + black hole demo
+# Color values 0..255 (matches subject),mat tail = ks shine refl tex_id [temp emit]
+
+A 0.10 255,255,255
+C 0,3,-18 0,0,1 70
+
+# soft fill
+L -10,12,-12 0.4 255,240,200
+L 10,10,6 0.3 200,210,255
+
+# floor
+pl 0,-2,0 0,1,0 120,120,140 mat 0.1 32 0.05 -1
+
+# back wall
+pl 0,0,30 0,0,-1 40,42,55 mat 0.05 16 0 -1
+
+# black hole at (0,3,8) with rs = 1.2
+bh 0,3,8 1.2
+
+# ring of bright stars (so we can see the lensing distortion)
+sp -8,3,18 1.0 255,180,60 mat 0.2 32 0 -1 5500 3.0
+sp 8,3,18 1.0 60,180,255 mat 0.2 32 0 -1 9000 3.0
+sp 0,9,18 1.0 255,60,60 mat 0.2 32 0 -1 3500 3.0
+sp 0,-3,18 1.0 255,255,255 mat 0.2 32 0 -1 8000 4.0
+sp -6,8,18 0.7 200,140,255 mat 0.2 32 0 -1 7000 2.5
+sp 6,8,18 0.7 80,255,160 mat 0.2 32 0 -1 6000 2.5
+sp -6,-2,18 0.7 255,200,120 mat 0.2 32 0 -1 4500 2.5
+sp 6,-2,18 0.7 120,255,200 mat 0.2 32 0 -1 5000 2.5
+
+# pile of dynamic bouncing balls in foreground
+sp -3,6,-4 1.0 220,80,80 mat 0.4 64 0.0 -1
+dyn -1 1.0 0.7 0,0,0
+sp -1,8,-4 1.0 80,220,80 mat 0.4 64 0.0 -1
+dyn -1 1.0 0.7 0,0,0
+sp 1,9,-4 1.0 80,140,255 mat 0.4 64 0.0 -1
+dyn -1 1.0 0.7 0,0,0
+sp 3,7,-4 1.0 240,210,80 mat 0.4 64 0.0 -1
+dyn -1 1.0 0.7 0,0,0
+sp -2,12,-4 1.0 255,255,255 mat 0.4 64 0.2 -1
+dyn -1 1.0 0.6 1,0,0
+sp 2,14,-4 1.0 255,160,255 mat 0.4 64 0.0 -1
+dyn -1 1.0 0.6 -1,0,0
+
+# white-hot iron ball (visibly emissive,also dynamic)
+sp 0,18,-4 0.8 255,255,200 mat 0.3 64 0 -1 4500 6.0
+dyn -1 0.5 0.4 0,0,0
+
+# default gravity is (0,-9.81,0); override here for fun
+g 0,-12,0

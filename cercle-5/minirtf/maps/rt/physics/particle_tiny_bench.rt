@@ -1,0 +1,17 @@
+A 0.05 255,255,255
+C 0,4,-12 0,-0.2,1 70
+
+# N-body gravity off
+G 0
+
+# Single point light above emitter
+L 0,10,0  200  255,230,180
+
+# Ground plane — diffuse grey
+pl 0,-1,0 0,1,0 80,80,80
+mat
+rough 0.9
+
+# Tiny particle emitter for fast callgrind profiling (20 particles max)
+# pos      dir     rate  speed  life_min  life_max  size  spread  temp_min  temp_max
+pe 0,0,0  0,1,0  20  6.0  1.5  4.0  0.12  0.45  0.5  1.0

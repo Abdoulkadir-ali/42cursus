@@ -1,0 +1,47 @@
+#Packages
+packages/minilibx-linux
+packages/stb_image
+objs/
+ignore/
+digest.txt
+*.txt
+
+# Compilation
+objs/
+*.o
+*.d
+
+# Binaries
+miniRT
+a.out
+
+# Libraries
+*.a
+packages/libft/libft.a
+
+# Editor directories
+.vscode/
+.idea/
+.settings/
+*.swp
+*~
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Misc
+digest.txt
+subjects/
+*.log
+valgrind-out.txt
+*.md
+!README.md
+42_header.txt
+
+callgrind*
+maps/fbx
+maps/glb
+scripts/
+objs/
+42Header

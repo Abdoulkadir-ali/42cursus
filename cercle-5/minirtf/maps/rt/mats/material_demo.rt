@@ -1,0 +1,99 @@
+# ============================================================
+# Extended RT format demo
+# All material modifiers are OPTIONAL.
+# They apply to the last declared object.
+# ============================================================
+
+A 0.05 255,255,255
+C 0,8,25 0,-0.2,-1 70
+L 0,20,5 0.6 255,240,220
+
+# --- Sphere: solid color with physical properties ---
+sp 0,2,0 4.0 255,255,255
+mat s 220,80,50
+rough 0.3
+metal 0.8
+refl 0.4
+ior 1.0
+
+# --- Sphere: checkered pattern (color_a  color_b  scale) ---
+sp 8,2,0 4.0 0,0,0
+mat c 255,255,255 30,30,30 1.5
+rough 0.9
+metal 0.0
+
+# --- Sphere: bitmap texture ---
+sp -8,2,0 4.0 0,0,0
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.6
+metal 0.0
+emit 0,0,0
+
+# --- Emissive sphere (glowing) ---
+sp 0,12,0 2.0 0,0,0
+mat s 255,200,80
+rough 1.0
+emit 255,180,60
+
+# --- Semi-transparent sphere ---
+sp 4,2,8 3.0 150,200,255
+mat s 150,200,255
+rough 0.05
+metal 0.0
+opac 0.2
+ior 1.45
+refl 0.1
+
+# --- Plane: checker floor ---
+pl 0,-1,0 0,1,0 255,255,255
+mat c 200,200,200 50,50,50 3.0
+rough 0.95
+metal 0.0
+
+# --- Cylinder: brushed metal ---
+cy 12,2,0 0,1,0 3.0 8.0 180,180,200
+rough 0.2
+metal 0.9
+refl 0.5
+
+# --- Box: matte red ---
+bx -12,2,0 1,0,0 2,2,2 200,60,60
+rough 0.8
+metal 0.0
+
+# --- Capsule: glass ---
+ca 0,4,-12 0,1,0 1.5 3.0 200,230,255
+rough 0.02
+metal 0.0
+opac 0.05
+ior 1.52
+refl 0.05
+
+# === FORMAT REFERENCE ===
+# Line order per object (all optional after transform fields):
+#
+# 1.  <type>   — sp / pl / cy / cn / bx / ca / py / tr / rc
+# 2.  <args>   — shape-specific (pos, size/radius, axis...)
+# 3.  <r,g,b>  — legacy solid color (still works, sets slot 0)
+#
+# 4.  mat s <r,g,b>                    — solid albedo
+#     mat c <r1,g1,b1> <r2,g2,b2> [s] — checker (scale optional, default 1)
+#     mat t <path>                     — bitmap texture
+#
+# 5.  rough      <0.0 – 1.0>   roughness
+#     metal      <0.0 – 1.0>   metallic
+#     emit       <r,g,b>       emissive color (values can exceed 255 for HDR)
+#     emit_power <float>       multiplier on emit color (e.g. 2.0 for bright glow)
+#     opac       <0.0 – 1.0>   opacity (1 = fully opaque, 0 = invisible)
+#     refl       <0.0 – 1.0>   reflectivity
+#     ior        <float>       index of refraction (glass ~1.45, water ~1.33)
+#     shine      <float>       phong shininess exponent (default 32)
+#     uv_scale   <float>       texture/checker UV tiling scale
+#     bump       <path>        bump/normal map texture path
+#     name       <string>      material label (shown in inspector)
+#
+# 6.  phys mass   <float>      rigid-body mass (0 = immovable)
+#     phys static <0|1>        lock from physics simulation
+#     phys elast  <float>      elasticity / restitution (0–1)
+#     phys fric   <float>      friction coefficient (0–1)
+#     (phys modifiers apply to mesh objects only)

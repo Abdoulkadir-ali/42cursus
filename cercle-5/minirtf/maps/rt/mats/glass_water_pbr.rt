@@ -1,0 +1,43 @@
+A 0.15 255,255,255
+C 0,10,30 0,-0.2,-1 70
+L 10,20,10 0.9 255,245,220
+
+# Floor — checker
+pl 0,0,0 0,1,0 255,255,255
+mat c 220,220,220 60,60,60 2.0
+rough 0.85
+metal 0.0
+
+# Glass Sphere
+sp -4,4,0 6.0 255,255,255
+mat s 220,235,255
+rough 0.03
+metal 0.0
+opac 0.08
+ior 1.52
+refl 0.08
+name glass
+
+# Water Sphere
+sp 4,4,0 6.0 255,255,255
+mat s 130,190,230
+rough 0.05
+metal 0.0
+opac 0.12
+ior 1.33
+refl 0.06
+name water
+
+# Background Sphere (diffuse red — visible through refracting spheres)
+sp 0,4,-10 4.0 220,60,50
+mat s 220,60,50
+rough 0.7
+metal 0.0
+
+
+# --- Sphere: bitmap texture ---
+sp 15,2,0 8.0 0,0,0
+mat t maps/obj/garen/garen_tex.jpg
+rough 0.6
+metal 0.0
+emit 0,0,0
